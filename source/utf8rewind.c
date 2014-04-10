@@ -83,30 +83,30 @@ size_t utf8encode(unicode_t unicode, char* target, size_t targetSize)
 	return length;
 }
 
-size_t utf8encodeutf16(utf16_t character, char* target, size_t targetSize)
+size_t utf8encodeutf16(utf16_t codePoint, char* target, size_t targetSize)
 {
 	utf16_t surrogate;
 
-	if (character <= 0xFFFF)
+	if (codePoint <= 0xFFFF)
 	{
 		if (targetSize < 2)
 		{
 			return 0;
 		}
 
-		target[0] = (char)((character & 0xFF00) >> 8);
-		target[1] = (char)(character & 0x00FF);
+		target[0] = (char)((codePoint & 0xFF00) >> 8);
+		target[1] = (char)(codePoint & 0x00FF);
 
 		return 2;
 	}
-	else if (character < 0x110000)
+	else if (codePoint < 0x110000)
 	{
 		if (targetSize < 4)
 		{
 			return 0;
 		}
 
-		surrogate = ((character - 0x10000) >> 10) + 0xD800;
+		surrogate = ((codePoint - 0x10000) >> 10) + 0xD800;
 		target[0] = (char)((surrogate & 0xFF00) >> 8);
 		target[1] = (char)(surrogate & 0x00FF);
 
