@@ -17,7 +17,7 @@
 						'Optimization': 0, # /Od
 						'PreprocessorDefinitions': [ 'DEBUG', '_DEBUG' ],
 						'BasicRuntimeChecks': 3,
-						'RuntimeLibrary': 1, # /MTd (static debug)
+						'RuntimeLibrary': 3, # /MDd (dynamic debug)
 					},
 					'VCLinkerTool': {
 						'LinkIncremental': 2,
@@ -33,7 +33,7 @@
 					'VCCLCompilerTool': {
 						'Optimization': 2, # /Os
 						'PreprocessorDefinitions': [ 'NDEBUG' ],
-						'RuntimeLibrary': 0, # /MT (static release)
+						'RuntimeLibrary': 2, # /MD (dynamic release)
 					},
 					'VCLinkerTool': {
 						'LinkIncremental': 1,
