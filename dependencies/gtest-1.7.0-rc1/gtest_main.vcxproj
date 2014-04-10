@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{21B227DD-625A-4676-B100-C9BE4FD19569}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>gtest_main</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+    <PropertyGroup>
+      <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\Debug\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">gtest_main.dir\Debug\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">gtest_main</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\Release\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">gtest_main.dir\Release\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">gtest_main</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\MinSizeRel\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">gtest_main.dir\MinSizeRel\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">gtest_main</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.lib</TargetExt>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\RelWithDebInfo\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">gtest_main.dir\RelWithDebInfo\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">gtest_main</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.lib</TargetExt>
+    </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions> /Zm1000 /Zm1000 -J %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/include;D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4127;4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;WIN32;_WINDOWS;_UNICODE;UNICODE;WIN32;_WIN32;STRICT;WIN32_LEAN_AND_MEAN;GTEST_HAS_PTHREAD=0;_HAS_EXCEPTIONS=1;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>Debug</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/Debug/gtest_main.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;WIN32;_WINDOWS;_UNICODE;UNICODE;WIN32;_WIN32;STRICT;WIN32_LEAN_AND_MEAN;GTEST_HAS_PTHREAD=0;_HAS_EXCEPTIONS=1;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/include;D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/include;D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions> /Zm1000 /Zm1000 -J %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/include;D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4127;4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32;_WINDOWS;_UNICODE;UNICODE;WIN32;_WIN32;STRICT;WIN32_LEAN_AND_MEAN;GTEST_HAS_PTHREAD=0;_HAS_EXCEPTIONS=1;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>Release</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/Release/gtest_main.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32;_WINDOWS;_UNICODE;UNICODE;WIN32;_WIN32;STRICT;WIN32_LEAN_AND_MEAN;GTEST_HAS_PTHREAD=0;_HAS_EXCEPTIONS=1;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/include;D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/include;D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalOptions> /Zm1000 /Zm1000 -J %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/include;D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4127;4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32;_WINDOWS;_UNICODE;UNICODE;WIN32;_WIN32;STRICT;WIN32_LEAN_AND_MEAN;GTEST_HAS_PTHREAD=0;_HAS_EXCEPTIONS=1;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>MinSizeRel</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/MinSizeRel/gtest_main.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32;_WINDOWS;_UNICODE;UNICODE;WIN32;_WIN32;STRICT;WIN32_LEAN_AND_MEAN;GTEST_HAS_PTHREAD=0;_HAS_EXCEPTIONS=1;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/include;D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/include;D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalOptions> /Zm1000 /Zm1000 -J %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/include;D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4127;4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32;_WINDOWS;_UNICODE;UNICODE;WIN32;_WIN32;STRICT;WIN32_LEAN_AND_MEAN;GTEST_HAS_PTHREAD=0;_HAS_EXCEPTIONS=1;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>RelWithDebInfo</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/RelWithDebInfo/gtest_main.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32;_WINDOWS;_UNICODE;UNICODE;WIN32;_WIN32;STRICT;WIN32_LEAN_AND_MEAN;GTEST_HAS_PTHREAD=0;_HAS_EXCEPTIONS=1;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/include;D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/include;D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+"D:\Programs\CMake 2.8\bin\cmake.exe" -HD:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1 -BD:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1 --check-stamp-file D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/CMakeLists.txt;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeLists.txt;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeSystem.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeCXXCompiler.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeCCompiler.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeSystemSpecificInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeGenericSystem.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\WindowsPaths.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-CXX.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeRCCompiler.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeRCInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-C.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\cmake\internal_utils.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPythonInterp.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindThreads.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CheckIncludeFiles.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CheckLibraryExists.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeExpandImportedTargets.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CheckSymbolExists.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeExpandImportedTargets.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\generate.stamp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+"D:\Programs\CMake 2.8\bin\cmake.exe" -HD:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1 -BD:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1 --check-stamp-file D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/CMakeLists.txt;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeLists.txt;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeSystem.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeCXXCompiler.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeCCompiler.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeSystemSpecificInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeGenericSystem.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\WindowsPaths.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-CXX.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeRCCompiler.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeRCInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-C.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\cmake\internal_utils.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPythonInterp.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindThreads.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CheckIncludeFiles.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CheckLibraryExists.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeExpandImportedTargets.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CheckSymbolExists.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeExpandImportedTargets.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\generate.stamp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+"D:\Programs\CMake 2.8\bin\cmake.exe" -HD:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1 -BD:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1 --check-stamp-file D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/CMakeLists.txt;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeLists.txt;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeSystem.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeCXXCompiler.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeCCompiler.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeSystemSpecificInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeGenericSystem.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\WindowsPaths.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-CXX.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeRCCompiler.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeRCInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-C.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\cmake\internal_utils.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPythonInterp.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindThreads.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CheckIncludeFiles.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CheckLibraryExists.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeExpandImportedTargets.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CheckSymbolExists.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeExpandImportedTargets.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\generate.stamp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+"D:\Programs\CMake 2.8\bin\cmake.exe" -HD:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1 -BD:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1 --check-stamp-file D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/CMakeLists.txt;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeLists.txt;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeSystem.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeCXXCompiler.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeCCompiler.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeSystemSpecificInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeGenericSystem.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\WindowsPaths.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-CXX.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\2.8.10.2\CMakeRCCompiler.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeRCInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCInformation.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-C.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\cmake\internal_utils.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPythonInterp.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindThreads.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CheckIncludeFiles.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CheckLibraryExists.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeExpandImportedTargets.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CheckSymbolExists.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeExpandImportedTargets.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;D:\Programs\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\Projects\ExLibrisGL\Dependencies\gtest-1.7.0-rc1\CMakeFiles\generate.stamp</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\gtest_main.cc"  />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/ZERO_CHECK.vcxproj">
+      <Project>6722DC40-CD48-4D90-A534-0A2F813986E4</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/Projects/ExLibrisGL/Dependencies/gtest-1.7.0-rc1/gtest.vcxproj">
+      <Project>77AAF550-1FE4-4EF9-B6ED-88092654AAFF</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

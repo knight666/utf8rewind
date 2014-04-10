@@ -1,7 +1,7 @@
 # Project
 syntax: regexp
 (Debug|Release)/obj/*
-utf8rewind\.(sln|vcxproj).*
+[^/]*\.(sln|vcxproj).* # ignore generated projects
 
 # Visual Studio 2010
 syntax: glob
@@ -18,6 +18,11 @@ ipch/*
 *.suo
 syntax: regexp
 .*UpgradeLog([0-9]*)\.XML
+
+# CMake
+syntax: glob
+CMakeFiles/*
+CMakeCache.txt
 
 # Other
 syntax: glob
