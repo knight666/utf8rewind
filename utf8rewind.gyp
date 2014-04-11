@@ -40,6 +40,7 @@
 			],
 			'sources': [
 				'source/suite-charvalid.cpp',
+				'source/suite-encode.cpp',
 				'source/tests-base.hpp',
 				'source/tests-main.cpp',
 			]
