@@ -17,7 +17,7 @@
 				['OS=="win"', {
 						'msvs_settings': {
 							'VCCLCompilerTool': {
-								'CompileAs': 1,
+								'CompileAs': 1, # Compile as C
 							},
 						},
 					}
@@ -41,6 +41,7 @@
 			'sources': [
 				'source/suite-charlen.cpp',
 				'source/suite-charvalid.cpp',
+				'source/suite-convertucs2.cpp',
 				'source/suite-decode.cpp',
 				'source/suite-encode.cpp',
 				'source/suite-seek.cpp',

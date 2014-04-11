@@ -17,6 +17,7 @@ extern "C" {
 #endif
 
 typedef unsigned int unicode_t; /*!< Unicode codepoint. */
+typedef unsigned short ucs2_t; /*!< UCS-2 encoded codepoint. */
 typedef unsigned short utf16_t; /*!< UTF-16 encoded codepoint. */
 
 //! Check if a character is valid according to UTF-8 encoding.
@@ -53,7 +54,23 @@ size_t utf8charlen(char encodedCharacter);
 */
 size_t utf8encode(unicode_t codePoint, char* target, size_t targetSize);
 
-size_t utf8encodeutf16(utf16_t codePoint, char* target, size_t targetSize);
+//! Convert a UCS-2 codepoint to UTF-8.
+/*!
+	UCS-2 encoding is similar to UTF-16 encoding, except that it
+	does not use surrogate pairs to encode values beyond U+FFFF.
+
+	This encoding was standard on Microsoft Windows XP. Newer
+	versions of Windows use UTF-16 instead.
+
+	@note Surrogate pairs cannot be converted using this function.
+	Use utf8convertutf16 instead.
+
+	@param codePoint UCS-2 encoded codepoint.
+	@param target String to write the result to.
+	@param targetSize Amount of bytes remaining in the string.
+	@return Length in bytes or 0 on failure.
+*/
+size_t utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize);
 
 //! Decode a UTF-8 encoded codepoint to a Unicode codepoint.
 /*!
