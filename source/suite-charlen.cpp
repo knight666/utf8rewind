@@ -1,0 +1,215 @@
+#include "tests-base.hpp"
+
+#include "utf8rewind.h"
+
+TEST(CharacterLength, OneByte)
+{
+	EXPECT_EQ(1, utf8charlen('\x00'));
+	EXPECT_EQ(1, utf8charlen('\x01'));
+	EXPECT_EQ(1, utf8charlen('\x02'));
+	EXPECT_EQ(1, utf8charlen('\x03'));
+	EXPECT_EQ(1, utf8charlen('\x04'));
+	EXPECT_EQ(1, utf8charlen('\x05'));
+	EXPECT_EQ(1, utf8charlen('\x06'));
+	EXPECT_EQ(1, utf8charlen('\x07'));
+	EXPECT_EQ(1, utf8charlen('\x08'));
+	EXPECT_EQ(1, utf8charlen('\x09'));
+	EXPECT_EQ(1, utf8charlen('\x0A'));
+	EXPECT_EQ(1, utf8charlen('\x0B'));
+	EXPECT_EQ(1, utf8charlen('\x0C'));
+	EXPECT_EQ(1, utf8charlen('\x0D'));
+	EXPECT_EQ(1, utf8charlen('\x0E'));
+	EXPECT_EQ(1, utf8charlen('\x0F'));
+	EXPECT_EQ(1, utf8charlen('\x10'));
+	EXPECT_EQ(1, utf8charlen('\x11'));
+	EXPECT_EQ(1, utf8charlen('\x12'));
+	EXPECT_EQ(1, utf8charlen('\x13'));
+	EXPECT_EQ(1, utf8charlen('\x14'));
+	EXPECT_EQ(1, utf8charlen('\x15'));
+	EXPECT_EQ(1, utf8charlen('\x16'));
+	EXPECT_EQ(1, utf8charlen('\x17'));
+	EXPECT_EQ(1, utf8charlen('\x18'));
+	EXPECT_EQ(1, utf8charlen('\x19'));
+	EXPECT_EQ(1, utf8charlen('\x1A'));
+	EXPECT_EQ(1, utf8charlen('\x1B'));
+	EXPECT_EQ(1, utf8charlen('\x1C'));
+	EXPECT_EQ(1, utf8charlen('\x1D'));
+	EXPECT_EQ(1, utf8charlen('\x1E'));
+	EXPECT_EQ(1, utf8charlen('\x1F'));
+	EXPECT_EQ(1, utf8charlen('\x20'));
+	EXPECT_EQ(1, utf8charlen('\x21'));
+	EXPECT_EQ(1, utf8charlen('\x22'));
+	EXPECT_EQ(1, utf8charlen('\x23'));
+	EXPECT_EQ(1, utf8charlen('\x24'));
+	EXPECT_EQ(1, utf8charlen('\x25'));
+	EXPECT_EQ(1, utf8charlen('\x26'));
+	EXPECT_EQ(1, utf8charlen('\x27'));
+	EXPECT_EQ(1, utf8charlen('\x28'));
+	EXPECT_EQ(1, utf8charlen('\x29'));
+	EXPECT_EQ(1, utf8charlen('\x2A'));
+	EXPECT_EQ(1, utf8charlen('\x2B'));
+	EXPECT_EQ(1, utf8charlen('\x2C'));
+	EXPECT_EQ(1, utf8charlen('\x2D'));
+	EXPECT_EQ(1, utf8charlen('\x2E'));
+	EXPECT_EQ(1, utf8charlen('\x2F'));
+	EXPECT_EQ(1, utf8charlen('\x30'));
+	EXPECT_EQ(1, utf8charlen('\x31'));
+	EXPECT_EQ(1, utf8charlen('\x32'));
+	EXPECT_EQ(1, utf8charlen('\x33'));
+	EXPECT_EQ(1, utf8charlen('\x34'));
+	EXPECT_EQ(1, utf8charlen('\x35'));
+	EXPECT_EQ(1, utf8charlen('\x36'));
+	EXPECT_EQ(1, utf8charlen('\x37'));
+	EXPECT_EQ(1, utf8charlen('\x38'));
+	EXPECT_EQ(1, utf8charlen('\x39'));
+	EXPECT_EQ(1, utf8charlen('\x3A'));
+	EXPECT_EQ(1, utf8charlen('\x3B'));
+	EXPECT_EQ(1, utf8charlen('\x3C'));
+	EXPECT_EQ(1, utf8charlen('\x3D'));
+	EXPECT_EQ(1, utf8charlen('\x3E'));
+	EXPECT_EQ(1, utf8charlen('\x3F'));
+	EXPECT_EQ(1, utf8charlen('\x40'));
+	EXPECT_EQ(1, utf8charlen('\x41'));
+	EXPECT_EQ(1, utf8charlen('\x42'));
+	EXPECT_EQ(1, utf8charlen('\x43'));
+	EXPECT_EQ(1, utf8charlen('\x44'));
+	EXPECT_EQ(1, utf8charlen('\x45'));
+	EXPECT_EQ(1, utf8charlen('\x46'));
+	EXPECT_EQ(1, utf8charlen('\x47'));
+	EXPECT_EQ(1, utf8charlen('\x48'));
+	EXPECT_EQ(1, utf8charlen('\x49'));
+	EXPECT_EQ(1, utf8charlen('\x4A'));
+	EXPECT_EQ(1, utf8charlen('\x4B'));
+	EXPECT_EQ(1, utf8charlen('\x4C'));
+	EXPECT_EQ(1, utf8charlen('\x4D'));
+	EXPECT_EQ(1, utf8charlen('\x4E'));
+	EXPECT_EQ(1, utf8charlen('\x4F'));
+	EXPECT_EQ(1, utf8charlen('\x50'));
+	EXPECT_EQ(1, utf8charlen('\x51'));
+	EXPECT_EQ(1, utf8charlen('\x52'));
+	EXPECT_EQ(1, utf8charlen('\x53'));
+	EXPECT_EQ(1, utf8charlen('\x54'));
+	EXPECT_EQ(1, utf8charlen('\x55'));
+	EXPECT_EQ(1, utf8charlen('\x56'));
+	EXPECT_EQ(1, utf8charlen('\x57'));
+	EXPECT_EQ(1, utf8charlen('\x58'));
+	EXPECT_EQ(1, utf8charlen('\x59'));
+	EXPECT_EQ(1, utf8charlen('\x5A'));
+	EXPECT_EQ(1, utf8charlen('\x5B'));
+	EXPECT_EQ(1, utf8charlen('\x5C'));
+	EXPECT_EQ(1, utf8charlen('\x5D'));
+	EXPECT_EQ(1, utf8charlen('\x5E'));
+	EXPECT_EQ(1, utf8charlen('\x5F'));
+	EXPECT_EQ(1, utf8charlen('\x60'));
+	EXPECT_EQ(1, utf8charlen('\x61'));
+	EXPECT_EQ(1, utf8charlen('\x62'));
+	EXPECT_EQ(1, utf8charlen('\x63'));
+	EXPECT_EQ(1, utf8charlen('\x64'));
+	EXPECT_EQ(1, utf8charlen('\x65'));
+	EXPECT_EQ(1, utf8charlen('\x66'));
+	EXPECT_EQ(1, utf8charlen('\x67'));
+	EXPECT_EQ(1, utf8charlen('\x68'));
+	EXPECT_EQ(1, utf8charlen('\x69'));
+	EXPECT_EQ(1, utf8charlen('\x6A'));
+	EXPECT_EQ(1, utf8charlen('\x6B'));
+	EXPECT_EQ(1, utf8charlen('\x6C'));
+	EXPECT_EQ(1, utf8charlen('\x6D'));
+	EXPECT_EQ(1, utf8charlen('\x6E'));
+	EXPECT_EQ(1, utf8charlen('\x6F'));
+	EXPECT_EQ(1, utf8charlen('\x70'));
+	EXPECT_EQ(1, utf8charlen('\x71'));
+	EXPECT_EQ(1, utf8charlen('\x72'));
+	EXPECT_EQ(1, utf8charlen('\x73'));
+	EXPECT_EQ(1, utf8charlen('\x74'));
+	EXPECT_EQ(1, utf8charlen('\x75'));
+	EXPECT_EQ(1, utf8charlen('\x76'));
+	EXPECT_EQ(1, utf8charlen('\x77'));
+	EXPECT_EQ(1, utf8charlen('\x78'));
+	EXPECT_EQ(1, utf8charlen('\x79'));
+	EXPECT_EQ(1, utf8charlen('\x7A'));
+	EXPECT_EQ(1, utf8charlen('\x7B'));
+	EXPECT_EQ(1, utf8charlen('\x7C'));
+	EXPECT_EQ(1, utf8charlen('\x7D'));
+	EXPECT_EQ(1, utf8charlen('\x7E'));
+	EXPECT_EQ(1, utf8charlen('\x7F'));
+}
+
+TEST(CharacterLength, TwoBytes)
+{
+	EXPECT_EQ(2, utf8charlen('\xC2'));
+	EXPECT_EQ(2, utf8charlen('\xC3'));
+	EXPECT_EQ(2, utf8charlen('\xC4'));
+	EXPECT_EQ(2, utf8charlen('\xC5'));
+	EXPECT_EQ(2, utf8charlen('\xC6'));
+	EXPECT_EQ(2, utf8charlen('\xC7'));
+	EXPECT_EQ(2, utf8charlen('\xC8'));
+	EXPECT_EQ(2, utf8charlen('\xC9'));
+	EXPECT_EQ(2, utf8charlen('\xCA'));
+	EXPECT_EQ(2, utf8charlen('\xCB'));
+	EXPECT_EQ(2, utf8charlen('\xCC'));
+	EXPECT_EQ(2, utf8charlen('\xCD'));
+	EXPECT_EQ(2, utf8charlen('\xCE'));
+	EXPECT_EQ(2, utf8charlen('\xCF'));
+	EXPECT_EQ(2, utf8charlen('\xD0'));
+	EXPECT_EQ(2, utf8charlen('\xD1'));
+	EXPECT_EQ(2, utf8charlen('\xD2'));
+	EXPECT_EQ(2, utf8charlen('\xD3'));
+	EXPECT_EQ(2, utf8charlen('\xD4'));
+	EXPECT_EQ(2, utf8charlen('\xD5'));
+	EXPECT_EQ(2, utf8charlen('\xD6'));
+	EXPECT_EQ(2, utf8charlen('\xD7'));
+	EXPECT_EQ(2, utf8charlen('\xD8'));
+	EXPECT_EQ(2, utf8charlen('\xD9'));
+	EXPECT_EQ(2, utf8charlen('\xDA'));
+	EXPECT_EQ(2, utf8charlen('\xDB'));
+	EXPECT_EQ(2, utf8charlen('\xDC'));
+	EXPECT_EQ(2, utf8charlen('\xDD'));
+	EXPECT_EQ(2, utf8charlen('\xDE'));
+	EXPECT_EQ(2, utf8charlen('\xDF'));
+}
+
+TEST(CharacterLength, ThreeBytes)
+{
+	EXPECT_EQ(3, utf8charlen('\xE0'));
+	EXPECT_EQ(3, utf8charlen('\xE1'));
+	EXPECT_EQ(3, utf8charlen('\xE2'));
+	EXPECT_EQ(3, utf8charlen('\xE3'));
+	EXPECT_EQ(3, utf8charlen('\xE4'));
+	EXPECT_EQ(3, utf8charlen('\xE5'));
+	EXPECT_EQ(3, utf8charlen('\xE6'));
+	EXPECT_EQ(3, utf8charlen('\xE7'));
+	EXPECT_EQ(3, utf8charlen('\xE8'));
+	EXPECT_EQ(3, utf8charlen('\xE9'));
+	EXPECT_EQ(3, utf8charlen('\xEA'));
+	EXPECT_EQ(3, utf8charlen('\xEB'));
+	EXPECT_EQ(3, utf8charlen('\xEC'));
+	EXPECT_EQ(3, utf8charlen('\xED'));
+	EXPECT_EQ(3, utf8charlen('\xEE'));
+	EXPECT_EQ(3, utf8charlen('\xEF'));
+}
+
+TEST(CharacterLength, FourBytes)
+{
+	EXPECT_EQ(4, utf8charlen('\xF0'));
+	EXPECT_EQ(4, utf8charlen('\xF1'));
+	EXPECT_EQ(4, utf8charlen('\xF2'));
+	EXPECT_EQ(4, utf8charlen('\xF3'));
+	EXPECT_EQ(4, utf8charlen('\xF4'));
+}
+
+TEST(CharacterLength, Invalid)
+{
+	EXPECT_EQ(0, utf8charlen('\xC0'));
+	EXPECT_EQ(0, utf8charlen('\xC1'));
+	EXPECT_EQ(0, utf8charlen('\xF5'));
+	EXPECT_EQ(0, utf8charlen('\xF6'));
+	EXPECT_EQ(0, utf8charlen('\xF7'));
+	EXPECT_EQ(0, utf8charlen('\xF8'));
+	EXPECT_EQ(0, utf8charlen('\xF9'));
+	EXPECT_EQ(0, utf8charlen('\xFA'));
+	EXPECT_EQ(0, utf8charlen('\xFB'));
+	EXPECT_EQ(0, utf8charlen('\xFC'));
+	EXPECT_EQ(0, utf8charlen('\xFD'));
+	EXPECT_EQ(0, utf8charlen('\xFE'));
+	EXPECT_EQ(0, utf8charlen('\xFF'));
+}

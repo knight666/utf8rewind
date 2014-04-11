@@ -39,6 +39,7 @@
 				'Debug/lib/utf8rewind.lib',
 			],
 			'sources': [
+				'source/suite-charlen.cpp',
 				'source/suite-charvalid.cpp',
 				'source/suite-decode.cpp',
 				'source/suite-encode.cpp',
