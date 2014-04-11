@@ -31,15 +31,16 @@
 				'utf8rewind',
 			],
 			'include_dirs': [
-				'include/utf8rewind',
 				'dependencies/gtest-1.7.0-rc1/include',
+				'include/utf8rewind',
 			],
 			'libraries': [
-				'$(SolutionDir)/dependencies/gtest-1.7.0-rc1/lib/windows/x86/Debug/gtest.lib',
-				'$(SolutionDir)/Debug/lib/utf8rewind.lib',
+				'dependencies/gtest-1.7.0-rc1/lib/windows/x86/Debug/gtest.lib',
+				'Debug/lib/utf8rewind.lib',
 			],
 			'sources': [
 				'source/suite-charvalid.cpp',
+				'source/suite-decode.cpp',
 				'source/suite-encode.cpp',
 				'source/tests-base.hpp',
 				'source/tests-main.cpp',
