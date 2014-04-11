@@ -1,5 +1,8 @@
 #include "utf8rewind.h"
 
+#define SURROGATE_START_LOW 0xD800
+#define SURROGATE_END_HIGH 0xDFFF
+
 int utf8charvalid(char encodedCharacter)
 {
 	return ((((unsigned char)encodedCharacter & 0xFE) != 0xC0) && ((unsigned char)encodedCharacter < 0xF5));
@@ -33,7 +36,7 @@ size_t utf8charlen(char encodedCharacter)
 	}
 }
 
-size_t utf8encode(unicode_t unicode, char* target, size_t targetSize)
+size_t utf8encode(unicode_t codePoint, char* target, size_t targetSize)
 {
 	size_t length = 1;
 	unicode_t mask = 0;
@@ -44,19 +47,19 @@ size_t utf8encode(unicode_t unicode, char* target, size_t targetSize)
 		return 0;
 	}
 
-	if (unicode <= 0x7F)
+	if (codePoint <= 0x7F)
 	{
-		target[0] = (char)unicode;
+		target[0] = (char)codePoint;
 
 		return 1;
 	}
 
-	if (unicode <= 0x7FF)
+	if (codePoint <= 0x7FF)
 	{
 		length = 2;
 		mask = 0xC0;
 	}
-	else if (unicode <= 0xFFFF)
+	else if (codePoint <= 0xFFFF)
 	{
 		length = 3;
 		mask = 0xE0;
@@ -74,47 +77,62 @@ size_t utf8encode(unicode_t unicode, char* target, size_t targetSize)
 
 	for (i = length - 1; i >= 1; --i)
 	{
-		target[i] = (char)((unicode & 0x3F) | 0x80);
-		unicode >>= 6;
+		target[i] = (char)((codePoint & 0x3F) | 0x80);
+		codePoint >>= 6;
 	}
 
-	target[0] = (char)(unicode | mask);
+	target[0] = (char)(codePoint | mask);
 
 	return length;
 }
 
-size_t utf8encodeutf16(utf16_t codePoint, char* target, size_t targetSize)
+size_t utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize)
 {
-	utf16_t surrogate;
+	if (target == 0 || targetSize < 1)
+	{
+		return 0;
+	}
 
-	if (codePoint <= 0xFFFF)
+	if (codePoint <= 0x7F)
+	{
+		target[0] = (char)codePoint;
+
+		return 1;
+	}
+	else if (codePoint <= 0x7FF)
 	{
 		if (targetSize < 2)
 		{
 			return 0;
 		}
 
-		target[0] = (char)((codePoint & 0xFF00) >> 8);
-		target[1] = (char)(codePoint & 0x00FF);
+		target[1] = (char)((codePoint       & 0x3F) | 0x80);
+		target[0] = (char)((codePoint >> 6)         | 0xC0);
 
 		return 2;
 	}
-	else if (codePoint < 0x110000)
+	else if (codePoint <= 0xFFFF)
 	{
-		if (targetSize < 4)
+		if (codePoint >= SURROGATE_START_LOW && codePoint <= SURROGATE_END_HIGH)
+		{
+			/*
+				The range between U+D800 and U+DFFF is reserved
+				for lead and trail surrogate pairs.
+			*/
+
+			return 0;
+		}
+		
+		if (targetSize < 3)
 		{
 			return 0;
 		}
 
-		surrogate = ((codePoint - 0x10000) >> 10) + 0xD800;
-		target[0] = (char)((surrogate & 0xFF00) >> 8);
-		target[1] = (char)(surrogate & 0x00FF);
+		target[2] = (char)(( codePoint        & 0x3F) | 0x80);
+		target[1] = (char)(((codePoint >>  6) & 0x3F) | 0x80);
+		target[0] = (char)( (codePoint >> 12)         | 0xE0);
 
-		surrogate = (surrogate & 0x3FF) + 0xDC00;
-		target[2] = (char)((surrogate & 0xFF00) >> 8);
-		target[3] = (char)(surrogate & 0x00FF);
-
-		return 4;
+		return 3;
 	}
 
 	return 0;
