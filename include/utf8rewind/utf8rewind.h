@@ -12,6 +12,10 @@
 #include <wchar.h>
 /// @endcond
 
+#define UTF8_ERR_NOT_ENOUGH_SPACE (-1)
+#define UTF8_ERR_OUT_OF_RANGE (-2)
+#define UTF8_ERR_SURROGATE_PAIR (-3)
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -23,6 +27,7 @@ typedef unsigned short utf16_t; /*!< UTF-16 encoded codepoint. */
 //! Check if a character is valid according to UTF-8 encoding.
 /*!
 	@param encodedCharacter Character to check.
+
 	@return 1 on success or 0 on failure.
 */
 int utf8charvalid(char encodedCharacter);
@@ -37,6 +42,7 @@ int utf8charvalid(char encodedCharacter);
 	used to encode a codepoint.
 
 	@param encodedCharacter Character to check.
+
 	@return Length in bytes or 0 on failure.
 */
 size_t utf8charlen(char encodedCharacter);
@@ -50,6 +56,7 @@ size_t utf8charlen(char encodedCharacter);
 	@param codePoint Unicode codepoint.
 	@param target String to write the result to.
 	@param targetSize Amount of bytes remaining in the string.
+
 	@return Length in bytes or 0 on failure.
 */
 size_t utf8encode(unicode_t codePoint, char* target, size_t targetSize);
@@ -68,9 +75,12 @@ size_t utf8encode(unicode_t codePoint, char* target, size_t targetSize);
 	@param codePoint UCS-2 encoded codepoint.
 	@param target String to write the result to.
 	@param targetSize Amount of bytes remaining in the string.
-	@return Length in bytes or 0 on failure.
+
+	@return Length in bytes or an error code.
+		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+		- #UTF8_ERR_SURROGATE_PAIR Codepoint is part of a surrogate pair.
 */
-size_t utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize);
+int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize);
 
 //! Decode a UTF-8 encoded codepoint to a Unicode codepoint.
 /*!
@@ -79,6 +89,7 @@ size_t utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize);
 
 	@param text Input string.
 	@param result String to write the result to.
+
 	@return Input offset in bytes or 0 on failure.
 */
 size_t utf8decode(const char* text, unicode_t* result);
@@ -106,6 +117,7 @@ size_t utf8decode(const char* text, unicode_t* result);
 	@param text Input string.
 	@param textStart Start of input string.
 	@param offset Requested offset in string.
+
 	@param direction Offset string or no change on error.
 */
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
