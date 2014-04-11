@@ -8,7 +8,7 @@ TEST(ConvertUcs2, ZeroLength)
 	const size_t s = 256;
 	char b[s] = { 0 };
 
-	EXPECT_EQ(0, utf8convertucs2(c, b, 0));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8convertucs2(c, b, 0));
 	EXPECT_STREQ("", b);
 }
 
@@ -17,7 +17,7 @@ TEST(ConvertUcs2, ZeroBuffer)
 	ucs2_t c = 'T';
 	const size_t s = 256;
 
-	EXPECT_EQ(0, utf8convertucs2(c, nullptr, s));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8convertucs2(c, nullptr, s));
 }
 
 TEST(ConvertUcs2, OneByte)
@@ -149,7 +149,7 @@ TEST(ConvertUcs2, SurrogateStart)
 	const size_t s = 256;
 	char b[s] = { 0 };
 
-	EXPECT_EQ(0, utf8convertucs2(c, b, s));
+	EXPECT_EQ(UTF8_ERR_SURROGATE_PAIR, utf8convertucs2(c, b, s));
 	EXPECT_STREQ("", b);
 }
 
@@ -159,6 +159,6 @@ TEST(ConvertUcs2, SurrogateEnd)
 	const size_t s = 256;
 	char b[s] = { 0 };
 
-	EXPECT_EQ(0, utf8convertucs2(c, b, s));
+	EXPECT_EQ(UTF8_ERR_SURROGATE_PAIR, utf8convertucs2(c, b, s));
 	EXPECT_STREQ("", b);
 }

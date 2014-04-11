@@ -86,11 +86,11 @@ size_t utf8encode(unicode_t codePoint, char* target, size_t targetSize)
 	return length;
 }
 
-size_t utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize)
+int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize)
 {
 	if (target == 0 || targetSize < 1)
 	{
-		return 0;
+		return UTF8_ERR_NOT_ENOUGH_SPACE;
 	}
 
 	if (codePoint <= 0x7F)
@@ -103,7 +103,7 @@ size_t utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize)
 	{
 		if (targetSize < 2)
 		{
-			return 0;
+			return UTF8_ERR_NOT_ENOUGH_SPACE;
 		}
 
 		target[1] = (char)((codePoint       & 0x3F) | 0x80);
@@ -120,12 +120,12 @@ size_t utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize)
 				for lead and trail surrogate pairs.
 			*/
 
-			return 0;
+			return UTF8_ERR_SURROGATE_PAIR;
 		}
 		
 		if (targetSize < 3)
 		{
-			return 0;
+			return UTF8_ERR_NOT_ENOUGH_SPACE;
 		}
 
 		target[2] = (char)(( codePoint        & 0x3F) | 0x80);
