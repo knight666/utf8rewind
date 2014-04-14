@@ -62,7 +62,7 @@ TEST(Encode, ZeroLength)
 	const size_t s = 256;
 	char b[s] = { 0 };
 
-	EXPECT_EQ(0, utf8encode(c, b, 0));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8encode(c, b, 0));
 	EXPECT_STREQ("", b);
 }
 
@@ -71,7 +71,7 @@ TEST(Encode, ZeroBuffer)
 	unicode_t c = 'K';
 	const size_t s = 256;
 
-	EXPECT_EQ(0, utf8encode(c, nullptr, s));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8encode(c, nullptr, s));
 }
 
 TEST(Encode, Ascii)
@@ -214,7 +214,7 @@ TEST(Encode, TwoBytesBufferTooSmall)
 	const size_t s = 1;
 	char b[s] = { 0 };
 
-	EXPECT_EQ(0, utf8encode(c, b, s));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8encode(c, b, s));
 	EXPECT_STREQ("", b);
 }
 
@@ -291,7 +291,7 @@ TEST(Encode, ThreeBytesBufferTooSmall)
 	const size_t s = 2;
 	char b[s] = { 0 };
 
-	EXPECT_EQ(0, utf8encode(c, b, s));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8encode(c, b, s));
 	EXPECT_STREQ("", b);
 }
 
@@ -361,6 +361,6 @@ TEST(Encode, FourBytesBufferTooSmall)
 	const size_t s = 3;
 	char b[s] = { 0 };
 
-	EXPECT_EQ(0, utf8encode(c, b, s));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8encode(c, b, s));
 	EXPECT_STREQ("", b);
 }

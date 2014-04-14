@@ -12,9 +12,11 @@
 #include <wchar.h>
 /// @endcond
 
-#define UTF8_ERR_NOT_ENOUGH_SPACE (-1)
-#define UTF8_ERR_OUT_OF_RANGE (-2)
-#define UTF8_ERR_SURROGATE_PAIR (-3)
+#define UTF8_ERR_INVALID_CHARACTER (-1)
+#define UTF8_ERR_INVALID_DATA (-2)
+#define UTF8_ERR_NOT_ENOUGH_SPACE (-3)
+#define UTF8_ERR_OUT_OF_RANGE (-4)
+#define UTF8_ERR_SURROGATE_PAIR (-5)
 
 #if defined(__cplusplus)
 extern "C" {
@@ -43,9 +45,10 @@ int utf8charvalid(char encodedCharacter);
 
 	@param encodedCharacter Character to check.
 
-	@return Length in bytes or 0 on failure.
+	@return Length in bytes or an error code.
+		- #UTF8_ERR_INVALID_CHARACTER Not a valid UTF-8 continuation byte.
 */
-size_t utf8charlen(char encodedCharacter);
+int utf8charlen(char encodedCharacter);
 
 //! Encode a Unicode codepoint to UTF-8.
 /*!
@@ -57,9 +60,10 @@ size_t utf8charlen(char encodedCharacter);
 	@param target String to write the result to.
 	@param targetSize Amount of bytes remaining in the string.
 
-	@return Length in bytes or 0 on failure.
+	@return Length in bytes or an error code.
+		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 */
-size_t utf8encode(unicode_t codePoint, char* target, size_t targetSize);
+int utf8encode(unicode_t codePoint, char* target, size_t targetSize);
 
 //! Convert a UCS-2 codepoint to UTF-8.
 /*!
@@ -92,7 +96,7 @@ int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize);
 
 	@return Input offset in bytes or 0 on failure.
 */
-size_t utf8decode(const char* text, unicode_t* result);
+int utf8decode(const char* text, unicode_t* result);
 
 //! Seek into a UTF-8 encoded string.
 /*!
