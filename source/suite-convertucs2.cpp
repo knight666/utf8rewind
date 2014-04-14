@@ -149,7 +149,7 @@ TEST(ConvertUcs2, SurrogateStart)
 	const size_t s = 256;
 	char b[s] = { 0 };
 
-	EXPECT_EQ(UTF8_ERR_SURROGATE_PAIR, utf8convertucs2(c, b, s));
+	EXPECT_EQ(UTF8_ERR_UNHANDLED_SURROGATE_PAIR, utf8convertucs2(c, b, s));
 	EXPECT_STREQ("", b);
 }
 
@@ -159,6 +159,6 @@ TEST(ConvertUcs2, SurrogateEnd)
 	const size_t s = 256;
 	char b[s] = { 0 };
 
-	EXPECT_EQ(UTF8_ERR_SURROGATE_PAIR, utf8convertucs2(c, b, s));
+	EXPECT_EQ(UTF8_ERR_UNHANDLED_SURROGATE_PAIR, utf8convertucs2(c, b, s));
 	EXPECT_STREQ("", b);
 }

@@ -1,7 +1,9 @@
 #include "utf8rewind.h"
 
-#define SURROGATE_START_LOW 0xD800
-#define SURROGATE_END_HIGH 0xDFFF
+#define SURROGATE_HIGH_START 0xD800
+#define SURROGATE_HIGH_END 0xDBFF
+#define SURROGATE_LOW_START 0xDC00
+#define SURROGATE_LOW_END 0xDFFF
 
 int utf8charvalid(char encodedCharacter)
 {
@@ -113,14 +115,14 @@ int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize)
 	}
 	else if (codePoint <= 0xFFFF)
 	{
-		if (codePoint >= SURROGATE_START_LOW && codePoint <= SURROGATE_END_HIGH)
+		if (codePoint >= SURROGATE_HIGH_START && codePoint <= SURROGATE_LOW_END)
 		{
 			/*
 				The range between U+D800 and U+DFFF is reserved
 				for lead and trail surrogate pairs.
 			*/
 
-			return UTF8_ERR_SURROGATE_PAIR;
+			return UTF8_ERR_UNHANDLED_SURROGATE_PAIR;
 		}
 		
 		if (targetSize < 3)
@@ -136,6 +138,71 @@ int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize)
 	}
 
 	return 0;
+}
+
+int utf8convertutf16(const char* input, size_t inputSize, char* target, size_t targetSize)
+{
+	const utf16_t* src;
+	utf16_t surrogateHigh;
+	utf16_t surrogateLow;
+	unicode_t codePoint;
+
+	if (inputSize < 2)
+	{
+		return UTF8_ERR_INVALID_DATA;
+	}
+
+	src = (const utf16_t*)input;
+
+	if (*src < SURROGATE_HIGH_START || *src > SURROGATE_LOW_END)
+	{
+		return utf8convertucs2(*(const ucs2_t*)input, target, targetSize);
+	}
+	else
+	{
+		if (inputSize < 4)
+		{
+			return UTF8_ERR_INVALID_DATA;
+		}
+
+		surrogateHigh = *src;
+
+		if (surrogateHigh < SURROGATE_HIGH_START || surrogateHigh > SURROGATE_HIGH_END)
+		{
+			return UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
+		}
+
+		surrogateLow = *(src + 1);
+
+		if (surrogateLow < SURROGATE_LOW_START || surrogateLow > SURROGATE_LOW_END)
+		{
+			return UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
+		}
+
+		if (targetSize < 4)
+		{
+			return UTF8_ERR_NOT_ENOUGH_SPACE;
+		}
+
+		codePoint =
+			0x10000 +
+			(surrogateLow - SURROGATE_LOW_START) +
+			((surrogateHigh - SURROGATE_HIGH_START) << 10);
+
+		if (codePoint >= 0x110000)
+		{
+			/* Unicode characters must be encoded in a maximum of four bytes. */
+
+			return UTF8_ERR_INVALID_CHARACTER;
+		}
+
+		target[3] = (char)(( codePoint        & 0x3F) | 0x80);
+		target[2] = (char)(((codePoint >>  6) & 0x3F) | 0x80);
+		target[1] = (char)(((codePoint >> 12) & 0x3F) | 0x80);
+		target[0] = (char)( (codePoint >> 18)         | 0xF0);
+
+		return 4;
+	}
 }
 
 int utf8decode(const char* text, unicode_t* result)
