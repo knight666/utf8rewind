@@ -199,17 +199,17 @@ TEST(CharacterLength, FourBytes)
 
 TEST(CharacterLength, Invalid)
 {
-	EXPECT_EQ(0, utf8charlen('\xC0'));
-	EXPECT_EQ(0, utf8charlen('\xC1'));
-	EXPECT_EQ(0, utf8charlen('\xF5'));
-	EXPECT_EQ(0, utf8charlen('\xF6'));
-	EXPECT_EQ(0, utf8charlen('\xF7'));
-	EXPECT_EQ(0, utf8charlen('\xF8'));
-	EXPECT_EQ(0, utf8charlen('\xF9'));
-	EXPECT_EQ(0, utf8charlen('\xFA'));
-	EXPECT_EQ(0, utf8charlen('\xFB'));
-	EXPECT_EQ(0, utf8charlen('\xFC'));
-	EXPECT_EQ(0, utf8charlen('\xFD'));
-	EXPECT_EQ(0, utf8charlen('\xFE'));
-	EXPECT_EQ(0, utf8charlen('\xFF'));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8charlen('\xC0'));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8charlen('\xC1'));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8charlen('\xF5'));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8charlen('\xF6'));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8charlen('\xF7'));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8charlen('\xF8'));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8charlen('\xF9'));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8charlen('\xFA'));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8charlen('\xFB'));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8charlen('\xFC'));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8charlen('\xFD'));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8charlen('\xFE'));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8charlen('\xFF'));
 }

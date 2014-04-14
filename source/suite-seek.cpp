@@ -621,7 +621,7 @@ TEST(SeekSet, Empty)
 	EXPECT_EQ(t, r);
 	EXPECT_STREQ("", r);
 	size_t o = 0;
-	EXPECT_EQ(0, utf8decode(r, &o));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode(r, &o));
 }
 
 TEST(SeekSet, Ascii)
@@ -657,7 +657,7 @@ TEST(SeekSet, AsciiPastEnd)
 	EXPECT_EQ(t + strlen(t), r);
 	EXPECT_STREQ("", r);
 	size_t o = 0;
-	EXPECT_EQ(0, utf8decode(r, &o));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode(r, &o));
 }
 
 TEST(SeekSet, AsciiNegative)
@@ -705,7 +705,7 @@ TEST(SeekSet, TwoBytesPastEnd)
 	EXPECT_EQ(t + strlen(t), r);
 	EXPECT_STREQ("", r);
 	size_t o = 0;
-	EXPECT_EQ(0, utf8decode(r, &o));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode(r, &o));
 }
 
 TEST(SeekSet, TwoBytesNegative)
@@ -753,7 +753,7 @@ TEST(SeekSet, ThreeBytesPastEnd)
 	EXPECT_EQ(t + strlen(t), r);
 	EXPECT_STREQ("", r);
 	size_t o = 0;
-	EXPECT_EQ(0, utf8decode(r, &o));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode(r, &o));
 }
 
 TEST(SeekSet, ThreeBytesNegative)
@@ -801,7 +801,7 @@ TEST(SeekSet, FourBytesPastEnd)
 	EXPECT_EQ(t + strlen(t), r);
 	EXPECT_STREQ("", r);
 	size_t o = 0;
-	EXPECT_EQ(0, utf8decode(r, &o));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode(r, &o));
 }
 
 TEST(SeekSet, FourBytesNegative)

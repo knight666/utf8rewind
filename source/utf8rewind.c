@@ -8,11 +8,11 @@ int utf8charvalid(char encodedCharacter)
 	return ((((unsigned char)encodedCharacter & 0xFE) != 0xC0) && ((unsigned char)encodedCharacter < 0xF5));
 }
 
-size_t utf8charlen(char encodedCharacter)
+int utf8charlen(char encodedCharacter)
 {
 	if (!utf8charvalid(encodedCharacter))
 	{
-		return 0;
+		return UTF8_ERR_INVALID_CHARACTER;
 	}
 	else if ((unsigned char)encodedCharacter <= 0x7F)
 	{
@@ -32,11 +32,11 @@ size_t utf8charlen(char encodedCharacter)
 	}
 	else
 	{
-		return 0;
+		return UTF8_ERR_INVALID_CHARACTER;
 	}
 }
 
-size_t utf8encode(unicode_t codePoint, char* target, size_t targetSize)
+int utf8encode(unicode_t codePoint, char* target, size_t targetSize)
 {
 	size_t length = 1;
 	unicode_t mask = 0;
@@ -44,7 +44,7 @@ size_t utf8encode(unicode_t codePoint, char* target, size_t targetSize)
 
 	if (target == 0)
 	{
-		return 0;
+		return UTF8_ERR_NOT_ENOUGH_SPACE;
 	}
 
 	if (codePoint <= 0x7F)
@@ -72,7 +72,7 @@ size_t utf8encode(unicode_t codePoint, char* target, size_t targetSize)
 
 	if (length >= targetSize)
 	{
-		return 0;
+		return UTF8_ERR_NOT_ENOUGH_SPACE;
 	}
 
 	for (i = length - 1; i >= 1; --i)
@@ -138,31 +138,39 @@ int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize)
 	return 0;
 }
 
-size_t utf8decode(const char* text, unicode_t* result)
+int utf8decode(const char* text, unicode_t* result)
 {
 	size_t text_length;
 	const unsigned char* src;
-	size_t length;
 
-	if (text == 0 || result == 0)
+	if (result == 0)
 	{
-		return 0;
+		return UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+
+	if (text == 0)
+	{
+		return UTF8_ERR_INVALID_DATA;
 	}
 
 	text_length = strlen(text);
-	if (text_length == 0 || !utf8charvalid(text[0]))
+	if (text_length == 0)
 	{
-		return 0;
+		return UTF8_ERR_INVALID_DATA;
+	}
+
+	if (!utf8charvalid(text[0]))
+	{
+		return UTF8_ERR_INVALID_CHARACTER;
 	}
 
 	src = (const unsigned char*)text;
-	length = 0;
 
 	if (src[0] <= 0x7F)
 	{
 		*result = (unicode_t)src[0];
 
-		length = 1;
+		return 1;
 	}
 	else if ((src[0] & 0xE0) == 0xC0)
 	{
@@ -170,13 +178,13 @@ size_t utf8decode(const char* text, unicode_t* result)
 		{
 			*result = 0;
 
-			return 0;
+			return UTF8_ERR_INVALID_DATA;
 		}
 
-		*result = +src[0] & 0x1F;
+		*result = src[0] & 0x1F;
 		*result = (*result << 6) | (src[1] & 0x3F);
 
-		length = 2;
+		return 2;
 	}
 	else if ((src[0] & 0xF0) == 0xE0)
 	{
@@ -184,14 +192,14 @@ size_t utf8decode(const char* text, unicode_t* result)
 		{
 			*result = 0;
 
-			return 0;
+			return UTF8_ERR_INVALID_DATA;
 		}
 
 		*result = src[0] & 0x0F;
 		*result = (*result << 6) | (src[1] & 0x3F);
 		*result = (*result << 6) | (src[2] & 0x3F);
 
-		length = 3;
+		return 3;
 	}
 	else if ((src[0] & 0xF8) == 0xF0)
 	{
@@ -199,7 +207,7 @@ size_t utf8decode(const char* text, unicode_t* result)
 		{
 			result = 0;
 
-			return 0;
+			return UTF8_ERR_INVALID_DATA;
 		}
 
 		*result = src[0] & 0x07;
@@ -207,14 +215,12 @@ size_t utf8decode(const char* text, unicode_t* result)
 		*result = (*result << 6) | (src[2] & 0x3F);
 		*result = (*result << 6) | (src[3] & 0x3F);
 
-		length = 4;
+		return 4;
 	}
 	else
 	{
-		length = 0;
+		return UTF8_ERR_INVALID_CHARACTER;
 	}
-
-	return length;
 }
 
 const char* seekforward(const char* src, off_t offset)
@@ -233,8 +239,8 @@ const char* seekforward(const char* src, off_t offset)
 
 	for (i = 0; i < offset; ++i)
 	{
-		size_t char_length = utf8charlen(*src);
-		if (char_length == 0)
+		int char_length = utf8charlen(*src);
+		if (char_length <= 0)
 		{
 			break;
 		}

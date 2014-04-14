@@ -12,8 +12,8 @@ TEST(Decode, Ascii)
 TEST(Decode, AsciiMinimum)
 {
 	size_t o = 0;
-	EXPECT_EQ(0, utf8decode("\0", &o));
-	EXPECT_EQ(0x00, o);
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode("\0", &o));
+	EXPECT_EQ(0, o);
 }
 
 TEST(Decode, AsciiMaximum)
@@ -26,7 +26,7 @@ TEST(Decode, AsciiMaximum)
 TEST(Decode, AsciiInvalid)
 {
 	size_t o = 0;
-	EXPECT_EQ(0, utf8decode("\x88", &o));
+	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8decode("\x88", &o));
 	EXPECT_EQ(0x00, o);
 }
 
@@ -57,7 +57,7 @@ TEST(Decode, TwoBytesMaximum)
 TEST(Decode, TwoBytesNotEnoughData)
 {
 	size_t o = 0;
-	EXPECT_EQ(0, utf8decode("\xC2", &o));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode("\xC2", &o));
 	EXPECT_EQ(0x00, o);
 }
 
@@ -89,7 +89,7 @@ TEST(Decode, ThreeBytesNotEnoughData)
 {
 	size_t o = 0;
 
-	EXPECT_EQ(0, utf8decode("\xEF\xBF", &o));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode("\xEF\xBF", &o));
 	EXPECT_EQ(0x00, o);
 }
 
@@ -121,11 +121,11 @@ TEST(Decode, FourBytesNotEnoughData)
 {
 	size_t o = 0;
 
-	EXPECT_EQ(0, utf8decode("\xF0\x90\x80", &o));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode("\xF0\x90\x80", &o));
 	EXPECT_EQ(0x00, o);
 }
 
 TEST(Decode, NoOutputSpecified)
 {
-	EXPECT_EQ(0, utf8decode("\3E", nullptr));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8decode("\3E", nullptr));
 }
