@@ -45,6 +45,7 @@
 				'source/suite-decode.cpp',
 				'source/suite-encode.cpp',
 				'source/suite-seek.cpp',
+				'source/suite-toutf8.cpp',
 				'source/tests-base.hpp',
 				'source/tests-main.cpp',
 			]

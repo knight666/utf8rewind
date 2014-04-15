@@ -111,6 +111,28 @@ int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize);
 */
 int utf8convertutf16(const char* input, size_t inputSize, char* target, size_t targetSize, int* bytesRead);
 
+//! Convert a UTF-16 encoded string to UTF-8.
+/*!
+	UTF-16 encoded text consists of two up to four bytes per
+	encoded codepoint. A codepoint may consist of a high and low 
+	surrogate pair, which allows the encoding of the full range
+	of Unicode characters that would otherwise not fit in a
+	single 16-bit integer.
+
+	@param input UTF-16 encoded string.
+	@param inputSize Size of the input in bytes.
+	@param target String to write the result to.
+	@param targetSize Amount of bytes remaining in the string.
+
+	@return Amount of bytes written or an error code.
+	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for encoding.
+	- #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR High surrogate pair was not matched.
+	- #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR Low surrogate pair was not matched.
+	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+	- #UTF8_ERR_INVALID_CHARACTER Codepoint could not be encoded.
+*/
+int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize);
+
 //! Decode a UTF-8 encoded codepoint to a Unicode codepoint.
 /*!
 	The result of this function can be used to offset the input
@@ -151,7 +173,6 @@ int utf8decode(const char* text, unicode_t* result);
 */
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
 
-size_t wctoutf8(const utf16_t* text, char* target, size_t targetSize);
 size_t utf8towc(const char* text, utf16_t* target, size_t targetSize);
 
 #if defined(__cplusplus)

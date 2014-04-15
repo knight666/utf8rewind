@@ -141,7 +141,7 @@ TEST(ConvertUtf16, NotEnoughSpace)
 	char b[s] = { 0 };
 	int r = 0;
 
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8convertutf16(c, strlen(c), b, s, &r));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8convertutf16(c, 4, b, s, &r));
 	EXPECT_EQ(0, r);
 	EXPECT_STREQ("", b);
 }
@@ -153,7 +153,7 @@ TEST(ConvertUtf16, Ucs2NotEnoughData)
 	char b[s] = { 0 };
 	int r = 0;
 
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8convertutf16(c, strlen(c), b, s, &r));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8convertutf16(c, 1, b, s, &r));
 	EXPECT_EQ(0, r);
 	EXPECT_STREQ("", b);
 }
