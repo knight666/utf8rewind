@@ -1,9 +1,11 @@
 #include "utf8rewind.h"
 
-#define SURROGATE_HIGH_START 0xD800
-#define SURROGATE_HIGH_END 0xDBFF
-#define SURROGATE_LOW_START 0xDC00
-#define SURROGATE_LOW_END 0xDFFF
+#define MAX_BASIC_MULTILINGUAR_PLANE  0xFFFF
+#define REPLACEMENT_CHARACTER         0xFFFD
+#define SURROGATE_HIGH_START          0xD800
+#define SURROGATE_HIGH_END            0xDBFF
+#define SURROGATE_LOW_START           0xDC00
+#define SURROGATE_LOW_END             0xDFFF
 
 int utf8charvalid(char encodedCharacter)
 {
@@ -140,90 +142,18 @@ int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize)
 	return 0;
 }
 
-int utf8convertutf16(const char* input, size_t inputSize, char* target, size_t targetSize, int* bytesRead)
-{
-	const utf16_t* src;
-	utf16_t surrogateHigh;
-	utf16_t surrogateLow;
-	unicode_t codePoint;
-
-	if (input == 0 || inputSize < 2)
-	{
-		return UTF8_ERR_INVALID_DATA;
-	}
-
-	src = (const utf16_t*)input;
-
-	if (*src < SURROGATE_HIGH_START || *src > SURROGATE_LOW_END)
-	{
-		if (bytesRead != 0)
-		{
-			*bytesRead = 2;
-		}
-
-		return utf8convertucs2(*(const ucs2_t*)input, target, targetSize);
-	}
-	else
-	{
-		if (inputSize < 4)
-		{
-			return UTF8_ERR_INVALID_DATA;
-		}
-
-		surrogateHigh = *src;
-
-		if (surrogateHigh < SURROGATE_HIGH_START || surrogateHigh > SURROGATE_HIGH_END)
-		{
-			return UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
-		}
-
-		surrogateLow = *(src + 1);
-
-		if (surrogateLow < SURROGATE_LOW_START || surrogateLow > SURROGATE_LOW_END)
-		{
-			return UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
-		}
-
-		if (targetSize < 4)
-		{
-			return UTF8_ERR_NOT_ENOUGH_SPACE;
-		}
-
-		codePoint =
-			0x10000 +
-			(surrogateLow - SURROGATE_LOW_START) +
-			((surrogateHigh - SURROGATE_HIGH_START) << 10);
-
-		if (codePoint >= 0x110000)
-		{
-			/* Unicode characters must be encoded in a maximum of four bytes. */
-
-			return UTF8_ERR_INVALID_CHARACTER;
-		}
-
-		target[3] = (char)(( codePoint        & 0x3F) | 0x80);
-		target[2] = (char)(((codePoint >>  6) & 0x3F) | 0x80);
-		target[1] = (char)(((codePoint >> 12) & 0x3F) | 0x80);
-		target[0] = (char)( (codePoint >> 18)         | 0xF0);
-
-		if (bytesRead != 0)
-		{
-			*bytesRead = 4;
-		}
-
-		return 4;
-	}
-}
-
 int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize)
 {
 	int result = 0;
+	utf16_t surrogate_high;
+	utf16_t surrogate_low;
+	utf16_t current;
+	unicode_t codepoint;
 	const char* src = (const char*)input;
 	size_t src_size = inputSize;
-	const char* dst = target;
+	char* dst = target;
 	size_t dst_size = targetSize;
 	int bytes_written = 0;
-	int bytes_read = 0;
 
 	if (input == 0 || inputSize < 2)
 	{
@@ -232,19 +162,75 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 
 	while (src_size > 0)
 	{
-		result = utf8convertutf16(src, src_size, dst, dst_size, &bytes_read);
-		if (result <= 0)
+		current = *(utf16_t*)src;
+
+		if (current < SURROGATE_HIGH_START || current > SURROGATE_LOW_END)
 		{
-			return result;
+			result = utf8convertucs2(*(const ucs2_t*)src, dst, dst_size);
+			if (result <= 0)
+			{
+				return result;
+			}
+
+			src += 2;
+			src_size -= 2;
+
+			dst += result;
+			dst_size -= result;
+
+			bytes_written += result;
 		}
+		else
+		{
+			if (src_size < 4)
+			{
+				return UTF8_ERR_INVALID_DATA;
+			}
 
-		src += bytes_read;
-		src_size -= bytes_read;
+			surrogate_high = *(utf16_t*)src;
 
-		dst += result;
-		dst_size -= result;
+			if (surrogate_high < SURROGATE_HIGH_START || surrogate_high > SURROGATE_HIGH_END)
+			{
+				return UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
+			}
 
-		bytes_written += result;
+			surrogate_low = *(utf16_t*)(src + 2);
+
+			if (surrogate_low < SURROGATE_LOW_START || surrogate_low > SURROGATE_LOW_END)
+			{
+				return UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
+			}
+
+			if (dst_size < 4)
+			{
+				return UTF8_ERR_NOT_ENOUGH_SPACE;
+			}
+
+			codepoint =
+				0x10000 +
+				(surrogate_low - SURROGATE_LOW_START) +
+				((surrogate_high - SURROGATE_HIGH_START) << 10);
+
+			if (codepoint >= 0x110000)
+			{
+				/* Unicode characters must be encoded in a maximum of four bytes. */
+
+				return UTF8_ERR_INVALID_CHARACTER;
+			}
+
+			src += 4;
+			src_size -= 4;
+
+			dst[3] = (char)(( codepoint        & 0x3F) | 0x80);
+			dst[2] = (char)(((codepoint >>  6) & 0x3F) | 0x80);
+			dst[1] = (char)(((codepoint >> 12) & 0x3F) | 0x80);
+			dst[0] = (char)( (codepoint >> 18)         | 0xF0);
+
+			dst += 4;
+			dst_size -= 4;
+
+			bytes_written += 4;
+		}
 	}
 
 	return bytes_written;
