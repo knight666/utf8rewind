@@ -54,9 +54,9 @@ int utf8charlen(char encodedCharacter);
 
 //! Encode a Unicode codepoint to UTF-8.
 /*!
-	Unicode codepoints must be in the range 0 - U+FFFFFF. Larger
-	codepoints exist, but cannot be encoded in a single 32-bit
-	integer.
+	Unicode codepoints must be in the range 0 - U+10FFFF,
+	however the range U+D800 to U+DFFF is reserved for
+	surrogate pairs and cannot be encoded.
 
 	@param codePoint Unicode codepoint.
 	@param target String to write the result to.
@@ -96,6 +96,22 @@ int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize);
 	of Unicode characters that would otherwise not fit in a
 	single 16-bit integer.
 
+	Example:
+
+	@code{.c}
+		const wchar_t* input = "textures/\xD803\xDC11.png";
+		size_t output_size = (wcslen(input) + 1) * sizeof(char);
+		char* output = (wchar_t*)malloc(output_size);
+		int result = 0;
+
+		memset(output, 0, output_size);
+		result = wctoutf8(input, wcslen(input), output, output_size);
+		if (result > 0)
+		{
+			Texture_Load(output);
+		}
+	@endcode
+
 	@param input UTF-16 encoded string.
 	@param inputSize Size of the input in bytes.
 	@param target String to write the result to.
@@ -107,6 +123,8 @@ int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize);
 	- #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR Low surrogate pair was not matched.
 	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 	- #UTF8_ERR_INVALID_CHARACTER Codepoint could not be encoded.
+
+	@sa utf8towc
 */
 int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize);
 
@@ -124,16 +142,32 @@ int utf8decode(const char* text, unicode_t* result);
 
 //! Convert a UTF-8 encoded string to UTF-16.
 /*!
+	Example:
+
+	@code{.c}
+		const char* input = "Bj\xC3\xB6rn Zonderland";
+		size_t output_size = (strlen(input) + 1) * sizeof(wchar_t);
+		wchar_t* output = (wchar_t*)malloc(output_size);
+		int result = 0;
+
+		memset(output, 0, output_size);
+		result = utf8towc(input, strlen(input), output, output_size);
+		if (result > 0)
+		{
+			Player_SetName(output);
+		}
+	@endcode
+
 	@param input UTF-8 encoded string.
 	@param inputSize Size of the input in bytes.
 	@param target String to write the result to.
 	@param targetSize Amount of bytes remaining in the string.
 
-	@sa wctoutf8
-
 	@return Amount of bytes written or an error code.
 	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
 	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+
+	@sa wctoutf8
 */
 int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t targetSize);
 
