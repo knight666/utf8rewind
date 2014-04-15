@@ -140,14 +140,14 @@ int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize)
 	return 0;
 }
 
-int utf8convertutf16(const char* input, size_t inputSize, char* target, size_t targetSize)
+int utf8convertutf16(const char* input, size_t inputSize, char* target, size_t targetSize, int* bytesRead)
 {
 	const utf16_t* src;
 	utf16_t surrogateHigh;
 	utf16_t surrogateLow;
 	unicode_t codePoint;
 
-	if (inputSize < 2)
+	if (input == 0 || inputSize < 2)
 	{
 		return UTF8_ERR_INVALID_DATA;
 	}
@@ -156,6 +156,11 @@ int utf8convertutf16(const char* input, size_t inputSize, char* target, size_t t
 
 	if (*src < SURROGATE_HIGH_START || *src > SURROGATE_LOW_END)
 	{
+		if (bytesRead != 0)
+		{
+			*bytesRead = 2;
+		}
+
 		return utf8convertucs2(*(const ucs2_t*)input, target, targetSize);
 	}
 	else
@@ -200,6 +205,11 @@ int utf8convertutf16(const char* input, size_t inputSize, char* target, size_t t
 		target[2] = (char)(((codePoint >>  6) & 0x3F) | 0x80);
 		target[1] = (char)(((codePoint >> 12) & 0x3F) | 0x80);
 		target[0] = (char)( (codePoint >> 18)         | 0xF0);
+
+		if (bytesRead != 0)
+		{
+			*bytesRead = 4;
+		}
 
 		return 4;
 	}
