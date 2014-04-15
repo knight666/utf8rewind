@@ -109,7 +109,7 @@ int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize);
 	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 	- #UTF8_ERR_INVALID_CHARACTER Codepoint could not be encoded.
 */
-int utf8convertutf16(const char* input, size_t inputSize, char* target, size_t targetSize);
+int utf8convertutf16(const char* input, size_t inputSize, char* target, size_t targetSize, int* bytesRead);
 
 //! Decode a UTF-8 encoded codepoint to a Unicode codepoint.
 /*!
