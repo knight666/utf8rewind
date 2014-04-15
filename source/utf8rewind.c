@@ -215,6 +215,41 @@ int utf8convertutf16(const char* input, size_t inputSize, char* target, size_t t
 	}
 }
 
+int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize)
+{
+	int result = 0;
+	const char* src = (const char*)input;
+	size_t src_size = inputSize;
+	const char* dst = target;
+	size_t dst_size = targetSize;
+	int bytes_written = 0;
+	int bytes_read = 0;
+
+	if (input == 0 || inputSize < 2)
+	{
+		return UTF8_ERR_INVALID_DATA;
+	}
+
+	while (src_size > 0)
+	{
+		result = utf8convertutf16(src, src_size, dst, dst_size, &bytes_read);
+		if (result <= 0)
+		{
+			return result;
+		}
+
+		src += bytes_read;
+		src_size -= bytes_read;
+
+		dst += result;
+		dst_size -= result;
+
+		bytes_written += result;
+	}
+
+	return bytes_written;
+}
+
 int utf8decode(const char* text, unicode_t* result)
 {
 	size_t text_length;
