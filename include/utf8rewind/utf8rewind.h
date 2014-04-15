@@ -122,6 +122,21 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 */
 int utf8decode(const char* text, unicode_t* result);
 
+//! Convert a UTF-8 encoded string to UTF-16.
+/*!
+	@param input UTF-8 encoded string.
+	@param inputSize Size of the input in bytes.
+	@param target String to write the result to.
+	@param targetSize Amount of bytes remaining in the string.
+
+	@sa wctoutf8
+
+	@return Amount of bytes written or an error code.
+	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
+	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+*/
+int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t targetSize);
+
 //! Seek into a UTF-8 encoded string.
 /*!
 	Working with UTF-8 encoded strings can be tricky due to
@@ -149,8 +164,6 @@ int utf8decode(const char* text, unicode_t* result);
 	@param direction Offset string or no change on error.
 */
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
-
-size_t utf8towc(const char* text, utf16_t* target, size_t targetSize);
 
 #if defined(__cplusplus)
 }

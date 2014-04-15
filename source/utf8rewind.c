@@ -1,6 +1,7 @@
 #include "utf8rewind.h"
 
 #define MAX_BASIC_MULTILINGUAR_PLANE  0xFFFF
+#define MAX_LEGAL_UTF32               0x10FFFF
 #define REPLACEMENT_CHARACTER         0xFFFD
 #define SURROGATE_HIGH_START          0xD800
 #define SURROGATE_HIGH_END            0xDBFF
@@ -319,6 +320,122 @@ int utf8decode(const char* text, unicode_t* result)
 	{
 		return UTF8_ERR_INVALID_CHARACTER;
 	}
+}
+
+int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t targetSize)
+{
+	unicode_t codepoint;
+	const char* src = input;
+	int src_size = inputSize;
+	wchar_t* dst = target;
+	size_t dst_size = targetSize;
+	int bytes_written = 0;
+
+	if (target == 0)
+	{
+		return UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+
+	if (src == 0 || src_size == 0)
+	{
+		return UTF8_ERR_INVALID_DATA;
+	}
+
+	while (src_size > 0)
+	{
+		codepoint = *(utf16_t*)src;
+
+		if (codepoint <= 0x7F)
+		{
+			src++;
+			src_size--;
+		}
+		else if ((codepoint & 0xE0) == 0xC0)
+		{
+			if (src_size < 2)
+			{
+				return UTF8_ERR_INVALID_DATA;
+			}
+
+			codepoint = src[0] & 0x1F;
+			codepoint = (codepoint << 6) | (src[1] & 0x3F);
+
+			src += 2;
+			src_size -= 2;
+		}
+		else if ((codepoint & 0xF0) == 0xE0)
+		{
+			if (src_size < 3)
+			{
+				return UTF8_ERR_INVALID_DATA;
+			}
+
+			codepoint = src[0] & 0x0F;
+			codepoint = (codepoint << 6) | (src[1] & 0x3F);
+			codepoint = (codepoint << 6) | (src[2] & 0x3F);
+
+			src += 3;
+			src_size -= 3;
+		}
+		else if ((codepoint & 0xF8) == 0xF0)
+		{
+			if (src_size < 4)
+			{
+				return UTF8_ERR_INVALID_DATA;
+			}
+
+			codepoint = src[0] & 0x07;
+			codepoint = (codepoint << 6) | (src[1] & 0x3F);
+			codepoint = (codepoint << 6) | (src[2] & 0x3F);
+			codepoint = (codepoint << 6) | (src[3] & 0x3F);
+
+			src += 4;
+			src_size -= 4;
+		}
+
+		if (codepoint <= MAX_BASIC_MULTILINGUAR_PLANE)
+		{
+			if (dst_size < 2)
+			{
+				return UTF8_ERR_NOT_ENOUGH_SPACE;
+			}
+
+			if (codepoint >= SURROGATE_HIGH_START && codepoint <= SURROGATE_LOW_END)
+			{
+				*dst++ = REPLACEMENT_CHARACTER;
+
+				src += 2;
+				src_size -= 2;
+			}
+			else
+			{
+				*dst++ = (utf16_t)codepoint;
+			}
+
+			dst_size -= 2;
+
+			bytes_written += 2;
+		}
+		else
+		{
+			/* Codepoint must be converted to a surrogate pair. */
+
+			if (dst_size < 4)
+			{
+				return UTF8_ERR_NOT_ENOUGH_SPACE;
+			}
+
+			codepoint -= 0x10000;
+			*dst++ = (codepoint >> 10) + SURROGATE_HIGH_START;
+			*dst++ = (codepoint & 0x3FF) + SURROGATE_LOW_START;
+
+			dst_size -= 4;
+
+			bytes_written += 4;
+		}
+	}
+
+	return bytes_written;
 }
 
 const char* seekforward(const char* src, off_t offset)
