@@ -41,6 +41,77 @@ int utf8charlen(char encodedCharacter)
 	}
 }
 
+int utf8len(const char* text)
+{
+	int length = 0;
+	unsigned char codepoint = 0;
+	int codepoint_length = 0;
+	int text_length = 0;
+
+	if (text == 0)
+	{
+		return 0;
+	}
+
+	text_length = (int)strlen(text);
+	if (text_length == 0)
+	{
+		return 0;
+	}
+
+	while (*text != 0 && text_length > 0)
+	{
+		if (!utf8charvalid(*text))
+		{
+			return UTF8_ERR_INVALID_CHARACTER;
+		}
+
+		codepoint = (unsigned char)*text;
+
+		if (codepoint <= 0x7F)
+		{
+			codepoint_length = 1;
+		}
+		else if ((codepoint & 0xE0) == 0xC0)
+		{
+			if (text_length < 2)
+			{
+				return UTF8_ERR_INVALID_CHARACTER;
+			}
+
+			codepoint_length = 2;
+		}
+		else if ((codepoint & 0xF0) == 0xE0)
+		{
+			if (text_length < 3)
+			{
+				return UTF8_ERR_INVALID_CHARACTER;
+			}
+
+			codepoint_length = 3;
+		}
+		else if ((codepoint & 0xF8) == 0xF0)
+		{
+			if (text_length < 4)
+			{
+				return UTF8_ERR_INVALID_CHARACTER;
+			}
+
+			codepoint_length = 4;
+		}
+		else
+		{
+			return UTF8_ERR_INVALID_CHARACTER;
+		}
+
+		length++;
+		text += codepoint_length;
+		text_length -= codepoint_length;
+	}
+
+	return length;
+}
+
 int utf8encode(unicode_t codePoint, char* target, size_t targetSize)
 {
 	size_t length = 1;

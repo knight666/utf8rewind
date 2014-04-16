@@ -52,6 +52,25 @@ int utf8charvalid(char encodedCharacter);
 */
 int utf8charlen(char encodedCharacter);
 
+//! Get the length in codepoints of a UTF-8 encoded string.
+/*!
+	Example:
+
+	@code{.c}
+		int CheckPassword(const char* password)
+		{
+			int length = utf8len(password);
+			return (length == utf8len("hunter2"));
+		}
+	@endcode
+
+	@param text UTF-8 encoded string.
+
+	@return Length in codepoints or an error code.
+		-#UTF8_ERR_INVALID_CHARACTER An invalid character was encountered.
+*/
+int utf8len(const char* text);
+
 //! Encode a Unicode codepoint to UTF-8.
 /*!
 	Unicode codepoints must be in the range 0 - U+10FFFF,
@@ -132,6 +151,34 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 /*!
 	The result of this function can be used to offset the input
 	string in order to decode all characters in a string.
+
+	Example:
+
+	@code{.c}
+		const char* input = "Name: Bj\xC3\xB6rn Zonderland";
+		const char* src = input;
+		unicode_t codepoint;
+		int offset;
+		int i;
+
+		FontBatch_Start();
+
+		for (i = 0; i < utf8len(input); ++i)
+		{
+			offset = utf8decode(src, &codepoint);
+			if (offset <= 0)
+			{
+				break;
+			}
+
+			Font_AddCharacter(codepoint);
+
+			src += offset;
+		}
+
+		FontBatch_End();
+		FontBatch_Draw(100, 100);
+	@endcode
 
 	@param text Input string.
 	@param result String to write the result to.
