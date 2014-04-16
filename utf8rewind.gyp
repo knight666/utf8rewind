@@ -44,6 +44,7 @@
 				'source/suite-convertucs2.cpp',
 				'source/suite-decode.cpp',
 				'source/suite-encode.cpp',
+				'source/suite-len.cpp',
 				'source/suite-seek.cpp',
 				'source/suite-toutf8.cpp',
 				'source/suite-towc.cpp',
