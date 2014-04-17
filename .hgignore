@@ -25,6 +25,10 @@ syntax: glob
 CMakeFiles/*
 CMakeCache.txt
 
+# Python
+syntax: glob
+*.pyc
+
 # Other
 syntax: glob
 *.layout
