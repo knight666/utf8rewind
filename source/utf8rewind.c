@@ -118,32 +118,38 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize)
 	unicode_t mask = 0;
 	size_t i;
 
-	if (target == 0)
+	if (target == 0 || targetSize < 1)
 	{
 		return UTF8_ERR_NOT_ENOUGH_SPACE;
 	}
 
-	if (codepoint <= 0x7F)
+	if (codepoint < 0x80)
 	{
 		target[0] = (char)codepoint;
 
 		return 1;
 	}
 
-	if (codepoint <= 0x7FF)
+	if (codepoint < 0x800)
 	{
 		length = 2;
 		mask = 0xC0;
 	}
-	else if (codepoint <= 0xFFFF)
+	else if (codepoint < 0x10000)
 	{
 		length = 3;
 		mask = 0xE0;
 	}
-	else
+	else if (codepoint <= MAX_LEGAL_UTF32)
 	{
 		length = 4;
 		mask = 0xF0;
+	}
+	else
+	{
+		codepoint = REPLACEMENT_CHARACTER;
+		length = 3;
+		mask = 0xE0;
 	}
 
 	if (length >= targetSize)
