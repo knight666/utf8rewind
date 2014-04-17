@@ -65,7 +65,9 @@ Suppose you client application written in C. In order for clients to login, you 
 	}
 @endcode
 
-Now we want to improve our security by allowing the full range of Unicode in the passwords by using UTF-8 encoding. What would we have to change? The answer is: nothing.
+Now we want to improve our security by allowing the full range of Unicode in the passwords by using UTF-8 encoding.
+
+What would we have to change? The answer is: nothing.
 
 A password like "MøntiPythønikdenHølieGräilen" would be encoded as "M\xF8Pyth\xF8denH\xF8Gr\xE4en", meaning the functions `strcat` and `strcpy` would still work as intended. The password can be treated as ASCII without problems.
 
