@@ -1,0 +1,255 @@
+ï»¿/*! @mainpage utf8rewind
+
+@tableofcontents
+
+@section introduction Introduction
+
+`utf8rewind` is a C library designed to extend default string handling functions in order to add support for UTF-8 encoded text. Besides providing functions to deal with UTF-8 encoded text, it also provides functions for converting to and from UTF-16 encoded text, the default on Windows.
+
+For a full summary of the interface, please click [here](@ref utf8rewind.h).
+
+For inquiries, complaints and patches, please contact `{quinten}{lansu} {at} {gmail}.{com}`. Remove the brackets to get a valid e-mail address.
+
+@section building Building
+
+Use [GYP](http://code.google.com/p/gyp/) to generate a project, like so:
+
+	tools/gyp/gyp --depth --format=msvs2010 utf8rewind.gyp
+
+After generating a solution, build and run the "tests" project. Verify that all tests pass on your system before continuing.
+
+Note that the project has only been tested using Visual Studio 2010 on Windows, but GYP should generate workable output for other platforms as well.
+
+@section why-utf8 Why UTF-8?
+
+UTF-8 encoded Unicode accounts for [over 60 percent of the web](http://googleblog.blogspot.nl/2012/02/unicode-over-60-percent-of-web.html). And with good reason! Because UTF-8 is completely backwards-compatible with ASCII, developers only need to change code dealing with codepoints. UTF-8 can encode the full range of Unicode codepoints in a maximum of six bytes per codepoint. However, because most text tends to be the Latin alphabet mixed with special characters, the common case is strings not much longer than pure ASCII.
+
+@section why-not-utf16 Why not UTF-16?
+
+UTF-16 encoding solves the same problems as UTF-8, but in a different way. UTF-16 is not backwards-compatible with ASCII, resulting in invalid codepoints being encountered when the string is treated as ASCII. As a result, all code dealing with strings must be changed in order to handle these new strings. This can be seen in the changes made in the C strings API:
+
+Description                | ASCII   | UTF-16
+-------------------------- | ------- | ------
+Get the length of a string | strlen  | wcslen
+Copy a string to another   | strcpy  | wcscpy
+Append to a string         | strcat  | wcscat
+Convert to lowercase       | tolower | towlower
+
+Converting a project to use UTF-16 after the fact is a serious endeavour that touches *all* code dealing with strings. On the other hand, changing existing code to use UTF-8 only deals with codepoint processing.
+
+@section example-changes Example of changes
+
+Suppose you client application written in C. In order for clients to login, you need to check their credentials. This is accomplished by the following function:
+
+@code{.c}
+	int Login_CheckCredentials(const char* username, const char* password)
+	{
+		const char* salt;
+		const char* hashed_password;
+		char verify_password[256];
+		char hashed_verify_password[256];
+
+		memset(verify_password, 0, 256);
+		/* For the purposes of brevity, ignore the fact that this is
+		a terrible way to generate a salt, because it is
+		cryptographically insecure. */
+		salt = md5(username);
+		hashed_password = md5(password);
+		strcat(verify_password, hashed_password);
+		strcat(verify_password, salt);
+
+		memset(hashed_verify_password, 0, 256);
+		strcpy(hashed_verify_password, md5(verify_password));
+
+		return Database_CheckLogin(username, hashed_verify_password);
+	}
+@endcode
+
+Now we want to improve our security by allowing the full range of Unicode in the passwords by using UTF-8 encoding. What would we have to change? The answer is: nothing.
+
+A password like "MøntiPythønikdenHølieGräilen" would be encoded as "M\xF8Pyth\xF8denH\xF8Gr\xE4en", meaning the functions `strcat` and `strcpy` would still work as intended. The password can be treated as ASCII without problems.
+
+When converting your project to use UTF-8, you only have to worry about two surface area's: input and display. Let's look at those separately.
+
+@section example-user-input Dealing with user input
+
+Continuing with the previous example, the old password field accepted only ASCII input:
+
+@code{.c}
+	static const int g_PasswordInputMaximum = 255;
+	static char g_PasswordInput[g_PasswordInputMaximum + 1];
+
+	int PasswordField_EnterCharacter(char input)
+	{
+		char text_input[2];
+		text_input[0] = input;
+		text_input[1] = 0;
+		
+		if (strlen(g_PasswordInput) + 1 > g_PasswordInputMaximum)
+		{
+			return 0;
+		}
+		
+		strcat(g_PasswordInput, text_input);
+
+		return 1;
+	}
+@endcode
+
+We'll have to make sure that we provide UTF-32 codepoints instead:
+
+@code{.c}
+	int PasswordField_EnterCharacter(unicode_t input)
+@endcode
+
+This can be accomplished using a simple cast, because all Unicode codepoints fit in a `unicode_t` type.
+
+Next, we'll have to increase the size of the `text_input` string in order to accomodate the conversion of the codepoint to UTF-8:
+
+@code{.c}
+	char text_input[16];
+	memset(text_input, 0, 16);
+	
+	if (utf8encode(input, text_input, 16) <= 0)
+	{
+		return 0;
+	}
+@endcode
+
+Because the codepoint can consist of multiple characters, we'll have to change the check to see if we're not overflowing the password input string:
+
+@code{.c}
+	if (strlen(g_PasswordInput) + strlen(text_input) > g_PasswordInputMaximum)
+	{
+		return 0;
+	}
+@endcode
+
+Finally, putting it all together:
+
+@code{.c}
+	static const int g_PasswordInputMaximum = 255;
+	static char g_PasswordInput[g_PasswordInputMaximum + 1];
+
+	int PasswordField_EnterCharacter(unicode_t input)
+	{
+		char text_input[16];
+		memset(text_input, 0, 16);
+		
+		if (utf8encode(input, text_input, 16) <= 0)
+		{
+			return 0;
+		}
+		
+		if (strlen(g_PasswordInput) + strlen(text_input) > g_PasswordInputMaximum)
+		{
+			return 0;
+		}
+		
+		strcat(g_PasswordInput, text_input);
+
+		return 1;
+	}
+@endcode
+
+With a few changes, the password field now accepts UTF-8 input. The benefit here is that we didn't need to change the algorithm itself, only the input had to be converted.
+
+@section example-display Displaying Unicode usernames
+
+One problem remains: the user may be able to *enter* Unicode characters in text fields, but they won't show up right.
+
+Let's look at the offending function:
+
+@code{.c}
+	void InputField_Draw(int x, int y, const char* text)
+	{
+		size_t i;
+		const char* src = text;
+		
+		FontBatch_Start("Arial20");
+		
+		for (i = 0; i < strlen(text); ++i)
+		{
+			FontBatch_AddCharacter(*src);
+			
+			src++;
+		}
+		
+		FontBatch_End();
+		FontBatch_Draw(x, y);
+	}
+@endcode
+
+The first thing that will have to change is that `FontBatch_AddCharacter` should accept UTF-32 codepoints. Fortunately, that change is backwards-compatible:
+
+@code{.c}
+	FontBatch_AddCharacter((unicode_t)*src);
+@endcode
+
+Next, we'll have to treat the input as UTF-8 encoded. We'll have to read codepoints one-by-one.
+
+@code{.c}
+	unicode_t codepoint;
+	size_t i;
+	int offset;
+	const char* src = text;
+	
+	for (i = 0; i < strlen(text); )
+	{
+		offset = utf8decode(src, &codepoint);
+		if (offset <= 0)
+		{
+			break;
+		}
+		
+		src += offset;
+		i += offset;
+	}
+@endcode
+
+Putting it all together again:
+
+@code{.c}
+	void InputField_Draw(int x, int y, const char* text)
+	{
+		unicode_t codepoint;
+		size_t i;
+		int offset;
+		const char* src = text;
+		
+		FontBatch_Start("Arial20");
+		
+		for (i = 0; i < strlen(text); )
+		{
+			offset = utf8decode(src, &codepoint);
+			if (offset <= 0)
+			{
+				break;
+			}
+			
+			FontBatch_AddCharacter(codepoint);
+			
+			src += offset;
+			i += offset;
+		}
+		
+		FontBatch_End();
+		FontBatch_Draw(x, y);
+	}
+@endcode
+
+@section helping-out Helping out
+
+As a user, you can help the project in a number of ways, in order of difficulty:
+
+* **Use it** - Interface designers such as myself often have very different ideas about usability than those actually using it. By using the library, you are helping the project spread and could potentially improve it by taking your project into consideration.
+
+* **Spread the word** - If you find `utf8rewind` useful, recommend it to your friends and coworkers.
+
+* **Complain** - No library is perfect and `utf8rewind` is no exception. If you find a fault but lack the means (time, resources, etc.) to fix it, sending complaints to the proper channels can help the project out a lot.
+
+* **Write a failing test** - If a feature is not working as intended, you can prove it by writing a failing test. By sending the test to us, we can make the adjustments necessary for it to pass.
+
+* **Write a patch** - Patches include a code change that help tests to pass. A patch must always include a set of tests that fail to pass without the patch. All patches will be reviewed and possibly cleaned up before being accepted.
+
+*/
