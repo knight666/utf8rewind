@@ -364,3 +364,13 @@ TEST(Encode, FourBytesBufferTooSmall)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8encode(c, b, s));
 	EXPECT_STREQ("", b);
 }
+
+TEST(Encode, AboveMaxLegalUtf32)
+{
+	unicode_t c = 0x110000;
+	const size_t s = 256;
+	char b[s] = { 0 };
+
+	EXPECT_EQ(3, utf8encode(c, b, s));
+	EXPECT_STREQ("\xEF\xBF\xBD", b);
+}
