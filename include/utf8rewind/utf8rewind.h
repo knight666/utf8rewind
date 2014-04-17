@@ -77,14 +77,26 @@ int utf8len(const char* text);
 	however the range U+D800 to U+DFFF is reserved for
 	surrogate pairs and cannot be encoded.
 
-	@param codePoint Unicode codepoint.
+	Example:
+
+	@code{.c}
+		char result[128] = { 0 };
+		char* dst;
+
+		strcat(result, "STARG");
+		dst = result + strlen(result);
+		utf8encode(0x1402, dst, 128 - strlen(result));
+		strcat(result, "TE");
+	@endcode
+
+	@param codepoint Unicode codepoint.
 	@param target String to write the result to.
 	@param targetSize Amount of bytes remaining in the string.
 
 	@return Amount of bytes written or an error code.
 		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 */
-int utf8encode(unicode_t codePoint, char* target, size_t targetSize);
+int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
 
 //! Convert a UCS-2 codepoint to UTF-8.
 /*!
@@ -97,7 +109,30 @@ int utf8encode(unicode_t codePoint, char* target, size_t targetSize);
 	@note Surrogate pairs cannot be converted using this function.
 	Use utf8convertutf16 instead.
 
-	@param codePoint UCS-2 encoded codepoint.
+	Example:
+
+	@code{.c}
+		ucs2_t input[] = { 0x3041, 0x304B, 0x3060, 0x3074 };
+		const size_t text_size = 128;
+		char text[text_size];
+		char* dst = text;
+		int i;
+		int offset;
+
+		memset(text, 0, text_size);
+		for (i = 0; i < 4; ++i)
+		{
+			offset = utf8convertucs2(input[i], dst, 128);
+			if (offset <= 0)
+			{
+				return 0;
+			}
+
+			dst += offset;
+		}
+	@endcode
+
+	@param codepoint UCS-2 encoded codepoint.
 	@param target String to write the result to.
 	@param targetSize Amount of bytes remaining in the string.
 
@@ -105,7 +140,7 @@ int utf8encode(unicode_t codePoint, char* target, size_t targetSize);
 		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 		- #UTF8_ERR_UNHANDLED_SURROGATE_PAIR Codepoint is part of a surrogate pair.
 */
-int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize);
+int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize);
 
 //! Convert a UTF-16 encoded string to UTF-8.
 /*!
@@ -118,13 +153,13 @@ int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize);
 	Example:
 
 	@code{.c}
-		const wchar_t* input = "textures/\xD803\xDC11.png";
-		size_t output_size = (wcslen(input) + 1) * sizeof(char);
-		char* output = (wchar_t*)malloc(output_size);
+		const wchar_t* input = L"textures/\xD803\xDC11.png";
+		const size_t output_size = 128;
+		char output[output_size];
 		int result = 0;
 
 		memset(output, 0, output_size);
-		result = wctoutf8(input, wcslen(input), output, output_size);
+		result = wctoutf8(input, wcslen(input) * sizeof(wchar_t), output, output_size);
 		if (result > 0)
 		{
 			Texture_Load(output);
@@ -229,6 +264,13 @@ int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t target
 	This function provides an interface similar to `fseek`
 	in order to enable skipping to another part of the
 	string.
+
+	Example:
+
+	@code{.c}
+		const char* text = "Input: <LEFT ARROW>";
+		const char* input = utf8seek(text, text, utf8len("Input: "), SEEK_SET);
+	@endcode
 
 	Directions:
 	- `SEEK_SET` Offset is from the start of the string.

@@ -112,7 +112,7 @@ int utf8len(const char* text)
 	return length;
 }
 
-int utf8encode(unicode_t codePoint, char* target, size_t targetSize)
+int utf8encode(unicode_t codepoint, char* target, size_t targetSize)
 {
 	size_t length = 1;
 	unicode_t mask = 0;
@@ -123,19 +123,19 @@ int utf8encode(unicode_t codePoint, char* target, size_t targetSize)
 		return UTF8_ERR_NOT_ENOUGH_SPACE;
 	}
 
-	if (codePoint <= 0x7F)
+	if (codepoint <= 0x7F)
 	{
-		target[0] = (char)codePoint;
+		target[0] = (char)codepoint;
 
 		return 1;
 	}
 
-	if (codePoint <= 0x7FF)
+	if (codepoint <= 0x7FF)
 	{
 		length = 2;
 		mask = 0xC0;
 	}
-	else if (codePoint <= 0xFFFF)
+	else if (codepoint <= 0xFFFF)
 	{
 		length = 3;
 		mask = 0xE0;
@@ -153,43 +153,43 @@ int utf8encode(unicode_t codePoint, char* target, size_t targetSize)
 
 	for (i = length - 1; i >= 1; --i)
 	{
-		target[i] = (char)((codePoint & 0x3F) | 0x80);
-		codePoint >>= 6;
+		target[i] = (char)((codepoint & 0x3F) | 0x80);
+		codepoint >>= 6;
 	}
 
-	target[0] = (char)(codePoint | mask);
+	target[0] = (char)(codepoint | mask);
 
 	return length;
 }
 
-int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize)
+int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize)
 {
 	if (target == 0 || targetSize < 1)
 	{
 		return UTF8_ERR_NOT_ENOUGH_SPACE;
 	}
 
-	if (codePoint <= 0x7F)
+	if (codepoint <= 0x7F)
 	{
-		target[0] = (char)codePoint;
+		target[0] = (char)codepoint;
 
 		return 1;
 	}
-	else if (codePoint <= 0x7FF)
+	else if (codepoint <= 0x7FF)
 	{
 		if (targetSize < 2)
 		{
 			return UTF8_ERR_NOT_ENOUGH_SPACE;
 		}
 
-		target[1] = (char)((codePoint       & 0x3F) | 0x80);
-		target[0] = (char)((codePoint >> 6)         | 0xC0);
+		target[1] = (char)((codepoint       & 0x3F) | 0x80);
+		target[0] = (char)((codepoint >> 6)         | 0xC0);
 
 		return 2;
 	}
-	else if (codePoint <= 0xFFFF)
+	else if (codepoint <= 0xFFFF)
 	{
-		if (codePoint >= SURROGATE_HIGH_START && codePoint <= SURROGATE_LOW_END)
+		if (codepoint >= SURROGATE_HIGH_START && codepoint <= SURROGATE_LOW_END)
 		{
 			/*
 				The range between U+D800 and U+DFFF is reserved
@@ -204,9 +204,9 @@ int utf8convertucs2(ucs2_t codePoint, char* target, size_t targetSize)
 			return UTF8_ERR_NOT_ENOUGH_SPACE;
 		}
 
-		target[2] = (char)(( codePoint        & 0x3F) | 0x80);
-		target[1] = (char)(((codePoint >>  6) & 0x3F) | 0x80);
-		target[0] = (char)( (codePoint >> 12)         | 0xE0);
+		target[2] = (char)(( codepoint        & 0x3F) | 0x80);
+		target[1] = (char)(((codepoint >>  6) & 0x3F) | 0x80);
+		target[0] = (char)( (codepoint >> 12)         | 0xE0);
 
 		return 3;
 	}
@@ -222,7 +222,7 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 	utf16_t current;
 	unicode_t codepoint;
 	const char* src = (const char*)input;
-	size_t src_size = inputSize;
+	int src_size = (int)inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
 	int bytes_written = 0;
