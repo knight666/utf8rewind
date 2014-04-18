@@ -603,6 +603,8 @@ const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction)
 {
+	size_t length;
+
 	switch (direction)
 	{
 
@@ -631,6 +633,13 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 
 	case SEEK_END:
 		{
+			length = strlen(textStart);
+			if (offset < 0 || length < 1)
+			{
+				return textStart + length;
+			}
+
+			return seekrewind(textStart + length, textStart, -offset);
 
 		} break;
 	}
