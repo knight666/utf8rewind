@@ -815,3 +815,147 @@ TEST(SeekSet, FourBytesNegative)
 	size_t o = 0;
 	EXPECT_EQ(4, utf8decode(r, &o));
 }
+
+TEST(SeekEnd, Empty)
+{
+	const char* t = "";
+
+	const char* r = utf8seek(t, t, -5, SEEK_END);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("", r);
+	size_t o = 0;
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, Ascii)
+{
+	const char* t = "Farmer";
+
+	const char* r = utf8seek(t, t, 2, SEEK_END);
+
+	EXPECT_EQ(t + 5, r);
+	EXPECT_STREQ("r", r);
+	size_t o = 0;
+	EXPECT_EQ(1, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, AsciiOffset)
+{
+	const char* t = "Waterbringer";
+
+	const char* r = utf8seek(t + 5, t, 8, SEEK_END);
+
+	EXPECT_EQ(t + 5, r);
+	EXPECT_STREQ("bringer", r);
+	size_t o = 0;
+	EXPECT_EQ(1, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, AsciiPastStart)
+{
+	const char* t = "Moonshine";
+
+	const char* r = utf8seek(t, t, 16, SEEK_END);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("Moonshine", r);
+	size_t o = 0;
+	EXPECT_EQ(1, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, AsciiNegative)
+{
+	const char* t = "Alternative";
+
+	const char* r = utf8seek(t, t, -2, SEEK_END);
+
+	EXPECT_EQ(t + 11, r);
+	EXPECT_STREQ("", r);
+	size_t o = 0;
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, TwoBytes)
+{
+	const char* t = "\xD4\x9A\xD4\x9C\xD4\x86\xD4\x8A\xD4\xB6";
+
+	const char* r = utf8seek(t, t, 2, SEEK_END);
+
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("\xD4\xB6", r);
+	size_t o = 0;
+	EXPECT_EQ(2, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, TwoBytesOffset)
+{
+	const char* t = "\xD4\x9A\xD4\x9C\xD4\x86\xD4\x8A\xD4\xB6";
+
+	const char* r = utf8seek(t + 6, t, 2, SEEK_END);
+
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("\xD4\xB6", r);
+	size_t o = 0;
+	EXPECT_EQ(2, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, TwoBytesPastStart)
+{
+	const char* t = "\xD4\x9A\xD4\x9C\xD4\x86\xD4\x8A\xD4\xB6";
+
+	const char* r = utf8seek(t, t, 16, SEEK_END);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xD4\x9A\xD4\x9C\xD4\x86\xD4\x8A\xD4\xB6", r);
+	size_t o = 0;
+	EXPECT_EQ(2, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, TwoBytesNegative)
+{
+	const char* t = "\xD4\x9A\xD4\x9C\xD4\x86\xD4\x8A\xD4\xB6";
+
+	const char* r = utf8seek(t, t, -4, SEEK_END);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("", r);
+	size_t o = 0;
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, ThreeBytes)
+{
+	const char* t = "\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F";
+
+	const char* r = utf8seek(t, t, 3, SEEK_END);
+
+	EXPECT_EQ(t + 9, r);
+	EXPECT_STREQ("\xE2\xB8\xAF\xE2\xB9\x8F", r);
+	size_t o = 0;
+	EXPECT_EQ(3, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, ThreeBytesOffset)
+{
+	const char* t = "\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F";
+
+	const char* r = utf8seek(t + 4, t, 2, SEEK_END);
+
+	EXPECT_EQ(t + 12, r);
+	EXPECT_STREQ("\xE2\xB9\x8F", r);
+	size_t o = 0;
+	EXPECT_EQ(3, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, ThreeBytesPastStart)
+{
+	const char* t = "\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F";
+
+	const char* r = utf8seek(t + 4, t, 24, SEEK_END);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F", r);
+	size_t o = 0;
+	EXPECT_EQ(3, utf8decode(r, &o));
+}
