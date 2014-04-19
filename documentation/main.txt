@@ -10,16 +10,6 @@ For a full summary of the interface, please click [here](@ref utf8rewind.h).
 
 For inquiries, complaints and patches, please contact `{quinten}{lansu} {at} {gmail}.{com}`. Remove the brackets to get a valid e-mail address.
 
-@section building Building
-
-Use [GYP](http://code.google.com/p/gyp/) to generate a project, like so:
-
-	tools/gyp/gyp --depth --format=msvs2010 utf8rewind.gyp
-
-After generating a solution, build and run the "tests" project. Verify that all tests pass on your system before continuing.
-
-Note that the project has only been tested using Visual Studio 2010 on Windows, but GYP should generate workable output for other platforms as well.
-
 @section why-utf8 Why UTF-8?
 
 UTF-8 encoded Unicode accounts for [over 60 percent of the web](http://googleblog.blogspot.nl/2012/02/unicode-over-60-percent-of-web.html). And with good reason! Because UTF-8 is completely backwards-compatible with ASCII, developers only need to change code dealing with codepoints. UTF-8 can encode the full range of Unicode codepoints in a maximum of six bytes per codepoint. However, because most text tends to be the Latin alphabet mixed with special characters, the common case is strings not much longer than pure ASCII.
@@ -37,9 +27,11 @@ Convert to lowercase       | tolower | towlower
 
 Converting a project to use UTF-16 after the fact is a serious endeavour that touches *all* code dealing with strings. On the other hand, changing existing code to use UTF-8 only deals with codepoint processing.
 
-@section example-changes Example of changes
+@section examples Examples
 
-Suppose you client application written in C. In order for clients to login, you need to check their credentials. This is accomplished by the following function:
+@subsection example-changes Changes to existing code
+
+Suppose you maintain a client application written in C. In order for clients to login, the application needs to check their credentials. This is accomplished by the following function:
 
 @code{.c}
 	int Login_CheckCredentials(const char* username, const char* password)
@@ -50,9 +42,9 @@ Suppose you client application written in C. In order for clients to login, you 
 		char hashed_verify_password[256];
 
 		memset(verify_password, 0, 256);
-		/* For the purposes of brevity, ignore the fact that this is
-		a terrible way to generate a salt, because it is
-		cryptographically insecure. */
+		/* For the purposes of brevity, ignore the fact
+		that this is a terrible way to generate a salt,
+		because it has insufficient entropy. */
 		salt = md5(username);
 		hashed_password = md5(password);
 		strcat(verify_password, hashed_password);
@@ -69,11 +61,11 @@ Now we want to improve our security by allowing the full range of Unicode in the
 
 What would we have to change? The answer is: nothing.
 
-A password like "MøntiPythønikdenHølieGräilen" would be encoded as "M\xF8Pyth\xF8denH\xF8Gr\xE4en", meaning the functions `strcat` and `strcpy` would still work as intended. The password can be treated as ASCII without problems.
+A password like \"M&ocirc;ntiPyth&ocirc;nikdenH&ocirc;lieGr&acirc;ilen\" would be encoded as "M\xF8Pyth\xF8denH\xF8Gr\xE4en", meaning the calls to `strcat` and `strcpy` would still work as intended. The password can be treated as ASCII without changing the code.
 
 When converting your project to use UTF-8, you only have to worry about two surface area's: input and display. Let's look at those separately.
 
-@section example-user-input Dealing with user input
+@subsection example-user-input Dealing with user input
 
 Continuing with the previous example, the old password field accepted only ASCII input:
 
@@ -106,7 +98,7 @@ We'll have to make sure that we provide UTF-32 codepoints instead:
 
 This can be accomplished using a simple cast, because all Unicode codepoints fit in a `unicode_t` type.
 
-Next, we'll have to increase the size of the `text_input` string in order to accomodate the conversion of the codepoint to UTF-8:
+Next, we'll have to increase the size of the `text_input` string in order to accommodate the conversion of the codepoint to UTF-8:
 
 @code{.c}
 	char text_input[16];
@@ -156,7 +148,7 @@ Finally, putting it all together:
 
 With a few changes, the password field now accepts UTF-8 input. The benefit here is that we didn't need to change the algorithm itself, only the input had to be converted.
 
-@section example-display Displaying Unicode usernames
+@subsection example-display Displaying Unicode usernames
 
 One problem remains: the user may be able to *enter* Unicode characters in text fields, but they won't show up right.
 
@@ -188,7 +180,7 @@ The first thing that will have to change is that `FontBatch_AddCharacter` should
 	FontBatch_AddCharacter((unicode_t)*src);
 @endcode
 
-Next, we'll have to treat the input as UTF-8 encoded. We'll have to read codepoints one-by-one.
+Next, we'll have to treat the input as UTF-8 encoded text. We'll have to read codepoints one-by-one.
 
 @code{.c}
 	unicode_t codepoint;
@@ -240,6 +232,20 @@ Putting it all together again:
 	}
 @endcode
 
+@section building Building utf8rewind
+
+Use [GYP](http://code.google.com/p/gyp/) to generate a project, like so:
+
+	tools/gyp/gyp --depth --format=msvs2010 utf8rewind.gyp
+
+After generating a solution, build and run the "tests" project. Verify that all tests pass on your system before continuing.
+
+@note The project has only been tested as compiling and running using Visual Studio 2010 on Windows, but GYP should generate workable output for other platforms as well.
+
+@subsection integration Integrating with your own project
+
+The recommended way to integrate `utf8rewind` is to link to the static library you compiled. Of course, because the library consists of only two files, the header and source can also be included directly.
+
 @section helping-out Helping out
 
 As a user, you can help the project in a number of ways, in order of difficulty:
@@ -252,6 +258,4 @@ As a user, you can help the project in a number of ways, in order of difficulty:
 
 * **Write a failing test** - If a feature is not working as intended, you can prove it by writing a failing test. By sending the test to us, we can make the adjustments necessary for it to pass.
 
-* **Write a patch** - Patches include a code change that help tests to pass. A patch must always include a set of tests that fail to pass without the patch. All patches will be reviewed and possibly cleaned up before being accepted.
-
-*/
+* **Write a patch** - Patches include a code change that help tests to pass. A patch must always include a set of tests that fail to pass without the patch. All patches will be reviewed and possibly cleaned up before being accepted.*/
