@@ -188,7 +188,7 @@ Next, we'll have to treat the input as UTF-8 encoded text. We'll have to read co
 	int offset;
 	const char* src = text;
 	
-	for (i = 0; i < strlen(text); )
+	for (i = 0; i < utf8len(text); ++i)
 	{
 		offset = utf8decode(src, &codepoint);
 		if (offset <= 0)
@@ -197,7 +197,6 @@ Next, we'll have to treat the input as UTF-8 encoded text. We'll have to read co
 		}
 		
 		src += offset;
-		i += offset;
 	}
 @endcode
 
@@ -213,7 +212,7 @@ Putting it all together again:
 		
 		FontBatch_Start("Arial20");
 		
-		for (i = 0; i < strlen(text); )
+		for (i = 0; i < utf8len(text); ++i)
 		{
 			offset = utf8decode(src, &codepoint);
 			if (offset <= 0)
@@ -224,7 +223,6 @@ Putting it all together again:
 			FontBatch_AddCharacter(codepoint);
 			
 			src += offset;
-			i += offset;
 		}
 		
 		FontBatch_End();

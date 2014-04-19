@@ -67,7 +67,7 @@ int utf8charlen(char encodedCharacter);
 	@param text UTF-8 encoded string.
 
 	@return Length in codepoints or an error code.
-		-#UTF8_ERR_INVALID_CHARACTER An invalid character was encountered.
+		- #UTF8_ERR_INVALID_CHARACTER An invalid character was encountered.
 */
 int utf8len(const char* text);
 
@@ -80,9 +80,10 @@ int utf8len(const char* text);
 	Example:
 
 	@code{.c}
-		char result[128] = { 0 };
+		char result[128];
 		char* dst;
 
+		memset(result, 0, 128);
 		strcat(result, "STARG");
 		dst = result + strlen(result);
 		utf8encode(0x1402, dst, 128 - strlen(result));
@@ -139,6 +140,8 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
 	@return Amount of bytes written or an error code.
 		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 		- #UTF8_ERR_UNHANDLED_SURROGATE_PAIR Codepoint is part of a surrogate pair.
+
+	@sa wctoutf8
 */
 int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize);
 
@@ -218,7 +221,12 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 	@param text Input string.
 	@param result String to write the result to.
 
-	@return Input offset in bytes or 0 on failure.
+	@return Input offset in bytes or an error code.
+	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
+	- #UTF8_ERR_INVALID_CHARACTER Input does not point to a valid UTF-8 encoded character.
+	- #UTF8_ERR_NOT_ENOUGH_SPACE Could not write result.
+
+	@sa utf8encode
 */
 int utf8decode(const char* text, unicode_t* result);
 
