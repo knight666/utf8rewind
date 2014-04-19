@@ -959,3 +959,63 @@ TEST(SeekEnd, ThreeBytesPastStart)
 	size_t o = 0;
 	EXPECT_EQ(3, utf8decode(r, &o));
 }
+
+TEST(SeekEnd, ThreeBytesNegative)
+{
+	const char* t = "\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F";
+
+	const char* r = utf8seek(t, t, -3, SEEK_END);
+
+	EXPECT_EQ(t + 15, r);
+	EXPECT_STREQ("", r);
+	size_t o = 0;
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, FourBytes)
+{
+	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
+
+	const char* r = utf8seek(t, t, 5, SEEK_END);
+
+	EXPECT_EQ(t + 4, r);
+	EXPECT_STREQ("\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80", r);
+	size_t o = 0;
+	EXPECT_EQ(4, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, FourBytesOffset)
+{
+	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
+
+	const char* r = utf8seek(t + 12, t, 3, SEEK_END);
+
+	EXPECT_EQ(t + 12, r);
+	EXPECT_STREQ("\xF0\x90\x92\x80\xF0\x90\x92\x80", r);
+	size_t o = 0;
+	EXPECT_EQ(4, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, FourBytesPastStart)
+{
+	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
+
+	const char* r = utf8seek(t, t, 128, SEEK_END);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80", r);
+	size_t o = 0;
+	EXPECT_EQ(4, utf8decode(r, &o));
+}
+
+TEST(SeekEnd, FourBytesNegative)
+{
+	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
+
+	const char* r = utf8seek(t, t, -12, SEEK_END);
+
+	EXPECT_EQ(t + 20, r);
+	EXPECT_STREQ("", r);
+	size_t o = 0;
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode(r, &o));
+}
