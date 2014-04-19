@@ -141,7 +141,7 @@ Why not UTF-16?</h1>
 Examples</h1>
 <h2><a class="anchor" id="example-changes"></a>
 Changes to existing code</h2>
-<p>Suppose you client application written in C. In order for clients to login, you need to check their credentials. This is accomplished by the following function:</p>
+<p>Suppose you maintain a client application written in C. In order for clients to login, the application needs to check their credentials. This is accomplished by the following function:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">int</span> Login_CheckCredentials(<span class="keyword">const</span> <span class="keywordtype">char</span>* username, <span class="keyword">const</span> <span class="keywordtype">char</span>* password)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* salt;</div>
@@ -150,9 +150,9 @@ Changes to existing code</h2>
 <div class="line">    <span class="keywordtype">char</span> hashed_verify_password[256];</div>
 <div class="line"></div>
 <div class="line">    memset(verify_password, 0, 256);</div>
-<div class="line">    <span class="comment">/* For the purposes of brevity, ignore the fact that this is</span></div>
-<div class="line"><span class="comment">    a terrible way to generate a salt, because it is</span></div>
-<div class="line"><span class="comment">    cryptographically insecure. */</span></div>
+<div class="line">    <span class="comment">/* For the purposes of brevity, ignore the fact</span></div>
+<div class="line"><span class="comment">    that this is a terrible way to generate a salt,</span></div>
+<div class="line"><span class="comment">    because it has insufficient entropy. */</span></div>
 <div class="line">    salt = md5(username);</div>
 <div class="line">    hashed_password = md5(password);</div>
 <div class="line">    strcat(verify_password, hashed_password);</div>
@@ -257,7 +257,7 @@ Displaying Unicode usernames</h2>
 <div class="line"><span class="keywordtype">int</span> offset;</div>
 <div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* src = text;</div>
 <div class="line"></div>
-<div class="line"><span class="keywordflow">for</span> (i = 0; i &lt; strlen(text); )</div>
+<div class="line"><span class="keywordflow">for</span> (i = 0; i &lt; <a class="code" href="utf8rewind_8h.html#ab34ee783c503a651da04128ec8086b4b">utf8len</a>(text); ++i)</div>
 <div class="line">{</div>
 <div class="line">    offset = <a class="code" href="utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c">utf8decode</a>(src, &amp;codepoint);</div>
 <div class="line">    <span class="keywordflow">if</span> (offset &lt;= 0)</div>
@@ -266,7 +266,6 @@ Displaying Unicode usernames</h2>
 <div class="line">    }</div>
 <div class="line">    </div>
 <div class="line">    src += offset;</div>
-<div class="line">    i += offset;</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>Putting it all together again:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> InputField_Draw(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
@@ -278,7 +277,7 @@ Displaying Unicode usernames</h2>
 <div class="line">    </div>
 <div class="line">    FontBatch_Start(<span class="stringliteral">&quot;Arial20&quot;</span>);</div>
 <div class="line">    </div>
-<div class="line">    <span class="keywordflow">for</span> (i = 0; i &lt; strlen(text); )</div>
+<div class="line">    <span class="keywordflow">for</span> (i = 0; i &lt; <a class="code" href="utf8rewind_8h.html#ab34ee783c503a651da04128ec8086b4b">utf8len</a>(text); ++i)</div>
 <div class="line">    {</div>
 <div class="line">        offset = <a class="code" href="utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c">utf8decode</a>(src, &amp;codepoint);</div>
 <div class="line">        <span class="keywordflow">if</span> (offset &lt;= 0)</div>
@@ -289,7 +288,6 @@ Displaying Unicode usernames</h2>
 <div class="line">        FontBatch_AddCharacter(codepoint);</div>
 <div class="line">        </div>
 <div class="line">        src += offset;</div>
-<div class="line">        i += offset;</div>
 <div class="line">    }</div>
 <div class="line">    </div>
 <div class="line">    FontBatch_End();</div>
@@ -317,7 +315,7 @@ Helping out</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Apr 19 2014 12:58:14 for utf8rewind by
+    <li class="footer">Generated on Sat Apr 19 2014 13:40:08 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>
