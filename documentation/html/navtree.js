@@ -3,12 +3,16 @@ var NAVTREE =
   [ "utf8rewind", "index.html", [
     [ "Files", null, [
       [ "Introduction", "index.html#introduction", null ],
-      [ "Building", "index.html#building", null ],
       [ "Why UTF-8?", "index.html#why-utf8", null ],
       [ "Why not UTF-16?", "index.html#why-not-utf16", null ],
-      [ "Example of changes", "index.html#example-changes", null ],
-      [ "Dealing with user input", "index.html#example-user-input", null ],
-      [ "Displaying Unicode usernames", "index.html#example-display", null ],
+      [ "Examples", "index.html#examples", [
+        [ "Changes to existing code", "index.html#example-changes", null ],
+        [ "Dealing with user input", "index.html#example-user-input", null ],
+        [ "Displaying Unicode usernames", "index.html#example-display", null ]
+      ] ],
+      [ "Building utf8rewind", "index.html#building", [
+        [ "Integrating with your own project", "index.html#integration", null ]
+      ] ],
       [ "Helping out", "index.html#helping-out", null ],
       [ "File List", "files.html", "files" ],
       [ "File Members", "globals.html", [
@@ -137,7 +141,7 @@ function createIndent(o,domNode,node,level)
     span.style.display = 'inline-block';
     span.style.width   = 16*(level+1)+'px';
     span.style.height  = '22px';
-    span.innerHTML = '&#160;';
+    span.innerHTML = '&nbsp;';
     domNode.appendChild(span);
   } 
 }
