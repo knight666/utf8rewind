@@ -679,17 +679,13 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 		} break;
 
 	case SEEK_SET:
-		{
-			return seekforward(textStart, offset);
-
-		} break;
+		return seekforward(textStart, offset);
 
 	case SEEK_END:
-		{
-			return seekatend(textStart, offset);
+		return seekatend(textStart, offset);
 
-		} break;
+	default:
+		return text;
+
 	}
-
-	return text;
 }

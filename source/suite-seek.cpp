@@ -1019,3 +1019,13 @@ TEST(SeekEnd, FourBytesNegative)
 	size_t o = 0;
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, utf8decode(r, &o));
 }
+
+TEST(Seek, InvalidDirection)
+{
+	const char* t = "Interesting";
+
+	const char* r = utf8seek(t, t, 2, 33);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("Interesting", r);
+}
