@@ -601,9 +601,48 @@ const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 	return src;
 }
 
+const char* seekatend(const char* src, const char* srcStart, off_t offset)
+{
+	int length;
+	int isAscii;
+	const char* src_current;
+	int i;
+
+	for (src_current = src; src_current != srcStart; src_current--)
+	{
+		isAscii = (*src_current & 0x80) != 0x80;
+		if (!isAscii)
+		{
+			for (i = 0; i < 6; ++i)
+			{
+				if (src_current < srcStart)
+				{
+					break;
+				}
+
+				src_current--;
+				if ((*src_current & 0xC0) != 0x80)
+				{
+					break;
+				}
+			}
+		}
+
+		src = src_current;
+
+		if (++offset == 0)
+		{
+			break;
+		}
+	}
+
+	return src;
+}
+
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction)
 {
-	size_t length;
+	int length;
+	const char* src;
 
 	switch (direction)
 	{
@@ -633,13 +672,21 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 
 	case SEEK_END:
 		{
-			length = strlen(textStart);
-			if (offset < 0 || length < 1)
+			length = (int)strlen(textStart);
+
+			if (length <= offset)
 			{
-				return textStart + length;
+				return textStart;
 			}
 
-			return seekrewind(textStart + length, textStart, -offset);
+			src = textStart + length;
+
+			if (offset < 0 || length < 1)
+			{
+				return src;
+			}
+
+			return seekatend(src, textStart, -offset);
 
 		} break;
 	}
