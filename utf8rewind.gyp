@@ -34,9 +34,13 @@
 				'dependencies/gtest-1.7.0-rc1/include',
 				'include/utf8rewind',
 			],
+			'library_dirs': [
+				'dependencies/gtest-1.7.0-rc1/lib/windows/x86/<(CONFIGURATION_NAME)',
+				'<(CONFIGURATION_NAME)/lib',
+			],
 			'libraries': [
-				'dependencies/gtest-1.7.0-rc1/lib/windows/x86/Debug/gtest.lib',
-				'Debug/lib/utf8rewind.lib',
+				'gtest.lib',
+				'utf8rewind.lib',
 			],
 			'sources': [
 				'source/suite-charlen.cpp',
@@ -50,7 +54,7 @@
 				'source/suite-towc.cpp',
 				'source/tests-base.hpp',
 				'source/tests-main.cpp',
-			]
+			],
 		},
 	],
 }
