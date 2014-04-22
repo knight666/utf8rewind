@@ -170,30 +170,36 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize)
 
 int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize)
 {
-	if (target == 0 || targetSize < 1)
-	{
-		return UTF8_ERR_NOT_ENOUGH_SPACE;
-	}
-
 	if (codepoint <= 0x7F)
 	{
-		target[0] = (char)codepoint;
+		if (target != 0)
+		{
+			if (targetSize < 1)
+			{
+				return UTF8_ERR_NOT_ENOUGH_SPACE;
+			}
+
+			target[0] = (char)codepoint;
+		}
 
 		return 1;
 	}
 	else if (codepoint <= 0x7FF)
 	{
-		if (targetSize < 2)
+		if (target != 0)
 		{
-			return UTF8_ERR_NOT_ENOUGH_SPACE;
-		}
+			if (targetSize < 2)
+			{
+				return UTF8_ERR_NOT_ENOUGH_SPACE;
+			}
 
-		target[1] = (char)((codepoint       & 0x3F) | 0x80);
-		target[0] = (char)((codepoint >> 6)         | 0xC0);
+			target[1] = (char)((codepoint       & 0x3F) | 0x80);
+			target[0] = (char)((codepoint >> 6)         | 0xC0);
+		}
 
 		return 2;
 	}
-	else if (codepoint <= 0xFFFF)
+	else
 	{
 		if (codepoint >= SURROGATE_HIGH_START && codepoint <= SURROGATE_LOW_END)
 		{
@@ -205,19 +211,20 @@ int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize)
 			return UTF8_ERR_UNHANDLED_SURROGATE_PAIR;
 		}
 		
-		if (targetSize < 3)
+		if (target != 0)
 		{
-			return UTF8_ERR_NOT_ENOUGH_SPACE;
-		}
+			if (targetSize < 3)
+			{
+				return UTF8_ERR_NOT_ENOUGH_SPACE;
+			}
 
-		target[2] = (char)(( codepoint        & 0x3F) | 0x80);
-		target[1] = (char)(((codepoint >>  6) & 0x3F) | 0x80);
-		target[0] = (char)( (codepoint >> 12)         | 0xE0);
+			target[2] = (char)(( codepoint        & 0x3F) | 0x80);
+			target[1] = (char)(((codepoint >>  6) & 0x3F) | 0x80);
+			target[0] = (char)( (codepoint >> 12)         | 0xE0);
+		}
 
 		return 3;
 	}
-
-	return 0;
 }
 
 int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize)
@@ -253,8 +260,11 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 			src += 2;
 			src_size -= 2;
 
-			dst += result;
-			dst_size -= result;
+			if (dst != 0)
+			{
+				dst += result;
+				dst_size -= result;
+			}
 
 			bytes_written += result;
 		}
@@ -279,11 +289,6 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 				return UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
 			}
 
-			if (dst_size < 4)
-			{
-				return UTF8_ERR_NOT_ENOUGH_SPACE;
-			}
-
 			codepoint =
 				0x10000 +
 				(surrogate_low - SURROGATE_LOW_START) +
@@ -299,13 +304,21 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 			src += 4;
 			src_size -= 4;
 
-			dst[3] = (char)(( codepoint        & 0x3F) | 0x80);
-			dst[2] = (char)(((codepoint >>  6) & 0x3F) | 0x80);
-			dst[1] = (char)(((codepoint >> 12) & 0x3F) | 0x80);
-			dst[0] = (char)( (codepoint >> 18)         | 0xF0);
+			if (dst != 0)
+			{
+				if (dst_size < 4)
+				{
+					return UTF8_ERR_NOT_ENOUGH_SPACE;
+				}
 
-			dst += 4;
-			dst_size -= 4;
+				dst[3] = (char)(( codepoint        & 0x3F) | 0x80);
+				dst[2] = (char)(((codepoint >>  6) & 0x3F) | 0x80);
+				dst[1] = (char)(((codepoint >> 12) & 0x3F) | 0x80);
+				dst[0] = (char)( (codepoint >> 18)         | 0xF0);
+
+				dst += 4;
+				dst_size -= 4;
+			}
 
 			bytes_written += 4;
 		}

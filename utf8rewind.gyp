@@ -72,6 +72,7 @@
 			'type': 'executable',
 			'dependencies': [
 				'utf8rewind',
+				'utf8string',
 			],
 			'include_dirs': [
 				'dependencies/gtest-1.7.0-rc1/include',

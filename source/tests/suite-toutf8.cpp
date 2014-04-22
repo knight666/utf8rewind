@@ -134,3 +134,31 @@ TEST(ToUtf8, InvalidData)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, wctoutf8((const wchar_t*)c, 2, b, s));
 	EXPECT_STREQ("", b);
 }
+
+TEST(ToUtf8, OutputLengthOneByte)
+{
+	utf16_t c = 0x0021;
+
+	EXPECT_EQ(1, wctoutf8((const wchar_t*)&c, 2, nullptr, 0));
+}
+
+TEST(ToUtf8, OutputLengthTwoBytes)
+{
+	utf16_t c = 0x00DD;
+
+	EXPECT_EQ(2, wctoutf8((const wchar_t*)&c, 2, nullptr, 0));
+}
+
+TEST(ToUtf8, OutputLengthThreeBytes)
+{
+	utf16_t c = 0x8812;
+
+	EXPECT_EQ(3, wctoutf8((const wchar_t*)&c, 2, nullptr, 0));
+}
+
+TEST(ToUtf8, OutputLengthSurrogatePair)
+{
+	const char* c = "\x18\xD8\xDE\xDC";
+
+	EXPECT_EQ(4, wctoutf8((const wchar_t*)&c, 4, nullptr, 0));
+}

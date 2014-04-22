@@ -2,24 +2,6 @@
 
 #include "utf8rewind.h"
 
-TEST(ConvertUcs2, ZeroLength)
-{
-	ucs2_t c = 0x8812;
-	const size_t s = 256;
-	char b[s] = { 0 };
-
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8convertucs2(c, b, 0));
-	EXPECT_STREQ("", b);
-}
-
-TEST(ConvertUcs2, ZeroBuffer)
-{
-	ucs2_t c = 'T';
-	const size_t s = 256;
-
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8convertucs2(c, nullptr, s));
-}
-
 TEST(ConvertUcs2, OneByte)
 {
 	ucs2_t c = L'A';
@@ -50,6 +32,16 @@ TEST(ConvertUcs2, OneByteMaximum)
 	EXPECT_STREQ("\x7F", b);
 }
 
+TEST(ConvertUcs2, OneByteNotEnoughSpace)
+{
+	ucs2_t c = L'(';
+	const size_t s = 0;
+	char b[1] = { 0 };
+
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8convertucs2(c, b, s));
+	EXPECT_STREQ("", b);
+}
+
 TEST(ConvertUcs2, TwoBytes)
 {
 	ucs2_t c = 0x80;
@@ -78,6 +70,16 @@ TEST(ConvertUcs2, TwoBytesMaximum)
 
 	EXPECT_EQ(2, utf8convertucs2(c, b, s));
 	EXPECT_STREQ("\xDF\xBF", b);
+}
+
+TEST(ConvertUcs2, TwoBytesNotEnoughSpace)
+{
+	ucs2_t c = 0x912;
+	const size_t s = 1;
+	char b[s] = { 0 };
+
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8convertucs2(c, b, s));
+	EXPECT_STREQ("", b);
 }
 
 TEST(ConvertUcs2, ThreeByteString)
@@ -143,6 +145,16 @@ TEST(ConvertUcs2, ThreeBytesMaximum)
 	EXPECT_STREQ("\xEF\xBF\xBF", b);
 }
 
+TEST(ConvertUcs2, ThreeBytesNotEnoughSpace)
+{
+	ucs2_t c = 0xFEED;
+	const size_t s = 2;
+	char b[s] = { 0 };
+
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8convertucs2(c, b, s));
+	EXPECT_STREQ("", b);
+}
+
 TEST(ConvertUcs2, SurrogateStart)
 {
 	ucs2_t c = 0xD800;
@@ -161,4 +173,42 @@ TEST(ConvertUcs2, SurrogateEnd)
 
 	EXPECT_EQ(UTF8_ERR_UNHANDLED_SURROGATE_PAIR, utf8convertucs2(c, b, s));
 	EXPECT_STREQ("", b);
+}
+
+TEST(ConvertUcs2, ZeroLength)
+{
+	ucs2_t c = 0x8812;
+	const size_t s = 256;
+	char b[s] = { 0 };
+
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, utf8convertucs2(c, b, 0));
+	EXPECT_STREQ("", b);
+}
+
+TEST(ConvertUcs2, OutputLengthOneByte)
+{
+	ucs2_t c = 'B';
+
+	EXPECT_EQ(1, utf8convertucs2(c, nullptr, 0));
+}
+
+TEST(ConvertUcs2, OutputLengthTwoBytes)
+{
+	ucs2_t c = 0x112;
+
+	EXPECT_EQ(2, utf8convertucs2(c, nullptr, 0));
+}
+
+TEST(ConvertUcs2, OutputLengthThreeBytes)
+{
+	ucs2_t c = L'㒱';
+
+	EXPECT_EQ(3, utf8convertucs2(c, nullptr, 0));
+}
+
+TEST(ConvertUcs2, OutputLengthSurrogate)
+{
+	ucs2_t c = 0xD801;
+
+	EXPECT_EQ(UTF8_ERR_UNHANDLED_SURROGATE_PAIR, utf8convertucs2(c, nullptr, 0));
 }
