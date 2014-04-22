@@ -96,6 +96,9 @@ int utf8len(const char* text);
 
 	@return Amount of bytes written or an error code.
 		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+
+	@sa wctoutf8
+	@sa utf8convertucs2
 */
 int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
 
@@ -107,8 +110,11 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
 	This encoding was standard on Microsoft Windows XP. Newer
 	versions of Windows use UTF-16 instead.
 
+	If 0 is specified as the target buffer, this function
+	returns the number of bytes needed to store the codepoint.
+
 	@note Surrogate pairs cannot be converted using this function.
-	Use utf8convertutf16 instead.
+	Use wctoutf8() instead.
 
 	Example:
 
@@ -142,6 +148,7 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
 		- #UTF8_ERR_UNHANDLED_SURROGATE_PAIR Codepoint is part of a surrogate pair.
 
 	@sa wctoutf8
+	@sa utf8convertucs2
 */
 int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize);
 
@@ -153,19 +160,32 @@ int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize);
 	of Unicode characters that would otherwise not fit in a
 	single 16-bit integer.
 
+	If 0 is specified as the target buffer, this function returns
+	the number of bytes needed to store the string.
+
 	Example:
 
 	@code{.c}
 		const wchar_t* input = L"textures/\xD803\xDC11.png";
-		const size_t output_size = 128;
-		char output[output_size];
+		size_t output_size = 0;
+		char* output = 0;
 		int result = 0;
 
-		memset(output, 0, output_size);
-		result = wctoutf8(input, wcslen(input) * sizeof(wchar_t), output, output_size);
+		int result = wctoutf8(input, wcslen(input) * sizeof(wchar_t), 0, 0);
 		if (result > 0)
 		{
-			Texture_Load(output);
+			output_size = (size_t)result + 1;
+
+			output = (char*)malloc(output_size);
+			memset(output, 0, output_size);
+
+			result = wctoutf8(input, wcslen(input) * sizeof(wchar_t), output, output_size);
+			if (result > 0)
+			{
+				Texture_Load(output);
+			}
+
+			free(output);
 		}
 	@endcode
 
@@ -258,6 +278,7 @@ int utf8decode(const char* text, unicode_t* result);
 	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 
 	@sa wctoutf8
+	@sa utf8decode
 */
 int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t targetSize);
 
