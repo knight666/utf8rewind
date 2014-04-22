@@ -25,7 +25,18 @@
 			],
 		},
 		{
-			'target_name': 'tests',
+			'target_name': 'utf8string',
+			'type': 'static_library',
+			'include_dirs': [
+				'include/utf8rewind',
+			],
+			'sources': [
+				'include/utf8rewind/utf8string.hpp',
+				'source/utf8string.cpp',
+			],
+		},
+		{
+			'target_name': 'tests-rewind',
 			'type': 'executable',
 			'dependencies': [
 				'utf8rewind',
@@ -52,6 +63,31 @@
 				'source/tests/suite-seek.cpp',
 				'source/tests/suite-toutf8.cpp',
 				'source/tests/suite-towc.cpp',
+				'source/tests/tests-base.hpp',
+				'source/tests/tests-main.cpp',
+			],
+		},
+		{
+			'target_name': 'tests-string',
+			'type': 'executable',
+			'dependencies': [
+				'utf8rewind',
+			],
+			'include_dirs': [
+				'dependencies/gtest-1.7.0-rc1/include',
+				'include/utf8rewind',
+			],
+			'library_dirs': [
+				'dependencies/gtest-1.7.0-rc1/lib/windows/x86/<(CONFIGURATION_NAME)',
+				'<(CONFIGURATION_NAME)/lib',
+			],
+			'libraries': [
+				'gtest.lib',
+				'utf8rewind.lib',
+				'utf8string.lib',
+			],
+			'sources': [
+				'source/tests/suite-string-construct.cpp',
 				'source/tests/tests-base.hpp',
 				'source/tests/tests-main.cpp',
 			],

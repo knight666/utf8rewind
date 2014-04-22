@@ -1,6 +1,6 @@
 # Project
 syntax: regexp
-(Debug|Release)/obj/*
+(Debug|Release)/*
 [^/]*\.(sln|vcxproj).* # ignore generated projects
 
 # Visual Studio 2010
