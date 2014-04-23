@@ -90,6 +90,7 @@
 			'sources': [
 				'source/tests/suite-string-clear.cpp',
 				'source/tests/suite-string-construct.cpp',
+				'source/tests/suite-string-copy.cpp',
 				'source/tests/tests-base.hpp',
 				'source/tests/tests-main.cpp',
 			],
@@ -124,6 +125,7 @@
 				'source/tests/suite-seek.cpp',
 				'source/tests/suite-string-clear.cpp',
 				'source/tests/suite-string-construct.cpp',
+				'source/tests/suite-string-copy.cpp',
 				'source/tests/suite-toutf8.cpp',
 				'source/tests/suite-towc.cpp',
 				'source/tests/tests-base.hpp',
