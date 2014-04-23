@@ -44,8 +44,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>C&#160;interface</span></a></li>
+      <li><a href="classutf8rewind_1_1_utf8_string.html"><span>String&#160;class</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -90,7 +93,7 @@ $(document).ready(function(){initNavTree('utf8rewind_8h.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -386,7 +389,8 @@ Functions</h2></td></tr>
 <p>Convert a UCS-2 codepoint to UTF-8. </p>
 <p>UCS-2 encoding is similar to UTF-16 encoding, except that it does not use surrogate pairs to encode values beyond U+FFFF.</p>
 <p>This encoding was standard on Microsoft Windows XP. Newer versions of Windows use UTF-16 instead.</p>
-<dl class="section note"><dt>Note</dt><dd>Surrogate pairs cannot be converted using this function. Use utf8convertutf16 instead.</dd></dl>
+<p>If 0 is specified as the target buffer, this function returns the number of bytes needed to store the codepoint.</p>
+<dl class="section note"><dt>Note</dt><dd>Surrogate pairs cannot be converted using this function. Use <a class="el" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d" title="Convert a UTF-16 encoded string to UTF-8. ">wctoutf8()</a> instead.</dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line"><a class="code" href="utf8rewind_8h.html#a367c7c085f27100ec4bbfc8f220aeaab">ucs2_t</a> input[] = { 0x3041, 0x304B, 0x3060, 0x3074 };</div>
 <div class="line"><span class="keyword">const</span> <span class="keywordtype">size_t</span> text_size = 128;</div>
@@ -419,7 +423,9 @@ Functions</h2></td></tr>
 <li><a class="el" href="utf8rewind_8h.html#aa0c5762ac11727331a3538f8e0a56104">UTF8_ERR_UNHANDLED_SURROGATE_PAIR</a> Codepoint is part of a surrogate pair.</li>
 </ul>
 </dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d" title="Convert a UTF-16 encoded string to UTF-8. ">wctoutf8</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d" title="Convert a UTF-16 encoded string to UTF-8. ">wctoutf8</a> </dd>
+<dd>
+<a class="el" href="utf8rewind_8h.html#a9c0b98a672e469ea9da31fac51fc321e" title="Convert a UCS-2 codepoint to UTF-8. ">utf8convertucs2</a> </dd></dl>
 
 </div>
 </div>
@@ -540,9 +546,12 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Amount of bytes written or an error code.<ul>
-<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result. </li>
+<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
 </ul>
 </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d" title="Convert a UTF-16 encoded string to UTF-8. ">wctoutf8</a> </dd>
+<dd>
+<a class="el" href="utf8rewind_8h.html#a9c0b98a672e469ea9da31fac51fc321e" title="Convert a UCS-2 codepoint to UTF-8. ">utf8convertucs2</a> </dd></dl>
 
 </div>
 </div>
@@ -704,7 +713,9 @@ Functions</h2></td></tr>
 <li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
 </ul>
 </dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d" title="Convert a UTF-16 encoded string to UTF-8. ">wctoutf8</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d" title="Convert a UTF-16 encoded string to UTF-8. ">wctoutf8</a> </dd>
+<dd>
+<a class="el" href="utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c" title="Decode a UTF-8 encoded codepoint to a Unicode codepoint. ">utf8decode</a> </dd></dl>
 
 </div>
 </div>
@@ -746,17 +757,28 @@ Functions</h2></td></tr>
 
 <p>Convert a UTF-16 encoded string to UTF-8. </p>
 <p>UTF-16 encoded text consists of two up to four bytes per encoded codepoint. A codepoint may consist of a high and low surrogate pair, which allows the encoding of the full range of Unicode characters that would otherwise not fit in a single 16-bit integer.</p>
+<p>If 0 is specified as the target buffer, this function returns the number of bytes needed to store the string.</p>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* input = L<span class="stringliteral">&quot;textures/\xD803\xDC11.png&quot;</span>;</div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">size_t</span> output_size = 128;</div>
-<div class="line"><span class="keywordtype">char</span> output[output_size];</div>
+<div class="line"><span class="keywordtype">size_t</span> output_size = 0;</div>
+<div class="line"><span class="keywordtype">char</span>* output = 0;</div>
 <div class="line"><span class="keywordtype">int</span> result = 0;</div>
 <div class="line"></div>
-<div class="line">memset(output, 0, output_size);</div>
-<div class="line">result = <a class="code" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d">wctoutf8</a>(input, wcslen(input) * <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>), output, output_size);</div>
+<div class="line"><span class="keywordtype">int</span> result = <a class="code" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d">wctoutf8</a>(input, wcslen(input) * <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>), 0, 0);</div>
 <div class="line"><span class="keywordflow">if</span> (result &gt; 0)</div>
 <div class="line">{</div>
-<div class="line">    Texture_Load(output);</div>
+<div class="line">    output_size = (size_t)result + 1;</div>
+<div class="line"></div>
+<div class="line">    output = (<span class="keywordtype">char</span>*)malloc(output_size);</div>
+<div class="line">    memset(output, 0, output_size);</div>
+<div class="line"></div>
+<div class="line">    result = <a class="code" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d">wctoutf8</a>(input, wcslen(input) * <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>), output, output_size);</div>
+<div class="line">    <span class="keywordflow">if</span> (result &gt; 0)</div>
+<div class="line">    {</div>
+<div class="line">        Texture_Load(output);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    free(output);</div>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -785,7 +807,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_19f418181f8b699045c2f8e6c49f857e.html">utf8rewind</a></li><li class="navelem"><a class="el" href="utf8rewind_8h.html">utf8rewind.h</a></li>
-    <li class="footer">Generated on Sat Apr 19 2014 13:40:08 for utf8rewind by
+    <li class="footer">Generated on Wed Apr 23 2014 08:09:33 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

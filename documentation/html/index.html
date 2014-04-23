@@ -44,8 +44,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li class="current"><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>C&#160;interface</span></a></li>
+      <li><a href="classutf8rewind_1_1_utf8_string.html"><span>String&#160;class</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -84,7 +87,7 @@ $(document).ready(function(){initNavTree('index.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -95,7 +98,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 
 <div class="header">
   <div class="headertitle">
-<div class="title">utf8rewind </div>  </div>
+<div class="title"><a class="el" href="namespaceutf8rewind.html">utf8rewind</a> </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
@@ -115,7 +118,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 </div>
 <div class="textblock"><h1><a class="anchor" id="introduction"></a>
 Introduction</h1>
-<p><code>utf8rewind</code> is a C library designed to extend default string handling functions in order to add support for UTF-8 encoded text. Besides providing functions to deal with UTF-8 encoded text, it also provides functions for converting to and from UTF-16 encoded text, the default on Windows.</p>
+<p><code><a class="el" href="namespaceutf8rewind.html">utf8rewind</a></code> is a C library designed to extend default string handling functions in order to add support for UTF-8 encoded text. Besides providing functions to deal with UTF-8 encoded text, it also provides functions for converting to and from UTF-16 encoded text, the default on Windows.</p>
 <p>For a full summary of the interface, please click <a class="el" href="utf8rewind_8h.html">here</a>.</p>
 <p>For inquiries, complaints and patches, please contact <code>{quinten}{lansu} {at} {gmail}.{com}</code>. Remove the brackets to get a valid e-mail address.</p>
 <h1><a class="anchor" id="why-utf8"></a>
@@ -301,13 +304,13 @@ Building utf8rewind</h1>
 <dl class="section note"><dt>Note</dt><dd>The project has only been tested as compiling and running using Visual Studio 2010 on Windows, but GYP should generate workable output for other platforms as well.</dd></dl>
 <h2><a class="anchor" id="integration"></a>
 Integrating with your own project</h2>
-<p>The recommended way to integrate <code>utf8rewind</code> is to link to the static library you compiled. Of course, because the library consists of only two files, the header and source can also be included directly.</p>
+<p>The recommended way to integrate <code><a class="el" href="namespaceutf8rewind.html">utf8rewind</a></code> is to link to the static library you compiled. Of course, because the library consists of only two files, the header and source can also be included directly.</p>
 <h1><a class="anchor" id="helping-out"></a>
 Helping out</h1>
 <p>As a user, you can help the project in a number of ways, in order of difficulty:</p>
 <p><b>Use it</b> - Interface designers such as myself often have very different ideas about usability than those actually using it. By using the library, you are helping the project spread and could potentially improve it by taking your project into consideration.</p>
-<p><b>Spread the word</b> - If you find <code>utf8rewind</code> useful, recommend it to your friends and coworkers.</p>
-<p><b>Complain</b> - No library is perfect and <code>utf8rewind</code> is no exception. If you find a fault but lack the means (time, resources, etc.) to fix it, sending complaints to the proper channels can help the project out a lot.</p>
+<p><b>Spread the word</b> - If you find <code><a class="el" href="namespaceutf8rewind.html">utf8rewind</a></code> useful, recommend it to your friends and coworkers.</p>
+<p><b>Complain</b> - No library is perfect and <code><a class="el" href="namespaceutf8rewind.html">utf8rewind</a></code> is no exception. If you find a fault but lack the means (time, resources, etc.) to fix it, sending complaints to the proper channels can help the project out a lot.</p>
 <p><b>Write a failing test</b> - If a feature is not working as intended, you can prove it by writing a failing test. By sending the test to us, we can make the adjustments necessary for it to pass.</p>
 <p><b>Write a patch</b> - Patches include a code change that help tests to pass. A patch must always include a set of tests that fail to pass without the patch. All patches will be reviewed and possibly cleaned up before being accepted. </p>
 </div></div><!-- contents -->
@@ -315,7 +318,7 @@ Helping out</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Apr 19 2014 13:40:08 for utf8rewind by
+    <li class="footer">Generated on Wed Apr 23 2014 08:09:34 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>
