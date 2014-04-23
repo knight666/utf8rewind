@@ -8,6 +8,20 @@ namespace utf8rewind {
 		_buffer.push_back(0);
 	}
 
+	Utf8String::Utf8String(const Utf8String& other)
+		: _length(other.length())
+	{
+		if (other.size() > 0)
+		{
+			_buffer.resize(other.size());
+			memcpy(&_buffer[0], other.c_str(), other.size() - 1);
+		}
+		else
+		{
+			_buffer.push_back(0);
+		}
+	}
+
 	Utf8String::Utf8String(const char* text)
 		: _length(0)
 	{
