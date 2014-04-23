@@ -1,7 +1,7 @@
 var NAVTREE =
 [
   [ "utf8rewind", "index.html", [
-    [ "Files", null, [
+    [ "Namespaces", null, [
       [ "Introduction", "index.html#introduction", null ],
       [ "Why UTF-8?", "index.html#why-utf8", null ],
       [ "Why not UTF-16?", "index.html#why-not-utf16", null ],
@@ -14,6 +14,17 @@ var NAVTREE =
         [ "Integrating with your own project", "index.html#integration", null ]
       ] ],
       [ "Helping out", "index.html#helping-out", null ],
+      [ "Namespace List", "namespaces.html", "namespaces" ]
+    ] ],
+    [ "Classes", null, [
+      [ "Class List", "annotated.html", "annotated" ],
+      [ "Class Index", "classes.html", null ],
+      [ "Class Members", "functions.html", [
+        [ "All", "functions.html", null ],
+        [ "Functions", "functions_func.html", null ]
+      ] ]
+    ] ],
+    [ "Files", null, [
       [ "File List", "files.html", "files" ],
       [ "File Members", "globals.html", [
         [ "All", "globals.html", null ],
@@ -22,13 +33,14 @@ var NAVTREE =
         [ "Macros", "globals_defs.html", null ]
       ] ]
     ] ],
-    [ "C interface", "utf8rewind_8h.html", null ]
+    [ "C interface", "utf8rewind_8h.html", null ],
+    [ "String class", "classutf8rewind_1_1_utf8_string.html", null ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-"dir_19f418181f8b699045c2f8e6c49f857e.html"
+"annotated.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

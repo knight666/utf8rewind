@@ -17,7 +17,11 @@ var searchData=
   ['utf8decode',['utf8decode',['../utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c',1,'utf8rewind.h']]],
   ['utf8encode',['utf8encode',['../utf8rewind_8h.html#ab936e1848e79cdff95c834a294a7539c',1,'utf8rewind.h']]],
   ['utf8len',['utf8len',['../utf8rewind_8h.html#ab34ee783c503a651da04128ec8086b4b',1,'utf8rewind.h']]],
+  ['utf8rewind',['utf8rewind',['../namespaceutf8rewind.html',1,'']]],
   ['utf8rewind_2eh',['utf8rewind.h',['../utf8rewind_8h.html',1,'']]],
   ['utf8seek',['utf8seek',['../utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb',1,'utf8rewind.h']]],
+  ['utf8string',['Utf8String',['../classutf8rewind_1_1_utf8_string.html#a26df46faef32ff18decc7b97a112edc4',1,'utf8rewind::Utf8String::Utf8String()'],['../classutf8rewind_1_1_utf8_string.html#a6761f103ba05a2ac6f33468aa2d99677',1,'utf8rewind::Utf8String::Utf8String(const char *text)'],['../classutf8rewind_1_1_utf8_string.html#a59d84491e58038a866bd85a6f2ca64ab',1,'utf8rewind::Utf8String::Utf8String(const wchar_t *text)']]],
+  ['utf8string',['Utf8String',['../classutf8rewind_1_1_utf8_string.html',1,'utf8rewind']]],
+  ['utf8string_2ehpp',['utf8string.hpp',['../utf8string_8hpp.html',1,'']]],
   ['utf8towc',['utf8towc',['../utf8rewind_8h.html#afe10f10be61afc896374cac318c8494d',1,'utf8rewind.h']]]
 ];
