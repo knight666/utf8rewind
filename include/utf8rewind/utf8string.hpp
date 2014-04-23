@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include <utf8rewind.h>
+
 namespace utf8rewind {
 
 	class Utf8String
@@ -11,6 +13,7 @@ namespace utf8rewind {
 
 		Utf8String();
 		Utf8String(const char* text);
+		Utf8String(const wchar_t* text);
 
 		// STL interface
 

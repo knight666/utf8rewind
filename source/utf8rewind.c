@@ -68,7 +68,11 @@ int utf8len(const char* text)
 
 		codepoint = (unsigned char)*text;
 
-		if (codepoint <= 0x7F)
+		if (codepoint == 0)
+		{
+			break;
+		}
+		else if (codepoint <= 0x7F)
 		{
 			codepoint_length = 1;
 		}
