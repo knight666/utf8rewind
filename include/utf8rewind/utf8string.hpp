@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-
 #include <utf8rewind.h>
 
 namespace utf8rewind {
@@ -12,10 +11,35 @@ namespace utf8rewind {
 
 	public:
 
+		class iterator
+		{
+
+			friend class Utf8String;
+
+		public:
+
+			unicode_t operator * () const;
+
+		private:
+
+			iterator(const char* start, char* value);
+
+		private:
+
+			const char* _start;
+			char* _value;
+
+		};
+
+	public:
+
 		Utf8String();
 		Utf8String(const Utf8String& other);
 		Utf8String(const char* text);
 		Utf8String(const wchar_t* text);
+
+		iterator begin();
+		iterator end();
 
 		//! Get the length in codepoints.
 		size_t length() const;

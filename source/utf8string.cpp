@@ -2,6 +2,29 @@
 
 namespace utf8rewind {
 
+	Utf8String::iterator::iterator(const char* start, char* value)
+		: _start(start)
+		, _value(value)
+	{
+	}
+
+	unicode_t Utf8String::iterator::operator * () const
+	{
+		if (*_value != 0)
+		{
+			unicode_t decoded = 0;
+
+			if (utf8decode(_value, &decoded) <= 0)
+			{
+				return 0;
+			}
+
+			return decoded;
+		}
+		
+		return 0;
+	}
+
 	Utf8String::Utf8String()
 		: _length(0)
 	{
@@ -63,14 +86,24 @@ namespace utf8rewind {
 		}
 	}
 
-	size_t Utf8String::size() const
+	Utf8String::iterator Utf8String::begin()
 	{
-		return _buffer.size();
+		return Utf8String::iterator((const char*)_buffer.data(), _buffer.data());
+	}
+
+	Utf8String::iterator Utf8String::end()
+	{
+		return Utf8String::iterator((const char*)_buffer.data(), _buffer.data() + _buffer.size() - 1);
 	}
 
 	size_t Utf8String::length() const
 	{
 		return _length;
+	}
+
+	size_t Utf8String::size() const
+	{
+		return _buffer.size();
 	}
 
 	void Utf8String::clear()
