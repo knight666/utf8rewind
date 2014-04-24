@@ -20,7 +20,8 @@
       <tab type="globals" visible="yes" title="" intro=""/>
     </tab>
 	<tab type="user" url="@ref utf8rewind.h" title="C interface"/>
-	<tab type="user" url="@ref utf8rewind::Utf8String" title="String class"/>
+	<tab type="user" url="@ref utf8rewind::Utf8String" title="String"/>
+	<tab type="user" url="@ref utf8rewind::Utf8String::iterator" title="String iterator"/>
     <tab type="examples" visible="yes" title="" intro=""/>  
   </navindex>
 

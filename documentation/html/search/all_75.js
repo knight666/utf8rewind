@@ -20,7 +20,7 @@ var searchData=
   ['utf8rewind',['utf8rewind',['../namespaceutf8rewind.html',1,'']]],
   ['utf8rewind_2eh',['utf8rewind.h',['../utf8rewind_8h.html',1,'']]],
   ['utf8seek',['utf8seek',['../utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb',1,'utf8rewind.h']]],
-  ['utf8string',['Utf8String',['../classutf8rewind_1_1_utf8_string.html#a26df46faef32ff18decc7b97a112edc4',1,'utf8rewind::Utf8String::Utf8String()'],['../classutf8rewind_1_1_utf8_string.html#a6761f103ba05a2ac6f33468aa2d99677',1,'utf8rewind::Utf8String::Utf8String(const char *text)'],['../classutf8rewind_1_1_utf8_string.html#a59d84491e58038a866bd85a6f2ca64ab',1,'utf8rewind::Utf8String::Utf8String(const wchar_t *text)']]],
+  ['utf8string',['Utf8String',['../classutf8rewind_1_1_utf8_string_1_1iterator.html#a5334e2392d51d89acb80c0033400154c',1,'utf8rewind::Utf8String::iterator::Utf8String()'],['../classutf8rewind_1_1_utf8_string.html#a26df46faef32ff18decc7b97a112edc4',1,'utf8rewind::Utf8String::Utf8String()'],['../classutf8rewind_1_1_utf8_string.html#a38732071a34527591337de8a2bb44a07',1,'utf8rewind::Utf8String::Utf8String(const Utf8String &amp;other)'],['../classutf8rewind_1_1_utf8_string.html#a6761f103ba05a2ac6f33468aa2d99677',1,'utf8rewind::Utf8String::Utf8String(const char *text)'],['../classutf8rewind_1_1_utf8_string.html#a59d84491e58038a866bd85a6f2ca64ab',1,'utf8rewind::Utf8String::Utf8String(const wchar_t *text)']]],
   ['utf8string',['Utf8String',['../classutf8rewind_1_1_utf8_string.html',1,'utf8rewind']]],
   ['utf8string_2ehpp',['utf8string.hpp',['../utf8string_8hpp.html',1,'']]],
   ['utf8towc',['utf8towc',['../utf8rewind_8h.html#afe10f10be61afc896374cac318c8494d',1,'utf8rewind.h']]]
