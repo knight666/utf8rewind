@@ -21,7 +21,8 @@ var NAVTREE =
       [ "Class Index", "classes.html", null ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
-        [ "Functions", "functions_func.html", null ]
+        [ "Functions", "functions_func.html", null ],
+        [ "Related Functions", "functions_rela.html", null ]
       ] ]
     ] ],
     [ "Files", null, [
@@ -34,7 +35,8 @@ var NAVTREE =
       ] ]
     ] ],
     [ "C interface", "utf8rewind_8h.html", null ],
-    [ "String class", "classutf8rewind_1_1_utf8_string.html", null ]
+    [ "String", "classutf8rewind_1_1_utf8_string.html", null ],
+    [ "String iterator", "classutf8rewind_1_1_utf8_string_1_1iterator.html", null ]
   ] ]
 ];
 

@@ -48,7 +48,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>C&#160;interface</span></a></li>
-      <li><a href="classutf8rewind_1_1_utf8_string.html"><span>String&#160;class</span></a></li>
+      <li><a href="classutf8rewind_1_1_utf8_string.html"><span>String</span></a></li>
+      <li><a href="classutf8rewind_1_1_utf8_string_1_1iterator.html"><span>String&#160;iterator</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -78,6 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="functions.html"><span>All</span></a></li>
       <li class="current"><a href="functions_func.html"><span>Functions</span></a></li>
+      <li><a href="functions_rela.html"><span>Related&#160;Functions</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -100,7 +102,7 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -111,6 +113,9 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 
 <div class="contents">
 &#160;<ul>
+<li>begin()
+: <a class="el" href="classutf8rewind_1_1_utf8_string.html#a2b57d3a94fd3f4aaeede1ed23da03214">utf8rewind::Utf8String</a>
+</li>
 <li>c_str()
 : <a class="el" href="classutf8rewind_1_1_utf8_string.html#a60a770d75a6962027346298ba1aaea84">utf8rewind::Utf8String</a>
 </li>
@@ -120,8 +125,14 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <li>empty()
 : <a class="el" href="classutf8rewind_1_1_utf8_string.html#a5dc27fa47e2a279feb765177e8133059">utf8rewind::Utf8String</a>
 </li>
+<li>end()
+: <a class="el" href="classutf8rewind_1_1_utf8_string.html#a2446a50d042b5952e8ca44333fca61b9">utf8rewind::Utf8String</a>
+</li>
 <li>length()
 : <a class="el" href="classutf8rewind_1_1_utf8_string.html#afa4f7ae9add7a0090aa7950b9ffae6d9">utf8rewind::Utf8String</a>
+</li>
+<li>operator*()
+: <a class="el" href="classutf8rewind_1_1_utf8_string_1_1iterator.html#a69d722793dd71d847c72599522e6097f">utf8rewind::Utf8String::iterator</a>
 </li>
 <li>size()
 : <a class="el" href="classutf8rewind_1_1_utf8_string.html#ab3b077e8fc350a0cb9041abfe791dbac">utf8rewind::Utf8String</a>
@@ -135,7 +146,7 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Wed Apr 23 2014 08:14:44 for utf8rewind by
+    <li class="footer">Generated on Thu Apr 24 2014 08:48:06 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>
