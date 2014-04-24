@@ -37,3 +37,25 @@ TEST(IteratorConstruct, Utf8Invalid)
 	EXPECT_UNICODE_EQ(0, b);
 	EXPECT_UNICODE_EQ(0, e);
 }
+
+TEST(IteratorConstruct, Utf16)
+{
+	Utf8String s(L"★㸂㹫★");
+
+	Utf8String::iterator b = s.begin();
+	Utf8String::iterator e = s.end();
+
+	EXPECT_UNICODE_EQ(0x2605, b);
+	EXPECT_UNICODE_EQ(0, e);
+}
+
+TEST(IteratorConstruct, Utf16Invalid)
+{
+	Utf8String s(L"\xD800");
+
+	Utf8String::iterator b = s.begin();
+	Utf8String::iterator e = s.end();
+
+	EXPECT_UNICODE_EQ(0, b);
+	EXPECT_UNICODE_EQ(0, e);
+}
