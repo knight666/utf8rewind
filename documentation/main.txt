@@ -38,10 +38,9 @@ Suppose you maintain a client application written in C. In order for clients to 
 	{
 		const char* salt;
 		const char* hashed_password;
-		char verify_password[256];
-		char hashed_verify_password[256];
+		char verify_password[256] = { 0 };
+		char hashed_verify_password[256] = { 0 };
 
-		memset(verify_password, 0, 256);
 		/* For the purposes of brevity, ignore the fact
 		that this is a terrible way to generate a salt,
 		because it has insufficient entropy. */
@@ -50,7 +49,6 @@ Suppose you maintain a client application written in C. In order for clients to 
 		strcat(verify_password, hashed_password);
 		strcat(verify_password, salt);
 
-		memset(hashed_verify_password, 0, 256);
 		strcpy(hashed_verify_password, md5(verify_password));
 
 		return Database_CheckLogin(username, hashed_verify_password);
@@ -75,11 +73,9 @@ Continuing with the previous example, the old password field accepted only ASCII
 
 	int PasswordField_EnterCharacter(char input)
 	{
-		char text_input[2];
-		text_input[0] = input;
-		text_input[1] = 0;
+		char text_input[2] = { input, 0 };
 		
-		if (strlen(g_PasswordInput) + 1 > g_PasswordInputMaximum)
+		if ((strlen(g_PasswordInput) + 1) > g_PasswordInputMaximum)
 		{
 			return 0;
 		}
@@ -96,13 +92,12 @@ We'll have to make sure that we provide UTF-32 codepoints instead:
 	int PasswordField_EnterCharacter(unicode_t input)
 @endcode
 
-This can be accomplished using a simple cast, because all Unicode codepoints fit in a `unicode_t` type.
+This can be accomplished using a simple cast, because all ASCII codepoints fit in a `unicode_t` type.
 
 Next, we'll have to increase the size of the `text_input` string in order to accommodate the conversion of the codepoint to UTF-8:
 
 @code{.c}
-	char text_input[16];
-	memset(text_input, 0, 16);
+	char text_input[16] = { 0 };
 	
 	if (utf8encode(input, text_input, 16) <= 0)
 	{
@@ -113,7 +108,7 @@ Next, we'll have to increase the size of the `text_input` string in order to acc
 Because the codepoint can consist of multiple characters, we'll have to change the check to see if we're not overflowing the password input string:
 
 @code{.c}
-	if (strlen(g_PasswordInput) + strlen(text_input) > g_PasswordInputMaximum)
+	if ((strlen(g_PasswordInput) + strlen(text_input)) > g_PasswordInputMaximum)
 	{
 		return 0;
 	}
@@ -127,15 +122,14 @@ Finally, putting it all together:
 
 	int PasswordField_EnterCharacter(unicode_t input)
 	{
-		char text_input[16];
-		memset(text_input, 0, 16);
+		char text_input[16] = { 0 };
 		
 		if (utf8encode(input, text_input, 16) <= 0)
 		{
 			return 0;
 		}
 		
-		if (strlen(g_PasswordInput) + strlen(text_input) > g_PasswordInputMaximum)
+		if ((strlen(g_PasswordInput) + strlen(text_input)) > g_PasswordInputMaximum)
 		{
 			return 0;
 		}
@@ -148,7 +142,7 @@ Finally, putting it all together:
 
 With a few changes, the password field now accepts UTF-8 input. The benefit here is that we didn't need to change the algorithm itself, only the input had to be converted.
 
-@subsection example-display Displaying Unicode usernames
+@subsection example-display Displaying Unicode text
 
 One problem remains: the user may be able to *enter* Unicode characters in text fields, but they won't show up right.
 
@@ -248,7 +242,7 @@ The recommended way to integrate `utf8rewind` is to link to the static library y
 
 As a user, you can help the project in a number of ways, in order of difficulty:
 
-* **Use it** - Interface designers such as myself often have very different ideas about usability than those actually using it. By using the library, you are helping the project spread and could potentially improve it by taking your project into consideration.
+* **Use it** - Designers of a public interface often have very different ideas about usability than those actually using it. By using the library, you are helping the project spread and could potentially improve it by us taking your project into consideration when we design the API.
 
 * **Spread the word** - If you find `utf8rewind` useful, recommend it to your friends and coworkers.
 

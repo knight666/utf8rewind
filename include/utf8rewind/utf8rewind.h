@@ -120,16 +120,16 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
 
 	@code{.c}
 		ucs2_t input[] = { 0x3041, 0x304B, 0x3060, 0x3074 };
+		const size_t input_size = sizeof(input) / sizeof(ucs2_t);
 		const size_t text_size = 128;
-		char text[text_size];
+		char text[text_size] = { 0 };
 		char* dst = text;
-		int i;
+		size_t i;
 		int offset;
 
-		memset(text, 0, text_size);
-		for (i = 0; i < 4; ++i)
+		for (i = 0; i < input_size; ++i)
 		{
-			offset = utf8convertucs2(input[i], dst, 128);
+			offset = utf8convertucs2(input[i], dst, text_size);
 			if (offset <= 0)
 			{
 				return 0;
@@ -311,9 +311,10 @@ int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t target
 
 	@param text Input string.
 	@param textStart Start of input string.
-	@param offset Requested offset in string.
+	@param offset Requested offset in codepoints.
+	@param direction Direction to seek in.
 
-	@param direction Offset string or no change on error.
+	@return Changed string or no change on error.
 */
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
 

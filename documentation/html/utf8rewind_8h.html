@@ -394,16 +394,16 @@ Functions</h2></td></tr>
 <dl class="section note"><dt>Note</dt><dd>Surrogate pairs cannot be converted using this function. Use <a class="el" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d" title="Convert a UTF-16 encoded string to UTF-8. ">wctoutf8()</a> instead.</dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line"><a class="code" href="utf8rewind_8h.html#a367c7c085f27100ec4bbfc8f220aeaab">ucs2_t</a> input[] = { 0x3041, 0x304B, 0x3060, 0x3074 };</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">size_t</span> input_size = <span class="keyword">sizeof</span>(input) / <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#a367c7c085f27100ec4bbfc8f220aeaab">ucs2_t</a>);</div>
 <div class="line"><span class="keyword">const</span> <span class="keywordtype">size_t</span> text_size = 128;</div>
-<div class="line"><span class="keywordtype">char</span> text[text_size];</div>
+<div class="line"><span class="keywordtype">char</span> text[text_size] = { 0 };</div>
 <div class="line"><span class="keywordtype">char</span>* dst = text;</div>
-<div class="line"><span class="keywordtype">int</span> i;</div>
+<div class="line"><span class="keywordtype">size_t</span> i;</div>
 <div class="line"><span class="keywordtype">int</span> offset;</div>
 <div class="line"></div>
-<div class="line">memset(text, 0, text_size);</div>
-<div class="line"><span class="keywordflow">for</span> (i = 0; i &lt; 4; ++i)</div>
+<div class="line"><span class="keywordflow">for</span> (i = 0; i &lt; input_size; ++i)</div>
 <div class="line">{</div>
-<div class="line">    offset = <a class="code" href="utf8rewind_8h.html#a9c0b98a672e469ea9da31fac51fc321e">utf8convertucs2</a>(input[i], dst, 128);</div>
+<div class="line">    offset = <a class="code" href="utf8rewind_8h.html#a9c0b98a672e469ea9da31fac51fc321e">utf8convertucs2</a>(input[i], dst, text_size);</div>
 <div class="line">    <span class="keywordflow">if</span> (offset &lt;= 0)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">return</span> 0;</div>
@@ -643,11 +643,12 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">text</td><td>Input string. </td></tr>
     <tr><td class="paramname">textStart</td><td>Start of input string. </td></tr>
-    <tr><td class="paramname">offset</td><td>Requested offset in string.</td></tr>
-    <tr><td class="paramname">direction</td><td>Offset string or no change on error. </td></tr>
+    <tr><td class="paramname">offset</td><td>Requested offset in codepoints. </td></tr>
+    <tr><td class="paramname">direction</td><td>Direction to seek in.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>Changed string or no change on error. </dd></dl>
 
 </div>
 </div>
@@ -808,7 +809,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_19f418181f8b699045c2f8e6c49f857e.html">utf8rewind</a></li><li class="navelem"><a class="el" href="utf8rewind_8h.html">utf8rewind.h</a></li>
-    <li class="footer">Generated on Thu Apr 24 2014 08:48:05 for utf8rewind by
+    <li class="footer">Generated on Fri May 30 2014 17:31:52 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>
