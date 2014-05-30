@@ -25,17 +25,6 @@
 			],
 		},
 		{
-			'target_name': 'utf8string',
-			'type': 'static_library',
-			'include_dirs': [
-				'include/utf8rewind',
-			],
-			'sources': [
-				'include/utf8rewind/utf8string.hpp',
-				'source/utf8string.cpp',
-			],
-		},
-		{
 			'target_name': 'tests-rewind',
 			'type': 'executable',
 			'dependencies': [
@@ -61,75 +50,6 @@
 				'source/tests/suite-encode.cpp',
 				'source/tests/suite-len.cpp',
 				'source/tests/suite-seek.cpp',
-				'source/tests/suite-toutf8.cpp',
-				'source/tests/suite-towc.cpp',
-				'source/tests/tests-base.hpp',
-				'source/tests/tests-main.cpp',
-			],
-		},
-		{
-			'target_name': 'tests-string',
-			'type': 'executable',
-			'dependencies': [
-				'utf8rewind',
-				'utf8string',
-			],
-			'include_dirs': [
-				'dependencies/gtest-1.7.0-rc1/include',
-				'include/utf8rewind',
-			],
-			'library_dirs': [
-				'dependencies/gtest-1.7.0-rc1/lib/windows/x86/<(CONFIGURATION_NAME)',
-				'<(CONFIGURATION_NAME)/lib',
-			],
-			'libraries': [
-				'gtest.lib',
-				'utf8rewind.lib',
-				'utf8string.lib',
-			],
-			'sources': [
-				'source/tests/string-helpers.hpp',
-				'source/tests/suite-iterator-construct.cpp',
-				'source/tests/suite-string-clear.cpp',
-				'source/tests/suite-string-construct.cpp',
-				'source/tests/suite-string-copy.cpp',
-				'source/tests/tests-base.hpp',
-				'source/tests/tests-main.cpp',
-			],
-		},
-		{
-			'target_name': 'tests-all',
-			'type': 'executable',
-			'dependencies': [
-				'utf8rewind',
-				'utf8string',
-			],
-			'include_dirs': [
-				'dependencies/gtest-1.7.0-rc1/include',
-				'include/utf8rewind',
-			],
-			'library_dirs': [
-				'dependencies/gtest-1.7.0-rc1/lib/windows/x86/<(CONFIGURATION_NAME)',
-				'<(CONFIGURATION_NAME)/lib',
-			],
-			'libraries': [
-				'gtest.lib',
-				'utf8rewind.lib',
-				'utf8string.lib',
-			],
-			'sources': [
-				'source/tests/string-helpers.hpp',
-				'source/tests/suite-charlen.cpp',
-				'source/tests/suite-charvalid.cpp',
-				'source/tests/suite-convertucs2.cpp',
-				'source/tests/suite-decode.cpp',
-				'source/tests/suite-encode.cpp',
-				'source/tests/suite-iterator-construct.cpp',
-				'source/tests/suite-len.cpp',
-				'source/tests/suite-seek.cpp',
-				'source/tests/suite-string-clear.cpp',
-				'source/tests/suite-string-construct.cpp',
-				'source/tests/suite-string-copy.cpp',
 				'source/tests/suite-toutf8.cpp',
 				'source/tests/suite-towc.cpp',
 				'source/tests/tests-base.hpp',
