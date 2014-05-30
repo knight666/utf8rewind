@@ -1,31 +1,19 @@
 var NAVTREE =
 [
   [ "utf8rewind", "index.html", [
-    [ "Namespaces", null, [
+    [ "Files", null, [
       [ "Introduction", "index.html#introduction", null ],
       [ "Why UTF-8?", "index.html#why-utf8", null ],
       [ "Why not UTF-16?", "index.html#why-not-utf16", null ],
       [ "Examples", "index.html#examples", [
         [ "Changes to existing code", "index.html#example-changes", null ],
         [ "Dealing with user input", "index.html#example-user-input", null ],
-        [ "Displaying Unicode usernames", "index.html#example-display", null ]
+        [ "Displaying Unicode text", "index.html#example-display", null ]
       ] ],
       [ "Building utf8rewind", "index.html#building", [
         [ "Integrating with your own project", "index.html#integration", null ]
       ] ],
       [ "Helping out", "index.html#helping-out", null ],
-      [ "Namespace List", "namespaces.html", "namespaces" ]
-    ] ],
-    [ "Classes", null, [
-      [ "Class List", "annotated.html", "annotated" ],
-      [ "Class Index", "classes.html", null ],
-      [ "Class Members", "functions.html", [
-        [ "All", "functions.html", null ],
-        [ "Functions", "functions_func.html", null ],
-        [ "Related Functions", "functions_rela.html", null ]
-      ] ]
-    ] ],
-    [ "Files", null, [
       [ "File List", "files.html", "files" ],
       [ "File Members", "globals.html", [
         [ "All", "globals.html", null ],
@@ -34,15 +22,13 @@ var NAVTREE =
         [ "Macros", "globals_defs.html", null ]
       ] ]
     ] ],
-    [ "C interface", "utf8rewind_8h.html", null ],
-    [ "String", "classutf8rewind_1_1_utf8_string.html", null ],
-    [ "String iterator", "classutf8rewind_1_1_utf8_string_1_1iterator.html", null ]
+    [ "C interface", "utf8rewind_8h.html", null ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-"annotated.html"
+"dir_19f418181f8b699045c2f8e6c49f857e.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
