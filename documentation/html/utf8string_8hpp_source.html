@@ -147,32 +147,36 @@ $(document).ready(function(){initNavTree('utf8string_8hpp_source.html','');});
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="classutf8rewind_1_1_utf8_string.html#a26df46faef32ff18decc7b97a112edc4">Utf8String</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* text);</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <a class="code" href="classutf8rewind_1_1_utf8_string.html#a26df46faef32ff18decc7b97a112edc4">Utf8String</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* text);</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <a class="code" href="classutf8rewind_1_1_utf8_string_1_1iterator.html">iterator</a> <a class="code" href="classutf8rewind_1_1_utf8_string.html#a2b57d3a94fd3f4aaeede1ed23da03214">begin</a>();</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <a class="code" href="classutf8rewind_1_1_utf8_string_1_1iterator.html">iterator</a> <a class="code" href="classutf8rewind_1_1_utf8_string.html#a2446a50d042b5952e8ca44333fca61b9">end</a>();</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keywordtype">size_t</span> <a class="code" href="classutf8rewind_1_1_utf8_string.html#afa4f7ae9add7a0090aa7950b9ffae6d9">length</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keywordtype">size_t</span> <a class="code" href="classutf8rewind_1_1_utf8_string.html#ab3b077e8fc350a0cb9041abfe791dbac">size</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classutf8rewind_1_1_utf8_string.html#a8e012541ea0a79570ff3eeb48c18304f">clear</a>();</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classutf8rewind_1_1_utf8_string.html#a5dc27fa47e2a279feb765177e8133059">empty</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classutf8rewind_1_1_utf8_string.html#a60a770d75a6962027346298ba1aaea84">c_str</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        std::vector&lt;char&gt; _buffer;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keywordtype">size_t</span> _length;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    };</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;};</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <a class="code" href="classutf8rewind_1_1_utf8_string.html">Utf8String</a>&amp; <a class="code" href="classutf8rewind_1_1_utf8_string.html#a0e030110ebc73856ad05c7b8c705f32a">operator = </a>(<span class="keyword">const</span> <a class="code" href="classutf8rewind_1_1_utf8_string.html">Utf8String</a>&amp; other);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <a class="code" href="classutf8rewind_1_1_utf8_string.html">Utf8String</a>&amp; <a class="code" href="classutf8rewind_1_1_utf8_string.html#a0e030110ebc73856ad05c7b8c705f32a">operator = </a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* text);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <a class="code" href="classutf8rewind_1_1_utf8_string.html">Utf8String</a>&amp; <a class="code" href="classutf8rewind_1_1_utf8_string.html#a0e030110ebc73856ad05c7b8c705f32a">operator = </a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* text);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <a class="code" href="classutf8rewind_1_1_utf8_string_1_1iterator.html">iterator</a> <a class="code" href="classutf8rewind_1_1_utf8_string.html#a2b57d3a94fd3f4aaeede1ed23da03214">begin</a>();</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <a class="code" href="classutf8rewind_1_1_utf8_string_1_1iterator.html">iterator</a> <a class="code" href="classutf8rewind_1_1_utf8_string.html#a2446a50d042b5952e8ca44333fca61b9">end</a>();</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordtype">size_t</span> <a class="code" href="classutf8rewind_1_1_utf8_string.html#afa4f7ae9add7a0090aa7950b9ffae6d9">length</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordtype">size_t</span> <a class="code" href="classutf8rewind_1_1_utf8_string.html#ab3b077e8fc350a0cb9041abfe791dbac">size</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classutf8rewind_1_1_utf8_string.html#a8e012541ea0a79570ff3eeb48c18304f">clear</a>();</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classutf8rewind_1_1_utf8_string.html#a5dc27fa47e2a279feb765177e8133059">empty</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classutf8rewind_1_1_utf8_string.html#a60a770d75a6962027346298ba1aaea84">c_str</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        std::vector&lt;char&gt; _buffer;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keywordtype">size_t</span> _length;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    };</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;};</div>
 <div class="ttc" id="classutf8rewind_1_1_utf8_string_html_a26df46faef32ff18decc7b97a112edc4"><div class="ttname"><a href="classutf8rewind_1_1_utf8_string.html#a26df46faef32ff18decc7b97a112edc4">utf8rewind::Utf8String::Utf8String</a></div><div class="ttdeci">Utf8String()</div></div>
 <div class="ttc" id="utf8rewind_8h_html_a1fe7d84695f910c23ceca80b12983323"><div class="ttname"><a href="utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323">unicode_t</a></div><div class="ttdeci">unsigned int unicode_t</div><div class="ttdef"><b>Definition:</b> utf8rewind.h:27</div></div>
 <div class="ttc" id="classutf8rewind_1_1_utf8_string_1_1iterator_html"><div class="ttname"><a href="classutf8rewind_1_1_utf8_string_1_1iterator.html">utf8rewind::Utf8String::iterator</a></div><div class="ttdoc">Read-only class for stepping through a Utf8String instance. </div><div class="ttdef"><b>Definition:</b> utf8string.hpp:15</div></div>
@@ -182,6 +186,7 @@ $(document).ready(function(){initNavTree('utf8string_8hpp_source.html','');});
 <div class="ttc" id="utf8rewind_8h_html"><div class="ttname"><a href="utf8rewind_8h.html">utf8rewind.h</a></div><div class="ttdoc">Functions for working with UTF-8 encoded text. </div></div>
 <div class="ttc" id="classutf8rewind_1_1_utf8_string_html_a8e012541ea0a79570ff3eeb48c18304f"><div class="ttname"><a href="classutf8rewind_1_1_utf8_string.html#a8e012541ea0a79570ff3eeb48c18304f">utf8rewind::Utf8String::clear</a></div><div class="ttdeci">void clear()</div><div class="ttdoc">Clear the string. </div></div>
 <div class="ttc" id="classutf8rewind_1_1_utf8_string_html_a2446a50d042b5952e8ca44333fca61b9"><div class="ttname"><a href="classutf8rewind_1_1_utf8_string.html#a2446a50d042b5952e8ca44333fca61b9">utf8rewind::Utf8String::end</a></div><div class="ttdeci">iterator end()</div><div class="ttdoc">Get an iterator for the end of the string. </div></div>
+<div class="ttc" id="classutf8rewind_1_1_utf8_string_html_a0e030110ebc73856ad05c7b8c705f32a"><div class="ttname"><a href="classutf8rewind_1_1_utf8_string.html#a0e030110ebc73856ad05c7b8c705f32a">utf8rewind::Utf8String::operator=</a></div><div class="ttdeci">Utf8String &amp; operator=(const Utf8String &amp;other)</div></div>
 <div class="ttc" id="classutf8rewind_1_1_utf8_string_html_a60a770d75a6962027346298ba1aaea84"><div class="ttname"><a href="classutf8rewind_1_1_utf8_string.html#a60a770d75a6962027346298ba1aaea84">utf8rewind::Utf8String::c_str</a></div><div class="ttdeci">const char * c_str() const </div><div class="ttdoc">Get a pointer to the string&amp;#39;s data. </div></div>
 <div class="ttc" id="classutf8rewind_1_1_utf8_string_html_a2b57d3a94fd3f4aaeede1ed23da03214"><div class="ttname"><a href="classutf8rewind_1_1_utf8_string.html#a2b57d3a94fd3f4aaeede1ed23da03214">utf8rewind::Utf8String::begin</a></div><div class="ttdeci">iterator begin()</div><div class="ttdoc">Get an iterator for the start of the string. </div></div>
 <div class="ttc" id="classutf8rewind_1_1_utf8_string_html_afa4f7ae9add7a0090aa7950b9ffae6d9"><div class="ttname"><a href="classutf8rewind_1_1_utf8_string.html#afa4f7ae9add7a0090aa7950b9ffae6d9">utf8rewind::Utf8String::length</a></div><div class="ttdeci">size_t length() const </div><div class="ttdoc">Get the length in codepoints. </div></div>
@@ -192,7 +197,7 @@ $(document).ready(function(){initNavTree('utf8string_8hpp_source.html','');});
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_19f418181f8b699045c2f8e6c49f857e.html">utf8rewind</a></li><li class="navelem"><a class="el" href="utf8string_8hpp.html">utf8string.hpp</a></li>
-    <li class="footer">Generated on Thu Apr 24 2014 08:48:05 for utf8rewind by
+    <li class="footer">Generated on Fri May 30 2014 17:31:52 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

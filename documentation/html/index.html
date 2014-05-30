@@ -150,10 +150,9 @@ Changes to existing code</h2>
 <div class="line">{</div>
 <div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* salt;</div>
 <div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* hashed_password;</div>
-<div class="line">    <span class="keywordtype">char</span> verify_password[256];</div>
-<div class="line">    <span class="keywordtype">char</span> hashed_verify_password[256];</div>
+<div class="line">    <span class="keywordtype">char</span> verify_password[256] = { 0 };</div>
+<div class="line">    <span class="keywordtype">char</span> hashed_verify_password[256] = { 0 };</div>
 <div class="line"></div>
-<div class="line">    memset(verify_password, 0, 256);</div>
 <div class="line">    <span class="comment">/* For the purposes of brevity, ignore the fact</span></div>
 <div class="line"><span class="comment">    that this is a terrible way to generate a salt,</span></div>
 <div class="line"><span class="comment">    because it has insufficient entropy. */</span></div>
@@ -162,7 +161,6 @@ Changes to existing code</h2>
 <div class="line">    strcat(verify_password, hashed_password);</div>
 <div class="line">    strcat(verify_password, salt);</div>
 <div class="line"></div>
-<div class="line">    memset(hashed_verify_password, 0, 256);</div>
 <div class="line">    strcpy(hashed_verify_password, md5(verify_password));</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">return</span> Database_CheckLogin(username, hashed_verify_password);</div>
@@ -179,11 +177,9 @@ Dealing with user input</h2>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">int</span> PasswordField_EnterCharacter(<span class="keywordtype">char</span> input)</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordtype">char</span> text_input[2];</div>
-<div class="line">    text_input[0] = input;</div>
-<div class="line">    text_input[1] = 0;</div>
+<div class="line">    <span class="keywordtype">char</span> text_input[2] = { input, 0 };</div>
 <div class="line">    </div>
-<div class="line">    <span class="keywordflow">if</span> (strlen(g_PasswordInput) + 1 &gt; g_PasswordInputMaximum)</div>
+<div class="line">    <span class="keywordflow">if</span> ((strlen(g_PasswordInput) + 1) &gt; g_PasswordInputMaximum)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">    }</div>
@@ -194,17 +190,16 @@ Dealing with user input</h2>
 <div class="line">}</div>
 </div><!-- fragment --><p>We'll have to make sure that we provide UTF-32 codepoints instead:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">int</span> PasswordField_EnterCharacter(<a class="code" href="utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323">unicode_t</a> input)</div>
-</div><!-- fragment --><p>This can be accomplished using a simple cast, because all Unicode codepoints fit in a <code>unicode_t</code> type.</p>
+</div><!-- fragment --><p>This can be accomplished using a simple cast, because all ASCII codepoints fit in a <code>unicode_t</code> type.</p>
 <p>Next, we'll have to increase the size of the <code>text_input</code> string in order to accommodate the conversion of the codepoint to UTF-8:</p>
-<div class="fragment"><div class="line"><span class="keywordtype">char</span> text_input[16];</div>
-<div class="line">memset(text_input, 0, 16);</div>
+<div class="fragment"><div class="line"><span class="keywordtype">char</span> text_input[16] = { 0 };</div>
 <div class="line"></div>
 <div class="line"><span class="keywordflow">if</span> (<a class="code" href="utf8rewind_8h.html#ab936e1848e79cdff95c834a294a7539c">utf8encode</a>(input, text_input, 16) &lt;= 0)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>Because the codepoint can consist of multiple characters, we'll have to change the check to see if we're not overflowing the password input string:</p>
-<div class="fragment"><div class="line"><span class="keywordflow">if</span> (strlen(g_PasswordInput) + strlen(text_input) &gt; g_PasswordInputMaximum)</div>
+<div class="fragment"><div class="line"><span class="keywordflow">if</span> ((strlen(g_PasswordInput) + strlen(text_input)) &gt; g_PasswordInputMaximum)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
@@ -214,15 +209,14 @@ Dealing with user input</h2>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">int</span> PasswordField_EnterCharacter(<a class="code" href="utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323">unicode_t</a> input)</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordtype">char</span> text_input[16];</div>
-<div class="line">    memset(text_input, 0, 16);</div>
+<div class="line">    <span class="keywordtype">char</span> text_input[16] = { 0 };</div>
 <div class="line">    </div>
 <div class="line">    <span class="keywordflow">if</span> (<a class="code" href="utf8rewind_8h.html#ab936e1848e79cdff95c834a294a7539c">utf8encode</a>(input, text_input, 16) &lt;= 0)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">    }</div>
 <div class="line">    </div>
-<div class="line">    <span class="keywordflow">if</span> (strlen(g_PasswordInput) + strlen(text_input) &gt; g_PasswordInputMaximum)</div>
+<div class="line">    <span class="keywordflow">if</span> ((strlen(g_PasswordInput) + strlen(text_input)) &gt; g_PasswordInputMaximum)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">    }</div>
@@ -309,7 +303,7 @@ Integrating with your own project</h2>
 <h1><a class="anchor" id="helping-out"></a>
 Helping out</h1>
 <p>As a user, you can help the project in a number of ways, in order of difficulty:</p>
-<p><b>Use it</b> - Interface designers such as myself often have very different ideas about usability than those actually using it. By using the library, you are helping the project spread and could potentially improve it by taking your project into consideration.</p>
+<p><b>Use it</b> - Designers of a public interface often have very different ideas about usability than those actually using it. By using the library, you are helping the project spread and could potentially improve it by us taking your project into consideration when we design the API.</p>
 <p><b>Spread the word</b> - If you find <code><a class="el" href="namespaceutf8rewind.html">utf8rewind</a></code> useful, recommend it to your friends and coworkers.</p>
 <p><b>Complain</b> - No library is perfect and <code><a class="el" href="namespaceutf8rewind.html">utf8rewind</a></code> is no exception. If you find a fault but lack the means (time, resources, etc.) to fix it, sending complaints to the proper channels can help the project out a lot.</p>
 <p><b>Write a failing test</b> - If a feature is not working as intended, you can prove it by writing a failing test. By sending the test to us, we can make the adjustments necessary for it to pass.</p>
@@ -319,7 +313,7 @@ Helping out</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Apr 24 2014 08:48:05 for utf8rewind by
+    <li class="footer">Generated on Fri May 30 2014 17:31:52 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

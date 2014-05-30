@@ -11,5 +11,8 @@ var classutf8rewind_1_1_utf8_string =
     [ "empty", "classutf8rewind_1_1_utf8_string.html#a5dc27fa47e2a279feb765177e8133059", null ],
     [ "end", "classutf8rewind_1_1_utf8_string.html#a2446a50d042b5952e8ca44333fca61b9", null ],
     [ "length", "classutf8rewind_1_1_utf8_string.html#afa4f7ae9add7a0090aa7950b9ffae6d9", null ],
+    [ "operator=", "classutf8rewind_1_1_utf8_string.html#a0e030110ebc73856ad05c7b8c705f32a", null ],
+    [ "operator=", "classutf8rewind_1_1_utf8_string.html#adbe2c1a557c52527d230846d32cabc62", null ],
+    [ "operator=", "classutf8rewind_1_1_utf8_string.html#afa9d72fa286dfdabe8958af382697956", null ],
     [ "size", "classutf8rewind_1_1_utf8_string.html#ab3b077e8fc350a0cb9041abfe791dbac", null ]
 ];
