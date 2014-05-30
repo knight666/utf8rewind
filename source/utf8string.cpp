@@ -73,7 +73,7 @@ namespace utf8rewind {
 			if (size > 0)
 			{
 				_buffer.resize(size + 1);
-				wctoutf8(text, length + 2, &_buffer[0], size + 1);
+				wctoutf8(text, length + 2, &_buffer[0], _buffer.size());
 				_buffer.back() = 0;
 
 				_length = length;
@@ -84,6 +84,75 @@ namespace utf8rewind {
 		{
 			_buffer.push_back(0);
 		}
+	}
+
+	Utf8String& Utf8String::operator = (const Utf8String& other)
+	{
+		_length = other.length();
+
+		_buffer.clear();
+		if (other.size() > 0)
+		{
+			_buffer.resize(other.size());
+			memcpy(&_buffer[0], other.c_str(), other.size());
+		}
+		else
+		{
+			_buffer.push_back(0);
+		}
+
+		return *this;
+	}
+
+	Utf8String& Utf8String::operator = (const char* text)
+	{
+		_buffer.clear();
+		_length = 0;
+
+		int length = utf8len(text);
+		if (length <= 0)
+		{
+			_buffer.push_back(0);
+
+			return *this;
+		}
+
+		_length = length;
+
+		_buffer.resize(strlen(text) + 1);
+		memcpy(&_buffer[0], text, _buffer.size() - 1);
+
+		return *this;
+	}
+
+	Utf8String& Utf8String::operator = (const wchar_t* text)
+	{
+		_buffer.clear();
+		_length = 0;
+
+		size_t length = wcslen(text);
+		if (length == 0)
+		{
+			_buffer.push_back(0);
+
+			return *this;
+		}
+
+		int size = wctoutf8(text, length + 2, nullptr, 0);
+		if (size <= 0)
+		{
+			_buffer.push_back(0);
+
+			return *this;
+		}
+
+		_length = length;
+
+		_buffer.resize(size + 1);
+		wctoutf8(text, length + 2, &_buffer[0], _buffer.size());
+		_buffer.back() = 0;
+
+		return *this;
 	}
 
 	Utf8String::iterator Utf8String::begin()

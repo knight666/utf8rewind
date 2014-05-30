@@ -40,6 +40,10 @@ namespace utf8rewind {
 		Utf8String(const char* text);
 		Utf8String(const wchar_t* text);
 
+		Utf8String& operator = (const Utf8String& other);
+		Utf8String& operator = (const char* text);
+		Utf8String& operator = (const wchar_t* text);
+
 		//! Get an iterator for the start of the string.
 		/*!
 			The begin iterator will always point to the
