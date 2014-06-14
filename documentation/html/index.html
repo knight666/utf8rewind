@@ -44,8 +44,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li class="current"><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
-      <li><a href="utf8rewind_8h.html"><span>C&#160;interface</span></a></li>
+      <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
+      <li><a href="examples.html"><span>Examples</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -107,20 +109,15 @@ $(document).ready(function(){initNavTree('index.html','');});
 <li class="level2"><a href="#running-tests">Running the tests</a></li>
 </ul>
 </li>
-<li class="level1"><a href="#examples">Examples</a><ul><li class="level2"><a href="#example-changes">Changes to existing code</a></li>
-<li class="level2"><a href="#example-user-input">Dealing with user input</a></li>
-<li class="level2"><a href="#example-display">Displaying Unicode text</a></li>
-<li class="level2"><a href="#integration">Integrating with your own project</a></li>
-</ul>
-</li>
 <li class="level1"><a href="#helping-out">Helping out</a></li>
+<li class="level1"><a href="#contact">Contact</a></li>
 </ul>
 </div>
 <div class="textblock"><h1><a class="anchor" id="introduction"></a>
 Introduction</h1>
 <p><code>utf8rewind</code> is a C library designed to extend default string handling functions in order to add support for UTF-8 encoded text. Besides providing functions to deal with UTF-8 encoded text, it also provides functions for converting to and from UTF-16 encoded text, the default on Windows.</p>
-<p>For a full summary of the interface, please click <a class="el" href="utf8rewind_8h.html">here</a>.</p>
-<p>For inquiries, complaints and patches, please contact <code>{quinten}{lansu} {at} {gmail}.{com}</code>. Remove the brackets to get a valid e-mail address.</p>
+<p>For a full summary of the interface, please refer to the <a class="el" href="utf8rewind_8h.html">library interface</a>.</p>
+<p>For detailed examples showing how to use the library, please refer to the <a class="el" href="examples.html">examples page</a>.</p>
 <h1><a class="anchor" id="why-utf8"></a>
 Why UTF-8?</h1>
 <p>UTF-8 encoded Unicode accounts for <a href="http://googleblog.blogspot.nl/2012/02/unicode-over-60-percent-of-web.html">over 60 percent of the web</a>. And with good reason! Because UTF-8 is completely backwards-compatible with ASCII, developers only need to change code dealing with codepoints. UTF-8 can encode the full range of Unicode codepoints in a maximum of six bytes per codepoint. However, because most text tends to be the Latin alphabet mixed with special characters, the common case is strings not much longer than pure ASCII.</p>
@@ -153,159 +150,6 @@ Using the source directly</h2>
 <h2><a class="anchor" id="running-tests"></a>
 Running the tests</h2>
 <p>After generating a solution, build and run the "tests-rewind" project. Verify that all tests pass on your system before continuing.</p>
-<h1><a class="anchor" id="examples"></a>
-Examples</h1>
-<h2><a class="anchor" id="example-changes"></a>
-Changes to existing code</h2>
-<p>Suppose you maintain a client application written in C. In order for clients to login, the application needs to check their credentials. This is accomplished by the following function:</p>
-<div class="fragment"><div class="line"><span class="keywordtype">int</span> Login_CheckCredentials(<span class="keyword">const</span> <span class="keywordtype">char</span>* username, <span class="keyword">const</span> <span class="keywordtype">char</span>* password)</div>
-<div class="line">{</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* salt;</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* hashed_password;</div>
-<div class="line">    <span class="keywordtype">char</span> verify_password[256] = { 0 };</div>
-<div class="line">    <span class="keywordtype">char</span> hashed_verify_password[256] = { 0 };</div>
-<div class="line"></div>
-<div class="line">    <span class="comment">/* For the purposes of brevity, ignore the fact</span></div>
-<div class="line"><span class="comment">    that this is a terrible way to generate a salt,</span></div>
-<div class="line"><span class="comment">    because it has insufficient entropy. */</span></div>
-<div class="line">    salt = md5(username);</div>
-<div class="line">    hashed_password = md5(password);</div>
-<div class="line">    strcat(verify_password, hashed_password);</div>
-<div class="line">    strcat(verify_password, salt);</div>
-<div class="line"></div>
-<div class="line">    strcpy(hashed_verify_password, md5(verify_password));</div>
-<div class="line"></div>
-<div class="line">    <span class="keywordflow">return</span> Database_CheckLogin(username, hashed_verify_password);</div>
-<div class="line">}</div>
-</div><!-- fragment --><p>Now we want to improve our security by allowing the full range of Unicode in the passwords by using UTF-8 encoding.</p>
-<p>What would we have to change? The answer is: nothing.</p>
-<p>A password like "M&ocirc;ntiPyth&ocirc;nikdenH&ocirc;lieGr&acirc;ilen" would be encoded as "M\xF8Pyth\xF8denH\xF8Gr\xE4en", meaning the calls to <code>strcat</code> and <code>strcpy</code> would still work as intended. The password can be treated as ASCII without changing the code.</p>
-<p>When converting your project to use UTF-8, you only have to worry about two surface area's: input and display. Let's look at those separately.</p>
-<h2><a class="anchor" id="example-user-input"></a>
-Dealing with user input</h2>
-<p>Continuing with the previous example, the old password field accepted only ASCII input:</p>
-<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> g_PasswordInputMaximum = 255;</div>
-<div class="line"><span class="keyword">static</span> <span class="keywordtype">char</span> g_PasswordInput[g_PasswordInputMaximum + 1];</div>
-<div class="line"></div>
-<div class="line"><span class="keywordtype">int</span> PasswordField_EnterCharacter(<span class="keywordtype">char</span> input)</div>
-<div class="line">{</div>
-<div class="line">    <span class="keywordtype">char</span> text_input[2] = { input, 0 };</div>
-<div class="line">    </div>
-<div class="line">    <span class="keywordflow">if</span> ((strlen(g_PasswordInput) + 1) &gt; g_PasswordInputMaximum)</div>
-<div class="line">    {</div>
-<div class="line">        <span class="keywordflow">return</span> 0;</div>
-<div class="line">    }</div>
-<div class="line">    </div>
-<div class="line">    strcat(g_PasswordInput, text_input);</div>
-<div class="line"></div>
-<div class="line">    <span class="keywordflow">return</span> 1;</div>
-<div class="line">}</div>
-</div><!-- fragment --><p>We'll have to make sure that we provide UTF-32 codepoints instead:</p>
-<div class="fragment"><div class="line"><span class="keywordtype">int</span> PasswordField_EnterCharacter(<a class="code" href="utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323">unicode_t</a> input)</div>
-</div><!-- fragment --><p>This can be accomplished using a simple cast, because all ASCII codepoints fit in a <code>unicode_t</code> type.</p>
-<p>Next, we'll have to increase the size of the <code>text_input</code> string in order to accommodate the conversion of the codepoint to UTF-8:</p>
-<div class="fragment"><div class="line"><span class="keywordtype">char</span> text_input[16] = { 0 };</div>
-<div class="line"></div>
-<div class="line"><span class="keywordflow">if</span> (<a class="code" href="utf8rewind_8h.html#ab936e1848e79cdff95c834a294a7539c">utf8encode</a>(input, text_input, 16) &lt;= 0)</div>
-<div class="line">{</div>
-<div class="line">    <span class="keywordflow">return</span> 0;</div>
-<div class="line">}</div>
-</div><!-- fragment --><p>Because the codepoint can consist of multiple characters, we'll have to change the check to see if we're not overflowing the password input string:</p>
-<div class="fragment"><div class="line"><span class="keywordflow">if</span> ((strlen(g_PasswordInput) + strlen(text_input)) &gt; g_PasswordInputMaximum)</div>
-<div class="line">{</div>
-<div class="line">    <span class="keywordflow">return</span> 0;</div>
-<div class="line">}</div>
-</div><!-- fragment --><p>Finally, putting it all together:</p>
-<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> g_PasswordInputMaximum = 255;</div>
-<div class="line"><span class="keyword">static</span> <span class="keywordtype">char</span> g_PasswordInput[g_PasswordInputMaximum + 1];</div>
-<div class="line"></div>
-<div class="line"><span class="keywordtype">int</span> PasswordField_EnterCharacter(<a class="code" href="utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323">unicode_t</a> input)</div>
-<div class="line">{</div>
-<div class="line">    <span class="keywordtype">char</span> text_input[16] = { 0 };</div>
-<div class="line">    </div>
-<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="utf8rewind_8h.html#ab936e1848e79cdff95c834a294a7539c">utf8encode</a>(input, text_input, 16) &lt;= 0)</div>
-<div class="line">    {</div>
-<div class="line">        <span class="keywordflow">return</span> 0;</div>
-<div class="line">    }</div>
-<div class="line">    </div>
-<div class="line">    <span class="keywordflow">if</span> ((strlen(g_PasswordInput) + strlen(text_input)) &gt; g_PasswordInputMaximum)</div>
-<div class="line">    {</div>
-<div class="line">        <span class="keywordflow">return</span> 0;</div>
-<div class="line">    }</div>
-<div class="line">    </div>
-<div class="line">    strcat(g_PasswordInput, text_input);</div>
-<div class="line"></div>
-<div class="line">    <span class="keywordflow">return</span> 1;</div>
-<div class="line">}</div>
-</div><!-- fragment --><p>With a few changes, the password field now accepts UTF-8 input. The benefit here is that we didn't need to change the algorithm itself, only the input had to be converted.</p>
-<h2><a class="anchor" id="example-display"></a>
-Displaying Unicode text</h2>
-<p>One problem remains: the user may be able to <em>enter</em> Unicode characters in text fields, but they won't show up right.</p>
-<p>Let's look at the offending function:</p>
-<div class="fragment"><div class="line"><span class="keywordtype">void</span> InputField_Draw(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
-<div class="line">{</div>
-<div class="line">    <span class="keywordtype">size_t</span> i;</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* src = text;</div>
-<div class="line">    </div>
-<div class="line">    FontBatch_Start(<span class="stringliteral">&quot;Arial20&quot;</span>);</div>
-<div class="line">    </div>
-<div class="line">    <span class="keywordflow">for</span> (i = 0; i &lt; strlen(text); ++i)</div>
-<div class="line">    {</div>
-<div class="line">        FontBatch_AddCharacter(*src);</div>
-<div class="line">        </div>
-<div class="line">        src++;</div>
-<div class="line">    }</div>
-<div class="line">    </div>
-<div class="line">    FontBatch_End();</div>
-<div class="line">    FontBatch_Draw(x, y);</div>
-<div class="line">}</div>
-</div><!-- fragment --><p>The first thing that will have to change is that <code>FontBatch_AddCharacter</code> should accept UTF-32 codepoints. Fortunately, that change is backwards-compatible:</p>
-<div class="fragment"><div class="line">FontBatch_AddCharacter((<a class="code" href="utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323">unicode_t</a>)*src);</div>
-</div><!-- fragment --><p>Next, we'll have to treat the input as UTF-8 encoded text. We'll have to read codepoints one-by-one.</p>
-<div class="fragment"><div class="line"><a class="code" href="utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323">unicode_t</a> codepoint;</div>
-<div class="line"><span class="keywordtype">size_t</span> i;</div>
-<div class="line"><span class="keywordtype">int</span> offset;</div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* src = text;</div>
-<div class="line"></div>
-<div class="line"><span class="keywordflow">for</span> (i = 0; i &lt; <a class="code" href="utf8rewind_8h.html#ab34ee783c503a651da04128ec8086b4b">utf8len</a>(text); ++i)</div>
-<div class="line">{</div>
-<div class="line">    offset = <a class="code" href="utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c">utf8decode</a>(src, &amp;codepoint);</div>
-<div class="line">    <span class="keywordflow">if</span> (offset &lt;= 0)</div>
-<div class="line">    {</div>
-<div class="line">        <span class="keywordflow">break</span>;</div>
-<div class="line">    }</div>
-<div class="line">    </div>
-<div class="line">    src += offset;</div>
-<div class="line">}</div>
-</div><!-- fragment --><p>Putting it all together again:</p>
-<div class="fragment"><div class="line"><span class="keywordtype">void</span> InputField_Draw(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
-<div class="line">{</div>
-<div class="line">    <a class="code" href="utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323">unicode_t</a> codepoint;</div>
-<div class="line">    <span class="keywordtype">size_t</span> i;</div>
-<div class="line">    <span class="keywordtype">int</span> offset;</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* src = text;</div>
-<div class="line">    </div>
-<div class="line">    FontBatch_Start(<span class="stringliteral">&quot;Arial20&quot;</span>);</div>
-<div class="line">    </div>
-<div class="line">    <span class="keywordflow">for</span> (i = 0; i &lt; <a class="code" href="utf8rewind_8h.html#ab34ee783c503a651da04128ec8086b4b">utf8len</a>(text); ++i)</div>
-<div class="line">    {</div>
-<div class="line">        offset = <a class="code" href="utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c">utf8decode</a>(src, &amp;codepoint);</div>
-<div class="line">        <span class="keywordflow">if</span> (offset &lt;= 0)</div>
-<div class="line">        {</div>
-<div class="line">            <span class="keywordflow">break</span>;</div>
-<div class="line">        }</div>
-<div class="line">        </div>
-<div class="line">        FontBatch_AddCharacter(codepoint);</div>
-<div class="line">        </div>
-<div class="line">        src += offset;</div>
-<div class="line">    }</div>
-<div class="line">    </div>
-<div class="line">    FontBatch_End();</div>
-<div class="line">    FontBatch_Draw(x, y);</div>
-<div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="integration"></a>
-Integrating with your own project</h2>
-<p>The recommended way to integrate <code>utf8rewind</code> is to link to the static library you compiled. Of course, because the library consists of only two files, the header and source can also be included directly.</p>
 <h1><a class="anchor" id="helping-out"></a>
 Helping out</h1>
 <p>As a user, you can help the project in a number of ways, in order of difficulty:</p>
@@ -313,13 +157,16 @@ Helping out</h1>
 <p><b>Spread the word</b> - If you find <code>utf8rewind</code> useful, recommend it to your friends and coworkers.</p>
 <p><b>Complain</b> - No library is perfect and <code>utf8rewind</code> is no exception. If you find a fault but lack the means (time, resources, etc.) to fix it, sending complaints to the proper channels can help the project out a lot.</p>
 <p><b>Write a failing test</b> - If a feature is not working as intended, you can prove it by writing a failing test. By sending the test to us, we can make the adjustments necessary for it to pass.</p>
-<p><b>Write a patch</b> - Patches include a code change that help tests to pass. A patch must always include a set of tests that fail to pass without the patch. All patches will be reviewed and possibly cleaned up before being accepted. </p>
+<p><b>Write a patch</b> - Patches include a code change that help tests to pass. A patch must always include a set of tests that fail to pass without the patch. All patches will be reviewed and possibly cleaned up before being accepted.</p>
+<h1><a class="anchor" id="contact"></a>
+Contact</h1>
+<p>For inquiries, complaints and patches, please contact <code>{quinten}{lansu} {at} {gmail}.{com}</code>. Remove the brackets to get a valid e-mail address. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Jun 14 2014 09:49:16 for utf8rewind by
+    <li class="footer">Generated on Sat Jun 14 2014 10:28:57 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>

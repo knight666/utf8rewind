@@ -6,9 +6,9 @@
 
 `utf8rewind` is a C library designed to extend default string handling functions in order to add support for UTF-8 encoded text. Besides providing functions to deal with UTF-8 encoded text, it also provides functions for converting to and from UTF-16 encoded text, the default on Windows.
 
-For a full summary of the interface, please click [here](@ref utf8rewind.h).
+For a full summary of the interface, please refer to the [library interface](@ref utf8rewind.h).
 
-For inquiries, complaints and patches, please contact `{quinten}{lansu} {at} {gmail}.{com}`. Remove the brackets to get a valid e-mail address.
+For detailed examples showing how to use the library, please refer to the [examples page](@ref examples).
 
 @section why-utf8 Why UTF-8?
 
@@ -47,207 +47,6 @@ Copy 'include/utf8rewind/utf8rewind.h' and 'source/utf8rewind.c' directly into y
 
 After generating a solution, build and run the "tests-rewind" project. Verify that all tests pass on your system before continuing.
 
-@section examples Examples
-
-@subsection example-changes Changes to existing code
-
-Suppose you maintain a client application written in C. In order for clients to login, the application needs to check their credentials. This is accomplished by the following function:
-
-@code{.c}
-	int Login_CheckCredentials(const char* username, const char* password)
-	{
-		const char* salt;
-		const char* hashed_password;
-		char verify_password[256] = { 0 };
-		char hashed_verify_password[256] = { 0 };
-
-		/* For the purposes of brevity, ignore the fact
-		that this is a terrible way to generate a salt,
-		because it has insufficient entropy. */
-		salt = md5(username);
-		hashed_password = md5(password);
-		strcat(verify_password, hashed_password);
-		strcat(verify_password, salt);
-
-		strcpy(hashed_verify_password, md5(verify_password));
-
-		return Database_CheckLogin(username, hashed_verify_password);
-	}
-@endcode
-
-Now we want to improve our security by allowing the full range of Unicode in the passwords by using UTF-8 encoding.
-
-What would we have to change? The answer is: nothing.
-
-A password like \"M&ocirc;ntiPyth&ocirc;nikdenH&ocirc;lieGr&acirc;ilen\" would be encoded as "M\xF8Pyth\xF8denH\xF8Gr\xE4en", meaning the calls to `strcat` and `strcpy` would still work as intended. The password can be treated as ASCII without changing the code.
-
-When converting your project to use UTF-8, you only have to worry about two surface area's: input and display. Let's look at those separately.
-
-@subsection example-user-input Dealing with user input
-
-Continuing with the previous example, the old password field accepted only ASCII input:
-
-@code{.c}
-	static const int g_PasswordInputMaximum = 255;
-	static char g_PasswordInput[g_PasswordInputMaximum + 1];
-
-	int PasswordField_EnterCharacter(char input)
-	{
-		char text_input[2] = { input, 0 };
-		
-		if ((strlen(g_PasswordInput) + 1) > g_PasswordInputMaximum)
-		{
-			return 0;
-		}
-		
-		strcat(g_PasswordInput, text_input);
-
-		return 1;
-	}
-@endcode
-
-We'll have to make sure that we provide UTF-32 codepoints instead:
-
-@code{.c}
-	int PasswordField_EnterCharacter(unicode_t input)
-@endcode
-
-This can be accomplished using a simple cast, because all ASCII codepoints fit in a `unicode_t` type.
-
-Next, we'll have to increase the size of the `text_input` string in order to accommodate the conversion of the codepoint to UTF-8:
-
-@code{.c}
-	char text_input[16] = { 0 };
-	
-	if (utf8encode(input, text_input, 16) <= 0)
-	{
-		return 0;
-	}
-@endcode
-
-Because the codepoint can consist of multiple characters, we'll have to change the check to see if we're not overflowing the password input string:
-
-@code{.c}
-	if ((strlen(g_PasswordInput) + strlen(text_input)) > g_PasswordInputMaximum)
-	{
-		return 0;
-	}
-@endcode
-
-Finally, putting it all together:
-
-@code{.c}
-	static const int g_PasswordInputMaximum = 255;
-	static char g_PasswordInput[g_PasswordInputMaximum + 1];
-
-	int PasswordField_EnterCharacter(unicode_t input)
-	{
-		char text_input[16] = { 0 };
-		
-		if (utf8encode(input, text_input, 16) <= 0)
-		{
-			return 0;
-		}
-		
-		if ((strlen(g_PasswordInput) + strlen(text_input)) > g_PasswordInputMaximum)
-		{
-			return 0;
-		}
-		
-		strcat(g_PasswordInput, text_input);
-
-		return 1;
-	}
-@endcode
-
-With a few changes, the password field now accepts UTF-8 input. The benefit here is that we didn't need to change the algorithm itself, only the input had to be converted.
-
-@subsection example-display Displaying Unicode text
-
-One problem remains: the user may be able to *enter* Unicode characters in text fields, but they won't show up right.
-
-Let's look at the offending function:
-
-@code{.c}
-	void InputField_Draw(int x, int y, const char* text)
-	{
-		size_t i;
-		const char* src = text;
-		
-		FontBatch_Start("Arial20");
-		
-		for (i = 0; i < strlen(text); ++i)
-		{
-			FontBatch_AddCharacter(*src);
-			
-			src++;
-		}
-		
-		FontBatch_End();
-		FontBatch_Draw(x, y);
-	}
-@endcode
-
-The first thing that will have to change is that `FontBatch_AddCharacter` should accept UTF-32 codepoints. Fortunately, that change is backwards-compatible:
-
-@code{.c}
-	FontBatch_AddCharacter((unicode_t)*src);
-@endcode
-
-Next, we'll have to treat the input as UTF-8 encoded text. We'll have to read codepoints one-by-one.
-
-@code{.c}
-	unicode_t codepoint;
-	size_t i;
-	int offset;
-	const char* src = text;
-	
-	for (i = 0; i < utf8len(text); ++i)
-	{
-		offset = utf8decode(src, &codepoint);
-		if (offset <= 0)
-		{
-			break;
-		}
-		
-		src += offset;
-	}
-@endcode
-
-Putting it all together again:
-
-@code{.c}
-	void InputField_Draw(int x, int y, const char* text)
-	{
-		unicode_t codepoint;
-		size_t i;
-		int offset;
-		const char* src = text;
-		
-		FontBatch_Start("Arial20");
-		
-		for (i = 0; i < utf8len(text); ++i)
-		{
-			offset = utf8decode(src, &codepoint);
-			if (offset <= 0)
-			{
-				break;
-			}
-			
-			FontBatch_AddCharacter(codepoint);
-			
-			src += offset;
-		}
-		
-		FontBatch_End();
-		FontBatch_Draw(x, y);
-	}
-@endcode
-
-@subsection integration Integrating with your own project
-
-The recommended way to integrate `utf8rewind` is to link to the static library you compiled. Of course, because the library consists of only two files, the header and source can also be included directly.
-
 @section helping-out Helping out
 
 As a user, you can help the project in a number of ways, in order of difficulty:
@@ -260,4 +59,8 @@ As a user, you can help the project in a number of ways, in order of difficulty:
 
 * **Write a failing test** - If a feature is not working as intended, you can prove it by writing a failing test. By sending the test to us, we can make the adjustments necessary for it to pass.
 
-* **Write a patch** - Patches include a code change that help tests to pass. A patch must always include a set of tests that fail to pass without the patch. All patches will be reviewed and possibly cleaned up before being accepted.*/
+* **Write a patch** - Patches include a code change that help tests to pass. A patch must always include a set of tests that fail to pass without the patch. All patches will be reviewed and possibly cleaned up before being accepted.
+
+@section contact Contact
+
+For inquiries, complaints and patches, please contact `{quinten}{lansu} {at} {gmail}.{com}`. Remove the brackets to get a valid e-mail address.*/

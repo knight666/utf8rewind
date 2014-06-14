@@ -1,7 +1,7 @@
 var NAVTREE =
 [
   [ "utf8rewind", "index.html", [
-    [ "Files", null, [
+    [ "Examples", "examples.html", [
       [ "Introduction", "index.html#introduction", null ],
       [ "Why UTF-8?", "index.html#why-utf8", null ],
       [ "Why not UTF-16?", "index.html#why-not-utf16", null ],
@@ -10,13 +10,13 @@ var NAVTREE =
         [ "Using the source directly", "index.html#using-source", null ],
         [ "Running the tests", "index.html#running-tests", null ]
       ] ],
-      [ "Examples", "index.html#examples", [
-        [ "Changes to existing code", "index.html#example-changes", null ],
-        [ "Dealing with user input", "index.html#example-user-input", null ],
-        [ "Displaying Unicode text", "index.html#example-display", null ],
-        [ "Integrating with your own project", "index.html#integration", null ]
-      ] ],
       [ "Helping out", "index.html#helping-out", null ],
+      [ "Contact", "index.html#contact", null ],
+      [ "Changes to existing code", "examples.html#example-changes", null ],
+      [ "Dealing with user input", "examples.html#example-user-input", null ],
+      [ "Displaying Unicode text", "examples.html#example-display", null ]
+    ] ],
+    [ "Files", null, [
       [ "File List", "files.html", "files" ],
       [ "File Members", "globals.html", [
         [ "All", "globals.html", null ],
@@ -25,7 +25,8 @@ var NAVTREE =
         [ "Macros", "globals_defs.html", null ]
       ] ]
     ] ],
-    [ "C interface", "utf8rewind_8h.html", null ]
+    [ "Library interface", "utf8rewind_8h.html", null ],
+    [ "Examples", "examples.html", null ]
   ] ]
 ];
 
