@@ -152,7 +152,7 @@ Dealing with user input</h1>
 <div class="line">    <span class="keywordflow">return</span> 1;</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>We'll have to make sure that we provide UTF-32 codepoints instead:</p>
-<div class="fragment"><div class="line"><span class="keywordtype">int</span> PasswordField_EnterCharacter(<a class="code" href="utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323">unicode_t</a> input)</div>
+<div class="fragment"><div class="line"><span class="keywordtype">int</span> PasswordField_EnterCharacter(<a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a> input)</div>
 </div><!-- fragment --><p>This can be accomplished using a simple cast, because all ASCII codepoints fit in a <code>unicode_t</code> type.</p>
 <p>Next, we'll have to increase the size of the <code>text_input</code> string in order to accommodate the conversion of the codepoint to UTF-8:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">char</span> text_input[16] = { 0 };</div>
@@ -170,7 +170,7 @@ Dealing with user input</h1>
 <div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> g_PasswordInputMaximum = 255;</div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">char</span> g_PasswordInput[g_PasswordInputMaximum + 1];</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">int</span> PasswordField_EnterCharacter(<a class="code" href="utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323">unicode_t</a> input)</div>
+<div class="line"><span class="keywordtype">int</span> PasswordField_EnterCharacter(<a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a> input)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">char</span> text_input[16] = { 0 };</div>
 <div class="line">    </div>
@@ -211,9 +211,9 @@ Displaying Unicode text</h1>
 <div class="line">    FontBatch_Draw(x, y);</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>The first thing that will have to change is that <code>FontBatch_AddCharacter</code> should accept UTF-32 codepoints. Fortunately, that change is backwards-compatible:</p>
-<div class="fragment"><div class="line">FontBatch_AddCharacter((<a class="code" href="utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323">unicode_t</a>)*src);</div>
+<div class="fragment"><div class="line">FontBatch_AddCharacter((<a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a>)*src);</div>
 </div><!-- fragment --><p>Next, we'll have to treat the input as UTF-8 encoded text. We'll have to read codepoints one-by-one.</p>
-<div class="fragment"><div class="line"><a class="code" href="utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323">unicode_t</a> codepoint;</div>
+<div class="fragment"><div class="line"><a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a> codepoint;</div>
 <div class="line"><span class="keywordtype">size_t</span> i;</div>
 <div class="line"><span class="keywordtype">int</span> offset;</div>
 <div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* src = text;</div>
@@ -231,7 +231,7 @@ Displaying Unicode text</h1>
 </div><!-- fragment --><p>Putting it all together again:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> InputField_Draw(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
-<div class="line">    <a class="code" href="utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323">unicode_t</a> codepoint;</div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a> codepoint;</div>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
 <div class="line">    <span class="keywordtype">int</span> offset;</div>
 <div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* src = text;</div>
@@ -259,7 +259,7 @@ Displaying Unicode text</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Jun 14 2014 10:28:57 for utf8rewind by
+    <li class="footer">Generated on Sat Jun 14 2014 18:29:23 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>
