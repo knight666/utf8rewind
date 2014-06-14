@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['utf8rewind',['utf8rewind',['../index.html',1,'']]]
+  ['examples',['Examples',['../examples.html',1,'']]]
 ];
