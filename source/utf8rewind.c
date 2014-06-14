@@ -298,7 +298,7 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 				(surrogate_low - SURROGATE_LOW_START) +
 				((surrogate_high - SURROGATE_HIGH_START) << 10);
 
-			if (codepoint >= 0x110000)
+			if (codepoint > MAX_LEGAL_UTF32)
 			{
 				/* Unicode characters must be encoded in a maximum of four bytes. */
 
@@ -567,8 +567,8 @@ const char* seekforward(const char* src, off_t offset)
 
 const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 {
-	int isAscii;
-	int lastCheck;
+	int is_ascii;
+	int last_check;
 	int i;
 
 	if (srcStart >= src)
@@ -578,20 +578,20 @@ const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 
 	while (src != srcStart)
 	{
-		isAscii = (*src & 0x80) != 0x80;
-		lastCheck = 0;
+		is_ascii = (*src & 0x80) != 0x80;
+		last_check = 0;
 
-		if (isAscii)
+		if (is_ascii)
 		{
 			src--;
 
 			if (offset + 1 == 0)
 			{
-				lastCheck = ((*src & 0x80) == 0x80);
+				last_check = ((*src & 0x80) == 0x80);
 			}
 		}
 
-		if (!isAscii || lastCheck)
+		if (!is_ascii || last_check)
 		{
 			for (i = 0; i < 4; ++i)
 			{
@@ -621,7 +621,7 @@ const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 const char* seekatend(const char* srcStart, off_t offset)
 {
 	int length;
-	int isAscii;
+	int is_ascii;
 	const char* src;
 	const char* src_current;
 	int i;
@@ -644,8 +644,8 @@ const char* seekatend(const char* srcStart, off_t offset)
 
 	for (src_current = src; src_current != srcStart; src_current--)
 	{
-		isAscii = (*src_current & 0x80) != 0x80;
-		if (!isAscii)
+		is_ascii = (*src_current & 0x80) != 0x80;
+		if (!is_ascii)
 		{
 			for (i = 0; i < 6; ++i)
 			{
