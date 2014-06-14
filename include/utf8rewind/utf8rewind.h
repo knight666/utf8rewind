@@ -33,6 +33,7 @@
 
 /// @cond IGNORE
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include <wchar.h>
 /// @endcond
@@ -49,9 +50,9 @@
 extern "C" {
 #endif
 
-typedef unsigned int unicode_t; /*!< Unicode codepoint. */
-typedef unsigned short ucs2_t; /*!< UCS-2 encoded codepoint. */
-typedef unsigned short utf16_t; /*!< UTF-16 encoded codepoint. */
+typedef uint32_t unicode_t; /*!< Unicode codepoint. */
+typedef uint16_t ucs2_t; /*!< UCS-2 encoded codepoint. */
+typedef uint16_t utf16_t; /*!< UTF-16 encoded codepoint. */
 
 //! Check if a character is valid according to UTF-8 encoding.
 /*!
