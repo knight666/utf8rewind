@@ -27,6 +27,26 @@ Convert to lowercase       | tolower | towlower
 
 Converting a project to use UTF-16 after the fact is a serious endeavour that touches *all* code dealing with strings. On the other hand, changing existing code to use UTF-8 only deals with codepoint processing.
 
+@section license Licensing
+
+This project is licensed under the MIT license, a full copy of which should have been provided with the project.
+
+@section building Building the project
+
+Use [GYP](http://code.google.com/p/gyp/) to generate a solution, like so:
+
+	tools\gyp\gyp --depth --format=msvs2010 utf8rewind.gyp
+
+@note The project has only been tested as compiling and running using Visual Studio 2010 on Windows, but GYP should generate workable output for other platforms as well.
+
+@subsection using-source Using the source directly
+
+Copy 'include/utf8rewind/utf8rewind.h' and 'source/utf8rewind.c' directly into your existing solution. Make sure you specify that the source file should be compiled as C code (`/TC` in Visual Studio). Include the header from your source and start using it.
+
+@subsection running-tests Running the tests
+
+After generating a solution, build and run the "tests-rewind" project. Verify that all tests pass on your system before continuing.
+
 @section examples Examples
 
 @subsection example-changes Changes to existing code
@@ -223,16 +243,6 @@ Putting it all together again:
 		FontBatch_Draw(x, y);
 	}
 @endcode
-
-@section building Building utf8rewind
-
-Use [GYP](http://code.google.com/p/gyp/) to generate a project, like so:
-
-	tools/gyp/gyp --depth --format=msvs2010 utf8rewind.gyp
-
-After generating a solution, build and run the "tests" project. Verify that all tests pass on your system before continuing.
-
-@note The project has only been tested as compiling and running using Visual Studio 2010 on Windows, but GYP should generate workable output for other platforms as well.
 
 @subsection integration Integrating with your own project
 
