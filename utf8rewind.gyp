@@ -6,6 +6,9 @@
 		{
 			'target_name': 'utf8rewind',
 			'type': 'static_library',
+			'defines': [
+				'UTF8_BYTE_ORDER=UTF8_BYTE_ORDER_LITTLE_ENDIAN'
+			],
 			'include_dirs': [
 				'include/utf8rewind',
 			],
@@ -27,6 +30,9 @@
 		{
 			'target_name': 'tests-rewind',
 			'type': 'executable',
+			'defines': [
+				'UTF8_BYTE_ORDER=UTF8_BYTE_ORDER_LITTLE_ENDIAN'
+			],
 			'dependencies': [
 				'utf8rewind',
 			],
