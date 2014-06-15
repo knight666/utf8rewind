@@ -150,9 +150,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a4c456e1c3d8637bdf3f999aa0377b2f2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a4c456e1c3d8637bdf3f999aa0377b2f2">utf8charlen</a> (char encodedCharacter)</td></tr>
 <tr class="memdesc:a4c456e1c3d8637bdf3f999aa0377b2f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the length in bytes of the encoded character.  <a href="#a4c456e1c3d8637bdf3f999aa0377b2f2">More...</a><br /></td></tr>
 <tr class="separator:a4c456e1c3d8637bdf3f999aa0377b2f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab34ee783c503a651da04128ec8086b4b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#ab34ee783c503a651da04128ec8086b4b">utf8len</a> (const char *text)</td></tr>
-<tr class="memdesc:ab34ee783c503a651da04128ec8086b4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the length in codepoints of a UTF-8 encoded string.  <a href="#ab34ee783c503a651da04128ec8086b4b">More...</a><br /></td></tr>
-<tr class="separator:ab34ee783c503a651da04128ec8086b4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6a3ebdecf49591cff736ccf054c048e"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a> (const char *text)</td></tr>
+<tr class="memdesc:aa6a3ebdecf49591cff736ccf054c048e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the length in codepoints of a UTF-8 encoded string.  <a href="#aa6a3ebdecf49591cff736ccf054c048e">More...</a><br /></td></tr>
+<tr class="separator:aa6a3ebdecf49591cff736ccf054c048e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab936e1848e79cdff95c834a294a7539c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#ab936e1848e79cdff95c834a294a7539c">utf8encode</a> (<a class="el" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a> codepoint, char *target, size_t targetSize)</td></tr>
 <tr class="memdesc:ab936e1848e79cdff95c834a294a7539c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encode a Unicode codepoint to UTF-8.  <a href="#ab936e1848e79cdff95c834a294a7539c">More...</a><br /></td></tr>
 <tr class="separator:ab936e1848e79cdff95c834a294a7539c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -463,7 +463,7 @@ Functions</h2></td></tr>
 <div class="line"></div>
 <div class="line">FontBatch_Start();</div>
 <div class="line"></div>
-<div class="line"><span class="keywordflow">for</span> (i = 0; i &lt; <a class="code" href="utf8rewind_8h.html#ab34ee783c503a651da04128ec8086b4b">utf8len</a>(input); ++i)</div>
+<div class="line"><span class="keywordflow">for</span> (i = 0; i &lt; <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(input); ++i)</div>
 <div class="line">{</div>
 <div class="line">    offset = <a class="code" href="utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c">utf8decode</a>(src, &amp;codepoint);</div>
 <div class="line">    <span class="keywordflow">if</span> (offset &lt;= 0)</div>
@@ -554,12 +554,12 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ab34ee783c503a651da04128ec8086b4b"></a>
+<a class="anchor" id="aa6a3ebdecf49591cff736ccf054c048e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int utf8len </td>
+          <td class="memname">size_t utf8len </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>text</em></td><td>)</td>
@@ -572,8 +572,8 @@ Functions</h2></td></tr>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">int</span> CheckPassword(<span class="keyword">const</span> <span class="keywordtype">char</span>* password)</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordtype">int</span> length = <a class="code" href="utf8rewind_8h.html#ab34ee783c503a651da04128ec8086b4b">utf8len</a>(password);</div>
-<div class="line">    <span class="keywordflow">return</span> (length == <a class="code" href="utf8rewind_8h.html#ab34ee783c503a651da04128ec8086b4b">utf8len</a>(<span class="stringliteral">&quot;hunter2&quot;</span>));</div>
+<div class="line">    <span class="keywordtype">size_t</span> length = <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(password);</div>
+<div class="line">    <span class="keywordflow">return</span> (length == <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(<span class="stringliteral">&quot;hunter2&quot;</span>));</div>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -582,7 +582,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Length in codepoints or an error code.<ul>
-<li><a class="el" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">UTF8_ERR_INVALID_CHARACTER</a> An invalid character was encountered. </li>
+<li>SIZE_MAX An invalid character was encountered. </li>
 </ul>
 </dd></dl>
 
@@ -629,7 +629,7 @@ Functions</h2></td></tr>
 <p>This function provides an interface similar to <code>fseek</code> in order to enable skipping to another part of the string.</p>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* text = <span class="stringliteral">&quot;Input: &lt;LEFT ARROW&gt;&quot;</span>;</div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* input = <a class="code" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8seek</a>(text, text, <a class="code" href="utf8rewind_8h.html#ab34ee783c503a651da04128ec8086b4b">utf8len</a>(<span class="stringliteral">&quot;Input: &quot;</span>), SEEK_SET);</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* input = <a class="code" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8seek</a>(text, text, <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(<span class="stringliteral">&quot;Input: &quot;</span>), SEEK_SET);</div>
 </div><!-- fragment --><p>Directions:</p><ul>
 <li><code>SEEK_SET</code> Offset is from the start of the string.</li>
 <li><code>SEEK_CUR</code> Offset is from the current position of the string.</li>
@@ -806,7 +806,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_19f418181f8b699045c2f8e6c49f857e.html">utf8rewind</a></li><li class="navelem"><a class="el" href="utf8rewind_8h.html">utf8rewind.h</a></li>
-    <li class="footer">Generated on Sat Jun 14 2014 18:29:23 for utf8rewind by
+    <li class="footer">Generated on Sun Jun 15 2014 09:36:54 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>

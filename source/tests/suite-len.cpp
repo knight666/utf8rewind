@@ -34,7 +34,7 @@ TEST(Length, TwoByteCodepointNotEnoughData)
 {
 	const char* c = "\xCC";
 
-	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8len(c));
+	EXPECT_EQ(SIZE_MAX, utf8len(c));
 }
 
 TEST(Length, ThreeByteCodepoint)
@@ -48,7 +48,7 @@ TEST(Length, ThreeByteCodepointNotEnoughData)
 {
 	const char* c = "\xE1\xB5";
 
-	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8len(c));
+	EXPECT_EQ(SIZE_MAX, utf8len(c));
 }
 
 TEST(Length, FourByteCodepoint)
@@ -62,7 +62,7 @@ TEST(Length, FourByteCodepointNotEnoughData)
 {
 	const char* c = "\xF0\xDA";
 
-	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, utf8len(c));
+	EXPECT_EQ(SIZE_MAX, utf8len(c));
 }
 
 TEST(Length, ZeroLength)
