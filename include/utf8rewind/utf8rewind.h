@@ -38,6 +38,18 @@
 #include <wchar.h>
 /// @endcond
 
+//! @defgroup configuration Global configuration
+//! @{
+
+#define UTF8_BYTE_ORDER_LITTLE_ENDIAN (0)
+#define UTF8_BYTE_ORDER_BIG_ENDIAN (1)
+
+#ifndef UTF8_BYTE_ORDER
+	#error Byte order must be specified.
+#endif
+
+/// @}
+
 #define UTF8_ERR_INVALID_CHARACTER (-1)
 #define UTF8_ERR_INVALID_DATA (-2)
 #define UTF8_ERR_NOT_ENOUGH_SPACE (-3)
@@ -48,6 +60,10 @@
 
 #if defined(__cplusplus)
 extern "C" {
+#endif
+
+#if (UTF8_BYTE_ORDER == UTF8_BYTE_ORDER_LITTLE_ENDIAN)
+#elif (UTF8_BYTE_ORDER == UTF8_BYTE_ORDER_BIG_ENDIAN)
 #endif
 
 typedef uint32_t unicode_t; /*!< Unicode codepoint. */
