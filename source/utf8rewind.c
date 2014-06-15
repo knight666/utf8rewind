@@ -66,7 +66,7 @@ int utf8charlen(char encodedCharacter)
 	}
 }
 
-int utf8len(const char* text)
+size_t utf8len(const char* text)
 {
 	int length = 0;
 	unsigned char codepoint = 0;
@@ -88,7 +88,7 @@ int utf8len(const char* text)
 	{
 		if (!utf8charvalid(*text))
 		{
-			return UTF8_ERR_INVALID_CHARACTER;
+			return SIZE_MAX;
 		}
 
 		codepoint = (unsigned char)*text;
@@ -105,7 +105,7 @@ int utf8len(const char* text)
 		{
 			if (text_length < 2)
 			{
-				return UTF8_ERR_INVALID_CHARACTER;
+				return SIZE_MAX;
 			}
 
 			codepoint_length = 2;
@@ -114,7 +114,7 @@ int utf8len(const char* text)
 		{
 			if (text_length < 3)
 			{
-				return UTF8_ERR_INVALID_CHARACTER;
+				return SIZE_MAX;
 			}
 
 			codepoint_length = 3;
@@ -123,14 +123,14 @@ int utf8len(const char* text)
 		{
 			if (text_length < 4)
 			{
-				return UTF8_ERR_INVALID_CHARACTER;
+				return SIZE_MAX;
 			}
 
 			codepoint_length = 4;
 		}
 		else
 		{
-			return UTF8_ERR_INVALID_CHARACTER;
+			return SIZE_MAX;
 		}
 
 		length++;

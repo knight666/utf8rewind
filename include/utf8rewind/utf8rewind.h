@@ -85,7 +85,7 @@ int utf8charlen(char encodedCharacter);
 	@code{.c}
 		int CheckPassword(const char* password)
 		{
-			int length = utf8len(password);
+			size_t length = utf8len(password);
 			return (length == utf8len("hunter2"));
 		}
 	@endcode
@@ -93,9 +93,9 @@ int utf8charlen(char encodedCharacter);
 	@param text UTF-8 encoded string.
 
 	@return Length in codepoints or an error code.
-		- #UTF8_ERR_INVALID_CHARACTER An invalid character was encountered.
+		- SIZE_MAX An invalid character was encountered.
 */
-int utf8len(const char* text);
+size_t utf8len(const char* text);
 
 //! Encode a Unicode codepoint to UTF-8.
 /*!
