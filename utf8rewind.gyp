@@ -51,7 +51,7 @@
 			'sources': [
 				'source/tests/suite-charlen.cpp',
 				'source/tests/suite-charvalid.cpp',
-				'source/tests/suite-convertucs2.cpp',
+				'source/tests/suite-convertucs2_le.cpp',
 				'source/tests/suite-decode.cpp',
 				'source/tests/suite-encode.cpp',
 				'source/tests/suite-len.cpp',
