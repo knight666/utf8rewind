@@ -160,5 +160,5 @@ TEST(ToUtf8, OutputLengthSurrogatePair)
 {
 	const char* c = "\x18\xD8\xDE\xDC";
 
-	EXPECT_EQ(5, wctoutf8((const wchar_t*)&c, 4, nullptr, 0));
+	EXPECT_EQ(4, wctoutf8((const wchar_t*)c, 4, nullptr, 0));
 }
