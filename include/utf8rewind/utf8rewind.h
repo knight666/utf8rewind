@@ -41,11 +41,33 @@
 //! @defgroup configuration Global configuration
 //! @{
 
-#define UTF8_BYTE_ORDER_LITTLE_ENDIAN (0)
-#define UTF8_BYTE_ORDER_BIG_ENDIAN (1)
+#define UTF8_BYTE_ORDER_LITTLE_ENDIAN (1234)
+#define UTF8_BYTE_ORDER_BIG_ENDIAN (4321)
+
+// Many thanks to the authors of SDL_Endian for this detection code.
 
 #ifndef UTF8_BYTE_ORDER
-	#error Byte order must be specified.
+	#ifdef __linux__
+		#include <endian.h>
+
+		#if (__BYTE_ORDER == __LITTLE_ENDIAN)
+			#define UTF8_BYTE_ORDER UTF8_BYTE_ORDER_LITTLE_ENDIAN
+		#elif (__BYTE_ORDER == __BIG_ENDIAN)
+			#define UTF8_BYTE_ORDER UTF8_BYTE_ORDER_BIG_ENDIAN
+		#else
+			#error Byte order could not be determined automatically.
+		#endif
+	#else
+		#if defined(__hppa__) || \
+			defined(__m68k__) || defined(mc68000) || defined(_M_M68K) || \
+			(defined(__MIPS__) && defined(__MISPEB__)) || \
+			defined(__ppc__) || defined(__POWERPC__) || defined(_M_PPC) || \
+			defined(__sparc__)
+			#define UTF8_BYTE_ORDER UTF8_BYTE_ORDER_BIG_ENDIAN
+		#else
+			#define UTF8_BYTE_ORDER UTF8_BYTE_ORDER_LITTLE_ENDIAN
+		#endif
+	#endif
 #endif
 
 /// @}
@@ -122,10 +144,9 @@ size_t utf8len(const char* text);
 	Example:
 
 	@code{.c}
-		char result[128];
+		char result[128] = { 0 };
 		char* dst;
 
-		memset(result, 0, 128);
 		strcat(result, "STARG");
 		dst = result + strlen(result);
 		utf8encode(0x1402, dst, 128 - strlen(result));
