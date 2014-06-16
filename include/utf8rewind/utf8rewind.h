@@ -151,14 +151,15 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
 		char text[text_size] = { 0 };
 		char* dst = text;
 		size_t i;
-		int offset;
+		size_t offset;
+		int32_t errors = 0;
 
 		for (i = 0; i < input_size; ++i)
 		{
-			offset = utf8convertucs2(input[i], dst, text_size);
-			if (offset <= 0)
+			offset = utf8convertucs2(input[i], dst, text_size, &errors);
+			if (offset == SIZE_MAX)
 			{
-				return 0;
+				return errors;
 			}
 
 			dst += offset;
@@ -168,15 +169,17 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
 	@param codepoint UCS-2 encoded codepoint.
 	@param target String to write the result to.
 	@param targetSize Amount of bytes remaining in the string.
+	@param errors Target for errors, if any.
 
-	@return Amount of bytes written or an error code.
+	@return Amount of bytes written or SIZE_MAX on error.
+
+	Errors:
 		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 		- #UTF8_ERR_UNHANDLED_SURROGATE_PAIR Codepoint is part of a surrogate pair.
 
 	@sa wctoutf8
-	@sa utf8convertucs2
 */
-int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize);
+size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_t* errors);
 
 //! Convert a UTF-16 encoded string to UTF-8.
 /*!

@@ -12,7 +12,7 @@ var utf8rewind_8h =
     [ "utf16_t", "utf8rewind_8h.html#a1e9e182e040e6f408cfb7188eaafb48a", null ],
     [ "utf8charlen", "utf8rewind_8h.html#a4c456e1c3d8637bdf3f999aa0377b2f2", null ],
     [ "utf8charvalid", "utf8rewind_8h.html#a9d19522cd09e2dff6fca8db6a3a5cacf", null ],
-    [ "utf8convertucs2", "utf8rewind_8h.html#a9c0b98a672e469ea9da31fac51fc321e", null ],
+    [ "utf8convertucs2", "utf8rewind_8h.html#ac08ff5b9be438e67b8e0af6a4c56543f", null ],
     [ "utf8decode", "utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c", null ],
     [ "utf8encode", "utf8rewind_8h.html#ab936e1848e79cdff95c834a294a7539c", null ],
     [ "utf8len", "utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e", null ],
