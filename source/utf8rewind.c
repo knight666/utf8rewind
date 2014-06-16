@@ -197,7 +197,7 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize)
 	return length;
 }
 
-int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize)
+size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_t* errors)
 {
 	if (codepoint <= 0x7F)
 	{
@@ -205,7 +205,11 @@ int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize)
 		{
 			if (targetSize < 1)
 			{
-				return UTF8_ERR_NOT_ENOUGH_SPACE;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+				}
+				return SIZE_MAX;
 			}
 
 			target[0] = (char)codepoint;
@@ -219,7 +223,11 @@ int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize)
 		{
 			if (targetSize < 2)
 			{
-				return UTF8_ERR_NOT_ENOUGH_SPACE;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+				}
+				return SIZE_MAX;
 			}
 
 			target[1] = (char)((codepoint       & 0x3F) | 0x80);
@@ -237,14 +245,22 @@ int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize)
 				for lead and trail surrogate pairs.
 			*/
 
-			return UTF8_ERR_UNHANDLED_SURROGATE_PAIR;
+			if (errors != 0)
+			{
+				*errors = UTF8_ERR_UNHANDLED_SURROGATE_PAIR;
+			}
+			return SIZE_MAX;
 		}
 		
 		if (target != 0)
 		{
 			if (targetSize < 3)
 			{
-				return UTF8_ERR_NOT_ENOUGH_SPACE;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+				}
+				return SIZE_MAX;
 			}
 
 			target[2] = (char)(( codepoint        & 0x3F) | 0x80);
@@ -268,6 +284,7 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 	char* dst = target;
 	size_t dst_size = targetSize;
 	int bytes_written = 0;
+	int32_t errors = 0;
 
 	if (input == 0 || inputSize < 2)
 	{
@@ -280,10 +297,10 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 
 		if (current < SURROGATE_HIGH_START || current > SURROGATE_LOW_END)
 		{
-			result = utf8convertucs2(*(const ucs2_t*)src, dst, dst_size);
-			if (result <= 0)
+			result = utf8convertucs2(*(const ucs2_t*)src, dst, dst_size, &errors);
+			if (result == SIZE_MAX)
 			{
-				return result;
+				return errors;
 			}
 
 			src += 2;
