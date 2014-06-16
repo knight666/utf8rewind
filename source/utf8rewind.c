@@ -197,7 +197,82 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize)
 	return length;
 }
 
-int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize)
+size_t utf8convertucs2_le(ucs2_t codepoint, char* target, size_t targetSize, int32_t* errors /*= 0*/)
+{
+	if (codepoint <= 0x7F)
+	{
+		if (target != 0)
+		{
+			if (targetSize < 1)
+			{
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+				}
+				return SIZE_MAX;
+			}
+
+			target[0] = (char)codepoint;
+		}
+
+		return 1;
+	}
+	else if (codepoint <= 0x7FF)
+	{
+		if (target != 0)
+		{
+			if (targetSize < 2)
+			{
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+				}
+				return SIZE_MAX;
+			}
+
+			target[1] = (char)((codepoint       & 0x3F) | 0x80);
+			target[0] = (char)((codepoint >> 6)         | 0xC0);
+		}
+
+		return 2;
+	}
+	else
+	{
+		if (codepoint >= SURROGATE_HIGH_START && codepoint <= SURROGATE_LOW_END)
+		{
+			/*
+				The range between U+D800 and U+DFFF is reserved
+				for lead and trail surrogate pairs.
+			*/
+
+			if (errors != 0)
+			{
+				*errors = UTF8_ERR_UNHANDLED_SURROGATE_PAIR;
+			}
+			return SIZE_MAX;
+		}
+		
+		if (target != 0)
+		{
+			if (targetSize < 3)
+			{
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+				}
+				return SIZE_MAX;	
+			}
+
+			target[2] = (char)(( codepoint        & 0x3F) | 0x80);
+			target[1] = (char)(((codepoint >>  6) & 0x3F) | 0x80);
+			target[0] = (char)( (codepoint >> 12)         | 0xE0);
+		}
+
+		return 3;
+	}
+}
+
+size_t utf8convertucs2_be(ucs2_t codepoint, char* target, size_t targetSize, int32_t* errors /*= 0*/)
 {
 	if (codepoint <= 0x7F)
 	{
@@ -208,7 +283,7 @@ int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize)
 				return UTF8_ERR_NOT_ENOUGH_SPACE;
 			}
 
-			target[0] = (char)codepoint;
+			target[0] = (char)(codepoint >> 8);
 		}
 
 		return 1;
@@ -268,6 +343,7 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 	char* dst = target;
 	size_t dst_size = targetSize;
 	int bytes_written = 0;
+	int32_t errors = 0;
 
 	if (input == 0 || inputSize < 2)
 	{
@@ -280,10 +356,10 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 
 		if (current < SURROGATE_HIGH_START || current > SURROGATE_LOW_END)
 		{
-			result = utf8convertucs2(*(const ucs2_t*)src, dst, dst_size);
-			if (result <= 0)
+			result = utf8convertucs2(*(const ucs2_t*)src, dst, dst_size, &errors);
+			if (result == SIZE_MAX)
 			{
-				return result;
+				return errors;
 			}
 
 			src += 2;
