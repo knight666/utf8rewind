@@ -84,10 +84,6 @@
 extern "C" {
 #endif
 
-#if (UTF8_BYTE_ORDER == UTF8_BYTE_ORDER_LITTLE_ENDIAN)
-#elif (UTF8_BYTE_ORDER == UTF8_BYTE_ORDER_BIG_ENDIAN)
-#endif
-
 typedef uint32_t unicode_t; /*!< Unicode codepoint. */
 typedef uint16_t ucs2_t; /*!< UCS-2 encoded codepoint. */
 typedef uint16_t utf16_t; /*!< UTF-16 encoded codepoint. */
@@ -165,6 +161,9 @@ size_t utf8len(const char* text);
 */
 int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
 
+size_t utf8convertucs2_le(ucs2_t codepoint, char* target, size_t targetSize, int32_t* errors);
+size_t utf8convertucs2_be(ucs2_t codepoint, char* target, size_t targetSize, int32_t* errors);
+
 //! Convert a UCS-2 codepoint to UTF-8.
 /*!
 	UCS-2 encoding is similar to UTF-16 encoding, except that it
@@ -189,13 +188,14 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
 		char* dst = text;
 		size_t i;
 		int offset;
+		int32_t errors = 0;
 
 		for (i = 0; i < input_size; ++i)
 		{
-			offset = utf8convertucs2(input[i], dst, text_size);
-			if (offset <= 0)
+			offset = utf8convertucs2(input[i], dst, text_size, &errors);
+			if (offset == SIZE_MAX)
 			{
-				return 0;
+				return errors;
 			}
 
 			dst += offset;
@@ -205,15 +205,21 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
 	@param codepoint UCS-2 encoded codepoint.
 	@param target String to write the result to.
 	@param targetSize Amount of bytes remaining in the string.
+	@param errors Target for errors, if any.
 
-	@return Amount of bytes written or an error code.
+	@return Amount of bytes written or SIZE_MAX on error.
+
+	Errors:
 		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 		- #UTF8_ERR_UNHANDLED_SURROGATE_PAIR Codepoint is part of a surrogate pair.
 
 	@sa wctoutf8
-	@sa utf8convertucs2
 */
-int utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize);
+#if (UTF8_BYTE_ORDER == UTF8_BYTE_ORDER_LITTLE_ENDIAN)
+	#define utf8convertucs2 utf8convertucs2_le
+#elif (UTF8_BYTE_ORDER == UTF8_BYTE_ORDER_BIG_ENDIAN)
+	#define utf8convertucs2 utf8convertucs2_be
+#endif
 
 //! Convert a UTF-16 encoded string to UTF-8.
 /*!
