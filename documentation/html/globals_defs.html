@@ -45,6 +45,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
@@ -100,7 +101,7 @@ $(document).ready(function(){initNavTree('globals_defs.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -111,6 +112,15 @@ $(document).ready(function(){initNavTree('globals_defs.html','');});
 
 <div class="contents">
 &#160;<ul>
+<li>UTF8_BYTE_ORDER
+: <a class="el" href="group__configuration.html#ga4b27e4b4ad7452f9fc74eb65d69ef46a">utf8rewind.h</a>
+</li>
+<li>UTF8_BYTE_ORDER_BIG_ENDIAN
+: <a class="el" href="group__configuration.html#ga59fcd7b30d89adce1e6cb9fd37fac02e">utf8rewind.h</a>
+</li>
+<li>UTF8_BYTE_ORDER_LITTLE_ENDIAN
+: <a class="el" href="group__configuration.html#ga2d6e2dbaba1c22d506dde38154f579f1">utf8rewind.h</a>
+</li>
 <li>UTF8_ERR_INVALID_CHARACTER
 : <a class="el" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">utf8rewind.h</a>
 </li>
@@ -132,13 +142,16 @@ $(document).ready(function(){initNavTree('globals_defs.html','');});
 <li>UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR
 : <a class="el" href="utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c">utf8rewind.h</a>
 </li>
+<li>utf8convertucs2
+: <a class="el" href="utf8rewind_8h.html#a8734b4622d2f5eef17b9ca1e435fe99b">utf8rewind.h</a>
+</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Jun 15 2014 09:36:54 for utf8rewind by
+    <li class="footer">Generated on Mon Jun 16 2014 08:27:31 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>
