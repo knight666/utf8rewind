@@ -70,6 +70,32 @@
 	#endif
 #endif
 
+// Configuration taken from SDL_stdinc.
+
+#ifndef UTF8_INLINE
+	#if defined(__GNUC__)
+		#define UTF8_INLINE __inline__
+	#elif \
+		defined(_MSC_VER) || defined(__BORLANDC__) || \
+		defined(__DMC__) || defined(__SC__) || \
+		defined(__WATCOMC__) || defined(__LCC__) || \
+		defined(__DECC)
+		#define UTF8_INLINE __inline
+	#else
+		#define UTF8_INLINE inline
+	#endif
+#endif
+
+#ifndef UTF8_FORCE_INLINE
+	#if defined(_MSC_VER)
+		#define UTF8_FORCE_INLINE __forceinline
+	#elif ((defined(__GNUC__) && (__GNUC__ >= 4)) || defined(__clang__))
+		#define UTF8_FORCE_INLINE __attribute__((always_inline)) static __inline__
+	#else
+		#define UTF8_FORCE_INLINE static UTF8_INLINE
+	#endif
+#endif
+
 /// @}
 
 #define UTF8_ERR_INVALID_CHARACTER (-1)
@@ -161,7 +187,10 @@ size_t utf8len(const char* text);
 */
 int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
 
+//! Little-Endian version of utf8convertucs2().
 size_t utf8convertucs2_le(ucs2_t codepoint, char* target, size_t targetSize, int32_t* errors);
+
+//! Big-Endian version of utf8convertucs2().
 size_t utf8convertucs2_be(ucs2_t codepoint, char* target, size_t targetSize, int32_t* errors);
 
 //! Convert a UCS-2 codepoint to UTF-8.
@@ -215,11 +244,14 @@ size_t utf8convertucs2_be(ucs2_t codepoint, char* target, size_t targetSize, int
 
 	@sa wctoutf8
 */
+UTF8_FORCE_INLINE size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_t* errors)
+{
 #if (UTF8_BYTE_ORDER == UTF8_BYTE_ORDER_LITTLE_ENDIAN)
-	#define utf8convertucs2 utf8convertucs2_le
+	return utf8convertucs2_le(codepoint, target, targetSize, errors);
 #elif (UTF8_BYTE_ORDER == UTF8_BYTE_ORDER_BIG_ENDIAN)
-	#define utf8convertucs2 utf8convertucs2_be
+	return utf8convertucs2_be(codepoint, target, targetSize, errors);
 #endif
+}
 
 //! Convert a UTF-16 encoded string to UTF-8.
 /*!

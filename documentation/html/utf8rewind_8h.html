@@ -125,6 +125,10 @@ Macros</h2></td></tr>
 <tr class="separator:ga59fcd7b30d89adce1e6cb9fd37fac02e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4b27e4b4ad7452f9fc74eb65d69ef46a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__configuration.html#ga4b27e4b4ad7452f9fc74eb65d69ef46a">UTF8_BYTE_ORDER</a>&#160;&#160;&#160;<a class="el" href="group__configuration.html#ga2d6e2dbaba1c22d506dde38154f579f1">UTF8_BYTE_ORDER_LITTLE_ENDIAN</a></td></tr>
 <tr class="separator:ga4b27e4b4ad7452f9fc74eb65d69ef46a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0e2670b646bc79440bdafdb419b7356b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__configuration.html#ga0e2670b646bc79440bdafdb419b7356b">UTF8_INLINE</a>&#160;&#160;&#160;inline</td></tr>
+<tr class="separator:ga0e2670b646bc79440bdafdb419b7356b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad51ac09d975082af3d02d58b3e8507b5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__configuration.html#gad51ac09d975082af3d02d58b3e8507b5">UTF8_FORCE_INLINE</a>&#160;&#160;&#160;static <a class="el" href="group__configuration.html#ga0e2670b646bc79440bdafdb419b7356b">UTF8_INLINE</a></td></tr>
+<tr class="separator:gad51ac09d975082af3d02d58b3e8507b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3a118249a9ae08e152079f4989ca588"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">UTF8_ERR_INVALID_CHARACTER</a>&#160;&#160;&#160;(-1)</td></tr>
 <tr class="separator:aa3a118249a9ae08e152079f4989ca588"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aabf4ed55c67112f79abe7275ee2ecc9b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a>&#160;&#160;&#160;(-2)</td></tr>
@@ -139,9 +143,6 @@ Macros</h2></td></tr>
 <tr class="separator:a0661d820dd006e49adfbdf0c7a9dec14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a892fe61a47f8258d88e292553a459a1c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a>&#160;&#160;&#160;(-7)</td></tr>
 <tr class="separator:a892fe61a47f8258d88e292553a459a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8734b4622d2f5eef17b9ca1e435fe99b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a8734b4622d2f5eef17b9ca1e435fe99b">utf8convertucs2</a>&#160;&#160;&#160;<a class="el" href="utf8rewind_8h.html#af670b5db47da7257ab6d6c2ab10edee4">utf8convertucs2_le</a></td></tr>
-<tr class="memdesc:a8734b4622d2f5eef17b9ca1e435fe99b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a UCS-2 codepoint to UTF-8.  <a href="#a8734b4622d2f5eef17b9ca1e435fe99b">More...</a><br /></td></tr>
-<tr class="separator:a8734b4622d2f5eef17b9ca1e435fe99b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -167,9 +168,14 @@ Functions</h2></td></tr>
 <tr class="memdesc:ab936e1848e79cdff95c834a294a7539c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encode a Unicode codepoint to UTF-8.  <a href="#ab936e1848e79cdff95c834a294a7539c">More...</a><br /></td></tr>
 <tr class="separator:ab936e1848e79cdff95c834a294a7539c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af670b5db47da7257ab6d6c2ab10edee4"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#af670b5db47da7257ab6d6c2ab10edee4">utf8convertucs2_le</a> (<a class="el" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a> codepoint, char *target, size_t targetSize, int32_t *errors)</td></tr>
+<tr class="memdesc:af670b5db47da7257ab6d6c2ab10edee4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Little-Endian version of <a class="el" href="utf8rewind_8h.html#a7a82e11d30a01f2e5ce5c3b658d7626f" title="Convert a UCS-2 codepoint to UTF-8. ">utf8convertucs2()</a>.  <a href="#af670b5db47da7257ab6d6c2ab10edee4">More...</a><br /></td></tr>
 <tr class="separator:af670b5db47da7257ab6d6c2ab10edee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a209e35301f1a5b0374a82823b84c1fee"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a209e35301f1a5b0374a82823b84c1fee">utf8convertucs2_be</a> (<a class="el" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a> codepoint, char *target, size_t targetSize, int32_t *errors)</td></tr>
+<tr class="memdesc:a209e35301f1a5b0374a82823b84c1fee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Big-Endian version of <a class="el" href="utf8rewind_8h.html#a7a82e11d30a01f2e5ce5c3b658d7626f" title="Convert a UCS-2 codepoint to UTF-8. ">utf8convertucs2()</a>.  <a href="#a209e35301f1a5b0374a82823b84c1fee">More...</a><br /></td></tr>
 <tr class="separator:a209e35301f1a5b0374a82823b84c1fee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a82e11d30a01f2e5ce5c3b658d7626f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__configuration.html#gad51ac09d975082af3d02d58b3e8507b5">UTF8_FORCE_INLINE</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a7a82e11d30a01f2e5ce5c3b658d7626f">utf8convertucs2</a> (<a class="el" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a> codepoint, char *target, size_t targetSize, int32_t *errors)</td></tr>
+<tr class="memdesc:a7a82e11d30a01f2e5ce5c3b658d7626f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a UCS-2 codepoint to UTF-8.  <a href="#a7a82e11d30a01f2e5ce5c3b658d7626f">More...</a><br /></td></tr>
+<tr class="separator:a7a82e11d30a01f2e5ce5c3b658d7626f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac472a3dfa44e41bda08513860b61317d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d">wctoutf8</a> (const wchar_t *input, size_t inputSize, char *target, size_t targetSize)</td></tr>
 <tr class="memdesc:ac472a3dfa44e41bda08513860b61317d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a UTF-16 encoded string to UTF-8.  <a href="#ac472a3dfa44e41bda08513860b61317d">More...</a><br /></td></tr>
 <tr class="separator:ac472a3dfa44e41bda08513860b61317d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -270,59 +276,6 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a8734b4622d2f5eef17b9ca1e435fe99b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define utf8convertucs2&#160;&#160;&#160;<a class="el" href="utf8rewind_8h.html#af670b5db47da7257ab6d6c2ab10edee4">utf8convertucs2_le</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Convert a UCS-2 codepoint to UTF-8. </p>
-<p>UCS-2 encoding is similar to UTF-16 encoding, except that it does not use surrogate pairs to encode values beyond U+FFFF.</p>
-<p>This encoding was standard on Microsoft Windows XP. Newer versions of Windows use UTF-16 instead.</p>
-<p>If 0 is specified as the target buffer, this function returns the number of bytes needed to store the codepoint.</p>
-<dl class="section note"><dt>Note</dt><dd>Surrogate pairs cannot be converted using this function. Use <a class="el" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d" title="Convert a UTF-16 encoded string to UTF-8. ">wctoutf8()</a> instead.</dd></dl>
-<p>Example:</p>
-<div class="fragment"><div class="line"><a class="code" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a> input[] = { 0x3041, 0x304B, 0x3060, 0x3074 };</div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">size_t</span> input_size = <span class="keyword">sizeof</span>(input) / <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a>);</div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">size_t</span> text_size = 128;</div>
-<div class="line"><span class="keywordtype">char</span> text[text_size] = { 0 };</div>
-<div class="line"><span class="keywordtype">char</span>* dst = text;</div>
-<div class="line"><span class="keywordtype">size_t</span> i;</div>
-<div class="line"><span class="keywordtype">int</span> offset;</div>
-<div class="line">int32_t errors = 0;</div>
-<div class="line"></div>
-<div class="line"><span class="keywordflow">for</span> (i = 0; i &lt; input_size; ++i)</div>
-<div class="line">{</div>
-<div class="line">    offset = <a class="code" href="utf8rewind_8h.html#a8734b4622d2f5eef17b9ca1e435fe99b">utf8convertucs2</a>(input[i], dst, text_size, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (offset == SIZE_MAX)</div>
-<div class="line">    {</div>
-<div class="line">        <span class="keywordflow">return</span> errors;</div>
-<div class="line">    }</div>
-<div class="line"></div>
-<div class="line">    dst += offset;</div>
-<div class="line">}</div>
-</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">codepoint</td><td>UCS-2 encoded codepoint. </td></tr>
-    <tr><td class="paramname">target</td><td>String to write the result to. </td></tr>
-    <tr><td class="paramname">targetSize</td><td>Amount of bytes remaining in the string. </td></tr>
-    <tr><td class="paramname">errors</td><td>Target for errors, if any.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Amount of bytes written or SIZE_MAX on error.</dd></dl>
-<p>Errors:</p><ul>
-<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
-<li><a class="el" href="utf8rewind_8h.html#aa0c5762ac11727331a3538f8e0a56104">UTF8_ERR_UNHANDLED_SURROGATE_PAIR</a> Codepoint is part of a surrogate pair.</li>
-</ul>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d" title="Convert a UTF-16 encoded string to UTF-8. ">wctoutf8</a> </dd></dl>
-
-</div>
-</div>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a class="anchor" id="aaed921fc64460bb8f0039ba06c5abd17"></a>
 <div class="memitem">
@@ -419,6 +372,85 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a7a82e11d30a01f2e5ce5c3b658d7626f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__configuration.html#gad51ac09d975082af3d02d58b3e8507b5">UTF8_FORCE_INLINE</a> size_t utf8convertucs2 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a>&#160;</td>
+          <td class="paramname"><em>codepoint</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>targetSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t *&#160;</td>
+          <td class="paramname"><em>errors</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convert a UCS-2 codepoint to UTF-8. </p>
+<p>UCS-2 encoding is similar to UTF-16 encoding, except that it does not use surrogate pairs to encode values beyond U+FFFF.</p>
+<p>This encoding was standard on Microsoft Windows XP. Newer versions of Windows use UTF-16 instead.</p>
+<p>If 0 is specified as the target buffer, this function returns the number of bytes needed to store the codepoint.</p>
+<dl class="section note"><dt>Note</dt><dd>Surrogate pairs cannot be converted using this function. Use <a class="el" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d" title="Convert a UTF-16 encoded string to UTF-8. ">wctoutf8()</a> instead.</dd></dl>
+<p>Example:</p>
+<div class="fragment"><div class="line"><a class="code" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a> input[] = { 0x3041, 0x304B, 0x3060, 0x3074 };</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">size_t</span> input_size = <span class="keyword">sizeof</span>(input) / <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a>);</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">size_t</span> text_size = 128;</div>
+<div class="line"><span class="keywordtype">char</span> text[text_size] = { 0 };</div>
+<div class="line"><span class="keywordtype">char</span>* dst = text;</div>
+<div class="line"><span class="keywordtype">size_t</span> i;</div>
+<div class="line"><span class="keywordtype">int</span> offset;</div>
+<div class="line">int32_t errors = 0;</div>
+<div class="line"></div>
+<div class="line"><span class="keywordflow">for</span> (i = 0; i &lt; input_size; ++i)</div>
+<div class="line">{</div>
+<div class="line">    offset = <a class="code" href="utf8rewind_8h.html#a7a82e11d30a01f2e5ce5c3b658d7626f">utf8convertucs2</a>(input[i], dst, text_size, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (offset == SIZE_MAX)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">return</span> errors;</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    dst += offset;</div>
+<div class="line">}</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">codepoint</td><td>UCS-2 encoded codepoint. </td></tr>
+    <tr><td class="paramname">target</td><td>String to write the result to. </td></tr>
+    <tr><td class="paramname">targetSize</td><td>Amount of bytes remaining in the string. </td></tr>
+    <tr><td class="paramname">errors</td><td>Target for errors, if any.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes written or SIZE_MAX on error.</dd></dl>
+<p>Errors:</p><ul>
+<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
+<li><a class="el" href="utf8rewind_8h.html#aa0c5762ac11727331a3538f8e0a56104">UTF8_ERR_UNHANDLED_SURROGATE_PAIR</a> Codepoint is part of a surrogate pair.</li>
+</ul>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d" title="Convert a UTF-16 encoded string to UTF-8. ">wctoutf8</a> </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a209e35301f1a5b0374a82823b84c1fee"></a>
 <div class="memitem">
 <div class="memproto">
@@ -454,6 +486,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Big-Endian version of <a class="el" href="utf8rewind_8h.html#a7a82e11d30a01f2e5ce5c3b658d7626f" title="Convert a UCS-2 codepoint to UTF-8. ">utf8convertucs2()</a>. </p>
 
 </div>
 </div>
@@ -492,6 +526,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Little-Endian version of <a class="el" href="utf8rewind_8h.html#a7a82e11d30a01f2e5ce5c3b658d7626f" title="Convert a UCS-2 codepoint to UTF-8. ">utf8convertucs2()</a>. </p>
 
 </div>
 </div>
@@ -616,7 +652,7 @@ Functions</h2></td></tr>
 </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d" title="Convert a UTF-16 encoded string to UTF-8. ">wctoutf8</a> </dd>
 <dd>
-<a class="el" href="utf8rewind_8h.html#a8734b4622d2f5eef17b9ca1e435fe99b" title="Convert a UCS-2 codepoint to UTF-8. ">utf8convertucs2</a> </dd></dl>
+<a class="el" href="utf8rewind_8h.html#a7a82e11d30a01f2e5ce5c3b658d7626f" title="Convert a UCS-2 codepoint to UTF-8. ">utf8convertucs2</a> </dd></dl>
 
 </div>
 </div>
@@ -872,7 +908,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_19f418181f8b699045c2f8e6c49f857e.html">utf8rewind</a></li><li class="navelem"><a class="el" href="utf8rewind_8h.html">utf8rewind.h</a></li>
-    <li class="footer">Generated on Mon Jun 16 2014 08:27:31 for utf8rewind by
+    <li class="footer">Generated on Mon Jun 16 2014 10:43:14 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>
