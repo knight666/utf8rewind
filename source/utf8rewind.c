@@ -260,7 +260,7 @@ size_t utf8convertucs2_le(ucs2_t codepoint, char* target, size_t targetSize, int
 				{
 					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
 				}
-				return SIZE_MAX;	
+				return SIZE_MAX;
 			}
 
 			target[2] = (char)(( codepoint        & 0x3F) | 0x80);
@@ -280,10 +280,14 @@ size_t utf8convertucs2_be(ucs2_t codepoint, char* target, size_t targetSize, int
 		{
 			if (targetSize < 1)
 			{
-				return UTF8_ERR_NOT_ENOUGH_SPACE;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+				}
+				return SIZE_MAX;
 			}
 
-			target[0] = (char)(codepoint >> 8);
+			target[0] = codepoint >> 8;
 		}
 
 		return 1;
@@ -294,7 +298,11 @@ size_t utf8convertucs2_be(ucs2_t codepoint, char* target, size_t targetSize, int
 		{
 			if (targetSize < 2)
 			{
-				return UTF8_ERR_NOT_ENOUGH_SPACE;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+				}
+				return SIZE_MAX;
 			}
 
 			target[1] = (char)((codepoint       & 0x3F) | 0x80);
@@ -312,14 +320,22 @@ size_t utf8convertucs2_be(ucs2_t codepoint, char* target, size_t targetSize, int
 				for lead and trail surrogate pairs.
 			*/
 
-			return UTF8_ERR_UNHANDLED_SURROGATE_PAIR;
+			if (errors != 0)
+			{
+				*errors = UTF8_ERR_UNHANDLED_SURROGATE_PAIR;
+			}
+			return SIZE_MAX;
 		}
 		
 		if (target != 0)
 		{
 			if (targetSize < 3)
 			{
-				return UTF8_ERR_NOT_ENOUGH_SPACE;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+				}
+				return SIZE_MAX;
 			}
 
 			target[2] = (char)(( codepoint        & 0x3F) | 0x80);
