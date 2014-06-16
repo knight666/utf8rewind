@@ -45,6 +45,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
@@ -92,7 +93,7 @@ $(document).ready(function(){initNavTree('utf8rewind_8h_source.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -139,72 +140,111 @@ $(document).ready(function(){initNavTree('utf8rewind_8h_source.html','');});
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;string.h&gt;</span></div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;wchar.h&gt;</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">   41</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_INVALID_CHARACTER (-1)</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">   42</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_INVALID_DATA (-2)</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">   43</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_NOT_ENOUGH_SPACE (-3)</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a26c37b1e55b873bc49642319dc3d19e5">   44</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_OUT_OF_RANGE (-4)</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aa0c5762ac11727331a3538f8e0a56104">   45</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_UNHANDLED_SURROGATE_PAIR (-5)</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a0661d820dd006e49adfbdf0c7a9dec14">   46</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR (-6)</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c">   47</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR (-7)</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="group__configuration.html#ga2d6e2dbaba1c22d506dde38154f579f1">   44</a></span>&#160;<span class="preprocessor">#define UTF8_BYTE_ORDER_LITTLE_ENDIAN (1234)</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="group__configuration.html#ga59fcd7b30d89adce1e6cb9fd37fac02e">   45</a></span>&#160;<span class="preprocessor">#define UTF8_BYTE_ORDER_BIG_ENDIAN (4321)</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">// Many thanks to the authors of SDL_Endian for this detection code.</span></div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#if defined(__cplusplus)</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#ifndef UTF8_BYTE_ORDER</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">    #ifdef __linux__</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">        #include &lt;endian.h&gt;</span></div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">   53</a></span>&#160;<span class="keyword">typedef</span> uint32_t <a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a>; </div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">   54</a></span>&#160;<span class="keyword">typedef</span> uint16_t <a class="code" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a>; </div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a1e9e182e040e6f408cfb7188eaafb48a">   55</a></span>&#160;<span class="keyword">typedef</span> uint16_t <a class="code" href="utf8rewind_8h.html#a1e9e182e040e6f408cfb7188eaafb48a">utf16_t</a>; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keywordtype">int</span> <a class="code" href="utf8rewind_8h.html#a9d19522cd09e2dff6fca8db6a3a5cacf">utf8charvalid</a>(<span class="keywordtype">char</span> encodedCharacter);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keywordtype">int</span> <a class="code" href="utf8rewind_8h.html#a4c456e1c3d8637bdf3f999aa0377b2f2">utf8charlen</a>(<span class="keywordtype">char</span> encodedCharacter);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">        #if (__BYTE_ORDER == __LITTLE_ENDIAN)</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">            #define UTF8_BYTE_ORDER UTF8_BYTE_ORDER_LITTLE_ENDIAN</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">        #elif (__BYTE_ORDER == __BIG_ENDIAN)</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">            #define UTF8_BYTE_ORDER UTF8_BYTE_ORDER_BIG_ENDIAN</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">        #else</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">            #error Byte order could not be determined automatically.</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">        #endif</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">    #else</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">        #if defined(__hppa__) || \</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">            defined(__m68k__) || defined(mc68000) || defined(_M_M68K) || \</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">            (defined(__MIPS__) &amp;&amp; defined(__MISPEB__)) || \</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">            defined(__ppc__) || defined(__POWERPC__) || defined(_M_PPC) || \</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">            defined(__sparc__)</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">            #define UTF8_BYTE_ORDER UTF8_BYTE_ORDER_BIG_ENDIAN</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">        #else</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="group__configuration.html#ga4b27e4b4ad7452f9fc74eb65d69ef46a">   68</a></span>&#160;<span class="preprocessor">            #define UTF8_BYTE_ORDER UTF8_BYTE_ORDER_LITTLE_ENDIAN</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">        #endif</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">    #endif</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">   75</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_INVALID_CHARACTER (-1)</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">   76</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_INVALID_DATA (-2)</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">   77</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_NOT_ENOUGH_SPACE (-3)</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a26c37b1e55b873bc49642319dc3d19e5">   78</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_OUT_OF_RANGE (-4)</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aa0c5762ac11727331a3538f8e0a56104">   79</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_UNHANDLED_SURROGATE_PAIR (-5)</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a0661d820dd006e49adfbdf0c7a9dec14">   80</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR (-6)</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c">   81</a></span>&#160;<span class="preprocessor">#define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR (-7)</span></div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* text);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="keywordtype">int</span> <a class="code" href="utf8rewind_8h.html#ab936e1848e79cdff95c834a294a7539c">utf8encode</a>(unicode_t codepoint, <span class="keywordtype">char</span>* target, <span class="keywordtype">size_t</span> targetSize);</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="keywordtype">int</span> <a class="code" href="utf8rewind_8h.html#a9c0b98a672e469ea9da31fac51fc321e">utf8convertucs2</a>(ucs2_t codepoint, <span class="keywordtype">char</span>* target, <span class="keywordtype">size_t</span> targetSize);</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="keywordtype">int</span> <a class="code" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d">wctoutf8</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* input, <span class="keywordtype">size_t</span> inputSize, <span class="keywordtype">char</span>* target, <span class="keywordtype">size_t</span> targetSize);</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;<span class="keywordtype">int</span> <a class="code" href="utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c">utf8decode</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* text, unicode_t* result);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">#if defined(__cplusplus)</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">   87</a></span>&#160;<span class="keyword">typedef</span> uint32_t <a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a>; </div>
+<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">   88</a></span>&#160;<span class="keyword">typedef</span> uint16_t <a class="code" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a>; </div>
+<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a1e9e182e040e6f408cfb7188eaafb48a">   89</a></span>&#160;<span class="keyword">typedef</span> uint16_t <a class="code" href="utf8rewind_8h.html#a1e9e182e040e6f408cfb7188eaafb48a">utf16_t</a>; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="keywordtype">int</span> <a class="code" href="utf8rewind_8h.html#a9d19522cd09e2dff6fca8db6a3a5cacf">utf8charvalid</a>(<span class="keywordtype">char</span> encodedCharacter);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="keywordtype">int</span> <a class="code" href="utf8rewind_8h.html#a4c456e1c3d8637bdf3f999aa0377b2f2">utf8charlen</a>(<span class="keywordtype">char</span> encodedCharacter);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* text);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="keywordtype">int</span> <a class="code" href="utf8rewind_8h.html#ab936e1848e79cdff95c834a294a7539c">utf8encode</a>(unicode_t codepoint, <span class="keywordtype">char</span>* target, <span class="keywordtype">size_t</span> targetSize);</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="utf8rewind_8h.html#af670b5db47da7257ab6d6c2ab10edee4">utf8convertucs2_le</a>(ucs2_t codepoint, <span class="keywordtype">char</span>* target, <span class="keywordtype">size_t</span> targetSize, int32_t* errors);</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="utf8rewind_8h.html#a209e35301f1a5b0374a82823b84c1fee">utf8convertucs2_be</a>(ucs2_t codepoint, <span class="keywordtype">char</span>* target, <span class="keywordtype">size_t</span> targetSize, int32_t* errors);</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="preprocessor">#if (UTF8_BYTE_ORDER == UTF8_BYTE_ORDER_LITTLE_ENDIAN)</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a8734b4622d2f5eef17b9ca1e435fe99b">  219</a></span>&#160;<span class="preprocessor">    #define utf8convertucs2 utf8convertucs2_le</span></div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="preprocessor">#elif (UTF8_BYTE_ORDER == UTF8_BYTE_ORDER_BIG_ENDIAN)</span></div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="preprocessor">    #define utf8convertucs2 utf8convertucs2_be</span></div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="keywordtype">int</span> <a class="code" href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d">wctoutf8</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* input, <span class="keywordtype">size_t</span> inputSize, <span class="keywordtype">char</span>* target, <span class="keywordtype">size_t</span> targetSize);</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;</div>
 <div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;<span class="keywordtype">int</span> <a class="code" href="utf8rewind_8h.html#afe10f10be61afc896374cac318c8494d">utf8towc</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* input, <span class="keywordtype">size_t</span> inputSize, <span class="keywordtype">wchar_t</span>* target, <span class="keywordtype">size_t</span> targetSize);</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8seek</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* text, <span class="keyword">const</span> <span class="keywordtype">char</span>* textStart, off_t offset, <span class="keywordtype">int</span> direction);</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;<span class="preprocessor">#if defined(__cplusplus)</span></div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;}</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;<span class="keywordtype">int</span> <a class="code" href="utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c">utf8decode</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* text, unicode_t* result);</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;<span class="keywordtype">int</span> <a class="code" href="utf8rewind_8h.html#afe10f10be61afc896374cac318c8494d">utf8towc</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* input, <span class="keywordtype">size_t</span> inputSize, <span class="keywordtype">wchar_t</span>* target, <span class="keywordtype">size_t</span> targetSize);</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8seek</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* text, <span class="keyword">const</span> <span class="keywordtype">char</span>* textStart, off_t offset, <span class="keywordtype">int</span> direction);</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;<span class="preprocessor">#if defined(__cplusplus)</span></div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;}</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="utf8rewind_8h_html_a4d0c2482832b035a189e96a0d3d80e4c"><div class="ttname"><a href="utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c">utf8decode</a></div><div class="ttdeci">int utf8decode(const char *text, unicode_t *result)</div><div class="ttdoc">Decode a UTF-8 encoded codepoint to a Unicode codepoint. </div></div>
 <div class="ttc" id="utf8rewind_8h_html_a9d19522cd09e2dff6fca8db6a3a5cacf"><div class="ttname"><a href="utf8rewind_8h.html#a9d19522cd09e2dff6fca8db6a3a5cacf">utf8charvalid</a></div><div class="ttdeci">int utf8charvalid(char encodedCharacter)</div><div class="ttdoc">Check if a character is valid according to UTF-8 encoding. </div></div>
-<div class="ttc" id="utf8rewind_8h_html_a9c0b98a672e469ea9da31fac51fc321e"><div class="ttname"><a href="utf8rewind_8h.html#a9c0b98a672e469ea9da31fac51fc321e">utf8convertucs2</a></div><div class="ttdeci">int utf8convertucs2(ucs2_t codepoint, char *target, size_t targetSize)</div><div class="ttdoc">Convert a UCS-2 codepoint to UTF-8. </div></div>
 <div class="ttc" id="utf8rewind_8h_html_aa6a3ebdecf49591cff736ccf054c048e"><div class="ttname"><a href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a></div><div class="ttdeci">size_t utf8len(const char *text)</div><div class="ttdoc">Get the length in codepoints of a UTF-8 encoded string. </div></div>
 <div class="ttc" id="utf8rewind_8h_html_ac472a3dfa44e41bda08513860b61317d"><div class="ttname"><a href="utf8rewind_8h.html#ac472a3dfa44e41bda08513860b61317d">wctoutf8</a></div><div class="ttdeci">int wctoutf8(const wchar_t *input, size_t inputSize, char *target, size_t targetSize)</div><div class="ttdoc">Convert a UTF-16 encoded string to UTF-8. </div></div>
 <div class="ttc" id="utf8rewind_8h_html_a13d55ea3402d6d91cfb965f3605ec3eb"><div class="ttname"><a href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8seek</a></div><div class="ttdeci">const char * utf8seek(const char *text, const char *textStart, off_t offset, int direction)</div><div class="ttdoc">Seek into a UTF-8 encoded string. </div></div>
 <div class="ttc" id="utf8rewind_8h_html_a4c456e1c3d8637bdf3f999aa0377b2f2"><div class="ttname"><a href="utf8rewind_8h.html#a4c456e1c3d8637bdf3f999aa0377b2f2">utf8charlen</a></div><div class="ttdeci">int utf8charlen(char encodedCharacter)</div><div class="ttdoc">Returns the length in bytes of the encoded character. </div></div>
 <div class="ttc" id="utf8rewind_8h_html_afe10f10be61afc896374cac318c8494d"><div class="ttname"><a href="utf8rewind_8h.html#afe10f10be61afc896374cac318c8494d">utf8towc</a></div><div class="ttdeci">int utf8towc(const char *input, size_t inputSize, wchar_t *target, size_t targetSize)</div><div class="ttdoc">Convert a UTF-8 encoded string to UTF-16. </div></div>
-<div class="ttc" id="utf8rewind_8h_html_aaed921fc64460bb8f0039ba06c5abd17"><div class="ttname"><a href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a></div><div class="ttdeci">uint16_t ucs2_t</div><div class="ttdef"><b>Definition:</b> utf8rewind.h:54</div></div>
+<div class="ttc" id="utf8rewind_8h_html_aaed921fc64460bb8f0039ba06c5abd17"><div class="ttname"><a href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a></div><div class="ttdeci">uint16_t ucs2_t</div><div class="ttdef"><b>Definition:</b> utf8rewind.h:88</div></div>
+<div class="ttc" id="utf8rewind_8h_html_af670b5db47da7257ab6d6c2ab10edee4"><div class="ttname"><a href="utf8rewind_8h.html#af670b5db47da7257ab6d6c2ab10edee4">utf8convertucs2_le</a></div><div class="ttdeci">size_t utf8convertucs2_le(ucs2_t codepoint, char *target, size_t targetSize, int32_t *errors)</div></div>
 <div class="ttc" id="utf8rewind_8h_html_ab936e1848e79cdff95c834a294a7539c"><div class="ttname"><a href="utf8rewind_8h.html#ab936e1848e79cdff95c834a294a7539c">utf8encode</a></div><div class="ttdeci">int utf8encode(unicode_t codepoint, char *target, size_t targetSize)</div><div class="ttdoc">Encode a Unicode codepoint to UTF-8. </div></div>
-<div class="ttc" id="utf8rewind_8h_html_a1e9e182e040e6f408cfb7188eaafb48a"><div class="ttname"><a href="utf8rewind_8h.html#a1e9e182e040e6f408cfb7188eaafb48a">utf16_t</a></div><div class="ttdeci">uint16_t utf16_t</div><div class="ttdef"><b>Definition:</b> utf8rewind.h:55</div></div>
-<div class="ttc" id="utf8rewind_8h_html_a5fc61747372b4165739ae5a52384468f"><div class="ttname"><a href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdef"><b>Definition:</b> utf8rewind.h:53</div></div>
+<div class="ttc" id="utf8rewind_8h_html_a209e35301f1a5b0374a82823b84c1fee"><div class="ttname"><a href="utf8rewind_8h.html#a209e35301f1a5b0374a82823b84c1fee">utf8convertucs2_be</a></div><div class="ttdeci">size_t utf8convertucs2_be(ucs2_t codepoint, char *target, size_t targetSize, int32_t *errors)</div></div>
+<div class="ttc" id="utf8rewind_8h_html_a1e9e182e040e6f408cfb7188eaafb48a"><div class="ttname"><a href="utf8rewind_8h.html#a1e9e182e040e6f408cfb7188eaafb48a">utf16_t</a></div><div class="ttdeci">uint16_t utf16_t</div><div class="ttdef"><b>Definition:</b> utf8rewind.h:89</div></div>
+<div class="ttc" id="utf8rewind_8h_html_a5fc61747372b4165739ae5a52384468f"><div class="ttname"><a href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdef"><b>Definition:</b> utf8rewind.h:87</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_19f418181f8b699045c2f8e6c49f857e.html">utf8rewind</a></li><li class="navelem"><a class="el" href="utf8rewind_8h.html">utf8rewind.h</a></li>
-    <li class="footer">Generated on Sun Jun 15 2014 09:36:54 for utf8rewind by
+    <li class="footer">Generated on Mon Jun 16 2014 08:27:31 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>
