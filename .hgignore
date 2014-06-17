@@ -1,6 +1,9 @@
 # Project
+syntax: glob
+intermediate/*
+output/*
+
 syntax: regexp
-(Debug|Release)/*
 [^/]*\.(sln|vcxproj).* # ignore generated projects
 
 # Visual Studio 2010
