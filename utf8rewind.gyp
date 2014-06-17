@@ -35,8 +35,8 @@
 				'include/utf8rewind',
 			],
 			'library_dirs': [
-				'dependencies/gtest-1.7.0-rc1/lib/windows/x86/<(CONFIGURATION_NAME)',
-				'<(CONFIGURATION_NAME)/lib',
+				'dependencies/gtest-1.7.0-rc1/lib/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
+				'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
 			],
 			'libraries': [
 				'gtest.lib',
