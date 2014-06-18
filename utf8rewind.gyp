@@ -18,13 +18,15 @@
 			],
 			'conditions': [
 				['OS=="win"', {
-						'msvs_settings': {
-							'VCCLCompilerTool': {
-								'CompileAs': 1, # Compile as C
-							},
+					'msvs_settings': {
+						'VCCLCompilerTool': {
+							'CompileAs': 1, # Compile as C
 						},
-					}
-				]
+					},
+				}],
+				['OS=="linux"', {
+					'toolsets': [ 'x86', 'x64' ],
+				}],
 			],
 		},
 		{
@@ -47,6 +49,7 @@
 					],
 				}],
 				['OS=="linux"', {
+					'toolsets': [ 'x86', 'x64' ],
 					'libraries': [
 						'<(gtest_path)/lib/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)/<(STATIC_LIB_PREFIX)gtest<(STATIC_LIB_SUFFIX)',
 					],
