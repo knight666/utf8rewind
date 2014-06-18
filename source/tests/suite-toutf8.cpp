@@ -37,7 +37,6 @@ TEST(ToUtf8, Ucs2ThreeBytes)
 	utf16_t c = 0x1280;
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int r = 0;
 
 	EXPECT_EQ(3, wctoutf8((const wchar_t*)&c, 2, b, s));
 	EXPECT_STREQ("\xE1\x8A\x80", b);
@@ -48,7 +47,6 @@ TEST(ToUtf8, SurrogatePair)
 	const char* c = "\x34\xD8\x1E\xDD";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int r = 0;
 
 	EXPECT_EQ(4, wctoutf8((const wchar_t*)c, 4, b, s));
 	EXPECT_STREQ("\xF0\x9D\x84\x9E", b);
@@ -59,7 +57,6 @@ TEST(ToUtf8, SurrogatePairMinimum)
 	const char* c = "\x00\xD8\x00\xDC";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int r = 0;
 
 	EXPECT_EQ(4, wctoutf8((const wchar_t*)c, 4, b, s));
 	EXPECT_STREQ("\xF0\x90\x80\x80", b);
