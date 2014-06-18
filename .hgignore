@@ -22,6 +22,16 @@ ipch/*
 syntax: regexp
 .*UpgradeLog([0-9]*)\.XML
 
+# Makefile
+syntax: glob
+Makefile
+*.Makefile
+*.target.mk
+
+# GYP
+syntax: glob
+gyp-win-tool
+
 # CMake
 syntax: glob
 CMakeFiles/*
