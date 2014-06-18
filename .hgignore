@@ -26,7 +26,7 @@ syntax: regexp
 syntax: glob
 Makefile
 *.Makefile
-*.target.mk
+*.mk
 
 # GYP
 syntax: glob

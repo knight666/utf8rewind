@@ -7,11 +7,11 @@
 			}],
 			['OS=="mac"', {
 				'platform_name%': 'macosx',
-				'architecture_name%': 'x86', # TODO: Determine architecture per target
+				'architecture_name%': '$(TOOLSET)',
 			}],
 			['OS=="linux"', {
 				'platform_name%': 'linux',
-				'architecture_name%': 'x86', # TODO: Determine architecture per target
+				'architecture_name%': '$(TOOLSET)',
 			}],
 		]
 	},
