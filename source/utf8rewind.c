@@ -33,7 +33,7 @@
 #define SURROGATE_LOW_START           0xDC00
 #define SURROGATE_LOW_END             0xDFFF
 
-int utf8charvalid(char encodedCharacter)
+int8_t utf8charvalid(char encodedCharacter)
 {
 	return ((((unsigned char)encodedCharacter & 0xFE) != 0xC0) && ((unsigned char)encodedCharacter < 0xF5));
 }

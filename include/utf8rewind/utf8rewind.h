@@ -60,7 +60,7 @@ typedef uint16_t utf16_t; /*!< UTF-16 encoded codepoint. */
 
 	@return 1 on success or 0 on failure.
 */
-int utf8charvalid(char encodedCharacter);
+int8_t utf8charvalid(char encodedCharacter);
 
 //! Returns the length in bytes of the encoded character.
 /*!
