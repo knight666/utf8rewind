@@ -280,9 +280,9 @@ size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_
 	}
 }
 
-int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize)
+size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
-	int result = 0;
+	size_t result = 0;
 	utf16_t surrogate_high;
 	utf16_t surrogate_low;
 	utf16_t current;
@@ -292,11 +292,14 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 	char* dst = target;
 	size_t dst_size = targetSize;
 	int bytes_written = 0;
-	int32_t errors = 0;
 
 	if (input == 0 || inputSize < 2)
 	{
-		return UTF8_ERR_INVALID_DATA;
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_DATA;
+		}
+		return SIZE_MAX;
 	}
 
 	while (src_size > 0)
@@ -305,10 +308,10 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 
 		if (current < SURROGATE_HIGH_START || current > SURROGATE_LOW_END)
 		{
-			result = utf8convertucs2(*(const ucs2_t*)src, dst, dst_size, &errors);
+			result = utf8convertucs2(*(const ucs2_t*)src, dst, dst_size, errors);
 			if (result == SIZE_MAX)
 			{
-				return errors;
+				return SIZE_MAX;
 			}
 
 			src += 2;
@@ -326,21 +329,33 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 		{
 			if (src_size < 4)
 			{
-				return UTF8_ERR_INVALID_DATA;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_INVALID_DATA;
+				}
+				return SIZE_MAX;
 			}
 
 			surrogate_high = *(utf16_t*)src;
 
 			if (surrogate_high < SURROGATE_HIGH_START || surrogate_high > SURROGATE_HIGH_END)
 			{
-				return UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
+				}
+				return SIZE_MAX;
 			}
 
 			surrogate_low = *(utf16_t*)(src + 2);
 
 			if (surrogate_low < SURROGATE_LOW_START || surrogate_low > SURROGATE_LOW_END)
 			{
-				return UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
+				}
+				return SIZE_MAX;
 			}
 
 			codepoint =
@@ -352,7 +367,11 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 			{
 				/* Unicode characters must be encoded in a maximum of four bytes. */
 
-				return UTF8_ERR_INVALID_CHARACTER;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_INVALID_CHARACTER;
+				}
+				return SIZE_MAX;
 			}
 
 			src += 4;
@@ -362,7 +381,11 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 			{
 				if (dst_size < 4)
 				{
-					return UTF8_ERR_NOT_ENOUGH_SPACE;
+					if (errors != 0)
+					{
+						*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+					}
+					return SIZE_MAX;
 				}
 
 				dst[3] = (char)(( codepoint        & 0x3F) | 0x80);
