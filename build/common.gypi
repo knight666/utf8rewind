@@ -7,13 +7,16 @@
 			}],
 			['OS=="mac"', {
 				'platform_name%': 'macosx',
-				'architecture_name%': '$(TOOLSET)',
+				'architecture_name%': 'x86', # TODO: Impossible to determine architecture per configuration?
 			}],
 			['OS=="linux"', {
 				'platform_name%': 'linux',
-				'architecture_name%': '$(TOOLSET)',
+				'architecture_name%': 'x86', # TODO: Impossible to determine architecture per configuration?
 			}],
-		]
+		],
+		'generator_flags': {
+			'stuff': 'thangs',
+		},
 	},
 	'target_defaults': {
 		'default_configuration': 'Debug',
@@ -22,6 +25,7 @@
 				'abstract': 1,
 				'conditions': [
 					['OS=="win"', {
+						'defines': [ 'WIN32' ],
 						'msvs_configuration_attributes': {
 							'OutputDirectory': '$(SolutionDir)output\\<(platform_name)\\<(architecture_name)\\$(ConfigurationName)',
 							'IntermediateDirectory': '$(SolutionDir)intermediate\\$(ProjectName)\\<(architecture_name)\\$(ConfigurationName)',
@@ -45,9 +49,7 @@
 							},
 						},
 					}],
-					['OS=="linux"', {
-						'cflags': [ '-m32' ],
-					}],
+					# TODO: Architecture configuration on other platforms.
 				]
 			},
 			'Platform_x64': {
@@ -64,15 +66,16 @@
 					['OS=="linux"', {
 						'cflags': [ '-m64' ],
 					}],
+					# TODO: Architecture configuration on other platforms.
 				],
 			},
 			'Debug_Base': {
 				'abstract': 1,
+				'defines': [ 'DEBUG', '_DEBUG' ],
 				'conditions': [
 					['OS=="win"', {
 						'msvs_settings': {
 							'VCCLCompilerTool': {
-								'PreprocessorDefinitions': [ 'DEBUG', '_DEBUG' ],
 								'Optimization': 0, # /Od
 								'BasicRuntimeChecks': 3, # /RTC1
 								'RuntimeLibrary': 3, # /MDd (dynamic debug)
@@ -82,18 +85,15 @@
 							},
 						},
 					}],
-					['OS=="linux"', {
-						'cflags': [ '-DDEBUG', '-D_DEBUG' ],
-					}],
 				],
 			},
 			'Release_Base': {
 				'abstract': 1,
+				'defines': [ 'NDEBUG' ],
 				'conditions': [
 					['OS=="win"', {
 						'msvs_settings': {
 							'VCCLCompilerTool': {
-								'PreprocessorDefinitions': [ 'NDEBUG' ],
 								'RuntimeLibrary': 2, # /MD (dynamic release)
 								'Optimization': 3, # /Ox
 								'InlineFunctionExpansion': 2, # /Ob2
@@ -107,9 +107,6 @@
 							},
 						},
 					}],
-					['OS=="linux"', {
-						'cflags': [ '-DNDEBUG' ],
-					}]
 				],
 			},
 			'Debug': {
@@ -125,10 +122,5 @@
 				'inherit_from': ['Common', 'Platform_x64', 'Release_Base' ],
 			},
 		},
-		'conditions': [
-			['OS == "win"', {
-				'defines': [ 'WIN32' ],
-			}]
-		],
 	},
 }
