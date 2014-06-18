@@ -105,7 +105,10 @@ $(document).ready(function(){initNavTree('index.html','');});
 <li class="level1"><a href="#why-utf8">Why UTF-8?</a></li>
 <li class="level1"><a href="#why-not-utf16">Why not UTF-16?</a></li>
 <li class="level1"><a href="#license">Licensing</a></li>
-<li class="level1"><a href="#building">Building the project</a><ul><li class="level2"><a href="#using-source">Using the source directly</a></li>
+<li class="level1"><a href="#building">Building the project</a><ul><li class="level2"><a href="#building-windows">Building on Windows with Visual Studio</a></li>
+<li class="level2"><a href="#building-linux">Building on Linux with GCC</a></li>
+<li class="level2"><a href="#building-mac">Building on Mac OS X using Xcode</a></li>
+<li class="level2"><a href="#using-source">Using the source directly</a></li>
 <li class="level2"><a href="#running-tests">Running the tests</a></li>
 </ul>
 </li>
@@ -142,8 +145,26 @@ Licensing</h1>
 <p>This project is licensed under the MIT license, a full copy of which should have been provided with the project.</p>
 <h1><a class="anchor" id="building"></a>
 Building the project</h1>
-<p>Use <a href="http://code.google.com/p/gyp/">GYP</a> to generate a solution, like so: </p><pre class="fragment">tools\gyp\gyp --depth --format=msvs2010 utf8rewind.gyp
-</pre><dl class="section note"><dt>Note</dt><dd>The project has only been tested as compiling and running using Visual Studio 2010 on Windows, but GYP should generate workable output for other platforms as well.</dd></dl>
+<p>All supported platforms use <a href="http://code.google.com/p/gyp/">GYP</a> to generate a solution. This generated solution can be used to compile the project and its dependencies.</p>
+<h2><a class="anchor" id="building-windows"></a>
+Building on Windows with Visual Studio</h2>
+<p>You will need to have Visual Studio 2010 or above installed.</p>
+<p>Open a command window at the project's root.</p>
+<p>Execute the following to generate a solution: </p><pre class="fragment">tools\gyp\gyp --depth --format=msvs utf8rewind.gyp
+</pre><p>Open the solution in Visual Studio and you can build the library and tests.</p>
+<h2><a class="anchor" id="building-linux"></a>
+Building on Linux with GCC</h2>
+<p>Open a command window at the project's root.</p>
+<p>First, make sure you have all dependencies installed using your favorite package manager. </p><pre class="fragment">sudo apt-get install gyp gcc g++
+</pre><p>Next, execute the following command to generate a makefile: </p><pre class="fragment">gyp --depth=./ --format=make utf8rewind.gyp
+</pre><p>Now you can build the project: </p><pre class="fragment">make
+</pre><p>For a release build, specify the build type: </p><pre class="fragment">make BUILDTYPE=Release
+</pre><h2><a class="anchor" id="building-mac"></a>
+Building on Mac OS X using Xcode</h2>
+<dl class="section note"><dt>Note</dt><dd>Building on Mac OS X is currently untested. Please let us know if you can help us in this regard.</dd></dl>
+<p>Open a command window at the project's root.</p>
+<p>Execute the following to generate a solution: </p><pre class="fragment">tools\gyp\gyp --depth --format=xcode utf8rewind.gyp
+</pre><p>Open the solution in Xcode and you can build the library and tests.</p>
 <h2><a class="anchor" id="using-source"></a>
 Using the source directly</h2>
 <p>Copy '<a class="el" href="utf8rewind_8h.html" title="Functions for working with UTF-8 encoded text. ">include/utf8rewind/utf8rewind.h</a>' and 'source/utf8rewind.c' directly into your existing solution. Make sure you specify that the source file should be compiled as C code (<code>/TC</code> in Visual Studio). Include the header from your source and start using it.</p>
@@ -166,7 +187,7 @@ Contact</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Jun 16 2014 18:27:16 for utf8rewind by
+    <li class="footer">Generated on Wed Jun 18 2014 17:01:45 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>

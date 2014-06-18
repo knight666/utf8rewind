@@ -7,6 +7,9 @@ var NAVTREE =
       [ "Why not UTF-16?", "index.html#why-not-utf16", null ],
       [ "Licensing", "index.html#license", null ],
       [ "Building the project", "index.html#building", [
+        [ "Building on Windows with Visual Studio", "index.html#building-windows", null ],
+        [ "Building on Linux with GCC", "index.html#building-linux", null ],
+        [ "Building on Mac OS X using Xcode", "index.html#building-mac", null ],
         [ "Using the source directly", "index.html#using-source", null ],
         [ "Running the tests", "index.html#running-tests", null ]
       ] ],
