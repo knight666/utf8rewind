@@ -1,7 +1,4 @@
 {
-	'variables': {
-		'gtest_path%': 'dependencies/gtest-1.7.0-rc1',
-	},
 	'includes': [
 		'build/common.gypi',
 	],
@@ -16,6 +13,11 @@
 				'include/utf8rewind/utf8rewind.h',
 				'source/utf8rewind.c',
 			],
+			'direct_dependent_settings': {
+				'include_dirs': [
+					'include/utf8rewind',
+				],
+			},
 			'conditions': [
 				['OS=="win"', {
 					'msvs_settings': {
@@ -24,36 +26,14 @@
 						},
 					},
 				}],
-				['OS=="linux"', {
-					'toolsets': [ 'x86', 'x64' ],
-				}],
 			],
 		},
 		{
 			'target_name': 'tests-rewind',
 			'type': 'executable',
 			'dependencies': [
+				'dependencies.gyp:gtest',
 				'utf8rewind',
-			],
-			'include_dirs': [
-				'<(gtest_path)/include',
-				'include/utf8rewind',
-			],
-			'conditions': [
-				['OS=="win"', {
-					'library_dirs': [
-						'<(gtest_path)/lib/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
-					],
-					'libraries': [
-						'<(STATIC_LIB_PREFIX)gtest<(STATIC_LIB_SUFFIX)',
-					],
-				}],
-				['OS=="linux"', {
-					'toolsets': [ 'x86', 'x64' ],
-					'libraries': [
-						'<(gtest_path)/lib/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)/<(STATIC_LIB_PREFIX)gtest<(STATIC_LIB_SUFFIX)',
-					],
-				}],
 			],
 			'sources': [
 				'source/tests/suite-charlen.cpp',
