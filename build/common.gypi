@@ -27,14 +27,6 @@
 							'IntermediateDirectory': '$(SolutionDir)intermediate\\$(ProjectName)\\<(architecture_name)\\$(ConfigurationName)',
 							'CharacterSet': '1', # unicode
 						},
-						'msvs_settings': {
-							'VCLibrarianTool': {
-								'OutputFile': '$(OutDir)$(TargetName)$(TargetExt)',
-							},
-							'VCLinkerTool': {
-								'OutputFile': '$(OutDir)$(TargetName)$(TargetExt)',
-							},
-						},
 					}],
 					['OS=="linux"', {
 						'cflags': [ '-g', '-Wall', '-Wextra' ],
@@ -80,16 +72,13 @@
 					['OS=="win"', {
 						'msvs_settings': {
 							'VCCLCompilerTool': {
-								'Optimization': 0, # /Od
 								'PreprocessorDefinitions': [ 'DEBUG', '_DEBUG' ],
-								'BasicRuntimeChecks': 3,
+								'Optimization': 0, # /Od
+								'BasicRuntimeChecks': 3, # /RTC1
 								'RuntimeLibrary': 3, # /MDd (dynamic debug)
 							},
 							'VCLinkerTool': {
-								'LinkIncremental': 2,
-							},
-							'VCResourceCompilerTool': {
-								'PreprocessorDefinitions': [ 'DEBUG', '_DEBUG' ],
+								'LinkIncremental': 2, # /INCREMENTAL
 							},
 						},
 					}],
@@ -104,15 +93,17 @@
 					['OS=="win"', {
 						'msvs_settings': {
 							'VCCLCompilerTool': {
-								'Optimization': 2, # /Os
 								'PreprocessorDefinitions': [ 'NDEBUG' ],
 								'RuntimeLibrary': 2, # /MD (dynamic release)
+								'Optimization': 3, # /Ox
+								'InlineFunctionExpansion': 2, # /Ob2
+								'EnableIntrinsicFunctions': 'true', # /Oi
+								'FavorSizeOrSpeed': 1, # /Ot
+								'EnableEnhancedInstructionSet': 2, # /arch:SSE2
+								'FloatingPointModel': 2, # /fp:fast
 							},
 							'VCLinkerTool': {
-								'LinkIncremental': 1,
-							},
-							'VCResourceCompilerTool': {
-								'PreprocessorDefinitions': [ 'NDEBUG' ],
+								'LinkIncremental': 2, # /INCREMENTAL
 							},
 						},
 					}],
