@@ -10,13 +10,53 @@ This project is licensed under the MIT license, a full copy of which should have
 
 There are two ways to use the library: you can either create a static library and link to that or paste the source files directly into your source. This is a viable alternative because the project consists of only two files: 'utf8rewind.h' (header) and 'utf8rewind.c' (source).
 
-### Generating a solution ###
+## Building the project ##
 
-Use [GYP](http://code.google.com/p/gyp/) to generate a solution, like so:
+All supported platforms use [GYP](http://code.google.com/p/gyp/) to generate a solution. This generated solution can be used to compile the project and its dependencies.
 
-	tools\gyp\gyp --depth --format=msvs2010 utf8rewind.gyp
+### Building on Windows with Visual Studio ###
 
-The project has only been tested as compiling and running using Visual Studio 2010 on Windows, but GYP should generate workable output for other platforms as well.
+You will need to have Visual Studio 2010 or above installed.
+
+Open a command window at the project's root.
+
+Execute the following to generate a solution:
+
+	tools\gyp\gyp --depth --format=msvs utf8rewind.gyp
+
+Open the solution in Visual Studio and you can build the library and tests.
+
+### Building on Linux with GCC ###
+
+Open a command window at the project's root.
+
+First, make sure you have all dependencies installed using your favorite package manager.
+
+	sudo apt-get install gyp gcc g++
+
+Next, execute the following command to generate a makefile:
+
+	gyp --depth=./ --format=make utf8rewind.gyp
+
+Now you can build the project:
+
+	make
+
+For a release build, specify the build type:
+
+	make BUILDTYPE=Release
+
+### Building on Mac OS X using Xcode ###
+
+Building on Mac OS X is currently untested. Please let us know if you can help us in this regard.
+
+Open a command window at the project's root.
+
+Execute the following to generate a solution:
+
+	tools\gyp\gyp --depth --format=xcode utf8rewind.gyp
+
+Open the solution in Xcode and you can build the library and tests.
 
 ### Using the source directly ###
 
