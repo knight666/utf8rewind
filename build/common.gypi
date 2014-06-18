@@ -31,6 +31,12 @@
 							'IntermediateDirectory': '$(SolutionDir)intermediate\\$(ProjectName)\\<(architecture_name)\\$(ConfigurationName)',
 							'CharacterSet': '1', # unicode
 						},
+						'msvs_settings': {
+							'VCCLCompilerTool': {
+								'WarningLevel': 3, # /W3
+								# 'WarnAsError': 'true' # TODO
+							},
+						},
 					}],
 					['OS=="linux"', {
 						'cflags': [ '-g', '-Wall', '-Wextra' ],
