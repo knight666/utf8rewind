@@ -610,6 +610,7 @@ const char* seekforward(const char* src, off_t offset)
 	size_t length;
 	const char* end;
 	off_t i;
+	int char_length;
 
 	length = strlen(src);
 	if (length == 0)
@@ -621,7 +622,7 @@ const char* seekforward(const char* src, off_t offset)
 
 	for (i = 0; i < offset; ++i)
 	{
-		int char_length = utf8charlen(*src);
+		char_length = utf8charlen(*src);
 		if (char_length <= 0)
 		{
 			break;
@@ -640,9 +641,9 @@ const char* seekforward(const char* src, off_t offset)
 
 const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 {
-	int is_ascii;
+	int8_t is_ascii;
 	int last_check;
-	int i;
+	size_t i;
 
 	if (srcStart >= src)
 	{
@@ -693,13 +694,13 @@ const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 
 const char* seekatend(const char* srcStart, off_t offset)
 {
-	int length;
-	int is_ascii;
+	off_t length;
+	int8_t is_ascii;
 	const char* src;
 	const char* src_current;
-	int i;
+	size_t i;
 
-	length = (int)strlen(srcStart);
+	length = (off_t)strlen(srcStart);
 
 	if (length <= offset)
 	{
