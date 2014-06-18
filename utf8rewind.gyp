@@ -1,4 +1,7 @@
 {
+	'variables': {
+		'gtest_path%': 'dependencies/gtest-1.7.0-rc1',
+	},
 	'includes': [
 		'build/common.gypi',
 	],
@@ -31,16 +34,23 @@
 				'utf8rewind',
 			],
 			'include_dirs': [
-				'dependencies/gtest-1.7.0-rc1/include',
+				'<(gtest_path)/include',
 				'include/utf8rewind',
 			],
-			'library_dirs': [
-				'dependencies/gtest-1.7.0-rc1/lib/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
-				'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
-			],
-			'libraries': [
-				'gtest.lib',
-				'utf8rewind.lib',
+			'conditions': [
+				['OS=="win"', {
+					'library_dirs': [
+						'<(gtest_path)/lib/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
+					],
+					'libraries': [
+						'<(STATIC_LIB_PREFIX)gtest<(STATIC_LIB_SUFFIX)',
+					],
+				}],
+				['OS=="linux"', {
+					'libraries': [
+						'<(gtest_path)/lib/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)/<(STATIC_LIB_PREFIX)gtest<(STATIC_LIB_SUFFIX)',
+					],
+				}],
 			],
 			'sources': [
 				'source/tests/suite-charlen.cpp',
