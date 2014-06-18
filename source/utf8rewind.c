@@ -141,7 +141,7 @@ size_t utf8len(const char* text)
 	return length;
 }
 
-int utf8encode(unicode_t codepoint, char* target, size_t targetSize)
+size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t* errors)
 {
 	size_t length = 1;
 	unicode_t mask = 0;
@@ -149,7 +149,11 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize)
 
 	if (target == 0 || targetSize < 1)
 	{
-		return UTF8_ERR_NOT_ENOUGH_SPACE;
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+		}
+		return SIZE_MAX;
 	}
 
 	if (codepoint < 0x80)
@@ -183,7 +187,11 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize)
 
 	if (length >= targetSize)
 	{
-		return UTF8_ERR_NOT_ENOUGH_SPACE;
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+		}
+		return SIZE_MAX;
 	}
 
 	for (i = length - 1; i >= 1; --i)
