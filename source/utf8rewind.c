@@ -521,23 +521,31 @@ size_t utf8decode(const char* text, unicode_t* result, int32_t* errors)
 	}
 }
 
-int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t targetSize)
+size_t utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors)
 {
 	unicode_t codepoint;
 	const char* src = input;
 	ptrdiff_t src_size = (ptrdiff_t)inputSize;
 	wchar_t* dst = target;
 	size_t dst_size = targetSize;
-	int bytes_written = 0;
+	size_t bytes_written = 0;
 
 	if (target == 0)
 	{
-		return UTF8_ERR_NOT_ENOUGH_SPACE;
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+		}
+		return SIZE_MAX;
 	}
 
 	if (src == 0 || src_size == 0)
 	{
-		return UTF8_ERR_INVALID_DATA;
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_DATA;
+		}
+		return SIZE_MAX;
 	}
 
 	while (src_size > 0)
@@ -553,7 +561,11 @@ int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t target
 		{
 			if (src_size < 2)
 			{
-				return UTF8_ERR_INVALID_DATA;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_INVALID_DATA;
+				}
+				return SIZE_MAX;
 			}
 
 			codepoint = src[0] & 0x1F;
@@ -566,7 +578,11 @@ int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t target
 		{
 			if (src_size < 3)
 			{
-				return UTF8_ERR_INVALID_DATA;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_INVALID_DATA;
+				}
+				return SIZE_MAX;
 			}
 
 			codepoint = src[0] & 0x0F;
@@ -580,7 +596,11 @@ int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t target
 		{
 			if (src_size < 4)
 			{
-				return UTF8_ERR_INVALID_DATA;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_INVALID_DATA;
+				}
+				return SIZE_MAX;
 			}
 
 			codepoint = src[0] & 0x07;
@@ -596,7 +616,11 @@ int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t target
 		{
 			if (dst_size < 2)
 			{
-				return UTF8_ERR_NOT_ENOUGH_SPACE;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+				}
+				return SIZE_MAX;
 			}
 
 			if (codepoint >= SURROGATE_HIGH_START && codepoint <= SURROGATE_LOW_END)
@@ -621,7 +645,11 @@ int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t target
 
 			if (dst_size < 4)
 			{
-				return UTF8_ERR_NOT_ENOUGH_SPACE;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+				}
+				return SIZE_MAX;
 			}
 
 			codepoint -= 0x10000;

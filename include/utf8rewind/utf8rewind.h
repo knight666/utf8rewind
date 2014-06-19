@@ -298,11 +298,12 @@ size_t utf8decode(const char* text, unicode_t* result, int32_t* errors);
 		const char* input = "Bj\xC3\xB6rn Zonderland";
 		size_t output_size = (strlen(input) + 1) * sizeof(wchar_t);
 		wchar_t* output = (wchar_t*)malloc(output_size);
-		int result = 0;
+		size_t result = 0;
+		int32_t errors = 0;
 
 		memset(output, 0, output_size);
-		result = utf8towc(input, strlen(input), output, output_size);
-		if (result > 0)
+		result = utf8towc(input, strlen(input), output, output_size, &errors);
+		if (result != SIZE_MAX)
 		{
 			Player_SetName(output);
 		}
@@ -312,15 +313,18 @@ size_t utf8decode(const char* text, unicode_t* result, int32_t* errors);
 	@param inputSize Size of the input in bytes.
 	@param target String to write the result to.
 	@param targetSize Amount of bytes remaining in the string.
+	@param errors Output for errors.
 
-	@return Amount of bytes written or an error code.
+	@return Amount of bytes written or SIZE_MAX on error.
+
+	Errors:
 	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
 	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 
 	@sa wctoutf8
 	@sa utf8decode
 */
-int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t targetSize);
+size_t utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors);
 
 //! Seek into a UTF-8 encoded string.
 /*!
