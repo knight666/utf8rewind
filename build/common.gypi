@@ -25,7 +25,6 @@
 				'abstract': 1,
 				'conditions': [
 					['OS=="win"', {
-						'defines': [ 'WIN32' ],
 						'msvs_configuration_attributes': {
 							'OutputDirectory': '$(SolutionDir)output\\<(platform_name)\\<(architecture_name)\\$(ConfigurationName)',
 							'IntermediateDirectory': '$(SolutionDir)intermediate\\$(ProjectName)\\<(architecture_name)\\$(ConfigurationName)',
@@ -48,6 +47,7 @@
 				'abstract': 1,
 				'conditions': [
 					['OS=="win"', {
+						'defines': [ 'WIN32' ],
 						'msvs_configuration_platform': 'Win32',
 						'msvs_settings': {
 							'VCLinkerTool': {
@@ -62,6 +62,7 @@
 				'abstract': 1,
 				'conditions': [
 					['OS=="win"', {
+						'defines': [ '_WIN64' ],
 						'msvs_configuration_platform': 'x64',
 						'msvs_settings': {
 							'VCLinkerTool': {
