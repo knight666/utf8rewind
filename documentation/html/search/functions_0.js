@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['utf8charlen',['utf8charlen',['../utf8rewind_8h.html#a4c456e1c3d8637bdf3f999aa0377b2f2',1,'utf8rewind.h']]],
+  ['utf8charlen',['utf8charlen',['../utf8rewind_8h.html#a46a4b4215a32429f0726dd0dffb6e718',1,'utf8rewind.h']]],
   ['utf8charvalid',['utf8charvalid',['../utf8rewind_8h.html#a548f6f67979ffd8576a6f45b2a3455e1',1,'utf8rewind.h']]],
   ['utf8convertucs2',['utf8convertucs2',['../utf8rewind_8h.html#ac08ff5b9be438e67b8e0af6a4c56543f',1,'utf8rewind.h']]],
   ['utf8decode',['utf8decode',['../utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c',1,'utf8rewind.h']]],

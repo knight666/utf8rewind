@@ -10,7 +10,7 @@ var utf8rewind_8h =
     [ "ucs2_t", "utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17", null ],
     [ "unicode_t", "utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f", null ],
     [ "utf16_t", "utf8rewind_8h.html#a1e9e182e040e6f408cfb7188eaafb48a", null ],
-    [ "utf8charlen", "utf8rewind_8h.html#a4c456e1c3d8637bdf3f999aa0377b2f2", null ],
+    [ "utf8charlen", "utf8rewind_8h.html#a46a4b4215a32429f0726dd0dffb6e718", null ],
     [ "utf8charvalid", "utf8rewind_8h.html#a548f6f67979ffd8576a6f45b2a3455e1", null ],
     [ "utf8convertucs2", "utf8rewind_8h.html#ac08ff5b9be438e67b8e0af6a4c56543f", null ],
     [ "utf8decode", "utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c", null ],
