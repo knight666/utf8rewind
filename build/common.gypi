@@ -19,6 +19,7 @@
 		},
 	},
 	'target_defaults': {
+		'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
 		'default_configuration': 'Debug',
 		'configurations': {
 			'Common': {
