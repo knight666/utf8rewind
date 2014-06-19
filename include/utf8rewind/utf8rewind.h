@@ -60,7 +60,7 @@ typedef uint16_t utf16_t; /*!< UTF-16 encoded codepoint. */
 
 	@return 1 on success or 0 on failure.
 */
-int utf8charvalid(char encodedCharacter);
+int8_t utf8charvalid(char encodedCharacter);
 
 //! Returns the length in bytes of the encoded character.
 /*!
@@ -73,10 +73,9 @@ int utf8charvalid(char encodedCharacter);
 
 	@param encodedCharacter Character to check.
 
-	@return Amount of bytes written or an error code.
-		- #UTF8_ERR_INVALID_CHARACTER Not a valid UTF-8 continuation byte.
+	@return Amount of bytes written or SIZE_MAX on error.
 */
-int utf8charlen(char encodedCharacter);
+size_t utf8charlen(char encodedCharacter);
 
 //! Get the length in codepoints of a UTF-8 encoded string.
 /*!
@@ -108,25 +107,29 @@ size_t utf8len(const char* text);
 	@code{.c}
 		char result[128];
 		char* dst;
+		int32_t errors = 0;
 
 		memset(result, 0, 128);
 		strcat(result, "STARG");
 		dst = result + strlen(result);
-		utf8encode(0x1402, dst, 128 - strlen(result));
+		utf8encode(0x1402, dst, 128 - strlen(result), &errors);
 		strcat(result, "TE");
 	@endcode
 
 	@param codepoint Unicode codepoint.
 	@param target String to write the result to.
 	@param targetSize Amount of bytes remaining in the string.
+	@param errors Output for errors.
 
-	@return Amount of bytes written or an error code.
+	@return Amount of bytes written or SIZE_MAX on error.
+
+	Errors:
 		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 
 	@sa wctoutf8
 	@sa utf8convertucs2
 */
-int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
+size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t* errors);
 
 //! Convert a UCS-2 codepoint to UTF-8.
 /*!
@@ -169,7 +172,7 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize);
 	@param codepoint UCS-2 encoded codepoint.
 	@param target String to write the result to.
 	@param targetSize Amount of bytes remaining in the string.
-	@param errors Target for errors, if any.
+	@param errors Output for errors.
 
 	@return Amount of bytes written or SIZE_MAX on error.
 
@@ -189,7 +192,7 @@ size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_
 	of Unicode characters that would otherwise not fit in a
 	single 16-bit integer.
 
-	If 0 is specified as the target buffer, this function returns
+	If 0 is specified as the target buffer, the function returns
 	the number of bytes needed to store the string.
 
 	Example:
@@ -198,18 +201,19 @@ size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_
 		const wchar_t* input = L"textures/\xD803\xDC11.png";
 		size_t output_size = 0;
 		char* output = 0;
-		int result = 0;
+		size_t result = 0;
+		int32_t errors = 0;
 
-		int result = wctoutf8(input, wcslen(input) * sizeof(wchar_t), 0, 0);
-		if (result > 0)
+		result = wctoutf8(input, wcslen(input) * sizeof(wchar_t), 0, 0, &errors);
+		if (result != (size_t)SIZE_MAX)
 		{
-			output_size = (size_t)result + 1;
+			output_size = result + 1;
 
 			output = (char*)malloc(output_size);
 			memset(output, 0, output_size);
 
-			result = wctoutf8(input, wcslen(input) * sizeof(wchar_t), output, output_size);
-			if (result > 0)
+			result = wctoutf8(input, wcslen(input) * sizeof(wchar_t), output, output_size, &errors);
+			if (result != (size_t)SIZE_MAX)
 			{
 				Texture_Load(output);
 			}
@@ -222,8 +226,11 @@ size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_
 	@param inputSize Size of the input in bytes.
 	@param target String to write the result to.
 	@param targetSize Amount of bytes remaining in the string.
+	@param errors Output for errors.
 
-	@return Amount of bytes written or an error code.
+	@return Amount of bytes written or SIZE_MAX on error.
+	
+	Errors:
 	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for encoding.
 	- #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR High surrogate pair was not matched.
 	- #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR Low surrogate pair was not matched.
@@ -232,7 +239,7 @@ size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_
 
 	@sa utf8towc
 */
-int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize);
+size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 //! Decode a UTF-8 encoded codepoint to a Unicode codepoint.
 /*!
