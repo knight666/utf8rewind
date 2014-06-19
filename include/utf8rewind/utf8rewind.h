@@ -46,6 +46,27 @@
 #define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR (-6)
 #define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR (-7)
 
+//! @defgroup configuration Global configuration
+//! @{
+
+#ifndef UTF8_WCHAR_SIZE
+	#if (__SIZEOF_WCHAR_T__ == 4) || (WCHAR_MAX > UINT16_MAX) || (__WCHAR_MAX__ > UINT16_MAX)
+		#define UTF8_WCHAR_SIZE (4)
+	#else
+		#define UTF8_WCHAR_SIZE (2)
+	#endif
+#endif
+
+#if (UTF8_WCHAR_SIZE == 4)
+	#define UTF8_WCHAR_UTF32 (1)
+#elif (UTF8_WCHAR_SIZE == 2)
+	#define UTF8_WCHAR_UTF16 (1)
+#else
+	#error Invalid size for wchar_t type.
+#endif
+
+//! @}
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
