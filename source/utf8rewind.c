@@ -33,16 +33,16 @@
 #define SURROGATE_LOW_START           0xDC00
 #define SURROGATE_LOW_END             0xDFFF
 
-int utf8charvalid(char encodedCharacter)
+int8_t utf8charvalid(char encodedCharacter)
 {
 	return ((((unsigned char)encodedCharacter & 0xFE) != 0xC0) && ((unsigned char)encodedCharacter < 0xF5));
 }
 
-int utf8charlen(char encodedCharacter)
+size_t utf8charlen(char encodedCharacter)
 {
 	if (!utf8charvalid(encodedCharacter))
 	{
-		return UTF8_ERR_INVALID_CHARACTER;
+		return SIZE_MAX;
 	}
 	else if ((unsigned char)encodedCharacter <= 0x7F)
 	{
@@ -62,26 +62,26 @@ int utf8charlen(char encodedCharacter)
 	}
 	else
 	{
-		return UTF8_ERR_INVALID_CHARACTER;
+		return SIZE_MAX;
 	}
 }
 
 size_t utf8len(const char* text)
 {
-	int length = 0;
+	size_t length = 0;
 	unsigned char codepoint = 0;
 	int codepoint_length = 0;
 	int text_length = 0;
 
 	if (text == 0)
 	{
-		return 0;
+		return length;
 	}
 
 	text_length = (int)strlen(text);
 	if (text_length == 0)
 	{
-		return 0;
+		return length;
 	}
 
 	while (*text != 0 && text_length > 0)
@@ -141,7 +141,7 @@ size_t utf8len(const char* text)
 	return length;
 }
 
-int utf8encode(unicode_t codepoint, char* target, size_t targetSize)
+size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t* errors)
 {
 	size_t length = 1;
 	unicode_t mask = 0;
@@ -149,7 +149,11 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize)
 
 	if (target == 0 || targetSize < 1)
 	{
-		return UTF8_ERR_NOT_ENOUGH_SPACE;
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+		}
+		return SIZE_MAX;
 	}
 
 	if (codepoint < 0x80)
@@ -183,7 +187,11 @@ int utf8encode(unicode_t codepoint, char* target, size_t targetSize)
 
 	if (length >= targetSize)
 	{
-		return UTF8_ERR_NOT_ENOUGH_SPACE;
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+		}
+		return SIZE_MAX;
 	}
 
 	for (i = length - 1; i >= 1; --i)
@@ -272,23 +280,26 @@ size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_
 	}
 }
 
-int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize)
+size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
-	int result = 0;
+	size_t result = 0;
 	utf16_t surrogate_high;
 	utf16_t surrogate_low;
 	utf16_t current;
 	unicode_t codepoint;
 	const char* src = (const char*)input;
-	int src_size = (int)inputSize;
+	ptrdiff_t src_size = (ptrdiff_t)inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
-	int bytes_written = 0;
-	int32_t errors = 0;
+	size_t bytes_written = 0;
 
 	if (input == 0 || inputSize < 2)
 	{
-		return UTF8_ERR_INVALID_DATA;
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_DATA;
+		}
+		return SIZE_MAX;
 	}
 
 	while (src_size > 0)
@@ -297,10 +308,10 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 
 		if (current < SURROGATE_HIGH_START || current > SURROGATE_LOW_END)
 		{
-			result = utf8convertucs2(*(const ucs2_t*)src, dst, dst_size, &errors);
+			result = utf8convertucs2(*(const ucs2_t*)src, dst, dst_size, errors);
 			if (result == SIZE_MAX)
 			{
-				return errors;
+				return SIZE_MAX;
 			}
 
 			src += 2;
@@ -318,21 +329,33 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 		{
 			if (src_size < 4)
 			{
-				return UTF8_ERR_INVALID_DATA;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_INVALID_DATA;
+				}
+				return SIZE_MAX;
 			}
 
 			surrogate_high = *(utf16_t*)src;
 
 			if (surrogate_high < SURROGATE_HIGH_START || surrogate_high > SURROGATE_HIGH_END)
 			{
-				return UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
+				}
+				return SIZE_MAX;
 			}
 
 			surrogate_low = *(utf16_t*)(src + 2);
 
 			if (surrogate_low < SURROGATE_LOW_START || surrogate_low > SURROGATE_LOW_END)
 			{
-				return UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
+				}
+				return SIZE_MAX;
 			}
 
 			codepoint =
@@ -344,7 +367,11 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 			{
 				/* Unicode characters must be encoded in a maximum of four bytes. */
 
-				return UTF8_ERR_INVALID_CHARACTER;
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_INVALID_CHARACTER;
+				}
+				return SIZE_MAX;
 			}
 
 			src += 4;
@@ -354,7 +381,11 @@ int wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t target
 			{
 				if (dst_size < 4)
 				{
-					return UTF8_ERR_NOT_ENOUGH_SPACE;
+					if (errors != 0)
+					{
+						*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+					}
+					return SIZE_MAX;
 				}
 
 				dst[3] = (char)(( codepoint        & 0x3F) | 0x80);
@@ -462,7 +493,7 @@ int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t target
 {
 	unicode_t codepoint;
 	const char* src = input;
-	int src_size = inputSize;
+	ptrdiff_t src_size = (ptrdiff_t)inputSize;
 	wchar_t* dst = target;
 	size_t dst_size = targetSize;
 	int bytes_written = 0;
@@ -579,6 +610,7 @@ const char* seekforward(const char* src, off_t offset)
 	size_t length;
 	const char* end;
 	off_t i;
+	size_t char_length;
 
 	length = strlen(src);
 	if (length == 0)
@@ -590,8 +622,8 @@ const char* seekforward(const char* src, off_t offset)
 
 	for (i = 0; i < offset; ++i)
 	{
-		int char_length = utf8charlen(*src);
-		if (char_length <= 0)
+		char_length = utf8charlen(*src);
+		if (char_length == (size_t)SIZE_MAX)
 		{
 			break;
 		}
@@ -609,9 +641,9 @@ const char* seekforward(const char* src, off_t offset)
 
 const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 {
-	int is_ascii;
-	int last_check;
-	int i;
+	int8_t is_ascii;
+	int8_t is_last_byte;
+	size_t i;
 
 	if (srcStart >= src)
 	{
@@ -621,7 +653,7 @@ const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 	while (src != srcStart)
 	{
 		is_ascii = (*src & 0x80) != 0x80;
-		last_check = 0;
+		is_last_byte = 0;
 
 		if (is_ascii)
 		{
@@ -629,11 +661,11 @@ const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 
 			if (offset + 1 == 0)
 			{
-				last_check = ((*src & 0x80) == 0x80);
+				is_last_byte = ((*src & 0x80) == 0x80);
 			}
 		}
 
-		if (!is_ascii || last_check)
+		if (!is_ascii || is_last_byte)
 		{
 			for (i = 0; i < 4; ++i)
 			{
@@ -662,13 +694,13 @@ const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 
 const char* seekatend(const char* srcStart, off_t offset)
 {
-	int length;
-	int is_ascii;
+	off_t length;
+	int8_t is_ascii;
 	const char* src;
 	const char* src_current;
-	int i;
+	size_t i;
 
-	length = (int)strlen(srcStart);
+	length = (off_t)strlen(srcStart);
 
 	if (length <= offset)
 	{
