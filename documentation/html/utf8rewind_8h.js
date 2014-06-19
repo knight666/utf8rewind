@@ -17,6 +17,6 @@ var utf8rewind_8h =
     [ "utf8encode", "utf8rewind_8h.html#ac9b9b9d684c8bae0ad20c26d2d946986", null ],
     [ "utf8len", "utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e", null ],
     [ "utf8seek", "utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb", null ],
-    [ "utf8towc", "utf8rewind_8h.html#afe10f10be61afc896374cac318c8494d", null ],
+    [ "utf8towc", "utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f", null ],
     [ "wctoutf8", "utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b", null ]
 ];

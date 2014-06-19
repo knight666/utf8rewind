@@ -165,9 +165,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a33dcf979fa8ab17d40c0b7c7645a5dfa"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a33dcf979fa8ab17d40c0b7c7645a5dfa">utf8decode</a> (const char *text, <a class="el" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a> *result, int32_t *errors)</td></tr>
 <tr class="memdesc:a33dcf979fa8ab17d40c0b7c7645a5dfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decode a UTF-8 encoded codepoint to a Unicode codepoint.  <a href="#a33dcf979fa8ab17d40c0b7c7645a5dfa">More...</a><br /></td></tr>
 <tr class="separator:a33dcf979fa8ab17d40c0b7c7645a5dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe10f10be61afc896374cac318c8494d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#afe10f10be61afc896374cac318c8494d">utf8towc</a> (const char *input, size_t inputSize, wchar_t *target, size_t targetSize)</td></tr>
-<tr class="memdesc:afe10f10be61afc896374cac318c8494d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a UTF-8 encoded string to UTF-16.  <a href="#afe10f10be61afc896374cac318c8494d">More...</a><br /></td></tr>
-<tr class="separator:afe10f10be61afc896374cac318c8494d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17370cc081b5bd688c6d95bf9b09f72f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f">utf8towc</a> (const char *input, size_t inputSize, wchar_t *target, size_t targetSize, int32_t *errors)</td></tr>
+<tr class="memdesc:a17370cc081b5bd688c6d95bf9b09f72f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a UTF-8 encoded string to UTF-16.  <a href="#a17370cc081b5bd688c6d95bf9b09f72f">More...</a><br /></td></tr>
+<tr class="separator:a17370cc081b5bd688c6d95bf9b09f72f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13d55ea3402d6d91cfb965f3605ec3eb"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8seek</a> (const char *text, const char *textStart, off_t offset, int direction)</td></tr>
 <tr class="memdesc:a13d55ea3402d6d91cfb965f3605ec3eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seek into a UTF-8 encoded string.  <a href="#a13d55ea3402d6d91cfb965f3605ec3eb">More...</a><br /></td></tr>
 <tr class="separator:a13d55ea3402d6d91cfb965f3605ec3eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -668,12 +668,12 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="afe10f10be61afc896374cac318c8494d"></a>
+<a class="anchor" id="a17370cc081b5bd688c6d95bf9b09f72f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int utf8towc </td>
+          <td class="memname">size_t utf8towc </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>input</em>, </td>
@@ -694,7 +694,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>targetSize</em>&#160;</td>
+          <td class="paramname"><em>targetSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t *&#160;</td>
+          <td class="paramname"><em>errors</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -709,11 +715,12 @@ Functions</h2></td></tr>
 <div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* input = <span class="stringliteral">&quot;Bj\xC3\xB6rn Zonderland&quot;</span>;</div>
 <div class="line"><span class="keywordtype">size_t</span> output_size = (strlen(input) + 1) * <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>);</div>
 <div class="line"><span class="keywordtype">wchar_t</span>* output = (<span class="keywordtype">wchar_t</span>*)malloc(output_size);</div>
-<div class="line"><span class="keywordtype">int</span> result = 0;</div>
+<div class="line"><span class="keywordtype">size_t</span> result = 0;</div>
+<div class="line">int32_t errors = 0;</div>
 <div class="line"></div>
 <div class="line">memset(output, 0, output_size);</div>
-<div class="line">result = <a class="code" href="utf8rewind_8h.html#afe10f10be61afc896374cac318c8494d">utf8towc</a>(input, strlen(input), output, output_size);</div>
-<div class="line"><span class="keywordflow">if</span> (result &gt; 0)</div>
+<div class="line">result = <a class="code" href="utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f">utf8towc</a>(input, strlen(input), output, output_size, &amp;errors);</div>
+<div class="line"><span class="keywordflow">if</span> (result != SIZE_MAX)</div>
 <div class="line">{</div>
 <div class="line">    Player_SetName(output);</div>
 <div class="line">}</div>
@@ -722,15 +729,16 @@ Functions</h2></td></tr>
     <tr><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
     <tr><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
     <tr><td class="paramname">target</td><td>String to write the result to. </td></tr>
-    <tr><td class="paramname">targetSize</td><td>Amount of bytes remaining in the string.</td></tr>
+    <tr><td class="paramname">targetSize</td><td>Amount of bytes remaining in the string. </td></tr>
+    <tr><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Amount of bytes written or an error code.<ul>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes written or SIZE_MAX on error.</dd></dl>
+<p>Errors:</p><ul>
 <li><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a> Input does not contain enough bytes for decoding.</li>
 <li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
 </ul>
-</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b" title="Convert a UTF-16 encoded string to UTF-8. ">wctoutf8</a> </dd>
 <dd>
 <a class="el" href="utf8rewind_8h.html#a33dcf979fa8ab17d40c0b7c7645a5dfa" title="Decode a UTF-8 encoded codepoint to a Unicode codepoint. ">utf8decode</a> </dd></dl>
@@ -823,7 +831,7 @@ Functions</h2></td></tr>
 <li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
 <li><a class="el" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">UTF8_ERR_INVALID_CHARACTER</a> Codepoint could not be encoded.</li>
 </ul>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#afe10f10be61afc896374cac318c8494d" title="Convert a UTF-8 encoded string to UTF-16. ">utf8towc</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f" title="Convert a UTF-8 encoded string to UTF-16. ">utf8towc</a> </dd></dl>
 
 </div>
 </div>
@@ -833,7 +841,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_19f418181f8b699045c2f8e6c49f857e.html">utf8rewind</a></li><li class="navelem"><a class="el" href="utf8rewind_8h.html">utf8rewind.h</a></li>
-    <li class="footer">Generated on Thu Jun 19 2014 17:35:39 for utf8rewind by
+    <li class="footer">Generated on Thu Jun 19 2014 17:47:42 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>
