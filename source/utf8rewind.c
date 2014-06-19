@@ -38,11 +38,11 @@ int8_t utf8charvalid(char encodedCharacter)
 	return ((((unsigned char)encodedCharacter & 0xFE) != 0xC0) && ((unsigned char)encodedCharacter < 0xF5));
 }
 
-int utf8charlen(char encodedCharacter)
+size_t utf8charlen(char encodedCharacter)
 {
 	if (!utf8charvalid(encodedCharacter))
 	{
-		return UTF8_ERR_INVALID_CHARACTER;
+		return SIZE_MAX;
 	}
 	else if ((unsigned char)encodedCharacter <= 0x7F)
 	{
@@ -62,7 +62,7 @@ int utf8charlen(char encodedCharacter)
 	}
 	else
 	{
-		return UTF8_ERR_INVALID_CHARACTER;
+		return SIZE_MAX;
 	}
 }
 
@@ -610,7 +610,7 @@ const char* seekforward(const char* src, off_t offset)
 	size_t length;
 	const char* end;
 	off_t i;
-	int char_length;
+	size_t char_length;
 
 	length = strlen(src);
 	if (length == 0)
@@ -623,7 +623,7 @@ const char* seekforward(const char* src, off_t offset)
 	for (i = 0; i < offset; ++i)
 	{
 		char_length = utf8charlen(*src);
-		if (char_length <= 0)
+		if (char_length == (size_t)SIZE_MAX)
 		{
 			break;
 		}

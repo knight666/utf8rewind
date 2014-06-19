@@ -73,10 +73,9 @@ int8_t utf8charvalid(char encodedCharacter);
 
 	@param encodedCharacter Character to check.
 
-	@return Amount of bytes written or an error code.
-		- #UTF8_ERR_INVALID_CHARACTER Not a valid UTF-8 continuation byte.
+	@return Amount of bytes written or SIZE_MAX on error.
 */
-int utf8charlen(char encodedCharacter);
+size_t utf8charlen(char encodedCharacter);
 
 //! Get the length in codepoints of a UTF-8 encoded string.
 /*!
