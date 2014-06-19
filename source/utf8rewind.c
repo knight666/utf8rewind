@@ -404,30 +404,46 @@ size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t tar
 	return bytes_written;
 }
 
-int utf8decode(const char* text, unicode_t* result)
+size_t utf8decode(const char* text, unicode_t* result, int32_t* errors)
 {
 	size_t text_length;
 	const unsigned char* src;
 
 	if (result == 0)
 	{
-		return UTF8_ERR_NOT_ENOUGH_SPACE;
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+		}
+		return SIZE_MAX;
 	}
 
 	if (text == 0)
 	{
-		return UTF8_ERR_INVALID_DATA;
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_DATA;
+		}
+		return SIZE_MAX;
 	}
 
 	text_length = strlen(text);
 	if (text_length == 0)
 	{
-		return UTF8_ERR_INVALID_DATA;
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_DATA;
+		}
+		return SIZE_MAX;
 	}
 
 	if (!utf8charvalid(text[0]))
 	{
-		return UTF8_ERR_INVALID_CHARACTER;
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_CHARACTER;
+		}
+		return SIZE_MAX;
 	}
 
 	src = (const unsigned char*)text;
@@ -444,7 +460,11 @@ int utf8decode(const char* text, unicode_t* result)
 		{
 			*result = 0;
 
-			return UTF8_ERR_INVALID_DATA;
+			if (errors != 0)
+			{
+				*errors = UTF8_ERR_INVALID_DATA;
+			}
+			return SIZE_MAX;
 		}
 
 		*result = src[0] & 0x1F;
@@ -458,7 +478,11 @@ int utf8decode(const char* text, unicode_t* result)
 		{
 			*result = 0;
 
-			return UTF8_ERR_INVALID_DATA;
+			if (errors != 0)
+			{
+				*errors = UTF8_ERR_INVALID_DATA;
+			}
+			return SIZE_MAX;
 		}
 
 		*result = src[0] & 0x0F;
@@ -473,7 +497,11 @@ int utf8decode(const char* text, unicode_t* result)
 		{
 			result = 0;
 
-			return UTF8_ERR_INVALID_DATA;
+			if (errors != 0)
+			{
+				*errors = UTF8_ERR_INVALID_DATA;
+			}
+			return SIZE_MAX;
 		}
 
 		*result = src[0] & 0x07;
@@ -485,7 +513,11 @@ int utf8decode(const char* text, unicode_t* result)
 	}
 	else
 	{
-		return UTF8_ERR_INVALID_CHARACTER;
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_CHARACTER;
+		}
+		return SIZE_MAX;
 	}
 }
 
