@@ -68,20 +68,20 @@ int utf8charlen(char encodedCharacter)
 
 size_t utf8len(const char* text)
 {
-	int length = 0;
+	size_t length = 0;
 	unsigned char codepoint = 0;
 	int codepoint_length = 0;
 	int text_length = 0;
 
 	if (text == 0)
 	{
-		return 0;
+		return length;
 	}
 
 	text_length = (int)strlen(text);
 	if (text_length == 0)
 	{
-		return 0;
+		return length;
 	}
 
 	while (*text != 0 && text_length > 0)
@@ -288,10 +288,10 @@ size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t tar
 	utf16_t current;
 	unicode_t codepoint;
 	const char* src = (const char*)input;
-	int src_size = (int)inputSize;
+	ptrdiff_t src_size = (ptrdiff_t)inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
-	int bytes_written = 0;
+	size_t bytes_written = 0;
 
 	if (input == 0 || inputSize < 2)
 	{
@@ -493,7 +493,7 @@ int utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t target
 {
 	unicode_t codepoint;
 	const char* src = input;
-	int src_size = inputSize;
+	ptrdiff_t src_size = (ptrdiff_t)inputSize;
 	wchar_t* dst = target;
 	size_t dst_size = targetSize;
 	int bytes_written = 0;
@@ -642,7 +642,7 @@ const char* seekforward(const char* src, off_t offset)
 const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 {
 	int8_t is_ascii;
-	int last_check;
+	int8_t is_last_byte;
 	size_t i;
 
 	if (srcStart >= src)
@@ -653,7 +653,7 @@ const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 	while (src != srcStart)
 	{
 		is_ascii = (*src & 0x80) != 0x80;
-		last_check = 0;
+		is_last_byte = 0;
 
 		if (is_ascii)
 		{
@@ -661,11 +661,11 @@ const char* seekrewind(const char* src, const char* srcStart, off_t offset)
 
 			if (offset + 1 == 0)
 			{
-				last_check = ((*src & 0x80) == 0x80);
+				is_last_byte = ((*src & 0x80) == 0x80);
 			}
 		}
 
-		if (!is_ascii || last_check)
+		if (!is_ascii || is_last_byte)
 		{
 			for (i = 0; i < 4; ++i)
 			{
