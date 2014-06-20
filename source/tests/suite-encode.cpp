@@ -112,7 +112,7 @@ TEST(Encode, StringEndsInMiddle)
 
 	EXPECT_EQ(5, utf8encodeutf32(c, sizeof(c), b, s, &errors));
 	EXPECT_EQ(0, errors);
-	EXPECT_STREQ("\xE2\x92\x88[rn", b);
+	EXPECT_STREQ("\xE2\x92\x88[r", b);
 }
 
 TEST(Encode, Ascii)
@@ -134,9 +134,9 @@ TEST(Encode, AsciiFirst)
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(1, utf8encodeutf32(&c, 4, b, s, &errors));
+	EXPECT_EQ(0, utf8encodeutf32(&c, 4, b, s, &errors));
 	EXPECT_EQ(0, errors);
-	EXPECT_STREQ("\0", b);
+	EXPECT_STREQ("", b);
 }
 
 TEST(Encode, AsciiLast)

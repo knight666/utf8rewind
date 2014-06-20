@@ -481,7 +481,11 @@ size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, s
 	{
 		codepoint = *src;
 
-		if (codepoint < 0x80)
+		if (codepoint == 0)
+		{
+			break;
+		}
+		else if (codepoint < 0x80)
 		{
 			encoded_length = 1;
 			mask = 0x00;
