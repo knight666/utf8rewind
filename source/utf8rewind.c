@@ -468,7 +468,7 @@ size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, s
 	size_t dst_size = targetSize;
 	size_t bytes_written = 0;
 
-	if (input == 0 || inputSize < 2)
+	if (input == 0 || inputSize < 4)
 	{
 		if (errors != 0)
 		{
@@ -481,7 +481,12 @@ size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, s
 	{
 		codepoint = *src;
 
-		if (codepoint < 0x800)
+		if (codepoint < 0x80)
+		{
+			encoded_length = 1;
+			mask = 0x00;
+		}
+		else if (codepoint < 0x800)
 		{
 			encoded_length = 2;
 			mask = 0xC0;
@@ -501,15 +506,6 @@ size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, s
 			codepoint = REPLACEMENT_CHARACTER;
 			encoded_length = 3;
 			mask = 0xE0;
-		}
-
-		if (encoded_length >= targetSize)
-		{
-			if (errors != 0)
-			{
-				*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
-			}
-			return SIZE_MAX;
 		}
 
 		if (dst != 0)
@@ -534,6 +530,8 @@ size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, s
 			dst += encoded_length;
 			dst_size -= encoded_length;
 		}
+
+		src_size -= 4;
 
 		bytes_written += encoded_length;
 	}
