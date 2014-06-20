@@ -2,7 +2,7 @@
 
 #include "utf8rewind.h"
 
-TEST(Encode, Encode)
+TEST(Encode, Character)
 {
 	unicode_t c = 'U';
 	const size_t s = 256;
@@ -14,53 +14,21 @@ TEST(Encode, Encode)
 	EXPECT_STREQ("U", b);
 }
 
-TEST(Encode, EncodeString)
+TEST(Encode, String)
 {
+	unicode_t c[] = {
+		'S',
+		0x1F12E,
+		'H',
+		0xA840, // ꡀ
+		0x07D4  // ߔ
+	};
 	const size_t s = 256;
 	char b[s] = { 0 };
-	char* d = b;
 	int32_t errors = 0;
 
-	{
-		unicode_t c = 'S';
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(1, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 0x1F12E;
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(4, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 'H';
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(1, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 0xA840; // ꡀ
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(3, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 0x07D4; // ߔ
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(2, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
+	EXPECT_EQ(11, utf8encodeutf32(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("S\xF0\x9F\x84\xAEH\xEA\xA1\x80\xDF\x94", b);
 }
 
@@ -124,43 +92,13 @@ TEST(Encode, AsciiLast)
 
 TEST(Encode, AsciiString)
 {
+	unicode_t c[] = { 'B', 'o', 'm', 'b' };
 	const size_t s = 256;
 	char b[s] = { 0 };
-	char* d = b;
 	int32_t errors = 0;
 
-	{
-		unicode_t c = 'B';
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(1, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 'o';
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(1, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 'm';
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(1, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 'b';
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(1, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
+	EXPECT_EQ(4, utf8encodeutf32(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("Bomb", b);
 }
 
@@ -202,43 +140,18 @@ TEST(Encode, TwoBytesLast)
 
 TEST(Encode, TwoBytesString)
 {
+	unicode_t c[] = {
+		0x0169, // ũ
+		0x014E, // Ŏ
+		0x0191, // Ƒ
+		0x014A  // Ŋ
+	};
 	const size_t s = 256;
 	char b[s] = { 0 };
-	char* d = b;
 	int32_t errors = 0;
 
-	{
-		unicode_t c = 0x0169; // ũ
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(2, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 0x014E; // Ŏ
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(2, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 0x0191; // Ƒ
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(2, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 0x014A; // Ŋ
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(2, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
+	EXPECT_EQ(8, utf8encodeutf32(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xC5\xA9\xC5\x8E\xC6\x91\xC5\x8A", b);
 }
 
@@ -292,43 +205,18 @@ TEST(Encode, ThreeBytesLast)
 
 TEST(Encode, ThreeBytesString)
 {
+	unicode_t c[] = {
+		0x2776, // ❶
+		0x2778, // ❸
+		0x2665, // ♥
+		0x277D  // ❽
+	};
 	const size_t s = 256;
 	char b[s] = { 0 };
-	char* d = b;
 	int32_t errors = 0;
 
-	{
-		unicode_t c = 0x2776; // ❶
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(3, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 0x2778; // ❸
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(3, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 0x2665; // ♥
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(3, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 0x277D; // ❽
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(3, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
+	EXPECT_EQ(12, utf8encodeutf32(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xE2\x9D\xB6\xE2\x9D\xB8\xE2\x99\xA5\xE2\x9D\xBD", b);
 }
 
@@ -382,35 +270,17 @@ TEST(Encode, FourBytesLast)
 
 TEST(Encode, FourBytesString)
 {
+	unicode_t c[] = {
+		0x1F191, // 🆑
+		0x1F198, // 🆘
+		0x1F19A  // 🆚
+	};
 	const size_t s = 256;
 	char b[s] = { 0 };
-	char* d = b;
 	int32_t errors = 0;
 
-	{
-		unicode_t c = 0x1F191; // 🆑
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(4, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 0x1F198; // 🆘
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(4, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
-	{
-		unicode_t c = 0x1F19A; // 🆚
-		size_t l = utf8encodeutf32(&c, 4, d, s, &errors);
-		EXPECT_EQ(4, l);
-		EXPECT_EQ(0, errors);
-		d += l;
-	}
-
+	EXPECT_EQ(12, utf8encodeutf32(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xF0\x9F\x86\x91\xF0\x9F\x86\x98\xF0\x9F\x86\x9A", b);
 }
 

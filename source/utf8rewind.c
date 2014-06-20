@@ -531,6 +531,7 @@ size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, s
 			dst_size -= encoded_length;
 		}
 
+		src++;
 		src_size -= 4;
 
 		bytes_written += encoded_length;
