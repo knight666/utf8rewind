@@ -7,7 +7,7 @@
 			'target_name': 'gtest',
 			'type': 'static_library',
 			'variables': {
-				'project_dir': 'dependencies/gtest-1.7.0-rc1',
+				'project_dir': 'dependencies/gtest-svn-head',
 			},
 			'defines': [
 				'GTEST_HAS_PTHREAD=0'
