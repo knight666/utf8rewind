@@ -152,6 +152,12 @@ size_t utf8len(const char* text);
 */
 size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t* errors);
 
+size_t utf8encodeutf16(const utf16_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+
+size_t utf8decodeutf16(const char* input, size_t inputSize, utf16_t* target, size_t targetSize, int32_t* errors);
+size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, size_t targetSize, int32_t* errors);
+
 //! Convert a UCS-2 codepoint to UTF-8.
 /*!
 	UCS-2 encoding is similar to UTF-16 encoding, except that it
