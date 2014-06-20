@@ -97,9 +97,11 @@
 								'Optimization': 0, # /Od
 								'BasicRuntimeChecks': 3, # /RTC1
 								'RuntimeLibrary': 3, # /MDd (dynamic debug)
+								'ProgramDataBaseFileName': '$(TargetDir)$(ProjectName).pdb',
 							},
 							'VCLinkerTool': {
 								'LinkIncremental': 2, # /INCREMENTAL
+								'GenerateDebugInformation': 'true',
 							},
 						},
 					}],
