@@ -280,8 +280,278 @@ size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_
 	}
 }
 
+size_t utf8encodeutf16(const utf16_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+{
+	size_t encoded_length = 0;
+	utf16_t surrogate_high;
+	utf16_t surrogate_low;
+	utf16_t current;
+	unicode_t codepoint;
+	const utf16_t* src = (const utf16_t*)input;
+	ptrdiff_t src_size = (ptrdiff_t)inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
+	size_t bytes_written = 0;
+
+	if (input == 0 || inputSize < 2)
+	{
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_DATA;
+		}
+		return SIZE_MAX;
+	}
+
+	while (src_size > 0)
+	{
+		current = *src;
+
+		if (current < SURROGATE_HIGH_START || current > SURROGATE_LOW_END)
+		{
+			if (current <= 0x7F)
+			{
+				if (dst != 0)
+				{
+					if (dst_size < 1)
+					{
+						if (errors != 0)
+						{
+							*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+						}
+						return SIZE_MAX;
+					}
+
+					dst[0] = (char)current;
+				}
+
+				encoded_length = 1;
+			}
+			else if (current <= 0x7FF)
+			{
+				if (dst != 0)
+				{
+					if (dst_size < 2)
+					{
+						if (errors != 0)
+						{
+							*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+						}
+						return SIZE_MAX;
+					}
+
+					dst[1] = (char)((current       & 0x3F) | 0x80);
+					dst[0] = (char)((current >> 6)         | 0xC0);
+				}
+
+				encoded_length = 2;
+			}
+			else
+			{
+				if (dst != 0)
+				{
+					if (dst_size < 3)
+					{
+						if (errors != 0)
+						{
+							*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+						}
+						return SIZE_MAX;
+					}
+
+					dst[2] = (char)(( current        & 0x3F) | 0x80);
+					dst[1] = (char)(((current >>  6) & 0x3F) | 0x80);
+					dst[0] = (char)( (current >> 12)         | 0xE0);
+				}
+
+				encoded_length = 3;
+			}
+
+			src++;
+			src_size -= 2;
+
+			if (dst != 0)
+			{
+				dst += encoded_length;
+				dst_size -= encoded_length;
+			}
+
+			bytes_written += encoded_length;
+		}
+		else
+		{
+			if (src_size < 4)
+			{
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_INVALID_DATA;
+				}
+				return SIZE_MAX;
+			}
+
+			surrogate_high = *src;
+
+			if (surrogate_high < SURROGATE_HIGH_START || surrogate_high > SURROGATE_HIGH_END)
+			{
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
+				}
+				return SIZE_MAX;
+			}
+
+			surrogate_low = *(src + 1);
+
+			if (surrogate_low < SURROGATE_LOW_START || surrogate_low > SURROGATE_LOW_END)
+			{
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
+				}
+				return SIZE_MAX;
+			}
+
+			codepoint =
+				0x10000 +
+				(surrogate_low - SURROGATE_LOW_START) +
+				((surrogate_high - SURROGATE_HIGH_START) << 10);
+
+			if (codepoint > MAX_LEGAL_UTF32)
+			{
+				/* Unicode characters must be encoded in a maximum of four bytes. */
+
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_INVALID_CHARACTER;
+				}
+				return SIZE_MAX;
+			}
+
+			src += 4;
+			src_size -= 4;
+
+			if (dst != 0)
+			{
+				if (dst_size < 4)
+				{
+					if (errors != 0)
+					{
+						*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+					}
+					return SIZE_MAX;
+				}
+
+				dst[3] = (char)(( codepoint        & 0x3F) | 0x80);
+				dst[2] = (char)(((codepoint >>  6) & 0x3F) | 0x80);
+				dst[1] = (char)(((codepoint >> 12) & 0x3F) | 0x80);
+				dst[0] = (char)( (codepoint >> 18)         | 0xF0);
+
+				dst += 4;
+				dst_size -= 4;
+			}
+
+			bytes_written += 4;
+		}
+	}
+
+	return bytes_written;
+}
+
+size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+{
+	unicode_t codepoint;
+	size_t encoded_length;
+	size_t i;
+	unicode_t mask = 0;
+	const unicode_t* src = (const unicode_t*)input;
+	ptrdiff_t src_size = (ptrdiff_t)inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
+	size_t bytes_written = 0;
+
+	if (input == 0 || inputSize < 2)
+	{
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_DATA;
+		}
+		return SIZE_MAX;
+	}
+
+	while (src_size > 0)
+	{
+		codepoint = *src;
+
+		if (codepoint < 0x800)
+		{
+			encoded_length = 2;
+			mask = 0xC0;
+		}
+		else if (codepoint < 0x10000)
+		{
+			encoded_length = 3;
+			mask = 0xE0;
+		}
+		else if (codepoint <= MAX_LEGAL_UTF32)
+		{
+			encoded_length = 4;
+			mask = 0xF0;
+		}
+		else
+		{
+			codepoint = REPLACEMENT_CHARACTER;
+			encoded_length = 3;
+			mask = 0xE0;
+		}
+
+		if (encoded_length >= targetSize)
+		{
+			if (errors != 0)
+			{
+				*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+			}
+			return SIZE_MAX;
+		}
+
+		if (dst != 0)
+		{
+			if (dst_size < encoded_length)
+			{
+				if (errors != 0)
+				{
+					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+				}
+				return SIZE_MAX;
+			}
+
+			for (i = encoded_length - 1; i >= 1; --i)
+			{
+				dst[i] = (char)((codepoint & 0x3F) | 0x80);
+				codepoint >>= 6;
+			}
+
+			dst[0] = (char)(codepoint | mask);
+
+			dst += encoded_length;
+			dst_size -= encoded_length;
+		}
+
+		bytes_written += encoded_length;
+	}
+
+	return bytes_written;
+}
+
 size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
+#if 1
+#if UTF8_WCHAR_UTF16
+	return utf8encodeutf16((const utf16_t*)input, inputSize, target, targetSize, errors);
+#elif UTF8_WCHAR_UTF32
+	return utf8encodeutf32((const unicode_t*)input, inputSize, target, targetSize, errors);
+#else
+	return SIZE_MAX;
+#endif
+#else
 	size_t result = 0;
 	utf16_t surrogate_high;
 	utf16_t surrogate_low;
@@ -402,6 +672,7 @@ size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t tar
 	}
 
 	return bytes_written;
+#endif
 }
 
 size_t utf8decode(const char* text, unicode_t* result, int32_t* errors)
