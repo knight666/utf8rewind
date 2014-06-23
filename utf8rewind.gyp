@@ -40,6 +40,7 @@
 				'source/tests/suite-charvalid.cpp',
 				'source/tests/suite-convertucs2.cpp',
 				'source/tests/suite-decode.cpp',
+				'source/tests/suite-encodeutf16.cpp',
 				'source/tests/suite-encodeutf32.cpp',
 				'source/tests/suite-len.cpp',
 				'source/tests/suite-seek.cpp',
