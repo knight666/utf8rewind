@@ -312,8 +312,7 @@ TEST(EncodeUtf16, ThreeBytesString)
 TEST(EncodeUtf16, SurrogatePair)
 {
 	utf16_t c[] = {
-		0xD834,
-		0xDD1E
+		0xD834, 0xDD1E
 	};
 	const size_t s = 256;
 	char b[s] = { 0 };
@@ -327,8 +326,7 @@ TEST(EncodeUtf16, SurrogatePair)
 TEST(EncodeUtf16, SurrogatePairFirst)
 {
 	utf16_t c[] = {
-		0xD800,
-		0xDC00
+		0xD800, 0xDC00
 	};
 	const size_t s = 256;
 	char b[s] = { 0 };
@@ -342,8 +340,7 @@ TEST(EncodeUtf16, SurrogatePairFirst)
 TEST(EncodeUtf16, SurrogatePairLast)
 {
 	utf16_t c[] = {
-		0xDBFF,
-		0xDFFF
+		0xDBFF, 0xDFFF
 	};
 	const size_t s = 256;
 	char b[s] = { 0 };
@@ -357,8 +354,7 @@ TEST(EncodeUtf16, SurrogatePairLast)
 TEST(EncodeUtf16, SurrogatePairUnmatchedLow)
 {
 	utf16_t c[] = {
-		0xD800,
-		0x1100
+		0xD800, 0x1100
 	};
 	const size_t s = 256;
 	char b[s] = { 0 };
@@ -372,8 +368,7 @@ TEST(EncodeUtf16, SurrogatePairUnmatchedLow)
 TEST(EncodeUtf16, SurrogatePairUnmatchedHigh)
 {
 	utf16_t c[] = {
-		0xDD1E,
-		0xD834
+		0xDD1E, 0xD834
 	};
 	const size_t s = 256;
 	char b[s] = { 0 };
@@ -387,8 +382,7 @@ TEST(EncodeUtf16, SurrogatePairUnmatchedHigh)
 TEST(EncodeUtf16, SurrogatePairBufferTooSmall)
 {
 	utf16_t c[] = {
-		0xDB21,
-		0xDC7D
+		0xDB21, 0xDC7D
 	};
 	const size_t s = 3;
 	char b[s] = { 0 };
@@ -402,8 +396,7 @@ TEST(EncodeUtf16, SurrogatePairBufferTooSmall)
 TEST(EncodeUtf16, SurrogatePairLength)
 {
 	utf16_t c[] = {
-		0xD967,
-		0xDDDD
+		0xD967, 0xDDDD
 	};
 	int32_t errors = 0;
 
@@ -414,12 +407,9 @@ TEST(EncodeUtf16, SurrogatePairLength)
 TEST(EncodeUtf16, SurrogatePairString)
 {
 	utf16_t c[] = {
-		0xD821,
-		0xDC7D,
-		0xD85E,
-		0xDF88,
-		0xD955,
-		0xDDED
+		0xD821, 0xDC7D,
+		0xD85E, 0xDF88,
+		0xD955, 0xDDED
 	};
 	const size_t s = 256;
 	char b[s] = { 0 };
@@ -428,4 +418,21 @@ TEST(EncodeUtf16, SurrogatePairString)
 	EXPECT_EQ(12, utf8encodeutf16(c, sizeof(c), b, s, &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xF0\x98\x91\xBD\xF0\xA7\xAE\x88\xF1\xA5\x97\xAD", b);
+}
+
+TEST(EncodeUtf16, SurrogatePairStringUnmatchedPair)
+{
+	utf16_t c[] = {
+		0xD85E, 0xDF88,
+		0xD955, 0xDDED,
+		0xD821, 0xDD,
+		0xD83D, 0xDE12
+	};
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(SIZE_MAX, utf8encodeutf16(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR, errors);
+	EXPECT_STREQ("\xF0\xA7\xAE\x88\xF1\xA5\x97\xAD", b);
 }

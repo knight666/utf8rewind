@@ -392,3 +392,130 @@ TEST(EncodeUtf32, FourBytesString)
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xF0\x9F\x86\x91\xF0\x9F\x86\x98\xF0\x9F\x86\x9A", b);
 }
+
+TEST(EncodeUtf32, SurrogatePair)
+{
+	unicode_t c[] = {
+		0xD834, 0xDE45
+	};
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8encodeutf32(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xF0\x9D\x89\x85", b);
+}
+
+TEST(EncodeUtf32, SurrogatePairFirst)
+{
+	unicode_t c[] = {
+		0xD800, 0xDC00
+	};
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8encodeutf32(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xF0\x90\x80\x80", b);
+}
+
+TEST(EncodeUtf32, SurrogatePairLast)
+{
+	unicode_t c[] = {
+		0xDBFF, 0xDFFF
+	};
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8encodeutf32(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xF4\x8F\xBF\xBF", b);
+}
+
+TEST(EncodeUtf32, SurrogatePairUnmatchedLow)
+{
+	unicode_t c[] = {
+		0xD820, 0x17
+	};
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(SIZE_MAX, utf8encodeutf32(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR, errors);
+	EXPECT_STREQ("", b);
+}
+
+TEST(EncodeUtf32, SurrogatePairUnmatchedHigh)
+{
+	unicode_t c[] = {
+		0xDD1E, 0xD834
+	};
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(SIZE_MAX, utf8encodeutf32(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR, errors);
+	EXPECT_STREQ("", b);
+}
+
+TEST(EncodeUtf32, SurrogatePairBufferTooSmall)
+{
+	unicode_t c[] = {
+		0xD81A, 0xDC00
+	};
+	const size_t s = 3;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(SIZE_MAX, utf8encodeutf32(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_STREQ("", b);
+}
+
+TEST(EncodeUtf32, SurrogatePairLength)
+{
+	unicode_t c[] = {
+		0xD834, 0xDE45
+	};
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8encodeutf32(c, sizeof(c), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(EncodeUtf32, SurrogatePairString)
+{
+	unicode_t c[] = {
+		0xD83D, 0xDE12,
+		0xD83D, 0xDE22,
+		0xD83D, 0xDE24,
+	};
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(12, utf8encodeutf32(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xF0\x9F\x98\x92\xF0\x9F\x98\xA2\xF0\x9F\x98\xA4", b);
+}
+
+TEST(EncodeUtf32, SurrogatePairStringUnmatchedPair)
+{
+	unicode_t c[] = {
+		0xD83D, 0xDE12,
+		0xD83D, 0x988,
+		0xD834, 0xDE24,
+	};
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(SIZE_MAX, utf8encodeutf32(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR, errors);
+	EXPECT_STREQ("\xF0\x9F\x98\x92", b);
+}
