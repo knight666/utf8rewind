@@ -2,7 +2,7 @@
 
 #include "utf8rewind.h"
 
-TEST(Encode, Character)
+TEST(EncodeUtf32, Character)
 {
 	unicode_t c = 'U';
 	const size_t s = 256;
@@ -14,7 +14,7 @@ TEST(Encode, Character)
 	EXPECT_STREQ("U", b);
 }
 
-TEST(Encode, CharacterAboveLegalUtf32)
+TEST(EncodeUtf32, CharacterAboveLegalUtf32)
 {
 	unicode_t c = 0x110001;
 	const size_t s = 256;
@@ -26,7 +26,7 @@ TEST(Encode, CharacterAboveLegalUtf32)
 	EXPECT_STREQ("\xEF\xBF\xBD", b);
 }
 
-TEST(Encode, ZeroLength)
+TEST(EncodeUtf32, ZeroLength)
 {
 	unicode_t c = 0x8712;
 	const size_t s = 256;
@@ -38,7 +38,7 @@ TEST(Encode, ZeroLength)
 	EXPECT_STREQ("", b);
 }
 
-TEST(Encode, ZeroBuffer)
+TEST(EncodeUtf32, ZeroBuffer)
 {
 	unicode_t c = 'K';
 	const size_t s = 256;
@@ -48,7 +48,7 @@ TEST(Encode, ZeroBuffer)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(Encode, String)
+TEST(EncodeUtf32, String)
 {
 	unicode_t c[] = {
 		'S',
@@ -66,7 +66,7 @@ TEST(Encode, String)
 	EXPECT_STREQ("S\xF0\x9F\x84\xAEH\xEA\xA1\x80\xDF\x94", b);
 }
 
-TEST(Encode, StringBufferTooSmall)
+TEST(EncodeUtf32, StringBufferTooSmall)
 {
 	unicode_t c[] = {
 		'F',
@@ -83,7 +83,7 @@ TEST(Encode, StringBufferTooSmall)
 	EXPECT_STREQ("Foo", b);
 }
 
-TEST(Encode, StringEmpty)
+TEST(EncodeUtf32, StringEmpty)
 {
 	unicode_t c[] = {
 		0
@@ -97,7 +97,7 @@ TEST(Encode, StringEmpty)
 	EXPECT_STREQ("", b);
 }
 
-TEST(Encode, StringEndsInMiddle)
+TEST(EncodeUtf32, StringEndsInMiddle)
 {
 	unicode_t c[] = {
 		0x2488, // ⒈
@@ -115,7 +115,7 @@ TEST(Encode, StringEndsInMiddle)
 	EXPECT_STREQ("\xE2\x92\x88[r", b);
 }
 
-TEST(Encode, Ascii)
+TEST(EncodeUtf32, Ascii)
 {
 	unicode_t c = ')';
 	const size_t s = 256;
@@ -127,7 +127,7 @@ TEST(Encode, Ascii)
 	EXPECT_STREQ(")", b);
 }
 
-TEST(Encode, AsciiFirst)
+TEST(EncodeUtf32, AsciiFirst)
 {
 	unicode_t c = 0;
 	const size_t s = 256;
@@ -139,7 +139,7 @@ TEST(Encode, AsciiFirst)
 	EXPECT_STREQ("", b);
 }
 
-TEST(Encode, AsciiLast)
+TEST(EncodeUtf32, AsciiLast)
 {
 	unicode_t c = 0x7F;
 	const size_t s = 256;
@@ -151,7 +151,7 @@ TEST(Encode, AsciiLast)
 	EXPECT_STREQ("\x7F", b);
 }
 
-TEST(Encode, AsciiString)
+TEST(EncodeUtf32, AsciiString)
 {
 	unicode_t c[] = { 'B', 'o', 'm', 'b' };
 	const size_t s = 256;
@@ -163,7 +163,7 @@ TEST(Encode, AsciiString)
 	EXPECT_STREQ("Bomb", b);
 }
 
-TEST(Encode, TwoBytes)
+TEST(EncodeUtf32, TwoBytes)
 {
 	unicode_t c = 0x03A9; // Ω
 	const size_t s = 256;
@@ -175,7 +175,7 @@ TEST(Encode, TwoBytes)
 	EXPECT_STREQ("\xCE\xA9", b);
 }
 
-TEST(Encode, TwoBytesFirst)
+TEST(EncodeUtf32, TwoBytesFirst)
 {
 	unicode_t c = 0x80; // Ω
 	const size_t s = 256;
@@ -187,7 +187,7 @@ TEST(Encode, TwoBytesFirst)
 	EXPECT_STREQ("\xC2\x80", b);
 }
 
-TEST(Encode, TwoBytesLast)
+TEST(EncodeUtf32, TwoBytesLast)
 {
 	unicode_t c = 0x07FF;
 	const size_t s = 256;
@@ -199,7 +199,7 @@ TEST(Encode, TwoBytesLast)
 	EXPECT_STREQ("\xDF\xBF", b);
 }
 
-TEST(Encode, TwoBytesBufferTooSmall)
+TEST(EncodeUtf32, TwoBytesBufferTooSmall)
 {
 	unicode_t c = 0x044B; // ы
 	const size_t s = 1;
@@ -211,7 +211,7 @@ TEST(Encode, TwoBytesBufferTooSmall)
 	EXPECT_STREQ("", b);
 }
 
-TEST(Encode, TwoBytesString)
+TEST(EncodeUtf32, TwoBytesString)
 {
 	unicode_t c[] = {
 		0x0169, // ũ
@@ -228,7 +228,7 @@ TEST(Encode, TwoBytesString)
 	EXPECT_STREQ("\xC5\xA9\xC5\x8E\xC6\x91\xC5\x8A", b);
 }
 
-TEST(Encode, ThreeBytes)
+TEST(EncodeUtf32, ThreeBytes)
 {
 	unicode_t c = 0x3DB1; // 㶱
 	const size_t s = 256;
@@ -240,7 +240,7 @@ TEST(Encode, ThreeBytes)
 	EXPECT_STREQ("\xE3\xB6\xB1", b);
 }
 
-TEST(Encode, ThreeBytesFirst)
+TEST(EncodeUtf32, ThreeBytesFirst)
 {
 	unicode_t c = 0x800;
 	const size_t s = 256;
@@ -252,7 +252,7 @@ TEST(Encode, ThreeBytesFirst)
 	EXPECT_STREQ("\xE0\xA0\x80", b);
 }
 
-TEST(Encode, ThreeBytesLast)
+TEST(EncodeUtf32, ThreeBytesLast)
 {
 	unicode_t c = 0xFFFF;
 	const size_t s = 256;
@@ -264,7 +264,7 @@ TEST(Encode, ThreeBytesLast)
 	EXPECT_STREQ("\xEF\xBF\xBF", b);
 }
 
-TEST(Encode, ThreeBytesBufferTooSmall)
+TEST(EncodeUtf32, ThreeBytesBufferTooSmall)
 {
 	unicode_t c = 0x1F61; // ὡ
 	const size_t s = 2;
@@ -276,7 +276,7 @@ TEST(Encode, ThreeBytesBufferTooSmall)
 	EXPECT_STREQ("", b);
 }
 
-TEST(Encode, ThreeBytesString)
+TEST(EncodeUtf32, ThreeBytesString)
 {
 	unicode_t c[] = {
 		0x2776, // ❶
@@ -293,7 +293,7 @@ TEST(Encode, ThreeBytesString)
 	EXPECT_STREQ("\xE2\x9D\xB6\xE2\x9D\xB8\xE2\x99\xA5\xE2\x9D\xBD", b);
 }
 
-TEST(Encode, FourBytes)
+TEST(EncodeUtf32, FourBytes)
 {
 	unicode_t c = 0x1D424; // 𝐤
 	const size_t s = 256;
@@ -305,7 +305,7 @@ TEST(Encode, FourBytes)
 	EXPECT_STREQ("\xF0\x9D\x90\xA4", b);
 }
 
-TEST(Encode, FourBytesFirst)
+TEST(EncodeUtf32, FourBytesFirst)
 {
 	unicode_t c = 0x10000;
 	const size_t s = 256;
@@ -317,7 +317,7 @@ TEST(Encode, FourBytesFirst)
 	EXPECT_STREQ("\xF0\x90\x80\x80", b);
 }
 
-TEST(Encode, FourBytesLast)
+TEST(EncodeUtf32, FourBytesLast)
 {
 	unicode_t c = 0x1000FF;
 	const size_t s = 256;
@@ -329,7 +329,7 @@ TEST(Encode, FourBytesLast)
 	EXPECT_STREQ("\xF4\x80\x83\xBF", b);
 }
 
-TEST(Encode, FourBytesBufferTooSmall)
+TEST(EncodeUtf32, FourBytesBufferTooSmall)
 {
 	unicode_t c = 0x10840;
 	const size_t s = 3;
@@ -341,7 +341,7 @@ TEST(Encode, FourBytesBufferTooSmall)
 	EXPECT_STREQ("", b);
 }
 
-TEST(Encode, FourBytesString)
+TEST(EncodeUtf32, FourBytesString)
 {
 	unicode_t c[] = {
 		0x1F191, // 🆑
