@@ -75,7 +75,7 @@ size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t*
 			{
 				*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
 			}
-			return SIZE_MAX;
+			return 0;
 		}
 
 		for (i = encoded_length - 1; i >= 1; --i)
@@ -358,7 +358,7 @@ size_t utf8encodeutf16(const utf16_t* input, size_t inputSize, char* target, siz
 		{
 			*errors = UTF8_ERR_INVALID_DATA;
 		}
-		return SIZE_MAX;
+		return bytes_written;
 	}
 
 	while (src_size > 0)
@@ -377,7 +377,7 @@ size_t utf8encodeutf16(const utf16_t* input, size_t inputSize, char* target, siz
 				{
 					*errors = UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
 				}
-				return SIZE_MAX;
+				return bytes_written;
 			}
 
 			if (src_size < 4)
@@ -386,7 +386,7 @@ size_t utf8encodeutf16(const utf16_t* input, size_t inputSize, char* target, siz
 				{
 					*errors = UTF8_ERR_INVALID_DATA;
 				}
-				return SIZE_MAX;
+				return bytes_written;
 			}
 
 			src++;
@@ -400,7 +400,7 @@ size_t utf8encodeutf16(const utf16_t* input, size_t inputSize, char* target, siz
 				{
 					*errors = UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
 				}
-				return SIZE_MAX;
+				return bytes_written;
 			}
 
 			codepoint =
@@ -414,9 +414,9 @@ size_t utf8encodeutf16(const utf16_t* input, size_t inputSize, char* target, siz
 		}
 
 		encoded_length = writecodepoint(codepoint, &dst, &dst_size, errors);
-		if (encoded_length == SIZE_MAX)
+		if (encoded_length == 0)
 		{
-			return SIZE_MAX;
+			return bytes_written;
 		}
 
 		src++;
@@ -446,7 +446,7 @@ size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, s
 		{
 			*errors = UTF8_ERR_INVALID_DATA;
 		}
-		return SIZE_MAX;
+		return bytes_written;
 	}
 
 	while (src_size > 0)
@@ -465,7 +465,7 @@ size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, s
 				{
 					*errors = UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
 				}
-				return SIZE_MAX;
+				return bytes_written;
 			}
 
 			if (src_size < 8)
@@ -474,7 +474,7 @@ size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, s
 				{
 					*errors = UTF8_ERR_INVALID_DATA;
 				}
-				return SIZE_MAX;
+				return bytes_written;
 			}
 
 			src++;
@@ -488,7 +488,7 @@ size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, s
 				{
 					*errors = UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
 				}
-				return SIZE_MAX;
+				return bytes_written;
 			}
 
 			codepoint =
@@ -498,9 +498,9 @@ size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, s
 		}
 
 		encoded_length = writecodepoint(codepoint, &dst, &dst_size, errors);
-		if (encoded_length == SIZE_MAX)
+		if (encoded_length == 0)
 		{
-			return SIZE_MAX;
+			return bytes_written;
 		}
 
 		src++;
