@@ -388,7 +388,7 @@ TEST(EncodeUtf16, SurrogatePairBufferTooSmall)
 {
 	utf16_t c[] = {
 		0xDB21,
-		0xD87D
+		0xDC7D
 	};
 	const size_t s = 3;
 	char b[s] = { 0 };
