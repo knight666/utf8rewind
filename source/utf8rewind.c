@@ -306,7 +306,11 @@ size_t utf8encodeutf16(const utf16_t* input, size_t inputSize, char* target, siz
 	{
 		current = *src;
 
-		if (current < SURROGATE_HIGH_START || current > SURROGATE_LOW_END)
+		if (current == 0)
+		{
+			break;
+		}
+		else if (current < SURROGATE_HIGH_START || current > SURROGATE_LOW_END)
 		{
 			if (current <= 0x7F)
 			{
@@ -426,7 +430,7 @@ size_t utf8encodeutf16(const utf16_t* input, size_t inputSize, char* target, siz
 				return SIZE_MAX;
 			}
 
-			src += 4;
+			src += 2;
 			src_size -= 4;
 
 			if (dst != 0)
