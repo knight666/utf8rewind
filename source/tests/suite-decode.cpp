@@ -193,3 +193,146 @@ TEST(DecodeUtf32, FourBytesNotEnoughData)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_EQ(0x00, o[0]);
 }
+
+TEST(DecodeUtf32, ReadAscii)
+{
+	const char* i = "I";
+	int32_t errors = 0;
+
+	EXPECT_EQ(1, utf8decodeutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, ReadAsciiFirst)
+{
+	const char* i = "\0";
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8decodeutf32(i, 1, nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, ReadAsciiLast)
+{
+	const char* i = "\x7F";
+	int32_t errors = 0;
+
+	EXPECT_EQ(1, utf8decodeutf32(i, 1, nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, ReadTwoBytes)
+{
+	const char* i = "\xCB\x9B";
+	int32_t errors = 0;
+
+	EXPECT_EQ(2, utf8decodeutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, ReadTwoBytesFirst)
+{
+	const char* i = "\xC2\x80";
+	int32_t errors = 0;
+
+	EXPECT_EQ(2, utf8decodeutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, ReadTwoBytesLast)
+{
+	const char* i = "\xDF\xBF";
+	int32_t errors = 0;
+
+	EXPECT_EQ(2, utf8decodeutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, ReadTwoBytesNotEnoughData)
+{
+	const char* i = "\xC8";
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8decodeutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(DecodeUtf32, ReadThreeBytes)
+{
+	const char* i = "\xE0\xB4\x8B";
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8decodeutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, ReadThreeBytesFirst)
+{
+	const char* i = "\xE0\xA0\x80";
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8decodeutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, ReadThreeBytesLast)
+{
+	const char* i = "\xEF\xBF\xBF";
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8decodeutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, ReadThreeBytesNotEnoughData)
+{
+	const char* i = "\xE0\xB4";
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8decodeutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(DecodeUtf32, ReadFourBytes)
+{
+	const char* i = "\xF0\x90\xB0\xAC";
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8decodeutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, ReadFourBytesFirst)
+{
+	const char* i = "\xF0\x90\x80\x80";
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8decodeutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, ReadFourBytesLast)
+{
+	const char* i = "\xF4\x80\x83\xBF";
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8decodeutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, ReadFourBytesNotEnoughData)
+{
+	const char* i = "\xF0\x90\xB1";
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8decodeutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(DecodeUtf32, ReadNotEnoughData)
+{
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8decodeutf32(nullptr, 1, nullptr, 0, &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
