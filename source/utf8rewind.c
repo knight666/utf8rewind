@@ -689,7 +689,11 @@ size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, s
 
 		current = (uint8_t)*src;
 
-		if (current <= 0x7F)
+		if (current == 0)
+		{
+			break;
+		}
+		else if (current <= 0x7F)
 		{
 			decoded_length = 1;
 			mask = 0xFF;
