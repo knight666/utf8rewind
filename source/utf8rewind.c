@@ -647,7 +647,7 @@ size_t utf8decode(const char* text, unicode_t* result, int32_t* errors)
 
 size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, size_t targetSize, int32_t* errors)
 {
-	size_t bytes_read = 0;
+	size_t bytes_written = 0;
 	size_t decoded_length = 0;
 	uint8_t current;
 	unicode_t codepoint;
@@ -664,7 +664,7 @@ size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, s
 		{
 			*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
 		}
-		return bytes_read;
+		return bytes_written;
 	}
 
 	if (input == 0 || inputSize == 0)
@@ -673,7 +673,7 @@ size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, s
 		{
 			*errors = UTF8_ERR_INVALID_DATA;
 		}
-		return bytes_read;
+		return bytes_written;
 	}
 
 	while (src_length > 0)
@@ -684,7 +684,7 @@ size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, s
 			{
 				*errors = UTF8_ERR_INVALID_CHARACTER;
 			}
-			return bytes_read;
+			return bytes_written;
 		}
 
 		current = (uint8_t)*src;
@@ -719,7 +719,7 @@ size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, s
 			{
 				*errors = UTF8_ERR_INVALID_CHARACTER;
 			}
-			return bytes_read;
+			return bytes_written;
 		}
 
 		if (src_length < decoded_length)
@@ -728,7 +728,7 @@ size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, s
 			{
 				*errors = UTF8_ERR_INVALID_DATA;
 			}
-			return bytes_read;
+			return bytes_written;
 		}
 
 		codepoint = (unicode_t)(src[0] & mask);
@@ -749,17 +749,17 @@ size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, s
 				{
 					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
 				}
-				return bytes_read;
+				return bytes_written;
 			}
 
 			*dst++ = codepoint;
 			dst_size -= 4;
 		}
 
-		bytes_read += decoded_length;
+		bytes_written += 4;
 	}
 
-	return bytes_read;
+	return bytes_written;
 }
 
 size_t utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors)
