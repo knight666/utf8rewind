@@ -708,6 +708,101 @@ size_t utf8decode(const char* text, unicode_t* result, int32_t* errors)
 	}
 }
 
+size_t utf8decodeutf16(const char* input, size_t inputSize, utf16_t* target, size_t targetSize, int32_t* errors)
+{
+	size_t bytes_written = 0;
+	size_t decoded_length;
+	unicode_t codepoint;
+	const char* src = input;
+	size_t src_length = inputSize;
+	utf16_t* dst = target;
+	size_t dst_size = targetSize;
+
+	if (target != 0 && targetSize < 4)
+	{
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+		}
+		return bytes_written;
+	}
+
+	if (input == 0 || inputSize == 0)
+	{
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_DATA;
+		}
+		return bytes_written;
+	}
+
+	while (src_length > 0)
+	{
+		decoded_length = readcodepoint(&codepoint, src, src_length, errors);
+		if (decoded_length == 0)
+		{
+			return bytes_written;
+		}
+
+		if (codepoint <= MAX_BASIC_MULTILINGUAR_PLANE)
+		{
+			if (dst != 0)
+			{
+				if (dst_size < 2)
+				{
+					if (errors != 0)
+					{
+						*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+					}
+					return bytes_written;
+				}
+
+				if (codepoint >= SURROGATE_HIGH_START && codepoint <= SURROGATE_LOW_END)
+				{
+					*dst++ = REPLACEMENT_CHARACTER;
+				}
+				else
+				{
+					*dst++ = (utf16_t)codepoint;
+				}
+
+				dst_size -= 2;
+			}
+
+			bytes_written += 2;
+		}
+		else
+		{
+			if (dst != 0)
+			{
+				/* Codepoint must be converted to a surrogate pair. */
+
+				if (dst_size < 4)
+				{
+					if (errors != 0)
+					{
+						*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+					}
+					return bytes_written;
+				}
+
+				codepoint -= 0x10000;
+				*dst++ = (codepoint >> 10) + SURROGATE_HIGH_START;
+				*dst++ = (codepoint & 0x3FF) + SURROGATE_LOW_START;
+
+				dst_size -= 4;
+			}
+
+			bytes_written += 4;
+		}
+
+		src += decoded_length;
+		src_length -= decoded_length;
+	}
+
+	return bytes_written;
+}
+
 size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, size_t targetSize, int32_t* errors)
 {
 	size_t bytes_written = 0;
@@ -744,12 +839,9 @@ size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, s
 			return bytes_written;
 		}
 
-		src += decoded_length;
-		src_length -= decoded_length;
-
 		if (dst != 0)
 		{
-			if (dst_size < decoded_length)
+			if (dst_size < 4)
 			{
 				if (errors != 0)
 				{
@@ -763,6 +855,9 @@ size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, s
 		}
 
 		bytes_written += 4;
+
+		src += decoded_length;
+		src_length -= decoded_length;
 	}
 
 	return bytes_written;

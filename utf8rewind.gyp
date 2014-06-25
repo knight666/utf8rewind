@@ -39,6 +39,7 @@
 				'source/tests/suite-charlen.cpp',
 				'source/tests/suite-charvalid.cpp',
 				'source/tests/suite-convertucs2.cpp',
+				'source/tests/suite-decodeutf16.cpp',
 				'source/tests/suite-decodeutf32.cpp',
 				'source/tests/suite-encodeutf16.cpp',
 				'source/tests/suite-encodeutf32.cpp',
