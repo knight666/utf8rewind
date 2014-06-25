@@ -95,7 +95,70 @@ size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t*
 
 size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int32_t* errors)
 {
-	return 0;
+	uint8_t current = (uint8_t)*src;
+	uint8_t mask;
+	size_t decoded_length;
+	size_t i;
+
+	if (!utf8charvalid(*src))
+	{
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_CHARACTER;
+		}
+		return 0;
+	}
+
+	if (current == 0)
+	{
+		return 0;
+	}
+	else if (current <= 0x7F)
+	{
+		decoded_length = 1;
+		mask = 0xFF;
+	}
+	else if ((current & 0xE0) == 0xC0)
+	{
+		decoded_length = 2;
+		mask = 0x1F;
+	}
+	else if ((current & 0xF0) == 0xE0)
+	{
+		decoded_length = 3;
+		mask = 0x0F;
+	}
+	else if ((current & 0xF8) == 0xF0)
+	{
+		decoded_length = 4;
+		mask = 0x07;
+	}
+	else
+	{
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_CHARACTER;
+		}
+		return 0;
+	}
+
+	if (srcSize < decoded_length)
+	{
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_DATA;
+		}
+		return 0;
+	}
+
+	*codepoint = (unicode_t)(current & mask);
+
+	for (i = 1; i < decoded_length; ++i)
+	{
+		*codepoint = (*codepoint << 6) | (src[i] & 0x3F);
+	}
+
+	return decoded_length;
 }
 
 int8_t utf8charvalid(char encodedCharacter)
@@ -648,11 +711,8 @@ size_t utf8decode(const char* text, unicode_t* result, int32_t* errors)
 size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, size_t targetSize, int32_t* errors)
 {
 	size_t bytes_written = 0;
-	size_t decoded_length = 0;
-	uint8_t current;
+	size_t decoded_length;
 	unicode_t codepoint;
-	unicode_t mask;
-	size_t i;
 	const char* src = input;
 	size_t src_length = inputSize;
 	unicode_t* dst = target;
@@ -678,64 +738,10 @@ size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, s
 
 	while (src_length > 0)
 	{
-		if (!utf8charvalid(*src))
+		decoded_length = readcodepoint(&codepoint, src, src_length, errors);
+		if (decoded_length == 0)
 		{
-			if (errors != 0)
-			{
-				*errors = UTF8_ERR_INVALID_CHARACTER;
-			}
 			return bytes_written;
-		}
-
-		current = (uint8_t)*src;
-
-		if (current == 0)
-		{
-			break;
-		}
-		else if (current <= 0x7F)
-		{
-			decoded_length = 1;
-			mask = 0xFF;
-		}
-		else if ((current & 0xE0) == 0xC0)
-		{
-			decoded_length = 2;
-			mask = 0x1F;
-		}
-		else if ((current & 0xF0) == 0xE0)
-		{
-			decoded_length = 3;
-			mask = 0x0F;
-		}
-		else if ((current & 0xF8) == 0xF0)
-		{
-			decoded_length = 4;
-			mask = 0x07;
-		}
-		else
-		{
-			if (errors != 0)
-			{
-				*errors = UTF8_ERR_INVALID_CHARACTER;
-			}
-			return bytes_written;
-		}
-
-		if (src_length < decoded_length)
-		{
-			if (errors != 0)
-			{
-				*errors = UTF8_ERR_INVALID_DATA;
-			}
-			return bytes_written;
-		}
-
-		codepoint = (unicode_t)(src[0] & mask);
-
-		for (i = 1; i < decoded_length; ++i)
-		{
-			codepoint = (codepoint << 6) | (src[i] & 0x3F);
 		}
 
 		src += decoded_length;
