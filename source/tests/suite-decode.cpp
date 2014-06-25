@@ -2,6 +2,78 @@
 
 #include "utf8rewind.h"
 
+TEST(DecodeUtf32, Character)
+{
+	const char* i = "\xF0\x9F\x98\xA4";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8decodeutf32(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x1F624, o[0]);
+}
+
+TEST(DecodeUtf32, String)
+{
+	const char* i = "\xE0\xA4\x9C\xE0\xA4\xA1\xE0\xA4\xA4";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8decodeutf32(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x091C, o[0]);
+	EXPECT_EQ(0x0921, o[1]);
+	EXPECT_EQ(0x0924, o[2]);
+}
+
+TEST(DecodeUtf32, StringEndsInMiddle)
+{
+	const char* i = "How un\0fortunate";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8decodeutf32(i, 16, o, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ('H', o[0]);
+	EXPECT_EQ('o', o[1]);
+	EXPECT_EQ('w', o[2]);
+	EXPECT_EQ(' ', o[3]);
+	EXPECT_EQ('u', o[4]);
+	EXPECT_EQ('n', o[5]);
+}
+
+TEST(DecodeUtf32, StringDataSizeUnder)
+{
+	const char* i = "Tree";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8decodeutf32(i, 3, o, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ('T', o[0]);
+	EXPECT_EQ('r', o[1]);
+	EXPECT_EQ('e', o[2]);
+}
+
+TEST(DecodeUtf32, StringDataSizeOver)
+{
+	const char* i = "Bark";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8decodeutf32(i, 8, o, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ('B', o[0]);
+	EXPECT_EQ('a', o[1]);
+	EXPECT_EQ('r', o[2]);
+	EXPECT_EQ('k', o[3]);
+}
+
 TEST(DecodeUtf32, Ascii)
 {
 	const char* i = "\x5F";
