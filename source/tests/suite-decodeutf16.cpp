@@ -9,7 +9,7 @@ TEST(DecodeUtf16, Character)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x091C, o[0]);
 }
@@ -21,7 +21,7 @@ TEST(DecodeUtf16, String)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(6, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(6, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x091C, o[0]);
 	EXPECT_EQ(0x0921, o[1]);
@@ -63,7 +63,7 @@ TEST(DecodeUtf16, Ascii)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ('k', o[0]);
 }
@@ -75,7 +75,7 @@ TEST(DecodeUtf16, AsciiFirst)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(0, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_EQ(0x0000, o[0]);
 }
@@ -87,7 +87,7 @@ TEST(DecodeUtf16, AsciiLast)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x007F, o[0]);
 }
@@ -99,7 +99,7 @@ TEST(DecodeUtf16, AsciiString)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(6, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(6, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ('H', o[0]);
 	EXPECT_EQ('a', o[1]);
@@ -113,7 +113,7 @@ TEST(DecodeUtf16, AsciiInvalid)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(0, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, errors);
 	EXPECT_EQ(0x0000, o[0]);
 }
@@ -125,7 +125,7 @@ TEST(DecodeUtf16, TwoBytes)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x0169, o[0]);
 }
@@ -137,7 +137,7 @@ TEST(DecodeUtf16, TwoBytesFirst)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x0080, o[0]);
 }
@@ -149,7 +149,7 @@ TEST(DecodeUtf16, TwoBytesLast)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x07FF, o[0]);
 }
@@ -161,7 +161,7 @@ TEST(DecodeUtf16, TwoBytesString)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(6, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(6, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x076E, o[0]);
 	EXPECT_EQ(0x078A, o[1]);
@@ -175,7 +175,7 @@ TEST(DecodeUtf16, TwoBytesNotEnoughData)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(0, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_EQ(0x0000, o[0]);
 }
@@ -187,7 +187,7 @@ TEST(DecodeUtf16, ThreeBytes)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x130A, o[0]);
 }
@@ -199,7 +199,7 @@ TEST(DecodeUtf16, ThreeBytesFirst)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x0800, o[0]);
 }
@@ -211,7 +211,7 @@ TEST(DecodeUtf16, ThreeBytesLast)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0xFFFF, o[0]);
 }
@@ -223,7 +223,7 @@ TEST(DecodeUtf16, ThreeBytesString)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(8, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(8, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x304A, o[0]);
 	EXPECT_EQ(0x304D, o[1]);
@@ -238,7 +238,7 @@ TEST(DecodeUtf16, ThreeBytesNotEnoughData)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(0, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_EQ(0x0000, o[0]);
 }
@@ -250,7 +250,7 @@ TEST(DecodeUtf16, SurrogatePair)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(4, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(4, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0xD83D, o[0]);
 	EXPECT_EQ(0xDE24, o[1]);
@@ -263,7 +263,7 @@ TEST(DecodeUtf16, SurrogatePairFirst)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(4, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(4, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0xD800, o[0]);
 	EXPECT_EQ(0xDC00, o[1]);
@@ -276,7 +276,7 @@ TEST(DecodeUtf16, SurrogatePairLast)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(4, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(4, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0xDBFF, o[0]);
 	EXPECT_EQ(0xDFFF, o[1]);
@@ -289,7 +289,7 @@ TEST(DecodeUtf16, SurrogatePairString)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(8, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(8, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0xD801, o[0]);
 	EXPECT_EQ(0xDCA0, o[1]);
@@ -304,7 +304,7 @@ TEST(DecodeUtf16, SurrogatePairNotEnoughData)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(0, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_EQ(0x0000, o[0]);
 }
