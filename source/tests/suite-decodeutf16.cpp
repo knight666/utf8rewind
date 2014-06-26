@@ -28,6 +28,34 @@ TEST(DecodeUtf16, String)
 	EXPECT_EQ(0x0924, o[2]);
 }
 
+TEST(DecodeUtf16, StringEndsInMiddle)
+{
+	const char* i = "\xCE\xBA\xE1\xBD\xB9\x00\xCF\x83\xCE\xBC\xCE\xB5";
+	const size_t s = 256;
+	utf16_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x03BA, o[0]);
+	EXPECT_EQ(0x1F79, o[1]);
+}
+
+TEST(DecodeUtf16, StringBufferTooSmall)
+{
+	const char* i = "Ba\xF4\x8F\xBF\xBFy";
+	const size_t s = 4;
+	utf16_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_EQ('B', o[0]);
+	EXPECT_EQ('a', o[1]);
+	EXPECT_EQ(0xDBFF, o[2]);
+	EXPECT_EQ(0xDFFF, o[3]);
+}
+
 TEST(DecodeUtf16, Ascii)
 {
 	const char* i = "k";
@@ -62,6 +90,20 @@ TEST(DecodeUtf16, AsciiLast)
 	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s, &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x007F, o[0]);
+}
+
+TEST(DecodeUtf16, AsciiString)
+{
+	const char* i = "Ham";
+	const size_t s = 256;
+	utf16_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ('H', o[0]);
+	EXPECT_EQ('a', o[1]);
+	EXPECT_EQ('m', o[2]);
 }
 
 TEST(DecodeUtf16, AsciiInvalid)
@@ -112,6 +154,20 @@ TEST(DecodeUtf16, TwoBytesLast)
 	EXPECT_EQ(0x07FF, o[0]);
 }
 
+TEST(DecodeUtf16, TwoBytesString)
+{
+	const char* i = "\xDD\xAE\xDE\x8A\xDF\x80";
+	const size_t s = 256;
+	utf16_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x076E, o[0]);
+	EXPECT_EQ(0x078A, o[1]);
+	EXPECT_EQ(0x07C0, o[2]);
+}
+
 TEST(DecodeUtf16, TwoBytesNotEnoughData)
 {
 	const char* i = "\xDA";
@@ -158,6 +214,21 @@ TEST(DecodeUtf16, ThreeBytesLast)
 	EXPECT_EQ(2, utf8decodeutf16(i, strlen(i), o, s, &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0xFFFF, o[0]);
+}
+
+TEST(DecodeUtf16, ThreeBytesString)
+{
+	const char* i = "\xE3\x81\x8A\xE3\x81\x8D\xE3\x81\x99\xE3\x81\x88";
+	const size_t s = 256;
+	utf16_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x304A, o[0]);
+	EXPECT_EQ(0x304D, o[1]);
+	EXPECT_EQ(0x3059, o[2]);
+	EXPECT_EQ(0x3048, o[3]);
 }
 
 TEST(DecodeUtf16, ThreeBytesNotEnoughData)
@@ -211,6 +282,21 @@ TEST(DecodeUtf16, SurrogatePairLast)
 	EXPECT_EQ(0xDFFF, o[1]);
 }
 
+TEST(DecodeUtf16, SurrogatePairString)
+{
+	const char* i = "\xF0\x90\x92\xA0\xF0\x90\x92\xA8";
+	const size_t s = 256;
+	utf16_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8decodeutf16(i, strlen(i), o, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0xD801, o[0]);
+	EXPECT_EQ(0xDCA0, o[1]);
+	EXPECT_EQ(0xD801, o[2]);
+	EXPECT_EQ(0xDCA8, o[3]);
+}
+
 TEST(DecodeUtf16, SurrogatePairNotEnoughData)
 {
 	const char* i = "\xF0\x9F\x98";
@@ -220,5 +306,17 @@ TEST(DecodeUtf16, SurrogatePairNotEnoughData)
 
 	EXPECT_EQ(0, utf8decodeutf16(i, strlen(i), o, s, &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_EQ(0x0000, o[0]);
+}
+
+TEST(DecodeUtf16, SurrogatePairNotEnoughSpace)
+{
+	const char* i = "\xF0\x90\x92\xA0";
+	const size_t s = 1;
+	utf16_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8decodeutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_EQ(0x0000, o[0]);
 }
