@@ -84,7 +84,7 @@ TEST_F(QuickbrownWide, German)
 TEST_F(QuickbrownWide, Greek)
 {
 	ReadSection(911, 105);
-	EXPECT_STREQ(L"\x393\x3B1\x3B6\x3AD\x3B5\x3C2 \
+	EXPECT_STREQ(L"  \x393\x3B1\x3B6\x3AD\x3B5\x3C2 \
 \x3BA\x3B1\x1F76 \x3BC\x3C5\x3C1\x3C4\x3B9\x1F72\x3C2 \
 \x3B4\x1F72\x3BD \x3B8\x1F70 \x3B2\x3C1\x1FF6 \x3C0\
 \x3B9\x1F70 \x3C3\x3C4\x1F78 \x3C7\x3C1\x3C5\x3C3\x3B1\
@@ -114,7 +114,7 @@ TEST_F(QuickbrownWide, French)
 {
 	ReadSection(1527, 361);
 	EXPECT_STREQ(L"  Portez ce vieux whisky au juge blond qui fume sur son \xEEle int\xE9rieure, \xE0\n\
-  c\xF4t\xE9 de l'alc\xF4ve ovo\xEF" L"id, o\xF9 les b\xFB" L"ches se consument dans l'\xE2tre, ce\n\
+  c\xF4t\xE9 de l'alc\xF4ve ovo\xEF" L"de, o\xF9 les b\xFB" L"ches se consument dans l'\xE2tre, ce\n\
   qui lui permet de penser \xE0 la c\xE6nogen\xE8se de l'\xEAtre dont il est question\n\
   dans la cause ambigu\xEB entendue \xE0 Mo\xFF, dans un capharna\xFCm qui,\n\
   pense-t-il, diminue \xE7\xE0 et l\xE0 la qualit\xE9 de son \x153uvre. ", output);
@@ -122,15 +122,15 @@ TEST_F(QuickbrownWide, French)
 
 TEST_F(QuickbrownWide, IrishGaelic)
 {
-	ReadSection(1890, 117);
+	ReadSection(2196, 76);
 	EXPECT_STREQ(L"  D'fhuascail \xCDosa, \xDArmhac na h\xD3ighe Beannaithe, p\xF3r \xC9" L"ava agus \xC1" L"dhaimh", output);
 }
 
 TEST_F(QuickbrownWide, Icelandic)
 {
 	ReadSection(2441, 63);
-	EXPECT_STREQ(L"  \xC1rv\xEDzt\x171r\x151 t\xFCk\xF6rf\xFAr\xF3g\xE9pa", output);
+	EXPECT_STREQ(L"  K\xE6mi n\xFD \xF6xi h\xE9r ykist \xFEj\xF3" L"fum n\xFA b\xE6\xF0i v\xEDl og \xE1" L"drepa", output);
 
 	ReadSection(2506, 46);
-	EXPECT_STREQ(L"\x0020\x0020\x00C1\x0072\x0076\x00ED\x007A\x0074\x0171\x0072\x0151\x0020\x0074\x00FC\x006B\x00F6\x0072\x0066\x00FA\x0072\x00F3\x0067\x00E9\x0070", output);
+	EXPECT_STREQ(L"  S\xE6v\xF6r gr\xE9t \xE1\xF0" L"an \xFEv\xED \xFAlpan var \xF3n\xFDt", output);
 }
