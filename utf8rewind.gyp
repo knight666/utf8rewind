@@ -36,6 +36,7 @@
 				'utf8rewind',
 			],
 			'sources': [
+				'source/tests/integration-quickbrown.cpp',
 				'source/tests/suite-charlen.cpp',
 				'source/tests/suite-charvalid.cpp',
 				'source/tests/suite-convertucs2.cpp',
