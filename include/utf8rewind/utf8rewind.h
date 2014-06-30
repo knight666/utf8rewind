@@ -47,6 +47,27 @@
 #define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR (-6)
 #define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR (-7)
 
+//! @defgroup configuration Global configuration
+//! @{
+
+#ifndef UTF8_WCHAR_SIZE
+	#if (__SIZEOF_WCHAR_T__ == 4) || (WCHAR_MAX > UINT16_MAX) || (__WCHAR_MAX__ > UINT16_MAX)
+		#define UTF8_WCHAR_SIZE (4)
+	#else
+		#define UTF8_WCHAR_SIZE (2)
+	#endif
+#endif
+
+#if (UTF8_WCHAR_SIZE == 4)
+	#define UTF8_WCHAR_UTF32 (1)
+#elif (UTF8_WCHAR_SIZE == 2)
+	#define UTF8_WCHAR_UTF16 (1)
+#else
+	#error Invalid size for wchar_t type.
+#endif
+
+//! @}
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -131,6 +152,12 @@ size_t utf8len(const char* text);
 	@sa utf8convertucs2
 */
 size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t* errors);
+
+size_t utf8encodeutf16(const utf16_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+
+size_t utf8decodeutf16(const char* input, size_t inputSize, utf16_t* target, size_t targetSize, int32_t* errors);
+size_t utf8decodeutf32(const char* input, size_t inputSize, unicode_t* target, size_t targetSize, int32_t* errors);
 
 //! Convert a UCS-2 codepoint to UTF-8.
 /*!
