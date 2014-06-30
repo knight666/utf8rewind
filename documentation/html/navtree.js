@@ -19,6 +19,7 @@ var NAVTREE =
       [ "Dealing with user input", "examples.html#example-user-input", null ],
       [ "Displaying Unicode text", "examples.html#example-display", null ]
     ] ],
+    [ "Modules", "modules.html", "modules" ],
     [ "Files", null, [
       [ "File List", "files.html", "files" ],
       [ "File Members", "globals.html", [
