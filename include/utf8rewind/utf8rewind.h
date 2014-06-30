@@ -32,6 +32,7 @@
 #define _UTF8REWIND_H_
 
 /// @cond IGNORE
+#include <stddef.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
