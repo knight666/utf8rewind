@@ -26,6 +26,9 @@
 						},
 					},
 				}],
+				['OS!="win"', {
+					'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
+				}],
 			],
 		},
 		{
@@ -47,6 +50,11 @@
 				'source/tests/suite-towc.cpp',
 				'source/tests/tests-base.hpp',
 				'source/tests/tests-main.cpp',
+			],
+			'conditions': [
+				['OS!="win"', {
+					'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
+				}],
 			],
 		},
 	],
