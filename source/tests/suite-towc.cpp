@@ -26,7 +26,7 @@ TEST(ToWc, Ascii)
 	EXPECT_STREQ(L"7", b);
 }
 
-TEST(ToWc, AsciiInvalidLength)
+TEST(ToWc, AsciiNotEnoughData)
 {
 	const char* c = "%";
 	const size_t s = 256;
@@ -70,19 +70,7 @@ TEST(ToWc, TwoBytesNotEnoughData)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_STREQ(L"", b);
-}
-
-TEST(ToWc, TwoBytesInvalidLength)
-{
-	const char* c = "\xDC\x80";
-	const size_t s = 1;
-	wchar_t b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf8towc(c, 1, b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_STREQ(L"", b);
 }
 
@@ -118,18 +106,6 @@ TEST(ToWc, ThreeBytesNotEnoughData)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
-	EXPECT_STREQ(L"", b);
-}
-
-TEST(ToWc, ThreeBytesInvalidLength)
-{
-	const char* c = "\xE3\x83\xBB";
-	const size_t s = 256;
-	wchar_t b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf8towc(c, 0, b, s * sizeof(wchar_t), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_STREQ(L"", b);
 }
@@ -193,18 +169,6 @@ TEST(ToWc, AboveBasicMultilingualPlaneNotEnoughData)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
-	EXPECT_STREQ(L"", b);
-}
-
-TEST(ToWc, AboveBasicMultilingualPlaneInvalidLength)
-{
-	const char* c = "\xF0\x90\x85\x82";
-	const size_t s = 256;
-	wchar_t b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf8towc(c, 3, b, s * sizeof(wchar_t), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_STREQ(L"", b);
 }

@@ -718,7 +718,7 @@ size_t utf8decodeutf16(const char* input, size_t inputSize, utf16_t* target, siz
 	utf16_t* dst = target;
 	size_t dst_size = targetSize;
 
-	if (target != 0 && targetSize < 4)
+	if (target != 0 && targetSize < 2)
 	{
 		if (errors != 0)
 		{
