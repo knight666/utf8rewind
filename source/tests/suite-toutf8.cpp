@@ -49,7 +49,7 @@ TEST(ToUtf8, ThreeBytes)
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(3, wctoutf8((const wchar_t*)&c, 2, b, s, &errors));
+	EXPECT_EQ(3, wctoutf8(&c, sizeof(c), b, s, &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xE1\x8A\x80", b);
 }
@@ -63,7 +63,7 @@ TEST(ToUtf8, FourBytes)
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(4, wctoutf8((const wchar_t*)&c, 2, b, s, &errors));
+	EXPECT_EQ(4, wctoutf8(&c, sizeof(c), b, s, &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xF0\x9F\x98\x92", b);
 }
@@ -147,7 +147,7 @@ TEST(ToUtf8, NoData)
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, wctoutf8(nullptr, 2, b, s, &errors));
+	EXPECT_EQ(0, wctoutf8(nullptr, sizeof(wchar_t), b, s, &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_STREQ("", b);
 }
