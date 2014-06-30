@@ -45,6 +45,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
@@ -100,7 +101,7 @@ $(document).ready(function(){initNavTree('globals_func.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -111,6 +112,12 @@ $(document).ready(function(){initNavTree('globals_func.html','');});
 
 <div class="contents">
 &#160;<ul>
+<li>utf16toutf8()
+: <a class="el" href="utf8rewind_8h.html#a4d6a9017be860a575c8dc1ac8c5a9253">utf8rewind.h</a>
+</li>
+<li>utf32toutf8()
+: <a class="el" href="utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80">utf8rewind.h</a>
+</li>
 <li>utf8charlen()
 : <a class="el" href="utf8rewind_8h.html#a46a4b4215a32429f0726dd0dffb6e718">utf8rewind.h</a>
 </li>
@@ -132,6 +139,12 @@ $(document).ready(function(){initNavTree('globals_func.html','');});
 <li>utf8seek()
 : <a class="el" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8rewind.h</a>
 </li>
+<li>utf8toutf16()
+: <a class="el" href="utf8rewind_8h.html#a384129f817fbbcc7cad6c08b2db354f5">utf8rewind.h</a>
+</li>
+<li>utf8toutf32()
+: <a class="el" href="utf8rewind_8h.html#a8f262c70a9fea7b45647ffea8b571008">utf8rewind.h</a>
+</li>
 <li>utf8towc()
 : <a class="el" href="utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f">utf8rewind.h</a>
 </li>
@@ -144,7 +157,7 @@ $(document).ready(function(){initNavTree('globals_func.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Jun 19 2014 17:47:42 for utf8rewind by
+    <li class="footer">Generated on Mon Jun 30 2014 18:01:49 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>

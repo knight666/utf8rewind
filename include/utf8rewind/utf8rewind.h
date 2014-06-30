@@ -156,8 +156,131 @@ size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t*
 size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
+//! Convert a wide string to a UTF-8 encoded string.
+/*!
+	Depending on the platform, wide strings are either UTF-16
+	or UTF-32 encoded. This function takes a wide string as
+	input and automatically calls the correct conversion
+	function.
+	
+	This allows for a cross-platform treatment of wide text and
+	is preferable to using the UTF-16 or UTF-32 versions
+	directly.
+
+	Example:
+
+	@code{.c}
+		const wchar_t* input = L"textures/\xD803\xDC11.png";
+		size_t input_size = wcslen(input) * sizeof(wchar_t);
+		size_t output_size = 0;
+		char* output = 0;
+		size_t result = 0;
+		int32_t errors = 0;
+
+		result = wctoutf8(input, input_size, 0, 0, &errors);
+		if (errors == 0)
+		{
+			output_size = result + 1;
+
+			output = (char*)malloc(output_size);
+			memset(output, 0, output_size);
+
+			wctoutf8(input, wcslen(input) * sizeof(wchar_t), output, output_size, &errors);
+			if (errors == 0)
+			{
+				Texture_Load(output);
+			}
+
+			free(output);
+		}
+	@endcode
+
+	@param input Wide encoded string.
+	@param inputSize Size of the input in bytes.
+	@param target Output buffer for the result.
+	@param targetSize Amount of bytes remaining in the output buffer.
+	@param errors Output for errors.
+
+	@return Amount of bytes written.
+	
+	Errors:
+	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for encoding.
+	- #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR High surrogate pair was not matched.
+	- #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR Low surrogate pair was not matched.
+	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+	- #UTF8_ERR_INVALID_CHARACTER Codepoint could not be encoded.
+
+	@sa utf8towc
+	@sa utf16toutf8
+	@sa utf32toutf8
+*/
+size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+
 size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t targetSize, int32_t* errors);
 size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_t targetSize, int32_t* errors);
+
+//! Convert a UTF-8 encoded string to a wide string.
+/*!
+	Depending on the platform, wide strings are either UTF-16
+	or UTF-32 encoded. This function takes a UTF-8 encoded
+	string as input and automatically calls the correct
+	conversion function.
+
+	This allows for a cross-platform treatment of wide text and
+	is preferable to using the UTF-16 or UTF-32 versions
+	directly.
+
+	Codepoints outside the Basic Multilingual Plane (BMP) are
+	converted to surrogate pairs when using UTF-16. This means
+	that strings containing characters outside the BMP
+	converted on a platform with UTF-32 wide strings are *not*
+	compatible with platforms with UTF-16 wide strings.
+
+	Hence, it is preferable to keep all data as UTF-8 and only
+	convert to wide strings when required by a third-party
+	interface.
+
+	Example:
+
+	@code{.c}
+		const char* input = "Bj\xC3\xB6rn Zonderland";
+		size_t input_size = strlen(input);
+		wchar_t* output = 0;
+		size_t output_size = 0;
+		size_t result = 0;
+		int32_t errors = 0;
+
+		output_size = utf8towc(input, input_size, 0, 0, &errors);
+		if (errors == 0)
+		{
+			output = (wchar_t*)malloc(output_size);
+			memset(output, 0, output_size);
+
+			utf8towc(input, input_size, output, output_size, &errors);
+			if (errors == 0)
+			{
+				Player_SetName(output);
+			}
+		}
+	@endcode
+
+	@param input UTF-8 encoded string.
+	@param inputSize Size of the input in bytes.
+	@param target Output buffer for the result.
+	@param targetSize Amount of bytes remaining in the output buffer.
+	@param errors Output for errors.
+
+	@return Amount of bytes written or SIZE_MAX on error.
+
+	Errors:
+	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
+	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+
+	@sa wctoutf8
+	@sa utf8toutf16
+	@sa utf8toutf32
+*/
+size_t utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors);
 
 //! Convert a UCS-2 codepoint to UTF-8.
 /*!
@@ -212,63 +335,6 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 */
 size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_t* errors);
 
-//! Convert a UTF-16 encoded string to UTF-8.
-/*!
-	UTF-16 encoded text consists of two up to four bytes per
-	encoded codepoint. A codepoint may consist of a high and low 
-	surrogate pair, which allows the encoding of the full range
-	of Unicode characters that would otherwise not fit in a
-	single 16-bit integer.
-
-	If 0 is specified as the target buffer, the function returns
-	the number of bytes needed to store the string.
-
-	Example:
-
-	@code{.c}
-		const wchar_t* input = L"textures/\xD803\xDC11.png";
-		size_t output_size = 0;
-		char* output = 0;
-		size_t result = 0;
-		int32_t errors = 0;
-
-		result = wctoutf8(input, wcslen(input) * sizeof(wchar_t), 0, 0, &errors);
-		if (result != (size_t)SIZE_MAX)
-		{
-			output_size = result + 1;
-
-			output = (char*)malloc(output_size);
-			memset(output, 0, output_size);
-
-			result = wctoutf8(input, wcslen(input) * sizeof(wchar_t), output, output_size, &errors);
-			if (result != (size_t)SIZE_MAX)
-			{
-				Texture_Load(output);
-			}
-
-			free(output);
-		}
-	@endcode
-
-	@param input UTF-16 encoded string.
-	@param inputSize Size of the input in bytes.
-	@param target String to write the result to.
-	@param targetSize Amount of bytes remaining in the string.
-	@param errors Output for errors.
-
-	@return Amount of bytes written or SIZE_MAX on error.
-	
-	Errors:
-	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for encoding.
-	- #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR High surrogate pair was not matched.
-	- #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR Low surrogate pair was not matched.
-	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
-	- #UTF8_ERR_INVALID_CHARACTER Codepoint could not be encoded.
-
-	@sa utf8towc
-*/
-size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
-
 //! Decode a UTF-8 encoded codepoint to a Unicode codepoint.
 /*!
 	The result of this function can be used to offset the input
@@ -317,42 +383,6 @@ size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t tar
 	@sa utf8encode
 */
 size_t utf8decode(const char* text, unicode_t* result, int32_t* errors);
-
-//! Convert a UTF-8 encoded string to UTF-16.
-/*!
-	Example:
-
-	@code{.c}
-		const char* input = "Bj\xC3\xB6rn Zonderland";
-		size_t output_size = (strlen(input) + 1) * sizeof(wchar_t);
-		wchar_t* output = (wchar_t*)malloc(output_size);
-		size_t result = 0;
-		int32_t errors = 0;
-
-		memset(output, 0, output_size);
-		result = utf8towc(input, strlen(input), output, output_size, &errors);
-		if (result != SIZE_MAX)
-		{
-			Player_SetName(output);
-		}
-	@endcode
-
-	@param input UTF-8 encoded string.
-	@param inputSize Size of the input in bytes.
-	@param target String to write the result to.
-	@param targetSize Amount of bytes remaining in the string.
-	@param errors Output for errors.
-
-	@return Amount of bytes written or SIZE_MAX on error.
-
-	Errors:
-	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
-	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
-
-	@sa wctoutf8
-	@sa utf8decode
-*/
-size_t utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors);
 
 //! Seek into a UTF-8 encoded string.
 /*!
