@@ -14,17 +14,9 @@
 				'architecture_name%': 'x86', # TODO: Impossible to determine architecture per configuration?
 			}],
 		],
-		'generator_flags': {
-			'stuff': 'thangs',
-		},
 	},
 	'target_defaults': {
 		'default_configuration': 'Debug',
-		'conditions': [
-			['OS!="win"', {
-				'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
-			}]
-		],
 		'configurations': {
 			'Common': {
 				'abstract': 1,
