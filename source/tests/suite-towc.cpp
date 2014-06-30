@@ -81,7 +81,7 @@ TEST(ToWc, TwoBytesInvalidLength)
 	wchar_t b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(0, utf8towc(c, 1, b, s * sizeof(wchar_t), &errors));
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_STREQ(L"", b);
 }
@@ -90,12 +90,12 @@ TEST(ToWc, TwoBytesNotEnoughSpace)
 {
 	const char* c = "\xDC\x80";
 	const size_t s = 1;
-	wchar_t b[s] = { 0 };
+	char b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(0, utf8towc(c, strlen(c), (wchar_t*)b, s, &errors));
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_STREQ(L"", b);
+	EXPECT_STREQ("", b);
 }
 
 TEST(ToWc, ThreeBytes)
@@ -146,7 +146,7 @@ TEST(ToWc, AboveBasicMultilingualPlane)
 	EXPECT_STREQ(L"\xD803\xDC11", b);
 #elif UTF8_WCHAR_UTF32
 	EXPECT_EQ(4, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
-	EXPECT_STREQ(L"\xD803\xDC11", b);
+	EXPECT_STREQ(L"\x10C11", b);
 #endif
 	EXPECT_EQ(0, errors);
 }
@@ -213,12 +213,12 @@ TEST(ToWc, AboveBasicMultilingualPlaneNotEnoughSpace)
 {
 	const char* c = "\xF0\x90\x82\xB0";
 	const size_t s = 1;
-	wchar_t b[s] = { 0 };
+	char b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(0, utf8towc(c, strlen(c), (wchar_t*)b, s, &errors));
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_STREQ(L"", b);
+	EXPECT_STREQ("", b);
 }
 
 TEST(ToWc, NoData)
