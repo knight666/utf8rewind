@@ -408,7 +408,7 @@ size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_
 	}
 }
 
-size_t utf8encodeutf16(const utf16_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 	size_t encoded_length = 0;
 	utf16_t surrogate_low;
@@ -496,7 +496,7 @@ size_t utf8encodeutf16(const utf16_t* input, size_t inputSize, char* target, siz
 	return bytes_written;
 }
 
-size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 	unicode_t codepoint;
 	size_t encoded_length;
@@ -583,9 +583,9 @@ size_t utf8encodeutf32(const unicode_t* input, size_t inputSize, char* target, s
 size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 #if UTF8_WCHAR_UTF16
-	return utf8encodeutf16((const utf16_t*)input, inputSize, target, targetSize, errors);
+	return utf16toutf8((const utf16_t*)input, inputSize, target, targetSize, errors);
 #elif UTF8_WCHAR_UTF32
-	return utf8encodeutf32((const unicode_t*)input, inputSize, target, targetSize, errors);
+	return utf32toutf8((const unicode_t*)input, inputSize, target, targetSize, errors);
 #else
 	return SIZE_MAX;
 #endif
