@@ -153,7 +153,108 @@ size_t utf8len(const char* text);
 */
 size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t* errors);
 
+//! Convert a UTF-16 encoded string to a UTF-8 encoded string.
+/*!
+	This function should only be called directly if you are positive
+	that you're working with UTF-16 encoded text. If you're working
+	with wide strings, take a look at wctoutf8() instead.
+
+	Example:
+
+	@code{.c}
+		int8_t Player_SetName(const utf16_t* name, size_t nameSize)
+		{
+			int32_t errors = 0;
+			char converted_name[256] = { 0 };
+			utf16toutf8(name, nameSize, converted_name, 256, &errors);
+			if (errors != 0)
+			{
+				return 0;
+			}
+
+			return Player_SetName(converted_name);
+		}
+	@endcode
+
+	@param input UTF-16 encoded string.
+	@param inputSize Size of the input in bytes.
+	@param target Output buffer for the result.
+	@param targetSize Size of the output buffer in bytes.
+	@param errors Output for errors.
+
+	@return Amount of bytes written.
+
+	Errors:
+	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for encoding.
+	- #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR High surrogate pair was not matched.
+	- #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR Low surrogate pair was not matched.
+	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+	- #UTF8_ERR_INVALID_CHARACTER Codepoint could not be encoded.
+
+	@sa utf32toutf8
+	@sa wctoutf8
+*/
 size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+
+//! Convert a UTF-32 encoded string to a UTF-8 encoded string.
+/*!
+	This function should only be called directly if you are positive
+	that you're working with UTF-32 encoded text. If you're working
+	with wide strings, take a look at wctoutf8() instead.
+
+	Example:
+
+	@code{.c}
+		int8_t Database_ExecuteQuery(const unicode_t* query, size_t querySize)
+		{
+			int32_t errors = 0;
+			char* converted = 0;
+			int8_t result = 0;
+			size_t converted_size = utf32toutf8(query, querySize, 0, 0, &errors);
+			if (errors != 0)
+			{
+				goto cleanup;
+			}
+
+			converted = (char*)malloc(converted_size + 1);
+			memset(converted, 0, converted_size + 1);
+
+			utf32toutf8(query, querySize, converted, converted_size, &errors);
+			if (errors != 0)
+			{
+				goto cleanup;
+			}
+
+			result = Database_ExecuteQuery(converted);
+
+		cleanup:
+			if (converted != 0)
+			{
+				free(converted);
+				converted = 0;
+			}
+			return result;
+		}
+	@endcode
+
+	@param input UTF-32 encoded string.
+	@param inputSize Size of the input in bytes.
+	@param target Output buffer for the result.
+	@param targetSize Size of the output buffer in bytes.
+	@param errors Output for errors.
+
+	@return Amount of bytes written.
+
+	Errors:
+	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for encoding.
+	- #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR High surrogate pair was not matched.
+	- #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR Low surrogate pair was not matched.
+	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+	- #UTF8_ERR_INVALID_CHARACTER Codepoint could not be encoded.
+
+	@sa utf16toutf8
+	@sa wctoutf8
+*/
 size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 //! Convert a wide string to a UTF-8 encoded string.
@@ -198,7 +299,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 	@param input Wide encoded string.
 	@param inputSize Size of the input in bytes.
 	@param target Output buffer for the result.
-	@param targetSize Amount of bytes remaining in the output buffer.
+	@param targetSize Size of the output buffer in bytes.
 	@param errors Output for errors.
 
 	@return Amount of bytes written.
@@ -267,7 +368,7 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	@param input UTF-8 encoded string.
 	@param inputSize Size of the input in bytes.
 	@param target Output buffer for the result.
-	@param targetSize Amount of bytes remaining in the output buffer.
+	@param targetSize Size of the output buffer in bytes.
 	@param errors Output for errors.
 
 	@return Amount of bytes written or SIZE_MAX on error.
