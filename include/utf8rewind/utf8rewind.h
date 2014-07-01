@@ -182,7 +182,7 @@ size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t*
 	@param targetSize Size of the output buffer in bytes.
 	@param errors Output for errors.
 
-	@return Amount of bytes written.
+	@return Amount of bytes needed for output.
 
 	Errors:
 	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for encoding.
@@ -243,7 +243,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 	@param targetSize Size of the output buffer in bytes.
 	@param errors Output for errors.
 
-	@return Amount of bytes written.
+	@return Amount of bytes needed for output.
 
 	Errors:
 	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for encoding.
@@ -302,7 +302,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 	@param targetSize Size of the output buffer in bytes.
 	@param errors Output for errors.
 
-	@return Amount of bytes written.
+	@return Amount of bytes needed for output.
 	
 	Errors:
 	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for encoding.
@@ -317,7 +317,82 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 */
 size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
+//! Convert a UTF-8 encoded string to a UTF-16 encoded string.
+/*!
+	This function should only be called directly if you are positive
+	that you *must* convert to UTF-16, independent of platform.
+	If you're working with wide strings, take a look at utf8towc()
+	instead.
+
+	Example:
+
+	@code{.c}
+		void Font_DrawText(int x, int y, const char* text)
+		{
+			int32_t errors = 0;
+			utf16_t converted[256] = { 0 };
+			size_t converted_size = utf8toutf16(title, strlen(title), converted, 256 * sizeof(utf16_t), &errors);
+			if (errors == 0)
+			{
+				Legacy_DrawText(g_FontCurrent, x, y, (unsigned short*)converted, converted_size);
+			}
+		}
+	@endcode
+
+	@param input UTF-8 encoded string.
+	@param inputSize Size of the input in bytes.
+	@param target Output buffer for the result.
+	@param targetSize Size of the output buffer in bytes.
+	@param errors Output for errors.
+
+	@return Amount of bytes needed for output.
+
+	Errors:
+	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
+	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+
+	@sa utf8towc
+	@sa utf8toutf32
+*/
 size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t targetSize, int32_t* errors);
+
+//! Convert a UTF-8 encoded string to a UTF-32 encoded string.
+/*!
+	This function should only be called directly if you are positive
+	that you *must* convert to UTF-32, independent of platform.
+	If you're working with wide strings, take a look at utf8towc()
+	instead.
+
+	Example:
+
+	@code{.c}
+		void TextField_AddCharacter(const char* encoded)
+		{
+			int32_t errors = 0;
+			unicode_t codepoint = 0;
+			utf8toutf32(encoded, strlen(encoded), &codepoint, sizeof(unicode_t), &errors);
+			if (errors == 0)
+			{
+				TextField_AddCodepoint(codepoint);
+			}
+		}
+	@endcode
+
+	@param input UTF-8 encoded string.
+	@param inputSize Size of the input in bytes.
+	@param target Output buffer for the result.
+	@param targetSize Size of the output buffer in bytes.
+	@param errors Output for errors.
+
+	@return Amount of bytes needed for output.
+
+	Errors:
+	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
+	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+
+	@sa utf8towc
+	@sa utf8toutf16
+*/
 size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_t targetSize, int32_t* errors);
 
 //! Convert a UTF-8 encoded string to a wide string.
@@ -362,6 +437,8 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 			{
 				Player_SetName(output);
 			}
+
+			free(output);
 		}
 	@endcode
 
@@ -371,7 +448,7 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	@param targetSize Size of the output buffer in bytes.
 	@param errors Output for errors.
 
-	@return Amount of bytes written or SIZE_MAX on error.
+	@return Amount of bytes needed for output.
 
 	Errors:
 	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
@@ -426,7 +503,7 @@ size_t utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t tar
 	@param targetSize Amount of bytes remaining in the string.
 	@param errors Output for errors.
 
-	@return Amount of bytes written or SIZE_MAX on error.
+	@return Amount of bytes needed for output.
 
 	Errors:
 		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
