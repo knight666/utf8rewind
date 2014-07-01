@@ -162,8 +162,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:ac9b9b9d684c8bae0ad20c26d2d946986"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encode a Unicode codepoint to UTF-8.  <a href="#ac9b9b9d684c8bae0ad20c26d2d946986">More...</a><br /></td></tr>
 <tr class="separator:ac9b9b9d684c8bae0ad20c26d2d946986"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d6a9017be860a575c8dc1ac8c5a9253"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a4d6a9017be860a575c8dc1ac8c5a9253">utf16toutf8</a> (const <a class="el" href="utf8rewind_8h.html#a1e9e182e040e6f408cfb7188eaafb48a">utf16_t</a> *input, size_t inputSize, char *target, size_t targetSize, int32_t *errors)</td></tr>
+<tr class="memdesc:a4d6a9017be860a575c8dc1ac8c5a9253"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a UTF-16 encoded string to a UTF-8 encoded string.  <a href="#a4d6a9017be860a575c8dc1ac8c5a9253">More...</a><br /></td></tr>
 <tr class="separator:a4d6a9017be860a575c8dc1ac8c5a9253"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b5f39b5fe6fd55a6fc40dd54eaa8a80"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80">utf32toutf8</a> (const <a class="el" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a> *input, size_t inputSize, char *target, size_t targetSize, int32_t *errors)</td></tr>
+<tr class="memdesc:a8b5f39b5fe6fd55a6fc40dd54eaa8a80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a UTF-32 encoded string to a UTF-8 encoded string.  <a href="#a8b5f39b5fe6fd55a6fc40dd54eaa8a80">More...</a><br /></td></tr>
 <tr class="separator:a8b5f39b5fe6fd55a6fc40dd54eaa8a80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae68f9a9de59685c36fb0098f373b7f8b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b">wctoutf8</a> (const wchar_t *input, size_t inputSize, char *target, size_t targetSize, int32_t *errors)</td></tr>
 <tr class="memdesc:ae68f9a9de59685c36fb0098f373b7f8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a wide string to a UTF-8 encoded string.  <a href="#ae68f9a9de59685c36fb0098f373b7f8b">More...</a><br /></td></tr>
@@ -355,6 +357,43 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Convert a UTF-16 encoded string to a UTF-8 encoded string. </p>
+<p>This function should only be called directly if you are positive that you're working with UTF-16 encoded text. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b" title="Convert a wide string to a UTF-8 encoded string. ">wctoutf8()</a> instead.</p>
+<p>Example:</p>
+<div class="fragment"><div class="line">int8_t Player_SetName(<span class="keyword">const</span> <a class="code" href="utf8rewind_8h.html#a1e9e182e040e6f408cfb7188eaafb48a">utf16_t</a>* name, <span class="keywordtype">size_t</span> nameSize)</div>
+<div class="line">{</div>
+<div class="line">    int32_t errors = 0;</div>
+<div class="line">    <span class="keywordtype">char</span> converted_name[256] = { 0 };</div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#a4d6a9017be860a575c8dc1ac8c5a9253">utf16toutf8</a>(name, nameSize, converted_name, 256, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (errors != 0)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">return</span> 0;</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">return</span> Player_SetName(converted_name);</div>
+<div class="line">}</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input</td><td>UTF-16 encoded string. </td></tr>
+    <tr><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
+    <tr><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
+    <tr><td class="paramname">errors</td><td>Output for errors.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes written.</dd></dl>
+<p>Errors:</p><ul>
+<li><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a> Input does not contain enough bytes for encoding.</li>
+<li><a class="el" href="utf8rewind_8h.html#a0661d820dd006e49adfbdf0c7a9dec14">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a> High surrogate pair was not matched.</li>
+<li><a class="el" href="utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a> Low surrogate pair was not matched.</li>
+<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
+<li><a class="el" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">UTF8_ERR_INVALID_CHARACTER</a> Codepoint could not be encoded.</li>
+</ul>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80" title="Convert a UTF-32 encoded string to a UTF-8 encoded string. ">utf32toutf8</a> </dd>
+<dd>
+<a class="el" href="utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b" title="Convert a wide string to a UTF-8 encoded string. ">wctoutf8</a> </dd></dl>
+
 </div>
 </div>
 <a class="anchor" id="a8b5f39b5fe6fd55a6fc40dd54eaa8a80"></a>
@@ -398,6 +437,61 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Convert a UTF-32 encoded string to a UTF-8 encoded string. </p>
+<p>This function should only be called directly if you are positive that you're working with UTF-32 encoded text. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b" title="Convert a wide string to a UTF-8 encoded string. ">wctoutf8()</a> instead.</p>
+<p>Example:</p>
+<div class="fragment"><div class="line">int8_t Database_ExecuteQuery(<span class="keyword">const</span> <a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a>* query, <span class="keywordtype">size_t</span> querySize)</div>
+<div class="line">{</div>
+<div class="line">    int32_t errors = 0;</div>
+<div class="line">    <span class="keywordtype">char</span>* converted = 0;</div>
+<div class="line">    int8_t result = 0;</div>
+<div class="line">    <span class="keywordtype">size_t</span> converted_size = <a class="code" href="utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80">utf32toutf8</a>(query, querySize, 0, 0, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (errors != 0)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    converted = (<span class="keywordtype">char</span>*)malloc(converted_size + 1);</div>
+<div class="line">    memset(converted, 0, converted_size + 1);</div>
+<div class="line"></div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80">utf32toutf8</a>(query, querySize, converted, converted_size, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (errors != 0)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    result = Database_ExecuteQuery(converted);</div>
+<div class="line"></div>
+<div class="line">cleanup:</div>
+<div class="line">    <span class="keywordflow">if</span> (converted != 0)</div>
+<div class="line">    {</div>
+<div class="line">        free(converted);</div>
+<div class="line">        converted = 0;</div>
+<div class="line">    }</div>
+<div class="line">    <span class="keywordflow">return</span> result;</div>
+<div class="line">}</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input</td><td>UTF-32 encoded string. </td></tr>
+    <tr><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
+    <tr><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
+    <tr><td class="paramname">errors</td><td>Output for errors.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes written.</dd></dl>
+<p>Errors:</p><ul>
+<li><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a> Input does not contain enough bytes for encoding.</li>
+<li><a class="el" href="utf8rewind_8h.html#a0661d820dd006e49adfbdf0c7a9dec14">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a> High surrogate pair was not matched.</li>
+<li><a class="el" href="utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a> Low surrogate pair was not matched.</li>
+<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
+<li><a class="el" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">UTF8_ERR_INVALID_CHARACTER</a> Codepoint could not be encoded.</li>
+</ul>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#a4d6a9017be860a575c8dc1ac8c5a9253" title="Convert a UTF-16 encoded string to a UTF-8 encoded string. ">utf16toutf8</a> </dd>
+<dd>
+<a class="el" href="utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b" title="Convert a wide string to a UTF-8 encoded string. ">wctoutf8</a> </dd></dl>
 
 </div>
 </div>
@@ -929,7 +1023,7 @@ Functions</h2></td></tr>
     <tr><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
     <tr><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
     <tr><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
-    <tr><td class="paramname">targetSize</td><td>Amount of bytes remaining in the output buffer. </td></tr>
+    <tr><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
     <tr><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
@@ -1021,7 +1115,7 @@ Functions</h2></td></tr>
     <tr><td class="paramname">input</td><td>Wide encoded string. </td></tr>
     <tr><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
     <tr><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
-    <tr><td class="paramname">targetSize</td><td>Amount of bytes remaining in the output buffer. </td></tr>
+    <tr><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
     <tr><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
@@ -1036,9 +1130,9 @@ Functions</h2></td></tr>
 </ul>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f" title="Convert a UTF-8 encoded string to a wide string. ">utf8towc</a> </dd>
 <dd>
-<a class="el" href="utf8rewind_8h.html#a4d6a9017be860a575c8dc1ac8c5a9253">utf16toutf8</a> </dd>
+<a class="el" href="utf8rewind_8h.html#a4d6a9017be860a575c8dc1ac8c5a9253" title="Convert a UTF-16 encoded string to a UTF-8 encoded string. ">utf16toutf8</a> </dd>
 <dd>
-<a class="el" href="utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80">utf32toutf8</a> </dd></dl>
+<a class="el" href="utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80" title="Convert a UTF-32 encoded string to a UTF-8 encoded string. ">utf32toutf8</a> </dd></dl>
 
 </div>
 </div>
@@ -1048,7 +1142,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_19f418181f8b699045c2f8e6c49f857e.html">utf8rewind</a></li><li class="navelem"><a class="el" href="utf8rewind_8h.html">utf8rewind.h</a></li>
-    <li class="footer">Generated on Mon Jun 30 2014 18:01:49 for utf8rewind by
+    <li class="footer">Generated on Tue Jul 1 2014 08:17:45 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>
