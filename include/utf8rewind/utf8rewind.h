@@ -155,7 +155,7 @@ size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t*
 
 //! Convert a UTF-16 encoded string to a UTF-8 encoded string.
 /*!
-	This function should only be called directly if you are positive
+	@note This function should only be called directly if you are positive
 	that you're working with UTF-16 encoded text. If you're working
 	with wide strings, take a look at wctoutf8() instead.
 
@@ -176,20 +176,20 @@ size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t*
 		}
 	@endcode
 
-	@param input UTF-16 encoded string.
-	@param inputSize Size of the input in bytes.
-	@param target Output buffer for the result.
-	@param targetSize Size of the output buffer in bytes.
-	@param errors Output for errors.
+	@param[in]   input       UTF-16 encoded string.
+	@param[in]   inputSize   Size of the input in bytes.
+	@param[out]  target      Output buffer for the result.
+	@param[in]   targetSize  Size of the output buffer in bytes.
+	@param[out]  errors      Output for errors.
 
-	@return Amount of bytes needed for output.
+	@return Bytes written or amount of bytes needed for output
+	if target buffer is specified as NULL.
 
-	Errors:
-	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for encoding.
-	- #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR High surrogate pair was not matched.
-	- #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR Low surrogate pair was not matched.
-	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
-	- #UTF8_ERR_INVALID_CHARACTER Codepoint could not be encoded.
+	@retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
+	@retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
+	@retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
+	@retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
+	@retval #UTF8_ERR_INVALID_CHARACTER              Codepoint could not be encoded.
 
 	@sa utf32toutf8
 	@sa wctoutf8
@@ -198,7 +198,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 
 //! Convert a UTF-32 encoded string to a UTF-8 encoded string.
 /*!
-	This function should only be called directly if you are positive
+	@note This function should only be called directly if you are positive
 	that you're working with UTF-32 encoded text. If you're working
 	with wide strings, take a look at wctoutf8() instead.
 
@@ -237,20 +237,20 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 		}
 	@endcode
 
-	@param input UTF-32 encoded string.
-	@param inputSize Size of the input in bytes.
-	@param target Output buffer for the result.
-	@param targetSize Size of the output buffer in bytes.
-	@param errors Output for errors.
+	@param[in]   input       UTF-32 encoded string.
+	@param[in]   inputSize   Size of the input in bytes.
+	@param[out]  target      Output buffer for the result.
+	@param[in]   targetSize  Size of the output buffer in bytes.
+	@param[out]  errors      Output for errors.
 
-	@return Amount of bytes needed for output.
+	@return Bytes written or amount of bytes needed for output
+	if target buffer is specified as NULL.
 
-	Errors:
-	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for encoding.
-	- #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR High surrogate pair was not matched.
-	- #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR Low surrogate pair was not matched.
-	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
-	- #UTF8_ERR_INVALID_CHARACTER Codepoint could not be encoded.
+	@retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
+	@retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
+	@retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
+	@retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
+	@retval #UTF8_ERR_INVALID_CHARACTER              Codepoint could not be encoded.
 
 	@sa utf16toutf8
 	@sa wctoutf8
@@ -296,20 +296,20 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 		}
 	@endcode
 
-	@param input Wide encoded string.
-	@param inputSize Size of the input in bytes.
-	@param target Output buffer for the result.
-	@param targetSize Size of the output buffer in bytes.
-	@param errors Output for errors.
+	@param[in]   input       Wide-encoded string.
+	@param[in]   inputSize   Size of the input in bytes.
+	@param[out]  target      Output buffer for the result.
+	@param[in]   targetSize  Size of the output buffer in bytes.
+	@param[out]  errors      Output for errors.
 
-	@return Amount of bytes needed for output.
-	
-	Errors:
-	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for encoding.
-	- #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR High surrogate pair was not matched.
-	- #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR Low surrogate pair was not matched.
-	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
-	- #UTF8_ERR_INVALID_CHARACTER Codepoint could not be encoded.
+	@return Bytes written or amount of bytes needed for output
+	if target buffer is specified as NULL.
+
+	@retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
+	@retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
+	@retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
+	@retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
+	@retval #UTF8_ERR_INVALID_CHARACTER              Codepoint could not be encoded.
 
 	@sa utf8towc
 	@sa utf16toutf8
@@ -319,7 +319,7 @@ size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t tar
 
 //! Convert a UTF-8 encoded string to a UTF-16 encoded string.
 /*!
-	This function should only be called directly if you are positive
+	@note This function should only be called directly if you are positive
 	that you *must* convert to UTF-16, independent of platform.
 	If you're working with wide strings, take a look at utf8towc()
 	instead.
@@ -339,17 +339,17 @@ size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t tar
 		}
 	@endcode
 
-	@param input UTF-8 encoded string.
-	@param inputSize Size of the input in bytes.
-	@param target Output buffer for the result.
-	@param targetSize Size of the output buffer in bytes.
-	@param errors Output for errors.
+	@param[in]   input       UTF-8 encoded string.
+	@param[in]   inputSize   Size of the input in bytes.
+	@param[out]  target      Output buffer for the result.
+	@param[in]   targetSize  Size of the output buffer in bytes.
+	@param[out]  errors      Output for errors.
 
-	@return Amount of bytes needed for output.
+	@return Bytes written or amount of bytes needed for output
+	if target buffer is specified as NULL.
 
-	Errors:
-	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
-	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+	@retval #UTF8_ERR_INVALID_DATA      Input does not contain enough bytes for decoding.
+	@retval #UTF8_ERR_NOT_ENOUGH_SPACE  Target buffer could not contain result.
 
 	@sa utf8towc
 	@sa utf8toutf32
@@ -358,10 +358,13 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 
 //! Convert a UTF-8 encoded string to a UTF-32 encoded string.
 /*!
-	This function should only be called directly if you are positive
+	@note This function should only be called directly if you are positive
 	that you *must* convert to UTF-32, independent of platform.
 	If you're working with wide strings, take a look at utf8towc()
 	instead.
+
+	If the target buffer is NULL, the function returns the number of bytes
+	required to store the converted result.
 
 	Example:
 
@@ -378,17 +381,17 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 		}
 	@endcode
 
-	@param input UTF-8 encoded string.
-	@param inputSize Size of the input in bytes.
-	@param target Output buffer for the result.
-	@param targetSize Size of the output buffer in bytes.
-	@param errors Output for errors.
+	@param[in]   input       UTF-8 encoded string.
+	@param[in]   inputSize   Size of the input in bytes.
+	@param[out]  target      Output buffer for the result.
+	@param[in]   targetSize  Size of the output buffer in bytes.
+	@param[out]  errors      Output for errors.
 
-	@return Amount of bytes needed for output.
+	@return Bytes written or amount of bytes needed for output
+	if target buffer is specified as NULL.
 
-	Errors:
-	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
-	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+	@retval #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
+	@retval #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 
 	@sa utf8towc
 	@sa utf8toutf16
@@ -406,13 +409,13 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	is preferable to using the UTF-16 or UTF-32 versions
 	directly.
 
-	Codepoints outside the Basic Multilingual Plane (BMP) are
+	@note Codepoints outside the Basic Multilingual Plane (BMP) are
 	converted to surrogate pairs when using UTF-16. This means
 	that strings containing characters outside the BMP
 	converted on a platform with UTF-32 wide strings are *not*
 	compatible with platforms with UTF-16 wide strings.
 
-	Hence, it is preferable to keep all data as UTF-8 and only
+	@par Hence, it is preferable to keep all data as UTF-8 and only
 	convert to wide strings when required by a third-party
 	interface.
 
@@ -442,17 +445,17 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 		}
 	@endcode
 
-	@param input UTF-8 encoded string.
-	@param inputSize Size of the input in bytes.
-	@param target Output buffer for the result.
-	@param targetSize Size of the output buffer in bytes.
-	@param errors Output for errors.
+	@param[in]   input       UTF-8 encoded string.
+	@param[in]   inputSize   Size of the input in bytes.
+	@param[out]  target      Output buffer for the result.
+	@param[in]   targetSize  Size of the output buffer in bytes.
+	@param[out]  errors      Output for errors.
 
-	@return Amount of bytes needed for output.
+	@return Bytes written or amount of bytes needed for output
+	if target buffer is specified as NULL.
 
-	Errors:
-	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
-	- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+	@retval #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
+	@retval #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 
 	@sa wctoutf8
 	@sa utf8toutf16
