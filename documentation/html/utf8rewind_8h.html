@@ -360,7 +360,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Convert a UTF-16 encoded string to a UTF-8 encoded string. </p>
-<p>This function should only be called directly if you are positive that you're working with UTF-16 encoded text. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b" title="Convert a wide string to a UTF-8 encoded string. ">wctoutf8()</a> instead.</p>
+<dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you're working with UTF-16 encoded text. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b" title="Convert a wide string to a UTF-8 encoded string. ">wctoutf8()</a> instead.</dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line">int8_t Player_SetName(<span class="keyword">const</span> <a class="code" href="utf8rewind_8h.html#a1e9e182e040e6f408cfb7188eaafb48a">utf16_t</a>* name, <span class="keywordtype">size_t</span> nameSize)</div>
 <div class="line">{</div>
@@ -376,22 +376,25 @@ Functions</h2></td></tr>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">input</td><td>UTF-16 encoded string. </td></tr>
-    <tr><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
-    <tr><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
-    <tr><td class="paramname">errors</td><td>Output for errors.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-16 encoded string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for output.</dd></dl>
-<p>Errors:</p><ul>
-<li><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a> Input does not contain enough bytes for encoding.</li>
-<li><a class="el" href="utf8rewind_8h.html#a0661d820dd006e49adfbdf0c7a9dec14">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a> High surrogate pair was not matched.</li>
-<li><a class="el" href="utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a> Low surrogate pair was not matched.</li>
-<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
-<li><a class="el" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">UTF8_ERR_INVALID_CHARACTER</a> Codepoint could not be encoded.</li>
-</ul>
+<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for encoding. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#a0661d820dd006e49adfbdf0c7a9dec14">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a></td><td>High surrogate pair was not matched. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a></td><td>Low surrogate pair was not matched. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">UTF8_ERR_INVALID_CHARACTER</a></td><td>Codepoint could not be encoded.</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80" title="Convert a UTF-32 encoded string to a UTF-8 encoded string. ">utf32toutf8</a> </dd>
 <dd>
 <a class="el" href="utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b" title="Convert a wide string to a UTF-8 encoded string. ">wctoutf8</a> </dd></dl>
@@ -441,7 +444,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Convert a UTF-32 encoded string to a UTF-8 encoded string. </p>
-<p>This function should only be called directly if you are positive that you're working with UTF-32 encoded text. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b" title="Convert a wide string to a UTF-8 encoded string. ">wctoutf8()</a> instead.</p>
+<dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you're working with UTF-32 encoded text. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b" title="Convert a wide string to a UTF-8 encoded string. ">wctoutf8()</a> instead.</dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line">int8_t Database_ExecuteQuery(<span class="keyword">const</span> <a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a>* query, <span class="keywordtype">size_t</span> querySize)</div>
 <div class="line">{</div>
@@ -475,22 +478,25 @@ Functions</h2></td></tr>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">input</td><td>UTF-32 encoded string. </td></tr>
-    <tr><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
-    <tr><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
-    <tr><td class="paramname">errors</td><td>Output for errors.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-32 encoded string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for output.</dd></dl>
-<p>Errors:</p><ul>
-<li><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a> Input does not contain enough bytes for encoding.</li>
-<li><a class="el" href="utf8rewind_8h.html#a0661d820dd006e49adfbdf0c7a9dec14">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a> High surrogate pair was not matched.</li>
-<li><a class="el" href="utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a> Low surrogate pair was not matched.</li>
-<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
-<li><a class="el" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">UTF8_ERR_INVALID_CHARACTER</a> Codepoint could not be encoded.</li>
-</ul>
+<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for encoding. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#a0661d820dd006e49adfbdf0c7a9dec14">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a></td><td>High surrogate pair was not matched. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a></td><td>Low surrogate pair was not matched. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">UTF8_ERR_INVALID_CHARACTER</a></td><td>Codepoint could not be encoded.</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#a4d6a9017be860a575c8dc1ac8c5a9253" title="Convert a UTF-16 encoded string to a UTF-8 encoded string. ">utf16toutf8</a> </dd>
 <dd>
 <a class="el" href="utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b" title="Convert a wide string to a UTF-8 encoded string. ">wctoutf8</a> </dd></dl>
@@ -908,7 +914,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Convert a UTF-8 encoded string to a UTF-16 encoded string. </p>
-<p>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-16, independent of platform. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f" title="Convert a UTF-8 encoded string to a wide string. ">utf8towc()</a> instead.</p>
+<dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-16, independent of platform. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f" title="Convert a UTF-8 encoded string to a wide string. ">utf8towc()</a> instead.</dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Font_DrawText(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
@@ -922,19 +928,22 @@ Functions</h2></td></tr>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
-    <tr><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
-    <tr><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
-    <tr><td class="paramname">errors</td><td>Output for errors.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for output.</dd></dl>
-<p>Errors:</p><ul>
-<li><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a> Input does not contain enough bytes for decoding.</li>
-<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
-</ul>
+<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f" title="Convert a UTF-8 encoded string to a wide string. ">utf8towc</a> </dd>
 <dd>
 <a class="el" href="utf8rewind_8h.html#a8f262c70a9fea7b45647ffea8b571008" title="Convert a UTF-8 encoded string to a UTF-32 encoded string. ">utf8toutf32</a> </dd></dl>
@@ -984,7 +993,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Convert a UTF-8 encoded string to a UTF-32 encoded string. </p>
-<p>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-32, independent of platform. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f" title="Convert a UTF-8 encoded string to a wide string. ">utf8towc()</a> instead.</p>
+<dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-32, independent of platform. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f" title="Convert a UTF-8 encoded string to a wide string. ">utf8towc()</a> instead.</dd></dl>
+<p>If the target buffer is NULL, the function returns the number of bytes required to store the converted result.</p>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> TextField_AddCharacter(<span class="keyword">const</span> <span class="keywordtype">char</span>* encoded)</div>
 <div class="line">{</div>
@@ -998,19 +1008,22 @@ Functions</h2></td></tr>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
-    <tr><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
-    <tr><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
-    <tr><td class="paramname">errors</td><td>Output for errors.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for output.</dd></dl>
-<p>Errors:</p><ul>
-<li><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a> Input does not contain enough bytes for decoding.</li>
-<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
-</ul>
+<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f" title="Convert a UTF-8 encoded string to a wide string. ">utf8towc</a> </dd>
 <dd>
 <a class="el" href="utf8rewind_8h.html#a384129f817fbbcc7cad6c08b2db354f5" title="Convert a UTF-8 encoded string to a UTF-16 encoded string. ">utf8toutf16</a> </dd></dl>
@@ -1062,8 +1075,8 @@ Functions</h2></td></tr>
 <p>Convert a UTF-8 encoded string to a wide string. </p>
 <p>Depending on the platform, wide strings are either UTF-16 or UTF-32 encoded. This function takes a UTF-8 encoded string as input and automatically calls the correct conversion function.</p>
 <p>This allows for a cross-platform treatment of wide text and is preferable to using the UTF-16 or UTF-32 versions directly.</p>
-<p>Codepoints outside the Basic Multilingual Plane (BMP) are converted to surrogate pairs when using UTF-16. This means that strings containing characters outside the BMP converted on a platform with UTF-32 wide strings are <em>not</em> compatible with platforms with UTF-16 wide strings.</p>
-<p>Hence, it is preferable to keep all data as UTF-8 and only convert to wide strings when required by a third-party interface.</p>
+<dl class="section note"><dt>Note</dt><dd>Codepoints outside the Basic Multilingual Plane (BMP) are converted to surrogate pairs when using UTF-16. This means that strings containing characters outside the BMP converted on a platform with UTF-32 wide strings are <em>not</em> compatible with platforms with UTF-16 wide strings.</dd></dl>
+<dl class="section user"><dt>Hence, it is preferable to keep all data as UTF-8 and only</dt><dd>convert to wide strings when required by a third-party interface.</dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* input = <span class="stringliteral">&quot;Bj\xC3\xB6rn Zonderland&quot;</span>;</div>
 <div class="line"><span class="keywordtype">size_t</span> input_size = strlen(input);</div>
@@ -1088,19 +1101,22 @@ Functions</h2></td></tr>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
-    <tr><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
-    <tr><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
-    <tr><td class="paramname">errors</td><td>Output for errors.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for output.</dd></dl>
-<p>Errors:</p><ul>
-<li><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a> Input does not contain enough bytes for decoding.</li>
-<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
-</ul>
+<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b" title="Convert a wide string to a UTF-8 encoded string. ">wctoutf8</a> </dd>
 <dd>
 <a class="el" href="utf8rewind_8h.html#a384129f817fbbcc7cad6c08b2db354f5" title="Convert a UTF-8 encoded string to a UTF-16 encoded string. ">utf8toutf16</a> </dd>
@@ -1180,22 +1196,25 @@ Functions</h2></td></tr>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">input</td><td>Wide encoded string. </td></tr>
-    <tr><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
-    <tr><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
-    <tr><td class="paramname">errors</td><td>Output for errors.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>Wide-encoded string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for output.</dd></dl>
-<p>Errors:</p><ul>
-<li><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a> Input does not contain enough bytes for encoding.</li>
-<li><a class="el" href="utf8rewind_8h.html#a0661d820dd006e49adfbdf0c7a9dec14">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a> High surrogate pair was not matched.</li>
-<li><a class="el" href="utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a> Low surrogate pair was not matched.</li>
-<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
-<li><a class="el" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">UTF8_ERR_INVALID_CHARACTER</a> Codepoint could not be encoded.</li>
-</ul>
+<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for encoding. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#a0661d820dd006e49adfbdf0c7a9dec14">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a></td><td>High surrogate pair was not matched. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a></td><td>Low surrogate pair was not matched. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result. </td></tr>
+    <tr><td class="paramname"><a class="el" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">UTF8_ERR_INVALID_CHARACTER</a></td><td>Codepoint could not be encoded.</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f" title="Convert a UTF-8 encoded string to a wide string. ">utf8towc</a> </dd>
 <dd>
 <a class="el" href="utf8rewind_8h.html#a4d6a9017be860a575c8dc1ac8c5a9253" title="Convert a UTF-16 encoded string to a UTF-8 encoded string. ">utf16toutf8</a> </dd>
@@ -1210,7 +1229,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_19f418181f8b699045c2f8e6c49f857e.html">utf8rewind</a></li><li class="navelem"><a class="el" href="utf8rewind_8h.html">utf8rewind.h</a></li>
-    <li class="footer">Generated on Tue Jul 1 2014 17:36:34 for utf8rewind by
+    <li class="footer">Generated on Tue Jul 1 2014 17:59:26 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>
