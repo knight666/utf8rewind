@@ -7,12 +7,13 @@
 
 var indexSectionsWithContent =
 {
-  0: "emuw",
+  0: "egmuw",
   1: "emu",
   2: "uw",
   3: "u",
   4: "u",
-  5: "eu"
+  5: "g",
+  6: "eu"
 };
 
 var indexSectionNames =
@@ -22,7 +23,8 @@ var indexSectionNames =
   2: "functions",
   3: "typedefs",
   4: "defines",
-  5: "pages"
+  5: "groups",
+  6: "pages"
 };
 
 function convertToId(search)
