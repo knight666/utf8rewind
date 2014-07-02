@@ -50,7 +50,7 @@
 				'source/tests/suite-len.cpp',
 				'source/tests/suite-seek.cpp',
 				'source/tests/suite-toutf8.cpp',
-				'source/tests/suite-towc.cpp',
+				'source/tests/suite-towide.cpp',
 				'source/tests/tests-base.hpp',
 				'source/tests/tests-main.cpp',
 			],
