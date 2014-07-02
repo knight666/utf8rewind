@@ -11,5 +11,5 @@ var searchData=
   ['utf8seek',['utf8seek',['../utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb',1,'utf8rewind.h']]],
   ['utf8toutf16',['utf8toutf16',['../utf8rewind_8h.html#a384129f817fbbcc7cad6c08b2db354f5',1,'utf8rewind.h']]],
   ['utf8toutf32',['utf8toutf32',['../utf8rewind_8h.html#a8f262c70a9fea7b45647ffea8b571008',1,'utf8rewind.h']]],
-  ['utf8towc',['utf8towc',['../utf8rewind_8h.html#a17370cc081b5bd688c6d95bf9b09f72f',1,'utf8rewind.h']]]
+  ['utf8towide',['utf8towide',['../utf8rewind_8h.html#a70996b8a2475177e9156948fe9c1996d',1,'utf8rewind.h']]]
 ];

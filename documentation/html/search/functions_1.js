@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['wctoutf8',['wctoutf8',['../utf8rewind_8h.html#ae68f9a9de59685c36fb0098f373b7f8b',1,'utf8rewind.h']]]
+  ['widetoutf8',['widetoutf8',['../utf8rewind_8h.html#ad4670f2b7165731bff971559f85690a5',1,'utf8rewind.h']]]
 ];
