@@ -428,59 +428,6 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 */
 size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors);
 
-//! Convert a UCS-2 codepoint to UTF-8.
-/*!
-	UCS-2 encoding is similar to UTF-16 encoding, except that it
-	does not use surrogate pairs to encode values beyond U+FFFF.
-
-	This encoding was standard on Microsoft Windows XP. Newer
-	versions of Windows use UTF-16 instead.
-
-	If 0 is specified as the target buffer, this function
-	returns the number of bytes needed to store the codepoint.
-
-	@note Surrogate pairs cannot be converted using this function.
-	Use widetoutf8() instead.
-
-	Example:
-
-	@code{.c}
-		ucs2_t input[] = { 0x3041, 0x304B, 0x3060, 0x3074 };
-		const size_t input_size = sizeof(input) / sizeof(ucs2_t);
-		const size_t text_size = 128;
-		char text[text_size] = { 0 };
-		char* dst = text;
-		size_t i;
-		size_t offset;
-		int32_t errors = 0;
-
-		for (i = 0; i < input_size; ++i)
-		{
-			offset = utf8convertucs2(input[i], dst, text_size, &errors);
-			if (offset == SIZE_MAX)
-			{
-				return errors;
-			}
-
-			dst += offset;
-		}
-	@endcode
-
-	@param codepoint UCS-2 encoded codepoint.
-	@param target String to write the result to.
-	@param targetSize Amount of bytes remaining in the string.
-	@param errors Output for errors.
-
-	@return Amount of bytes needed for output.
-
-	Errors:
-		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
-		- #UTF8_ERR_UNHANDLED_SURROGATE_PAIR Codepoint is part of a surrogate pair.
-
-	@sa widetoutf8
-*/
-size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_t* errors);
-
 //! Decode a UTF-8 encoded codepoint to a Unicode codepoint.
 /*!
 	The result of this function can be used to offset the input
