@@ -148,7 +148,7 @@ size_t utf8len(const char* text);
 	Errors:
 		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 
-	@sa wctoutf8
+	@sa widetoutf8
 	@sa utf8convertucs2
 */
 size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t* errors);
@@ -157,7 +157,7 @@ size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t*
 /*!
 	@note This function should only be called directly if you are positive
 	that you're working with UTF-16 encoded text. If you're working
-	with wide strings, take a look at wctoutf8() instead.
+	with wide strings, take a look at widetoutf8() instead.
 
 	Example:
 
@@ -192,7 +192,7 @@ size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t*
 	@retval #UTF8_ERR_INVALID_CHARACTER              Codepoint could not be encoded.
 
 	@sa utf32toutf8
-	@sa wctoutf8
+	@sa widetoutf8
 */
 size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
@@ -200,7 +200,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 /*!
 	@note This function should only be called directly if you are positive
 	that you're working with UTF-32 encoded text. If you're working
-	with wide strings, take a look at wctoutf8() instead.
+	with wide strings, take a look at widetoutf8() instead.
 
 	Example:
 
@@ -253,7 +253,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 	@retval #UTF8_ERR_INVALID_CHARACTER              Codepoint could not be encoded.
 
 	@sa utf16toutf8
-	@sa wctoutf8
+	@sa widetoutf8
 */
 size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
@@ -278,7 +278,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 		size_t result = 0;
 		int32_t errors = 0;
 
-		result = wctoutf8(input, input_size, 0, 0, &errors);
+		result = widetoutf8(input, input_size, 0, 0, &errors);
 		if (errors == 0)
 		{
 			output_size = result + 1;
@@ -286,7 +286,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 			output = (char*)malloc(output_size);
 			memset(output, 0, output_size);
 
-			wctoutf8(input, wcslen(input) * sizeof(wchar_t), output, output_size, &errors);
+			widetoutf8(input, wcslen(input) * sizeof(wchar_t), output, output_size, &errors);
 			if (errors == 0)
 			{
 				Texture_Load(output);
@@ -311,17 +311,17 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 	@retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
 	@retval #UTF8_ERR_INVALID_CHARACTER              Codepoint could not be encoded.
 
-	@sa utf8towc
+	@sa utf8towide
 	@sa utf16toutf8
 	@sa utf32toutf8
 */
-size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 //! Convert a UTF-8 encoded string to a UTF-16 encoded string.
 /*!
 	@note This function should only be called directly if you are positive
 	that you *must* convert to UTF-16, independent of platform.
-	If you're working with wide strings, take a look at utf8towc()
+	If you're working with wide strings, take a look at utf8towide()
 	instead.
 
 	Example:
@@ -351,7 +351,7 @@ size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t tar
 	@retval #UTF8_ERR_INVALID_DATA      Input does not contain enough bytes for decoding.
 	@retval #UTF8_ERR_NOT_ENOUGH_SPACE  Target buffer could not contain result.
 
-	@sa utf8towc
+	@sa utf8towide
 	@sa utf8toutf32
 */
 size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t targetSize, int32_t* errors);
@@ -360,7 +360,7 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 /*!
 	@note This function should only be called directly if you are positive
 	that you *must* convert to UTF-32, independent of platform.
-	If you're working with wide strings, take a look at utf8towc()
+	If you're working with wide strings, take a look at utf8towide()
 	instead.
 
 	If the target buffer is NULL, the function returns the number of bytes
@@ -393,7 +393,7 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 	@retval #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
 	@retval #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 
-	@sa utf8towc
+	@sa utf8towide
 	@sa utf8toutf16
 */
 size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_t targetSize, int32_t* errors);
@@ -429,13 +429,13 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 		size_t result = 0;
 		int32_t errors = 0;
 
-		output_size = utf8towc(input, input_size, 0, 0, &errors);
+		output_size = utf8towide(input, input_size, 0, 0, &errors);
 		if (errors == 0)
 		{
 			output = (wchar_t*)malloc(output_size);
 			memset(output, 0, output_size);
 
-			utf8towc(input, input_size, output, output_size, &errors);
+			utf8towide(input, input_size, output, output_size, &errors);
 			if (errors == 0)
 			{
 				Player_SetName(output);
@@ -457,11 +457,11 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	@retval #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
 	@retval #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 
-	@sa wctoutf8
+	@sa widetoutf8
 	@sa utf8toutf16
 	@sa utf8toutf32
 */
-size_t utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors);
+size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors);
 
 //! Convert a UCS-2 codepoint to UTF-8.
 /*!
@@ -475,7 +475,7 @@ size_t utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t tar
 	returns the number of bytes needed to store the codepoint.
 
 	@note Surrogate pairs cannot be converted using this function.
-	Use wctoutf8() instead.
+	Use widetoutf8() instead.
 
 	Example:
 
@@ -512,7 +512,7 @@ size_t utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t tar
 		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 		- #UTF8_ERR_UNHANDLED_SURROGATE_PAIR Codepoint is part of a surrogate pair.
 
-	@sa wctoutf8
+	@sa widetoutf8
 */
 size_t utf8convertucs2(ucs2_t codepoint, char* target, size_t targetSize, int32_t* errors);
 

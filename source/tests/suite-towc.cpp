@@ -9,7 +9,7 @@ TEST(ToWc, String)
 	wchar_t b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(3 * UTF8_WCHAR_SIZE, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(3 * UTF8_WCHAR_SIZE, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ(L"\x91C\x921\x924", b);
 }
@@ -21,7 +21,7 @@ TEST(ToWc, Ascii)
 	wchar_t b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(1 * UTF8_WCHAR_SIZE, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(1 * UTF8_WCHAR_SIZE, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ(L"7", b);
 }
@@ -33,7 +33,7 @@ TEST(ToWc, AsciiNotEnoughData)
 	wchar_t b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8towc(c, 0, b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(0, utf8towide(c, 0, b, s * sizeof(wchar_t), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_STREQ(L"", b);
 }
@@ -45,7 +45,7 @@ TEST(ToWc, AsciiNotEnoughSpace)
 	wchar_t b[1] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(0, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_STREQ(L"", b);
 }
@@ -57,7 +57,7 @@ TEST(ToWc, TwoBytes)
 	wchar_t b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(1 * UTF8_WCHAR_SIZE, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(1 * UTF8_WCHAR_SIZE, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ(L"\x02CC", b);
 }
@@ -69,7 +69,7 @@ TEST(ToWc, TwoBytesNotEnoughData)
 	wchar_t b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(0, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_STREQ(L"", b);
 }
@@ -81,7 +81,7 @@ TEST(ToWc, TwoBytesNotEnoughSpace)
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8towc(c, strlen(c), (wchar_t*)b, s, &errors));
+	EXPECT_EQ(0, utf8towide(c, strlen(c), (wchar_t*)b, s, &errors));
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_STREQ("", b);
 }
@@ -93,7 +93,7 @@ TEST(ToWc, ThreeBytes)
 	wchar_t b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(1 * UTF8_WCHAR_SIZE, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(1 * UTF8_WCHAR_SIZE, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ(L"\xAB01", b);
 }
@@ -105,7 +105,7 @@ TEST(ToWc, ThreeBytesNotEnoughData)
 	wchar_t b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(0, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_STREQ(L"", b);
 }
@@ -118,10 +118,10 @@ TEST(ToWc, AboveBasicMultilingualPlane)
 	int32_t errors = 0;
 
 #if UTF8_WCHAR_UTF16
-	EXPECT_EQ(4, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(4, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_STREQ(L"\xD803\xDC11", b);
 #elif UTF8_WCHAR_UTF32
-	EXPECT_EQ(4, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(4, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_STREQ(L"\x10C11", b);
 #endif
 	EXPECT_EQ(0, errors);
@@ -135,10 +135,10 @@ TEST(ToWc, AboveBasicMultilingualPlaneFirst)
 	int32_t errors = 0;
 
 #if UTF8_WCHAR_UTF16
-	EXPECT_EQ(4, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(4, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_STREQ(L"\xD800\xDC00", b);
 #elif UTF8_WCHAR_UTF32
-	EXPECT_EQ(4, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(4, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_STREQ(L"\x10000", b);
 #endif
 	EXPECT_EQ(0, errors);
@@ -152,10 +152,10 @@ TEST(ToWc, AboveBasicMultilingualPlaneLast)
 	int32_t errors = 0;
 
 #if UTF8_WCHAR_UTF16
-	EXPECT_EQ(4, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(4, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_STREQ(L"\xDBFF\xDFFF", b);
 #elif UTF8_WCHAR_UTF32
-	EXPECT_EQ(4, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(4, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_STREQ(L"\x10FFFF", b);
 #endif
 	EXPECT_EQ(0, errors);
@@ -168,7 +168,7 @@ TEST(ToWc, AboveBasicMultilingualPlaneNotEnoughData)
 	wchar_t b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8towc(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(0, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_STREQ(L"", b);
 }
@@ -180,7 +180,7 @@ TEST(ToWc, AboveBasicMultilingualPlaneNotEnoughSpace)
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8towc(c, strlen(c), (wchar_t*)b, s, &errors));
+	EXPECT_EQ(0, utf8towide(c, strlen(c), (wchar_t*)b, s, &errors));
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_STREQ("", b);
 }
@@ -192,7 +192,7 @@ TEST(ToWc, NoData)
 	wchar_t b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8towc(c, 2, b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(0, utf8towide(c, 2, b, s * sizeof(wchar_t), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_STREQ(L"", b);
 }
