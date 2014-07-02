@@ -118,41 +118,6 @@ size_t utf8charlen(char encodedCharacter);
 */
 size_t utf8len(const char* text);
 
-//! Encode a Unicode codepoint to UTF-8.
-/*!
-	Unicode codepoints must be in the range 0 - U+10FFFF,
-	however the range U+D800 to U+DFFF is reserved for
-	surrogate pairs and cannot be encoded.
-
-	Example:
-
-	@code{.c}
-		char result[128];
-		char* dst;
-		int32_t errors = 0;
-
-		memset(result, 0, 128);
-		strcat(result, "STARG");
-		dst = result + strlen(result);
-		utf8encode(0x1402, dst, 128 - strlen(result), &errors);
-		strcat(result, "TE");
-	@endcode
-
-	@param codepoint Unicode codepoint.
-	@param target String to write the result to.
-	@param targetSize Amount of bytes remaining in the string.
-	@param errors Output for errors.
-
-	@return Amount of bytes written or SIZE_MAX on error.
-
-	Errors:
-		- #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
-
-	@sa widetoutf8
-	@sa utf8convertucs2
-*/
-size_t utf8encode(unicode_t codepoint, char* target, size_t targetSize, int32_t* errors);
-
 //! Convert a UTF-16 encoded string to a UTF-8 encoded string.
 /*!
 	@note This function should only be called directly if you are positive
