@@ -580,7 +580,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 	return bytes_written;
 }
 
-size_t wctoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 #if UTF8_WCHAR_UTF16
 	return utf16toutf8((const utf16_t*)input, inputSize, target, targetSize, errors);
@@ -863,7 +863,7 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	return bytes_written;
 }
 
-size_t utf8towc(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors)
+size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors)
 {
 #if UTF8_WCHAR_UTF16
 	return utf8toutf16(input, inputSize, (utf16_t*)target, targetSize, errors);

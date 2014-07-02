@@ -38,7 +38,7 @@ protected:
 	{
 		ASSERT_TRUE(position < 4833 && position + length < 4833);
 
-		size_t decoded_size = utf8towc(input + position, length, nullptr, 0, &errors);
+		size_t decoded_size = utf8towide(input + position, length, nullptr, 0, &errors);
 		ASSERT_TRUE(decoded_size > 0);
 		ASSERT_EQ(0, errors);
 
@@ -52,7 +52,7 @@ protected:
 		output = new wchar_t[output_length + 1];
 		output[output_length] = 0;
 
-		utf8towc(input + position, length, output, decoded_size, &errors);
+		utf8towide(input + position, length, output, decoded_size, &errors);
 		ASSERT_EQ(0, errors);
 	}
 
