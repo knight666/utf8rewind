@@ -149,6 +149,18 @@ TEST(EncodeUtf16, AsciiLength)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(EncodeUtf16, AsciiBufferTooSmall)
+{
+	utf16_t c = L'(';
+	const size_t s = 0;
+	char b[1] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf16toutf8(&c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_STREQ("", b);
+}
+
 TEST(EncodeUtf16, AsciiString)
 {
 	utf16_t c[] = { 'x', '=', '(', '2', '*', '2', ')' };
