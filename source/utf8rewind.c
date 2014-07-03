@@ -197,29 +197,29 @@ size_t utf8charlen(char encodedCharacter)
 size_t utf8len(const char* text)
 {
 	size_t length = 0;
-	unsigned char codepoint = 0;
-	int codepoint_length = 0;
-	int text_length = 0;
+	size_t codepoint_length = 0;
+	size_t text_length = 0;
+	uint8_t codepoint = 0;
 
 	if (text == 0)
 	{
 		return length;
 	}
 
-	text_length = (int)strlen(text);
+	text_length = strlen(text);
 	if (text_length == 0)
 	{
 		return length;
 	}
 
-	while (*text != 0 && text_length > 0)
+	while (*text != 0)
 	{
 		if (!utf8charvalid(*text))
 		{
 			return SIZE_MAX;
 		}
 
-		codepoint = (unsigned char)*text;
+		codepoint = (uint8_t)*text;
 
 		if (codepoint == 0)
 		{
@@ -231,32 +231,22 @@ size_t utf8len(const char* text)
 		}
 		else if ((codepoint & 0xE0) == 0xC0)
 		{
-			if (text_length < 2)
-			{
-				return SIZE_MAX;
-			}
-
 			codepoint_length = 2;
 		}
 		else if ((codepoint & 0xF0) == 0xE0)
 		{
-			if (text_length < 3)
-			{
-				return SIZE_MAX;
-			}
-
 			codepoint_length = 3;
 		}
 		else if ((codepoint & 0xF8) == 0xF0)
 		{
-			if (text_length < 4)
-			{
-				return SIZE_MAX;
-			}
-
 			codepoint_length = 4;
 		}
 		else
+		{
+			return SIZE_MAX;
+		}
+
+		if (codepoint_length > text_length)
 		{
 			return SIZE_MAX;
 		}
