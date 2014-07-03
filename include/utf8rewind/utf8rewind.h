@@ -428,55 +428,6 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 */
 size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors);
 
-//! Decode a UTF-8 encoded codepoint to a Unicode codepoint.
-/*!
-	The result of this function can be used to offset the input
-	string in order to decode all characters in a string.
-
-	Example:
-
-	@code{.c}
-		const char* input = "Name: Bj\xC3\xB6rn Zonderland";
-		const char* src = input;
-		unicode_t codepoint = 0;
-		int32_t errors = 0;
-		size_t offset;
-		size_t i;
-
-		FontBatch_Start();
-
-		for (i = 0; i < utf8len(input); ++i)
-		{
-			offset = utf8decode(src, &codepoint, &errors);
-			if (offset == SIZE_MAX)
-			{
-				break;
-			}
-
-			Font_AddCharacter(codepoint);
-
-			src += offset;
-		}
-
-		FontBatch_End();
-		FontBatch_Draw(100, 100);
-	@endcode
-
-	@param text Input string.
-	@param result String to write the result to.
-	@param errors Output for errors.
-
-	@return Input offset in bytes or SIZE_MAX on error.
-
-	Errors:
-	- #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
-	- #UTF8_ERR_INVALID_CHARACTER Input does not point to a valid UTF-8 encoded character.
-	- #UTF8_ERR_NOT_ENOUGH_SPACE Could not write result.
-
-	@sa utf8encode
-*/
-size_t utf8decode(const char* text, unicode_t* result, int32_t* errors);
-
 //! Seek into a UTF-8 encoded string.
 /*!
 	Working with UTF-8 encoded strings can be tricky due to
