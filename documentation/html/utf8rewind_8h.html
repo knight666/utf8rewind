@@ -176,12 +176,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a70996b8a2475177e9156948fe9c1996d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a70996b8a2475177e9156948fe9c1996d">utf8towide</a> (const char *input, size_t inputSize, wchar_t *target, size_t targetSize, int32_t *errors)</td></tr>
 <tr class="memdesc:a70996b8a2475177e9156948fe9c1996d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a UTF-8 encoded string to a wide string.  <a href="#a70996b8a2475177e9156948fe9c1996d">More...</a><br /></td></tr>
 <tr class="separator:a70996b8a2475177e9156948fe9c1996d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac08ff5b9be438e67b8e0af6a4c56543f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#ac08ff5b9be438e67b8e0af6a4c56543f">utf8convertucs2</a> (<a class="el" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a> codepoint, char *target, size_t targetSize, int32_t *errors)</td></tr>
-<tr class="memdesc:ac08ff5b9be438e67b8e0af6a4c56543f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a UCS-2 codepoint to UTF-8.  <a href="#ac08ff5b9be438e67b8e0af6a4c56543f">More...</a><br /></td></tr>
-<tr class="separator:ac08ff5b9be438e67b8e0af6a4c56543f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33dcf979fa8ab17d40c0b7c7645a5dfa"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a33dcf979fa8ab17d40c0b7c7645a5dfa">utf8decode</a> (const char *text, <a class="el" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a> *result, int32_t *errors)</td></tr>
-<tr class="memdesc:a33dcf979fa8ab17d40c0b7c7645a5dfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decode a UTF-8 encoded codepoint to a Unicode codepoint.  <a href="#a33dcf979fa8ab17d40c0b7c7645a5dfa">More...</a><br /></td></tr>
-<tr class="separator:a33dcf979fa8ab17d40c0b7c7645a5dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13d55ea3402d6d91cfb965f3605ec3eb"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8seek</a> (const char *text, const char *textStart, off_t offset, int direction)</td></tr>
 <tr class="memdesc:a13d55ea3402d6d91cfb965f3605ec3eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seek into a UTF-8 encoded string.  <a href="#a13d55ea3402d6d91cfb965f3605ec3eb">More...</a><br /></td></tr>
 <tr class="separator:a13d55ea3402d6d91cfb965f3605ec3eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -549,160 +543,6 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>1 on success or 0 on failure. </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ac08ff5b9be438e67b8e0af6a4c56543f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t utf8convertucs2 </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a>&#160;</td>
-          <td class="paramname"><em>codepoint</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>target</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>targetSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int32_t *&#160;</td>
-          <td class="paramname"><em>errors</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Convert a UCS-2 codepoint to UTF-8. </p>
-<p>UCS-2 encoding is similar to UTF-16 encoding, except that it does not use surrogate pairs to encode values beyond U+FFFF.</p>
-<p>This encoding was standard on Microsoft Windows XP. Newer versions of Windows use UTF-16 instead.</p>
-<p>If 0 is specified as the target buffer, this function returns the number of bytes needed to store the codepoint.</p>
-<dl class="section note"><dt>Note</dt><dd>Surrogate pairs cannot be converted using this function. Use <a class="el" href="utf8rewind_8h.html#ad4670f2b7165731bff971559f85690a5" title="Convert a wide string to a UTF-8 encoded string. ">widetoutf8()</a> instead.</dd></dl>
-<p>Example:</p>
-<div class="fragment"><div class="line"><a class="code" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a> input[] = { 0x3041, 0x304B, 0x3060, 0x3074 };</div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">size_t</span> input_size = <span class="keyword">sizeof</span>(input) / <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#aaed921fc64460bb8f0039ba06c5abd17">ucs2_t</a>);</div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">size_t</span> text_size = 128;</div>
-<div class="line"><span class="keywordtype">char</span> text[text_size] = { 0 };</div>
-<div class="line"><span class="keywordtype">char</span>* dst = text;</div>
-<div class="line"><span class="keywordtype">size_t</span> i;</div>
-<div class="line"><span class="keywordtype">size_t</span> offset;</div>
-<div class="line">int32_t errors = 0;</div>
-<div class="line"></div>
-<div class="line"><span class="keywordflow">for</span> (i = 0; i &lt; input_size; ++i)</div>
-<div class="line">{</div>
-<div class="line">    offset = <a class="code" href="utf8rewind_8h.html#ac08ff5b9be438e67b8e0af6a4c56543f">utf8convertucs2</a>(input[i], dst, text_size, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (offset == SIZE_MAX)</div>
-<div class="line">    {</div>
-<div class="line">        <span class="keywordflow">return</span> errors;</div>
-<div class="line">    }</div>
-<div class="line"></div>
-<div class="line">    dst += offset;</div>
-<div class="line">}</div>
-</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">codepoint</td><td>UCS-2 encoded codepoint. </td></tr>
-    <tr><td class="paramname">target</td><td>String to write the result to. </td></tr>
-    <tr><td class="paramname">targetSize</td><td>Amount of bytes remaining in the string. </td></tr>
-    <tr><td class="paramname">errors</td><td>Output for errors.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for output.</dd></dl>
-<p>Errors:</p><ul>
-<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Target buffer could not contain result.</li>
-<li><a class="el" href="utf8rewind_8h.html#aa0c5762ac11727331a3538f8e0a56104">UTF8_ERR_UNHANDLED_SURROGATE_PAIR</a> Codepoint is part of a surrogate pair.</li>
-</ul>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#ad4670f2b7165731bff971559f85690a5" title="Convert a wide string to a UTF-8 encoded string. ">widetoutf8</a> </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a33dcf979fa8ab17d40c0b7c7645a5dfa"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t utf8decode </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>text</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a> *&#160;</td>
-          <td class="paramname"><em>result</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int32_t *&#160;</td>
-          <td class="paramname"><em>errors</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Decode a UTF-8 encoded codepoint to a Unicode codepoint. </p>
-<p>The result of this function can be used to offset the input string in order to decode all characters in a string.</p>
-<p>Example:</p>
-<div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* input = <span class="stringliteral">&quot;Name: Bj\xC3\xB6rn Zonderland&quot;</span>;</div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* src = input;</div>
-<div class="line"><a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a> codepoint = 0;</div>
-<div class="line">int32_t errors = 0;</div>
-<div class="line"><span class="keywordtype">size_t</span> offset;</div>
-<div class="line"><span class="keywordtype">size_t</span> i;</div>
-<div class="line"></div>
-<div class="line">FontBatch_Start();</div>
-<div class="line"></div>
-<div class="line"><span class="keywordflow">for</span> (i = 0; i &lt; <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(input); ++i)</div>
-<div class="line">{</div>
-<div class="line">    offset = <a class="code" href="utf8rewind_8h.html#a33dcf979fa8ab17d40c0b7c7645a5dfa">utf8decode</a>(src, &amp;codepoint, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (offset == SIZE_MAX)</div>
-<div class="line">    {</div>
-<div class="line">        <span class="keywordflow">break</span>;</div>
-<div class="line">    }</div>
-<div class="line"></div>
-<div class="line">    Font_AddCharacter(codepoint);</div>
-<div class="line"></div>
-<div class="line">    src += offset;</div>
-<div class="line">}</div>
-<div class="line"></div>
-<div class="line">FontBatch_End();</div>
-<div class="line">FontBatch_Draw(100, 100);</div>
-</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">text</td><td>Input string. </td></tr>
-    <tr><td class="paramname">result</td><td>String to write the result to. </td></tr>
-    <tr><td class="paramname">errors</td><td>Output for errors.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Input offset in bytes or SIZE_MAX on error.</dd></dl>
-<p>Errors:</p><ul>
-<li><a class="el" href="utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b">UTF8_ERR_INVALID_DATA</a> Input does not contain enough bytes for decoding.</li>
-<li><a class="el" href="utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588">UTF8_ERR_INVALID_CHARACTER</a> Input does not point to a valid UTF-8 encoded character.</li>
-<li><a class="el" href="utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a> Could not write result.</li>
-</ul>
-<dl class="section see"><dt>See also</dt><dd>utf8encode </dd></dl>
 
 </div>
 </div>
@@ -1159,7 +999,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_19f418181f8b699045c2f8e6c49f857e.html">utf8rewind</a></li><li class="navelem"><a class="el" href="utf8rewind_8h.html">utf8rewind.h</a></li>
-    <li class="footer">Generated on Wed Jul 2 2014 08:09:54 for utf8rewind by
+    <li class="footer">Generated on Thu Jul 3 2014 08:25:29 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>
