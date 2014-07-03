@@ -78,7 +78,7 @@ typedef uint16_t utf16_t; /*!< UTF-16 encoded codepoint. */
 
 //! Check if a character is valid according to UTF-8 encoding.
 /*!
-	@param encodedCharacter Character to check.
+	@param[in]  encodedCharacter  Byte to check.
 
 	@return 1 on success or 0 on failure.
 */
@@ -88,14 +88,14 @@ int8_t utf8charvalid(char encodedCharacter);
 /*!
 	A UTF-8 encoded codepoint must start with a special byte.
 	This byte indicates how many bytes are used to encode the
-	codepoint, up to a maximum of 6.
+	codepoint, up to a maximum of 4.
 
 	This function can be used to determine the amount of bytes
 	used to encode a codepoint.
 
-	@param encodedCharacter Character to check.
+	@param[in]  encodedCharacter  Byte to check.
 
-	@return Amount of bytes written or SIZE_MAX on error.
+	@return Amount of bytes used for encoding or SIZE_MAX on error.
 */
 size_t utf8charlen(char encodedCharacter);
 
@@ -104,17 +104,16 @@ size_t utf8charlen(char encodedCharacter);
 	Example:
 
 	@code{.c}
-		int CheckPassword(const char* password)
+		int8_t CheckPassword(const char* password)
 		{
 			size_t length = utf8len(password);
 			return (length == utf8len("hunter2"));
 		}
 	@endcode
 
-	@param text UTF-8 encoded string.
+	@param[in]  text  UTF-8 encoded string.
 
-	@return Length in codepoints or an error code.
-		- SIZE_MAX An invalid character was encountered.
+	@return Length in codepoints or SIZE_MAX on error.
 */
 size_t utf8len(const char* text);
 
@@ -440,25 +439,40 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 	in order to enable skipping to another part of the
 	string.
 
-	Example:
-
-	@code{.c}
-		const char* text = "Input: <LEFT ARROW>";
-		const char* input = utf8seek(text, text, utf8len("Input: "), SEEK_SET);
-	@endcode
-
-	Directions:
-	- `SEEK_SET` Offset is from the start of the string.
-	- `SEEK_CUR` Offset is from the current position of the string.
-	- `SEEK_END` Offset is from the end of the string.
-
 	@note `textStart` must come before `text` in memory when
 	seeking from the current or end position.
 
-	@param text Input string.
-	@param textStart Start of input string.
-	@param offset Requested offset in codepoints.
-	@param direction Direction to seek in.
+	Example:
+
+	@code{.c}
+		const char* text = "Press \xE0\x80\x13 to continue.";
+		const char fixed[1024] = { 0 };
+		const char* commandStart;
+		const char* commandEnd;
+
+		commandStart = strstr(text, "\xE0\x80\x13");
+		if (commandStart == 0)
+		{
+			return 0;
+		}
+
+		strncpy(fixed, text, commandStart - text);
+		strcat(fixed, "ENTER");
+
+		commandEnd = utf8seek(commandStart, text, 1, SEEK_CUR);
+		if (commandEnd != commandStart)
+		{
+			strcat(fixed, commandEnd);
+		}
+	@endcode
+
+	@param[in]  text       Input string.
+	@param[in]  textStart  Start of input string.
+	@param[in]  offset     Requested offset in codepoints.
+	@param[in]  direction  Direction to seek in.
+	@arg `SEEK_SET` Offset is from the start of the string.
+	@arg `SEEK_CUR` Offset is from the current position of the string.
+	@arg `SEEK_END` Offset is from the end of the string.
 
 	@return Changed string or no change on error.
 */

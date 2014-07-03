@@ -509,15 +509,15 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the length in bytes of the encoded character. </p>
-<p>A UTF-8 encoded codepoint must start with a special byte. This byte indicates how many bytes are used to encode the codepoint, up to a maximum of 6.</p>
+<p>A UTF-8 encoded codepoint must start with a special byte. This byte indicates how many bytes are used to encode the codepoint, up to a maximum of 4.</p>
 <p>This function can be used to determine the amount of bytes used to encode a codepoint.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">encodedCharacter</td><td>Character to check.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">encodedCharacter</td><td>Byte to check.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Amount of bytes written or SIZE_MAX on error. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes used for encoding or SIZE_MAX on error. </dd></dl>
 
 </div>
 </div>
@@ -538,7 +538,7 @@ Functions</h2></td></tr>
 <p>Check if a character is valid according to UTF-8 encoding. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">encodedCharacter</td><td>Character to check.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">encodedCharacter</td><td>Byte to check.</td></tr>
   </table>
   </dd>
 </dl>
@@ -562,21 +562,18 @@ Functions</h2></td></tr>
 
 <p>Get the length in codepoints of a UTF-8 encoded string. </p>
 <p>Example:</p>
-<div class="fragment"><div class="line"><span class="keywordtype">int</span> CheckPassword(<span class="keyword">const</span> <span class="keywordtype">char</span>* password)</div>
+<div class="fragment"><div class="line">int8_t CheckPassword(<span class="keyword">const</span> <span class="keywordtype">char</span>* password)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">size_t</span> length = <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(password);</div>
 <div class="line">    <span class="keywordflow">return</span> (length == <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(<span class="stringliteral">&quot;hunter2&quot;</span>));</div>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">text</td><td>UTF-8 encoded string.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">text</td><td>UTF-8 encoded string.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Length in codepoints or an error code.<ul>
-<li>SIZE_MAX An invalid character was encountered. </li>
-</ul>
-</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Length in codepoints or SIZE_MAX on error. </dd></dl>
 
 </div>
 </div>
@@ -619,21 +616,38 @@ Functions</h2></td></tr>
 <p>Seek into a UTF-8 encoded string. </p>
 <p>Working with UTF-8 encoded strings can be tricky due to the nature of the variable-length encoding. Because one character no longer equals one byte, it can be difficult to skip around in a UTF-8 encoded string without decoding the codepoints.</p>
 <p>This function provides an interface similar to <code>fseek</code> in order to enable skipping to another part of the string.</p>
+<dl class="section note"><dt>Note</dt><dd><code>textStart</code> must come before <code>text</code> in memory when seeking from the current or end position.</dd></dl>
 <p>Example:</p>
-<div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* text = <span class="stringliteral">&quot;Input: &lt;LEFT ARROW&gt;&quot;</span>;</div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* input = <a class="code" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8seek</a>(text, text, <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(<span class="stringliteral">&quot;Input: &quot;</span>), SEEK_SET);</div>
-</div><!-- fragment --><p>Directions:</p><ul>
-<li><code>SEEK_SET</code> Offset is from the start of the string.</li>
-<li><code>SEEK_CUR</code> Offset is from the current position of the string.</li>
+<div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* text = <span class="stringliteral">&quot;Press \xE0\x80\x13 to continue.&quot;</span>;</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span> fixed[1024] = { 0 };</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* commandStart;</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* commandEnd;</div>
+<div class="line"></div>
+<div class="line">commandStart = strstr(text, <span class="stringliteral">&quot;\xE0\x80\x13&quot;</span>);</div>
+<div class="line"><span class="keywordflow">if</span> (commandStart == 0)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+<div class="line"></div>
+<div class="line">strncpy(fixed, text, commandStart - text);</div>
+<div class="line">strcat(fixed, <span class="stringliteral">&quot;ENTER&quot;</span>);</div>
+<div class="line"></div>
+<div class="line">commandEnd = <a class="code" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8seek</a>(commandStart, text, 1, SEEK_CUR);</div>
+<div class="line"><span class="keywordflow">if</span> (commandEnd != commandStart)</div>
+<div class="line">{</div>
+<div class="line">    strcat(fixed, commandEnd);</div>
+<div class="line">}</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">text</td><td>Input string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">textStart</td><td>Start of input string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">offset</td><td>Requested offset in codepoints. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">direction</td><td>Direction to seek in. <ul>
+<li><code>SEEK_SET</code> Offset is from the start of the string. </li>
+<li><code>SEEK_CUR</code> Offset is from the current position of the string. </li>
 <li><code>SEEK_END</code> Offset is from the end of the string.</li>
 </ul>
-<dl class="section note"><dt>Note</dt><dd><code>textStart</code> must come before <code>text</code> in memory when seeking from the current or end position.</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">text</td><td>Input string. </td></tr>
-    <tr><td class="paramname">textStart</td><td>Start of input string. </td></tr>
-    <tr><td class="paramname">offset</td><td>Requested offset in codepoints. </td></tr>
-    <tr><td class="paramname">direction</td><td>Direction to seek in.</td></tr>
+</td></tr>
   </table>
   </dd>
 </dl>
@@ -999,7 +1013,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_19f418181f8b699045c2f8e6c49f857e.html">utf8rewind</a></li><li class="navelem"><a class="el" href="utf8rewind_8h.html">utf8rewind.h</a></li>
-    <li class="footer">Generated on Thu Jul 3 2014 08:25:29 for utf8rewind by
+    <li class="footer">Generated on Thu Jul 3 2014 17:38:23 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>
