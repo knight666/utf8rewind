@@ -437,7 +437,6 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 	unicode_t codepoint;
 	size_t encoded_length;
 	utf16_t surrogate_low;
-	unicode_t mask = 0;
 	const unicode_t* src = (const unicode_t*)input;
 	ptrdiff_t src_size = (ptrdiff_t)inputSize;
 	char* dst = target;
