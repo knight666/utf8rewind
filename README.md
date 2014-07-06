@@ -1,6 +1,6 @@
 ## Introduction ##
 
-`utf8rewind` is a C library designed to extend default string handling functions in order to add support for UTF-8 encoded text. Besides providing functions to deal with UTF-8 encoded text, it also provides functions for converting to and from UTF-16 encoded text, the default on Windows.
+`utf8rewind` is a C library designed to extend default string handling functions in order to add support for UTF-8 encoded text. Besides providing functions to deal with UTF-8 encoded text, it also provides functions for converting to and from wide strings. Wide strings of both the UTF-16 and UTF-32 variety are supported.
 
 ## Licensing ##
 
