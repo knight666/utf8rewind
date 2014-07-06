@@ -18,6 +18,7 @@ Suppose you maintain a client application written in C. In order for clients to 
 		that this is a terrible way to generate a salt,
 		because it has insufficient entropy. */
 		salt = md5(username);
+
 		hashed_password = md5(password);
 		strcat(verify_password, hashed_password);
 		strcat(verify_password, salt);
@@ -30,7 +31,7 @@ Suppose you maintain a client application written in C. In order for clients to 
 
 Now we want to improve our security by allowing the full range of Unicode in the passwords by using UTF-8 encoding.
 
-What would we have to change? The answer is: nothing.
+What would we have to change? Nothing at all.
 
 A password like \"M&ocirc;ntiPyth&ocirc;nikdenH&ocirc;lieGr&acirc;ilen\" would be encoded as `M\xF8Pyth\xF8denH\xF8Gr\xE4en`, meaning the calls to `strcat` and `strcpy` would still work as intended. The password can be treated as ASCII without changing the code.
 
@@ -67,12 +68,14 @@ We'll have to make sure that we provide UTF-32 codepoints instead:
 
 This can be accomplished using a simple cast, because all ASCII codepoints fit in a `unicode_t` type.
 
-Next, we'll have to increase the size of the `text_input` string in order to accommodate the conversion of the codepoint to UTF-8:
+Next, we'll have to increase the size of the `text_input` string in order to accommodate the conversion of the codepoint to UTF-8. Finally, we use the utf32toutf8() function to convert the input to UTF-8.
 
 @code{.c}
 	char text_input[16] = { 0 };
+	int32_t errors = 0;
 	
-	if (utf8encode(input, text_input, 16) <= 0)
+	utf32toutf8(&input, sizeof(unicode_t), text_input, 16, &errors);
+	if (errors != 0)
 	{
 		return 0;
 	}
@@ -87,7 +90,7 @@ Because the codepoint can consist of multiple characters, we'll have to change t
 	}
 @endcode
 
-Finally, putting it all together:
+Putting it all together again:
 
 @code{.c}
 	static const int g_PasswordInputMaximum = 255;
@@ -96,8 +99,10 @@ Finally, putting it all together:
 	int PasswordField_EnterCharacter(unicode_t input)
 	{
 		char text_input[16] = { 0 };
-		
-		if (utf8encode(input, text_input, 16) <= 0)
+		int32_t errors = 0;
+	
+		utf32toutf8(&input, sizeof(unicode_t), text_input, 16, &errors);
+		if (errors != 0)
 		{
 			return 0;
 		}
@@ -147,23 +152,30 @@ The first thing that will have to change is that `FontBatch_AddCharacter` should
 	FontBatch_AddCharacter((unicode_t)*src);
 @endcode
 
-Next, we'll have to treat the input as UTF-8 encoded text. We'll have to read codepoints one-by-one.
+Next, we'll have to treat the input as UTF-8 encoded text. We'll have to convert the string to UTF-32. For that, we'll use the utf8toutf32() function.
 
 @code{.c}
-	unicode_t codepoint;
-	size_t i;
-	int offset;
-	const char* src = text;
+	int32_t errors = 0;
+	char* converted = 0;
 	
-	for (i = 0; i < utf8len(text); ++i)
+	size_t converted_size = utf8toutf32(text, strlen(text), 0, 0, &errors);
+	if (errors != 0)
 	{
-		offset = utf8decode(src, &codepoint);
-		if (offset <= 0)
-		{
-			break;
-		}
-		
-		src += offset;
+		goto error;
+	}
+	
+	converted = (char*)malloc(converted_size);
+	utf8toutf32(text, strlen(text), converted, converted_size, &errors);
+	if (errors != 0)
+	{
+		goto error;
+	}
+	
+error:
+	if (converted != 0)
+	{
+		free(converted);
+		converted = 0;
 	}
 @endcode
 
@@ -172,27 +184,43 @@ Putting it all together again:
 @code{.c}
 	void InputField_Draw(int x, int y, const char* text)
 	{
-		unicode_t codepoint;
+		int32_t errors = 0;
+		char* converted = 0;
+		size_t converted_length = 0;
 		size_t i;
-		int offset;
-		const char* src = text;
+		
+		size_t converted_size = utf8toutf32(text, strlen(text), 0, 0, &errors);
+		if (errors != 0)
+		{
+			goto error;
+		}
+		
+		converted = (char*)malloc(converted_size);
+		utf8toutf32(text, strlen(text), converted, converted_size, &errors);
+		if (errors != 0)
+		{
+			goto error;
+		}
+		
+		converted_length = converted_size / sizeof(unicode_t);
 		
 		FontBatch_Start("Arial20");
 		
-		for (i = 0; i < utf8len(text); ++i)
+		for (i = 0; i < converted_length; ++i)
 		{
-			offset = utf8decode(src, &codepoint);
-			if (offset <= 0)
-			{
-				break;
-			}
-			
-			FontBatch_AddCharacter(codepoint);
-			
-			src += offset;
+			FontBatch_AddCharacter(converted[i]);
 		}
 		
 		FontBatch_End();
 		FontBatch_Draw(x, y);
+		
+	error:
+		if (converted != 0)
+		{
+			free(converted);
+			converted = 0;
+		}
 	}
-@endcode*/
+@endcode
+
+As you can see, it's relatively simple to convert a program to use UTF-8 after the fact, because it's backwards-compatible with ASCII-encoded text.*/
