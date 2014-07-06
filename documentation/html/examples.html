@@ -105,6 +105,7 @@ $(document).ready(function(){initNavTree('examples.html','');});
 <ul><li class="level1"><a href="#example-changes">Changes to existing code</a></li>
 <li class="level1"><a href="#example-user-input">Dealing with user input</a></li>
 <li class="level1"><a href="#example-display">Displaying Unicode text</a></li>
+<li class="level1"><a href="#example-interfacing">Interfacing with third-party libraries</a></li>
 </ul>
 </div>
 <div class="textblock"><h1><a class="anchor" id="example-changes"></a>
@@ -281,13 +282,183 @@ Displaying Unicode text</h1>
 <div class="line">        converted = 0;</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>As you can see, it's relatively simple to convert a program to use UTF-8 after the fact, because it's backwards-compatible with ASCII-encoded text. </p>
-</div></div><!-- contents -->
+</div><!-- fragment --><p>As you can see, it's relatively simple to convert a program to use UTF-8 after the fact, because it's backwards-compatible with ASCII-encoded text.</p>
+<h1><a class="anchor" id="example-interfacing"></a>
+Interfacing with third-party libraries</h1>
+<p>When working with localized text, you often have to interface with existing libraries. On Windows especially, the API's expect either ASCII or UTF-16 encoded text. Luckily, <code>utf8rewind</code> comes with tools to handle these situations.</p>
+<p>For example, let's say you're building a game and you want to store a player's progress in a savefile. To guarantee that the file is unique, you use the player's name in the filename.</p>
+<p>In this example, we're already using <code>utf8rewind</code> to deal with encoded text. The only issue remaining is actually opening the file and saving the progress. We use the following interface:</p>
+<div class="fragment"><div class="line">int32_t Save_WriteGameState(<span class="keyword">const</span> <span class="keywordtype">char</span>* playerName, GameState* state);</div>
+</div><!-- fragment --><p>Using the Windows API, here's how we can construct the path and open the file for writing:</p>
+<div class="fragment"><div class="line">int32_t Save_WriteGameState(<span class="keyword">const</span> <span class="keywordtype">char</span>* playerName, GameState* state)</div>
+<div class="line">{</div>
+<div class="line">    int32_t result = 0;</div>
+<div class="line">    <span class="keywordtype">wchar_t</span>* my_documents = NULL;</div>
+<div class="line">    <span class="keywordtype">wchar_t</span> full_path[_MAX_PATH] = { 0 };</div>
+<div class="line">    <span class="keywordtype">wchar_t</span>* wide_game_name = L<span class="stringliteral">&quot;Example&quot;</span>;</div>
+<div class="line">    <span class="comment">// TODO: Convert player name.</span></div>
+<div class="line">    <span class="keywordtype">wchar_t</span>* wide_player_name = L<span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line">    HANDLE file_handle = INVALID_HANDLE_VALUE;</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// retrieve path to &quot;My Documents&quot;</span></div>
+<div class="line">    </div>
+<div class="line">    <span class="keywordflow">if</span> (FAILED(::SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &amp;my_documents)))</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// construct path to game folder</span></div>
+<div class="line">    </div>
+<div class="line">    wcscat(full_path, my_documents);</div>
+<div class="line">    wcscat(full_path, L<span class="stringliteral">&quot;\\&quot;</span>);</div>
+<div class="line">    wcscat(full_path, L<span class="stringliteral">&quot;My Games\\&quot;</span>);</div>
+<div class="line">    wcscat(full_path, wide_game_name);</div>
+<div class="line">    wcscat(full_path, L<span class="stringliteral">&quot;\\&quot;</span>);</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// the path should now look similar to this:</span></div>
+<div class="line">    <span class="comment">// L&quot;C:/Users/Quinten/Documents/My Games/Example/&quot;</span></div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// ensure that the directory exists before trying to create the file</span></div>
+<div class="line">    ::CreateDirectoryW(full_path, NULL);</div>
+<div class="line">    </div>
+<div class="line">    wcscat(full_path, wide_player_name);</div>
+<div class="line">    wcscat(full_path, L<span class="stringliteral">&quot;.sav&quot;</span>);</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// the complete path:</span></div>
+<div class="line">    <span class="comment">// L&quot;C:/Users/Quinten/Documents/My Games/Example/Quinten.sav&quot;</span></div>
+<div class="line">    </div>
+<div class="line">    file_handle = ::CreateFileW(</div>
+<div class="line">        full_path,</div>
+<div class="line">        GENERIC_WRITE,</div>
+<div class="line">        FILE_SHARE_READ,</div>
+<div class="line">        NULL,</div>
+<div class="line">        CREATE_ALWAYS,</div>
+<div class="line">        FILE_ATTRIBUTE_NORMAL,</div>
+<div class="line">        0</div>
+<div class="line">    );</div>
+<div class="line">    <span class="keywordflow">if</span> (file_handle == INVALID_HANDLE_VALUE)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
+<div class="line">    result = Save_WriteGameStateToFile(file_handle, state);</div>
+<div class="line">    </div>
+<div class="line">cleanup:</div>
+<div class="line">    <span class="keywordflow">return</span> result;</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>Unfortunately, there's still a <code>TODO</code> comment at the top. We can use <a class="el" href="utf8rewind_8h.html#a70996b8a2475177e9156948fe9c1996d" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide()</a> to convert the player name to wide encoding, independent of platform.</p>
+<div class="fragment"><div class="line">    int32_t errors = 0;</div>
+<div class="line">    <span class="keywordtype">wchar_t</span>* wide_player_name = NULL;</div>
+<div class="line">    <span class="keywordtype">size_t</span> wide_player_name_length = 0;</div>
+<div class="line">    </div>
+<div class="line">    wide_player_name_length = <a class="code" href="utf8rewind_8h.html#a70996b8a2475177e9156948fe9c1996d">utf8towide</a>(playerName, strlen(playerName), 0, 0, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (errors != 0)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
+<div class="line">    wide_player_name = (<span class="keywordtype">wchar_t</span>*)malloc((wide_player_name_length + 1) * <span class="keyword">sizeof</span>(wchar_t));</div>
+<div class="line">    memset(wide_player_name, 0, (wide_player_name_length + 1) * <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>));</div>
+<div class="line">    </div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#a70996b8a2475177e9156948fe9c1996d">utf8towide</a>(playerName, strlen(playerName), wide_player_name, wide_player_name_length, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (errors != 0)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
+<div class="line">cleanup:</div>
+<div class="line">    <span class="keywordflow">if</span> (wide_player_name != NULL)</div>
+<div class="line">    {</div>
+<div class="line">        free(wide_player_name);</div>
+<div class="line">        wide_player_name = NULL;</div>
+<div class="line">    }</div>
+</div><!-- fragment --><p>Integrated with the rest of the function:</p>
+<div class="fragment"><div class="line">int32_t Save_WriteGameState(<span class="keyword">const</span> <span class="keywordtype">char</span>* playerName, GameState* state)</div>
+<div class="line">{</div>
+<div class="line">    int32_t result = 0;</div>
+<div class="line">    int32_t errors = 0;</div>
+<div class="line">    <span class="keywordtype">wchar_t</span>* my_documents = NULL;</div>
+<div class="line">    <span class="keywordtype">wchar_t</span> full_path[_MAX_PATH] = { 0 };</div>
+<div class="line">    <span class="keywordtype">wchar_t</span>* wide_game_name = L<span class="stringliteral">&quot;Example&quot;</span>;</div>
+<div class="line">    <span class="keywordtype">wchar_t</span>* wide_player_name = NULL;</div>
+<div class="line">    <span class="keywordtype">size_t</span> wide_player_name_length = 0;</div>
+<div class="line">    HANDLE file_handle = INVALID_HANDLE_VALUE;</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// convert player name to wide string</span></div>
+<div class="line">    </div>
+<div class="line">    wide_player_name_length = <a class="code" href="utf8rewind_8h.html#a70996b8a2475177e9156948fe9c1996d">utf8towide</a>(playerName, strlen(playerName), 0, 0, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (errors != 0)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
+<div class="line">    wide_player_name = (<span class="keywordtype">wchar_t</span>*)malloc((wide_player_name_length + 1) * <span class="keyword">sizeof</span>(wchar_t));</div>
+<div class="line">    memset(wide_player_name, 0, (wide_player_name_length + 1) * <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>));</div>
+<div class="line">    </div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#a70996b8a2475177e9156948fe9c1996d">utf8towide</a>(playerName, strlen(playerName), wide_player_name, wide_player_name_length, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (errors != 0)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// retrieve path to &quot;My Documents&quot;</span></div>
+<div class="line">    </div>
+<div class="line">    <span class="keywordflow">if</span> (FAILED(::SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &amp;my_documents)))</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// construct path to game folder</span></div>
+<div class="line">    </div>
+<div class="line">    wcscat(full_path, my_documents);</div>
+<div class="line">    wcscat(full_path, L<span class="stringliteral">&quot;\\&quot;</span>);</div>
+<div class="line">    wcscat(full_path, L<span class="stringliteral">&quot;My Games\\&quot;</span>);</div>
+<div class="line">    wcscat(full_path, wide_game_name);</div>
+<div class="line">    wcscat(full_path, L<span class="stringliteral">&quot;\\&quot;</span>);</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// the path should now look similar to this:</span></div>
+<div class="line">    <span class="comment">// L&quot;C:/Users/Quinten/Documents/My Games/Example/&quot;</span></div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// ensure that the directory exists before trying to create the file</span></div>
+<div class="line">    ::CreateDirectoryW(full_path, NULL);</div>
+<div class="line">    </div>
+<div class="line">    wcscat(full_path, wide_player_name);</div>
+<div class="line">    wcscat(full_path, L<span class="stringliteral">&quot;.sav&quot;</span>);</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// the complete path:</span></div>
+<div class="line">    <span class="comment">// L&quot;C:/Users/Quinten/Documents/My Games/Example/Quinten.sav&quot;</span></div>
+<div class="line">    </div>
+<div class="line">    file_handle = ::CreateFileW(</div>
+<div class="line">        full_path,</div>
+<div class="line">        GENERIC_WRITE,</div>
+<div class="line">        FILE_SHARE_READ,</div>
+<div class="line">        NULL,</div>
+<div class="line">        CREATE_ALWAYS,</div>
+<div class="line">        FILE_ATTRIBUTE_NORMAL,</div>
+<div class="line">        0</div>
+<div class="line">    );</div>
+<div class="line">    <span class="keywordflow">if</span> (file_handle == INVALID_HANDLE_VALUE)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
+<div class="line">    result = Save_WriteGameStateToFile(file_handle, state);</div>
+<div class="line"></div>
+<div class="line">cleanup:</div>
+<div class="line">    <span class="keywordflow">if</span> (wide_player_name != NULL)</div>
+<div class="line">    {</div>
+<div class="line">        free(wide_player_name);</div>
+<div class="line">        wide_player_name = NULL;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
+<div class="line">    <span class="keywordflow">return</span> result;</div>
+<div class="line">}</div>
+</div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Jul 6 2014 11:42:43 for utf8rewind by
+    <li class="footer">Generated on Sun Jul 6 2014 12:53:24 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>
