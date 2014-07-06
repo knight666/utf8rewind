@@ -123,6 +123,10 @@ size_t utf8len(const char* text);
 	that you're working with UTF-16 encoded text. If you're working
 	with wide strings, take a look at widetoutf8() instead.
 
+	@warning Conversion does not add a null-terminator. You must
+	set it yourself, either by clearing the string beforehand
+	or by setting the last byte(s) to zero.
+
 	Example:
 
 	@code{.c}
@@ -165,6 +169,10 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 	@note This function should only be called directly if you are positive
 	that you're working with UTF-32 encoded text. If you're working
 	with wide strings, take a look at widetoutf8() instead.
+
+	@warning Conversion does not add a null-terminator. You must
+	set it yourself, either by clearing the string beforehand
+	or by setting the last byte(s) to zero.
 
 	Example:
 
@@ -232,6 +240,10 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 	is preferable to using the UTF-16 or UTF-32 versions
 	directly.
 
+	@warning Conversion does not add a null-terminator. You must
+	set it yourself, either by clearing the string beforehand
+	or by setting the last byte(s) to zero.
+
 	Example:
 
 	@code{.c}
@@ -288,6 +300,10 @@ size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target, size_t t
 	If you're working with wide strings, take a look at utf8towide()
 	instead.
 
+	@warning Conversion does not add a null-terminator. You must
+	set it yourself, either by clearing the string beforehand
+	or by setting the last byte(s) to zero.
+
 	Example:
 
 	@code{.c}
@@ -327,8 +343,9 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 	If you're working with wide strings, take a look at utf8towide()
 	instead.
 
-	If the target buffer is NULL, the function returns the number of bytes
-	required to store the converted result.
+	@warning Conversion does not add a null-terminator. You must
+	set it yourself, either by clearing the string beforehand
+	or by setting the last byte(s) to zero.
 
 	Example:
 
@@ -379,9 +396,14 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	converted on a platform with UTF-32 wide strings are *not*
 	compatible with platforms with UTF-16 wide strings.
 
-	@par Hence, it is preferable to keep all data as UTF-8 and only
+	@par
+	Hence, it is preferable to keep all data as UTF-8 and only
 	convert to wide strings when required by a third-party
 	interface.
+
+	@warning Conversion does not add a null-terminator. You must
+	set it yourself, either by clearing the string beforehand
+	or by setting the last byte(s) to zero.
 
 	Example:
 
