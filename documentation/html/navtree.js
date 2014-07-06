@@ -17,7 +17,8 @@ var NAVTREE =
       [ "Contact", "index.html#contact", null ],
       [ "Changes to existing code", "examples.html#example-changes", null ],
       [ "Dealing with user input", "examples.html#example-user-input", null ],
-      [ "Displaying Unicode text", "examples.html#example-display", null ]
+      [ "Displaying Unicode text", "examples.html#example-display", null ],
+      [ "Interfacing with third-party libraries", "examples.html#example-interfacing", null ]
     ] ],
     [ "Modules", "modules.html", "modules" ],
     [ "Files", null, [

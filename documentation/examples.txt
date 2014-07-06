@@ -223,4 +223,193 @@ Putting it all together again:
 	}
 @endcode
 
-As you can see, it's relatively simple to convert a program to use UTF-8 after the fact, because it's backwards-compatible with ASCII-encoded text.*/
+As you can see, it's relatively simple to convert a program to use UTF-8 after the fact, because it's backwards-compatible with ASCII-encoded text.
+
+@section example-interfacing Interfacing with third-party libraries
+
+When working with localized text, you often have to interface with existing libraries. On Windows especially, the API's expect either ASCII or UTF-16 encoded text. Luckily, `utf8rewind` comes with tools to handle these situations.
+
+For example, let's say you're building a game and you want to store a player's progress in a savefile. To guarantee that the file is unique, you use the player's name in the filename.
+
+In this example, we're already using `utf8rewind` to deal with encoded text. The only issue remaining is actually opening the file and saving the progress. We use the following interface:
+
+@code{.c}
+	int32_t Save_WriteGameState(const char* playerName, GameState* state);
+@endcode
+
+Using the Windows API, here's how we can construct the path and open the file for writing:
+
+@code{.c}
+	int32_t Save_WriteGameState(const char* playerName, GameState* state)
+	{
+		int32_t result = 0;
+		wchar_t* my_documents = NULL;
+		wchar_t full_path[_MAX_PATH] = { 0 };
+		wchar_t* wide_game_name = L"Example";
+		// TODO: Convert player name.
+		wchar_t* wide_player_name = L"";
+		HANDLE file_handle = INVALID_HANDLE_VALUE;
+		
+		// retrieve path to "My Documents"
+		
+		if (FAILED(::SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &my_documents)))
+		{
+			goto cleanup;
+		}
+		
+		// construct path to game folder
+		
+		wcscat(full_path, my_documents);
+		wcscat(full_path, L"\\");
+		wcscat(full_path, L"My Games\\");
+		wcscat(full_path, wide_game_name);
+		wcscat(full_path, L"\\");
+		
+		// the path should now look similar to this:
+		// L"C:/Users/Quinten/Documents/My Games/Example/"
+		
+		// ensure that the directory exists before trying to create the file
+		::CreateDirectoryW(full_path, NULL);
+		
+		wcscat(full_path, wide_player_name);
+		wcscat(full_path, L".sav");
+		
+		// the complete path:
+		// L"C:/Users/Quinten/Documents/My Games/Example/Quinten.sav"
+		
+		file_handle = ::CreateFileW(
+			full_path,
+			GENERIC_WRITE,
+			FILE_SHARE_READ,
+			NULL,
+			CREATE_ALWAYS,
+			FILE_ATTRIBUTE_NORMAL,
+			0
+		);
+		if (file_handle == INVALID_HANDLE_VALUE)
+		{
+			goto cleanup;
+		}
+		
+		result = Save_WriteGameStateToFile(file_handle, state);
+		
+	cleanup:
+		return result;
+	}
+@endcode
+
+Unfortunately, there's still a `TODO` comment at the top. We can use utf8towide() to convert the player name to wide encoding, independent of platform.
+
+@code{.c}
+	int32_t errors = 0;
+	wchar_t* wide_player_name = NULL;
+	size_t wide_player_name_length = 0;
+	
+	wide_player_name_length = utf8towide(playerName, strlen(playerName), 0, 0, &errors);
+	if (errors != 0)
+	{
+		goto cleanup;
+	}
+	
+	wide_player_name = (wchar_t*)malloc((wide_player_name_length + 1) * sizeof(wchar_t));
+	memset(wide_player_name, 0, (wide_player_name_length + 1) * sizeof(wchar_t));
+	
+	utf8towide(playerName, strlen(playerName), wide_player_name, wide_player_name_length, &errors);
+	if (errors != 0)
+	{
+		goto cleanup;
+	}
+	
+cleanup:
+	if (wide_player_name != NULL)
+	{
+		free(wide_player_name);
+		wide_player_name = NULL;
+	}
+@endcode
+
+Integrated with the rest of the function:
+
+@code{.c}
+	int32_t Save_WriteGameState(const char* playerName, GameState* state)
+	{
+		int32_t result = 0;
+		int32_t errors = 0;
+		wchar_t* my_documents = NULL;
+		wchar_t full_path[_MAX_PATH] = { 0 };
+		wchar_t* wide_game_name = L"Example";
+		wchar_t* wide_player_name = NULL;
+		size_t wide_player_name_length = 0;
+		HANDLE file_handle = INVALID_HANDLE_VALUE;
+		
+		// convert player name to wide string
+		
+		wide_player_name_length = utf8towide(playerName, strlen(playerName), 0, 0, &errors);
+		if (errors != 0)
+		{
+			goto cleanup;
+		}
+		
+		wide_player_name = (wchar_t*)malloc((wide_player_name_length + 1) * sizeof(wchar_t));
+		memset(wide_player_name, 0, (wide_player_name_length + 1) * sizeof(wchar_t));
+		
+		utf8towide(playerName, strlen(playerName), wide_player_name, wide_player_name_length, &errors);
+		if (errors != 0)
+		{
+			goto cleanup;
+		}
+		
+		// retrieve path to "My Documents"
+		
+		if (FAILED(::SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &my_documents)))
+		{
+			goto cleanup;
+		}
+		
+		// construct path to game folder
+		
+		wcscat(full_path, my_documents);
+		wcscat(full_path, L"\\");
+		wcscat(full_path, L"My Games\\");
+		wcscat(full_path, wide_game_name);
+		wcscat(full_path, L"\\");
+		
+		// the path should now look similar to this:
+		// L"C:/Users/Quinten/Documents/My Games/Example/"
+		
+		// ensure that the directory exists before trying to create the file
+		::CreateDirectoryW(full_path, NULL);
+		
+		wcscat(full_path, wide_player_name);
+		wcscat(full_path, L".sav");
+		
+		// the complete path:
+		// L"C:/Users/Quinten/Documents/My Games/Example/Quinten.sav"
+		
+		file_handle = ::CreateFileW(
+			full_path,
+			GENERIC_WRITE,
+			FILE_SHARE_READ,
+			NULL,
+			CREATE_ALWAYS,
+			FILE_ATTRIBUTE_NORMAL,
+			0
+		);
+		if (file_handle == INVALID_HANDLE_VALUE)
+		{
+			goto cleanup;
+		}
+		
+		result = Save_WriteGameStateToFile(file_handle, state);
+	
+	cleanup:
+		if (wide_player_name != NULL)
+		{
+			free(wide_player_name);
+			wide_player_name = NULL;
+		}
+		
+		return result;
+	}
+@endcode
+*/

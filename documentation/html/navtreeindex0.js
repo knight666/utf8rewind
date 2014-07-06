@@ -6,6 +6,7 @@ var NAVTREEINDEX0 =
 "examples.html":[4],
 "examples.html#example-changes":[0,7],
 "examples.html#example-display":[0,9],
+"examples.html#example-interfacing":[0,10],
 "examples.html#example-user-input":[0,8],
 "files.html":[2,0],
 "globals.html":[2,1,0],
