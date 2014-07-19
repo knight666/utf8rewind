@@ -4,7 +4,7 @@
 
 **Download**
 
-[utf8rewind-1.1.0.zip (2.0 MB)](https://bitbucket.org/knight666/utf8rewind/downloads/utf8rewind-1.0.0.zip)
+[utf8rewind-1.1.0.zip (2.0 MB)](https://bitbucket.org/knight666/utf8rewind/downloads/utf8rewind-1.1.0.zip)
 
 **Clone in Mercurial**
 
