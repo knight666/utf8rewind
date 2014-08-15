@@ -173,7 +173,7 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 
 int8_t utf8charvalid(char encodedCharacter)
 {
-	return (((unsigned char)encodedCharacter & 0xFE) != 0xC0);
+	return ((((unsigned char)encodedCharacter & 0xFE) != 0xC0) && ((unsigned char)encodedCharacter < 0xFE));
 }
 
 size_t utf8charlen(char encodedCharacter)
