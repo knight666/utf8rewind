@@ -40,6 +40,7 @@
 			],
 			'sources': [
 				'source/tests/integration-quickbrown.cpp',
+				'source/tests/integration-conformance.cpp',
 				'source/tests/suite-charlen.cpp',
 				'source/tests/suite-charvalid.cpp',
 				'source/tests/suite-decodeutf16.cpp',
