@@ -198,6 +198,14 @@ size_t utf8charlen(char encodedCharacter)
 	{
 		return 4;
 	}
+	else if (((unsigned char)encodedCharacter & 0xFC) == 0xF8)
+	{
+		return 5;
+	}
+	else if (((unsigned char)encodedCharacter & 0xFE) == 0xFC)
+	{
+		return 6;
+	}
 	else
 	{
 		return SIZE_MAX;
