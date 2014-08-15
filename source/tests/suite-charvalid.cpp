@@ -20,6 +20,7 @@ TEST(CharValid, Valid)
 	EXPECT_EQ(1, utf8charvalid('\x0D'));
 	EXPECT_EQ(1, utf8charvalid('\x0E'));
 	EXPECT_EQ(1, utf8charvalid('\x0F'));
+
 	EXPECT_EQ(1, utf8charvalid('\x10'));
 	EXPECT_EQ(1, utf8charvalid('\x11'));
 	EXPECT_EQ(1, utf8charvalid('\x12'));
@@ -36,6 +37,7 @@ TEST(CharValid, Valid)
 	EXPECT_EQ(1, utf8charvalid('\x1D'));
 	EXPECT_EQ(1, utf8charvalid('\x1E'));
 	EXPECT_EQ(1, utf8charvalid('\x1F'));
+
 	EXPECT_EQ(1, utf8charvalid('\x20'));
 	EXPECT_EQ(1, utf8charvalid('\x21'));
 	EXPECT_EQ(1, utf8charvalid('\x22'));
@@ -52,6 +54,7 @@ TEST(CharValid, Valid)
 	EXPECT_EQ(1, utf8charvalid('\x2D'));
 	EXPECT_EQ(1, utf8charvalid('\x2E'));
 	EXPECT_EQ(1, utf8charvalid('\x2F'));
+
 	EXPECT_EQ(1, utf8charvalid('\x30'));
 	EXPECT_EQ(1, utf8charvalid('\x31'));
 	EXPECT_EQ(1, utf8charvalid('\x32'));
@@ -68,6 +71,7 @@ TEST(CharValid, Valid)
 	EXPECT_EQ(1, utf8charvalid('\x3D'));
 	EXPECT_EQ(1, utf8charvalid('\x3E'));
 	EXPECT_EQ(1, utf8charvalid('\x3F'));
+
 	EXPECT_EQ(1, utf8charvalid('\x40'));
 	EXPECT_EQ(1, utf8charvalid('\x41'));
 	EXPECT_EQ(1, utf8charvalid('\x42'));
@@ -84,6 +88,7 @@ TEST(CharValid, Valid)
 	EXPECT_EQ(1, utf8charvalid('\x4D'));
 	EXPECT_EQ(1, utf8charvalid('\x4E'));
 	EXPECT_EQ(1, utf8charvalid('\x4F'));
+
 	EXPECT_EQ(1, utf8charvalid('\x50'));
 	EXPECT_EQ(1, utf8charvalid('\x51'));
 	EXPECT_EQ(1, utf8charvalid('\x52'));
@@ -100,6 +105,7 @@ TEST(CharValid, Valid)
 	EXPECT_EQ(1, utf8charvalid('\x5D'));
 	EXPECT_EQ(1, utf8charvalid('\x5E'));
 	EXPECT_EQ(1, utf8charvalid('\x5F'));
+
 	EXPECT_EQ(1, utf8charvalid('\x60'));
 	EXPECT_EQ(1, utf8charvalid('\x61'));
 	EXPECT_EQ(1, utf8charvalid('\x62'));
@@ -116,6 +122,7 @@ TEST(CharValid, Valid)
 	EXPECT_EQ(1, utf8charvalid('\x6D'));
 	EXPECT_EQ(1, utf8charvalid('\x6E'));
 	EXPECT_EQ(1, utf8charvalid('\x6F'));
+
 	EXPECT_EQ(1, utf8charvalid('\x70'));
 	EXPECT_EQ(1, utf8charvalid('\x71'));
 	EXPECT_EQ(1, utf8charvalid('\x72'));
@@ -149,6 +156,7 @@ TEST(CharValid, Valid)
 	EXPECT_EQ(1, utf8charvalid('\x8D'));
 	EXPECT_EQ(1, utf8charvalid('\x8E'));
 	EXPECT_EQ(1, utf8charvalid('\x8F'));
+
 	EXPECT_EQ(1, utf8charvalid('\x90'));
 	EXPECT_EQ(1, utf8charvalid('\x91'));
 	EXPECT_EQ(1, utf8charvalid('\x92'));
@@ -165,6 +173,7 @@ TEST(CharValid, Valid)
 	EXPECT_EQ(1, utf8charvalid('\x9D'));
 	EXPECT_EQ(1, utf8charvalid('\x9E'));
 	EXPECT_EQ(1, utf8charvalid('\x9F'));
+
 	EXPECT_EQ(1, utf8charvalid('\xA0'));
 	EXPECT_EQ(1, utf8charvalid('\xA1'));
 	EXPECT_EQ(1, utf8charvalid('\xA2'));
@@ -175,6 +184,13 @@ TEST(CharValid, Valid)
 	EXPECT_EQ(1, utf8charvalid('\xA7'));
 	EXPECT_EQ(1, utf8charvalid('\xA8'));
 	EXPECT_EQ(1, utf8charvalid('\xA9'));
+	EXPECT_EQ(1, utf8charvalid('\xAA'));
+	EXPECT_EQ(1, utf8charvalid('\xAB'));
+	EXPECT_EQ(1, utf8charvalid('\xAC'));
+	EXPECT_EQ(1, utf8charvalid('\xAD'));
+	EXPECT_EQ(1, utf8charvalid('\xAE'));
+	EXPECT_EQ(1, utf8charvalid('\xAF'));
+
 	EXPECT_EQ(1, utf8charvalid('\xB0'));
 	EXPECT_EQ(1, utf8charvalid('\xB1'));
 	EXPECT_EQ(1, utf8charvalid('\xB2'));
@@ -206,6 +222,7 @@ TEST(CharValid, Valid)
 	EXPECT_EQ(1, utf8charvalid('\xCD'));
 	EXPECT_EQ(1, utf8charvalid('\xCE'));
 	EXPECT_EQ(1, utf8charvalid('\xCF'));
+
 	EXPECT_EQ(1, utf8charvalid('\xD0'));
 	EXPECT_EQ(1, utf8charvalid('\xD1'));
 	EXPECT_EQ(1, utf8charvalid('\xD2'));
@@ -222,22 +239,45 @@ TEST(CharValid, Valid)
 	EXPECT_EQ(1, utf8charvalid('\xDD'));
 	EXPECT_EQ(1, utf8charvalid('\xDE'));
 	EXPECT_EQ(1, utf8charvalid('\xDF'));
+
+	EXPECT_EQ(1, utf8charvalid('\xE0'));
+	EXPECT_EQ(1, utf8charvalid('\xE1'));
+	EXPECT_EQ(1, utf8charvalid('\xE2'));
+	EXPECT_EQ(1, utf8charvalid('\xE3'));
+	EXPECT_EQ(1, utf8charvalid('\xE4'));
+	EXPECT_EQ(1, utf8charvalid('\xE5'));
+	EXPECT_EQ(1, utf8charvalid('\xE6'));
+	EXPECT_EQ(1, utf8charvalid('\xE7'));
+	EXPECT_EQ(1, utf8charvalid('\xE8'));
+	EXPECT_EQ(1, utf8charvalid('\xE9'));
+	EXPECT_EQ(1, utf8charvalid('\xEA'));
+	EXPECT_EQ(1, utf8charvalid('\xEB'));
+	EXPECT_EQ(1, utf8charvalid('\xEC'));
+	EXPECT_EQ(1, utf8charvalid('\xED'));
+	EXPECT_EQ(1, utf8charvalid('\xEE'));
+	EXPECT_EQ(1, utf8charvalid('\xEF'));
+
+	EXPECT_EQ(1, utf8charvalid('\xF0'));
+	EXPECT_EQ(1, utf8charvalid('\xF1'));
+	EXPECT_EQ(1, utf8charvalid('\xF2'));
+	EXPECT_EQ(1, utf8charvalid('\xF3'));
+	EXPECT_EQ(1, utf8charvalid('\xF4'));
+	EXPECT_EQ(1, utf8charvalid('\xF5'));
+	EXPECT_EQ(1, utf8charvalid('\xF6'));
+	EXPECT_EQ(1, utf8charvalid('\xF7'));
+	EXPECT_EQ(1, utf8charvalid('\xF8'));
+	EXPECT_EQ(1, utf8charvalid('\xF9'));
+	EXPECT_EQ(1, utf8charvalid('\xFA'));
+	EXPECT_EQ(1, utf8charvalid('\xFB'));
+	EXPECT_EQ(1, utf8charvalid('\xFC'));
+	EXPECT_EQ(1, utf8charvalid('\xFD'));
 }
 
 TEST(CharValid, Invalid)
 {
-
 	EXPECT_EQ(0, utf8charvalid('\xC0'));
 	EXPECT_EQ(0, utf8charvalid('\xC1'));
-	EXPECT_EQ(0, utf8charvalid('\xF5'));
-	EXPECT_EQ(0, utf8charvalid('\xF6'));
-	EXPECT_EQ(0, utf8charvalid('\xF7'));
-	EXPECT_EQ(0, utf8charvalid('\xF8'));
-	EXPECT_EQ(0, utf8charvalid('\xF9'));
-	EXPECT_EQ(0, utf8charvalid('\xFA'));
-	EXPECT_EQ(0, utf8charvalid('\xFB'));
-	EXPECT_EQ(0, utf8charvalid('\xFC'));
-	EXPECT_EQ(0, utf8charvalid('\xFD'));
+	
 	EXPECT_EQ(0, utf8charvalid('\xFE'));
 	EXPECT_EQ(0, utf8charvalid('\xFF'));
 }
