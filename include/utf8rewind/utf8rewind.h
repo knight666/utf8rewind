@@ -72,9 +72,8 @@
 extern "C" {
 #endif
 
-typedef uint32_t unicode_t; /*!< Unicode codepoint. */
-typedef uint16_t ucs2_t; /*!< UCS-2 encoded codepoint. */
 typedef uint16_t utf16_t; /*!< UTF-16 encoded codepoint. */
+typedef uint32_t unicode_t; /*!< Unicode codepoint. */
 
 //! Check if a character is valid according to UTF-8 encoding.
 /*!

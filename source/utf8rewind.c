@@ -133,6 +133,16 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 		decoded_length = 4;
 		mask = 0x07;
 	}
+	else if ((current & 0xFC) == 0xF8)
+	{
+		decoded_length = 5;
+		mask = 0x03;
+	}
+	else if ((current & 0xFE) == 0xFC)
+	{
+		decoded_length = 6;
+		mask = 0x01;
+	}
 	else
 	{
 		if (errors != 0)
@@ -163,7 +173,7 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 
 int8_t utf8charvalid(char encodedCharacter)
 {
-	return ((((unsigned char)encodedCharacter & 0xFE) != 0xC0) && ((unsigned char)encodedCharacter < 0xF5));
+	return (((unsigned char)encodedCharacter & 0xFE) != 0xC0);
 }
 
 size_t utf8charlen(char encodedCharacter)
