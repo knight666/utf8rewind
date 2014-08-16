@@ -174,7 +174,7 @@ TEST(EncodeUtf32, AsciiString)
 
 TEST(EncodeUtf32, TwoBytes)
 {
-	unicode_t c = 0x03A9; // Ω
+	unicode_t c = 0x000003A9; // Ω
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -186,7 +186,7 @@ TEST(EncodeUtf32, TwoBytes)
 
 TEST(EncodeUtf32, TwoBytesFirst)
 {
-	unicode_t c = 0x80; // Ω
+	unicode_t c = 0x00000080; // Ω
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -198,7 +198,7 @@ TEST(EncodeUtf32, TwoBytesFirst)
 
 TEST(EncodeUtf32, TwoBytesLast)
 {
-	unicode_t c = 0x07FF;
+	unicode_t c = 0x000007FF;
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -210,7 +210,7 @@ TEST(EncodeUtf32, TwoBytesLast)
 
 TEST(EncodeUtf32, TwoBytesBufferTooSmall)
 {
-	unicode_t c = 0x044B; // ы
+	unicode_t c = 0x0000044B; // ы
 	const size_t s = 1;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -222,7 +222,7 @@ TEST(EncodeUtf32, TwoBytesBufferTooSmall)
 
 TEST(EncodeUtf32, TwoBytesLength)
 {
-	unicode_t c = 0x0656;
+	unicode_t c = 0x00000656;
 	int32_t errors = 0;
 
 	EXPECT_EQ(2, utf32toutf8(&c, sizeof(c), nullptr, 0, &errors));
@@ -232,10 +232,10 @@ TEST(EncodeUtf32, TwoBytesLength)
 TEST(EncodeUtf32, TwoBytesString)
 {
 	unicode_t c[] = {
-		0x0169, // ũ
-		0x014E, // Ŏ
-		0x0191, // Ƒ
-		0x014A  // Ŋ
+		0x00000169, // ũ
+		0x0000014E, // Ŏ
+		0x00000191, // Ƒ
+		0x0000014A  // Ŋ
 	};
 	const size_t s = 256;
 	char b[s] = { 0 };
@@ -248,7 +248,7 @@ TEST(EncodeUtf32, TwoBytesString)
 
 TEST(EncodeUtf32, ThreeBytes)
 {
-	unicode_t c = 0x3DB1; // 㶱
+	unicode_t c = 0x00003DB1; // 㶱
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -260,7 +260,7 @@ TEST(EncodeUtf32, ThreeBytes)
 
 TEST(EncodeUtf32, ThreeBytesFirst)
 {
-	unicode_t c = 0x800;
+	unicode_t c = 0x00000800;
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -272,7 +272,7 @@ TEST(EncodeUtf32, ThreeBytesFirst)
 
 TEST(EncodeUtf32, ThreeBytesLast)
 {
-	unicode_t c = 0xFFFF;
+	unicode_t c = 0x0000FFFF;
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -284,7 +284,7 @@ TEST(EncodeUtf32, ThreeBytesLast)
 
 TEST(EncodeUtf32, ThreeBytesBufferTooSmall)
 {
-	unicode_t c = 0x1F61; // ὡ
+	unicode_t c = 0x00001F61; // ὡ
 	const size_t s = 2;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -306,10 +306,10 @@ TEST(EncodeUtf32, ThreeBytesLength)
 TEST(EncodeUtf32, ThreeBytesString)
 {
 	unicode_t c[] = {
-		0x2776, // ❶
-		0x2778, // ❸
-		0x2665, // ♥
-		0x277D  // ❽
+		0x00002776, // ❶
+		0x00002778, // ❸
+		0x00002665, // ♥
+		0x0000277D  // ❽
 	};
 	const size_t s = 256;
 	char b[s] = { 0 };
@@ -322,7 +322,7 @@ TEST(EncodeUtf32, ThreeBytesString)
 
 TEST(EncodeUtf32, FourBytes)
 {
-	unicode_t c = 0x1D424; // 𝐤
+	unicode_t c = 0x0001D424; // 𝐤
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -334,7 +334,7 @@ TEST(EncodeUtf32, FourBytes)
 
 TEST(EncodeUtf32, FourBytesFirst)
 {
-	unicode_t c = 0x10000;
+	unicode_t c = 0x00010000;
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -346,7 +346,7 @@ TEST(EncodeUtf32, FourBytesFirst)
 
 TEST(EncodeUtf32, FourBytesLast)
 {
-	unicode_t c = 0x1000FF;
+	unicode_t c = 0x001FFFFF;
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;

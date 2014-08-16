@@ -26,7 +26,7 @@
 #include "utf8rewind.h"
 
 #define MAX_BASIC_MULTILINGUAR_PLANE  0xFFFF
-#define MAX_LEGAL_UTF32               0x10FFFF
+#define MAX_LEGAL_UNICODE               0x10FFFF
 #define REPLACEMENT_CHARACTER         0xFFFD
 #define SURROGATE_HIGH_START          0xD800
 #define SURROGATE_HIGH_END            0xDBFF
@@ -55,7 +55,7 @@ size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t*
 		encoded_length = 3;
 		mask = 0xE0;
 	}
-	else if (codepoint <= MAX_LEGAL_UTF32)
+	else if (codepoint <= MAX_LEGAL_UNICODE)
 	{
 		encoded_length = 4;
 		mask = 0xF0;
@@ -563,6 +563,7 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	size_t src_length = inputSize;
 	unicode_t* dst = target;
 	size_t dst_size = targetSize;
+	size_t i;
 
 	if (target != 0 && targetSize < 4)
 	{
@@ -590,22 +591,51 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 			return bytes_written;
 		}
 
-		if (dst != 0)
+		if (codepoint <= MAX_LEGAL_UNICODE)
 		{
-			if (dst_size < 4)
+			if (dst != 0)
 			{
-				if (errors != 0)
+				if (dst_size < 4)
 				{
-					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+					if (errors != 0)
+					{
+						*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+					}
+					return bytes_written;
 				}
-				return bytes_written;
+
+				*dst++ = codepoint;
+				dst_size -= 4;
 			}
 
-			*dst++ = codepoint;
-			dst_size -= 4;
+			bytes_written += 4;
 		}
+		else
+		{
+			if (dst != 0)
+			{
+				for (i = 0; i < decoded_length; ++i)
+				{
+					if (dst_size < 4)
+					{
+						if (errors != 0)
+						{
+							*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+						}
+						return bytes_written;
+					}
 
-		bytes_written += 4;
+					*dst++ = REPLACEMENT_CHARACTER;
+					dst_size -= 4;
+
+					bytes_written += 4;
+				}
+			}
+			else
+			{
+				bytes_written += decoded_length * 4;
+			}
+		}
 
 		src += decoded_length;
 		src_length -= decoded_length;
