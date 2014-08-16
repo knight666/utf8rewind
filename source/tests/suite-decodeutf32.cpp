@@ -117,9 +117,9 @@ TEST(DecodeUtf32, AsciiInvalid)
 	unicode_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, errors);
-	EXPECT_EQ(0x00000000, o[0]);
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
 }
 
 TEST(DecodeUtf32, TwoBytes)
@@ -410,4 +410,47 @@ TEST(DecodeUtf32, AmountOfBytesNoData)
 
 	EXPECT_EQ(0, utf8toutf32(nullptr, 1, nullptr, 0, &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(DecodeUtf32, MalformedContinuationByteFirst)
+{
+	const char* i = "\x80";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+}
+
+TEST(DecodeUtf32, MalformedContinuationByteLast)
+{
+	const char* i = "\xBF";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+}
+
+TEST(DecodeUtf32, MalformedContinuationByteCombined)
+{
+	const char* i =
+		"\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F" \
+		"\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F" \
+		"\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF" \
+		"\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(256, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	for (size_t i = 0; i < 64; ++i)
+	{
+		EXPECT_EQ(0x0000FFFD, o[i]);
+	}
 }

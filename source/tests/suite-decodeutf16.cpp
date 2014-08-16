@@ -141,9 +141,9 @@ TEST(DecodeUtf16, AsciiInvalid)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_CHARACTER, errors);
-	EXPECT_EQ(0x0000, o[0]);
+	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0xFFFD, o[0]);
 }
 
 TEST(DecodeUtf16, TwoBytes)

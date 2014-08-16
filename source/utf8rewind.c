@@ -118,6 +118,13 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 		decoded_length = 1;
 		mask = 0xFF;
 	}
+	else if (current >= 0x80 && current <= 0xBF)
+	{
+		/* Malformed continuation bytes */
+
+		*codepoint = REPLACEMENT_CHARACTER;
+		return 1;
+	}
 	else if ((current & 0xE0) == 0xC0)
 	{
 		decoded_length = 2;
@@ -173,7 +180,7 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 
 int8_t utf8charvalid(char encodedCharacter)
 {
-	return ((((unsigned char)encodedCharacter & 0xFE) != 0xC0) && ((unsigned char)encodedCharacter < 0xFE));
+	return ((((uint8_t)encodedCharacter & 0xFE) != 0xC0) && ((uint8_t)encodedCharacter < 0xFE));
 }
 
 size_t utf8charlen(char encodedCharacter)
@@ -182,27 +189,27 @@ size_t utf8charlen(char encodedCharacter)
 	{
 		return SIZE_MAX;
 	}
-	else if ((unsigned char)encodedCharacter <= 0x7F)
+	else if ((uint8_t)encodedCharacter <= 0x7F)
 	{
 		return 1;
 	}
-	else if (((unsigned char)encodedCharacter & 0xE0) == 0xC0)
+	else if (((uint8_t)encodedCharacter & 0xE0) == 0xC0)
 	{
 		return 2;
 	}
-	else if (((unsigned char)encodedCharacter & 0xF0) == 0xE0)
+	else if (((uint8_t)encodedCharacter & 0xF0) == 0xE0)
 	{
 		return 3;
 	}
-	else if (((unsigned char)encodedCharacter & 0xF8) == 0xF0)
+	else if (((uint8_t)encodedCharacter & 0xF8) == 0xF0)
 	{
 		return 4;
 	}
-	else if (((unsigned char)encodedCharacter & 0xFC) == 0xF8)
+	else if (((uint8_t)encodedCharacter & 0xFC) == 0xF8)
 	{
 		return 5;
 	}
-	else if (((unsigned char)encodedCharacter & 0xFE) == 0xFC)
+	else if (((uint8_t)encodedCharacter & 0xFE) == 0xFC)
 	{
 		return 6;
 	}
