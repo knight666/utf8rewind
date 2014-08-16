@@ -26,7 +26,7 @@
 #include "utf8rewind.h"
 
 #define MAX_BASIC_MULTILINGUAR_PLANE  0xFFFF
-#define MAX_LEGAL_UNICODE               0x10FFFF
+#define MAX_LEGAL_UNICODE             0x10FFFF
 #define REPLACEMENT_CHARACTER         0xFFFD
 #define SURROGATE_HIGH_START          0xD800
 #define SURROGATE_HIGH_END            0xDBFF
@@ -563,6 +563,7 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	size_t src_length = inputSize;
 	unicode_t* dst = target;
 	size_t dst_size = targetSize;
+	size_t repeat_count;
 	size_t i;
 
 	if (target != 0 && targetSize < 4)
@@ -593,7 +594,17 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 
 		if (codepoint <= MAX_LEGAL_UNICODE)
 		{
-			if (dst != 0)
+			repeat_count = 1;
+		}
+		else
+		{
+			codepoint = REPLACEMENT_CHARACTER;
+			repeat_count = decoded_length;
+		}
+
+		if (dst != 0)
+		{
+			for (i = 0; i < repeat_count; ++i)
 			{
 				if (dst_size < 4)
 				{
@@ -606,35 +617,13 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 
 				*dst++ = codepoint;
 				dst_size -= 4;
-			}
 
-			bytes_written += 4;
+				bytes_written += 4;
+			}
 		}
 		else
 		{
-			if (dst != 0)
-			{
-				for (i = 0; i < decoded_length; ++i)
-				{
-					if (dst_size < 4)
-					{
-						if (errors != 0)
-						{
-							*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
-						}
-						return bytes_written;
-					}
-
-					*dst++ = REPLACEMENT_CHARACTER;
-					dst_size -= 4;
-
-					bytes_written += 4;
-				}
-			}
-			else
-			{
-				bytes_written += decoded_length * 4;
-			}
+			bytes_written += repeat_count * 4;
 		}
 
 		src += decoded_length;
