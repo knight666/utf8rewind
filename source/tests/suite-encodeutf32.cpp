@@ -14,18 +14,6 @@ TEST(EncodeUtf32, Character)
 	EXPECT_STREQ("U", b);
 }
 
-TEST(EncodeUtf32, CharacterAboveLegalUtf32)
-{
-	unicode_t c = 0x110001;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(0, errors);
-	EXPECT_STREQ("\xEF\xBF\xBD", b);
-}
-
 TEST(EncodeUtf32, ZeroLength)
 {
 	unicode_t c = 0x8712;
@@ -346,14 +334,14 @@ TEST(EncodeUtf32, FourBytesFirst)
 
 TEST(EncodeUtf32, FourBytesLast)
 {
-	unicode_t c = 0x001FFFFF;
+	unicode_t c = 0x0010FFFF;
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
 	EXPECT_EQ(4, utf32toutf8(&c, sizeof(c), b, s, &errors));
 	EXPECT_EQ(0, errors);
-	EXPECT_STREQ("\xF4\x80\x83\xBF", b);
+	EXPECT_STREQ("\xF4\x8F\xBF\xBF", b);
 }
 
 TEST(EncodeUtf32, FourBytesBufferTooSmall)
@@ -391,6 +379,39 @@ TEST(EncodeUtf32, FourBytesString)
 	EXPECT_EQ(12, utf32toutf8(c, sizeof(c), b, s, &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xF0\x9F\x86\x91\xF0\x9F\x86\x98\xF0\x9F\x86\x9A", b);
+}
+
+TEST(EncodeUtf32, AboveLegalUnicode)
+{
+	unicode_t c = 0x110001;
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf32toutf8(&c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xEF\xBF\xBD", b);
+}
+
+TEST(EncodeUtf32, AboveLegalUnicodeLength)
+{
+	unicode_t c = 0x199128;
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf32toutf8(&c, sizeof(c), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(EncodeUtf32, AboveLegalUnicodeBufferTooSmall)
+{
+	unicode_t c = 0x871277;
+	const size_t s = 2;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf32toutf8(&c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_STREQ("", b);
 }
 
 TEST(EncodeUtf32, SurrogatePair)
