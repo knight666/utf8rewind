@@ -158,18 +158,6 @@ TEST(DecodeUtf32, TwoBytesLast)
 	EXPECT_EQ(0x000007FF, o[0]);
 }
 
-TEST(DecodeUtf32, TwoBytesNotEnoughData)
-{
-	const char* i = "\xC2";
-	const size_t s = 256;
-	unicode_t o[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
-	EXPECT_EQ(0x00000000, o[0]);
-}
-
 TEST(DecodeUtf32, TwoBytesLonelyStartFirst)
 {
 	const char* i = "\xC0 ";
@@ -224,6 +212,18 @@ TEST(DecodeUtf32, TwoBytesLonelyStartLength)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(DecodeUtf32, TwoBytesNotEnoughData)
+{
+	const char* i = "\xC2";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+}
+
 TEST(DecodeUtf32, ThreeBytes)
 {
 	const char* i = "\xE1\x8C\x8A";
@@ -260,6 +260,59 @@ TEST(DecodeUtf32, ThreeBytesLast)
 	EXPECT_EQ(0x0000FFFF, o[0]);
 }
 
+TEST(DecodeUtf32, ThreeBytesLonelyStartFirst)
+{
+	const char* i = "\xE0 ";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_EQ(' ', o[1]);
+}
+
+TEST(DecodeUtf32, ThreeBytesLonelyStartLast)
+{
+	const char* i = "\xEF ";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_EQ(' ', o[1]);
+}
+
+TEST(DecodeUtf32, ThreeBytesLonelyStartCombined)
+{
+	const char* i =
+		"\xE0 \xE1 \xE2 \xE3 \xE4 \xE5 \xE6 \xE7 \xE8 \xE9 \xEA \xEB \xEC \xED \xEE \xEF ";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(128, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+
+	for (size_t i = 0; i < 16; i += 2)
+	{
+		EXPECT_EQ(0x0000FFFD, o[i]);
+		EXPECT_EQ(' ', o[i + 1]);
+	}
+}
+
+TEST(DecodeUtf32, ThreeBytesLonelyStartLength)
+{
+	const char* i = "\xE6 ";
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
 TEST(DecodeUtf32, ThreeBytesNotEnoughData)
 {
 	const char* i = "\xEF\xBF";
@@ -267,9 +320,10 @@ TEST(DecodeUtf32, ThreeBytesNotEnoughData)
 	unicode_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
-	EXPECT_EQ(0x00000000, o[0]);
+	EXPECT_EQ(8, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_EQ(0x0000FFFD, o[1]);
 }
 
 TEST(DecodeUtf32, FourBytes)
@@ -315,9 +369,11 @@ TEST(DecodeUtf32, FourBytesNotEnoughData)
 	unicode_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
-	EXPECT_EQ(0x00000000, o[0]);
+	EXPECT_EQ(12, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_EQ(0x0000FFFD, o[1]);
+	EXPECT_EQ(0x0000FFFD, o[2]);
 }
 
 TEST(DecodeUtf32, OverlongFourBytesFirst)
@@ -454,8 +510,8 @@ TEST(DecodeUtf32, AmountOfBytesNotEnoughData)
 	const char* i = "\xC8";
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
 }
 
 TEST(DecodeUtf32, AmountOfBytesNoData)
