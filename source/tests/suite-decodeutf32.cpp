@@ -170,6 +170,60 @@ TEST(DecodeUtf32, TwoBytesNotEnoughData)
 	EXPECT_EQ(0x00000000, o[0]);
 }
 
+TEST(DecodeUtf32, TwoBytesLonelyStartFirst)
+{
+	const char* i = "\xC0 ";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_EQ(' ', o[1]);
+}
+
+TEST(DecodeUtf32, TwoBytesLonelyStartLast)
+{
+	const char* i = "\xDF ";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_EQ(' ', o[1]);
+}
+
+TEST(DecodeUtf32, TwoBytesLonelyStartCombined)
+{
+	const char* i =
+		"\xC0 \xC1 \xC2 \xC3 \xC4 \xC5 \xC6 \xC7 \xC8 \xC9 \xCA \xCB \xCC \xCD \xCE \xCF "\
+		"\xD0 \xD1 \xD2 \xD3 \xD4 \xD5 \xD6 \xD7 \xD8 \xD9 \xDA \xDB \xDC \xDD \xDE \xDF ";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(256, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+
+	for (size_t i = 0; i < 32; i += 2)
+	{
+		EXPECT_EQ(0x0000FFFD, o[i]);
+		EXPECT_EQ(' ', o[i + 1]);
+	}
+}
+
+TEST(DecodeUtf32, TwoBytesLonelyStartLength)
+{
+	const char* i = "\xD8 ";
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
 TEST(DecodeUtf32, ThreeBytes)
 {
 	const char* i = "\xE1\x8C\x8A";
