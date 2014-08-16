@@ -158,11 +158,8 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 
 	if (srcSize < decoded_length)
 	{
-		if (errors != 0)
-		{
-			*errors = UTF8_ERR_INVALID_DATA;
-		}
-		return 0;
+		*codepoint = REPLACEMENT_CHARACTER;
+		return 1;
 	}
 
 	*codepoint = (unicode_t)(current & mask);
