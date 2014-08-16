@@ -415,6 +415,59 @@ TEST(DecodeUtf32, FourBytesLonelyStartLength)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(DecodeUtf32, FiveBytesLonelyStartFirst)
+{
+	const char* i = "\xF8 ";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_EQ(' ', o[1]);
+}
+
+TEST(DecodeUtf32, FiveBytesLonelyStartLast)
+{
+	const char* i = "\xFB ";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_EQ(' ', o[1]);
+}
+
+TEST(DecodeUtf32, FiveBytesLonelyStartCombined)
+{
+	const char* i =
+		"\xF8 \xF9 \xFA \xFB ";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(32, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+
+	for (size_t i = 0; i < 4; i += 2)
+	{
+		EXPECT_EQ(0x0000FFFD, o[i]);
+		EXPECT_EQ(' ', o[i + 1]);
+	}
+}
+
+TEST(DecodeUtf32, FiveBytesLonelyStartLength)
+{
+	const char* i = "\xFA ";
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
 TEST(DecodeUtf32, FourBytesNotEnoughData)
 {
 	const char* i = "\xF0\x90\x80";
