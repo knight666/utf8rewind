@@ -102,11 +102,8 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 
 	if (!utf8charvalid(*src))
 	{
-		if (errors != 0)
-		{
-			*errors = UTF8_ERR_INVALID_CHARACTER;
-		}
-		return 0;
+		*codepoint = REPLACEMENT_CHARACTER;
+		return 1;
 	}
 
 	if (current == 0)
@@ -172,6 +169,12 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 
 	for (i = 1; i < decoded_length; ++i)
 	{
+		if ((src[i] & 0x80) == 0)
+		{
+			*codepoint = REPLACEMENT_CHARACTER;
+			return 1;
+		}
+
 		*codepoint = (*codepoint << 6) | (src[i] & 0x3F);
 	}
 
