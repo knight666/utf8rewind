@@ -641,6 +641,81 @@ TEST(DecodeUtf32, OverlongSlashSixBytes)
 	EXPECT_EQ(0x0000FFFD, o[5]);
 }
 
+TEST(DecodeUtf32, OverlongMaximumTwoBytes)
+{
+	const char* i = "\xC1\xBF";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_EQ(0x0000FFFD, o[1]);
+}
+
+TEST(DecodeUtf32, OverlongMaximumThreeBytes)
+{
+	const char* i = "\xE0\x9F\xBF";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(12, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_EQ(0x0000FFFD, o[1]);
+	EXPECT_EQ(0x0000FFFD, o[2]);
+}
+
+TEST(DecodeUtf32, OverlongMaximumFourBytes)
+{
+	const char* i = "\xF0\x8F\xBF\xBF";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(16, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_EQ(0x0000FFFD, o[1]);
+	EXPECT_EQ(0x0000FFFD, o[2]);
+	EXPECT_EQ(0x0000FFFD, o[3]);
+}
+
+TEST(DecodeUtf32, OverlongMaximumFiveBytes)
+{
+	const char* i = "\xF8\x87\xBF\xBF\xBF";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(20, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_EQ(0x0000FFFD, o[1]);
+	EXPECT_EQ(0x0000FFFD, o[2]);
+	EXPECT_EQ(0x0000FFFD, o[3]);
+	EXPECT_EQ(0x0000FFFD, o[4]);
+}
+
+TEST(DecodeUtf32, OverlongMaximumSixBytes)
+{
+	const char* i = "\xFC\x83\xBF\xBF\xBF\xBF";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(24, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_EQ(0x0000FFFD, o[1]);
+	EXPECT_EQ(0x0000FFFD, o[2]);
+	EXPECT_EQ(0x0000FFFD, o[3]);
+	EXPECT_EQ(0x0000FFFD, o[4]);
+	EXPECT_EQ(0x0000FFFD, o[5]);
+}
+
 TEST(DecodeUtf32, OverlongFourBytesFirst)
 {
 	const char* i = "\xF4\x90\x80\x80";
