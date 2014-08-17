@@ -33,6 +33,24 @@
 #define SURROGATE_LOW_START           0xDC00
 #define SURROGATE_LOW_END             0xDFFF
 
+static const size_t Utf8ByteMinimum[6] = {
+	0x00000000,
+	0x00000080,
+	0x00000800,
+	0x00010000,
+	0x00200000,
+	0x00400000
+};
+
+static const size_t Utf8ByteMaximum[6] = {
+	0x0000007F,
+	0x000007FF,
+	0x0000FFFF,
+	0x001FFFFF,
+	0x003FFFFF,
+	0xFFFFFFFF
+};
+
 size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t* errors)
 {
 	char* target = *dst;
@@ -168,7 +186,7 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 	{
 		if ((src[i] & 0x80) == 0)
 		{
-			/*! Not a continuation byte for a multi-byte sequence */
+			/* Not a continuation byte for a multi-byte sequence */
 
 			*codepoint = REPLACEMENT_CHARACTER;
 			return 1;
@@ -177,10 +195,10 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 		*codepoint = (*codepoint << 6) | (src[i] & 0x3F);
 	}
 
-	if (decoded_length > 1 && *codepoint >= 0x00 && *codepoint < 0x80)
-	{
-		/*! Overlong sequence detected */
+	/* Check for overlong sequences */
 
+	if (decoded_length > 1 && (*codepoint < Utf8ByteMinimum[decoded_length - 1] || *codepoint > Utf8ByteMaximum[decoded_length - 1]))
+	{
 		*codepoint = REPLACEMENT_CHARACTER;
 		return 1;
 	}
