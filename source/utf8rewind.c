@@ -195,12 +195,29 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 		*codepoint = (*codepoint << 6) | (src[i] & 0x3F);
 	}
 
-	/* Check for overlong sequences */
-
-	if (decoded_length > 1 && (*codepoint < Utf8ByteMinimum[decoded_length - 1] || *codepoint > Utf8ByteMaximum[decoded_length - 1]))
+	if (decoded_length > 1)
 	{
-		*codepoint = REPLACEMENT_CHARACTER;
-		return 1;
+		/* Check for overlong sequences */
+
+		if (
+			(*codepoint < Utf8ByteMinimum[decoded_length - 1] ||
+			*codepoint > Utf8ByteMaximum[decoded_length - 1])
+		)
+		{
+			*codepoint = REPLACEMENT_CHARACTER;
+			return 1;
+		}
+
+		/* Check for surrogate pairs */
+
+		else if (
+			(*codepoint >= SURROGATE_HIGH_START && *codepoint <= SURROGATE_HIGH_END) ||
+			(*codepoint >= SURROGATE_LOW_START && *codepoint <= SURROGATE_LOW_END)
+		)
+		{
+			*codepoint = REPLACEMENT_CHARACTER;
+			return 1;
+		}
 	}
 
 	return decoded_length;
