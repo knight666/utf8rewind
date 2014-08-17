@@ -168,11 +168,21 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 	{
 		if ((src[i] & 0x80) == 0)
 		{
+			/*! Not a continuation byte for a multi-byte sequence */
+
 			*codepoint = REPLACEMENT_CHARACTER;
 			return 1;
 		}
 
 		*codepoint = (*codepoint << 6) | (src[i] & 0x3F);
+	}
+
+	if (decoded_length > 1 && *codepoint >= 0x00 && *codepoint < 0x80)
+	{
+		/*! Overlong sequence detected */
+
+		*codepoint = REPLACEMENT_CHARACTER;
+		return 1;
 	}
 
 	return decoded_length;
