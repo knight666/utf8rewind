@@ -11,6 +11,8 @@ protected:
 	void SetUp()
 	{
 		errors = 0;
+		input = nullptr;
+		input_size = 0;
 		output = nullptr;
 
 		// load into file
@@ -18,18 +20,25 @@ protected:
 		file.open("testdata/UTF-8-test.txt", std::ios_base::in);
 		ASSERT_TRUE(file.is_open());
 
-		input = new char[24000];
-		memset(input, 0, 24000);
-		file.read(input, 24000);
+		file.seekg(0, std::ios::end);
+		input_size = file.tellg();
+		file.seekg(0, std::ios::beg);
 
-		size_t length = strlen(input);
+		ASSERT_EQ(20337, input_size);
+
+		input = new char[input_size];
+		memset(input, 0, input_size);
+		file.read(input, input_size);
 
 		file.close();
 	}
 
 	void TearDown()
 	{
-		delete [] input;
+		if (input != nullptr)
+		{
+			delete [] input;
+		}
 
 		if (output != nullptr)
 		{
@@ -71,6 +80,7 @@ protected:
 	}
 
 	char* input;
+	size_t input_size;
 	wchar_t* output;
 	unicode_t codepoint;
 	std::fstream file;
@@ -78,40 +88,14 @@ protected:
 
 };
 
-TEST_F(ConformanceSuite, CorrectlyEncoded)
+TEST_F(ConformanceSuite, ConvertAll)
 {
-	ReadSection(3640, 11);
-	EXPECT_STREQ(L"\x3BA\x1F79\x3C3\x3BC\x3B5", output);
-}
-
-TEST_F(ConformanceSuite, FirstPossibleSequence)
-{
-	codepoint = 0;
-	utf8toutf32(input + 4117, 1, &codepoint, sizeof(unicode_t), &errors);
+	size_t decoded_size = utf8toutf32(input, input_size, nullptr, 0, &errors);
+	ASSERT_EQ(16436, decoded_size);
 	ASSERT_EQ(0, errors);
-	EXPECT_EQ(0, codepoint);
 
-	ReadCodepoint(4197, 2);
-	EXPECT_EQ(0x80, codepoint);
-
-	ReadCodepoint(4278, 3);
-	EXPECT_EQ(0x800, codepoint);
-
-	ReadCodepoint(4360, 4);
-	EXPECT_EQ(0x10000, codepoint);
-
-	ReadCodepoint(4443, 5);
-	EXPECT_EQ(0x200000, codepoint);
-
-	ReadCodepoint(4527, 6);
-	EXPECT_EQ(0x4000000, codepoint);
-}
-
-TEST_F(ConformanceSuite, LastPossibleSequence)
-{
-	ReadCodepoint(4852, 1);
-	EXPECT_EQ(0x7F, codepoint);
-
-	ReadCodepoint(4932, 2);
-	EXPECT_EQ(0x7FF, codepoint);
+	unicode_t* decoded = new unicode_t[decoded_size + 1];
+	utf8toutf32(input, input_size, decoded, decoded_size, &errors);
+	ASSERT_EQ(0, errors);
+	decoded[decoded_size] = 0;
 }
