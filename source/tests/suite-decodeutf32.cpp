@@ -320,10 +320,9 @@ TEST(DecodeUtf32, ThreeBytesNotEnoughData)
 	unicode_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(8, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x0000FFFD, o[0]);
-	EXPECT_EQ(0x0000FFFD, o[1]);
 }
 
 TEST(DecodeUtf32, FourBytes)
@@ -422,11 +421,9 @@ TEST(DecodeUtf32, FourBytesNotEnoughData)
 	unicode_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(12, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x0000FFFD, o[0]);
-	EXPECT_EQ(0x0000FFFD, o[1]);
-	EXPECT_EQ(0x0000FFFD, o[2]);
 }
 
 TEST(DecodeUtf32, FiveBytesLonelyStartFirst)
@@ -480,12 +477,9 @@ TEST(DecodeUtf32, FiveBytesNotEnoughData)
 	unicode_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(16, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x0000FFFD, o[0]);
-	EXPECT_EQ(0x0000FFFD, o[1]);
-	EXPECT_EQ(0x0000FFFD, o[2]);
-	EXPECT_EQ(0x0000FFFD, o[3]);
 }
 
 TEST(DecodeUtf32, FiveBytesLonelyStartLength)
@@ -557,13 +551,9 @@ TEST(DecodeUtf32, SixBytesNotEnoughData)
 	unicode_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(20, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x0000FFFD, o[0]);
-	EXPECT_EQ(0x0000FFFD, o[1]);
-	EXPECT_EQ(0x0000FFFD, o[2]);
-	EXPECT_EQ(0x0000FFFD, o[3]);
-	EXPECT_EQ(0x0000FFFD, o[4]);
 }
 
 TEST(DecodeUtf32, OverlongSlashTwoBytes)
