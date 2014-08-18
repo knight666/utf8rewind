@@ -116,7 +116,7 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 	uint8_t current = (uint8_t)*src;
 	uint8_t mask;
 	size_t decoded_length;
-	size_t i;
+	size_t src_index;
 
 	if (current == 0)
 	{
@@ -168,25 +168,21 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 		return 0;
 	}
 
-	if (srcSize < decoded_length)
-	{
-		*codepoint = REPLACEMENT_CHARACTER;
-		return 1;
-	}
-
 	*codepoint = (unicode_t)(current & mask);
+	src++;
 
-	for (i = 1; i < decoded_length; ++i)
+	for (src_index = 1; src_index < decoded_length; ++src_index)
 	{
-		if ((src[i] & 0x80) == 0)
+		if ((*src & 0x80) == 0)
 		{
 			/* Not a continuation byte for a multi-byte sequence */
 
 			*codepoint = REPLACEMENT_CHARACTER;
-			return 1;
+			return src_index;
 		}
 
-		*codepoint = (*codepoint << 6) | (src[i] & 0x3F);
+		*codepoint = (*codepoint << 6) | (*src & 0x3F);
+		src++;
 	}
 
 	if (decoded_length > 1)

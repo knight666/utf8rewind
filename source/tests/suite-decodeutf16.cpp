@@ -266,10 +266,9 @@ TEST(DecodeUtf16, ThreeBytesNotEnoughData)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(4, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
+	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0xFFFD, o[0]);
-	EXPECT_EQ(0xFFFD, o[1]);
 }
 
 TEST(DecodeUtf16, SurrogatePair)
@@ -333,11 +332,9 @@ TEST(DecodeUtf16, SurrogatePairNotEnoughData)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(6, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
+	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0xFFFD, o[0]);
-	EXPECT_EQ(0xFFFD, o[1]);
-	EXPECT_EQ(0xFFFD, o[2]);
 }
 
 TEST(DecodeUtf16, SurrogatePairNotEnoughSpace)
@@ -447,7 +444,7 @@ TEST(DecodeUtf16, LengthThreeBytesNotEnoughData)
 	const char* i = "\xE0\xB4";
 	int32_t errors = 0;
 
-	EXPECT_EQ(4, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
 	EXPECT_EQ(0, errors);
 }
 
@@ -483,7 +480,7 @@ TEST(DecodeUtf16, LengthFourBytesNotEnoughData)
 	const char* i = "\xF0\x90\xB1";
 	int32_t errors = 0;
 
-	EXPECT_EQ(6, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
 	EXPECT_EQ(0, errors);
 }
 
