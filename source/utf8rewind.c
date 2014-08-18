@@ -127,9 +127,9 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 		decoded_length = 1;
 		mask = 0xFF;
 	}
-	else if (current >= 0x80 && current <= 0xBF)
+	else if (current <= 0xBF)
 	{
-		/* Malformed continuation bytes */
+		/* Malformed continuation byte */
 
 		*codepoint = REPLACEMENT_CHARACTER;
 		return 1;
@@ -161,6 +161,8 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 	}
 	else
 	{
+		/* Illegal byte */
+
 		*codepoint = REPLACEMENT_CHARACTER;
 		return 1;
 	}
