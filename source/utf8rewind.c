@@ -38,17 +38,17 @@ static const size_t Utf8ByteMinimum[6] = {
 	0x00000080,
 	0x00000800,
 	0x00010000,
-	0x00200000,
-	0x00400000
+	0x0010FFFF,
+	0x0010FFFF
 };
 
 static const size_t Utf8ByteMaximum[6] = {
 	0x0000007F,
 	0x000007FF,
 	0x0000FFFF,
-	0x001FFFFF,
-	0x003FFFFF,
-	0xFFFFFFFF
+	0x0010FFFF,
+	0x0010FFFF,
+	0x0010FFFF
 };
 
 size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t* errors)
@@ -117,12 +117,6 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 	uint8_t mask;
 	size_t decoded_length;
 	size_t i;
-
-	if (!utf8charvalid(*src))
-	{
-		*codepoint = REPLACEMENT_CHARACTER;
-		return 1;
-	}
 
 	if (current == 0)
 	{
@@ -205,7 +199,6 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 		)
 		{
 			*codepoint = REPLACEMENT_CHARACTER;
-			return 1;
 		}
 
 		/* Check for surrogate pairs */
@@ -216,7 +209,6 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 		)
 		{
 			*codepoint = REPLACEMENT_CHARACTER;
-			return 1;
 		}
 	}
 
