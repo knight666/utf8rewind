@@ -29,6 +29,7 @@ TEST(SeekForward, InvalidCharacter)
 	int32_t errors = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_EQ(0x0000FFFD, o);
 }
 
 TEST(SeekForward, PastEnd)

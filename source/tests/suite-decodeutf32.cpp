@@ -972,3 +972,82 @@ TEST(DecodeUtf32, OverlongSurrogatePairLowEnd)
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x0000FFFD, o[0]);
 }
+
+TEST(DecodeUtf32, IllegalByteFE)
+{
+	const char* i = "\xFE";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+}
+
+TEST(DecodeUtf32, IllegalByteFEInString)
+{
+	const char* i = "gr\xC3\xB6\xC3\x9F" "er\xFE" "en";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(36, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ('g', o[0]);
+	EXPECT_EQ('r', o[1]);
+	EXPECT_EQ(0x000000F6, o[2]);
+	EXPECT_EQ(0x000000DF, o[3]);
+	EXPECT_EQ('e', o[4]);
+	EXPECT_EQ('r', o[5]);
+	EXPECT_EQ(0x0000FFFD, o[6]);
+	EXPECT_EQ('e', o[7]);
+	EXPECT_EQ('n', o[8]);
+}
+
+TEST(DecodeUtf32, IllegalByteFELength)
+{
+	const char* i = "\xFE";
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, IllegalByteFF)
+{
+	const char* i = "\xFF";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+}
+
+TEST(DecodeUtf32, IllegalByteFFInString)
+{
+	const char* i = "Zw\xC3\xB6l\xFF" "f";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(24, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ('Z', o[0]);
+	EXPECT_EQ('w', o[1]);
+	EXPECT_EQ(0x000000F6, o[2]);
+	EXPECT_EQ('l', o[3]);
+	EXPECT_EQ(0x0000FFFD, o[4]);
+	EXPECT_EQ('f', o[5]);
+}
+
+TEST(DecodeUtf32, IllegalByteFFLength)
+{
+	const char* i = "\xFF";
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
