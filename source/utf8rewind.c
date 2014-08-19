@@ -253,6 +253,8 @@ size_t utf8charlen(char encodedCharacter)
 
 size_t utf8len(const char* text)
 {
+	const char* src;
+	size_t src_index;
 	size_t length = 0;
 	size_t codepoint_length = 0;
 	size_t text_length = 0;
@@ -310,13 +312,29 @@ size_t utf8len(const char* text)
 
 		length++;
 
-		if (codepoint_length > text_length)
+		/* Check if encoding is valid */
+
+		src = text + 1;
+
+		for (src_index = 1; src_index < codepoint_length; ++src_index)
+		{
+			if ((*src & 0x80) == 0)
+			{
+				/* Not a continuation byte for a multi-byte sequence */
+
+				break;
+			}
+
+			src++;
+		}
+
+		if (src_index > text_length)
 		{
 			break;
 		}
 
-		text += codepoint_length;
-		text_length -= codepoint_length;
+		text += src_index;
+		text_length -= src_index;
 	}
 
 	return length;

@@ -32,6 +32,13 @@ TEST(Length, TwoByteCodepoint)
 
 TEST(Length, TwoByteCodepointLonelyStart)
 {
+	const char* c = "\xDA";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, TwoByteCodepointLonelyStartAll)
+{
 	const char* c =
 		"\xC0 \xC1 \xC2 \xC3 \xC4 \xC5 \xC6 \xC7 \xC8 \xC9 \xCA \xCB \xCC \xCD \xCE \xCF "\
 		"\xD0 \xD1 \xD2 \xD3 \xD4 \xD5 \xD6 \xD7 \xD8 \xD9 \xDA \xDB \xDC \xDD \xDE \xDF ";
@@ -55,6 +62,13 @@ TEST(Length, ThreeByteCodepoint)
 
 TEST(Length, ThreeByteCodepointLonelyStart)
 {
+	const char* c = "\xE7";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, ThreeByteCodepointLonelyStartALl)
+{
 	const char* c =
 		"\xE0 \xE1 \xE2 \xE3 \xE4 \xE5 \xE6 \xE7 \xE8 \xE9 \xEA \xEB \xEC \xED \xEE \xEF ";
 
@@ -65,7 +79,7 @@ TEST(Length, ThreeByteCodepointNotEnoughData)
 {
 	const char* c = "\xE1\xB5";
 
-	EXPECT_EQ(SIZE_MAX, utf8len(c));
+	EXPECT_EQ(1, utf8len(c));
 }
 
 TEST(Length, FourByteCodepoint)
@@ -76,6 +90,13 @@ TEST(Length, FourByteCodepoint)
 }
 
 TEST(Length, FourByteCodepointLonelyStart)
+{
+	const char* c = "\xF2";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, FourByteCodepointLonelyStartAll)
 {
 	const char* c = "\xF0 \xF1 \xF2 \xF3 \xF4 \xF5 \xF6 \xF7 ";
 
@@ -98,6 +119,13 @@ TEST(Length, FourByteCodepointOverlong)
 
 TEST(Length, FiveByteCodepointLonelyStart)
 {
+	const char* c = "\xF9";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, FiveByteCodepointLonelyStartAll)
+{
 	const char* c = "\xF8 \xF9 \xFA \xFB ";
 
 	EXPECT_EQ(8, utf8len(c));
@@ -112,6 +140,13 @@ TEST(Length, FiveByteCodepointOverlong)
 
 TEST(Length, SixByteCodepointLonelyStart)
 {
+	const char* c = "\xFC";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, SixByteCodepointLonelyStartAll)
+{
 	const char* c = "\xFC \xFD ";
 
 	EXPECT_EQ(4, utf8len(c));
@@ -124,6 +159,13 @@ TEST(Length, SixByteCodepointOverlong)
 	EXPECT_EQ(1, utf8len(c));
 }
 
+TEST(Length, SixByteCodepointOverlongNotEnoughData)
+{
+	const char* c = "\xFC\x83\xBF\xBF\xBF";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
 TEST(Length, IllegalByteFE)
 {
 	const char* c = "\xFE";
@@ -131,11 +173,25 @@ TEST(Length, IllegalByteFE)
 	EXPECT_EQ(1, utf8len(c));
 }
 
+TEST(Length, IllegalByteFEInString)
+{
+	const char* c = "gr\xC3\xB6\xC3\x9F" "er\xFE" "en";
+
+	EXPECT_EQ(9, utf8len(c));
+}
+
 TEST(Length, IllegalByteFF)
 {
 	const char* c = "\xFE";
 
 	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, IllegalByteFFInString)
+{
+	const char* c = "Zw\xC3\xB6l\xFF" "f";
+
+	EXPECT_EQ(6, utf8len(c));
 }
 
 TEST(Length, ZeroLength)
