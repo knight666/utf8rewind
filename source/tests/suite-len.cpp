@@ -53,6 +53,20 @@ TEST(Length, TwoByteCodepointNotEnoughData)
 	EXPECT_EQ(1, utf8len(c));
 }
 
+TEST(Length, TwoByteCodepointOverlong)
+{
+	const char* c = "\xC0\xAF";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, TwoByteCodepointOverlongNotEnoughData)
+{
+	const char* c = "\xC0";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
 TEST(Length, ThreeByteCodepoint)
 {
 	const char* c = "\xE0\xAA\xBE";
@@ -78,6 +92,20 @@ TEST(Length, ThreeByteCodepointLonelyStartALl)
 TEST(Length, ThreeByteCodepointNotEnoughData)
 {
 	const char* c = "\xE1\xB5";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, ThreeByteCodepointOverlong)
+{
+	const char* c = "\xE0\x80\xAF";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, ThreeByteCodepointOverlongNotEnoughData)
+{
+	const char* c = "\xE0\x80";
 
 	EXPECT_EQ(1, utf8len(c));
 }
@@ -117,6 +145,13 @@ TEST(Length, FourByteCodepointOverlong)
 	EXPECT_EQ(1, utf8len(c));
 }
 
+TEST(Length, FourByteCodepointOverlongNotEnoughData)
+{
+	const char* c = "\xF0\x8F\xBF";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
 TEST(Length, FiveByteCodepointLonelyStart)
 {
 	const char* c = "\xF9";
@@ -134,6 +169,13 @@ TEST(Length, FiveByteCodepointLonelyStartAll)
 TEST(Length, FiveByteCodepointOverlong)
 {
 	const char* c = "\xF8\x87\xBF\xBF\xBF";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, FiveByteCodepointOverlongNotEnoughData)
+{
+	const char* c = "\xF8\x87\xBF\xBF";
 
 	EXPECT_EQ(1, utf8len(c));
 }
