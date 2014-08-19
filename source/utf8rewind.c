@@ -122,7 +122,7 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 	{
 		return 0;
 	}
-	else if (current <= 0x7F)
+	else if ((current & 0x80) == 0)
 	{
 		decoded_length = 1;
 		mask = 0xFF;
@@ -271,18 +271,13 @@ size_t utf8len(const char* text)
 
 	while (*text != 0)
 	{
-		if (!utf8charvalid(*text))
-		{
-			return SIZE_MAX;
-		}
-
 		codepoint = (uint8_t)*text;
 
 		if (codepoint == 0)
 		{
 			break;
 		}
-		else if (codepoint <= 0x7F)
+		else if ((codepoint & 0x80) == 0)
 		{
 			codepoint_length = 1;
 		}
@@ -298,17 +293,28 @@ size_t utf8len(const char* text)
 		{
 			codepoint_length = 4;
 		}
+		else if ((codepoint & 0xFC) == 0xF8)
+		{
+			codepoint_length = 5;
+		}
+		else if ((codepoint & 0xFE) == 0xFC)
+		{
+			codepoint_length = 6;
+		}
 		else
 		{
-			return SIZE_MAX;
-		}
+			/* Illegal codepoint */
 
-		if (codepoint_length > text_length)
-		{
-			return SIZE_MAX;
+			codepoint_length = 1;
 		}
 
 		length++;
+
+		if (codepoint_length > text_length)
+		{
+			break;
+		}
+
 		text += codepoint_length;
 		text_length -= codepoint_length;
 	}
