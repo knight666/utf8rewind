@@ -30,11 +30,20 @@ TEST(Length, TwoByteCodepoint)
 	EXPECT_EQ(1, utf8len(c));
 }
 
+TEST(Length, TwoByteCodepointLonelyStart)
+{
+	const char* c =
+		"\xC0 \xC1 \xC2 \xC3 \xC4 \xC5 \xC6 \xC7 \xC8 \xC9 \xCA \xCB \xCC \xCD \xCE \xCF "\
+		"\xD0 \xD1 \xD2 \xD3 \xD4 \xD5 \xD6 \xD7 \xD8 \xD9 \xDA \xDB \xDC \xDD \xDE \xDF ";
+
+	EXPECT_EQ(64, utf8len(c));
+}
+
 TEST(Length, TwoByteCodepointNotEnoughData)
 {
 	const char* c = "\xCC";
 
-	EXPECT_EQ(SIZE_MAX, utf8len(c));
+	EXPECT_EQ(1, utf8len(c));
 }
 
 TEST(Length, ThreeByteCodepoint)
@@ -42,6 +51,14 @@ TEST(Length, ThreeByteCodepoint)
 	const char* c = "\xE0\xAA\xBE";
 
 	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, ThreeByteCodepointLonelyStart)
+{
+	const char* c =
+		"\xE0 \xE1 \xE2 \xE3 \xE4 \xE5 \xE6 \xE7 \xE8 \xE9 \xEA \xEB \xEC \xED \xEE \xEF ";
+
+	EXPECT_EQ(32, utf8len(c));
 }
 
 TEST(Length, ThreeByteCodepointNotEnoughData)
@@ -58,11 +75,67 @@ TEST(Length, FourByteCodepoint)
 	EXPECT_EQ(1, utf8len(c));
 }
 
+TEST(Length, FourByteCodepointLonelyStart)
+{
+	const char* c = "\xF0 \xF1 \xF2 \xF3 \xF4 \xF5 \xF6 \xF7 ";
+
+	EXPECT_EQ(16, utf8len(c));
+}
+
 TEST(Length, FourByteCodepointNotEnoughData)
 {
 	const char* c = "\xF0\xDA";
 
-	EXPECT_EQ(SIZE_MAX, utf8len(c));
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, FourByteCodepointOverlong)
+{
+	const char* c = "\xF0\x8F\xBF\xBF";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, FiveByteCodepointLonelyStart)
+{
+	const char* c = "\xF8 \xF9 \xFA \xFB ";
+
+	EXPECT_EQ(8, utf8len(c));
+}
+
+TEST(Length, FiveByteCodepointOverlong)
+{
+	const char* c = "\xF8\x87\xBF\xBF\xBF";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, SixByteCodepointLonelyStart)
+{
+	const char* c = "\xFC \xFD ";
+
+	EXPECT_EQ(4, utf8len(c));
+}
+
+TEST(Length, SixByteCodepointOverlong)
+{
+	const char* c = "\xFC\x83\xBF\xBF\xBF\xBF";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, IllegalByteFE)
+{
+	const char* c = "\xFE";
+
+	EXPECT_EQ(1, utf8len(c));
+}
+
+TEST(Length, IllegalByteFF)
+{
+	const char* c = "\xFE";
+
+	EXPECT_EQ(1, utf8len(c));
 }
 
 TEST(Length, ZeroLength)
