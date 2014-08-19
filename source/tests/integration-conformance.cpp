@@ -15,7 +15,7 @@ protected:
 		input_size = 0;
 		output = nullptr;
 
-		// load into file
+		// load file into memory
 
 		file.open("testdata/UTF-8-test.txt", std::ios_base::in);
 		ASSERT_TRUE(file.is_open());
@@ -90,12 +90,46 @@ protected:
 
 TEST_F(ConformanceSuite, ConvertAll)
 {
-	size_t decoded_size = utf8toutf32(input, input_size, nullptr, 0, &errors);
+	// output has to be stitched together due to null character in data
+
+	size_t decoded_size = 0;
+
+	size_t total_size = 80624;
+	unicode_t* decoded = new unicode_t[total_size + 1];
+
+	const char* src = input;
+	size_t src_size = input_size;
+	unicode_t* dst = decoded;
+	size_t dst_size = total_size;
+
+	decoded_size = utf8toutf32(src, src_size, nullptr, 0, &errors);
 	ASSERT_EQ(16436, decoded_size);
 	ASSERT_EQ(0, errors);
 
-	unicode_t* decoded = new unicode_t[decoded_size + 1];
-	utf8toutf32(input, input_size, decoded, decoded_size, &errors);
+	utf8toutf32(src, src_size, dst, dst_size, &errors);
 	ASSERT_EQ(0, errors);
-	decoded[decoded_size] = 0;
+
+	src += 4118;
+	src_size -= 4118;
+	dst += (decoded_size / sizeof(unicode_t));
+	dst_size -= decoded_size;
+
+	decoded_size = utf8toutf32(src, src_size, nullptr, 0, &errors);
+	ASSERT_EQ(64188, decoded_size);
+	ASSERT_EQ(0, errors);
+
+	utf8toutf32(src, src_size, dst, dst_size, &errors);
+	ASSERT_EQ(0, errors);
+
+	unicode_t* the_end = dst + 15967;
+	EXPECT_EQ('T', the_end[0]);
+	EXPECT_EQ('H', the_end[1]);
+	EXPECT_EQ('E', the_end[2]);
+	EXPECT_EQ(' ', the_end[3]);
+	EXPECT_EQ('E', the_end[4]);
+	EXPECT_EQ('N', the_end[5]);
+	EXPECT_EQ('D', the_end[6]);
+
+	int i = 0;
+	//decoded[decoded_size] = 0;
 }
