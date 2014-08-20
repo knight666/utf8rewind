@@ -51,6 +51,44 @@ static const size_t Utf8ByteMaximum[6] = {
 	0x0010FFFF
 };
 
+size_t lengthcodepoint(uint8_t input)
+{
+	if ((input & 0x80) == 0)
+	{
+		return 1;
+	}
+	else if (input <= 0xBF || (input & 0xFE) == 0xFE)
+	{
+		/* Malformed continuation byte or illegal byte */
+
+		return 0;
+	}
+	else if ((input & 0xE0) == 0xC0)
+	{
+		return 2;
+	}
+	else if ((input & 0xF0) == 0xE0)
+	{
+		return 3;
+	}
+	else if ((input & 0xF8) == 0xF0)
+	{
+		return 4;
+	}
+	else if ((input & 0xFC) == 0xF8)
+	{
+		return 5;
+	}
+	else if ((input & 0xFE) == 0xFC)
+	{
+		return 6;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t* errors)
 {
 	char* target = *dst;
@@ -122,50 +160,15 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 	{
 		return 0;
 	}
-	else if ((current & 0x80) == 0)
-	{
-		decoded_length = 1;
-		mask = 0xFF;
-	}
-	else if (current <= 0xBF)
-	{
-		/* Malformed continuation byte */
 
+	decoded_length = lengthcodepoint(current);
+	if (decoded_length == 0)
+	{
 		*codepoint = REPLACEMENT_CHARACTER;
 		return 1;
 	}
-	else if ((current & 0xE0) == 0xC0)
-	{
-		decoded_length = 2;
-		mask = 0x1F;
-	}
-	else if ((current & 0xF0) == 0xE0)
-	{
-		decoded_length = 3;
-		mask = 0x0F;
-	}
-	else if ((current & 0xF8) == 0xF0)
-	{
-		decoded_length = 4;
-		mask = 0x07;
-	}
-	else if ((current & 0xFC) == 0xF8)
-	{
-		decoded_length = 5;
-		mask = 0x03;
-	}
-	else if ((current & 0xFE) == 0xFC)
-	{
-		decoded_length = 6;
-		mask = 0x01;
-	}
-	else
-	{
-		/* Illegal byte */
 
-		*codepoint = REPLACEMENT_CHARACTER;
-		return 1;
-	}
+	mask = (decoded_length == 1) ? 0xFF : (1 << (7 - decoded_length)) - 1;
 
 	*codepoint = (unicode_t)(current & mask);
 	src++;
