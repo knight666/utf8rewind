@@ -74,6 +74,21 @@ TEST(DecodeUtf32, StringDataSizeOver)
 	EXPECT_EQ('k', o[3]);
 }
 
+TEST(DecodeUtf32, StringBufferTooSmall)
+{
+	const char* i = "Ba\xC2\xA2\xC2\xA2y";
+	const size_t s = 4;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(16, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_EQ('B', o[0]);
+	EXPECT_EQ('a', o[1]);
+	EXPECT_EQ(0x000000A2, o[2]);
+	EXPECT_EQ(0x000000A2, o[3]);
+}
+
 TEST(DecodeUtf32, Ascii)
 {
 	const char* i = "\x5F";
@@ -108,6 +123,21 @@ TEST(DecodeUtf32, AsciiLast)
 	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x0000007F, o[0]);
+}
+
+TEST(DecodeUtf32, AsciiString)
+{
+	const char* i = "Boat";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(16, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ('B', o[0]);
+	EXPECT_EQ('o', o[1]);
+	EXPECT_EQ('a', o[2]);
+	EXPECT_EQ('t', o[3]);
 }
 
 TEST(DecodeUtf32, AsciiInvalid)
@@ -260,6 +290,21 @@ TEST(DecodeUtf32, ThreeBytesLast)
 	EXPECT_EQ(0x0000FFFF, o[0]);
 }
 
+TEST(DecodeUtf32, ThreeBytesString)
+{
+	const char* i = "\xE3\x81\x8A\xE3\x81\x8D\xE3\x81\x99\xE3\x81\x88";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(16, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000304A, o[0]);
+	EXPECT_EQ(0x0000304D, o[1]);
+	EXPECT_EQ(0x00003059, o[2]);
+	EXPECT_EQ(0x00003048, o[3]);
+}
+
 TEST(DecodeUtf32, ThreeBytesLonelyStartFirst)
 {
 	const char* i = "\xE0 ";
@@ -302,15 +347,6 @@ TEST(DecodeUtf32, ThreeBytesLonelyStartCombined)
 		EXPECT_EQ(0x0000FFFD, o[i]);
 		EXPECT_EQ(' ', o[i + 1]);
 	}
-}
-
-TEST(DecodeUtf32, ThreeBytesLonelyStartLength)
-{
-	const char* i = "\xE6 ";
-	int32_t errors = 0;
-
-	EXPECT_EQ(8, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
 }
 
 TEST(DecodeUtf32, ThreeBytesNotEnoughData)
