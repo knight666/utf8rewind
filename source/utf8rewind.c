@@ -535,7 +535,7 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 	utf16_t* dst = target;
 	size_t dst_size = targetSize;
 
-	if (target != 0 && targetSize < 2)
+	if (target != 0 && targetSize < sizeof(utf16_t))
 	{
 		if (errors != 0)
 		{
@@ -565,7 +565,7 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 		{
 			if (dst != 0)
 			{
-				if (dst_size < 2)
+				if (dst_size < sizeof(utf16_t))
 				{
 					if (errors != 0)
 					{
@@ -583,10 +583,10 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 					*dst++ = (utf16_t)codepoint;
 				}
 
-				dst_size -= 2;
+				dst_size -= sizeof(utf16_t);
 			}
 
-			bytes_written += 2;
+			bytes_written += sizeof(utf16_t);
 		}
 		else
 		{
@@ -594,7 +594,7 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 			{
 				/* Codepoint must be converted to a surrogate pair. */
 
-				if (dst_size < 4)
+				if (dst_size < sizeof(unicode_t))
 				{
 					if (errors != 0)
 					{
@@ -607,10 +607,10 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 				*dst++ = (codepoint >> 10) + SURROGATE_HIGH_START;
 				*dst++ = (codepoint & 0x3FF) + SURROGATE_LOW_START;
 
-				dst_size -= 4;
+				dst_size -= sizeof(unicode_t);
 			}
 
-			bytes_written += 4;
+			bytes_written += sizeof(unicode_t);
 		}
 
 		src += decoded_length;
@@ -629,10 +629,8 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	size_t src_length = inputSize;
 	unicode_t* dst = target;
 	size_t dst_size = targetSize;
-	size_t repeat_count;
-	size_t i;
 
-	if (target != 0 && targetSize < 4)
+	if (target != 0 && targetSize < sizeof(unicode_t))
 	{
 		if (errors != 0)
 		{
@@ -658,39 +656,22 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 			return bytes_written;
 		}
 
-		if (codepoint <= MAX_LEGAL_UNICODE)
-		{
-			repeat_count = 1;
-		}
-		else
-		{
-			codepoint = REPLACEMENT_CHARACTER;
-			repeat_count = decoded_length;
-		}
-
 		if (dst != 0)
 		{
-			for (i = 0; i < repeat_count; ++i)
+			if (dst_size < sizeof(unicode_t))
 			{
-				if (dst_size < 4)
+				if (errors != 0)
 				{
-					if (errors != 0)
-					{
-						*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
-					}
-					return bytes_written;
+					*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
 				}
-
-				*dst++ = codepoint;
-				dst_size -= 4;
-
-				bytes_written += 4;
+				return bytes_written;
 			}
+
+			*dst++ = codepoint;
+			dst_size -= sizeof(unicode_t);
 		}
-		else
-		{
-			bytes_written += repeat_count * 4;
-		}
+
+		bytes_written += sizeof(unicode_t);
 
 		src += decoded_length;
 		src_length -= decoded_length;
