@@ -1006,15 +1006,6 @@ TEST(DecodeUtf32, IllegalByteFEInString)
 	EXPECT_EQ('n', o[8]);
 }
 
-TEST(DecodeUtf32, IllegalByteFELength)
-{
-	const char* i = "\xFE";
-	int32_t errors = 0;
-
-	EXPECT_EQ(4, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
 TEST(DecodeUtf32, IllegalByteFF)
 {
 	const char* i = "\xFF";
@@ -1044,15 +1035,6 @@ TEST(DecodeUtf32, IllegalByteFFInString)
 	EXPECT_EQ('f', o[5]);
 }
 
-TEST(DecodeUtf32, IllegalByteFFLength)
-{
-	const char* i = "\xFF";
-	int32_t errors = 0;
-
-	EXPECT_EQ(4, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
 TEST(DecodeUtf32, AmountOfBytes)
 {
 	const char* i = "\xF0\x90\xB0\xAC";
@@ -1062,18 +1044,27 @@ TEST(DecodeUtf32, AmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(DecodeUtf32, AmountOfBytesOverlong)
+TEST(DecodeUtf32, AmountOfBytesString)
 {
-	const char* i = "\xFC\x84\x80\x80\x80\x80";
+	const char* i = "Pchn\xC4\x85\xC4\x87 w t\xC4\x99";
 	int32_t errors = 0;
 
-	EXPECT_EQ(4, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(44, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
 	EXPECT_EQ(0, errors);
 }
 
 TEST(DecodeUtf32, AmountOfBytesNotEnoughData)
 {
 	const char* i = "\xC8";
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(DecodeUtf32, AmountOfBytesOverlong)
+{
+	const char* i = "\xFC\x84\x80\x80\x80\x80";
 	int32_t errors = 0;
 
 	EXPECT_EQ(4, utf8toutf32(i, strlen(i), nullptr, 0, &errors));
