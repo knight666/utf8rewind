@@ -908,70 +908,7 @@ TEST(DecodeUtf16, IllegalByteFFInString)
 	EXPECT_EQ('f', o[5]);
 }
 
-TEST(DecodeUtf16, LengthAscii)
-{
-	const char* i = "I";
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthAsciiFirst)
-{
-	const char* i = "\0";
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf8toutf16(i, 1, nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthAsciiLast)
-{
-	const char* i = "\x7F";
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toutf16(i, 1, nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthTwoBytes)
-{
-	const char* i = "\xCB\x9B";
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthTwoBytesFirst)
-{
-	const char* i = "\xC2\x80";
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthTwoBytesLast)
-{
-	const char* i = "\xDF\xBF";
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthTwoBytesNotEnoughData)
-{
-	const char* i = "\xC8";
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthThreeBytes)
+TEST(DecodeUtf16, AmountOfBytes)
 {
 	const char* i = "\xE0\xB4\x8B";
 	int32_t errors = 0;
@@ -980,61 +917,16 @@ TEST(DecodeUtf16, LengthThreeBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(DecodeUtf16, LengthThreeBytesFirst)
+TEST(DecodeUtf16, AmountOfBytesString)
 {
-	const char* i = "\xE0\xA0\x80";
+	const char* i = "Pchn\xC4\x85\xC4\x87 w t\xC4\x99";
 	int32_t errors = 0;
 
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
+	EXPECT_EQ(22, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
 	EXPECT_EQ(0, errors);
 }
 
-TEST(DecodeUtf16, LengthThreeBytesLast)
-{
-	const char* i = "\xEF\xBF\xBF";
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthThreeBytesNotEnoughData)
-{
-	const char* i = "\xE0\xB4";
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthFourBytes)
-{
-	const char* i = "\xF0\x90\xB0\xAC";
-	int32_t errors = 0;
-
-	EXPECT_EQ(4, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthFourBytesFirst)
-{
-	const char* i = "\xF0\x90\x80\x80";
-	int32_t errors = 0;
-
-	EXPECT_EQ(4, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthFourBytesLast)
-{
-	const char* i = "\xF4\x80\x83\xBF";
-	int32_t errors = 0;
-
-	EXPECT_EQ(4, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthFourBytesNotEnoughData)
+TEST(DecodeUtf16, AmountOfBytesNotEnoughData)
 {
 	const char* i = "\xF0\x90\xB1";
 	int32_t errors = 0;
@@ -1043,34 +935,16 @@ TEST(DecodeUtf16, LengthFourBytesNotEnoughData)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(DecodeUtf16, LengthSixBytesLonelyStart)
+TEST(DecodeUtf16, AmountOfBytesOverlong)
 {
-	const char* i = "\xFA";
+	const char* i = "\xFC\x84\x80\x80\x80\x80";
 	int32_t errors = 0;
 
 	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
 	EXPECT_EQ(0, errors);
 }
 
-TEST(DecodeUtf16, LengthIllegalByteFE)
-{
-	const char* i = "\xFE";
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthIllegalByteFF)
-{
-	const char* i = "\xFF";
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(DecodeUtf16, LengthNoData)
+TEST(DecodeUtf16, AmountOfBytesNoData)
 {
 	int32_t errors = 0;
 
