@@ -355,7 +355,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 	size_t dst_size = targetSize;
 	size_t bytes_written = 0;
 
-	if (input == 0 || inputSize < 2)
+	if (input == 0 || inputSize < sizeof(utf16_t))
 	{
 		if (errors != 0)
 		{
@@ -383,7 +383,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 				return bytes_written;
 			}
 
-			if (src_size < 4)
+			if (src_size < sizeof(utf16_t))
 			{
 				if (errors != 0)
 				{
@@ -393,7 +393,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 			}
 
 			src++;
-			src_size -= 2;
+			src_size -= sizeof(utf16_t);
 
 			surrogate_low = *src;
 
@@ -423,7 +423,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 		}
 
 		src++;
-		src_size -= 2;
+		src_size -= sizeof(utf16_t);
 
 		bytes_written += encoded_length;
 	}
@@ -442,7 +442,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 	size_t dst_size = targetSize;
 	size_t bytes_written = 0;
 
-	if (input == 0 || inputSize < 4)
+	if (input == 0 || inputSize < sizeof(unicode_t))
 	{
 		if (errors != 0)
 		{
@@ -470,7 +470,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 				return bytes_written;
 			}
 
-			if (src_size < 8)
+			if (src_size < sizeof(unicode_t))
 			{
 				if (errors != 0)
 				{
@@ -480,7 +480,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 			}
 
 			src++;
-			src_size -= 4;
+			src_size -= sizeof(unicode_t);
 
 			surrogate_low = *src;
 
@@ -506,7 +506,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 		}
 
 		src++;
-		src_size -= 4;
+		src_size -= sizeof(unicode_t);
 
 		bytes_written += encoded_length;
 	}

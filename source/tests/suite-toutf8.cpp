@@ -190,7 +190,7 @@ TEST(ToUtf8, InvalidData)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, widetoutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_EQ(UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR, errors);
 	EXPECT_STREQ("", b);
 }
 
