@@ -575,6 +575,25 @@ TEST(DecodeUtf16, FourBytesLast)
 	EXPECT_EQ(0xDCFF, o[1]);
 }
 
+TEST(DecodeUtf16, FourBytesString)
+{
+	const char* i = "\xF0\x90\xA1\x8A\xF0\x90\xB0\xAC\xF0\x90\xB0\xB8\xF0\x90\xB0\xA6";
+	const size_t s = 256;
+	utf16_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(16, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0xD802, o[0]);
+	EXPECT_EQ(0xDC4A, o[1]);
+	EXPECT_EQ(0xD803, o[2]);
+	EXPECT_EQ(0xDC2C, o[3]);
+	EXPECT_EQ(0xD803, o[4]);
+	EXPECT_EQ(0xDC38, o[5]);
+	EXPECT_EQ(0xD803, o[6]);
+	EXPECT_EQ(0xDC26, o[7]);
+}
+
 TEST(DecodeUtf16, FourBytesOverlong)
 {
 	const char* i = "\xF0\x80\x80\xAF";
