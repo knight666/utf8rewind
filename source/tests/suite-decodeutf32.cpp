@@ -885,6 +885,21 @@ TEST(DecodeUtf32, SixBytesOverlongNotEnoughSpace)
 	EXPECT_EQ(0x0000FFFD, o[3]);
 }
 
+TEST(DecodeUtf32, SixBytesOverlongStringNotEnoughSpace)
+{
+	const char* i = "Der\xFD\xBF\xBF\xBF\xBF\xBFp";
+	const size_t s = 4;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(16, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_EQ('D', o[0]);
+	EXPECT_EQ('e', o[1]);
+	EXPECT_EQ('r', o[2]);
+	EXPECT_EQ(0x0000FFFD, o[3]);
+}
+
 TEST(DecodeUtf32, SixBytesLonelyStartFirst)
 {
 	const char* i = "\xFC ";
@@ -939,6 +954,78 @@ TEST(DecodeUtf32, SixBytesOverlongNotEnoughData)
 	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x0000FFFD, o[0]);
+}
+
+TEST(DecodeUtf32, SurrogatePair)
+{
+	const char* i = "\xF0\x9F\x98\xA4";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0001F624, o[0]);
+}
+
+TEST(DecodeUtf32, SurrogatePairFirst)
+{
+	const char* i = "\xF0\x90\x80\x80";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x00010000, o[0]);
+}
+
+TEST(DecodeUtf32, SurrogatePairLast)
+{
+	const char* i = "\xF4\x8F\xBF\xBF";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0010FFFF, o[0]);
+}
+
+TEST(DecodeUtf32, SurrogatePairString)
+{
+	const char* i = "\xF0\x90\x92\xA0\xF0\x90\x92\xA8";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x000104A0, o[0]);
+	EXPECT_EQ(0x000104A8, o[1]);
+}
+
+TEST(DecodeUtf32, SurrogatePairNotEnoughData)
+{
+	const char* i = "\xF0\x9F\x98";
+	const size_t s = 256;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0000FFFD, o[0]);
+}
+
+TEST(DecodeUtf32, SurrogatePairNotEnoughSpace)
+{
+	const char* i = "\xF0\x90\x92\xA0";
+	unicode_t o = 0;
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8toutf32(i, strlen(i), &o, 2, &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_EQ(0x00000000, o);
 }
 
 TEST(DecodeUtf32, SurrogatePairOverlongHigh)
