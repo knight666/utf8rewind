@@ -941,7 +941,7 @@ TEST(DecodeUtf16, SixBytesLonelyStartCombined)
 	}
 }
 
-TEST(DecodeUtf16, SixBytesNotEnoughData)
+TEST(DecodeUtf16, SixBytesOverlongNotEnoughData)
 {
 	const char* i = "\xFC\x80\x80\x80\x80";
 	const size_t s = 256;
