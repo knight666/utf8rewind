@@ -867,36 +867,6 @@ TEST(DecodeUtf16, SixBytesOverlongMaximum)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(DecodeUtf16, SixBytesOverlongNotEnoughSpace)
-{
-	const char* i = "Der\xFD\xBF\xBF\xBF\xBF\xBFp";
-	const size_t s = 4;
-	utf16_t o[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(8, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_EQ('D', o[0]);
-	EXPECT_EQ('e', o[1]);
-	EXPECT_EQ('r', o[2]);
-	EXPECT_EQ(0xFFFD, o[3]);
-}
-
-TEST(DecodeUtf16, SixBytesOverlongStringNotEnoughSpace)
-{
-	const char* i = "Der\xFD\xBF\xBF\xBF\xBF\xBFp";
-	const size_t s = 4;
-	utf16_t o[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(8, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_EQ('D', o[0]);
-	EXPECT_EQ('e', o[1]);
-	EXPECT_EQ('r', o[2]);
-	EXPECT_EQ(0xFFFD, o[3]);
-}
-
 TEST(DecodeUtf16, SixBytesLonelyStartFirst)
 {
 	const char* i = "\xFC ";
@@ -941,7 +911,7 @@ TEST(DecodeUtf16, SixBytesLonelyStartCombined)
 	}
 }
 
-TEST(DecodeUtf16, SixBytesOverlongNotEnoughData)
+TEST(DecodeUtf16, SixBytesNotEnoughData)
 {
 	const char* i = "\xFC\x80\x80\x80\x80";
 	const size_t s = 256;
@@ -951,6 +921,21 @@ TEST(DecodeUtf16, SixBytesOverlongNotEnoughData)
 	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0xFFFD, o[0]);
+}
+
+TEST(DecodeUtf16, SixBytesNotEnoughSpace)
+{
+	const char* i = "Der\xFD\xBF\xBF\xBF\xBF\xBFp";
+	const size_t s = 4;
+	utf16_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_EQ('D', o[0]);
+	EXPECT_EQ('e', o[1]);
+	EXPECT_EQ('r', o[2]);
+	EXPECT_EQ(0xFFFD, o[3]);
 }
 
 TEST(DecodeUtf16, SurrogatePair)

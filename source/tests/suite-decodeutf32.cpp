@@ -798,7 +798,7 @@ TEST(DecodeUtf32, FiveBytesLonelyStartCombined)
 	}
 }
 
-TEST(DecodeUtf32, FiveBytesOverlongNotEnoughData)
+TEST(DecodeUtf32, FiveBytesNotEnoughData)
 {
 	const char* i = "\xF8\x80\x80\x80";
 	const size_t s = 256;
@@ -870,36 +870,6 @@ TEST(DecodeUtf32, SixBytesOverlongMaximum)
 	EXPECT_EQ(0x0000FFFD, o[0]);
 }
 
-TEST(DecodeUtf32, SixBytesOverlongNotEnoughSpace)
-{
-	const char* i = "Der\xFD\xBF\xBF\xBF\xBF\xBFp";
-	const size_t s = 4;
-	unicode_t o[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(16, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_EQ('D', o[0]);
-	EXPECT_EQ('e', o[1]);
-	EXPECT_EQ('r', o[2]);
-	EXPECT_EQ(0x0000FFFD, o[3]);
-}
-
-TEST(DecodeUtf32, SixBytesOverlongStringNotEnoughSpace)
-{
-	const char* i = "Der\xFD\xBF\xBF\xBF\xBF\xBFp";
-	const size_t s = 4;
-	unicode_t o[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(16, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_EQ('D', o[0]);
-	EXPECT_EQ('e', o[1]);
-	EXPECT_EQ('r', o[2]);
-	EXPECT_EQ(0x0000FFFD, o[3]);
-}
-
 TEST(DecodeUtf32, SixBytesLonelyStartFirst)
 {
 	const char* i = "\xFC ";
@@ -944,7 +914,7 @@ TEST(DecodeUtf32, SixBytesLonelyStartCombined)
 	}
 }
 
-TEST(DecodeUtf32, SixBytesOverlongNotEnoughData)
+TEST(DecodeUtf32, SixBytesNotEnoughData)
 {
 	const char* i = "\xFC\x80\x80\x80\x80";
 	const size_t s = 256;
@@ -954,6 +924,21 @@ TEST(DecodeUtf32, SixBytesOverlongNotEnoughData)
 	EXPECT_EQ(4, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x0000FFFD, o[0]);
+}
+
+TEST(DecodeUtf32, SixBytesNotEnoughSpace)
+{
+	const char* i = "Der\xFD\xBF\xBF\xBF\xBF\xBFp";
+	const size_t s = 4;
+	unicode_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(16, utf8toutf32(i, strlen(i), o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_EQ('D', o[0]);
+	EXPECT_EQ('e', o[1]);
+	EXPECT_EQ('r', o[2]);
+	EXPECT_EQ(0x0000FFFD, o[3]);
 }
 
 TEST(DecodeUtf32, SurrogatePair)
