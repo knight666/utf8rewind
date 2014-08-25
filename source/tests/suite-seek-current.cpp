@@ -335,6 +335,49 @@ TEST(SeekForward, ThreeBytesAtEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
+TEST(SeekForward, ThreeBytesOverlong)
+{
+	const char* t = "\xE0\x80\xAF\xE0\x9F\xBF\xE0\x80\xAF";
+
+	const char* r = utf8seek(t, t, 1, SEEK_CUR);
+
+	EXPECT_EQ(t + 3, r);
+	EXPECT_STREQ("\xE0\x9F\xBF\xE0\x80\xAF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekForward, ThreeBytesOverlongFromMiddle)
+{
+	const char* t = "\xE0\x80\xAF\xE0\x9F\xBF\xE0\x80\xAF\xE0\x80\xAF";
+
+	const char* r = utf8seek(t + 6, t, 1, SEEK_CUR);
+
+	EXPECT_EQ(t + 9, r);
+	EXPECT_STREQ("\xE0\x80\xAF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekForward, ThreeBytesOverlongPastEnd)
+{
+	const char* t = "\xE0\x80\xAF\xE0\x80\xAF\xE0\x80\xAF";
+
+	const char* r = utf8seek(t, t, 4, SEEK_CUR);
+
+	EXPECT_EQ(t + strlen(t), r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
 TEST(SeekForward, ThreeBytesSwappedParameters)
 {
 	const char* t = "\xE0\xA4\x81\xE0\xA4\x8B\xE0\xA4\xB4\xE0\xA4\xBD";
@@ -650,7 +693,7 @@ TEST(SeekBackward, TwoBytesOverlongPastStart)
 {
 	const char* t = "\xC0\xAF\xC1\xBF\xC0\xAF";
 
-	const char* r = utf8seek(t, t, -6, SEEK_CUR);
+	const char* r = utf8seek(t + strlen(t), t, -6, SEEK_CUR);
 
 	EXPECT_EQ(t, r);
 	EXPECT_STREQ("\xC0\xAF\xC1\xBF\xC0\xAF", r);
@@ -757,6 +800,48 @@ TEST(SeekBackward, ThreeBytesAtStart)
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
 	EXPECT_EQ(0x901, o);
+}
+
+TEST(SeekBackward, ThreeBytesOverlong)
+{
+	const char* t = "\xE0\x80\xAF\xE0\x9F\xBF\xE0\x80\xAF";
+
+	const char* r = utf8seek(t + strlen(t), t, -1, SEEK_CUR);
+
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("\xE0\x80\xAF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, ThreeBytesOverlongFromMiddle)
+{
+	const char* t = "\xE0\x80\xAF\xE0\x9F\xBF\xE0\x80\xAF\xE0\x80\xAF";
+
+	const char* r = utf8seek(t + 9, t, -1, SEEK_CUR);
+
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("\xE0\x80\xAF\xE0\x80\xAF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, ThreeBytesOverlongPastStart)
+{
+	const char* t = "\xE0\x80\xAF\xE0\x80\xAF\xE0\x80\xAF";
+
+	const char* r = utf8seek(t + strlen(t), t, -4, SEEK_CUR);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xE0\x80\xAF\xE0\x80\xAF\xE0\x80\xAF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
 }
 
 TEST(SeekBackward, ThreeBytesSwappedParameters)
