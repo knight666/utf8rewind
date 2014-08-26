@@ -23,19 +23,19 @@ TEST(SeekEnd, Ascii)
 
 	const char* r = utf8seek(t, t, 2, SEEK_END);
 
-	EXPECT_EQ(t + 5, r);
-	EXPECT_STREQ("r", r);
+	EXPECT_EQ(t + 4, r);
+	EXPECT_STREQ("er", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('r', o);
+	EXPECT_EQ('e', o);
 }
 
 TEST(SeekEnd, AsciiOffset)
 {
 	const char* t = "Waterbringer";
 
-	const char* r = utf8seek(t + 5, t, 8, SEEK_END);
+	const char* r = utf8seek(t + 5, t, 7, SEEK_END);
 
 	EXPECT_EQ(t + 5, r);
 	EXPECT_STREQ("bringer", r);
