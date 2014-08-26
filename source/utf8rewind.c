@@ -740,9 +740,21 @@ const char* seekrewind(const char* src, const char* srcStart, size_t srcLength, 
 		return srcStart;
 	}
 
+	src--;
+
 	while (src != srcStart)
 	{
-		is_ascii = (*src & 0x80) != 0x80;
+		if ((*src & 0xC0) != 0x80 || (*src & 0xFE) == 0xFE)
+		{
+			if (++offset == 0)
+			{
+				break;
+			}
+		}
+
+		src--;
+
+		/*is_ascii = (*src & 0x80) != 0x80;
 		is_last_byte = 0;
 
 		if (is_ascii)
@@ -776,7 +788,7 @@ const char* seekrewind(const char* src, const char* srcStart, size_t srcLength, 
 		if (++offset == 0)
 		{
 			break;
-		}
+		}*/
 	}
 
 	return src;

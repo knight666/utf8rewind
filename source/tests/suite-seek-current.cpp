@@ -1346,10 +1346,10 @@ TEST(SeekBackward, EndsWithAscii)
 
 	const char* r = utf8seek(t + strlen(t), t, -3, SEEK_CUR);
 
-	EXPECT_EQ(t + 4, r);
-	EXPECT_STREQ("\xD1\x86j", r);
+	EXPECT_EQ(t + 3, r);
+	EXPECT_STREQ("e\xD1\x86j", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ(0x446, o);
+	EXPECT_EQ('e', o);
 }
