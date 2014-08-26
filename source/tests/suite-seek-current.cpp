@@ -535,6 +535,77 @@ TEST(SeekForward, FourBytesZeroOffset)
 	EXPECT_EQ(0x10480, o);
 }
 
+TEST(SeekForward, FiveBytesOverlong)
+{
+	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
+
+	const char* r = utf8seek(t, t, 1, SEEK_CUR);
+
+	EXPECT_EQ(t + 5, r);
+	EXPECT_STREQ("\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekForward, FiveBytesOverlongFromMiddle)
+{
+	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
+
+	const char* r = utf8seek(t + 5, t, 1, SEEK_CUR);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("\xFB\xBF\xBF\xBF\xBF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekForward, FiveBytesOverlongPastEnd)
+{
+	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
+
+	const char* r = utf8seek(t, t, 13, SEEK_CUR);
+
+	EXPECT_EQ(t + strlen(t), r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(SeekForward, FiveBytesSwappedParameters)
+{
+	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
+
+	const char* r = utf8seek(t, t + strlen(t), 2, SEEK_CUR);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("\xFB\xBF\xBF\xBF\xBF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekForward, FiveBytesZeroOffset)
+{
+	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
+
+	const char* r = utf8seek(t + 10, t, 0, SEEK_CUR);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("\xFB\xBF\xBF\xBF\xBF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
 TEST(SeekBackward, Ascii)
 {
 	const char* t = "Paper boat";
@@ -1048,6 +1119,78 @@ TEST(SeekBackward, FourBytesEndsInMiddle)
 	const char* r = utf8seek(t + 21, t, -4, SEEK_CUR);
 
 	EXPECT_EQ(t + 12, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(SeekBackward, FiveBytesOverlong)
+{
+	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
+
+	const char* r = utf8seek(t + strlen(t), t, -3, SEEK_CUR);
+
+	EXPECT_EQ(t + 5, r);
+	EXPECT_STREQ("\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, FiveBytesOverlongFromMiddle)
+{
+	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
+
+	const char* r = utf8seek(t + 10, t, -1, SEEK_CUR);
+
+	EXPECT_EQ(t + 5, r);
+	EXPECT_STREQ("\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, FiveBytesOverlongPastStart)
+{
+	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
+
+	const char* r = utf8seek(t, t, 13, SEEK_CUR);
+
+	EXPECT_EQ(t + strlen(t), r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(SeekBackward, FiveBytesSwappedParameters)
+{
+	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
+
+	const char* r = utf8seek(t, t + strlen(t), -2, SEEK_CUR);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, FiveBytesEndsInMiddle)
+{
+	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\0\xFB\xBF\xBF\xBF\xBF";
+
+	const char* r = utf8seek(t + 16, t, -3, SEEK_CUR);
+
+	EXPECT_EQ(t + 10, r);
 	EXPECT_STREQ("", r);
 
 	unicode_t o = 0;
