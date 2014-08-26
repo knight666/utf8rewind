@@ -57,7 +57,7 @@ size_t lengthcodepoint(uint8_t input)
 	{
 		return 1;
 	}
-	else if (input <= 0xBF || (input & 0xFE) == 0xFE)
+	else if ((input & 0xC0) != 0xC0 || (input & 0xFE) == 0xFE)
 	{
 		/* Malformed continuation byte or illegal byte */
 
