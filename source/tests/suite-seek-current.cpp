@@ -226,7 +226,7 @@ TEST(SeekForward, TwoBytesOverlongFromMiddle)
 
 	const char* r = utf8seek(t + 4, t, 1, SEEK_CUR);
 
-	EXPECT_EQ(t + strlen(t), r);
+	EXPECT_EQ(t + 6, r);
 	EXPECT_STREQ("\xC0\xAF", r);
 
 	unicode_t o = 0;
