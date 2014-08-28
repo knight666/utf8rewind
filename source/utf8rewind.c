@@ -693,8 +693,6 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 
 const char* seekforward(const char* src, const char* srcEnd, size_t srcLength, off_t offset)
 {
-	off_t i;
-
 	if (srcEnd <= src || offset <= 0 || srcLength == 0)
 	{
 		return src;
@@ -704,21 +702,23 @@ const char* seekforward(const char* src, const char* srcEnd, size_t srcLength, o
 		return srcEnd;
 	}
 
-	for (i = 0; i < offset; ++i)
+	do
 	{
 		size_t codepoint_length = lengthcodepoint(*src);
 		if (codepoint_length == 0)
 		{
-			break;
+			codepoint_length = 1;
 		}
 
-		if (src + codepoint_length >= srcEnd)
+		if (codepoint_length >= srcLength)
 		{
 			return srcEnd;
 		}
 
 		src += codepoint_length;
+		srcLength -= codepoint_length;
 	}
+	while (--offset > 0 && *src != 0);
 
 	return src;
 }
@@ -740,8 +740,10 @@ const char* seekrewind(const char* srcStart, const char* src, size_t srcLength, 
 	while (src != srcStart)
 	{
 		if (
-			(*src & 0xC0) != 0x80 || /* Invalid continuation byte */
-			(*src & 0xFE) == 0xFE)   /* Illegal byte */
+			(*src & 0x80) == 0 ||    /* ASCII */
+			(*src & 0xC0) != 0x80 || /* Malformed continuation byte */
+			(*src & 0xFE) == 0xFE    /* Illegal byte */
+		)
 		{
 			++offset;
 			if (offset == 0)

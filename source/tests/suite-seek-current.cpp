@@ -2,7 +2,6 @@
 
 #include "utf8rewind.h"
 
-
 TEST(SeekForward, Valid)
 {
 	const char* t = "\xCF\x84\xE1\xBD\xB4\xCE\xBD \xCE\xBA\xE1\xBD\xB9\xCF\x88\xCE\xB7";
@@ -15,22 +14,6 @@ TEST(SeekForward, Valid)
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
 	EXPECT_EQ(0x3BA, o);
-}
-
-TEST(SeekForward, InvalidCharacter)
-{
-	const char* t = "\xD0\xBC\xFF KKD";
-
-	const char* r = utf8seek(t, t, 3, SEEK_CUR);
-
-	EXPECT_EQ(t + 2, r);
-	EXPECT_STREQ("\xFF KKD", r);
-
-	unicode_t o = 0;
-	int32_t errors = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_EQ(0x0000FFFD, o);
 }
 
 TEST(SeekForward, PastEnd)
@@ -146,6 +129,48 @@ TEST(SeekForward, AsciiZeroOffset)
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
 	EXPECT_EQ(0x6E, o);
+}
+
+TEST(SeekForward, AsciiIllegalByteFE)
+{
+	const char* t = "Stuff\xFE happens";
+
+	const char* r = utf8seek(t, t, 7, SEEK_CUR);
+
+	EXPECT_EQ(t + 7, r);
+	EXPECT_STREQ("happens", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('h', o);
+}
+
+TEST(SeekForward, AsciiIllegalByteFF)
+{
+	const char* t = "Mag\xFF KKD";
+
+	const char* r = utf8seek(t, t, 6, SEEK_CUR);
+
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("KD", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('K', o);
+}
+
+TEST(SeekForward, AsciiMalformedContinuationByte)
+{
+	const char* t = "Player: \x87" "bob";
+
+	const char* r = utf8seek(t, t, 10, SEEK_CUR);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("ob", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('o', o);
 }
 
 TEST(SeekForward, TwoBytes)
@@ -311,7 +336,7 @@ TEST(SeekForward, ThreeBytesPastEnd)
 
 	const char* r = utf8seek(t + 3, t, 4, SEEK_CUR);
 
-	EXPECT_EQ(t + strlen(t), r);
+	EXPECT_EQ(t + 12, r);
 	EXPECT_STREQ("", r);
 
 	unicode_t o = 0;
@@ -717,6 +742,48 @@ TEST(SeekBackward, AsciiZeroOffset)
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
 	EXPECT_EQ('l', o);
+}
+
+TEST(SeekBackward, AsciiIllegalByteFE)
+{
+	const char* t = "Stuff\xFE happens";
+
+	const char* r = utf8seek(t + 14, t, -11, SEEK_CUR);
+
+	EXPECT_EQ(t + 3, r);
+	EXPECT_STREQ("ff\xFE happens", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('f', o);
+}
+
+TEST(SeekBackward, AsciiIllegalByteFF)
+{
+	const char* t = "Mag\xFF KKD";
+
+	const char* r = utf8seek(t + 8, t, -7, SEEK_CUR);
+
+	EXPECT_EQ(t + 1, r);
+	EXPECT_STREQ("ag\xFF KKD", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('a', o);
+}
+
+TEST(SeekBackward, AsciiMalformedContinuationByte)
+{
+	const char* t = "Player: \x87" "bob";
+
+	const char* r = utf8seek(t + 12, t, -8, SEEK_CUR);
+
+	EXPECT_EQ(t + 3, r);
+	EXPECT_STREQ("yer: \x87" "bob", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('y', o);
 }
 
 TEST(SeekBackward, AsciiPastStart)
