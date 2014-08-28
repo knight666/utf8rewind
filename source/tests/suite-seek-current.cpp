@@ -288,6 +288,35 @@ TEST(SeekForward, TwoBytesSwappedParameters)
 	EXPECT_EQ(0x43B, o);
 }
 
+TEST(SeekForward, TwoBytesLonelyStart)
+{
+	const char* t = "Gone\xC4" "Fishin'";
+
+	const char* r = utf8seek(t, t, 5, SEEK_CUR);
+
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("ishin'", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('i', o);
+}
+
+TEST(SeekForward, TwoBytesLonelyStartAtEnd)
+{
+	const char* t = "Megalodon\xDC";
+
+	const char* r = utf8seek(t, t, 10, SEEK_CUR);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
 TEST(SeekForward, TwoBytesZeroOffset)
 {
 	const char* t = "\xD0\xBB\xD0\xBE\xD0\xBA\xD0\xB0\xD0\xBB\xD0\xB8\xD0\xB7\xD0\xB0\xD1\x86\xD0\xB8\xD0\xB8";
@@ -968,6 +997,34 @@ TEST(SeekBackward, TwoBytesSwappedParameters)
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
 	EXPECT_EQ(0x43E, o);
+}
+
+TEST(SeekBackward, TwoBytesLonelyStart)
+{
+	const char* t = "Gone\xC4" "Fishin'";
+
+	const char* r = utf8seek(t + strlen(t), t, -8, SEEK_CUR);
+
+	EXPECT_EQ(t + 4, r);
+	EXPECT_STREQ("\xC4" "Fishin'", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, TwoBytesLonelyStartAtStart)
+{
+	const char* t = "\xDCMegalodon";
+
+	const char* r = utf8seek(t + strlen(t), t, -10, SEEK_CUR);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xDCMegalodon", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
 }
 
 TEST(SeekBackward, TwoBytesEndsInMiddle)
