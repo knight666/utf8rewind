@@ -791,6 +791,35 @@ TEST(SeekForward, FiveBytesLonelyStartAtEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
+TEST(SeekForward, FiveBytesNotEnoughData)
+{
+	const char* t = "Central\xF8\x80\x80\x80Plaza baker";
+
+	const char* r = utf8seek(t, t, 8, SEEK_CUR);
+
+	EXPECT_EQ(t + 12, r);
+	EXPECT_STREQ("laza baker", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('l', o);
+}
+
+TEST(SeekForward, FiveBytesNotEnoughDataAtEnd)
+{
+	const char* t = "Apple\xF8\x80\x80\x80";
+
+	const char* r = utf8seek(t, t, 6, SEEK_CUR);
+
+	EXPECT_EQ(t + 9, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
 TEST(SeekForward, FiveBytesZeroOffset)
 {
 	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
@@ -1642,6 +1671,34 @@ TEST(SeekBackward, FiveBytesLonelyStartAtStart)
 
 	EXPECT_EQ(t, r);
 	EXPECT_STREQ("\xFA" "Brontos", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, FiveBytesNotEnoughData)
+{
+	const char* t = "Central\xF8\x80\x80\x80Plaza baker";
+
+	const char* r = utf8seek(t + strlen(t), t, -13, SEEK_CUR);
+
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("l\xF8\x80\x80\x80Plaza baker", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('l', o);
+}
+
+TEST(SeekBackward, FiveBytesNotEnoughDataAtStart)
+{
+	const char* t = "\xF8\x80\x80\x80" "Apple";
+
+	const char* r = utf8seek(t + strlen(t), t, -6, SEEK_CUR);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xF8\x80\x80\x80" "Apple", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
