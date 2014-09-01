@@ -633,6 +633,35 @@ TEST(SeekForward, FourBytesSwappedParameters)
 	EXPECT_EQ(0x10480, o);
 }
 
+TEST(SeekForward, FourBytesLonelyStart)
+{
+	const char* t = "Clam\xF4shellpower";
+
+	const char* r = utf8seek(t, t, 8, SEEK_CUR);
+
+	EXPECT_EQ(t + 11, r);
+	EXPECT_STREQ("ower", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('o', o);
+}
+
+TEST(SeekForward, FourBytesLonelyStartAtEnd)
+{
+	const char* t = "Magic\xF6";
+
+	const char* r = utf8seek(t, t, 6, SEEK_CUR);
+
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
 TEST(SeekForward, FourBytesZeroOffset)
 {
 	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
@@ -1401,6 +1430,34 @@ TEST(SeekBackward, FourBytesOverlongPastStart)
 
 	EXPECT_EQ(t, r);
 	EXPECT_STREQ("\xF0\x80\x80\xAF\xF0\x80\x80\xAF\xF7\xBF\xBF\xBF\xF4\x90\x80\x80", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, FourBytesLonelyStart)
+{
+	const char* t = "Clam\xF4shellpower";
+
+	const char* r = utf8seek(t + strlen(t), t, -12, SEEK_CUR);
+
+	EXPECT_EQ(t + 3, r);
+	EXPECT_STREQ("m\xF4shellpower", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('m', o);
+}
+
+TEST(SeekBackward, FourBytesLonelyStartAtStart)
+{
+	const char* t = "\xF6Magic";
+
+	const char* r = utf8seek(t + strlen(t), t, -6, SEEK_CUR);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xF6Magic", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
