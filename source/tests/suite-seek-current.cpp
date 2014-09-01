@@ -877,13 +877,42 @@ TEST(SeekForward, SixBytesOverlongPastEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
+TEST(SeekForward, SixBytesLonelyStart)
+{
+	const char* t = "FC\xFCKnudde festival";
+
+	const char* r = utf8seek(t, t, 8, SEEK_CUR);
+
+	EXPECT_EQ(t + 13, r);
+	EXPECT_STREQ("tival", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('t', o);
+}
+
+TEST(SeekForward, SixBytesLonelyStartAtEnd)
+{
+	const char* t = "Stuff\xFD";
+
+	const char* r = utf8seek(t, t, 6, SEEK_CUR);
+
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
 TEST(SeekForward, SixBytesNotEnoughData)
 {
 	const char* t = "Hint\xFC\x80\x80\x80\x80machine";
 
 	const char* r = utf8seek(t, t, 6, SEEK_CUR);
 
-	EXPECT_EQ(t + 12, r);
+	EXPECT_EQ(t + 11, r);
 	EXPECT_STREQ("chine", r);
 
 	unicode_t o = 0;
@@ -1799,6 +1828,34 @@ TEST(SeekBackward, SixBytesOverlongPastStart)
 
 	EXPECT_EQ(t, r);
 	EXPECT_STREQ("\xFC\x84\x80\x80\x80\x80\xFC\x80\x80\x80\x80\x80\xFC\x84\x80\x80\x80\x80\xFD\xBF\xBF\xBF\xBF\xBF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, SixBytesLonelyStart)
+{
+	const char* t = "FC\xFCKnudde festival";
+
+	const char* r = utf8seek(t + strlen(t), t, -16, SEEK_CUR);
+
+	EXPECT_EQ(t + 2, r);
+	EXPECT_STREQ("\xFCKnudde festival", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, SixBytesLonelyStartAtStart)
+{
+	const char* t = "\xFDStuff";
+
+	const char* r = utf8seek(t + strlen(t), t, -6, SEEK_CUR);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xFDStuff", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
