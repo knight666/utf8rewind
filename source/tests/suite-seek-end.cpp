@@ -203,6 +203,76 @@ TEST(SeekEnd, TwoBytesOffset)
 	EXPECT_EQ(0x50A, o);
 }
 
+TEST(SeekEnd, TwoBytesOverlong)
+{
+	const char* t = "\xC0\xAF\xC1\xBF\xC0\xAF";
+
+	const char* r = utf8seek(t, t, 1, SEEK_END);
+
+	EXPECT_EQ(t + 4, r);
+	EXPECT_STREQ("\xC0\xAF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekEnd, TwoBytesOverlongPastStart)
+{
+	const char* t = "\xC0\xAF\xC1\xBF\xC0\xAF";
+
+	const char* r = utf8seek(t, t, 6, SEEK_END);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xC0\xAF\xC1\xBF\xC0\xAF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekEnd, TwoBytesLonelyStart)
+{
+	const char* t = "Gone\xC4" "Fishin'";
+
+	const char* r = utf8seek(t, t, 8, SEEK_END);
+
+	EXPECT_EQ(t + 4, r);
+	EXPECT_STREQ("\xC4" "Fishin'", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekEnd, TwoBytesLonelyStartAtStart)
+{
+	const char* t = "\xDCMegalodon";
+
+	const char* r = utf8seek(t, t, 10, SEEK_END);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xDCMegalodon", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekEnd, TwoBytesEndsInMiddle)
+{
+	const char* t = "\xD0\xBE\xD0\xBA\0\xD0\xB0\xD0\xBB";
+
+	const char* r = utf8seek(t, t, 4, SEEK_END);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xD0\xBE\xD0\xBA", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0x43E, o);
+}
+
 TEST(SeekEnd, TwoBytesPastStart)
 {
 	const char* t = "\xD4\x9A\xD4\x9C\xD4\x86\xD4\x8A\xD4\xB6";
