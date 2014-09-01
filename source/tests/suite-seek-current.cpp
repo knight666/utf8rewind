@@ -619,20 +619,6 @@ TEST(SeekForward, FourBytesOverlongPastEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, FourBytesSwappedParameters)
-{
-	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
-
-	const char* r = utf8seek(t, t + strlen(t), 2, SEEK_CUR);
-
-	EXPECT_EQ(t, r);
-	EXPECT_STREQ("\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ(0x10480, o);
-}
-
 TEST(SeekForward, FourBytesLonelyStart)
 {
 	const char* t = "Clam\xF4shellpower";
@@ -660,6 +646,49 @@ TEST(SeekForward, FourBytesLonelyStartAtEnd)
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(SeekForward, FourBytesNotEnoughData)
+{
+	const char* t = "Brilli\xF0\x90\x80" "ant";
+
+	const char* r = utf8seek(t, t, 8, SEEK_CUR);
+
+	EXPECT_EQ(t + 11, r);
+	EXPECT_STREQ("t", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('t', o);
+}
+
+TEST(SeekForward, FourBytesNotEnoughDataAtEnd)
+{
+	const char* t = "Night\xF0\x90\x80";
+
+	const char* r = utf8seek(t, t, 6, SEEK_CUR);
+
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(SeekForward, FourBytesSwappedParameters)
+{
+	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
+
+	const char* r = utf8seek(t, t + strlen(t), 2, SEEK_CUR);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0x10480, o);
 }
 
 TEST(SeekForward, FourBytesZeroOffset)
@@ -1487,6 +1516,34 @@ TEST(SeekBackward, FourBytesLonelyStartAtStart)
 
 	EXPECT_EQ(t, r);
 	EXPECT_STREQ("\xF6Magic", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, FourBytesNotEnoughData)
+{
+	const char* t = "Brilli\xF0\x90\x80" "ant";
+
+	const char* r = utf8seek(t + strlen(t), t, -4, SEEK_CUR);
+
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("\xF0\x90\x80" "ant", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, FourBytesNotEnoughDataAtStart)
+{
+	const char* t = "\xF0\x90\x80Night";
+
+	const char* r = utf8seek(t + strlen(t), t, -6, SEEK_CUR);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xF0\x90\x80Night", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
