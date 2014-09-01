@@ -733,6 +733,35 @@ TEST(SeekForward, FiveBytesSwappedParameters)
 	EXPECT_EQ(0xFFFD, o);
 }
 
+TEST(SeekForward, FiveBytesLonelyStart)
+{
+	const char* t = "Beyond\xFAMegalodon";
+
+	const char* r = utf8seek(t, t, 7, SEEK_CUR);
+
+	EXPECT_EQ(t + 11, r);
+	EXPECT_STREQ("lodon", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('l', o);
+}
+
+TEST(SeekForward, FiveBytesLonelyStartAtEnd)
+{
+	const char* t = "Dinos\xFA";
+
+	const char* r = utf8seek(t, t, 6, SEEK_CUR);
+
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
 TEST(SeekForward, FiveBytesZeroOffset)
 {
 	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
@@ -1528,6 +1557,34 @@ TEST(SeekBackward, FiveBytesOverlongPastStart)
 
 	EXPECT_EQ(t, r);
 	EXPECT_STREQ("\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, FiveBytesLonelyStart)
+{
+	const char* t = "Beyond\xFAMegalodon";
+
+	const char* r = utf8seek(t + strlen(t), t, -12, SEEK_CUR);
+
+	EXPECT_EQ(t + 4, r);
+	EXPECT_STREQ("nd\xFAMegalodon", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('n', o);
+}
+
+TEST(SeekBackward, FiveBytesLonelyStartAtStart)
+{
+	const char* t = "\xFA" "Brontos";
+
+	const char* r = utf8seek(t, t, -7, SEEK_CUR);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xFA" "Brontos", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
