@@ -446,6 +446,64 @@ TEST(SeekForward, ThreeBytesSwappedParameters)
 	EXPECT_EQ(0x901, o);
 }
 
+TEST(SeekForward, ThreeBytesLonelyStart)
+{
+	const char* t = "Rocker\xE4" "coaster";
+
+	const char* r = utf8seek(t, t, 8, SEEK_CUR);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("ster", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('s', o);
+}
+
+TEST(SeekForward, ThreeBytesLonelyStartAtEnd)
+{
+	const char* t = "Submarine\xED";
+
+	const char* r = utf8seek(t, t, 10, SEEK_CUR);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(SeekForward, ThreeBytesNotEnoughData)
+{
+	const char* t = "Compan\xEF\xBFions";
+
+	const char* r = utf8seek(t, t, 8, SEEK_CUR);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("ns", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('n', o);
+}
+
+TEST(SeekForward, ThreeBytesNotEnoughDataAtEnd)
+{
+	const char* t = "BBBark\xEF\xBF";
+
+	const char* r = utf8seek(t, t, 7, SEEK_CUR);
+
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
 TEST(SeekForward, ThreeBytesZeroOffset)
 {
 	const char* t = "\xE0\xA4\x81\xE0\xA4\x8B\xE0\xA4\xB4\xE0\xA4\xBD";
@@ -985,20 +1043,6 @@ TEST(SeekBackward, TwoBytesOverlongPastStart)
 	EXPECT_EQ(0xFFFD, o);
 }
 
-TEST(SeekBackward, TwoBytesSwappedParameters)
-{
-	const char* t = "\xD0\xBE\xD0\xBA\xD0\xB0\xD0\xBB";
-
-	const char* r = utf8seek(t, t + strlen(t), -3, SEEK_CUR);
-
-	EXPECT_EQ(t, r);
-	EXPECT_STREQ("\xD0\xBE\xD0\xBA\xD0\xB0\xD0\xBB", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ(0x43E, o);
-}
-
 TEST(SeekBackward, TwoBytesLonelyStart)
 {
 	const char* t = "Gone\xC4" "Fishin'";
@@ -1025,6 +1069,20 @@ TEST(SeekBackward, TwoBytesLonelyStartAtStart)
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
 	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, TwoBytesSwappedParameters)
+{
+	const char* t = "\xD0\xBE\xD0\xBA\xD0\xB0\xD0\xBB";
+
+	const char* r = utf8seek(t, t + strlen(t), -3, SEEK_CUR);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xD0\xBE\xD0\xBA\xD0\xB0\xD0\xBB", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0x43E, o);
 }
 
 TEST(SeekBackward, TwoBytesEndsInMiddle)
@@ -1147,6 +1205,62 @@ TEST(SeekBackward, ThreeBytesOverlongPastStart)
 
 	EXPECT_EQ(t, r);
 	EXPECT_STREQ("\xE0\x80\xAF\xE0\x80\xAF\xE0\x80\xAF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, ThreeBytesLonelyStart)
+{
+	const char* t = "Rocker\xE4" "coaster";
+
+	const char* r = utf8seek(t + strlen(t), t, -10, SEEK_CUR);
+
+	EXPECT_EQ(t + 4, r);
+	EXPECT_STREQ("er\xE4" "coaster", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('e', o);
+}
+
+TEST(SeekBackward, ThreeBytesLonelyStartAtStart)
+{
+	const char* t = "\xEDSubmarine";
+
+	const char* r = utf8seek(t + strlen(t), t, -10, SEEK_CUR);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xEDSubmarine", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekBackward, ThreeBytesNotEnoughData)
+{
+	const char* t = "Compan\xEF\xBFions";
+
+	const char* r = utf8seek(t + strlen(t), t, -6, SEEK_CUR);
+
+	EXPECT_EQ(t + 5, r);
+	EXPECT_STREQ("n\xEF\xBFions", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('n', o);
+}
+
+TEST(SeekBackward, ThreeBytesNotEnoughDataAtStart)
+{
+	const char* t = "\xEF\xBF" "BBBark";
+
+	const char* r = utf8seek(t + strlen(t), t, -7, SEEK_CUR);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xEF\xBF" "BBBark", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
