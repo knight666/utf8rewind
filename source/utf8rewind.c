@@ -784,7 +784,15 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 		} break;
 
 	case SEEK_SET:
-		return seekforward(textStart, textEnd, textLength, offset);
+		{
+			if (text < textStart)
+			{
+				return text;
+			}
+
+			return seekforward(textStart, textEnd, textLength, offset);
+
+		} break;
 
 	case SEEK_END:
 		return seekrewind(textStart, textEnd, textLength, -offset);
