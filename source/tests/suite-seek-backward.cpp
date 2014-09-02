@@ -525,7 +525,7 @@ TEST(SeekBackward, FiveBytesLonelyStartAtStart)
 {
 	const char* t = "\xFA" "Brontos";
 
-	const char* r = utf8seek(t, t, -7, SEEK_CUR);
+	const char* r = utf8seek(t + strlen(t), t, -8, SEEK_CUR);
 
 	EXPECT_EQ(t, r);
 	EXPECT_STREQ("\xFA" "Brontos", r);

@@ -439,3 +439,87 @@ TEST(SeekEnd, FourBytesNotEnoughDataAtStart)
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
 	EXPECT_EQ(0xFFFD, o);
 }
+
+TEST(SeekEnd, FiveBytesOverlong)
+{
+	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
+
+	const char* r = utf8seek(t, t, 2, SEEK_END);
+
+	EXPECT_EQ(t + 5, r);
+	EXPECT_STREQ("\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekEnd, FiveBytesOverlongPastStart)
+{
+	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
+
+	const char* r = utf8seek(t, t, 13, SEEK_END);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekEnd, FiveBytesLonelyStart)
+{
+	const char* t = "Beyond\xFAMegalodon";
+
+	const char* r = utf8seek(t, t, 12, SEEK_END);
+
+	EXPECT_EQ(t + 4, r);
+	EXPECT_STREQ("nd\xFAMegalodon", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('n', o);
+}
+
+TEST(SeekEnd, FiveBytesLonelyStartAtStart)
+{
+	const char* t = "\xFA" "Brontos";
+
+	const char* r = utf8seek(t, t, 8, SEEK_END);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xFA" "Brontos", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekEnd, FiveBytesNotEnoughData)
+{
+	const char* t = "Central\xF8\x80\x80\x80Plaza baker";
+
+	const char* r = utf8seek(t, t, 13, SEEK_END);
+
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("l\xF8\x80\x80\x80Plaza baker", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('l', o);
+}
+
+TEST(SeekEnd, FiveBytesNotEnoughDataAtStart)
+{
+	const char* t = "\xF8\x80\x80\x80" "Apple";
+
+	const char* r = utf8seek(t + strlen(t), t, 6, SEEK_END);
+
+	EXPECT_EQ(t, r);
+	EXPECT_STREQ("\xF8\x80\x80\x80" "Apple", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
