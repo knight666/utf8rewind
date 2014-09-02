@@ -187,6 +187,64 @@ TEST(SeekSet, TwoBytes)
 	EXPECT_EQ(0x430, o);
 }
 
+TEST(SeekSet, TwoBytesOverlong)
+{
+	const char* t = "\xC0\xAF\xC1\xBF\xC0\xAF";
+
+	const char* r = utf8seek(t, t, 1, SEEK_SET);
+
+	EXPECT_EQ(t + 2, r);
+	EXPECT_STREQ("\xC1\xBF\xC0\xAF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekSet, TwoBytesOverlongPastEnd)
+{
+	const char* t = "\xC0\xAF\xC1\xBF\xC0\xAF";
+
+	const char* r = utf8seek(t, t, 6, SEEK_SET);
+
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(SeekSet, TwoBytesLonelyStart)
+{
+	const char* t = "Gone\xC4" "Fishin'";
+
+	const char* r = utf8seek(t, t, 8, SEEK_SET);
+
+	EXPECT_EQ(t + 9, r);
+	EXPECT_STREQ("in'", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('i', o);
+}
+
+TEST(SeekSet, TwoBytesLonelyStartAtEnd)
+{
+	const char* t = "Megalodon\xDC";
+
+	const char* r = utf8seek(t, t, 10, SEEK_SET);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
 TEST(SeekSet, ThreeBytes)
 {
 	const char* t = "\xE0\xA4\x81\xE0\xA4\x8B\xE0\xA4\xB4\xE0\xA4\xBD";
