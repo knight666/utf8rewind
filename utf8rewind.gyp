@@ -51,6 +51,7 @@
 				'source/tests/suite-seek.cpp',
 				'source/tests/suite-seek-current.cpp',
 				'source/tests/suite-seek-end.cpp',
+				'source/tests/suite-seek-forward.cpp',
 				'source/tests/suite-seek-set.cpp',
 				'source/tests/suite-toutf8.cpp',
 				'source/tests/suite-towide.cpp',
