@@ -131,6 +131,48 @@ TEST(SeekSet, Ascii)
 	EXPECT_EQ('r', o);
 }
 
+TEST(SeekSet, AsciiIllegalByteFE)
+{
+	const char* t = "The time\xFE" "box";
+
+	const char* r = utf8seek(t, t, 10, SEEK_SET);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("ox", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('o', o);
+}
+
+TEST(SeekSet, AsciiIllegalByteFF)
+{
+	const char* t = "Mag\xFF KKD";
+
+	const char* r = utf8seek(t, t, 4, SEEK_SET);
+
+	EXPECT_EQ(t + 4, r);
+	EXPECT_STREQ(" KKD", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(' ', o);
+}
+
+TEST(SeekSet, AsciiMalformedContinuationByte)
+{
+	const char* t = "Player: \x87" "bob";
+
+	const char* r = utf8seek(t, t, 10, SEEK_SET);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("ob", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('o', o);
+}
+
 TEST(SeekSet, TwoBytes)
 {
 	const char* t = "\xD0\xBB\xD0\xBE\xD0\xBA\xD0\xB0\xD0\xBB\xD0\xB8\xD0\xB7\xD0\xB0\xD1\x86\xD0\xB8\xD0\xB8";
