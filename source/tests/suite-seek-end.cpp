@@ -88,6 +88,20 @@ TEST(SeekEnd, EndsInMiddle)
 	EXPECT_EQ(0x901, o);
 }
 
+TEST(SeekEnd, LonelyStartDouble)
+{
+	const char* t = "Dino\xE8\xD5magic";
+
+	const char* r = utf8seek(t, t, 8, SEEK_END);
+
+	EXPECT_EQ(t + 3, r);
+	EXPECT_STREQ("o\xE8\xD5magic", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('o', o);
+}
+
 TEST(SeekEnd, SwappedParameters)
 {
 	const char* t = "\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F";
