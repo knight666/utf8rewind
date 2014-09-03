@@ -533,3 +533,75 @@ TEST(SeekSet, FiveBytesNotEnoughDataAtEnd)
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
+
+TEST(SeekSet, SixBytesOverlong)
+{
+	const char* t = "\xFC\x84\x80\x80\x80\x80\xFC\x80\x80\x80\x80\x80\xFC\x84\x80\x80\x80\x80\xFD\xBF\xBF\xBF\xBF\xBF";
+
+	const char* r = utf8seek(t, t, 2, SEEK_SET);
+
+	EXPECT_EQ(t + 12, r);
+	EXPECT_STREQ("\xFC\x84\x80\x80\x80\x80\xFD\xBF\xBF\xBF\xBF\xBF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekSet, SixBytesLonelyStart)
+{
+	const char* t = "FC\xFCKnudde festival";
+
+	const char* r = utf8seek(t, t, 3, SEEK_SET);
+
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("e festival", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('e', o);
+}
+
+TEST(SeekSet, SixBytesLonelyStartAtEnd)
+{
+	const char* t = "Stuff" "\xFD";
+
+	const char* r = utf8seek(t, t, 6, SEEK_SET);
+
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(SeekSet, SixBytesNotEnoughData)
+{
+	const char* t = "Hint\xFC\x80\x80\x80\x80machine";
+
+	const char* r = utf8seek(t, t, 5, SEEK_SET);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("achine", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('a', o);
+}
+
+TEST(SeekSet, SixBytesNotEnoughDataAtEnd)
+{
+	const char* t = "Dull\xFC\x80\x80\x80\x80";
+
+	const char* r = utf8seek(t, t, 5, SEEK_SET);
+
+	EXPECT_EQ(t + 9, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
