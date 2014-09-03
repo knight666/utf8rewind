@@ -359,3 +359,90 @@ TEST(SeekSet, FourBytes)
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
 	EXPECT_EQ(0x10480, o);
 }
+
+TEST(SeekSet, FourBytesOverlong)
+{
+	const char* t = "\xF0\x80\x80\xAF\xF0\x80\x80\xAF\xF4\x90\x80\x80";
+
+	const char* r = utf8seek(t, t, 2, SEEK_SET);
+
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("\xF4\x90\x80\x80", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekSet, FourBytesOverlongPastEnd)
+{
+	const char* t = "\xF0\x80\x80\xAF\xF0\x80\x80\xAF\xF7\xBF\xBF\xBF\xF4\x90\x80\x80";
+
+	const char* r = utf8seek(t, t, 7, SEEK_SET);
+
+	EXPECT_EQ(t + 16, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(SeekSet, FourBytesLonelyStart)
+{
+	const char* t = "Clam\xF4shellpower";
+
+	const char* r = utf8seek(t, t, 6, SEEK_SET);
+
+	EXPECT_EQ(t + 9, r);
+	EXPECT_STREQ("lpower", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('l', o);
+}
+
+TEST(SeekSet, FourBytesLonelyStartAtEnd)
+{
+	const char* t = "Magic\xF6";
+
+	const char* r = utf8seek(t, t, 6, SEEK_SET);
+
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(SeekSet, FourBytesNotEnoughData)
+{
+	const char* t = "Brilli\xF0\x90\x80" "ant";
+
+	const char* r = utf8seek(t, t, 8, SEEK_SET);
+
+	EXPECT_EQ(t + 11, r);
+	EXPECT_STREQ("t", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('t', o);
+}
+
+TEST(SeekSet, FourBytesNotEnoughDataAtEnd)
+{
+	const char* t = "Night\xF0\x90\x80";
+
+	const char* r = utf8seek(t, t, 6, SEEK_SET);
+
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
