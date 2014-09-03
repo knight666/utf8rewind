@@ -30,12 +30,12 @@ TEST(DecodeUtf32, String)
 
 TEST(DecodeUtf32, StringEndsInMiddle)
 {
-	const char* i = "How un\0fortunate";
+	const char* i = "How un\0for";
 	const size_t s = 256;
 	unicode_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(24, utf8toutf32(i, 16, o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(40, utf8toutf32(i, 10, o, s * sizeof(unicode_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ('H', o[0]);
 	EXPECT_EQ('o', o[1]);
@@ -43,6 +43,10 @@ TEST(DecodeUtf32, StringEndsInMiddle)
 	EXPECT_EQ(' ', o[3]);
 	EXPECT_EQ('u', o[4]);
 	EXPECT_EQ('n', o[5]);
+	EXPECT_EQ(0, o[6]);
+	EXPECT_EQ('f', o[7]);
+	EXPECT_EQ('o', o[8]);
+	EXPECT_EQ('r', o[9]);
 }
 
 TEST(DecodeUtf32, StringDataSizeUnder)
@@ -66,12 +70,13 @@ TEST(DecodeUtf32, StringDataSizeOver)
 	unicode_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(16, utf8toutf32(i, 8, o, s * sizeof(unicode_t), &errors));
+	EXPECT_EQ(32, utf8toutf32(i, 8, o, s * sizeof(unicode_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ('B', o[0]);
 	EXPECT_EQ('a', o[1]);
 	EXPECT_EQ('r', o[2]);
 	EXPECT_EQ('k', o[3]);
+	EXPECT_EQ(0, o[4]);
 }
 
 TEST(DecodeUtf32, StringBufferTooSmall)
