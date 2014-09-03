@@ -75,6 +75,20 @@ TEST(SeekForward, EndsInMiddle)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
+TEST(SeekForward, LonelyStartDouble)
+{
+	const char* t = "Rock\xEF\xFBsoup";
+
+	const char* r = utf8seek(t, t, 7, SEEK_CUR);
+
+	EXPECT_EQ(t + 7, r);
+	EXPECT_STREQ("oup", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('o', o);
+}
+
 TEST(SeekForward, SwappedParameters)
 {
 	const char* t = "10-12 \xD0\xBC\xD0\xB0\xD1\x80\xD1\x82\xD0\xB0 1997";
@@ -208,12 +222,12 @@ TEST(SeekForward, TwoBytesLonelyStart)
 
 	const char* r = utf8seek(t, t, 5, SEEK_CUR);
 
-	EXPECT_EQ(t + 6, r);
-	EXPECT_STREQ("ishin'", r);
+	EXPECT_EQ(t + 5, r);
+	EXPECT_STREQ("Fishin'", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('i', o);
+	EXPECT_EQ('F', o);
 }
 
 TEST(SeekForward, TwoBytesLonelyStartAtEnd)
@@ -294,12 +308,12 @@ TEST(SeekForward, ThreeBytesLonelyStart)
 
 	const char* r = utf8seek(t, t, 8, SEEK_CUR);
 
-	EXPECT_EQ(t + 10, r);
-	EXPECT_STREQ("ster", r);
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("oaster", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('s', o);
+	EXPECT_EQ('o', o);
 }
 
 TEST(SeekForward, ThreeBytesLonelyStartAtEnd)
@@ -323,12 +337,12 @@ TEST(SeekForward, ThreeBytesNotEnoughData)
 
 	const char* r = utf8seek(t, t, 8, SEEK_CUR);
 
-	EXPECT_EQ(t + 10, r);
-	EXPECT_STREQ("ns", r);
+	EXPECT_EQ(t + 9, r);
+	EXPECT_STREQ("ons", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('n', o);
+	EXPECT_EQ('o', o);
 }
 
 TEST(SeekForward, ThreeBytesNotEnoughDataAtEnd)
@@ -409,12 +423,12 @@ TEST(SeekForward, FourBytesLonelyStart)
 
 	const char* r = utf8seek(t, t, 8, SEEK_CUR);
 
-	EXPECT_EQ(t + 11, r);
-	EXPECT_STREQ("ower", r);
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("llpower", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('o', o);
+	EXPECT_EQ('l', o);
 }
 
 TEST(SeekForward, FourBytesLonelyStartAtEnd)
@@ -438,12 +452,12 @@ TEST(SeekForward, FourBytesNotEnoughData)
 
 	const char* r = utf8seek(t, t, 8, SEEK_CUR);
 
-	EXPECT_EQ(t + 11, r);
-	EXPECT_STREQ("t", r);
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("nt", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('t', o);
+	EXPECT_EQ('n', o);
 }
 
 TEST(SeekForward, FourBytesNotEnoughDataAtEnd)
@@ -510,12 +524,12 @@ TEST(SeekForward, FiveBytesLonelyStart)
 
 	const char* r = utf8seek(t, t, 7, SEEK_CUR);
 
-	EXPECT_EQ(t + 11, r);
-	EXPECT_STREQ("lodon", r);
+	EXPECT_EQ(t + 7, r);
+	EXPECT_STREQ("Megalodon", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('l', o);
+	EXPECT_EQ('M', o);
 }
 
 TEST(SeekForward, FiveBytesLonelyStartAtEnd)
@@ -539,12 +553,12 @@ TEST(SeekForward, FiveBytesNotEnoughData)
 
 	const char* r = utf8seek(t, t, 8, SEEK_CUR);
 
-	EXPECT_EQ(t + 12, r);
-	EXPECT_STREQ("laza baker", r);
+	EXPECT_EQ(t + 11, r);
+	EXPECT_STREQ("Plaza baker", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('l', o);
+	EXPECT_EQ('P', o);
 }
 
 TEST(SeekForward, FiveBytesNotEnoughDataAtEnd)
@@ -611,12 +625,12 @@ TEST(SeekForward, SixBytesLonelyStart)
 
 	const char* r = utf8seek(t, t, 8, SEEK_CUR);
 
-	EXPECT_EQ(t + 13, r);
-	EXPECT_STREQ("tival", r);
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("e festival", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('t', o);
+	EXPECT_EQ('e', o);
 }
 
 TEST(SeekForward, SixBytesLonelyStartAtEnd)
@@ -640,12 +654,12 @@ TEST(SeekForward, SixBytesNotEnoughData)
 
 	const char* r = utf8seek(t, t, 6, SEEK_CUR);
 
-	EXPECT_EQ(t + 11, r);
-	EXPECT_STREQ("chine", r);
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("achine", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('c', o);
+	EXPECT_EQ('a', o);
 }
 
 TEST(SeekForward, SixBytesNotEnoughDataAtEnd)
