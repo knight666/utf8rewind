@@ -21,7 +21,7 @@ protected:
 		ASSERT_TRUE(file.is_open());
 
 		file.seekg(0, std::ios::end);
-		input_size = file.tellg();
+		input_size = (size_t)file.tellg();
 		file.seekg(0, std::ios::beg);
 
 		ASSERT_EQ(20337, input_size);
