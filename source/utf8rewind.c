@@ -149,7 +149,7 @@ size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t*
 	return encoded_length;
 }
 
-size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int32_t* errors)
+size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize)
 {
 	uint8_t current = (uint8_t)*src;
 	uint8_t mask;
@@ -158,7 +158,8 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize, int3
 
 	if (current == 0)
 	{
-		return 0;
+		*codepoint = 0;
+		return 1;
 	}
 
 	decoded_length = lengthcodepoint(current);
@@ -555,11 +556,7 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 
 	while (src_length > 0)
 	{
-		decoded_length = readcodepoint(&codepoint, src, src_length, errors);
-		if (decoded_length == 0)
-		{
-			return bytes_written;
-		}
+		decoded_length = readcodepoint(&codepoint, src, src_length);
 
 		if (codepoint <= MAX_BASIC_MULTILINGUAR_PLANE)
 		{
@@ -650,11 +647,7 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 
 	while (src_length > 0)
 	{
-		decoded_length = readcodepoint(&codepoint, src, src_length, errors);
-		if (decoded_length == 0)
-		{
-			return bytes_written;
-		}
+		decoded_length = readcodepoint(&codepoint, src, src_length);
 
 		if (dst != 0)
 		{
