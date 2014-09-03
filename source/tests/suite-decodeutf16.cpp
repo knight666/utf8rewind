@@ -35,10 +35,14 @@ TEST(DecodeUtf16, StringEndsInMiddle)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(4, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
+	EXPECT_EQ(12, utf8toutf16(i, 12, o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x03BA, o[0]);
 	EXPECT_EQ(0x1F79, o[1]);
+	EXPECT_EQ(0, o[2]);
+	EXPECT_EQ(0x03C3, o[3]);
+	EXPECT_EQ(0x03BC, o[4]);
+	EXPECT_EQ(0x03B5, o[5]);
 }
 
 TEST(DecodeUtf16, StringDataSizeUnder)
@@ -62,11 +66,12 @@ TEST(DecodeUtf16, StringDataSizeOver)
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(6, utf8toutf16(i, 18, o, s * sizeof(utf16_t), &errors));
+	EXPECT_EQ(30, utf8toutf16(i, 18, o, s * sizeof(utf16_t), &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_EQ(0x0393, o[0]);
 	EXPECT_EQ(0x03B1, o[1]);
 	EXPECT_EQ(0x03B6, o[2]);
+	EXPECT_EQ(0, o[3]);
 }
 
 TEST(DecodeUtf16, StringBufferTooSmall)
