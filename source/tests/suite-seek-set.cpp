@@ -259,6 +259,93 @@ TEST(SeekSet, ThreeBytes)
 	EXPECT_EQ(0x934, o);
 }
 
+TEST(SeekSet, ThreeBytesOverlong)
+{
+	const char* t = "\xE0\x80\xAF\xE0\x9F\xBF\xE0\x80\xAF";
+
+	const char* r = utf8seek(t, t, 1, SEEK_SET);
+
+	EXPECT_EQ(t + 3, r);
+	EXPECT_STREQ("\xE0\x9F\xBF\xE0\x80\xAF", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
+TEST(SeekSet, ThreeBytesOverlongPastEnd)
+{
+	const char* t = "\xE0\x80\xAF\xE0\x80\xAF\xE0\x80\xAF";
+
+	const char* r = utf8seek(t, t, 12, SEEK_SET);
+
+	EXPECT_EQ(t + 9, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(SeekSet, ThreeBytesLonelyStart)
+{
+	const char* t = "Rocker\xE4" "coaster";
+
+	const char* r = utf8seek(t, t, 10, SEEK_SET);
+
+	EXPECT_EQ(t + 12, r);
+	EXPECT_STREQ("er", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('e', o);
+}
+
+TEST(SeekSet, ThreeBytesLonelyStartAtEnd)
+{
+	const char* t = "Submarine\xED";
+
+	const char* r = utf8seek(t, t, 10, SEEK_SET);
+
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(SeekSet, ThreeBytesNotEnoughData)
+{
+	const char* t = "Compan\xEF\xBFions";
+
+	const char* r = utf8seek(t, t, 7, SEEK_SET);
+
+	EXPECT_EQ(t + 9, r);
+	EXPECT_STREQ("ons", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('o', o);
+}
+
+TEST(SeekSet, ThreeBytesNotEnoughDataAtEnd)
+{
+	const char* t = "BBBark\xEF\xBF";
+
+	const char* r = utf8seek(t, t, 7, SEEK_SET);
+
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("", r);
+
+	unicode_t o = 0;
+	int32_t errors = 0;
+	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
 TEST(SeekSet, FourBytes)
 {
 	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
