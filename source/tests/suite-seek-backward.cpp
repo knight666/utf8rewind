@@ -87,6 +87,20 @@ TEST(SeekBackward, EndsInMiddle)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
+TEST(SeekBackward, LonelyStartDouble)
+{
+	const char* t = "Rock\xEF\xFBsoup";
+
+	const char* r = utf8seek(t + strlen(t), t, -6, SEEK_CUR);
+
+	EXPECT_EQ(t + 4, r);
+	EXPECT_STREQ("\xEF\xFBsoup", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ(0xFFFD, o);
+}
+
 TEST(SeekBackward, SwappedParameters)
 {
 	const char* t = "\xFC\x84\x80\x80\x80\x80\xFC\x80\x80\x80\x80\x80\xFC\x84\x80\x80\x80\x80\xFD\xBF\xBF\xBF\xBF\xBF";
