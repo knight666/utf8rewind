@@ -88,6 +88,20 @@ TEST(SeekSet, EndsInMiddle)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
+TEST(SeekSet, LonelyStartDouble)
+{
+	const char* t = "In \xC4\xD4 transit";
+
+	const char* r = utf8seek(t, t, 8, SEEK_SET);
+
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("ansit", r);
+
+	unicode_t o = 0;
+	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
+	EXPECT_EQ('a', o);
+}
+
 TEST(SeekSet, SwappedParameters)
 {
 	const char* t = "\xD0\xBB\xD0\xBE\xD0\xBA\xD0\xB0\xD0\xBB\xD0\xB8\xD0\xB7\xD0\xB0\xD1\x86\xD0\xB8\xD0\xB8";
@@ -222,12 +236,12 @@ TEST(SeekSet, TwoBytesLonelyStart)
 
 	const char* r = utf8seek(t, t, 8, SEEK_SET);
 
-	EXPECT_EQ(t + 9, r);
-	EXPECT_STREQ("in'", r);
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("hin'", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('i', o);
+	EXPECT_EQ('h', o);
 }
 
 TEST(SeekSet, TwoBytesLonelyStartAtEnd)
@@ -294,12 +308,12 @@ TEST(SeekSet, ThreeBytesLonelyStart)
 
 	const char* r = utf8seek(t, t, 10, SEEK_SET);
 
-	EXPECT_EQ(t + 12, r);
-	EXPECT_STREQ("er", r);
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("ster", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('e', o);
+	EXPECT_EQ('s', o);
 }
 
 TEST(SeekSet, ThreeBytesLonelyStartAtEnd)
@@ -323,12 +337,12 @@ TEST(SeekSet, ThreeBytesNotEnoughData)
 
 	const char* r = utf8seek(t, t, 7, SEEK_SET);
 
-	EXPECT_EQ(t + 9, r);
-	EXPECT_STREQ("ons", r);
+	EXPECT_EQ(t + 8, r);
+	EXPECT_STREQ("ions", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('o', o);
+	EXPECT_EQ('i', o);
 }
 
 TEST(SeekSet, ThreeBytesNotEnoughDataAtEnd)
@@ -395,12 +409,12 @@ TEST(SeekSet, FourBytesLonelyStart)
 
 	const char* r = utf8seek(t, t, 6, SEEK_SET);
 
-	EXPECT_EQ(t + 9, r);
-	EXPECT_STREQ("lpower", r);
+	EXPECT_EQ(t + 6, r);
+	EXPECT_STREQ("hellpower", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('l', o);
+	EXPECT_EQ('h', o);
 }
 
 TEST(SeekSet, FourBytesLonelyStartAtEnd)
@@ -424,12 +438,12 @@ TEST(SeekSet, FourBytesNotEnoughData)
 
 	const char* r = utf8seek(t, t, 8, SEEK_SET);
 
-	EXPECT_EQ(t + 11, r);
-	EXPECT_STREQ("t", r);
+	EXPECT_EQ(t + 10, r);
+	EXPECT_STREQ("nt", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('t', o);
+	EXPECT_EQ('n', o);
 }
 
 TEST(SeekSet, FourBytesNotEnoughDataAtEnd)
@@ -482,12 +496,12 @@ TEST(SeekSet, FiveBytesLonelyStart)
 
 	const char* r = utf8seek(t, t, 7, SEEK_SET);
 
-	EXPECT_EQ(t + 11, r);
-	EXPECT_STREQ("lodon", r);
+	EXPECT_EQ(t + 7, r);
+	EXPECT_STREQ("Megalodon", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('l', o);
+	EXPECT_EQ('M', o);
 }
 
 TEST(SeekSet, FiveBytesLonelyStartAtEnd)
@@ -511,12 +525,12 @@ TEST(SeekSet, FiveBytesNotEnoughData)
 
 	const char* r = utf8seek(t, t, 8, SEEK_SET);
 
-	EXPECT_EQ(t + 12, r);
-	EXPECT_STREQ("laza baker", r);
+	EXPECT_EQ(t + 11, r);
+	EXPECT_STREQ("Plaza baker", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('l', o);
+	EXPECT_EQ('P', o);
 }
 
 TEST(SeekSet, FiveBytesNotEnoughDataAtEnd)
@@ -554,12 +568,12 @@ TEST(SeekSet, SixBytesLonelyStart)
 
 	const char* r = utf8seek(t, t, 3, SEEK_SET);
 
-	EXPECT_EQ(t + 8, r);
-	EXPECT_STREQ("e festival", r);
+	EXPECT_EQ(t + 3, r);
+	EXPECT_STREQ("Knudde festival", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('e', o);
+	EXPECT_EQ('K', o);
 }
 
 TEST(SeekSet, SixBytesLonelyStartAtEnd)
@@ -583,12 +597,12 @@ TEST(SeekSet, SixBytesNotEnoughData)
 
 	const char* r = utf8seek(t, t, 5, SEEK_SET);
 
-	EXPECT_EQ(t + 10, r);
-	EXPECT_STREQ("achine", r);
+	EXPECT_EQ(t + 9, r);
+	EXPECT_STREQ("machine", r);
 
 	unicode_t o = 0;
 	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('a', o);
+	EXPECT_EQ('m', o);
 }
 
 TEST(SeekSet, SixBytesNotEnoughDataAtEnd)
