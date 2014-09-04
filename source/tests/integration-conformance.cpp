@@ -32,36 +32,18 @@ protected:
 
 		file.close();
 
-		// output has to be stitched together due to null character in data
-
 		size_t decoded_size = 0;
 
-		output_size = 80624;
-		output = new unicode_t[output_size + 1];
-
-		const char* src = input;
-		size_t src_size = input_size;
-		unicode_t* dst = output;
-		size_t dst_size = output_size;
-
-		decoded_size = utf8toutf32(src, src_size, nullptr, 0, &errors);
-		ASSERT_EQ(16436, decoded_size);
+		decoded_size = utf8toutf32(input, input_size, nullptr, 0, &errors);
+		ASSERT_EQ(80628, decoded_size);
 		ASSERT_EQ(0, errors);
 
-		utf8toutf32(src, src_size, dst, dst_size, &errors);
+		output = new unicode_t[decoded_size + 1];
+
+		utf8toutf32(input, input_size, output, decoded_size, &errors);
 		ASSERT_EQ(0, errors);
 
-		src += 4118;
-		src_size -= 4118;
-		dst += decoded_size / sizeof(unicode_t);
-		dst_size -= decoded_size;
-
-		decoded_size = utf8toutf32(src, src_size, nullptr, 0, &errors);
-		ASSERT_EQ(64188, decoded_size);
-		ASSERT_EQ(0, errors);
-
-		utf8toutf32(src, src_size, dst, dst_size, &errors);
-		ASSERT_EQ(0, errors);
+		output[decoded_size] = 0;
 	}
 
 	void TearDown()
@@ -88,7 +70,7 @@ protected:
 
 TEST_F(ConformanceSuite, ReadTheEnd)
 {
-	unicode_t* the_end = output + 20076;
+	unicode_t* the_end = output + 20077;
 	EXPECT_EQ('T', the_end[0]);
 	EXPECT_EQ('H', the_end[1]);
 	EXPECT_EQ('E', the_end[2]);
