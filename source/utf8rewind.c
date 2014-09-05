@@ -53,14 +53,15 @@ static const size_t Utf8ByteMaximum[6] = {
 
 size_t lengthcodepoint(uint8_t input)
 {
-	if ((input & 0x80) == 0)
+	if ((input & 0x80) == 0) /* ASCII */
 	{
 		return 1;
 	}
-	else if ((input & 0xC0) != 0xC0 || (input & 0xFE) == 0xFE)
+	else if (
+		(input & 0xC0) != 0xC0 || /* Malformed continuation byte */
+		(input & 0xFE) == 0xFE    /* Illegal byte */
+	)
 	{
-		/* Malformed continuation byte or illegal byte */
-
 		return 0;
 	}
 	else if ((input & 0xE0) == 0xC0)
@@ -79,48 +80,37 @@ size_t lengthcodepoint(uint8_t input)
 	{
 		return 5;
 	}
-	else if ((input & 0xFE) == 0xFC)
+	else // (input & 0xFE) == 0xFC
 	{
 		return 6;
-	}
-	else
-	{
-		return 0;
 	}
 }
 
 size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t* errors)
 {
-	char* target = *dst;
-	size_t encoded_length = 0;
-	unicode_t mask = 0;
-	size_t i;
+	char* target;
+	size_t encoded_length;
 
 	if (codepoint < 0x80)
 	{
 		encoded_length = 1;
-		mask = 0x00;
 	}
 	else if (codepoint < 0x800)
 	{
 		encoded_length = 2;
-		mask = 0xC0;
 	}
 	else if (codepoint < 0x10000)
 	{
 		encoded_length = 3;
-		mask = 0xE0;
 	}
 	else if (codepoint <= MAX_LEGAL_UNICODE)
 	{
 		encoded_length = 4;
-		mask = 0xF0;
 	}
 	else
 	{
 		codepoint = REPLACEMENT_CHARACTER;
 		encoded_length = 3;
-		mask = 0xE0;
 	}
 
 	if (*dst != 0)
@@ -134,13 +124,37 @@ size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t*
 			return 0;
 		}
 
-		for (i = encoded_length - 1; i >= 1; --i)
-		{
-			target[i] = (char)((codepoint & 0x3F) | 0x80);
-			codepoint >>= 6;
-		}
+		target = *dst;
 
-		target[0] = (char)(codepoint | mask);
+		switch (encoded_length)
+		{
+
+		case 1:
+			*target++ = (char)codepoint;
+			break;
+
+		case 2:
+			*target++ = (char)(codepoint >>   6)         | 0xC0;
+			*target++ = (char)(codepoint         & 0x3F) | 0x80;
+			break;
+
+		case 3:
+			*target++ = (char)(codepoint  >> 12)         | 0xE0;
+			*target++ = (char)((codepoint >>  6) & 0x3F) | 0x80;
+			*target++ = (char)(codepoint         & 0x3F) | 0x80;
+			break;
+
+		case 4:
+			*target++ = (char)(codepoint  >> 18)         | 0xF0;
+			*target++ = (char)((codepoint >> 12) & 0x3F) | 0x80;
+			*target++ = (char)((codepoint >>  6) & 0x3F) | 0x80;
+			*target++ = (char)(codepoint         & 0x3F) | 0x80;
+			break;
+
+		default:
+			break;
+
+		}
 
 		*dst += encoded_length;
 		*dstSize -= encoded_length;
@@ -285,7 +299,11 @@ size_t utf8len(const char* text)
 		{
 			break;
 		}
-		else if ((codepoint & 0x80) == 0)
+		else if (
+			(codepoint & 0x80) == 0 ||    /* ASCII */
+			(codepoint & 0xC0) != 0xC0 || /* Malformed continuation byte */
+			(codepoint & 0xFE) == 0xFE    /* Illegal byte */
+		)
 		{
 			codepoint_length = 1;
 		}
@@ -305,15 +323,9 @@ size_t utf8len(const char* text)
 		{
 			codepoint_length = 5;
 		}
-		else if ((codepoint & 0xFE) == 0xFC)
+		else // (codepoint & 0xFE) == 0xFC
 		{
 			codepoint_length = 6;
-		}
-		else
-		{
-			/* Illegal codepoint */
-
-			codepoint_length = 1;
 		}
 
 		length++;
