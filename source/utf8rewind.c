@@ -155,6 +155,7 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize)
 	uint8_t mask;
 	size_t decoded_length;
 	size_t src_index;
+	size_t src_size = srcSize;
 
 	if (current == 0)
 	{
@@ -174,7 +175,7 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize)
 	*codepoint = (unicode_t)(current & mask);
 	src++;
 
-	for (src_index = 1; src_index < decoded_length; ++src_index)
+	for (src_index = 1; src_index < decoded_length && src_size > 0; ++src_index)
 	{
 		if ((*src & 0x80) == 0)
 		{
@@ -186,6 +187,7 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize)
 
 		*codepoint = (*codepoint << 6) | (*src & 0x3F);
 		src++;
+		src_size--;
 	}
 
 	if (decoded_length > 1)
@@ -351,7 +353,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 	utf16_t current;
 	unicode_t codepoint;
 	const utf16_t* src = (const utf16_t*)input;
-	ptrdiff_t src_size = (ptrdiff_t)inputSize;
+	size_t src_size = inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
 	size_t bytes_written = 0;
@@ -438,7 +440,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 	size_t encoded_length;
 	utf16_t surrogate_low;
 	const unicode_t* src = (const unicode_t*)input;
-	ptrdiff_t src_size = (ptrdiff_t)inputSize;
+	size_t src_size = inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
 	size_t bytes_written = 0;
