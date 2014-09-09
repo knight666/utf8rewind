@@ -39,13 +39,10 @@
 #include <wchar.h>
 /// @endcond
 
-#define UTF8_ERR_INVALID_CHARACTER (-1)
-#define UTF8_ERR_INVALID_DATA (-2)
-#define UTF8_ERR_NOT_ENOUGH_SPACE (-3)
-#define UTF8_ERR_OUT_OF_RANGE (-4)
-#define UTF8_ERR_UNHANDLED_SURROGATE_PAIR (-5)
-#define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR (-6)
-#define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR (-7)
+#define UTF8_ERR_INVALID_DATA (-1)
+#define UTF8_ERR_NOT_ENOUGH_SPACE (-2)
+#define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR (-3)
+#define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR (-4)
 
 //! @defgroup configuration Global configuration
 //! @{
