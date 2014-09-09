@@ -32,7 +32,11 @@ Now we want to improve our security by allowing the full range of Unicode in the
 
 What would we have to change? The answer is: nothing.
 
-A password like \"M&ocirc;ntiPyth&ocirc;nikdenH&ocirc;lieGr&acirc;ilen\" would be encoded as `M\xF8Pyth\xF8denH\xF8Gr\xE4en`, meaning the calls to `strcat` and `strcpy` would still work as intended. The password can be treated as ASCII without changing the code.
+A password like \"M&ocirc;ntiPyth&ocirc;nikdenH&ocirc;lieGr&acirc;ilen\" would be encoded as
+
+	"M\xC3\xB4Pyth\xC3\xB4" "denH\xC3\xB4Gr\xC3\xA2" "en"
+
+Which means that the calls to `strcat` and `strcpy` would still work as intended. The password can be treated as ASCII without changing the code.
 
 When converting your project to use UTF-8, you only have to worry about two surface areas: input and display. Let's look at those separately.
 
@@ -71,8 +75,10 @@ Next, we'll have to increase the size of the `text_input` string in order to acc
 
 @code{.c}
 	char text_input[16] = { 0 };
+	int32_t errors = 0;
 	
-	if (utf8encode(input, text_input, 16) <= 0)
+	utf32toutf8(input, sizeof(unicode_t), text_input, 16, &errors);
+	if (errors != 0)
 	{
 		return 0;
 	}
@@ -96,8 +102,10 @@ Finally, putting it all together:
 	int PasswordField_EnterCharacter(unicode_t input)
 	{
 		char text_input[16] = { 0 };
+		int32_t errors = 0;
 		
-		if (utf8encode(input, text_input, 16) <= 0)
+		utf32toutf8(input, sizeof(unicode_t), text_input, 16, &errors);
+		if (errors != 0)
 		{
 			return 0;
 		}
@@ -147,23 +155,37 @@ The first thing that will have to change is that `FontBatch_AddCharacter` should
 	FontBatch_AddCharacter((unicode_t)*src);
 @endcode
 
-Next, we'll have to treat the input as UTF-8 encoded text. We'll have to read codepoints one-by-one.
+Next, we'll have to treat the input as UTF-8 encoded text. We'll convert it to UTF-32 and add the codepoints one by one.
 
 @code{.c}
-	unicode_t codepoint;
-	size_t i;
-	int offset;
-	const char* src = text;
+	size_t text_size = strlen(text);
+	int32_t errors = 0;
+	unicode_t* decoded = NULL;
+	size_t decoded_size = 0;
 	
-	for (i = 0; i < utf8len(text); ++i)
+	/* Determine the size in bytes of the text as UTF-32 codepoints */
+	
+	decoded_size = utf8toutf32(text, text_size, NULL, 0, &errors);
+	if (decoded_size == 0 || errors != 0)
 	{
-		offset = utf8decode(src, &codepoint);
-		if (offset <= 0)
-		{
-			break;
-		}
-		
-		src += offset;
+		goto cleanup;
+	}
+	
+	decoded = (unicode_t*)malloc(decoded_size);
+	
+	/* Convert the text to UTF-32 */
+	
+	utf8toutf32(text, text_size, decoded, decoded_size, &errors);
+	if (errors != 0)
+	{
+		goto cleanup;
+	}
+	
+cleanup:
+	if (decoded != NULL)
+	{
+		free(decoded);
+		decoded = NULL;
 	}
 @endcode
 
@@ -172,27 +194,47 @@ Putting it all together again:
 @code{.c}
 	void InputField_Draw(int x, int y, const char* text)
 	{
-		unicode_t codepoint;
+		size_t text_size = strlen(text);
+		int32_t errors = 0;
+		unicode_t* decoded = NULL;
+		size_t decoded_size = 0;
 		size_t i;
-		int offset;
-		const char* src = text;
+		
+		/* Determine the size in bytes of the text as UTF-32 codepoints */
+		
+		decoded_size = utf8toutf32(text, text_size, NULL, 0, &errors);
+		if (decoded_size == 0 || errors != 0)
+		{
+			goto cleanup;
+		}
+		
+		decoded = (unicode_t*)malloc(decoded_size);
+		
+		/* Convert the text to UTF-32 */
+		
+		utf8toutf32(text, text_size, decoded, decoded_size, &errors);
+		if (errors != 0)
+		{
+			goto cleanup;
+		}
+		
+		/* Add the codepoints to the batch */
 		
 		FontBatch_Start("Arial20");
 		
-		for (i = 0; i < utf8len(text); ++i)
+		for (i = 0; i < decoded_size / sizeof(unicode_t); ++i)
 		{
-			offset = utf8decode(src, &codepoint);
-			if (offset <= 0)
-			{
-				break;
-			}
-			
-			FontBatch_AddCharacter(codepoint);
-			
-			src += offset;
+			FontBatch_AddCharacter(decoded[i]);
 		}
 		
 		FontBatch_End();
 		FontBatch_Draw(x, y);
+		
+	cleanup:
+		if (decoded != NULL)
+		{
+			free(decoded);
+			decoded = NULL;
+		}
 	}
 @endcode*/

@@ -131,7 +131,8 @@ Changes to existing code</h1>
 <div class="line">}</div>
 </div><!-- fragment --><p>Now we want to improve our security by allowing the full range of Unicode in the passwords by using UTF-8 encoding.</p>
 <p>What would we have to change? The answer is: nothing.</p>
-<p>A password like "M&ocirc;ntiPyth&ocirc;nikdenH&ocirc;lieGr&acirc;ilen" would be encoded as <code>M\xF8Pyth\xF8denH\xF8Gr\xE4en</code>, meaning the calls to <code>strcat</code> and <code>strcpy</code> would still work as intended. The password can be treated as ASCII without changing the code.</p>
+<p>A password like "M&ocirc;ntiPyth&ocirc;nikdenH&ocirc;lieGr&acirc;ilen" would be encoded as </p><pre class="fragment">"M\xC3\xB4Pyth\xC3\xB4" "denH\xC3\xB4Gr\xC3\xA2" "en"
+</pre><p>Which means that the calls to <code>strcat</code> and <code>strcpy</code> would still work as intended. The password can be treated as ASCII without changing the code.</p>
 <p>When converting your project to use UTF-8, you only have to worry about two surface areas: input and display. Let's look at those separately.</p>
 <h1><a class="anchor" id="example-user-input"></a>
 Dealing with user input</h1>
@@ -157,8 +158,10 @@ Dealing with user input</h1>
 </div><!-- fragment --><p>This can be accomplished using a simple cast, because all ASCII codepoints fit in a <code>unicode_t</code> type.</p>
 <p>Next, we'll have to increase the size of the <code>text_input</code> string in order to accommodate the conversion of the codepoint to UTF-8:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">char</span> text_input[16] = { 0 };</div>
+<div class="line">int32_t errors = 0;</div>
 <div class="line"></div>
-<div class="line"><span class="keywordflow">if</span> (utf8encode(input, text_input, 16) &lt;= 0)</div>
+<div class="line"><a class="code" href="utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80">utf32toutf8</a>(input, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a>), text_input, 16, &amp;errors);</div>
+<div class="line"><span class="keywordflow">if</span> (errors != 0)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
@@ -174,8 +177,10 @@ Dealing with user input</h1>
 <div class="line"><span class="keywordtype">int</span> PasswordField_EnterCharacter(<a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a> input)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">char</span> text_input[16] = { 0 };</div>
+<div class="line">    int32_t errors = 0;</div>
 <div class="line">    </div>
-<div class="line">    <span class="keywordflow">if</span> (utf8encode(input, text_input, 16) &lt;= 0)</div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80">utf32toutf8</a>(input, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a>), text_input, 16, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (errors != 0)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">    }</div>
@@ -213,54 +218,88 @@ Displaying Unicode text</h1>
 <div class="line">}</div>
 </div><!-- fragment --><p>The first thing that will have to change is that <code>FontBatch_AddCharacter</code> should accept UTF-32 codepoints. Fortunately, that change is backwards-compatible:</p>
 <div class="fragment"><div class="line">FontBatch_AddCharacter((<a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a>)*src);</div>
-</div><!-- fragment --><p>Next, we'll have to treat the input as UTF-8 encoded text. We'll have to read codepoints one-by-one.</p>
-<div class="fragment"><div class="line"><a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a> codepoint;</div>
-<div class="line"><span class="keywordtype">size_t</span> i;</div>
-<div class="line"><span class="keywordtype">int</span> offset;</div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* src = text;</div>
-<div class="line"></div>
-<div class="line"><span class="keywordflow">for</span> (i = 0; i &lt; <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(text); ++i)</div>
-<div class="line">{</div>
-<div class="line">    offset = utf8decode(src, &amp;codepoint);</div>
-<div class="line">    <span class="keywordflow">if</span> (offset &lt;= 0)</div>
+</div><!-- fragment --><p>Next, we'll have to treat the input as UTF-8 encoded text. We'll convert it to UTF-32 and add the codepoints one by one.</p>
+<div class="fragment"><div class="line">    <span class="keywordtype">size_t</span> text_size = strlen(text);</div>
+<div class="line">    int32_t errors = 0;</div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a>* decoded = NULL;</div>
+<div class="line">    <span class="keywordtype">size_t</span> decoded_size = 0;</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">/* Determine the size in bytes of the text as UTF-32 codepoints */</span></div>
+<div class="line">    </div>
+<div class="line">    decoded_size = <a class="code" href="utf8rewind_8h.html#a8f262c70a9fea7b45647ffea8b571008">utf8toutf32</a>(text, text_size, NULL, 0, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (decoded_size == 0 || errors != 0)</div>
 <div class="line">    {</div>
-<div class="line">        <span class="keywordflow">break</span>;</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>
 <div class="line">    </div>
-<div class="line">    src += offset;</div>
-<div class="line">}</div>
+<div class="line">    decoded = (<a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a>*)malloc(decoded_size);</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">/* Convert the text to UTF-32 */</span></div>
+<div class="line">    </div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#a8f262c70a9fea7b45647ffea8b571008">utf8toutf32</a>(text, text_size, decoded, decoded_size, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (errors != 0)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
+<div class="line">cleanup:</div>
+<div class="line">    <span class="keywordflow">if</span> (decoded != NULL)</div>
+<div class="line">    {</div>
+<div class="line">        free(decoded);</div>
+<div class="line">        decoded = NULL;</div>
+<div class="line">    }</div>
 </div><!-- fragment --><p>Putting it all together again:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> InputField_Draw(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
-<div class="line">    <a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a> codepoint;</div>
+<div class="line">    <span class="keywordtype">size_t</span> text_size = strlen(text);</div>
+<div class="line">    int32_t errors = 0;</div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a>* decoded = NULL;</div>
+<div class="line">    <span class="keywordtype">size_t</span> decoded_size = 0;</div>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
-<div class="line">    <span class="keywordtype">int</span> offset;</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* src = text;</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">/* Determine the size in bytes of the text as UTF-32 codepoints */</span></div>
+<div class="line">    </div>
+<div class="line">    decoded_size = <a class="code" href="utf8rewind_8h.html#a8f262c70a9fea7b45647ffea8b571008">utf8toutf32</a>(text, text_size, NULL, 0, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (decoded_size == 0 || errors != 0)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
+<div class="line">    decoded = (<a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a>*)malloc(decoded_size);</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">/* Convert the text to UTF-32 */</span></div>
+<div class="line">    </div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#a8f262c70a9fea7b45647ffea8b571008">utf8toutf32</a>(text, text_size, decoded, decoded_size, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (errors != 0)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">/* Add the codepoints to the batch */</span></div>
 <div class="line">    </div>
 <div class="line">    FontBatch_Start(<span class="stringliteral">&quot;Arial20&quot;</span>);</div>
 <div class="line">    </div>
-<div class="line">    <span class="keywordflow">for</span> (i = 0; i &lt; <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(text); ++i)</div>
+<div class="line">    <span class="keywordflow">for</span> (i = 0; i &lt; decoded_size / <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f">unicode_t</a>); ++i)</div>
 <div class="line">    {</div>
-<div class="line">        offset = utf8decode(src, &amp;codepoint);</div>
-<div class="line">        <span class="keywordflow">if</span> (offset &lt;= 0)</div>
-<div class="line">        {</div>
-<div class="line">            <span class="keywordflow">break</span>;</div>
-<div class="line">        }</div>
-<div class="line">        </div>
-<div class="line">        FontBatch_AddCharacter(codepoint);</div>
-<div class="line">        </div>
-<div class="line">        src += offset;</div>
+<div class="line">        FontBatch_AddCharacter(decoded[i]);</div>
 <div class="line">    }</div>
 <div class="line">    </div>
 <div class="line">    FontBatch_End();</div>
 <div class="line">    FontBatch_Draw(x, y);</div>
+<div class="line">    </div>
+<div class="line">cleanup:</div>
+<div class="line">    <span class="keywordflow">if</span> (decoded != NULL)</div>
+<div class="line">    {</div>
+<div class="line">        free(decoded);</div>
+<div class="line">        decoded = NULL;</div>
+<div class="line">    }</div>
 <div class="line">}</div>
 </div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Sep 9 2014 09:21:28 for utf8rewind by
+    <li class="footer">Generated on Tue Sep 9 2014 17:49:14 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>
