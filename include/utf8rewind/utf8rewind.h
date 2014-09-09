@@ -72,29 +72,6 @@ extern "C" {
 typedef uint16_t utf16_t; /*!< UTF-16 encoded codepoint. */
 typedef uint32_t unicode_t; /*!< Unicode codepoint. */
 
-//! Check if a character is valid according to UTF-8 encoding.
-/*!
-	@param[in]  encodedCharacter  Byte to check.
-
-	@return 1 on success or 0 on failure.
-*/
-int8_t utf8charvalid(char encodedCharacter);
-
-//! Returns the length in bytes of the encoded character.
-/*!
-	A UTF-8 encoded codepoint must start with a special byte.
-	This byte indicates how many bytes are used to encode the
-	codepoint, up to a maximum of 4.
-
-	This function can be used to determine the amount of bytes
-	used to encode a codepoint.
-
-	@param[in]  encodedCharacter  Byte to check.
-
-	@return Amount of bytes used for encoding or SIZE_MAX on error.
-*/
-size_t utf8charlen(char encodedCharacter);
-
 //! Get the length in codepoints of a UTF-8 encoded string.
 /*!
 	Example:
