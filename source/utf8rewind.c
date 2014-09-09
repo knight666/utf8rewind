@@ -230,47 +230,6 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize)
 	return decoded_length;
 }
 
-int8_t utf8charvalid(char encodedCharacter)
-{
-	return ((((uint8_t)encodedCharacter & 0xFE) != 0xC0) && ((uint8_t)encodedCharacter < 0xFE));
-}
-
-size_t utf8charlen(char encodedCharacter)
-{
-	if (!utf8charvalid(encodedCharacter))
-	{
-		return SIZE_MAX;
-	}
-	else if ((uint8_t)encodedCharacter <= 0x7F)
-	{
-		return 1;
-	}
-	else if (((uint8_t)encodedCharacter & 0xE0) == 0xC0)
-	{
-		return 2;
-	}
-	else if (((uint8_t)encodedCharacter & 0xF0) == 0xE0)
-	{
-		return 3;
-	}
-	else if (((uint8_t)encodedCharacter & 0xF8) == 0xF0)
-	{
-		return 4;
-	}
-	else if (((uint8_t)encodedCharacter & 0xFC) == 0xF8)
-	{
-		return 5;
-	}
-	else if (((uint8_t)encodedCharacter & 0xFE) == 0xFC)
-	{
-		return 6;
-	}
-	else
-	{
-		return SIZE_MAX;
-	}
-}
-
 size_t utf8len(const char* text)
 {
 	const char* src;
