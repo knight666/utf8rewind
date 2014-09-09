@@ -109,7 +109,7 @@ size_t utf8charlen(char encodedCharacter);
 
 	@param[in]  text  UTF-8 encoded string.
 
-	@return Length in codepoints or SIZE_MAX on error.
+	@return Length in codepoints.
 */
 size_t utf8len(const char* text);
 
@@ -281,6 +281,10 @@ size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target, size_t t
 	If you're working with wide strings, take a look at utf8towide()
 	instead.
 
+	Erroneous byte sequences such as missing bytes, illegal bytes or
+	overlong encodings of codepoints are converted to the
+	replacement character U+FFFD.
+
 	Example:
 
 	@code{.c}
@@ -320,8 +324,9 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 	If you're working with wide strings, take a look at utf8towide()
 	instead.
 
-	If the target buffer is NULL, the function returns the number of bytes
-	required to store the converted result.
+	Erroneous byte sequences such as missing bytes, illegal bytes or
+	overlong encodings of codepoints are converted to the
+	replacement character U+FFFD.
 
 	Example:
 
@@ -365,6 +370,10 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	This allows for a cross-platform treatment of wide text and
 	is preferable to using the UTF-16 or UTF-32 versions
 	directly.
+
+	Erroneous byte sequences such as missing bytes, illegal bytes or
+	overlong encodings of codepoints are converted to the
+	replacement character U+FFFD.
 
 	@note Codepoints outside the Basic Multilingual Plane (BMP) are
 	converted to surrogate pairs when using UTF-16. This means

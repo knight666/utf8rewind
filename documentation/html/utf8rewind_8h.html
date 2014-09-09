@@ -514,7 +514,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Length in codepoints or SIZE_MAX on error. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Length in codepoints. </dd></dl>
 
 </div>
 </div>
@@ -640,6 +640,7 @@ Functions</h2></td></tr>
 
 <p>Convert a UTF-8 encoded string to a UTF-16 encoded string. </p>
 <dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-16, independent of platform. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#a70996b8a2475177e9156948fe9c1996d" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide()</a> instead.</dd></dl>
+<p>Erroneous byte sequences such as missing bytes, illegal bytes or overlong encodings of codepoints are converted to the replacement character U+FFFD.</p>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Font_DrawText(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
@@ -719,7 +720,7 @@ Functions</h2></td></tr>
 
 <p>Convert a UTF-8 encoded string to a UTF-32 encoded string. </p>
 <dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-32, independent of platform. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#a70996b8a2475177e9156948fe9c1996d" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide()</a> instead.</dd></dl>
-<p>If the target buffer is NULL, the function returns the number of bytes required to store the converted result.</p>
+<p>Erroneous byte sequences such as missing bytes, illegal bytes or overlong encodings of codepoints are converted to the replacement character U+FFFD.</p>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> TextField_AddCharacter(<span class="keyword">const</span> <span class="keywordtype">char</span>* encoded)</div>
 <div class="line">{</div>
@@ -800,6 +801,7 @@ Functions</h2></td></tr>
 <p>Convert a UTF-8 encoded string to a wide string. </p>
 <p>Depending on the platform, wide strings are either UTF-16 or UTF-32 encoded. This function takes a UTF-8 encoded string as input and automatically calls the correct conversion function.</p>
 <p>This allows for a cross-platform treatment of wide text and is preferable to using the UTF-16 or UTF-32 versions directly.</p>
+<p>Erroneous byte sequences such as missing bytes, illegal bytes or overlong encodings of codepoints are converted to the replacement character U+FFFD.</p>
 <dl class="section note"><dt>Note</dt><dd>Codepoints outside the Basic Multilingual Plane (BMP) are converted to surrogate pairs when using UTF-16. This means that strings containing characters outside the BMP converted on a platform with UTF-32 wide strings are <em>not</em> compatible with platforms with UTF-16 wide strings.</dd></dl>
 <dl class="section user"><dt>Hence, it is preferable to keep all data as UTF-8 and only</dt><dd>convert to wide strings when required by a third-party interface.</dd></dl>
 <p>Example:</p>
@@ -953,7 +955,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_19f418181f8b699045c2f8e6c49f857e.html">utf8rewind</a></li><li class="navelem"><a class="el" href="utf8rewind_8h.html">utf8rewind.h</a></li>
-    <li class="footer">Generated on Tue Sep 9 2014 17:49:14 for utf8rewind by
+    <li class="footer">Generated on Tue Sep 9 2014 18:01:16 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.7 </li>
   </ul>
