@@ -975,6 +975,41 @@ TEST(DecodeUtf16, SurrogatePair)
 	EXPECT_EQ(0xFFFD, o[1]);
 }
 
+TEST(DecodeUtf16, SurrogatePairCombined)
+{
+	const char* i = "\
+\xED\xA0\x80\xED\xB0\x80\
+\xED\xA0\x80\xED\xBF\xBF\
+\xED\xAD\xBF\xED\xB0\x80\
+\xED\xAD\xBF\xED\xBF\xBF\
+\xED\xAE\x80\xED\xB0\x80\
+\xED\xAE\x80\xED\xBF\xBF\
+\xED\xAF\xBF\xED\xB0\x80\
+\xED\xAF\xBF\xED\xBF\xBF";
+	const size_t s = 256;
+	utf16_t o[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(32, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0xFFFD, o[0]);
+	EXPECT_EQ(0xFFFD, o[1]);
+	EXPECT_EQ(0xFFFD, o[2]);
+	EXPECT_EQ(0xFFFD, o[3]);
+	EXPECT_EQ(0xFFFD, o[4]);
+	EXPECT_EQ(0xFFFD, o[5]);
+	EXPECT_EQ(0xFFFD, o[6]);
+	EXPECT_EQ(0xFFFD, o[7]);
+	EXPECT_EQ(0xFFFD, o[8]);
+	EXPECT_EQ(0xFFFD, o[9]);
+	EXPECT_EQ(0xFFFD, o[10]);
+	EXPECT_EQ(0xFFFD, o[11]);
+	EXPECT_EQ(0xFFFD, o[12]);
+	EXPECT_EQ(0xFFFD, o[13]);
+	EXPECT_EQ(0xFFFD, o[14]);
+	EXPECT_EQ(0xFFFD, o[15]);
+}
+
 TEST(DecodeUtf16, SurrogatePairHigh)
 {
 	const char* i = "\xED\xAD\xBF";
