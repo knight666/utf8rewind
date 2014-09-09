@@ -149,7 +149,6 @@ size_t utf8len(const char* text);
 	@retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
 	@retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
 	@retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
-	@retval #UTF8_ERR_INVALID_CHARACTER              Codepoint could not be encoded.
 
 	@sa utf32toutf8
 	@sa widetoutf8
@@ -210,7 +209,6 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 	@retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
 	@retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
 	@retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
-	@retval #UTF8_ERR_INVALID_CHARACTER              Codepoint could not be encoded.
 
 	@sa utf16toutf8
 	@sa widetoutf8
@@ -269,7 +267,6 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 	@retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
 	@retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
 	@retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
-	@retval #UTF8_ERR_INVALID_CHARACTER              Codepoint could not be encoded.
 
 	@sa utf8towide
 	@sa utf16toutf8
