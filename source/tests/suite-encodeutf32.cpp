@@ -384,6 +384,22 @@ TEST(EncodeUtf32, SurrogatePairLast)
 	EXPECT_STREQ("\xF4\x8F\xBF\xBF", b);
 }
 
+TEST(EncodeUtf32, SurrogatePairString)
+{
+	unicode_t c[] = {
+		0xD83D, 0xDE12,
+		0xD83D, 0xDE22,
+		0xD83D, 0xDE24,
+	};
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(12, utf32toutf8(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xF0\x9F\x98\x92\xF0\x9F\x98\xA2\xF0\x9F\x98\xA4", b);
+}
+
 TEST(EncodeUtf32, SurrogatePairUnmatchedLow)
 {
 	unicode_t c[] = {
@@ -434,6 +450,17 @@ TEST(EncodeUtf32, AmountOfBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(2, utf32toutf8(&c, sizeof(c), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(EncodeUtf32, AmountOfBytesSurrogatePair)
+{
+	unicode_t c[] = {
+		0x0000D967, 0x0000DDDD
+	};
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf32toutf8(c, sizeof(c), nullptr, 0, &errors));
 	EXPECT_EQ(0, errors);
 }
 

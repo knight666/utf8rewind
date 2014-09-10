@@ -14,6 +14,18 @@ TEST(EncodeUtf16, Character)
 	EXPECT_STREQ("\xC3\x9D", b);
 }
 
+TEST(EncodeUtf16, BufferTooSmall)
+{
+	utf16_t c = 0x0922;
+	const size_t s = 2;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf16toutf8(&c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_STREQ("", b);
+}
+
 TEST(EncodeUtf16, ZeroLength)
 {
 	utf16_t c = 0x1118;
@@ -54,37 +66,6 @@ TEST(EncodeUtf16, String)
 	EXPECT_STREQ("Y\xE8\xA2\xADQ\xC4\xA5#", b);
 }
 
-TEST(EncodeUtf16, StringBufferTooSmall)
-{
-	utf16_t c[] = {
-		'D',
-		0x0998,
-		'g',
-		'g'
-	};
-	const size_t s = 3;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(1, utf16toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_STREQ("D", b);
-}
-
-TEST(EncodeUtf16, StringEmpty)
-{
-	utf16_t c[] = {
-		0
-	};
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf16toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(0, errors);
-	EXPECT_STREQ("", b);
-}
-
 TEST(EncodeUtf16, StringEndsInMiddle)
 {
 	utf16_t c[] = {
@@ -102,6 +83,37 @@ TEST(EncodeUtf16, StringEndsInMiddle)
 	EXPECT_EQ(4, utf16toutf8(c, sizeof(c), b, s, &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xE9\xA2\xADK", b);
+}
+
+TEST(EncodeUtf16, StringEmpty)
+{
+	utf16_t c[] = {
+		0
+	};
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf16toutf8(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("", b);
+}
+
+TEST(EncodeUtf16, StringBufferTooSmall)
+{
+	utf16_t c[] = {
+		'D',
+		0x0998,
+		'g',
+		'g'
+	};
+	const size_t s = 3;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(1, utf16toutf8(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_STREQ("D", b);
 }
 
 TEST(EncodeUtf16, Ascii)
@@ -138,27 +150,6 @@ TEST(EncodeUtf16, AsciiLast)
 	EXPECT_EQ(1, utf16toutf8(&c, sizeof(c), b, s, &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\x7F", b);
-}
-
-TEST(EncodeUtf16, AsciiLength)
-{
-	utf16_t c = 0x5E;
-	int32_t errors = 0;
-
-	EXPECT_EQ(1, utf16toutf8(&c, sizeof(c), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(EncodeUtf16, AsciiBufferTooSmall)
-{
-	utf16_t c = L'(';
-	const size_t s = 0;
-	char b[1] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf16toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_STREQ("", b);
 }
 
 TEST(EncodeUtf16, AsciiString)
@@ -207,27 +198,6 @@ TEST(EncodeUtf16, TwoBytesLast)
 	EXPECT_EQ(2, utf16toutf8(&c, sizeof(c), b, s, &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xDF\xBF", b);
-}
-
-TEST(EncodeUtf16, TwoBytesBufferTooSmall)
-{
-	utf16_t c = 0x777;
-	const size_t s = 1;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf16toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_STREQ("", b);
-}
-
-TEST(EncodeUtf16, TwoBytesLength)
-{
-	utf16_t c = 0x612;
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf16toutf8(&c, sizeof(c), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
 }
 
 TEST(EncodeUtf16, TwoBytesString)
@@ -281,27 +251,6 @@ TEST(EncodeUtf16, ThreeBytesLast)
 	EXPECT_EQ(3, utf16toutf8(&c, sizeof(c), b, s, &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xEF\xBF\xBF", b);
-}
-
-TEST(EncodeUtf16, ThreeBytesLength)
-{
-	utf16_t c = 0x0C85;
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf16toutf8(&c, sizeof(c), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(EncodeUtf16, ThreeBytesBufferTooSmall)
-{
-	utf16_t c = 0x0922;
-	const size_t s = 2;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf16toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_STREQ("", b);
 }
 
 TEST(EncodeUtf16, ThreeBytesString)
@@ -363,6 +312,22 @@ TEST(EncodeUtf16, SurrogatePairLast)
 	EXPECT_STREQ("\xF4\x8F\xBF\xBF", b);
 }
 
+TEST(EncodeUtf16, SurrogatePairString)
+{
+	utf16_t c[] = {
+		0xD821, 0xDC7D,
+		0xD85E, 0xDF88,
+		0xD955, 0xDDED
+	};
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(12, utf16toutf8(c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xF0\x98\x91\xBD\xF0\xA7\xAE\x88\xF1\xA5\x97\xAD", b);
+}
+
 TEST(EncodeUtf16, SurrogatePairUnmatchedLow)
 {
 	utf16_t c[] = {
@@ -391,47 +356,6 @@ TEST(EncodeUtf16, SurrogatePairUnmatchedHigh)
 	EXPECT_STREQ("", b);
 }
 
-TEST(EncodeUtf16, SurrogatePairBufferTooSmall)
-{
-	utf16_t c[] = {
-		0xDB21, 0xDC7D
-	};
-	const size_t s = 3;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf16toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_STREQ("", b);
-}
-
-TEST(EncodeUtf16, SurrogatePairLength)
-{
-	utf16_t c[] = {
-		0xD967, 0xDDDD
-	};
-	int32_t errors = 0;
-
-	EXPECT_EQ(4, utf16toutf8(c, sizeof(c), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(EncodeUtf16, SurrogatePairString)
-{
-	utf16_t c[] = {
-		0xD821, 0xDC7D,
-		0xD85E, 0xDF88,
-		0xD955, 0xDDED
-	};
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(12, utf16toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(0, errors);
-	EXPECT_STREQ("\xF0\x98\x91\xBD\xF0\xA7\xAE\x88\xF1\xA5\x97\xAD", b);
-}
-
 TEST(EncodeUtf16, SurrogatePairStringUnmatchedPair)
 {
 	utf16_t c[] = {
@@ -447,4 +371,32 @@ TEST(EncodeUtf16, SurrogatePairStringUnmatchedPair)
 	EXPECT_EQ(8, utf16toutf8(c, sizeof(c), b, s, &errors));
 	EXPECT_EQ(UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR, errors);
 	EXPECT_STREQ("\xF0\xA7\xAE\x88\xF1\xA5\x97\xAD", b);
+}
+
+TEST(EncodeUtf16, AmountOfBytes)
+{
+	utf16_t c = 0x612;
+	int32_t errors = 0;
+
+	EXPECT_EQ(2, utf16toutf8(&c, sizeof(c), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(EncodeUtf16, AmountOfBytesSurrogatePair)
+{
+	utf16_t c[] = {
+		0xD967, 0xDDDD
+	};
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf16toutf8(c, sizeof(c), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(EncodeUtf16, AmountOfBytesNoData)
+{
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf16toutf8(nullptr, 1, nullptr, 0, &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
