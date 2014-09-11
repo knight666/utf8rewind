@@ -2,7 +2,7 @@
 
 #include "utf8rewind.h"
 
-TEST(SeekStart, Valid)
+TEST(SeekSet, Valid)
 {
 	const char* t = "\xE0\xA4\x81\xE0\xA4\x8B\xE0\xA4\xB4\xE0\xA4\xBD";
 
