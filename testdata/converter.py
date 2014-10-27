@@ -1,6 +1,7 @@
 import re
 
-group_search = re.compile(' ?([0-9A-Za-z]+) ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)?;')
+section_search = re.compile('@(\w+) ?# ?(.+)')
+group_search = re.compile(' ?([0-9A-Za-z]+) ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)?;')
 
 def WriteGroup(file, matches, last):
 	file.write('{ ')
@@ -23,15 +24,93 @@ def WriteGroup(file, matches, last):
 	else:
 		converted.write('}, ')
 
-class CaseMapping:
+class Header:
+	def __init__(self, filename):
+		self.file = open(filename, 'w+')
+	
+	def close(self):
+		close(self.file)
+
+class UnicodeEntry:
 	def __init__(self):
-		self.codepoint = 0
-		self.lowercase = []
-		self.titlecase = []
-		self.uppercase = []
-		self.name = ""
+		self.matches = []
+		self.comment = ""
+
+class UnicodeSection:
+	def __init__(self):
+		self.identifier = ""
+		self.title = ""
+		self.entries = []
+		
+class UnicodeDocument:
+	def __init__(self):
+		self.limiter = -1
+		self.sections = []
+
+	def parse(self, filename):
+		section_current = UnicodeSection()
+		self.sections = []
+		self.sections.append(section_current)
+		
+		sections_found = 0
+		
+		with open(filename, 'r') as f:
+			for line in f:
+				if len(line) > 0 and not line.startswith('\n') and not line.startswith('#'):
+					stripped = line.rstrip('\n')
+					
+					# section
+					
+					section_match = re.match(section_search, stripped)
+					if section_match:
+						if sections_found > 0:
+							section_current = UnicodeSection()
+							self.sections.append(section_current)
+
+						section_current.identifier = section_match.group(1)
+						section_current.title = section_match.group(2)
+						sections_found += 1
+						
+						continue
+					
+					# entry
+					
+					entry = UnicodeEntry()
+					while (1):
+						matches = re.match(group_search, stripped)
+						if not matches:
+							break
+						entry.matches.append(matches)
+						stripped = stripped[matches.end():]
+					
+					# comment
+					
+					comment_match = re.match(' *# (.+)', stripped)
+					if comment_match:
+						entry.comment = comment_match.group(1)
+					
+					section_current.entries.append(entry)
+					
+					if self.limiter > -1:
+						self.limiter -= 1
+						if self.limiter == 0:
+							break
+					
+		for s in self.sections:
+			print s.identifier + " - " + s.title
+			for e in s.entries:
+				print len(e.matches)
+				print e.matches[0].group(1)
+				print e.comment
+		return True
+
 
 if __name__ == '__main__':
+	normalization = UnicodeDocument()
+	normalization.limiter = 100
+	normalization.parse('NormalizationTest.txt')
+	exit(0)
+	
 	with open('converted.h', 'w+') as converted:
 		with open('SpecialCasing.txt', 'r') as f:
 			for line in f:
