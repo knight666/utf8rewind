@@ -31,64 +31,63 @@ class CaseMapping:
 		self.uppercase = []
 		self.name = ""
 
-with open('converted.h', 'w+') as converted:
-	with open('SpecialCasing.txt', 'r') as f:
-		for line in f:
-			if len(line) > 0 and not line.startswith('\n') and not line.startswith('#'):
-				stripped = line.rstrip('\n')
-				print "LINE"
-				print stripped
-				
-				# codepoint
-				
-				codepoint_matches = re.match(group_search, stripped)
-				if not codepoint_matches:
-					break
-				stripped = stripped[codepoint_matches.end():]
-				
-				# lowercase
-				
-				lowercase_matches = re.match(group_search, stripped)
-				if lowercase_matches:
-					stripped = stripped[lowercase_matches.end():]
-				else:
-					stripped = stripped[stripped.find(';'):]
-				
-				# titlecase
-				
-				titlecase_matches = re.match(group_search, stripped)
-				if titlecase_matches:
-					stripped = stripped[titlecase_matches.end():]
-				else:
-					stripped = stripped[stripped.find(';'):]
-				
-				# uppercase
-				
-				uppercase_matches = re.match(group_search, stripped)
-				if uppercase_matches:
-					stripped = stripped[uppercase_matches.end():]
-				else:
-					stripped = stripped[stripped.find(';'):]
-				
-				# conditional
-				
-				conditional_match = re.match('(.+);', stripped)
-				if conditional_match:
-					stripped = stripped[conditional_match.end():]
-				
-				# comment
-				
-				comment_matches = re.match(' *# ([\w ]+)', stripped)
-				
-				# write
-				
-				if not conditional_match:
-					converted.write('{ ')
-					converted.write('0x' + codepoint_matches.group(1) + ', ')
+if __name__ == '__main__':
+	with open('converted.h', 'w+') as converted:
+		with open('SpecialCasing.txt', 'r') as f:
+			for line in f:
+				if len(line) > 0 and not line.startswith('\n') and not line.startswith('#'):
+					stripped = line.rstrip('\n')
 					
-					WriteGroup(converted, lowercase_matches, False)
-					WriteGroup(converted, titlecase_matches, False)
-					WriteGroup(converted, uppercase_matches, True)
+					# codepoint
 					
-					converted.write('}, ')
-					converted.write('/* ' + comment_matches.group(1) + ' */\n')
+					codepoint_matches = re.match(group_search, stripped)
+					if not codepoint_matches:
+						break
+					stripped = stripped[codepoint_matches.end():]
+					
+					# lowercase
+					
+					lowercase_matches = re.match(group_search, stripped)
+					if lowercase_matches:
+						stripped = stripped[lowercase_matches.end():]
+					else:
+						stripped = stripped[stripped.find(';'):]
+					
+					# titlecase
+					
+					titlecase_matches = re.match(group_search, stripped)
+					if titlecase_matches:
+						stripped = stripped[titlecase_matches.end():]
+					else:
+						stripped = stripped[stripped.find(';'):]
+					
+					# uppercase
+					
+					uppercase_matches = re.match(group_search, stripped)
+					if uppercase_matches:
+						stripped = stripped[uppercase_matches.end():]
+					else:
+						stripped = stripped[stripped.find(';'):]
+					
+					# conditional
+					
+					conditional_match = re.match('(.+);', stripped)
+					if conditional_match:
+						stripped = stripped[conditional_match.end():]
+					
+					# comment
+					
+					comment_matches = re.match(' *# ([\w ]+)', stripped)
+					
+					# write
+					
+					if not conditional_match:
+						converted.write('{ ')
+						converted.write('0x' + codepoint_matches.group(1) + ', ')
+						
+						WriteGroup(converted, lowercase_matches, False)
+						WriteGroup(converted, titlecase_matches, False)
+						WriteGroup(converted, uppercase_matches, True)
+						
+						converted.write('}, ')
+						converted.write('/* ' + comment_matches.group(1) + ' */\n')
