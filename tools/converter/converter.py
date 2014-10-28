@@ -94,7 +94,7 @@ class BinaryBlob(libs.unicode.UnicodeVisitor):
 		composition = CompositionEntry()
 		
 		composition.stringCodepoint = self.matchToString(entry.matches[0])
-		composition.codepoint = int(entry.matches[0].group(1), 16)
+		composition.codepoint = int(entry.matches[0][0], 16)
 		
 		composition.stringC = self.matchToString(entry.matches[1])
 		if composition.stringC == composition.stringCodepoint:
@@ -128,7 +128,7 @@ class BinaryBlob(libs.unicode.UnicodeVisitor):
 		if match == None:
 			return result
 		
-		for group in match.groups():
+		for group in match:
 			if group <> None:
 				codepoint = int(group, 16)
 				converted = codepointToUtf8(codepoint)
@@ -149,7 +149,7 @@ class BinaryBlob(libs.unicode.UnicodeVisitor):
 			else:
 				offset = 0
 			
-			print "hashing " + translation + " offset " + str(self.offset)
+			#print "hashing " + translation + " offset " + str(self.offset)
 			
 			self.hashed[translation] = result
 			self.offset += offset
@@ -157,16 +157,18 @@ class BinaryBlob(libs.unicode.UnicodeVisitor):
 		else:
 			result = self.hashed[translation]
 		
-		print "translated " + translation + " offset " + str(result)
+		#print "translated " + translation + " offset " + str(result)
+		
+		self.total += 1
 		
 		return result
 	
 	def write(self):
+		for e in self.entries:
+			print e
 		print "total " + str(self.total)
 		print "hashed " + str(len(self.hashed))
 		print self.blob
-		for e in self.entries:
-			print e
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')

@@ -29,7 +29,6 @@ class UnicodeDocument:
 		self.filename = filename
 		
 		section_search = re.compile('@(\w+) ?# ?(.+)')
-		group_search = re.compile(' ?([0-9A-Za-z]+) ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)? ?([0-9A-Za-z]+)?;')
 		comment_search = re.compile(' *# (.+)')
 		
 		section_current = UnicodeSection()
@@ -61,11 +60,13 @@ class UnicodeDocument:
 					
 					entry = UnicodeEntry()
 					while (1):
-						matches = re.match(group_search, stripped)
+						section_end = stripped.find(';')
+						sliced = stripped[0:section_end]
+						matches = re.findall('([0-9A-Za-z]+)', sliced)
 						if not matches:
 							break
 						entry.matches.append(matches)
-						stripped = stripped[matches.end():]
+						stripped = stripped[section_end + 1:]
 					
 					# comment
 					
