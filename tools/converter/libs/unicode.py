@@ -37,8 +37,17 @@ class UnicodeDocument:
 		
 		sections_found = 0
 		
+		line_count = 0
+		
 		with open(filename, 'r') as f:
-			for line in f:
+			lines = f.readlines()
+			lines_total = float(len(lines))
+			for line in lines:
+				line_count += 1
+				if not self.limiter:
+					if (line_count % 250) == 0:
+						print format(float(line_count) / lines_total * 100.0, ".2f") + "%"
+					
 				if len(line) > 0 and not line.startswith('\n') and not line.startswith('#'):
 					stripped = line.rstrip('\n')
 					
@@ -58,15 +67,18 @@ class UnicodeDocument:
 					
 					# entry
 					
+					comment_start = stripped.find('#')
+					entry_sliced = stripped[:comment_start]
+					
 					entry = UnicodeEntry()
 					while (1):
-						section_end = stripped.find(';')
-						sliced = stripped[0:section_end]
+						section_end = entry_sliced.find(';')
+						sliced = entry_sliced[:section_end]
 						matches = re.findall('([0-9A-Za-z]+)', sliced)
 						if not matches:
 							break
 						entry.matches.append(matches)
-						stripped = stripped[section_end + 1:]
+						entry_sliced = entry_sliced[section_end + 1:]
 					
 					# comment
 					

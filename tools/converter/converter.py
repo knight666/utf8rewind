@@ -87,10 +87,18 @@ class BinaryBlob(libs.unicode.UnicodeVisitor):
 		self.blob = "\\0"
 		self.total = 0
 		self.offset = 1
+		self.sectionRead = False
 		self.entries = []
 		self.hashed = dict()
 	
+	def visitSection(self, entry):
+		print "section " + entry.identifier
+		self.sectionRead = entry.identifier == "Part1"
+	
 	def visitEntry(self, entry):
+		if not self.sectionRead:
+			return
+		
 		composition = CompositionEntry()
 		
 		composition.stringCodepoint = self.matchToString(entry.matches[0])
