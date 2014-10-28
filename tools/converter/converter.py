@@ -148,7 +148,7 @@ class Printer(UnicodeVisitor):
 if __name__ == '__main__':
 	normalization = UnicodeDocument()
 	normalization.limiter = 100
-	normalization.parse('NormalizationTest.txt')
+	normalization.parse('data/NormalizationTest.txt')
 	
 	printer = Printer()
 	normalization.accept(printer)
