@@ -1,5 +1,7 @@
 import argparse
+import fileinput
 import re
+import sys
 import libs.unicode
 
 MAX_LEGAL_UNICODE = 0x10FFFF
@@ -40,10 +42,26 @@ def codepointToUtf8(codepoint):
 
 class Header:
 	def __init__(self, filename):
-		self.file = open(filename, 'w+')
+		self.file = open(filename, 'wb+')
+		self.tab_length = 0
 	
 	def close(self):
-		close(self.file)
+		self.file.close()
+	
+	def indent(self):
+		self.tab_length += 1
+	
+	def outdent(self):
+		self.tab_length -= 1
+	
+	def writeLine(self, line):
+		for i in range(0, self.tab_length):
+			self.file.write('\t')
+		self.file.write(line)
+		self.newLine()
+	
+	def newLine(self):
+		self.file.write('\r\n')
 
 class Printer(libs.unicode.UnicodeVisitor):
 	def visitDocument(self, document):
@@ -78,6 +96,7 @@ class CompositionEntry:
 		self.offsetD = 0
 		self.offsetKC = 0
 		self.offsetKD = 0
+		
 		
 	def __str__(self):
 		return "{ codepoint: " + hex(self.codepoint) + ", " + "offsetC: " + str(self.offsetC) + ", " + "offsetD: " + str(self.offsetD) + ", " + "offsetKC: " + str(self.offsetKC) + ", " +  "offsetKD: " + str(self.offsetKD) + " }"
@@ -172,11 +191,27 @@ class BinaryBlob(libs.unicode.UnicodeVisitor):
 		return result
 	
 	def write(self):
-		for e in self.entries:
-			print e
-		print "total " + str(self.total)
-		print "hashed " + str(len(self.hashed))
-		print self.blob
+		command_line = sys.argv[0]
+		arguments = sys.argv[1:]
+		for a in arguments:
+			command_line += " " + a
+			
+		header = Header('output/normalization.h')
+		header.writeLine("/*")
+		header.indent()
+		header.writeLine("DO NOT MODIFY, AUTO-GENERATED")
+		header.newLine()
+		header.writeLine("Command line:")
+		header.writeLine(command_line)
+		header.outdent()
+		header.writeLine("*/")
+		header.newLine()
+		header.writeLine("const char* DecompositionData = ")
+		header.indent()
+		header.writeLine("\"" + self.blob + "\";")
+		header.close()
+		
+		print "entries " + str(self.total) + " hashed " + str(len(self.hashed))
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
