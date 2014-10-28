@@ -66,44 +66,107 @@ class Printer(libs.unicode.UnicodeVisitor):
 		result += " }"
 		print " - - " + result
 
+class CompositionEntry:
+	def __init__(self):
+		self.stringCodepoint = ""
+		self.codepoint = 0
+		self.stringC = ""
+		self.stringD = ""
+		self.stringKC = ""
+		self.stringKD = ""
+		self.offsetC = 0
+		self.offsetD = 0
+		self.offsetKC = 0
+		self.offsetKD = 0
+		
+	def __str__(self):
+		return "{ codepoint: " + hex(self.codepoint) + ", " + "offsetC: " + str(self.offsetC) + ", " + "offsetD: " + str(self.offsetD) + ", " + "offsetKC: " + str(self.offsetKC) + ", " +  "offsetKD: " + str(self.offsetKD) + " }"
+
 class BinaryBlob(libs.unicode.UnicodeVisitor):
 	def __init__(self):
 		self.blob = "\\0"
 		self.total = 0
 		self.offset = 1
+		self.entries = []
 		self.hashed = dict()
 	
 	def visitEntry(self, entry):
-		for match in entry.matches:
-			if match <> None:
-				translated = ""
-				for group in match.groups():
-					if group <> None:
-						codepoint = int(group, 16)
-						converted = codepointToUtf8(codepoint)
-						translated += converted
-				translated += "\\0"
-				
-				if translated not in self.hashed:
-					character_matches = re.findall('\\\\x?[^\\\\]+', translated)
-					if character_matches:
-						offset = len(character_matches)
-					else:
-						offset = 0
-					
-					print "hashing " + translated + " offset " + str(self.offset)
-					self.hashed[translated] = self.offset
-					self.offset += offset
-					self.blob += translated
-				else:
-					offset = self.hashed[translated]
-				print "translated " + translated + " offset " + str(self.hashed[translated])
-				self.total += 1
+		composition = CompositionEntry()
+		
+		composition.stringCodepoint = self.matchToString(entry.matches[0])
+		composition.codepoint = int(entry.matches[0].group(1), 16)
+		
+		composition.stringC = self.matchToString(entry.matches[1])
+		if composition.stringC == composition.stringCodepoint:
+			composition.offsetC = 0
+		else:
+			composition.offsetC = self.addTranslation(composition.stringC)
+		
+		composition.stringD = self.matchToString(entry.matches[2])
+		if composition.stringD == composition.stringCodepoint:
+			composition.offsetD = 0
+		else:
+			composition.offsetD = self.addTranslation(composition.stringD)
+		
+		composition.stringKC = self.matchToString(entry.matches[3])
+		if composition.stringKC == composition.stringCodepoint:
+			composition.offsetKC = 0
+		else:
+			composition.offsetKC = self.addTranslation(composition.stringKC)
+		
+		composition.stringKD = self.matchToString(entry.matches[4])
+		if composition.stringKD == composition.stringCodepoint:
+			composition.offsetKD = 0
+		else:
+			composition.offsetKD = self.addTranslation(composition.stringKD)
+		
+		self.entries.append(composition)
+	
+	def matchToString(self, match):
+		result = ""
+		
+		if match == None:
+			return result
+		
+		for group in match.groups():
+			if group <> None:
+				codepoint = int(group, 16)
+				converted = codepointToUtf8(codepoint)
+				result += converted
+		result += "\\0"
+		
+		return result
+	
+	def addTranslation(self, translation):
+		result = 0
+		
+		if translation not in self.hashed:
+			result = self.offset
+			
+			character_matches = re.findall('\\\\x?[^\\\\]+', translation)
+			if character_matches:
+				offset = len(character_matches)
+			else:
+				offset = 0
+			
+			print "hashing " + translation + " offset " + str(self.offset)
+			
+			self.hashed[translation] = result
+			self.offset += offset
+			self.blob += translation
+		else:
+			result = self.hashed[translation]
+		
+		print "translated " + translation + " offset " + str(result)
+		
+		return result
 	
 	def write(self):
 		print "total " + str(self.total)
 		print "hashed " + str(len(self.hashed))
 		print self.blob
+		for e in self.entries:
+			print e
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
