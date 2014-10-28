@@ -132,7 +132,18 @@ class Printer(UnicodeVisitor):
 		print " - " + section.title
 	
 	def visitEntry(self, entry):
-		print " - - " + entry.matches[0].group(1)
+		result = "{ "
+		count = 0
+		for group in entry.matches[0].groups():
+			if count <> 0:
+				result += ", "
+			if group <> None:
+				result += "0x" + group
+			else:
+				result += "0"
+			count += 1
+		result += " }"
+		print " - - " + result
 
 if __name__ == '__main__':
 	normalization = UnicodeDocument()
