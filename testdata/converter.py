@@ -35,19 +35,30 @@ class UnicodeEntry:
 	def __init__(self):
 		self.matches = []
 		self.comment = ""
+	
+	def accept(self, visitor):
+		visitor.visitEntry(self)
 
 class UnicodeSection:
 	def __init__(self):
 		self.identifier = ""
 		self.title = ""
 		self.entries = []
-		
+	
+	def accept(self, visitor):
+		visitor.visitSection(self)
+		for e in self.entries:
+			e.accept(visitor)
+
 class UnicodeDocument:
 	def __init__(self):
 		self.limiter = -1
+		self.filename = ""
 		self.sections = []
-
+	
 	def parse(self, filename):
+		self.filename = filename
+		
 		section_current = UnicodeSection()
 		self.sections = []
 		self.sections.append(section_current)
@@ -66,7 +77,7 @@ class UnicodeDocument:
 						if sections_found > 0:
 							section_current = UnicodeSection()
 							self.sections.append(section_current)
-
+						
 						section_current.identifier = section_match.group(1)
 						section_current.title = section_match.group(2)
 						sections_found += 1
@@ -95,20 +106,42 @@ class UnicodeDocument:
 						self.limiter -= 1
 						if self.limiter == 0:
 							break
-					
-		for s in self.sections:
-			print s.identifier + " - " + s.title
-			for e in s.entries:
-				print len(e.matches)
-				print e.matches[0].group(1)
-				print e.comment
+		
 		return True
+	
+	def accept(self, visitor):
+		visitor.visitDocument(self)
+		for s in self.sections:
+			s.accept(visitor)
 
+class UnicodeVisitor:
+	def visitDocument(self, document):
+		pass
+	
+	def visitSection(self, section):
+		pass
+	
+	def visitEntry(self, entry):
+		pass
+
+class Printer(UnicodeVisitor):
+	def visitDocument(self, document):
+		print document.filename
+	
+	def visitSection(self, section):
+		print " - " + section.title
+	
+	def visitEntry(self, entry):
+		print " - - " + entry.matches[0].group(1)
 
 if __name__ == '__main__':
 	normalization = UnicodeDocument()
 	normalization.limiter = 100
 	normalization.parse('NormalizationTest.txt')
+	
+	printer = Printer()
+	normalization.accept(printer)
+	
 	exit(0)
 	
 	with open('converted.h', 'w+') as converted:
