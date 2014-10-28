@@ -76,24 +76,29 @@ class BinaryBlob(libs.unicode.UnicodeVisitor):
 	def visitEntry(self, entry):
 		for match in entry.matches:
 			if match <> None:
+				translated = ""
 				for group in match.groups():
 					if group <> None:
 						codepoint = int(group, 16)
-						converted = codepointToUtf8(codepoint) + "\\0"
-						if converted not in self.hashed:
-							character_matches = re.findall('\\\\x?[^\\\\]+', converted)
-							if character_matches:
-								offset = len(character_matches)
-							else:
-								offset = 0
-							
-							self.hashed[converted] = self.offset
-							self.offset += offset
-							self.blob += converted
-						else:
-							offset = self.hashed[converted]
-						print "codepoint " + hex(codepoint) + " offset " + str(self.hashed[converted])
-						self.total += 1
+						converted = codepointToUtf8(codepoint)
+						translated += converted
+				translated += "\\0"
+				
+				if translated not in self.hashed:
+					character_matches = re.findall('\\\\x?[^\\\\]+', translated)
+					if character_matches:
+						offset = len(character_matches)
+					else:
+						offset = 0
+					
+					print "hashing " + translated + " offset " + str(self.offset)
+					self.hashed[translated] = self.offset
+					self.offset += offset
+					self.blob += translated
+				else:
+					offset = self.hashed[translated]
+				print "translated " + translated + " offset " + str(self.hashed[translated])
+				self.total += 1
 	
 	def write(self):
 		print "total " + str(self.total)
