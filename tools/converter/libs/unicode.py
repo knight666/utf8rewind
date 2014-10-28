@@ -21,7 +21,7 @@ class UnicodeSection:
 
 class UnicodeDocument:
 	def __init__(self):
-		self.limiter = -1
+		self.limiter = None
 		self.filename = ""
 		self.sections = []
 	
@@ -75,7 +75,7 @@ class UnicodeDocument:
 					
 					section_current.entries.append(entry)
 					
-					if self.limiter > -1:
+					if self.limiter <> None:
 						self.limiter -= 1
 						if self.limiter == 0:
 							break

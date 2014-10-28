@@ -1,3 +1,4 @@
+import argparse
 import libs.unicode
 
 class Header:
@@ -29,8 +30,16 @@ class Printer(libs.unicode.UnicodeVisitor):
 		print " - - " + result
 
 if __name__ == '__main__':
+	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
+	parser.add_argument(
+		'--limiter',
+		type=int,
+		help='limit the amount of entries'
+	)
+	args = parser.parse_args()
+
 	normalization = libs.unicode.UnicodeDocument()
-	normalization.limiter = 100
+	normalization.limiter = args.limiter
 	normalization.parse('data/NormalizationTest.txt')
 	
 	printer = Printer()
