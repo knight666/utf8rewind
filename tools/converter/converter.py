@@ -208,7 +208,17 @@ class BinaryBlob(libs.unicode.UnicodeVisitor):
 		header.newLine()
 		header.writeLine("const char* DecompositionData = ")
 		header.indent()
-		header.writeLine("\"" + self.blob + "\";")
+		
+		blob_sliced = self.blob
+		while (1):
+			character_matches = re.match('(\\\\x?[^\\\\]+){25}', blob_sliced)
+			if character_matches:
+				header.writeLine("\"" + character_matches.group(0) + "\"")
+				blob_sliced = blob_sliced[character_matches.end():]
+			else:
+				header.writeLine("\"" + blob_sliced + "\";")
+				break
+		
 		header.close()
 		
 		print "entries " + str(self.total) + " hashed " + str(len(self.hashed))
