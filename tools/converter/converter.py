@@ -77,7 +77,7 @@ class CompositionEntry:
 		
 		return result
 
-class BinaryBlob(libs.unicode.UnicodeVisitor):
+class Normalization(libs.unicode.UnicodeVisitor):
 	def __init__(self):
 		self.blob = "\\0"
 		self.total = 0
@@ -241,10 +241,10 @@ if __name__ == '__main__':
 	)
 	args = parser.parse_args()
 
-	normalization = libs.unicode.UnicodeDocument()
-	normalization.limiter = args.limiter
-	normalization.parse('data/NormalizationTest.txt')
+	document = libs.unicode.UnicodeDocument()
+	document.limiter = args.limiter
+	document.parse('data/documentTest.txt')
 	
-	printer = BinaryBlob()
-	normalization.accept(printer)
+	printer = Normalization()
+	document.accept(printer)
 	printer.write()
