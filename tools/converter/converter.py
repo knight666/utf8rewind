@@ -2,31 +2,9 @@ import argparse
 import fileinput
 import re
 import sys
+import libs.header
 import libs.unicode
 import libs.utf8
-
-class Header:
-	def __init__(self, filename):
-		self.file = open(filename, 'wb+')
-		self.tab_length = 0
-	
-	def close(self):
-		self.file.close()
-	
-	def indent(self):
-		self.tab_length += 1
-	
-	def outdent(self):
-		self.tab_length -= 1
-	
-	def writeLine(self, line):
-		for i in range(0, self.tab_length):
-			self.file.write('\t')
-		self.file.write(line)
-		self.newLine()
-	
-	def newLine(self):
-		self.file.write('\r\n')
 
 class Printer(libs.unicode.UnicodeVisitor):
 	def visitDocument(self, document):
@@ -200,7 +178,7 @@ class BinaryBlob(libs.unicode.UnicodeVisitor):
 		for a in arguments:
 			command_line += " " + a
 		
-		header = Header('output/normalization.h')
+		header = libs.header.Header('output/normalization.h')
 		header.writeLine("/*")
 		header.indent()
 		header.writeLine("DO NOT MODIFY, AUTO-GENERATED")
