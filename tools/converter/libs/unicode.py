@@ -2,6 +2,7 @@ import re
 
 class UnicodeEntry:
 	def __init__(self):
+		self.lineNumber = 0
 		self.matches = []
 		self.comment = ""
 	
@@ -29,7 +30,7 @@ class UnicodeDocument:
 		self.filename = filename
 		
 		section_search = re.compile('@(\w+) ?# ?(.+)')
-		comment_search = re.compile(' *# (.+)')
+		comment_search = re.compile('.*# (.+)')
 		
 		section_current = UnicodeSection()
 		self.sections = []
@@ -71,6 +72,7 @@ class UnicodeDocument:
 					entry_sliced = stripped[:comment_start]
 					
 					entry = UnicodeEntry()
+					entry.lineNumber = line_count
 					while (1):
 						section_end = entry_sliced.find(';')
 						sliced = entry_sliced[:section_end]
