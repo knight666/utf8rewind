@@ -79,6 +79,7 @@ class CompositionEntry:
 
 class Normalization(libs.unicode.UnicodeVisitor):
 	def __init__(self):
+		self.verbose = False
 		self.blob = "\\0"
 		self.total = 0
 		self.offset = 1
@@ -107,29 +108,43 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		composition.stringCodepoint = self.matchToString(entry.matches[0])
 		composition.codepoint = int(entry.matches[0][0], 16)
 		
+		if self.verbose:
+			print "codepoint " + hex(composition.codepoint)
+		
 		composition.stringC = self.matchToString(entry.matches[1])
 		if composition.stringC == composition.stringCodepoint:
 			composition.offsetC = 0
 		else:
+			if self.verbose:
+				print "inputC " + str(entry.matches[1])
 			composition.offsetC = self.addTranslation(composition.stringC)
 		
 		composition.stringD = self.matchToString(entry.matches[2])
 		if composition.stringD == composition.stringCodepoint:
 			composition.offsetD = 0
 		else:
+			if self.verbose:
+				print "inputD " + str(entry.matches[2])
 			composition.offsetD = self.addTranslation(composition.stringD)
 		
 		composition.stringKC = self.matchToString(entry.matches[3])
 		if composition.stringKC == composition.stringCodepoint:
 			composition.offsetKC = 0
 		else:
+			if self.verbose:
+				print "inputKC " + str(entry.matches[3])
 			composition.offsetKC = self.addTranslation(composition.stringKC)
 		
 		composition.stringKD = self.matchToString(entry.matches[4])
 		if composition.stringKD == composition.stringCodepoint:
 			composition.offsetKD = 0
 		else:
+			if self.verbose:
+				print "inputKD " + str(entry.matches[4])
 			composition.offsetKD = self.addTranslation(composition.stringKD)
+		
+		#if self.verbose:
+		#	print composition
 		
 		self.entries.append(composition)
 		
@@ -162,7 +177,8 @@ class Normalization(libs.unicode.UnicodeVisitor):
 			else:
 				offset = 0
 			
-			#print "hashing " + translation + " offset " + str(self.offset)
+			if self.verbose:
+				print "hashing " + translation + " offset " + str(self.offset)
 			
 			self.hashed[translation] = result
 			self.offset += offset
@@ -170,7 +186,8 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		else:
 			result = self.hashed[translation]
 		
-		#print "translated " + translation + " offset " + str(result)
+		if self.verbose:
+			print "translated " + translation + " offset " + str(result)
 		
 		self.total += 1
 		
@@ -233,13 +250,19 @@ class Normalization(libs.unicode.UnicodeVisitor):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
 	parser.add_argument(
-		'--line-limit',
+		'--verbove', '-v',
+		dest = 'verbose',
+		action = 'store_true',
+		help = 'verbose output'
+	)
+	parser.add_argument(
+		'--line-limit', '-l',
 		dest = 'lineLimit',
 		type = int,
 		help = 'limit the amount of lines read'
 	)
 	parser.add_argument(
-		'--entry-limit',
+		'--entry-limit', '-e',
 		dest = 'entryLimit',
 		type = int,
 		help = 'limit the amount of entries parsed'
@@ -259,6 +282,7 @@ if __name__ == '__main__':
 	document.parse('data/NormalizationTest.txt')
 	
 	printer = Normalization()
+	printer.verbose = args.verbose
 	printer.ignoreHangul = not args.hangul
 	document.accept(printer)
 	printer.writeSource('output/normalizationdata.c')
