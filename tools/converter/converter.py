@@ -170,7 +170,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		return result
 	
-	def write(self):
+	def writeSource(self, filepath):
 		# comment header
 		
 		command_line = sys.argv[0]
@@ -178,7 +178,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		for a in arguments:
 			command_line += " " + a
 		
-		header = libs.header.Header('output/normalization.h')
+		header = libs.header.Header(filepath)
 		header.writeLine("/*")
 		header.indent()
 		header.writeLine("DO NOT MODIFY, AUTO-GENERATED")
@@ -189,17 +189,9 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		header.writeLine("*/")
 		header.newLine()
 		
-		# data structures
+		# includes
 		
-		header.writeLine("typedef struct {")
-		header.indent()
-		header.writeLine("unicode_t codepoint;")
-		header.writeLine("ptrdiff_t offsetC;")
-		header.writeLine("ptrdiff_t offsetD;")
-		header.writeLine("ptrdiff_t offsetKC;")
-		header.writeLine("ptrdiff_t offsetKD;")
-		header.outdent()
-		header.writeLine("} CompositionEntry;")
+		header.writeLine("#include \"normalization.h\"")
 		header.newLine()
 		
 		# composition data
@@ -243,8 +235,8 @@ if __name__ == '__main__':
 
 	document = libs.unicode.UnicodeDocument()
 	document.limiter = args.limiter
-	document.parse('data/documentTest.txt')
+	document.parse('data/NormalizationTest.txt')
 	
 	printer = Normalization()
 	document.accept(printer)
-	printer.write()
+	printer.writeSource('output/normalizationdata.c')
