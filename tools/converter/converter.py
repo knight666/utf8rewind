@@ -90,14 +90,16 @@ class Normalization(libs.unicode.UnicodeVisitor):
 	def visitDocument(self, document):
 		if self.ignoreHangul:
 			print "Ignoring Hangul codepoints."
+		return True
 	
 	def visitSection(self, entry):
 		print "section " + entry.identifier
 		self.sectionRead = entry.identifier == "Part1"
+		return True
 	
 	def visitEntry(self, entry):
 		if not self.sectionRead or (self.ignoreHangul and "HANGUL" in entry.comment):
-			return
+			return True
 		
 		composition = CompositionEntry()
 		composition.lineNumber = entry.lineNumber
@@ -130,6 +132,8 @@ class Normalization(libs.unicode.UnicodeVisitor):
 			composition.offsetKD = self.addTranslation(composition.stringKD)
 		
 		self.entries.append(composition)
+		
+		return True
 	
 	def matchToString(self, match):
 		result = ""
@@ -229,9 +233,16 @@ class Normalization(libs.unicode.UnicodeVisitor):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
 	parser.add_argument(
-		'--limiter',
+		'--line-limit',
+		dest = 'lineLimit',
 		type = int,
-		help = 'limit the amount of entries'
+		help = 'limit the amount of lines read'
+	)
+	parser.add_argument(
+		'--entry-limit',
+		dest = 'entryLimit',
+		type = int,
+		help = 'limit the amount of entries parsed'
 	)
 	parser.add_argument(
 		'--no-hangul',
@@ -243,7 +254,8 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 
 	document = libs.unicode.UnicodeDocument()
-	document.limiter = args.limiter
+	document.lineLimit = args.lineLimit
+	document.entryLimit = args.entryLimit
 	document.parse('data/NormalizationTest.txt')
 	
 	printer = Normalization()
