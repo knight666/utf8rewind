@@ -11,6 +11,8 @@
 			],
 			'sources': [
 				'include/utf8rewind/utf8rewind.h',
+				'source/normalization.h',
+				'source/normalizationdata.c',
 				'source/utf8rewind.c',
 			],
 			'direct_dependent_settings': {
