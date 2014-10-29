@@ -7,7 +7,7 @@ class UnicodeEntry:
 		self.comment = ""
 	
 	def accept(self, visitor):
-		visitor.visitEntry(self)
+		return visitor.visitEntry(self)
 
 class UnicodeSection:
 	def __init__(self):
@@ -15,14 +15,23 @@ class UnicodeSection:
 		self.title = ""
 		self.entries = []
 	
-	def accept(self, visitor):
-		visitor.visitSection(self)
+	def accept(self, visitor, limit):
+		if not visitor.visitSection(self):
+			return False
 		for e in self.entries:
-			e.accept(visitor)
+			result = e.accept(visitor)
+			if not result:
+				return False
+			elif limit:
+				limit -= 1
+				if limit == 0:
+					return True
+		return True
 
 class UnicodeDocument:
 	def __init__(self):
-		self.limiter = None
+		self.lineLimit = None
+		self.entryLimit = None
 		self.filename = ""
 		self.sections = []
 	
@@ -45,7 +54,7 @@ class UnicodeDocument:
 			lines_total = float(len(lines))
 			for line in lines:
 				line_count += 1
-				if not self.limiter:
+				if not self.lineLimit:
 					if (line_count % 250) == 0:
 						print format(float(line_count) / lines_total * 100.0, ".2f") + "%"
 					
@@ -90,24 +99,27 @@ class UnicodeDocument:
 					
 					section_current.entries.append(entry)
 					
-					if self.limiter <> None:
-						self.limiter -= 1
-						if self.limiter == 0:
+					if self.lineLimit <> None:
+						self.lineLimit -= 1
+						if self.lineLimit == 0:
 							break
 		
 		return True
 	
 	def accept(self, visitor):
-		visitor.visitDocument(self)
+		if not visitor.visitDocument(self):
+			return False
 		for s in self.sections:
-			s.accept(visitor)
+			if not s.accept(visitor, self.entryLimit):
+				return False
+		return True
 
 class UnicodeVisitor:
 	def visitDocument(self, document):
-		pass
+		return True
 	
 	def visitSection(self, section):
-		pass
+		return True
 	
 	def visitEntry(self, entry):
-		pass
+		return True
