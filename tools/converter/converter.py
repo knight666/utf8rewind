@@ -86,6 +86,7 @@ class Printer(libs.unicode.UnicodeVisitor):
 
 class CompositionEntry:
 	def __init__(self):
+		self.lineNumber = 0
 		self.stringCodepoint = ""
 		self.codepoint = 0
 		self.stringC = ""
@@ -97,9 +98,41 @@ class CompositionEntry:
 		self.offsetKC = 0
 		self.offsetKD = 0
 		
-		
 	def __str__(self):
 		return "{ codepoint: " + hex(self.codepoint) + ", " + "offsetC: " + str(self.offsetC) + ", " + "offsetD: " + str(self.offsetD) + ", " + "offsetKC: " + str(self.offsetKC) + ", " +  "offsetKD: " + str(self.offsetKD) + " }"
+	
+	def toHeaderString(self):
+		result = "{ "
+		result += hex(self.codepoint)
+		result += ", "
+		
+		if self.offsetC <> 0:
+			result += hex(self.offsetC)
+		else:
+			result += "0"
+		result += ", "
+		
+		if self.offsetD <> 0:
+			result += hex(self.offsetD)
+		else:
+			result += "0"
+		result += ", "
+		
+		if self.offsetKC <> 0:
+			result += hex(self.offsetKC)
+		else:
+			result += "0"
+		result += ", "
+		
+		if self.offsetKD <> 0:
+			result += hex(self.offsetKD)
+		else:
+			result += "0"
+		
+		result += " }, "
+		result += "/* " + str(self.lineNumber) + " */"
+		
+		return result
 
 class BinaryBlob(libs.unicode.UnicodeVisitor):
 	def __init__(self):
@@ -118,7 +151,11 @@ class BinaryBlob(libs.unicode.UnicodeVisitor):
 		if not self.sectionRead:
 			return
 		
+		#if "HANGUL" in entry.comment:
+		#	return
+		
 		composition = CompositionEntry()
+		composition.lineNumber = entry.lineNumber
 		
 		composition.stringCodepoint = self.matchToString(entry.matches[0])
 		composition.codepoint = int(entry.matches[0][0], 16)
@@ -191,11 +228,13 @@ class BinaryBlob(libs.unicode.UnicodeVisitor):
 		return result
 	
 	def write(self):
+		# comment header
+		
 		command_line = sys.argv[0]
 		arguments = sys.argv[1:]
 		for a in arguments:
 			command_line += " " + a
-			
+		
 		header = Header('output/normalization.h')
 		header.writeLine("/*")
 		header.indent()
@@ -206,6 +245,33 @@ class BinaryBlob(libs.unicode.UnicodeVisitor):
 		header.outdent()
 		header.writeLine("*/")
 		header.newLine()
+		
+		# data structures
+		
+		header.writeLine("typedef struct {")
+		header.indent()
+		header.writeLine("unicode_t codepoint;")
+		header.writeLine("ptrdiff_t offsetC;")
+		header.writeLine("ptrdiff_t offsetD;")
+		header.writeLine("ptrdiff_t offsetKC;")
+		header.writeLine("ptrdiff_t offsetKD;")
+		header.outdent()
+		header.writeLine("} CompositionEntry;")
+		header.newLine()
+		
+		# composition data
+		
+		header.writeLine("static const size_t CompositionDataCount = " + str(len(self.entries)) + ";")
+		header.writeLine("static const CompositionEntry CompositionData[CompositionDataCount] = {")
+		header.indent()
+		for e in self.entries:
+			header.writeLine(e.toHeaderString()) 
+		header.outdent()
+		header.writeLine("};")
+		header.newLine()
+		
+		# decomposition data
+		
 		header.writeLine("const char* DecompositionData = ")
 		header.indent()
 		
