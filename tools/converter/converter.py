@@ -1,6 +1,7 @@
 import argparse
-import fileinput
+import datetime
 import re
+import os
 import sys
 import libs.header
 import libs.unicode
@@ -201,13 +202,22 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		for a in arguments:
 			command_line += " " + a
 		
+		d = datetime.datetime.now()
+		
 		header = libs.header.Header(filepath)
 		header.writeLine("/*")
 		header.indent()
 		header.writeLine("DO NOT MODIFY, AUTO-GENERATED")
 		header.newLine()
+		header.writeLine("Generated on:")
+		header.indent()
+		header.writeLine(d.strftime("%Y-%m-%dT%H:%M:%S"))
+		header.outdent()
+		header.newLine()
 		header.writeLine("Command line:")
+		header.indent()
 		header.writeLine(command_line)
+		header.outdent()
 		header.outdent()
 		header.writeLine("*/")
 		header.newLine()
@@ -275,14 +285,16 @@ if __name__ == '__main__':
 		help = 'remove Hangul codepoints from output'
 	)
 	args = parser.parse_args()
+	
+	script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 
 	document = libs.unicode.UnicodeDocument()
 	document.lineLimit = args.lineLimit
 	document.entryLimit = args.entryLimit
-	document.parse('data/NormalizationTest.txt')
+	document.parse(script_path + '/data/NormalizationTest.txt')
 	
 	printer = Normalization()
 	printer.verbose = args.verbose
 	printer.ignoreHangul = not args.hangul
 	document.accept(printer)
-	printer.writeSource('output/normalizationdata.c')
+	printer.writeSource(script_path + '/../../source/normalizationdata.c')
