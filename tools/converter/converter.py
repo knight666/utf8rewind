@@ -83,19 +83,21 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		self.total = 0
 		self.offset = 1
 		self.sectionRead = False
+		self.ignoreHangul = False
 		self.entries = []
 		self.hashed = dict()
+	
+	def visitDocument(self, document):
+		if self.ignoreHangul:
+			print "Ignoring Hangul codepoints."
 	
 	def visitSection(self, entry):
 		print "section " + entry.identifier
 		self.sectionRead = entry.identifier == "Part1"
 	
 	def visitEntry(self, entry):
-		if not self.sectionRead:
+		if not self.sectionRead or (self.ignoreHangul and "HANGUL" in entry.comment):
 			return
-		
-		#if "HANGUL" in entry.comment:
-		#	return
 		
 		composition = CompositionEntry()
 		composition.lineNumber = entry.lineNumber
@@ -228,8 +230,15 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
 	parser.add_argument(
 		'--limiter',
-		type=int,
-		help='limit the amount of entries'
+		type = int,
+		help = 'limit the amount of entries'
+	)
+	parser.add_argument(
+		'--no-hangul',
+		dest = 'hangul',
+		default = True,
+		action = 'store_false',
+		help = 'remove Hangul codepoints from output'
 	)
 	args = parser.parse_args()
 
@@ -238,5 +247,6 @@ if __name__ == '__main__':
 	document.parse('data/NormalizationTest.txt')
 	
 	printer = Normalization()
+	printer.ignoreHangul = not args.hangul
 	document.accept(printer)
 	printer.writeSource('output/normalizationdata.c')
