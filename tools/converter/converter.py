@@ -164,7 +164,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 				codepoint = int(group, 16)
 				converted = libs.utf8.codepointToUtf8(codepoint)
 				result += converted
-		result += "\\0"
+		result += "\\x00"
 		
 		return result
 	
@@ -244,7 +244,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		# decomposition data
 		
-		blob_sliced = self.blob
+		blob_page = self.blob
 		
 		pages = int(math.floor(float(self.offset) / self.pageSize) + 1)
 		blob_size = self.offset
@@ -265,36 +265,36 @@ class Normalization(libs.unicode.UnicodeVisitor):
 			
 			first_line = True
 			
+			blob_sliced = blob_page
+			
 			while (1):
-				character_find_count = min(read, 25)
+				character_count = min(read, 25)
+				
+				character_line = blob_sliced[:(character_count * 4)]
 				
 				header.writeIndentation()
 				
-				character_find = "(\\\\x?[^\\\\]+){" + str(character_find_count) + "}"
+				header.write("\"")
+				if first_line:
+					header.write("\\x00")
+					first_line = False
+				header.write(character_line)
+				header.write("\"")
 				
-				character_matches = re.match(character_find, blob_sliced)
-				if character_matches:
-					header.write("\"")
-					if first_line:
-						header.write("\\0")
-						first_line = False
-					header.write(character_matches.group(0))
-					header.write("\"")
-					
-					written += character_find_count
-					blob_sliced = blob_sliced[character_matches.end():]
-				else:
-					print "failed to find " + character_find
-					break
+				written += character_count
 				
-				read -= character_find_count
+				read -= character_count
+				
 				if read <= 0:
 					header.write(",")
-					header.newLine()
+				header.newLine()
+				
+				if read <= 0:
 					break
 				
-				header.newLine()
+				blob_sliced = blob_sliced[(character_count * 4):]
 			
+			blob_page = blob_page[(written * 4):]
 			blob_size -= current_page_size
 		
 		header.outdent()
@@ -318,6 +318,13 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		header.close()
 		
 		print "entries " + str(self.total) + " hashed " + str(len(self.hashed))
+		
+		pages_start = []
+		pages_end = []
+		
+		pages_start.append(0)
+		current_page_end = self.pageSize
+		print self.blob[0:current_page_end + 1]
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
