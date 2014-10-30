@@ -12,11 +12,17 @@ class Header:
 	def outdent(self):
 		self.tab_length -= 1
 	
-	def writeLine(self, line):
-		for i in range(0, self.tab_length):
-			self.file.write('\t')
+	def write(self, line):
 		self.file.write(line)
-		self.newLine()
 	
 	def newLine(self):
 		self.file.write('\r\n')
+	
+	def writeIndentation(self):
+		for i in range(0, self.tab_length):
+			self.file.write('\t')
+	
+	def writeLine(self, line):
+		self.writeIndentation()
+		self.write(line)
+		self.newLine()
