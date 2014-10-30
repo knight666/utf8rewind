@@ -83,6 +83,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 	def __init__(self):
 		self.verbose = False
 		self.blob = ""
+		self.pageSize = 32767
 		self.total = 0
 		self.offset = 0
 		self.sectionRead = False
@@ -245,8 +246,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		blob_sliced = self.blob
 		
-		page_size = 32767
-		pages = int(math.floor(float(self.offset) / page_size) + 1)
+		pages = int(math.floor(float(self.offset) / self.pageSize) + 1)
 		blob_size = self.offset
 		
 		header.writeLine("const size_t DecompositionDataPageCount = " + str(pages) + ";")
@@ -257,7 +257,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		print "characterTotal " + str(blob_count)
 		
 		for p in range(0, pages):
-			current_page_size = min(blob_size, page_size)
+			current_page_size = min(blob_size, self.pageSize)
 			print "currentPageSize " + str(current_page_size)
 			
 			read = current_page_size
@@ -346,6 +346,13 @@ if __name__ == '__main__':
 		action = 'store_false',
 		help = 'remove Hangul codepoints from output'
 	)
+	parser.add_argument(
+		'--page-size', '-p',
+		dest = 'pageSize',
+		default = 32767,
+		type = int,
+		help = 'maximum page size for written strings'
+	)
 	args = parser.parse_args()
 	
 	script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -358,5 +365,6 @@ if __name__ == '__main__':
 	printer = Normalization()
 	printer.verbose = args.verbose
 	printer.ignoreHangul = not args.hangul
+	printer.pageSize = args.pageSize
 	document.accept(printer)
 	printer.writeSource(script_path + '/../../source/normalizationdata.c')
