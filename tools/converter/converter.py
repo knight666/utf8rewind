@@ -260,17 +260,38 @@ class Normalization(libs.unicode.UnicodeVisitor):
 			current_page_size = min(blob_size, self.pageSize)
 			print "currentPageSize " + str(current_page_size)
 			
-			read = current_page_size
+			page_read = 0
+			blob_search = blob_page
+			while 1:
+				end_index = blob_search.find("\\x00")
+				if end_index == -1:
+					break
+				offset = (end_index / 4) + 1
+				if (page_read + offset) >= current_page_size:
+					break
+				page_read += offset
+				blob_search = blob_search[(end_index + 4):]
+			
+			blob_sliced = blob_page[:(page_read * 4)]
+			
+			read = page_read
 			written = 0
 			
 			first_line = True
-			
-			blob_sliced = blob_page
 			
 			while (1):
 				character_count = min(read, 25)
 				
 				character_line = blob_sliced[:(character_count * 4)]
+				end_index = character_line.rfind("\\x00")
+				if end_index == -1:
+					print "Failed to find string terminator."
+					break
+				elif end_index <> (character_count * 4) - 4:
+					character_count = (end_index / 4) + 1
+					character_line = blob_sliced[:(character_count * 4)]
+				
+				print character_line
 				
 				header.writeIndentation()
 				
@@ -295,7 +316,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 				blob_sliced = blob_sliced[(character_count * 4):]
 			
 			blob_page = blob_page[(written * 4):]
-			blob_size -= current_page_size
+			blob_size -= page_read
 		
 		header.outdent()
 		header.writeLine("};")
