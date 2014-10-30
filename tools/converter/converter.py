@@ -1,5 +1,6 @@
 import argparse
 import datetime
+import math
 import re
 import os
 import sys
@@ -81,9 +82,9 @@ class CompositionEntry:
 class Normalization(libs.unicode.UnicodeVisitor):
 	def __init__(self):
 		self.verbose = False
-		self.blob = "\\0"
+		self.blob = ""
 		self.total = 0
-		self.offset = 1
+		self.offset = 0
 		self.sectionRead = False
 		self.ignoreHangul = False
 		self.entries = []
@@ -229,6 +230,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		# composition data
 		
+		"""
 		header.writeLine("static const size_t CompositionDataCount = " + str(len(self.entries)) + ";")
 		header.writeLine("static const CompositionEntry CompositionData[" + str(len(self.entries)) + "] = {")
 		header.indent()
@@ -237,9 +239,68 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		header.outdent()
 		header.writeLine("};")
 		header.newLine()
+		"""
 		
 		# decomposition data
 		
+		blob_sliced = self.blob
+		
+		page_size = 32767
+		pages = int(math.floor(float(self.offset) / page_size) + 1)
+		blob_size = self.offset
+		
+		header.writeLine("const size_t DecompositionDataPageCount = " + str(pages) + ";")
+		header.writeLine("const char* DecompositionData[" + str(pages) + "] = {")
+		header.indent()
+		
+		blob_count = len(re.findall('\\\\x?[^\\\\]+', self.blob))
+		print "characterTotal " + str(blob_count)
+		
+		for p in range(0, pages):
+			current_page_size = min(blob_size, page_size)
+			print "currentPageSize " + str(current_page_size)
+			
+			read = current_page_size
+			written = 0
+			
+			first_line = True
+			
+			while (1):
+				character_find_count = min(read, 25)
+				
+				header.writeIndentation()
+				
+				character_find = "(\\\\x?[^\\\\]+){" + str(character_find_count) + "}"
+				
+				character_matches = re.match(character_find, blob_sliced)
+				if character_matches:
+					header.write("\"")
+					if first_line:
+						header.write("\\0")
+						first_line = False
+					header.write(character_matches.group(0))
+					header.write("\"")
+					
+					written += character_find_count
+					blob_sliced = blob_sliced[character_matches.end():]
+				else:
+					print "failed to find " + character_find
+					break
+				
+				read -= character_find_count
+				if read <= 0:
+					header.write(",")
+					header.newLine()
+					break
+				
+				header.newLine()
+			
+			blob_size -= current_page_size
+		
+		header.outdent()
+		header.writeLine("};")
+		
+		"""
 		header.writeLine("const char* DecompositionData = ")
 		header.indent()
 		
@@ -252,6 +313,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 			else:
 				header.writeLine("\"" + blob_sliced + "\";")
 				break
+		"""
 		
 		header.close()
 		
