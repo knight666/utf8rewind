@@ -25,7 +25,32 @@
 
 #include "normalization.h"
 
-CompositionEntry* findcomposition(unicode_t codepoint)
+extern const size_t CompositionDataCount;
+extern const CompositionEntry* CompositionDataPtr;
+
+extern const size_t DecompositionDataPageCount;
+extern const char** DecompositionDataPtr;
+
+CompositionEntry* findcomposition(unicode_t codepoint, int32_t* result)
 {
+	if (result == 0)
+	{
+		return 0;
+	}
+
+	if (codepoint >= 0x10FFFF)
+	{
+		*result = FindResult_InvalidCodepoint;
+		return 0;
+	}
+	else if (
+		codepoint < CompositionDataPtr[0].codepoint ||
+		codepoint > CompositionDataPtr[CompositionDataCount - 1].codepoint)
+	{
+		*result = FindResult_OutOfBounds;
+		return 0;
+	}
+
+	*result = FindResult_Missing;
 	return 0;
 }
