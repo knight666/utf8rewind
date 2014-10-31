@@ -46,31 +46,31 @@ class CompositionEntry:
 	def __str__(self):
 		return "{ codepoint: " + hex(self.codepoint) + ", " + "offsetC: " + str(self.offsetC) + ", " + "offsetD: " + str(self.offsetD) + ", " + "offsetKC: " + str(self.offsetKC) + ", " +  "offsetKD: " + str(self.offsetKD) + " }"
 	
-	def toHeaderString(self):
+	def toHeaderString(self, pageOffsets):
 		result = "{ "
 		result += hex(self.codepoint)
 		result += ", "
 		
 		if self.offsetC <> 0:
-			result += hex(self.offsetC)
+			result += self.offsetToString(self.offsetC, pageOffsets)
 		else:
 			result += "0"
 		result += ", "
 		
 		if self.offsetD <> 0:
-			result += hex(self.offsetD)
+			result += self.offsetToString(self.offsetD, pageOffsets)
 		else:
 			result += "0"
 		result += ", "
 		
 		if self.offsetKC <> 0:
-			result += hex(self.offsetKC)
+			result += self.offsetToString(self.offsetKC, pageOffsets)
 		else:
 			result += "0"
 		result += ", "
 		
 		if self.offsetKD <> 0:
-			result += hex(self.offsetKD)
+			result += self.offsetToString(self.offsetKD, pageOffsets)
 		else:
 			result += "0"
 		
@@ -78,6 +78,14 @@ class CompositionEntry:
 		result += "/* " + str(self.lineNumber) + " */"
 		
 		return result
+	
+	def offsetToString(self, offset, pageOffsets):
+		page_offset = 0
+		for p in range(0, len(pageOffsets)):
+			if pageOffsets[p] > offset:
+				break
+			page_offset = p
+		return hex((page_offset << 24) | (offset - pageOffsets[page_offset]))
 
 class Normalization(libs.unicode.UnicodeVisitor):
 	def __init__(self):
@@ -85,7 +93,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		self.blob = ""
 		self.pageSize = 32767
 		self.total = 0
-		self.offset = 0
+		self.offset = 1
 		self.sectionRead = False
 		self.ignoreHangul = False
 		self.entries = []
@@ -197,14 +205,56 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		return result
 	
 	def writeSource(self, filepath):
-		# comment header
-		
 		command_line = sys.argv[0]
 		arguments = sys.argv[1:]
 		for a in arguments:
 			command_line += " " + a
 		
 		d = datetime.datetime.now()
+		
+		page_starts = []
+		page_ends = []
+		
+		page_starts.append(0)
+		
+		blob_size = self.offset
+		blob_page = self.blob
+		
+		total_offset = 0
+		
+		while 1:
+			if blob_size < self.pageSize:
+				page_ends.append(total_offset + blob_size)
+				break
+			
+			page_read = 0
+			blob_search = blob_page
+			while 1:
+				end_index = blob_search.find("\\x00")
+				if end_index == -1:
+					break
+				offset = (end_index / 4) + 1
+				if (page_read + offset) >= self.pageSize:
+					break
+				page_read += offset
+				blob_search = blob_search[(end_index + 4):]
+			
+			total_offset += page_read
+			
+			page_ends.append(total_offset)
+			page_starts.append(total_offset)
+			
+			blob_page = blob_page[(page_read * 4):]
+			blob_size -= page_read
+		
+		pages = len(page_starts)
+		
+		print "pages", pages, "blobSize", blob_size
+		
+		print "pageStarts", page_starts
+		print "pageEnds  ", page_ends
+		
+		# comment header
 		
 		header = libs.header.Header(filepath)
 		header.writeLine("/*")
@@ -231,53 +281,32 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		# composition data
 		
-		"""
 		header.writeLine("static const size_t CompositionDataCount = " + str(len(self.entries)) + ";")
 		header.writeLine("static const CompositionEntry CompositionData[" + str(len(self.entries)) + "] = {")
 		header.indent()
 		for e in self.entries:
-			header.writeLine(e.toHeaderString()) 
+			header.writeLine(e.toHeaderString(page_starts)) 
 		header.outdent()
 		header.writeLine("};")
 		header.newLine()
-		"""
 		
 		# decomposition data
 		
 		blob_page = self.blob
 		
-		pages = int(math.floor(float(self.offset) / self.pageSize) + 1)
-		blob_size = self.offset
-		
 		header.writeLine("const size_t DecompositionDataPageCount = " + str(pages) + ";")
 		header.writeLine("const char* DecompositionData[" + str(pages) + "] = {")
 		header.indent()
 		
-		blob_count = len(re.findall('\\\\x?[^\\\\]+', self.blob))
-		print "characterTotal " + str(blob_count)
-		
 		for p in range(0, pages):
-			current_page_size = min(blob_size, self.pageSize)
-			print "currentPageSize " + str(current_page_size)
+			blob_page = self.blob[page_starts[p] * 4:page_ends[p] * 4]
 			
-			page_read = 0
-			blob_search = blob_page
-			while 1:
-				end_index = blob_search.find("\\x00")
-				if end_index == -1:
-					break
-				offset = (end_index / 4) + 1
-				if (page_read + offset) >= current_page_size:
-					break
-				page_read += offset
-				blob_search = blob_search[(end_index + 4):]
-			
-			blob_sliced = blob_page[:(page_read * 4)]
-			
-			read = page_read
+			read = page_ends[p] - page_starts[p]
 			written = 0
 			
 			first_line = True
+			
+			blob_sliced = blob_page
 			
 			while (1):
 				if first_line:
@@ -308,27 +337,9 @@ class Normalization(libs.unicode.UnicodeVisitor):
 					break
 				
 				blob_sliced = blob_sliced[(character_count * 4):]
-			
-			blob_page = blob_page[(written * 4):]
-			blob_size -= page_read
 		
 		header.outdent()
 		header.writeLine("};")
-		
-		"""
-		header.writeLine("const char* DecompositionData = ")
-		header.indent()
-		
-		blob_sliced = self.blob
-		while (1):
-			character_matches = re.match('(\\\\x?[^\\\\]+){25}', blob_sliced)
-			if character_matches:
-				header.writeLine("\"" + character_matches.group(0) + "\"")
-				blob_sliced = blob_sliced[character_matches.end():]
-			else:
-				header.writeLine("\"" + blob_sliced + "\";")
-				break
-		"""
 		
 		header.close()
 		
