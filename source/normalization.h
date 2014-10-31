@@ -44,6 +44,6 @@ enum FindResult
 	FindResult_InvalidCodepoint
 };
 
-CompositionEntry* findcomposition(unicode_t codepoint, int32_t* result);
+const CompositionEntry* findcomposition(unicode_t codepoint, int32_t* result);
 
 #endif
