@@ -36,6 +36,12 @@ typedef struct {
 	ptrdiff_t offsetKD;
 } CompositionEntry;
 
+static const size_t CompositionDataCount;
+static const CompositionEntry* CompositionDataPtr;
+
+static const size_t DecompositionDataPageCount;
+static const char** DecompositionDataPtr;
+
 CompositionEntry* findcomposition(unicode_t codepoint);
 
 #endif
