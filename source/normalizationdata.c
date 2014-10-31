@@ -2,7 +2,7 @@
 	DO NOT MODIFY, AUTO-GENERATED
 
 	Generated on:
-		2014-10-31T14:59:15
+		2014-10-31T15:20:43
 
 	Command line:
 		D:\Projects\utf8rewind\tools\converter\converter.py
@@ -10,8 +10,8 @@
 
 #include "normalization.h"
 
-static const size_t CompositionDataCount = 16893;
-static const CompositionEntry CompositionData[16893] = {
+const size_t CompositionDataCount = 16893;
+const CompositionEntry CompositionData[16893] = {
 	{ 0xa0, 0, 0, 0x1, 0x1 }, /* 70 */
 	{ 0xa8, 0, 0, 0x3, 0x3 }, /* 71 */
 	{ 0xaa, 0, 0, 0x7, 0x7 }, /* 72 */
@@ -16906,6 +16906,7 @@ static const CompositionEntry CompositionData[16893] = {
 	{ 0x2fa1c, 0x1baf, 0x1baf, 0x1baf, 0x1baf }, /* 16961 */
 	{ 0x2fa1d, 0x3007813, 0x3007813, 0x3007813, 0x3007813 }, /* 16962 */
 };
+const CompositionEntry* CompositionDataPtr = CompositionData;
 
 const size_t DecompositionDataPageCount = 4;
 const char* DecompositionData[4] = {
@@ -22073,3 +22074,4 @@ const char* DecompositionData[4] = {
 	"\xe4\xb3\xb8\x00\xf0\xaa\x84\x85\x00\xf0\xaa\x88\x8e\x00\xf0\xaa\x8a\x91\x00\xe4\xb5\x96\x00\xe9\xbb"
 	"\xbe\x00\xe9\xbc\x85\x00\xe9\xbc\x8f\x00\xe9\xbc\x96\x00\xf0\xaa\x98\x80\x00",
 };
+const char** DecompositionDataPtr = DecompositionData;

@@ -281,13 +281,14 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		# composition data
 		
-		header.writeLine("static const size_t CompositionDataCount = " + str(len(self.entries)) + ";")
-		header.writeLine("static const CompositionEntry CompositionData[" + str(len(self.entries)) + "] = {")
+		header.writeLine("const size_t CompositionDataCount = " + str(len(self.entries)) + ";")
+		header.writeLine("const CompositionEntry CompositionData[" + str(len(self.entries)) + "] = {")
 		header.indent()
 		for e in self.entries:
 			header.writeLine(e.toHeaderString(page_starts)) 
 		header.outdent()
 		header.writeLine("};")
+		header.writeLine("const CompositionEntry* CompositionDataPtr = CompositionData;")
 		header.newLine()
 		
 		# decomposition data
@@ -340,6 +341,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		header.outdent()
 		header.writeLine("};")
+		header.write("const char** DecompositionDataPtr = DecompositionData;")
 		
 		header.close()
 		
