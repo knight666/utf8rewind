@@ -280,18 +280,12 @@ class Normalization(libs.unicode.UnicodeVisitor):
 			first_line = True
 			
 			while (1):
-				character_count = min(read, 25)
+				if first_line:
+					character_count = min(read, 24)
+				else:
+					character_count = min(read, 25)
 				
 				character_line = blob_sliced[:(character_count * 4)]
-				end_index = character_line.rfind("\\x00")
-				if end_index == -1:
-					print "Failed to find string terminator."
-					break
-				elif end_index <> (character_count * 4) - 4:
-					character_count = (end_index / 4) + 1
-					character_line = blob_sliced[:(character_count * 4)]
-				
-				print character_line
 				
 				header.writeIndentation()
 				
@@ -345,7 +339,6 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		pages_start.append(0)
 		current_page_end = self.pageSize
-		print self.blob[0:current_page_end + 1]
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
