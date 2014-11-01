@@ -48,7 +48,7 @@
 				'source/tests/suite-decodeutf32.cpp',
 				'source/tests/suite-encodeutf16.cpp',
 				'source/tests/suite-encodeutf32.cpp',
-				'source/tests/suite-internal-findcomposition.cpp'
+				'source/tests/suite-internal-findcomposition.cpp',
 				'source/tests/suite-len.cpp',
 				'source/tests/suite-seek.cpp',
 				'source/tests/suite-seek-current.cpp',
