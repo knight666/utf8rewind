@@ -63,15 +63,71 @@ TEST(FindComposition, FoundPivot)
 TEST(FindComposition, FoundDownPivot)
 {
 	int32_t r = 0;
-	const CompositionEntry* e = findcomposition(0x0000B357, &r);
+	const CompositionEntry* e = findcomposition(0x0000D455, &r);
 
 	ASSERT_NE(nullptr, e);
 	EXPECT_EQ(FindResult_Found, r);
-	EXPECT_EQ(0x0000B357, e->codepoint);
+	EXPECT_EQ(0x0000D455, e->codepoint);
 	EXPECT_EQ(0, e->offsetC);
-	EXPECT_EQ(0x00007606, e->offsetD);
+	EXPECT_EQ(0x03003C2D, e->offsetD);
 	EXPECT_EQ(0, e->offsetKC);
-	EXPECT_EQ(0x00007606, e->offsetKD);
+	EXPECT_EQ(0x03003C2D, e->offsetKD);
+}
+
+TEST(FindComposition, FoundUpPivot)
+{
+	int32_t r = 0;
+	const CompositionEntry* e = findcomposition(0x00003320, &r);
+
+	ASSERT_NE(nullptr, e);
+	EXPECT_EQ(FindResult_Found, r);
+	EXPECT_EQ(0x00003320, e->codepoint);
+	EXPECT_EQ(0, e->offsetC);
+	EXPECT_EQ(0, e->offsetD);
+	EXPECT_EQ(0x00002683, e->offsetKC);
+	EXPECT_EQ(0x00002683, e->offsetKD);
+}
+
+TEST(FindComposition, FoundDownDownPivot)
+{
+	int32_t r = 0;
+	const CompositionEntry* e = findcomposition(0x0000FECB, &r);
+
+	ASSERT_NE(nullptr, e);
+	EXPECT_EQ(FindResult_Found, r);
+	EXPECT_EQ(0x0000FECB, e->codepoint);
+	EXPECT_EQ(0, e->offsetC);
+	EXPECT_EQ(0, e->offsetD);
+	EXPECT_EQ(0x03006C90, e->offsetKC);
+	EXPECT_EQ(0x03006C90, e->offsetKD);
+}
+
+TEST(FindComposition, FoundDownUpDownPivot)
+{
+	int32_t r = 0;
+	const CompositionEntry* e = findcomposition(0x0000D035, &r);
+
+	ASSERT_NE(nullptr, e);
+	EXPECT_EQ(FindResult_Found, r);
+	EXPECT_EQ(0x0000D035, e->codepoint);
+	EXPECT_EQ(0, e->offsetC);
+	EXPECT_EQ(0x0300136a, e->offsetD);
+	EXPECT_EQ(0, e->offsetKC);
+	EXPECT_EQ(0x0300136a, e->offsetKD);
+}
+
+TEST(FindComposition, FoundAtMaxDepth)
+{
+	int32_t r = 0;
+	const CompositionEntry* e = findcomposition(0x0000FF16, &r);
+
+	ASSERT_NE(nullptr, e);
+	EXPECT_EQ(FindResult_Found, r);
+	EXPECT_EQ(0x0000FF16, e->codepoint);
+	EXPECT_EQ(0, e->offsetC);
+	EXPECT_EQ(0, e->offsetD);
+	EXPECT_EQ(0x000014d2, e->offsetKC);
+	EXPECT_EQ(0x000014D2, e->offsetKD);
 }
 
 TEST(FindComposition, NotFound)
