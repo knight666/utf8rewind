@@ -4,6 +4,20 @@ extern "C" {
 	#include "../normalization.h"
 }
 
+TEST(FindComposition, Found)
+{
+	int32_t r = 0;
+	const CompositionEntry* e = findcomposition(0x000004E4, &r);
+
+	ASSERT_NE(nullptr, e);
+	EXPECT_EQ(FindResult_Found, r);
+	EXPECT_EQ(0x000004E4, e->codepoint);
+	EXPECT_EQ(0, e->offsetC);
+	EXPECT_EQ(0x640, e->offsetD);
+	EXPECT_EQ(0, e->offsetKC);
+	EXPECT_EQ(0x640, e->offsetKD);
+}
+
 TEST(FindComposition, FoundFirst)
 {
 	int32_t r = 0;
@@ -44,6 +58,20 @@ TEST(FindComposition, FoundPivot)
 	EXPECT_EQ(0x0200192A, e->offsetD);
 	EXPECT_EQ(0, e->offsetKC);
 	EXPECT_EQ(0x0200192A, e->offsetKD);
+}
+
+TEST(FindComposition, FoundDownPivot)
+{
+	int32_t r = 0;
+	const CompositionEntry* e = findcomposition(0x0000B357, &r);
+
+	ASSERT_NE(nullptr, e);
+	EXPECT_EQ(FindResult_Found, r);
+	EXPECT_EQ(0x0000B357, e->codepoint);
+	EXPECT_EQ(0, e->offsetC);
+	EXPECT_EQ(0x00007606, e->offsetD);
+	EXPECT_EQ(0, e->offsetKC);
+	EXPECT_EQ(0x00007606, e->offsetKD);
 }
 
 TEST(FindComposition, NotFound)

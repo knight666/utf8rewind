@@ -36,6 +36,8 @@ const CompositionEntry* findcomposition(unicode_t codepoint, int32_t* result)
 	size_t offset_start = 0;
 	size_t offset_end = CompositionDataCount - 1;
 	size_t offset_center;
+	const CompositionEntry* src;
+	size_t i;
 
 	if (result == 0)
 	{
@@ -74,9 +76,32 @@ const CompositionEntry* findcomposition(unicode_t codepoint, int32_t* result)
 			*result = FindResult_Found;
 			return &CompositionDataPtr[offset_center];
 		}
+		else if (offset_end - offset_start <= 32)
+		{
+			src = &CompositionDataPtr[offset_start];
+			for (i = offset_start; i < offset_end; ++i)
+			{
+				if (src->codepoint == codepoint)
+				{
+					*result = FindResult_Found;
+					return src;
+				}
+
+				src++;
+			}
+
+			break;
+		}
 		else
 		{
-			break;
+			if (codepoint >= CompositionDataPtr[offset_center].codepoint)
+			{
+				offset_start = offset_center;
+			}
+			else
+			{
+				offset_end = offset_center;
+			}
 		}
 	}
 	while (offset_start != offset_end);
