@@ -46,7 +46,7 @@ const CompositionEntry* findcomposition(unicode_t codepoint, int32_t* result)
 
 	if (codepoint >= 0x10FFFF)
 	{
-		*result = FindResult_InvalidCodepoint;
+		*result = FindResult_Invalid;
 		return 0;
 	}
 	else if (
@@ -107,5 +107,10 @@ const CompositionEntry* findcomposition(unicode_t codepoint, int32_t* result)
 	while (offset_start != offset_end);
 
 	*result = FindResult_Missing;
+	return 0;
+}
+
+const char* resolvedecomposition(size_t offset, int32_t* result)
+{
 	return 0;
 }

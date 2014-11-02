@@ -41,9 +41,11 @@ enum FindResult
 	FindResult_Found,
 	FindResult_Missing,
 	FindResult_OutOfBounds,
-	FindResult_InvalidCodepoint
+	FindResult_Invalid
 };
 
 const CompositionEntry* findcomposition(unicode_t codepoint, int32_t* result);
+
+const char* resolvedecomposition(size_t offset, int32_t* result);
 
 #endif
