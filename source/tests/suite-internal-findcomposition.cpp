@@ -163,7 +163,7 @@ TEST(FindComposition, InvalidCodepoint)
 	const CompositionEntry* e = findcomposition(0x00110000, &r);
 
 	EXPECT_EQ(nullptr, e);
-	EXPECT_EQ(FindResult_InvalidCodepoint, r);
+	EXPECT_EQ(FindResult_Invalid, r);
 }
 
 TEST(FindComposition, NoResult)
