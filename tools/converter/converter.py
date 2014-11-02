@@ -341,8 +341,9 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		header.outdent()
 		header.writeLine("};")
+		header.writeLine("const char** DecompositionDataPtr = DecompositionData;")
 		
-		header.write("size_t DecompositionDataLength[" + str(pages) + "] = { ")
+		header.write("const size_t DecompositionDataLength[" + str(pages) + "] = { ")
 		for p in range(0, pages):
 			size = page_ends[p] - page_starts[p]
 			header.write(str(size))
@@ -350,8 +351,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 				header.write(',')
 			header.write(' ')
 		header.writeLine("};")
-		
-		header.write("const char** DecompositionDataPtr = DecompositionData;")
+		header.write("const size_t* DecompositionDataLengthPtr = DecompositionDataLength;")
 		
 		header.close()
 		
