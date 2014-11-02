@@ -25,7 +25,7 @@ TEST(ResolveDecomposition, OffsetZero)
 TEST(ResolveDecomposition, OffsetOutOfBounds)
 {
 	int32_t r = 0;
-	const char* d = resolvedecomposition(0, &r);
+	const char* d = resolvedecomposition(0x00FFFFFF, &r);
 
 	EXPECT_EQ(nullptr, d);
 	EXPECT_EQ(FindResult_OutOfBounds, r);
