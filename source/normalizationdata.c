@@ -2,7 +2,7 @@
 	DO NOT MODIFY, AUTO-GENERATED
 
 	Generated on:
-		2014-10-31T15:20:43
+		2014-11-02T19:01:54
 
 	Command line:
 		D:\Projects\utf8rewind\tools\converter\converter.py
@@ -22074,4 +22074,5 @@ const char* DecompositionData[4] = {
 	"\xe4\xb3\xb8\x00\xf0\xaa\x84\x85\x00\xf0\xaa\x88\x8e\x00\xf0\xaa\x8a\x91\x00\xe4\xb5\x96\x00\xe9\xbb"
 	"\xbe\x00\xe9\xbc\x85\x00\xe9\xbc\x8f\x00\xe9\xbc\x96\x00\xf0\xaa\x98\x80\x00",
 };
+size_t DecompositionDataLength[4] = { 32766, 32758, 32765, 30744 };
 const char** DecompositionDataPtr = DecompositionData;
