@@ -30,6 +30,7 @@ extern const CompositionEntry* CompositionDataPtr;
 
 extern const size_t DecompositionDataPageCount;
 extern const char** DecompositionDataPtr;
+extern const size_t* DecompositionDataLengthPtr;
 
 const CompositionEntry* findcomposition(unicode_t codepoint, int32_t* result)
 {
@@ -112,5 +113,22 @@ const CompositionEntry* findcomposition(unicode_t codepoint, int32_t* result)
 
 const char* resolvedecomposition(size_t offset, int32_t* result)
 {
-	return 0;
+	if (result == 0)
+	{
+		return 0;
+	}
+
+	if (offset == 0)
+	{
+		*result = FindResult_Invalid;
+		return 0;
+	}
+	else if (offset >= DecompositionDataLengthPtr[0])
+	{
+		*result = FindResult_OutOfBounds;
+		return 0;
+	}
+
+	*result = FindResult_Found;
+	return DecompositionDataPtr[0] + offset;
 }
