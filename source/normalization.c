@@ -130,12 +130,7 @@ const char* resolvedecomposition(size_t offset, int32_t* result)
 
 	offset &= 0x00FFFFFF;
 
-	if (offset == 0)
-	{
-		*result = FindResult_Invalid;
-		return 0;
-	}
-	else if (offset >= DecompositionDataLengthPtr[pageIndex])
+	if (offset >= DecompositionDataLengthPtr[pageIndex])
 	{
 		*result = FindResult_OutOfBounds;
 		return 0;
