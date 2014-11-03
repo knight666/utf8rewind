@@ -120,28 +120,27 @@ const char* resolvedecomposition(size_t offset, int32_t* result)
 		return 0;
 	}
 
+	pageIndex = (offset & 0xFF000000) >> 24;
+
+	if (pageIndex >= DecompositionDataPageCount)
+	{
+		*result = FindResult_Invalid;
+		return 0;
+	}
+
+	offset &= 0x00FFFFFF;
+
 	if (offset == 0)
 	{
 		*result = FindResult_Invalid;
 		return 0;
 	}
-	else
+	else if (offset >= DecompositionDataLengthPtr[pageIndex])
 	{
-		pageIndex = (offset & 0xFF000000) >> 24;
-		if (pageIndex >= DecompositionDataPageCount)
-		{
-			*result = FindResult_Invalid;
-			return 0;
-		}
-		
-		offset &= 0x00FFFFFF;
-		if (offset >= DecompositionDataLengthPtr[pageIndex])
-		{
-			*result = FindResult_OutOfBounds;
-			return 0;
-		}
-
-		*result = FindResult_Found;
-		return DecompositionDataPtr[pageIndex] + offset;
+		*result = FindResult_OutOfBounds;
+		return 0;
 	}
+	
+	*result = FindResult_Found;
+	return DecompositionDataPtr[pageIndex] + offset;
 }
