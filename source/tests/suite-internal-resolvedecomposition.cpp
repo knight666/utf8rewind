@@ -45,8 +45,8 @@ TEST(ResolveDecomposition, OffsetZero)
 	int32_t r = 0;
 	const char* d = resolvedecomposition(0x00000000, &r);
 
-	EXPECT_EQ(nullptr, d);
-	EXPECT_EQ(FindResult_Invalid, r);
+	EXPECT_STREQ("", d);
+	EXPECT_EQ(FindResult_Found, r);
 }
 
 TEST(ResolveDecomposition, OffsetOutOfBounds)
@@ -90,8 +90,8 @@ TEST(ResolveDecomposition, NextPageOffsetZero)
 	int32_t r = 0;
 	const char* d = resolvedecomposition(0x02000000, &r);
 
-	EXPECT_EQ(nullptr, d);
-	EXPECT_EQ(FindResult_Invalid, r);
+	EXPECT_STREQ("", d);
+	EXPECT_EQ(FindResult_Found, r);
 }
 
 TEST(ResolveDecomposition, NextPageOffsetOutOfBounds)
