@@ -68,7 +68,7 @@ enum GeneralCategory
 	GeneralCategory_Format,
 	GeneralCategory_Surrogate,
 	GeneralCategory_PrivateUse,
-	GeneralCategory_Unassigned
+	GeneralCategory_Unassigned,
 };
 
 enum CanonicalCombiningClass
