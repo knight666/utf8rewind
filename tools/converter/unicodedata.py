@@ -45,8 +45,39 @@ class UnicodeMapping:
 		}
 		self.generalCategory = mapping[value]
 	
+	def setCanonicalCombiningClass(self, value):
+		mapping = {
+			"0": "CanonicalCombiningClass_NotReordered",
+			"1": "CanonicalCombiningClass_Overlay",
+			"7": "CanonicalCombiningClass_Nukta",
+			"8": "CanonicalCombiningClass_KanaVoicing",
+			"9": "CanonicalCombiningClass_Virama",
+			"10": "CanonicalCombiningClass_FixedPositionStart",
+			"199": "CanonicalCombiningClass_FixedPositionEnd",
+			"200": "CanonicalCombiningClass_AttachedBelowLeft",
+			"202": "CanonicalCombiningClass_AttachedBelow",
+			"204": "CanonicalCombiningClass_AttachedTopRight",
+			"208": "CanonicalCombiningClass_AttachedLeft",
+			"210": "CanonicalCombiningClass_AttachedRight",
+			"212": "CanonicalCombiningClass_AttachedTopLeft",
+			"214": "CanonicalCombiningClass_AttachedAbove",
+			"216": "CanonicalCombiningClass_AttachedAboveRight",
+			"218": "CanonicalCombiningClass_BelowLeft",
+			"220": "CanonicalCombiningClass_Below",
+			"222": "CanonicalCombiningClass_BelowRight",
+			"224": "CanonicalCombiningClass_Left",
+			"226": "CanonicalCombiningClass_Right",
+			"228": "CanonicalCombiningClass_AboveLeft",
+			"230": "CanonicalCombiningClass_Above",
+			"232": "CanonicalCombiningClass_AboveRight",
+			"233": "CanonicalCombiningClass_DoubleBelow",
+			"234": "CanonicalCombiningClass_DoubleAbove",
+			"240": "CanonicalCombiningClass_IotaSubscript"
+		}
+		self.canonicalCombiningClass = mapping[value]
+	
 	def __str__(self):
-		return "{ codepoint: " + hex(self.codepoint) + ", generalCategory: " + self.generalCategory + " }"
+		return "{ codepoint: " + hex(self.codepoint) + ", generalCategory: " + self.generalCategory + ", canonicalCombiningClass: " + self.canonicalCombiningClass+ " }"
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
@@ -59,6 +90,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		u = UnicodeMapping()
 		u.codepoint = int(entry.matches[0][0], 16)
 		u.setGeneralCategory(entry.matches[2][0])
+		u.setCanonicalCombiningClass(entry.matches[3][0])
 		for e in entry.matches:
 			print e
 		
