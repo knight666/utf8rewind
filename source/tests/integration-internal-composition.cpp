@@ -337,3 +337,70 @@ TEST(Composition, CanonicalCompositeOWithCircumflex)
 		delete u;
 	}
 }
+
+TEST(Composition, MultipleCombiningMarksSWithDots)
+{
+	int32_t errors = 0;
+
+	const CompositionEntry* c = findcomposition(0x1E69, &errors);
+	ASSERT_NE(nullptr, c);
+	EXPECT_EQ(0, errors);
+
+	// NFC
+
+	EXPECT_EQ(0, c->offsetC);
+
+	// NFD
+
+	{
+		const char* d = resolvedecomposition(c->offsetD, &errors);
+		ASSERT_NE(nullptr, d);
+		EXPECT_EQ(0, errors);
+
+		EXPECT_STREQ("\x73\xCC\xA3\xCC\x87", d);
+
+		unicode_t* u = nullptr;
+		size_t ul = utf8toutf32(d, strlen(d), nullptr, 0, &errors);
+		EXPECT_EQ(0, errors);
+
+		u = new unicode_t[ul / sizeof(unicode_t)];
+		utf8toutf32(d, strlen(d), u, ul, &errors);
+		EXPECT_EQ(0, errors);
+
+		EXPECT_EQ(3 * sizeof(unicode_t), ul);
+		EXPECT_EQ(0x00000073, u[0]);
+		EXPECT_EQ(0x00000323, u[1]);
+		EXPECT_EQ(0x00000307, u[2]);
+
+		delete u;
+	}
+
+	// NFKC
+
+	EXPECT_EQ(0, c->offsetC);
+
+	// NFKD
+
+	{
+		const char* d = resolvedecomposition(c->offsetD, &errors);
+		ASSERT_NE(nullptr, d);
+		EXPECT_EQ(0, errors);
+
+		EXPECT_STREQ("\x73\xCC\xA3\xCC\x87", d);
+
+		unicode_t* u = nullptr;
+		size_t ul = utf8toutf32(d, strlen(d), nullptr, 0, &errors);
+		EXPECT_EQ(0, errors);
+
+		u = new unicode_t[ul / sizeof(unicode_t)];
+		utf8toutf32(d, strlen(d), u, ul, &errors);
+		EXPECT_EQ(0, errors);
+
+		EXPECT_EQ(3 * sizeof(unicode_t), ul);
+		EXPECT_EQ(0x00000073, u[0]);
+		EXPECT_EQ(0x00000323, u[1]);
+		EXPECT_EQ(0x00000307, u[2]);
+
+		delete u;
+	}
+}
