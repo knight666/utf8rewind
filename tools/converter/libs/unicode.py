@@ -84,11 +84,12 @@ class UnicodeDocument:
 					entry.lineNumber = line_count
 					while (1):
 						section_end = entry_sliced.find(';')
-						sliced = entry_sliced[:section_end]
-						matches = re.findall('([0-9A-Za-z]+)', sliced)
-						if not matches:
-							break
+						if section_end <> -1:
+							sliced = entry_sliced[:section_end]
+						matches = re.findall('([^ ]+)', sliced)
 						entry.matches.append(matches)
+						if section_end == -1:
+							break
 						entry_sliced = entry_sliced[section_end + 1:]
 					
 					# comment
