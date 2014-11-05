@@ -9,6 +9,8 @@ class UnicodeMapping:
 	def __init__(self):
 		self.codepoint = 0
 		self.generalCategory = ""
+		self.canonicalCombiningClass = ""
+		self.bidiClass = ""
 	
 	def setGeneralCategory(self, value):
 		mapping = {
@@ -76,8 +78,32 @@ class UnicodeMapping:
 		}
 		self.canonicalCombiningClass = mapping[value]
 	
+	def setBidiClass(self, value):
+		mapping = {
+			"L": "BidiClass_LeftToRight",
+			"LRE": "BidiClass_LeftToRightEmbedding",
+			"LRO": "BidiClass_LeftToRightOverride",
+			"R": "BidiClass_RightToLeft",
+			"AL": "BidiClass_ArabicLetter",
+			"RLE": "BidiClass_RightToLeftEmbedding",
+			"RLO": "BidiClass_RightToLeftOverride",
+			"PDF": "BidiClass_PopDirectionalFormat",
+			"EN": "BidiClass_EuropeanNumber",
+			"ES": "BidiClass_EuropeanSeparator",
+			"ET": "BidiClass_EuropeanTerminator",
+			"AN": "BidiClass_ArabicNumber",
+			"CS": "BidiClass_CommonSeparator",
+			"NSM": "BidiClass_NonspacingMark",
+			"BN": "BidiClass_BoundaryNeutral",
+			"B": "BidiClass_ParagraphSeparator",
+			"S": "BidiClass_SegmentSeparator",
+			"WS": "BidiClass_WhiteSpace",
+			"ON": "BidiClass_OtherNeutral"
+		}
+		self.bidiClass = mapping[value]
+	
 	def __str__(self):
-		return "{ codepoint: " + hex(self.codepoint) + ", generalCategory: " + self.generalCategory + ", canonicalCombiningClass: " + self.canonicalCombiningClass+ " }"
+		return "{ codepoint: " + hex(self.codepoint) + ", generalCategory: " + self.generalCategory + ", canonicalCombiningClass: " + self.canonicalCombiningClass+ ", bidiClass: " + self.bidiClass + " }"
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
@@ -91,9 +117,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		u.codepoint = int(entry.matches[0][0], 16)
 		u.setGeneralCategory(entry.matches[2][0])
 		u.setCanonicalCombiningClass(entry.matches[3][0])
+		u.setBidiClass(entry.matches[4][0])
+		
 		for e in entry.matches:
 			print e
-		
 		print u
 		
 		return True
