@@ -10,6 +10,7 @@ class UnicodeMapping:
 	def __init__(self, db):
 		self.db = db
 		self.codepoint = 0
+		self.name = ""
 		self.generalCategory = ""
 		self.canonicalCombiningClass = 0
 		self.bidiClass = ""
@@ -18,6 +19,11 @@ class UnicodeMapping:
 		self.numericType = "NumericType_None"
 		self.numericValue = 0
 		self.bidiMirrored = False
+	
+	def setName(self, value):
+		self.name = value[0]
+		for w in value[1:]:
+			self.name += " " + w
 	
 	def setGeneralCategory(self, value):
 		mapping = {
@@ -138,7 +144,7 @@ class UnicodeMapping:
 			self.bidiMirrored = False
 	
 	def __str__(self):
-		return "{ codepoint: " + hex(self.codepoint) + ", generalCategory: " + self.generalCategory + ", canonicalCombiningClass: " + str(self.canonicalCombiningClass) + ", bidiClass: " + self.bidiClass + ", decompositionType: " + self.decompositionType + ", decompositionTranslated: " + self.decompositionTranslated + ", numericType: " + self.numericType + ", numericValue: " + str(self.numericValue) + " }"
+		return "{ codepoint: " + hex(self.codepoint) + ", name: \"" + self.name + "\" generalCategory: \"" + self.generalCategory + "\", canonicalCombiningClass: " + str(self.canonicalCombiningClass) + ", bidiClass: \"" + self.bidiClass + "\", decompositionType: \"" + self.decompositionType + "\", decompositionTranslated: \"" + self.decompositionTranslated + "\", numericType: \"" + self.numericType + "\", numericValue: " + str(self.numericValue) + ", bidiMirrored: " + str(self.bidiMirrored) + " }"
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
@@ -154,6 +160,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		u = UnicodeMapping(self)
 		u.codepoint = int(entry.matches[0][0], 16)
+		u.setName(entry.matches[1])
 		u.setGeneralCategory(entry.matches[2][0])
 		u.setCanonicalCombiningClass(entry.matches[3][0])
 		u.setBidiClass(entry.matches[4][0])
