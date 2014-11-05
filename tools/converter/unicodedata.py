@@ -11,7 +11,7 @@ class UnicodeMapping:
 		self.db = db
 		self.codepoint = 0
 		self.generalCategory = ""
-		self.canonicalCombiningClass = ""
+		self.canonicalCombiningClass = 0
 		self.bidiClass = ""
 		self.decompositionType = ""
 		self.decompositionTranslated = ""
@@ -54,35 +54,7 @@ class UnicodeMapping:
 		self.generalCategory = mapping[value]
 	
 	def setCanonicalCombiningClass(self, value):
-		mapping = {
-			"0": "CanonicalCombiningClass_NotReordered",
-			"1": "CanonicalCombiningClass_Overlay",
-			"7": "CanonicalCombiningClass_Nukta",
-			"8": "CanonicalCombiningClass_KanaVoicing",
-			"9": "CanonicalCombiningClass_Virama",
-			"10": "CanonicalCombiningClass_FixedPositionStart",
-			"199": "CanonicalCombiningClass_FixedPositionEnd",
-			"200": "CanonicalCombiningClass_AttachedBelowLeft",
-			"202": "CanonicalCombiningClass_AttachedBelow",
-			"204": "CanonicalCombiningClass_AttachedTopRight",
-			"208": "CanonicalCombiningClass_AttachedLeft",
-			"210": "CanonicalCombiningClass_AttachedRight",
-			"212": "CanonicalCombiningClass_AttachedTopLeft",
-			"214": "CanonicalCombiningClass_AttachedAbove",
-			"216": "CanonicalCombiningClass_AttachedAboveRight",
-			"218": "CanonicalCombiningClass_BelowLeft",
-			"220": "CanonicalCombiningClass_Below",
-			"222": "CanonicalCombiningClass_BelowRight",
-			"224": "CanonicalCombiningClass_Left",
-			"226": "CanonicalCombiningClass_Right",
-			"228": "CanonicalCombiningClass_AboveLeft",
-			"230": "CanonicalCombiningClass_Above",
-			"232": "CanonicalCombiningClass_AboveRight",
-			"233": "CanonicalCombiningClass_DoubleBelow",
-			"234": "CanonicalCombiningClass_DoubleAbove",
-			"240": "CanonicalCombiningClass_IotaSubscript"
-		}
-		self.canonicalCombiningClass = mapping[value]
+		self.canonicalCombiningClass = int(value)
 	
 	def setBidiClass(self, value):
 		mapping = {
@@ -159,7 +131,7 @@ class UnicodeMapping:
 					self.numericValue = float(value_found.group(1)) / float(value_found.group(2))
 	
 	def __str__(self):
-		return "{ codepoint: " + hex(self.codepoint) + ", generalCategory: " + self.generalCategory + ", canonicalCombiningClass: " + self.canonicalCombiningClass+ ", bidiClass: " + self.bidiClass + ", decompositionType: " + self.decompositionType + ", decompositionTranslated: " + self.decompositionTranslated + ", numericType: " + self.numericType + ", numericValue: " + str(self.numericValue) + " }"
+		return "{ codepoint: " + hex(self.codepoint) + ", generalCategory: " + self.generalCategory + ", canonicalCombiningClass: " + str(self.canonicalCombiningClass) + ", bidiClass: " + self.bidiClass + ", decompositionType: " + self.decompositionType + ", decompositionTranslated: " + self.decompositionTranslated + ", numericType: " + self.numericType + ", numericValue: " + str(self.numericValue) + " }"
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
