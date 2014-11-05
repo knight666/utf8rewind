@@ -15,23 +15,14 @@ class UnicodeSection:
 		self.title = ""
 		self.entries = []
 	
-	def accept(self, visitor, limit):
-		if not visitor.visitSection(self):
-			return False
-		for e in self.entries:
-			result = e.accept(visitor)
-			if not result:
-				return False
-			elif limit:
-				limit -= 1
-				if limit == 0:
-					return True
-		return True
+	def accept(self, visitor):
+		return visitor.visitSection(self)
 
 class UnicodeDocument:
 	def __init__(self):
 		self.lineLimit = None
 		self.entryLimit = None
+		self.entrySkip = None
 		self.filename = ""
 		self.sections = []
 	
@@ -111,8 +102,18 @@ class UnicodeDocument:
 		if not visitor.visitDocument(self):
 			return False
 		for s in self.sections:
-			if not s.accept(visitor, self.entryLimit):
+			if not s.accept(visitor):
 				return False
+			for e in s.entries:
+				if self.entrySkip and self.entrySkip > 0:
+					self.entrySkip -= 1
+					continue
+				if not e.accept(visitor):
+					return False
+				if self.entryLimit:
+					self.entryLimit -= 1
+					if self.entryLimit == 0:
+						return True
 		return True
 
 class UnicodeVisitor:

@@ -118,6 +118,13 @@ if __name__ == '__main__':
 		type = int,
 		help = 'limit the amount of entries parsed'
 	)
+	parser.add_argument(
+		'--entry-skip', '-s',
+		dest = 'entrySkip',
+		default = 0,
+		type = int,
+		help = 'start offset for entries'
+	)
 	args = parser.parse_args()
 	
 	script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -125,7 +132,9 @@ if __name__ == '__main__':
 	document = libs.unicode.UnicodeDocument()
 	document.lineLimit = args.lineLimit
 	document.entryLimit = args.entryLimit
+	document.entrySkip = args.entrySkip
 	document.parse(script_path + '/data/UnicodeData.txt')
 	
 	db = Database()
+	db.entrySkip = args.entrySkip
 	document.accept(db)
