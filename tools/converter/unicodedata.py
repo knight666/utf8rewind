@@ -1,16 +1,20 @@
 import argparse
 import os
+import re
 import sys
 import libs.header
 import libs.unicode
 import libs.utf8
 
 class UnicodeMapping:
-	def __init__(self):
+	def __init__(self, db):
+		self.db = db
 		self.codepoint = 0
 		self.generalCategory = ""
 		self.canonicalCombiningClass = ""
 		self.bidiClass = ""
+		self.decompositionType = ""
+		self.decompositionTranslated = ""
 	
 	def setGeneralCategory(self, value):
 		mapping = {
@@ -102,28 +106,108 @@ class UnicodeMapping:
 		}
 		self.bidiClass = mapping[value]
 	
+	def setDecompositionMapping(self, value):
+		if not value:
+			self.decompositionType = "DecompositionType_Canonical"
+			self.decompositionMapping = 0
+		else:
+			mapping = {
+				"<font>": "DecompositionType_Font",
+				"<noBreak>": "DecompositionType_NoBreak",
+				"<initial>": "DecompositionType_InitialArabic",
+				"<medial>": "DecompositionType_MedialArabic",
+				"<final>": "DecompositionType_FinalArabic",
+				"<isolated>": "DecompositionType_IsolatedArabic",
+				"<circle>": "DecompositionType_Circle",
+				"<super>": "DecompositionType_Superscript",
+				"<sub>": "DecompositionType_Subscript",
+				"<vertical>": "DecompositionType_Vertical",
+				"<wide>": "DecompositionType_Wide",
+				"<narrow>": "DecompositionType_Narrow",
+				"<small>": "DecompositionType_Small",
+				"<square>": "DecompositionType_SquaredCJK",
+				"<fraction>": "DecompositionType_Fraction",
+				"<compat>": "DecompositionType_Unspecified"
+			}
+			if value[0] in mapping:
+				self.decompositionType = mapping[value[0]]
+				value = value[1:]
+			else:
+				self.decompositionType = "DecompositionType_Canonical"
+			self.decompositionTranslated = db.matchToString(value)
+			self.decompositionMapping = db.addTranslation(self.decompositionTranslated)
+	
 	def __str__(self):
-		return "{ codepoint: " + hex(self.codepoint) + ", generalCategory: " + self.generalCategory + ", canonicalCombiningClass: " + self.canonicalCombiningClass+ ", bidiClass: " + self.bidiClass + " }"
+		return "{ codepoint: " + hex(self.codepoint) + ", generalCategory: " + self.generalCategory + ", canonicalCombiningClass: " + self.canonicalCombiningClass+ ", bidiClass: " + self.bidiClass + ", decompositionType: " + self.decompositionType + ", decompositionTranslated: " + self.decompositionTranslated + " }"
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
-		pass
+		self.verbose = False
+		self.blob = ""
+		self.total = 0
+		self.offset = 1
+		self.hashed = dict()
 	
 	def visitEntry(self, entry):
 		if not entry.matches[0]:
 			return False
 		
-		u = UnicodeMapping()
+		u = UnicodeMapping(self)
 		u.codepoint = int(entry.matches[0][0], 16)
 		u.setGeneralCategory(entry.matches[2][0])
 		u.setCanonicalCombiningClass(entry.matches[3][0])
 		u.setBidiClass(entry.matches[4][0])
+		u.setDecompositionMapping(entry.matches[5])
 		
-		for e in entry.matches:
-			print e
-		print u
+		if u.decompositionTranslated <> "":
+			for e in entry.matches:
+				print e
+			print u
 		
 		return True
+	
+	def matchToString(self, match):
+		result = ""
+		
+		if match == None:
+			return result
+		
+		for group in match:
+			if group <> None:
+				codepoint = int(group, 16)
+				converted = libs.utf8.codepointToUtf8(codepoint)
+				result += converted
+		result += "\\x00"
+		
+		return result
+	
+	def addTranslation(self, translation):
+		result = 0
+		
+		if translation not in self.hashed:
+			result = self.offset
+			
+			character_matches = re.findall('\\\\x?[^\\\\]+', translation)
+			if character_matches:
+				offset = len(character_matches)
+			else:
+				offset = 0
+			
+			if self.verbose:
+				print "hashing " + translation + " offset " + str(self.offset)
+			
+			self.hashed[translation] = result
+			self.offset += offset
+			self.blob += translation
+		else:
+			result = self.hashed[translation]
+		
+		if self.verbose:
+			print "translated", translation, "offset", result
+		
+		self.total += 1
+		
+		return result
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
