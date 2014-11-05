@@ -17,6 +17,7 @@ class UnicodeMapping:
 		self.decompositionTranslated = ""
 		self.numericType = "NumericType_None"
 		self.numericValue = 0
+		self.bidiMirrored = False
 	
 	def setGeneralCategory(self, value):
 		mapping = {
@@ -130,6 +131,12 @@ class UnicodeMapping:
 				if value_found:
 					self.numericValue = float(value_found.group(1)) / float(value_found.group(2))
 	
+	def setBidiMirrored(self, value):
+		if value[0] == "Y":
+			self.bidiMirrored = True
+		else:
+			self.bidiMirrored = False
+	
 	def __str__(self):
 		return "{ codepoint: " + hex(self.codepoint) + ", generalCategory: " + self.generalCategory + ", canonicalCombiningClass: " + str(self.canonicalCombiningClass) + ", bidiClass: " + self.bidiClass + ", decompositionType: " + self.decompositionType + ", decompositionTranslated: " + self.decompositionTranslated + ", numericType: " + self.numericType + ", numericValue: " + str(self.numericValue) + " }"
 
@@ -152,10 +159,9 @@ class Database(libs.unicode.UnicodeVisitor):
 		u.setBidiClass(entry.matches[4][0])
 		u.setDecompositionMapping(entry.matches[5])
 		u.setNumericValue(entry.matches[6], entry.matches[7], entry.matches[8])
+		u.setBidiMirrored(entry.matches[9])
 		
-		if u.numericType <> "NumericType_None":
-			for e in entry.matches:
-				print e
+		if u.bidiMirrored:
 			print u
 		
 		return True
