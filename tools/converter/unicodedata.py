@@ -15,6 +15,8 @@ class UnicodeMapping:
 		self.bidiClass = ""
 		self.decompositionType = ""
 		self.decompositionTranslated = ""
+		self.numericType = "NumericType_None"
+		self.numericValue = 0
 	
 	def setGeneralCategory(self, value):
 		mapping = {
@@ -137,8 +139,27 @@ class UnicodeMapping:
 			self.decompositionTranslated = db.matchToString(value)
 			self.decompositionMapping = db.addTranslation(self.decompositionTranslated)
 	
+	def setNumericValue(self, fieldOne, fieldTwo, fieldThree):
+		if not fieldOne and not fieldTwo and not fieldThree:
+			self.numericType = "NumericType_None"
+			self.numericValue = 0
+			return
+		
+		if fieldThree:
+			if fieldTwo:
+				if fieldOne:
+					self.numericType = "NumericType_Decimal"
+				else:
+					self.numericType = "NumericType_Digit"
+				self.numericValue = int(fieldThree[0])
+			else:
+				self.numericType = "NumericType_Numeric"
+				value_found = re.match('([0-9]+)/([0-9]+)', fieldThree[0])
+				if value_found:
+					self.numericValue = float(value_found.group(1)) / float(value_found.group(2))
+	
 	def __str__(self):
-		return "{ codepoint: " + hex(self.codepoint) + ", generalCategory: " + self.generalCategory + ", canonicalCombiningClass: " + self.canonicalCombiningClass+ ", bidiClass: " + self.bidiClass + ", decompositionType: " + self.decompositionType + ", decompositionTranslated: " + self.decompositionTranslated + " }"
+		return "{ codepoint: " + hex(self.codepoint) + ", generalCategory: " + self.generalCategory + ", canonicalCombiningClass: " + self.canonicalCombiningClass+ ", bidiClass: " + self.bidiClass + ", decompositionType: " + self.decompositionType + ", decompositionTranslated: " + self.decompositionTranslated + ", numericType: " + self.numericType + ", numericValue: " + str(self.numericValue) + " }"
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
@@ -158,8 +179,9 @@ class Database(libs.unicode.UnicodeVisitor):
 		u.setCanonicalCombiningClass(entry.matches[3][0])
 		u.setBidiClass(entry.matches[4][0])
 		u.setDecompositionMapping(entry.matches[5])
+		u.setNumericValue(entry.matches[6], entry.matches[7], entry.matches[8])
 		
-		if u.decompositionTranslated <> "":
+		if u.numericType <> "NumericType_None":
 			for e in entry.matches:
 				print e
 			print u
