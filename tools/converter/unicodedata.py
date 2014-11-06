@@ -19,6 +19,7 @@ class UnicodeMapping:
 		self.bidiClass = ""
 		self.decompositionType = ""
 		self.decompositionTranslated = ""
+		self.decompositionCodepoints = []
 		self.numericType = "NumericType_None"
 		self.numericValue = 0
 		self.bidiMirrored = False
@@ -73,7 +74,10 @@ class UnicodeMapping:
 			"Co": "GeneralCategory_PrivateUse",
 			"Cn": "GeneralCategory_Unassigned"
 		}
-		self.generalCategory = generalCategoryMapping[matches[2][0]]
+		try:
+			self.generalCategory = generalCategoryMapping[matches[2][0]]
+		except:
+			raise KeyError("Failed to find general category mapping for value \"" + matches[2][0] + "\"")
 		
 		# canonical combining class
 		
@@ -100,9 +104,16 @@ class UnicodeMapping:
 			"B": "BidiClass_ParagraphSeparator",
 			"S": "BidiClass_SegmentSeparator",
 			"WS": "BidiClass_WhiteSpace",
-			"ON": "BidiClass_OtherNeutral"
+			"ON": "BidiClass_OtherNeutral",
+			"LRI": "BidiClass_LeftToRightIsolate",
+			"RLI": "BidiClass_RightToLeftIsolate",
+			"FSI": "BidiClass_FirstStrongIsolate",
+			"PDI": "BidiClass_PopDirectionalIsolate",
 		}
-		self.bidiClass = bidiClassMapping[matches[4][0]]
+		try:
+			self.bidiClass = bidiClassMapping[matches[4][0]]
+		except:
+			raise KeyError("Failed to find bidi class mapping for value \"" + matches[4][0] + "\"")
 		
 		# decomposition mapping
 		
@@ -133,6 +144,8 @@ class UnicodeMapping:
 				matches[5] = matches[5][1:]
 			else:
 				self.decompositionType = "DecompositionType_Canonical"
+			for c in matches[5]:
+				self.decompositionCodepoints.append(int(c, 16))
 			self.decompositionTranslated = db.matchToString(matches[5])
 			self.decompositionMapping = db.addTranslation(self.decompositionTranslated)
 		
@@ -173,19 +186,44 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.total = 0
 		self.offset = 1
 		self.hashed = dict()
+		self.records = dict()
 	
 	def visitEntry(self, entry):
 		if not entry.matches[0]:
 			return False
 		
 		u = UnicodeMapping(self)
-		if not u.parse(entry.matches):
+		try:
+			if not u.parse(entry.matches):
+				return False
+		except KeyError as e:
+			print "Failed to parse entry - error: \"" + e + "\" line: " + str(entry.lineNumber)
+			for m in entry.matches:
+				print m
 			return False
 		
-		if u.bidiMirrored:
-			print u
+		self.records[u.codepoint] = u
 		
 		return True
+	
+	def resolveCodepoint(self, codepoint):
+		found = self.records[codepoint]
+		if not found:
+			return ""
+		print found
+		if found.decompositionCodepoints:
+			result = ""
+			for c in found.decompositionCodepoints:
+				print c
+				result += " " + self.resolveCodepoint(c)
+			return result
+		else:
+			return hex(codepoint)
+				
+		print found
+	
+	def write(self):
+		print self.resolveCodepoint(0x00BD)
 	
 	def matchToString(self, match):
 		result = ""
@@ -270,3 +308,5 @@ if __name__ == '__main__':
 	db = Database()
 	db.entrySkip = args.entrySkip
 	document.accept(db)
+	
+	db.write()
