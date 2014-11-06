@@ -9,6 +9,9 @@ import libs.utf8
 class UnicodeMapping:
 	def __init__(self, db):
 		self.db = db
+		self.clear()
+	
+	def clear(self):
 		self.codepoint = 0
 		self.name = ""
 		self.generalCategory = ""
@@ -20,13 +23,25 @@ class UnicodeMapping:
 		self.numericValue = 0
 		self.bidiMirrored = False
 	
-	def setName(self, value):
-		self.name = value[0]
-		for w in value[1:]:
+	def parse(self, matches):
+		self.clear()
+		
+		if not matches[0]:
+			return False
+		
+		# codepoint
+		
+		self.codepoint = int(matches[0][0], 16)
+		
+		# name
+		
+		self.name = matches[1][0]
+		for w in matches[1][1:]:
 			self.name += " " + w
-	
-	def setGeneralCategory(self, value):
-		mapping = {
+		
+		# general category
+		
+		generalCategoryMapping = {
 			"Lu": "GeneralCategory_UppercaseLetter",
 			"Ll": "GeneralCategory_LowercaseLetter",
 			"Lt": "GeneralCategory_TitlecaseLetter",
@@ -58,13 +73,15 @@ class UnicodeMapping:
 			"Co": "GeneralCategory_PrivateUse",
 			"Cn": "GeneralCategory_Unassigned"
 		}
-		self.generalCategory = mapping[value]
-	
-	def setCanonicalCombiningClass(self, value):
-		self.canonicalCombiningClass = int(value)
-	
-	def setBidiClass(self, value):
-		mapping = {
+		self.generalCategory = generalCategoryMapping[matches[2][0]]
+		
+		# canonical combining class
+		
+		self.canonicalCombiningClass = int(matches[3][0])
+		
+		# bidi class
+		
+		bidiClassMapping = {
 			"L": "BidiClass_LeftToRight",
 			"LRE": "BidiClass_LeftToRightEmbedding",
 			"LRO": "BidiClass_LeftToRightOverride",
@@ -85,14 +102,15 @@ class UnicodeMapping:
 			"WS": "BidiClass_WhiteSpace",
 			"ON": "BidiClass_OtherNeutral"
 		}
-		self.bidiClass = mapping[value]
-	
-	def setDecompositionMapping(self, value):
-		if not value:
+		self.bidiClass = bidiClassMapping[matches[4][0]]
+		
+		# decomposition mapping
+		
+		if not matches[5]:
 			self.decompositionType = "DecompositionType_Canonical"
 			self.decompositionMapping = 0
 		else:
-			mapping = {
+			decompositionTypeMapping = {
 				"<font>": "DecompositionType_Font",
 				"<noBreak>": "DecompositionType_NoBreak",
 				"<initial>": "DecompositionType_InitialArabic",
@@ -110,38 +128,40 @@ class UnicodeMapping:
 				"<fraction>": "DecompositionType_Fraction",
 				"<compat>": "DecompositionType_Unspecified"
 			}
-			if value[0] in mapping:
-				self.decompositionType = mapping[value[0]]
-				value = value[1:]
+			if matches[5][0] in decompositionTypeMapping:
+				self.decompositionType = decompositionTypeMapping[matches[5][0]]
+				matches[5] = matches[5][1:]
 			else:
 				self.decompositionType = "DecompositionType_Canonical"
-			self.decompositionTranslated = db.matchToString(value)
+			self.decompositionTranslated = db.matchToString(matches[5])
 			self.decompositionMapping = db.addTranslation(self.decompositionTranslated)
-	
-	def setNumericValue(self, fieldOne, fieldTwo, fieldThree):
-		if not fieldOne and not fieldTwo and not fieldThree:
+		
+		# numerical value
+		
+		if not matches[6] and not matches[7] and not matches[8]:
 			self.numericType = "NumericType_None"
 			self.numericValue = 0
-			return
-		
-		if fieldThree:
-			if fieldTwo:
-				if fieldOne:
+		elif matches[8]:
+			if matches[7]:
+				if matches[6]:
 					self.numericType = "NumericType_Decimal"
 				else:
 					self.numericType = "NumericType_Digit"
-				self.numericValue = int(fieldThree[0])
+				self.numericValue = int(matches[8][0])
 			else:
 				self.numericType = "NumericType_Numeric"
-				value_found = re.match('([0-9]+)/([0-9]+)', fieldThree[0])
+				value_found = re.match('([0-9]+)/([0-9]+)', matches[8][0])
 				if value_found:
 					self.numericValue = float(value_found.group(1)) / float(value_found.group(2))
-	
-	def setBidiMirrored(self, value):
-		if value[0] == "Y":
+		
+		# bidi mirrored
+		
+		if matches[9][0] == "Y":
 			self.bidiMirrored = True
 		else:
 			self.bidiMirrored = False
+		
+		return True
 	
 	def __str__(self):
 		return "{ codepoint: " + hex(self.codepoint) + ", name: \"" + self.name + "\" generalCategory: \"" + self.generalCategory + "\", canonicalCombiningClass: " + str(self.canonicalCombiningClass) + ", bidiClass: \"" + self.bidiClass + "\", decompositionType: \"" + self.decompositionType + "\", decompositionTranslated: \"" + self.decompositionTranslated + "\", numericType: \"" + self.numericType + "\", numericValue: " + str(self.numericValue) + ", bidiMirrored: " + str(self.bidiMirrored) + " }"
@@ -159,14 +179,8 @@ class Database(libs.unicode.UnicodeVisitor):
 			return False
 		
 		u = UnicodeMapping(self)
-		u.codepoint = int(entry.matches[0][0], 16)
-		u.setName(entry.matches[1])
-		u.setGeneralCategory(entry.matches[2][0])
-		u.setCanonicalCombiningClass(entry.matches[3][0])
-		u.setBidiClass(entry.matches[4][0])
-		u.setDecompositionMapping(entry.matches[5])
-		u.setNumericValue(entry.matches[6], entry.matches[7], entry.matches[8])
-		u.setBidiMirrored(entry.matches[9])
+		if not u.parse(entry.matches):
+			return False
 		
 		if u.bidiMirrored:
 			print u
