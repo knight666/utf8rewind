@@ -122,6 +122,10 @@ enum BidiClass
 	BidiClass_SegmentSeparator,
 	BidiClass_WhiteSpace,
 	BidiClass_OtherNeutral,
+	BidiClass_LeftToRightIsolate,
+	BidiClass_RightToLeftIsolate,
+	BidiClass_FirstStrongIsolate,
+	BidiClass_PopDirectionalIsolate,
 };
 
 enum DecompositionType
