@@ -27,6 +27,8 @@ class UnicodeDocument:
 		self.sections = []
 	
 	def parse(self, filename):
+		print "Parsing \"" + filename + "\"..."
+		
 		self.filename = filename
 		
 		section_search = re.compile('@(\w+) ?# ?(.+)')
@@ -45,31 +47,32 @@ class UnicodeDocument:
 			lines_total = float(len(lines))
 			for line in lines:
 				line_count += 1
-				if not self.lineLimit:
-					if (line_count % 250) == 0:
-						print format(float(line_count) / lines_total * 100.0, ".2f") + "%"
 					
 				if len(line) > 0 and not line.startswith('\n') and not line.startswith('#'):
 					stripped = line.rstrip('\n')
 					
 					# section
 					
-					section_match = re.match(section_search, stripped)
-					if section_match:
-						if sections_found > 0:
-							section_current = UnicodeSection()
-							self.sections.append(section_current)
-						
-						section_current.identifier = section_match.group(1)
-						section_current.title = section_match.group(2)
-						sections_found += 1
-						
-						continue
+					if line.startswith('@'):
+						section_match = re.match(section_search, stripped)
+						if section_match:
+							if sections_found > 0:
+								section_current = UnicodeSection()
+								self.sections.append(section_current)
+							
+							section_current.identifier = section_match.group(1)
+							section_current.title = section_match.group(2)
+							sections_found += 1
+							
+							continue
 					
 					# entry
 					
 					comment_start = stripped.find('#')
-					entry_sliced = stripped[:comment_start]
+					if comment_start <> -1:
+						entry_sliced = stripped[:comment_start]
+					else:
+						entry_sliced = stripped
 					
 					entry = UnicodeEntry()
 					entry.lineNumber = line_count
