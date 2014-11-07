@@ -24,6 +24,14 @@ class UnicodeMapping:
 		self.numericValue = 0
 		self.bidiMirrored = False
 	
+	def decomposedToString(self):
+		decomposedCodepoints = ""
+		if self.decompositionCodepoints:
+			decomposedCodepoints = hex(self.decompositionCodepoints[0])
+			for c in self.decompositionCodepoints[1:]:
+				decomposedCodepoints += " " + hex(c)
+		return decomposedCodepoints
+	
 	def parse(self, matches):
 		self.clear()
 		
@@ -177,7 +185,7 @@ class UnicodeMapping:
 		return True
 	
 	def __str__(self):
-		return "{ codepoint: " + hex(self.codepoint) + ", name: \"" + self.name + "\" generalCategory: \"" + self.generalCategory + "\", canonicalCombiningClass: " + str(self.canonicalCombiningClass) + ", bidiClass: \"" + self.bidiClass + "\", decompositionType: \"" + self.decompositionType + "\", decompositionTranslated: \"" + self.decompositionTranslated + "\", numericType: \"" + self.numericType + "\", numericValue: " + str(self.numericValue) + ", bidiMirrored: " + str(self.bidiMirrored) + " }"
+		return "{ codepoint: " + hex(self.codepoint) + ", name: \"" + self.name + "\" generalCategory: \"" + self.generalCategory + "\", canonicalCombiningClass: " + str(self.canonicalCombiningClass) + ", bidiClass: \"" + self.bidiClass + "\", decompositionType: \"" + self.decompositionType + "\", decomposition: \"" + self.decomposedToString() + "\", numericType: \"" + self.numericType + "\", numericValue: " + str(self.numericValue) + ", bidiMirrored: " + str(self.bidiMirrored) + " }"
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
@@ -185,8 +193,13 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.blob = ""
 		self.total = 0
 		self.offset = 1
+		self.query = ""
 		self.hashed = dict()
 		self.records = dict()
+	
+	def visitDocument(self, document):
+		print "Parsing document to codepoint database..."
+		return True
 	
 	def visitEntry(self, entry):
 		if not entry.matches[0]:
@@ -210,20 +223,24 @@ class Database(libs.unicode.UnicodeVisitor):
 		found = self.records[codepoint]
 		if not found:
 			return ""
-		print found
+		
+		print found.name + " " + hex(found.codepoint) + " \"" + found.decomposedToString() + "\""
+		
 		if found.decompositionCodepoints:
 			result = ""
 			for c in found.decompositionCodepoints:
-				print c
-				result += " " + self.resolveCodepoint(c)
+				result += self.resolveCodepoint(c) + " "
 			return result
 		else:
 			return hex(codepoint)
-				
-		print found
 	
 	def write(self):
-		print self.resolveCodepoint(0x00BD)
+		if self.query <> "":
+			queryCodepoint = int(self.query, 16)
+			found = self.records[queryCodepoint]
+			if found:
+				print found
+				print self.resolveCodepoint(queryCodepoint)
 	
 	def matchToString(self, match):
 		result = ""
@@ -295,6 +312,12 @@ if __name__ == '__main__':
 		type = int,
 		help = 'start offset for entries'
 	)
+	parser.add_argument(
+		'--query', '-q',
+		dest = 'query',
+		default = "",
+		help = 'query a codepoint from the database'
+	)
 	args = parser.parse_args()
 	
 	script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -307,6 +330,7 @@ if __name__ == '__main__':
 	
 	db = Database()
 	db.entrySkip = args.entrySkip
+	db.query = args.query
 	document.accept(db)
 	
 	db.write()
