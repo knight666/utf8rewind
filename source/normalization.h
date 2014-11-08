@@ -162,15 +162,14 @@ typedef struct {
 	int8_t generalCategory;
 	int8_t canonicalCombiningClass;
 	int8_t bidiClass;
-	int8_t decompositionType;
-	ptrdiff_t decompositionMapping;
+	ptrdiff_t offsetNFC;
+	ptrdiff_t offsetNFD;
+	ptrdiff_t offsetNFKC;
+	ptrdiff_t offsetNFKD;
 	size_t numericType;
 	size_t numericValue;
 	int8_t bidiMirrored;
-	unicode_t simpleUppercaseMapping;
-	unicode_t simpleLowercaseMapping;
-	unicode_t simpleTitlecaseMapping;
-} UnicodeMapping;
+} UnicodeRecord;
 
 typedef struct {
 	unicode_t codepoint;
