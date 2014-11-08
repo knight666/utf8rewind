@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import os
 import re
 import sys
@@ -10,6 +11,9 @@ class UnicodeMapping:
 	def __init__(self, db):
 		self.db = db
 		self.clear()
+	
+	def __str__(self):
+		return "{ codepoint: " + hex(self.codepoint) + ", name: \"" + self.name + "\" generalCategory: \"" + self.generalCategory + "\", canonicalCombiningClass: " + str(self.canonicalCombiningClass) + ", bidiClass: \"" + self.bidiClass + "\", decompositionType: \"" + self.decompositionType + "\", decomposition: \"" + self.decomposedToString() + "\", numericType: \"" + self.numericType + "\", numericValue: " + str(self.numericValue) + ", bidiMirrored: " + str(self.bidiMirrored) + " }"
 	
 	def clear(self):
 		self.codepoint = 0
@@ -184,8 +188,47 @@ class UnicodeMapping:
 		
 		return True
 	
-	def __str__(self):
-		return "{ codepoint: " + hex(self.codepoint) + ", name: \"" + self.name + "\" generalCategory: \"" + self.generalCategory + "\", canonicalCombiningClass: " + str(self.canonicalCombiningClass) + ", bidiClass: \"" + self.bidiClass + "\", decompositionType: \"" + self.decompositionType + "\", decomposition: \"" + self.decomposedToString() + "\", numericType: \"" + self.numericType + "\", numericValue: " + str(self.numericValue) + ", bidiMirrored: " + str(self.bidiMirrored) + " }"
+	def resolveCodepoint(self, compatibility):
+		result = []
+		
+		if self.decompositionCodepoints and (compatibility or self.decompositionType == "DecompositionType_Canonical"):
+			for c in self.decompositionCodepoints:
+				if c in self.db.records:
+					resolved = self.db.records[c].resolveCodepoint(compatibility)
+					if resolved:
+						result.append(resolved)
+				else:
+					result.append(c)
+		else:
+			result.append(self.codepoint)
+		
+		return result
+	
+	def decompose(self):
+		self.decomposedNFD = self.resolveCodepoint(False)
+		self.decomposedNFKD = self.resolveCodepoint(True)
+		
+		print "codepoint " + hex(self.codepoint)
+		print "NFD: " + self.codepointsToString(self.decomposedNFD)
+		print "NFKD: " + self.codepointsToString(self.decomposedNFKD)
+	
+	def codepointsToString(self, values):
+		result = ""
+		
+		if values:
+			result = hex(values[0])
+			for v in values[1:]:
+				result += " " + hex(v)
+		
+		return result
+	
+	def toSource(self):
+		if self.bidiMirrored:
+			bidiMirroredString = "1"
+		else:
+			bidiMirroredString = "0"
+		
+		return "{ " + hex(self.codepoint) + ", " + self.generalCategory + ", " + str(self.canonicalCombiningClass) + ", " + self.bidiClass + ", 0, 0, 0, 0, " + self.numericType + ", " + str(self.numericValue) + ", " + bidiMirroredString + " }"
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
@@ -193,7 +236,6 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.blob = ""
 		self.total = 0
 		self.offset = 1
-		self.query = ""
 		self.hashed = dict()
 		self.records = dict()
 	
@@ -219,29 +261,46 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		return True
 	
-	def resolveCodepoint(self, codepoint):
+	def resolve(self):
+		for u in self.records:
+			r = self.records[u]
+			r.decompose()
+	
+	def resolveCodepoint(self, codepoint, compatibility):
 		found = self.records[codepoint]
 		if not found:
 			return ""
 		
-		print found.name + " " + hex(found.codepoint) + " \"" + found.decomposedToString() + "\""
+		if found.decompositionType == "DecompositionType_Canonical":
+			type = "Canonical"
+		elif found.decompositionCodepoints:
+			type = "Compatibility"
+		else:
+			type = "None"
 		
-		if found.decompositionCodepoints:
+		print found.name + " " + hex(found.codepoint) + " " + type + " \"" + found.decomposedToString() + "\""
+		
+		if found.decompositionCodepoints and (compatibility or found.decompositionType == "DecompositionType_Canonical"):
 			result = ""
 			for c in found.decompositionCodepoints:
-				result += self.resolveCodepoint(c) + " "
+				result += self.resolveCodepoint(c, compatibility) + " "
 			return result
 		else:
 			return hex(codepoint)
 	
-	def write(self):
-		if self.query <> "":
-			queryCodepoint = int(self.query, 16)
-			found = self.records[queryCodepoint]
-			if found:
-				print found
-				print self.resolveCodepoint(queryCodepoint)
-	
+	def executeQuery(self, query):
+		if query == "":
+			return
+		
+		queryCodepoint = int(query, 16)
+		found = self.records[queryCodepoint]
+		if found:
+			print found
+			print "Canonical:"
+			print self.resolveCodepoint(queryCodepoint, False)
+			print "Compatibility:"
+			print self.resolveCodepoint(queryCodepoint, True)
+
 	def matchToString(self, match):
 		result = ""
 		
@@ -284,6 +343,51 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.total += 1
 		
 		return result
+	
+	def writeSource(self, filepath):
+		print "Writing database to " + filepath + "..."
+		
+		command_line = sys.argv[0]
+		arguments = sys.argv[1:]
+		for a in arguments:
+			command_line += " " + a
+		
+		d = datetime.datetime.now()
+		
+		# comment header
+		
+		header = libs.header.Header(filepath)
+		header.writeLine("/*")
+		header.indent()
+		header.writeLine("DO NOT MODIFY, AUTO-GENERATED")
+		header.newLine()
+		header.writeLine("Generated on:")
+		header.indent()
+		header.writeLine(d.strftime("%Y-%m-%dT%H:%M:%S"))
+		header.outdent()
+		header.newLine()
+		header.writeLine("Command line:")
+		header.indent()
+		header.writeLine(command_line)
+		header.outdent()
+		header.outdent()
+		header.writeLine("*/")
+		header.newLine()
+		
+		# records
+		
+		header.writeLine("const size_t UnicodeRecordCount = " + str(len(self.records)) + ";")
+		header.writeLine("const UnicodeRecord UnicodeRecordData[" + str(len(self.records)) + "] = {")
+		
+		header.indent()
+		for u in self.records:
+			r = self.records[u]
+			header.writeLine(r.toSource())
+		header.outdent()
+		
+		header.writeLine("};")
+		header.writeLine("const UnicodeRecord* UnicodeRecordDataPtr = UnicodeRecordData;")
+		header.newLine()
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
@@ -329,8 +433,8 @@ if __name__ == '__main__':
 	document.parse(script_path + '/data/UnicodeData.txt')
 	
 	db = Database()
-	db.entrySkip = args.entrySkip
-	db.query = args.query
 	document.accept(db)
 	
-	db.write()
+	#db.resolve()
+	db.executeQuery(args.query)
+	db.writeSource(script_path + '/../../source/unicodedatabase.c')
