@@ -22,8 +22,11 @@ class UnicodeMapping:
 		self.canonicalCombiningClass = 0
 		self.bidiClass = ""
 		self.decompositionType = ""
-		self.decompositionTranslated = ""
 		self.decompositionCodepoints = []
+		self.offsetNFC = 0
+		self.offsetNFD = 0
+		self.offsetNFKC = 0
+		self.offsetNFKD = 0
 		self.numericType = "NumericType_None"
 		self.numericValue = 0
 		self.bidiMirrored = False
@@ -158,8 +161,6 @@ class UnicodeMapping:
 				self.decompositionType = "DecompositionType_Canonical"
 			for c in matches[5]:
 				self.decompositionCodepoints.append(int(c, 16))
-			self.decompositionTranslated = db.matchToString(matches[5])
-			self.decompositionMapping = db.addTranslation(self.decompositionTranslated)
 		
 		# numerical value
 		
@@ -207,10 +208,6 @@ class UnicodeMapping:
 	def decompose(self):
 		self.decomposedNFD = self.resolveCodepoint(False)
 		self.decomposedNFKD = self.resolveCodepoint(True)
-		
-		print "codepoint " + hex(self.codepoint)
-		print "NFD: " + self.codepointsToString(self.decomposedNFD)
-		print "NFKD: " + self.codepointsToString(self.decomposedNFKD)
 	
 	def codepointsToString(self, values):
 		result = ""
@@ -228,7 +225,7 @@ class UnicodeMapping:
 		else:
 			bidiMirroredString = "0"
 		
-		return "{ " + hex(self.codepoint) + ", " + self.generalCategory + ", " + str(self.canonicalCombiningClass) + ", " + self.bidiClass + ", 0, 0, 0, 0, " + self.numericType + ", " + str(self.numericValue) + ", " + bidiMirroredString + " }"
+		return "{ " + hex(self.codepoint) + ", " + self.generalCategory + ", " + str(self.canonicalCombiningClass) + ", " + self.bidiClass + ", " + str(self.offsetNFD) + ", " + str(self.offsetNFKD) + ", " + self.numericType + ", " + str(self.numericValue) + ", " + bidiMirroredString + " }"
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
@@ -262,9 +259,32 @@ class Database(libs.unicode.UnicodeVisitor):
 		return True
 	
 	def resolve(self):
+		print "Resolving decomposition for codepoints..."
+		
 		for u in self.records:
 			r = self.records[u]
 			r.decompose()
+			
+			convertedCodepoint = libs.utf8.codepointToUtf8(r.codepoint)
+			
+			r.offsetNFD = 0
+			r.offsetNFKD = 0
+			
+			if r.decomposedNFD:
+				convertedNFD = ""
+				for d in r.decomposedNFD:
+					convertedNFD += libs.utf8.codepointToUtf8(d)
+				
+				if convertedNFD <> convertedCodepoint:
+					r.offsetNFD = self.addTranslation(convertedNFD + "\\x00")
+			
+			if r.decomposedNFKD:
+				convertedNFKD = ""
+				for d in r.decomposedNFKD:
+					convertedNFKD += libs.utf8.codepointToUtf8(d)
+				
+				if convertedNFKD <> convertedCodepoint:
+					r.offsetNFKD = self.addTranslation(convertedNFKD + "\\x00")
 	
 	def resolveCodepoint(self, codepoint, compatibility):
 		found = self.records[codepoint]
@@ -435,6 +455,6 @@ if __name__ == '__main__':
 	db = Database()
 	document.accept(db)
 	
-	#db.resolve()
+	db.resolve()
 	db.executeQuery(args.query)
 	db.writeSource(script_path + '/../../source/unicodedatabase.c')
