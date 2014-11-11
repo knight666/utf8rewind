@@ -376,6 +376,27 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		d = datetime.datetime.now()
 		
+		recordsNFD = []
+		minimumNFD = 1000000
+		maximumNFD = 0
+		
+		recordsNFKD = []
+		minimumNFKD = 1000000
+		maximumNFKD = 0
+		
+		for u in self.records:
+			r = self.records[u]
+			
+			if r.offsetNFD <> 0:
+				recordsNFD.append(r)
+				minimumNFD = min(minimumNFD, r.codepoint)
+				maximumNFD = max(maximumNFD, r.codepoint)
+			
+			if r.offsetNFKD <> 0:
+				recordsNFKD.append(r)
+				minimumNFKD = min(minimumNFKD, r.codepoint)
+				maximumNFKD = max(maximumNFKD, r.codepoint)
+		
 		sliced = libs.blobsplitter.BlobSplitter()
 		sliced.split(self.blob, self.offset)
 		
@@ -399,19 +420,56 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.writeLine("*/")
 		header.newLine()
 		
-		# records
+		# decomposition records
 		
-		header.writeLine("const size_t UnicodeRecordCount = " + str(len(self.records)) + ";")
-		header.writeLine("const UnicodeRecord UnicodeRecordData[" + str(len(self.records)) + "] = {")
-		
+		header.writeLine("const size_t UnicodeNFDRecordCount = " + str(len(recordsNFD)) + ";")
+		header.writeLine("const DecompositionRecord UnicodeNFDRecord[" + str(len(recordsNFD)) + "] = {")
 		header.indent()
-		for u in self.records:
-			r = self.records[u]
-			header.writeLine(r.toSource())
-		header.outdent()
 		
+		count = 0
+		
+		for r in recordsNFD:
+			if (count % 4) == 0:
+				header.writeIndentation()
+			
+			header.write("{ " + hex(r.codepoint) + ", " + hex(r.offsetNFD) + "},")
+			
+			count += 1
+			if (count % 4) == 0:
+				header.newLine()
+			else:
+				header.write(" ")
+		
+		header.outdent()
 		header.writeLine("};")
-		header.writeLine("const UnicodeRecord* UnicodeRecordDataPtr = UnicodeRecordData;")
+		header.writeLine("const DecompositionRecord* UnicodeNFDRecordPtr = UnicodeNFDRecord;")
+		header.writeLine("const unicode_t UnicodeNFDRecordMinimum = " + hex(minimumNFD) + ";")
+		header.writeLine("const unicode_t UnicodeNFDRecordMaximum = " + hex(maximumNFD) + ";")
+		header.newLine()
+		
+		header.writeLine("const size_t UnicodeNFKDRecordCount = " + str(len(recordsNFKD)) + ";")
+		header.writeLine("const DecompositionRecord UnicodeNFKDRecord[" + str(len(recordsNFKD)) + "] = {")
+		header.indent()
+		
+		count = 0
+		
+		for r in recordsNFKD:
+			if (count % 4) == 0:
+				header.writeIndentation()
+			
+			header.write("{ " + hex(r.codepoint) + ", " + hex(r.offsetNFKD) + "},")
+			
+			count += 1
+			if (count % 4) == 0:
+				header.newLine()
+			else:
+				header.write(" ")
+		
+		header.outdent()
+		header.writeLine("};")
+		header.writeLine("const DecompositionRecord* UnicodeNFKDRecordPtr = UnicodeNFKDRecord;")
+		header.writeLine("const unicode_t UnicodeNFKDRecordMinimum = " + hex(minimumNFKD) + ";")
+		header.writeLine("const unicode_t UnicodeNFKDRecordMaximum = " + hex(maximumNFKD) + ";")
 		header.newLine()
 		
 		# decomposition data
@@ -428,7 +486,7 @@ class Database(libs.unicode.UnicodeVisitor):
 				header.newLine()
 		
 		header.outdent()
-		header.writeLine(";")
+		header.write(";")
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
