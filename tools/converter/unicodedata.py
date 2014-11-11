@@ -3,6 +3,7 @@ import datetime
 import os
 import re
 import sys
+import libs.blobsplitter
 import libs.header
 import libs.unicode
 import libs.utf8
@@ -375,42 +376,8 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		d = datetime.datetime.now()
 		
-		page_starts = []
-		page_ends = []
-		
-		page_starts.append(0)
-		
-		blob_size = self.offset
-		blob_page = self.blob
-		
-		total_offset = 0
-		
-		while 1:
-			if blob_size < self.pageSize:
-				page_ends.append(total_offset + blob_size)
-				break
-			
-			page_read = 0
-			blob_search = blob_page
-			while 1:
-				end_index = blob_search.find("\\x00")
-				if end_index == -1:
-					break
-				offset = (end_index / 4) + 1
-				if (page_read + offset) >= self.pageSize:
-					break
-				page_read += offset
-				blob_search = blob_search[(end_index + 4):]
-			
-			total_offset += page_read
-			
-			page_ends.append(total_offset)
-			page_starts.append(total_offset)
-			
-			blob_page = blob_page[(page_read * 4):]
-			blob_size -= page_read
-		
-		pages = len(page_starts)
+		sliced = libs.blobsplitter.BlobSplitter()
+		sliced.split(self.blob, self.offset)
 		
 		# comment header
 		
@@ -449,65 +416,21 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# decomposition data
 		
-		blob_page = self.blob
-		
-		header.writeLine("const size_t DecompositionDataPageCount = " + str(pages) + ";")
-		header.writeLine("const char* DecompositionData[" + str(pages) + "] = {")
+		header.writeLine("const size_t DecompositionDataPageCount = " + str(len(sliced.pages)) + ";")
+		header.writeLine("const char* DecompositionData[" + str(len(sliced.pages)) + "] = {")
 		header.indent()
 		
-		for p in range(0, pages):
-			blob_page = self.blob[page_starts[p] * 4:page_ends[p] * 4]
-			
-			read = page_ends[p] - page_starts[p]
-			written = 0
-			
-			first_line = True
-			
-			blob_sliced = blob_page
-			
-			while (1):
-				if first_line:
-					character_count = min(read, 24)
-				else:
-					character_count = min(read, 25)
-				
-				character_line = blob_sliced[:(character_count * 4)]
-				
+		for p in sliced.pages:
+			p.start()
+			while not p.atEnd:
+				p.nextLine()
 				header.writeIndentation()
-				
-				header.write("\"")
-				if first_line:
-					header.write("\\x00")
-					first_line = False
-				header.write(character_line)
-				header.write("\"")
-				
-				written += character_count
-				
-				read -= character_count
-				
-				if read <= 0:
-					header.write(",")
+				header.write(p.line)
 				header.newLine()
-				
-				if read <= 0:
-					break
-				
-				blob_sliced = blob_sliced[(character_count * 4):]
 		
 		header.outdent()
 		header.writeLine("};")
 		header.writeLine("const char** DecompositionDataPtr = DecompositionData;")
-		
-		header.write("const size_t DecompositionDataLength[" + str(pages) + "] = { ")
-		for p in range(0, pages):
-			size = page_ends[p] - page_starts[p]
-			header.write(str(size))
-			if p <> (pages - 1):
-				header.write(',')
-			header.write(' ')
-		header.writeLine("};")
-		header.write("const size_t* DecompositionDataLengthPtr = DecompositionDataLength;")
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
