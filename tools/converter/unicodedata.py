@@ -23,6 +23,8 @@ class UnicodeMapping:
 		self.bidiClass = ""
 		self.decompositionType = ""
 		self.decompositionCodepoints = []
+		self.decomposedNFD = []
+		self.decomposedNFKD = []
 		self.offsetNFC = 0
 		self.offsetNFD = 0
 		self.offsetNFKC = 0
@@ -197,7 +199,7 @@ class UnicodeMapping:
 				if c in self.db.records:
 					resolved = self.db.records[c].resolveCodepoint(compatibility)
 					if resolved:
-						result.append(resolved)
+						result += resolved
 				else:
 					result.append(c)
 		else:
@@ -231,6 +233,7 @@ class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
 		self.verbose = False
 		self.blob = ""
+		self.pageSize = 32767
 		self.total = 0
 		self.offset = 1
 		self.hashed = dict()
@@ -274,7 +277,6 @@ class Database(libs.unicode.UnicodeVisitor):
 				convertedNFD = ""
 				for d in r.decomposedNFD:
 					convertedNFD += libs.utf8.codepointToUtf8(d)
-				
 				if convertedNFD <> convertedCodepoint:
 					r.offsetNFD = self.addTranslation(convertedNFD + "\\x00")
 			
@@ -282,7 +284,6 @@ class Database(libs.unicode.UnicodeVisitor):
 				convertedNFKD = ""
 				for d in r.decomposedNFKD:
 					convertedNFKD += libs.utf8.codepointToUtf8(d)
-				
 				if convertedNFKD <> convertedCodepoint:
 					r.offsetNFKD = self.addTranslation(convertedNFKD + "\\x00")
 	
@@ -374,6 +375,43 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		d = datetime.datetime.now()
 		
+		page_starts = []
+		page_ends = []
+		
+		page_starts.append(0)
+		
+		blob_size = self.offset
+		blob_page = self.blob
+		
+		total_offset = 0
+		
+		while 1:
+			if blob_size < self.pageSize:
+				page_ends.append(total_offset + blob_size)
+				break
+			
+			page_read = 0
+			blob_search = blob_page
+			while 1:
+				end_index = blob_search.find("\\x00")
+				if end_index == -1:
+					break
+				offset = (end_index / 4) + 1
+				if (page_read + offset) >= self.pageSize:
+					break
+				page_read += offset
+				blob_search = blob_search[(end_index + 4):]
+			
+			total_offset += page_read
+			
+			page_ends.append(total_offset)
+			page_starts.append(total_offset)
+			
+			blob_page = blob_page[(page_read * 4):]
+			blob_size -= page_read
+		
+		pages = len(page_starts)
+		
 		# comment header
 		
 		header = libs.header.Header(filepath)
@@ -408,6 +446,68 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.writeLine("};")
 		header.writeLine("const UnicodeRecord* UnicodeRecordDataPtr = UnicodeRecordData;")
 		header.newLine()
+		
+		# decomposition data
+		
+		blob_page = self.blob
+		
+		header.writeLine("const size_t DecompositionDataPageCount = " + str(pages) + ";")
+		header.writeLine("const char* DecompositionData[" + str(pages) + "] = {")
+		header.indent()
+		
+		for p in range(0, pages):
+			blob_page = self.blob[page_starts[p] * 4:page_ends[p] * 4]
+			
+			read = page_ends[p] - page_starts[p]
+			written = 0
+			
+			first_line = True
+			
+			blob_sliced = blob_page
+			
+			while (1):
+				if first_line:
+					character_count = min(read, 24)
+				else:
+					character_count = min(read, 25)
+				
+				character_line = blob_sliced[:(character_count * 4)]
+				
+				header.writeIndentation()
+				
+				header.write("\"")
+				if first_line:
+					header.write("\\x00")
+					first_line = False
+				header.write(character_line)
+				header.write("\"")
+				
+				written += character_count
+				
+				read -= character_count
+				
+				if read <= 0:
+					header.write(",")
+				header.newLine()
+				
+				if read <= 0:
+					break
+				
+				blob_sliced = blob_sliced[(character_count * 4):]
+		
+		header.outdent()
+		header.writeLine("};")
+		header.writeLine("const char** DecompositionDataPtr = DecompositionData;")
+		
+		header.write("const size_t DecompositionDataLength[" + str(pages) + "] = { ")
+		for p in range(0, pages):
+			size = page_ends[p] - page_starts[p]
+			header.write(str(size))
+			if p <> (pages - 1):
+				header.write(',')
+			header.write(' ')
+		header.writeLine("};")
+		header.write("const size_t* DecompositionDataLengthPtr = DecompositionDataLength;")
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
@@ -442,6 +542,13 @@ if __name__ == '__main__':
 		default = "",
 		help = 'query a codepoint from the database'
 	)
+	parser.add_argument(
+		'--page-size', '-p',
+		dest = 'pageSize',
+		default = 32767,
+		type = int,
+		help = 'maximum page size for written strings'
+	)
 	args = parser.parse_args()
 	
 	script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -453,6 +560,7 @@ if __name__ == '__main__':
 	document.parse(script_path + '/data/UnicodeData.txt')
 	
 	db = Database()
+	db.pageSize = args.pageSize
 	document.accept(db)
 	
 	db.resolve()
