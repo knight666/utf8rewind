@@ -228,7 +228,7 @@ class UnicodeMapping:
 		else:
 			bidiMirroredString = "0"
 		
-		return "{ " + hex(self.codepoint) + ", " + self.generalCategory + ", " + str(self.canonicalCombiningClass) + ", " + self.bidiClass + ", " + str(self.offsetNFD) + ", " + str(self.offsetNFKD) + ", " + self.numericType + ", " + str(self.numericValue) + ", " + bidiMirroredString + " }"
+		return "{ " + hex(self.codepoint) + ", " + self.generalCategory + ", " + str(self.canonicalCombiningClass) + ", " + self.bidiClass + ", " + str(self.offsetNFD) + ", " + str(self.offsetNFKD) + ", " + self.numericType + ", " + str(self.numericValue) + ", " + bidiMirroredString + " },"
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
@@ -416,8 +416,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# decomposition data
 		
-		header.writeLine("const size_t DecompositionDataPageCount = " + str(len(sliced.pages)) + ";")
-		header.writeLine("const char* DecompositionData[" + str(len(sliced.pages)) + "] = {")
+		header.writeLine("const char* DecompositionData = ")
 		header.indent()
 		
 		for p in sliced.pages:
@@ -429,8 +428,7 @@ class Database(libs.unicode.UnicodeVisitor):
 				header.newLine()
 		
 		header.outdent()
-		header.writeLine("};")
-		header.writeLine("const char** DecompositionDataPtr = DecompositionData;")
+		header.writeLine(";")
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
