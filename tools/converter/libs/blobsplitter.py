@@ -1,6 +1,7 @@
 class BlobPage:
-	def __init__(self, splitter):
+	def __init__(self, splitter, pageIndex):
 		self.splitter = splitter
+		self.pageIndex = pageIndex
 		self.startIndex = 0
 		self.endIndex = 0
 	
@@ -34,7 +35,7 @@ class BlobPage:
 		self.written += character_count
 		self.read -= character_count
 		
-		if self.read <= 0:
+		if self.read <= 0 and self.pageIndex > 0:
 			self.line += ","
 		
 		if self.read > 0:
@@ -53,7 +54,7 @@ class BlobSplitter:
 		self.data = data
 		self.codepointCoint = codepointCount
 		
-		page_current = BlobPage(self)
+		page_current = BlobPage(self, len(self.pages))
 		self.pages.append(page_current)
 		
 		blob_page = data
@@ -82,7 +83,7 @@ class BlobSplitter:
 			
 			page_current.endIndex = total_offset
 			
-			page_current = BlobPage(self)
+			page_current = BlobPage(self, len(self.pages))
 			page_current.startIndex = total_offset
 			self.pages.append(page_current)
 			
