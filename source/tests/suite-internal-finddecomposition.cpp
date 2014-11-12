@@ -71,6 +71,28 @@ TEST(FindDecomposition, DecomposedFoundPivot)
 	EXPECT_EQ(FindResult_Found, e);
 }
 
+TEST(FindDecomposition, DecomposedFoundPivotUp)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x00001E63, NormalizationForm_Decomposed, &e);
+
+	ASSERT_NE(nullptr, r);
+	EXPECT_EQ(0x00001E63, r->codepoint);
+	EXPECT_EQ(0x00000BA2, r->offset);
+	EXPECT_EQ(FindResult_Found, e);
+}
+
+TEST(FindDecomposition, DecomposedFoundPivotDown)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x0002F81A, NormalizationForm_Decomposed, &e);
+
+	ASSERT_NE(nullptr, r);
+	EXPECT_EQ(0x0002F81A, r->codepoint);
+	EXPECT_EQ(0x00002B08, r->offset);
+	EXPECT_EQ(FindResult_Found, e);
+}
+
 TEST(FindDecomposition, DecomposedMissing)
 {
 	int32_t e = 0;
@@ -128,6 +150,28 @@ TEST(FindDecomposition, CompatibilityDecomposedFoundPivot)
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0000FB4F, r->codepoint);
 	EXPECT_EQ(0x0000356E, r->offset);
+	EXPECT_EQ(FindResult_Found, e);
+}
+
+TEST(FindDecomposition, CompatibilityDecomposedFoundPivotUp)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x000024E6, NormalizationForm_Compatibility_Decomposed, &e);
+
+	ASSERT_NE(nullptr, r);
+	EXPECT_EQ(0x000024E6, r->codepoint);
+	EXPECT_EQ(0x000004A6, r->offset);
+	EXPECT_EQ(FindResult_Found, e);
+}
+
+TEST(FindDecomposition, CompatibilityDecomposedFoundPivotDown)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x0001D596, NormalizationForm_Compatibility_Decomposed, &e);
+
+	ASSERT_NE(nullptr, r);
+	EXPECT_EQ(0x0001D596, r->codepoint);
+	EXPECT_EQ(0x000017FA, r->offset);
 	EXPECT_EQ(FindResult_Found, e);
 }
 

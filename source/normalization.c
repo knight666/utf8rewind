@@ -89,23 +89,38 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normali
 		return 0;
 	}
 
-	offset_pivot = offset_start + ((offset_end - offset_start) / 2);
+	do 
+	{
+		offset_pivot = offset_start + ((offset_end - offset_start) / 2);
 
-	if (codepoint == record[offset_start].codepoint)
-	{
-		*result = FindResult_Found;
-		return &record[offset_start];
+		if (codepoint == record[offset_start].codepoint)
+		{
+			*result = FindResult_Found;
+			return &record[offset_start];
+		}
+		else if (codepoint == record[offset_end].codepoint)
+		{
+			*result = FindResult_Found;
+			return &record[offset_end];
+		}
+		else if (codepoint == record[offset_pivot].codepoint)
+		{
+			*result = FindResult_Found;
+			return &record[offset_pivot];
+		}
+		else
+		{
+			if (codepoint > record[offset_pivot].codepoint)
+			{
+				offset_start = offset_pivot;
+			}
+			else
+			{
+				offset_end = offset_pivot;
+			}
+		}
 	}
-	else if (codepoint == record[offset_end].codepoint)
-	{
-		*result = FindResult_Found;
-		return &record[offset_end];
-	}
-	else if (codepoint == record[offset_pivot].codepoint)
-	{
-		*result = FindResult_Found;
-		return &record[offset_pivot];
-	}
+	while (offset_end - offset_start > 1);
 
 	*result = FindResult_Missing;
 	return 0;
