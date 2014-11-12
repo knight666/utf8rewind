@@ -83,6 +83,7 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normali
 		return 0;
 	}
 
+	*result = FindResult_Missing;
 	return 0;
 }
 
