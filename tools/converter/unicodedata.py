@@ -433,6 +433,11 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.writeLine("*/")
 		header.newLine()
 		
+		# includes
+		
+		header.writeLine("#include \"normalization.h\"")
+		header.newLine()
+		
 		# decomposition records
 		
 		header.writeLine("const size_t UnicodeNFDRecordCount = " + str(len(nfd_records)) + ";")
@@ -495,7 +500,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.writeLine("const DecompositionRecord* UnicodeNFKDRecordPtr = UnicodeNFKDRecord;")
 		
 		header.writeLine("const size_t UnicodeNFKDBoxOffsetCount = " + str(len(nfkd_box_offsets)) + ";")
-		header.write("const size_t UnicodeNFDBoxOffset[" + str(len(nfkd_box_offsets)) + "] = { ")
+		header.write("const size_t UnicodeNFKDBoxOffset[" + str(len(nfkd_box_offsets)) + "] = { ")
 		header.write(hex(nfkd_box_offsets[0]))
 		for o in nfkd_box_offsets[1:]:
 			header.write(", " + hex(o))
