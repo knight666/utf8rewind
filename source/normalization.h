@@ -173,6 +173,11 @@ typedef struct {
 
 typedef struct {
 	unicode_t codepoint;
+	ptrdiff_t offset;
+} DecompositionRecord;
+
+typedef struct {
+	unicode_t codepoint;
 	ptrdiff_t offsetC;
 	ptrdiff_t offsetD;
 	ptrdiff_t offsetKC;
@@ -186,6 +191,16 @@ enum FindResult
 	FindResult_OutOfBounds,
 	FindResult_Invalid
 };
+
+enum NormalizationForm
+{
+	NormalizationForm_Decomposed,
+	NormalizationForm_Composed,
+	NormalizationForm_Compatibility_Decomposed,
+	NormalizationForm_Compatibility_Composed,
+};
+
+const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normalization, int32_t* result);
 
 const CompositionEntry* findcomposition(unicode_t codepoint, int32_t* result);
 

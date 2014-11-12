@@ -14,6 +14,7 @@
 				'source/normalization.h',
 				'source/normalization.c',
 				'source/normalizationdata.c',
+				'source/unicodedatabase.c',
 				'source/utf8rewind.c',
 			],
 			'direct_dependent_settings': {
