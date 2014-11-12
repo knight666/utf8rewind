@@ -238,6 +238,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.total = 0
 		self.offset = 1
 		self.hashed = dict()
+		self.recordsOrdered = []
 		self.records = dict()
 	
 	def visitDocument(self, document):
@@ -258,6 +259,7 @@ class Database(libs.unicode.UnicodeVisitor):
 				print m
 			return False
 		
+		self.recordsOrdered.append(u)
 		self.records[u.codepoint] = u
 		
 		return True
@@ -376,26 +378,37 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		d = datetime.datetime.now()
 		
-		recordsNFD = []
-		minimumNFD = 1000000
-		maximumNFD = 0
+		nfd_records = []
+		nfd_box_offsets = []
+		nfd_previous = 0
+		nfd_offset = 0
 		
-		recordsNFKD = []
-		minimumNFKD = 1000000
-		maximumNFKD = 0
+		nfkd_records = []
+		nfkd_box_offsets = []
+		nfkd_previous = 0
+		nfkd_offset = 0
 		
-		for u in self.records:
-			r = self.records[u]
-			
+		for r in self.recordsOrdered:
 			if r.offsetNFD <> 0:
-				recordsNFD.append(r)
-				minimumNFD = min(minimumNFD, r.codepoint)
-				maximumNFD = max(maximumNFD, r.codepoint)
+				if nfd_previous == 0 or (r.codepoint - nfd_previous) > 1000:
+					nfd_box_offsets.append(nfd_offset)
+				
+				nfd_previous = r.codepoint
+				nfd_offset += 1
+				
+				nfd_records.append(r)
 			
 			if r.offsetNFKD <> 0:
-				recordsNFKD.append(r)
-				minimumNFKD = min(minimumNFKD, r.codepoint)
-				maximumNFKD = max(maximumNFKD, r.codepoint)
+				if nfkd_previous == 0 or (r.codepoint - nfkd_previous) > 1000:
+					nfkd_box_offsets.append(nfkd_offset)
+				
+				nfkd_previous = r.codepoint
+				nfkd_offset += 1
+				
+				nfkd_records.append(r)
+		
+		nfd_box_offsets.append(nfd_offset)
+		nfkd_box_offsets.append(nfkd_offset)
 		
 		sliced = libs.blobsplitter.BlobSplitter()
 		sliced.split(self.blob, self.offset)
@@ -422,54 +435,74 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# decomposition records
 		
-		header.writeLine("const size_t UnicodeNFDRecordCount = " + str(len(recordsNFD)) + ";")
-		header.writeLine("const DecompositionRecord UnicodeNFDRecord[" + str(len(recordsNFD)) + "] = {")
+		header.writeLine("const size_t UnicodeNFDRecordCount = " + str(len(nfd_records)) + ";")
+		header.writeLine("const DecompositionRecord UnicodeNFDRecord[" + str(len(nfd_records)) + "] = {")
 		header.indent()
 		
 		count = 0
 		
-		for r in recordsNFD:
+		for r in nfd_records:
 			if (count % 4) == 0:
 				header.writeIndentation()
 			
 			header.write("{ " + hex(r.codepoint) + ", " + hex(r.offsetNFD) + "},")
 			
 			count += 1
-			if (count % 4) == 0:
-				header.newLine()
-			else:
-				header.write(" ")
+			if count <> len(nfd_records):
+				if (count % 4) == 0:
+					header.newLine()
+				else:
+					header.write(" ")
 		
+		header.newLine()
 		header.outdent()
 		header.writeLine("};")
 		header.writeLine("const DecompositionRecord* UnicodeNFDRecordPtr = UnicodeNFDRecord;")
-		header.writeLine("const unicode_t UnicodeNFDRecordMinimum = " + hex(minimumNFD) + ";")
-		header.writeLine("const unicode_t UnicodeNFDRecordMaximum = " + hex(maximumNFD) + ";")
+		
+		header.writeLine("const size_t UnicodeNFDBoxOffsetCount = " + str(len(nfd_box_offsets)) + ";")
+		header.write("const size_t UnicodeNFDBoxOffset[" + str(len(nfd_box_offsets)) + "] = { ")
+		header.write(hex(nfd_box_offsets[0]))
+		for o in nfd_box_offsets[1:]:
+			header.write(", " + hex(o))
+		header.write(" };")
+		header.newLine()
+		header.writeLine("const size_t* UnicodeNFDBoxOffsetPtr = UnicodeNFDBoxOffset;")
+		
 		header.newLine()
 		
-		header.writeLine("const size_t UnicodeNFKDRecordCount = " + str(len(recordsNFKD)) + ";")
-		header.writeLine("const DecompositionRecord UnicodeNFKDRecord[" + str(len(recordsNFKD)) + "] = {")
+		header.writeLine("const size_t UnicodeNFKDRecordCount = " + str(len(nfkd_records)) + ";")
+		header.writeLine("const DecompositionRecord UnicodeNFKDRecord[" + str(len(nfkd_records)) + "] = {")
 		header.indent()
 		
 		count = 0
 		
-		for r in recordsNFKD:
+		for r in nfkd_records:
 			if (count % 4) == 0:
 				header.writeIndentation()
 			
 			header.write("{ " + hex(r.codepoint) + ", " + hex(r.offsetNFKD) + "},")
 			
 			count += 1
-			if (count % 4) == 0:
-				header.newLine()
-			else:
-				header.write(" ")
+			if count <> len(nfkd_records):
+				if (count % 4) == 0:
+					header.newLine()
+				else:
+					header.write(" ")
 		
+		header.newLine()
 		header.outdent()
 		header.writeLine("};")
 		header.writeLine("const DecompositionRecord* UnicodeNFKDRecordPtr = UnicodeNFKDRecord;")
-		header.writeLine("const unicode_t UnicodeNFKDRecordMinimum = " + hex(minimumNFKD) + ";")
-		header.writeLine("const unicode_t UnicodeNFKDRecordMaximum = " + hex(maximumNFKD) + ";")
+		
+		header.writeLine("const size_t UnicodeNFKDBoxOffsetCount = " + str(len(nfkd_box_offsets)) + ";")
+		header.write("const size_t UnicodeNFDBoxOffset[" + str(len(nfkd_box_offsets)) + "] = { ")
+		header.write(hex(nfkd_box_offsets[0]))
+		for o in nfkd_box_offsets[1:]:
+			header.write(", " + hex(o))
+		header.write(" };")
+		header.newLine()
+		header.writeLine("const size_t* UnicodeNFKDBoxOffsetPtr = UnicodeNFKDBoxOffset;")
+		
 		header.newLine()
 		
 		# decomposition data
