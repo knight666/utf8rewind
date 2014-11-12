@@ -16908,8 +16908,8 @@ const CompositionEntry CompositionData[16893] = {
 };
 const CompositionEntry* CompositionDataPtr = CompositionData;
 
-const size_t DecompositionDataPageCount = 4;
-const char* DecompositionData[4] = {
+const size_t DecompositionDataOldPageCount = 4;
+const char* DecompositionDataOld[4] = {
 	"\x00\x20\x00\x20\xcc\x88\x00\x61\x00\x20\xcc\x84\x00\x32\x00\x33\x00\x20\xcc\x81\x00\xce\xbc\x00\x20"
 	"\xcc\xa7\x00\x31\x00\x6f\x00\x31\xe2\x81\x84\x34\x00\x31\xe2\x81\x84\x32\x00\x33\xe2\x81\x84\x34\x00"
 	"\x41\xcc\x80\x00\x41\xcc\x81\x00\x41\xcc\x82\x00\x41\xcc\x83\x00\x41\xcc\x88\x00\x41\xcc\x8a\x00\x43"
@@ -22074,6 +22074,6 @@ const char* DecompositionData[4] = {
 	"\xe4\xb3\xb8\x00\xf0\xaa\x84\x85\x00\xf0\xaa\x88\x8e\x00\xf0\xaa\x8a\x91\x00\xe4\xb5\x96\x00\xe9\xbb"
 	"\xbe\x00\xe9\xbc\x85\x00\xe9\xbc\x8f\x00\xe9\xbc\x96\x00\xf0\xaa\x98\x80\x00",
 };
-const char** DecompositionDataPtr = DecompositionData;
-const size_t DecompositionDataLength[4] = { 32766, 32758, 32765, 30744 };
-const size_t* DecompositionDataLengthPtr = DecompositionDataLength;
+const char** DecompositionDataOldPtr = DecompositionDataOld;
+const size_t DecompositionDataOldLength[4] = { 32766, 32758, 32765, 30744 };
+const size_t* DecompositionDataOldLengthPtr = DecompositionDataOldLength;

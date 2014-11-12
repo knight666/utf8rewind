@@ -38,6 +38,42 @@ TEST(FindDecomposition, UnhandledNormalizationFormCompatibilityComposed)
 	EXPECT_EQ(FindResult_Invalid, e);
 }
 
+TEST(FindDecomposition, DecomposedMissingOutOfLowerBounds)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x00000067, NormalizationForm_Decomposed, &e);
+
+	EXPECT_EQ(nullptr, r);
+	EXPECT_EQ(FindResult_OutOfBounds, e);
+}
+
+TEST(FindDecomposition, DecomposedMissingOutOfUpperBounds)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x0011A26D, NormalizationForm_Decomposed, &e);
+
+	EXPECT_EQ(nullptr, r);
+	EXPECT_EQ(FindResult_OutOfBounds, e);
+}
+
+TEST(FindDecomposition, CompatibilityDecomposedMissingOutOfLowerBounds)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x00000023, NormalizationForm_Compatibility_Decomposed, &e);
+
+	EXPECT_EQ(nullptr, r);
+	EXPECT_EQ(FindResult_OutOfBounds, e);
+}
+
+TEST(FindDecomposition, CompatibilityDecomposedMissingOutOfUpperBounds)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x00DD2A5D, NormalizationForm_Compatibility_Decomposed, &e);
+
+	EXPECT_EQ(nullptr, r);
+	EXPECT_EQ(FindResult_OutOfBounds, e);
+}
+
 /*TEST(Decomposed, Found)
 {
 	int32_t e = 0;
@@ -47,8 +83,8 @@ TEST(FindDecomposition, UnhandledNormalizationFormCompatibilityComposed)
 	EXPECT_EQ(FindResult_Found, e);
 	EXPECT_EQ(0x000004E4, r->codepoint);
 	EXPECT_EQ(0x640, r->offset);
-
 }
+
 TEST(CompatibilityDecomposed, Found)
 {
 	int32_t e = 0;

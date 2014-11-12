@@ -28,21 +28,58 @@
 extern const size_t CompositionDataCount;
 extern const CompositionEntry* CompositionDataPtr;
 
-extern const size_t DecompositionDataPageCount;
-extern const char** DecompositionDataPtr;
-extern const size_t* DecompositionDataLengthPtr;
+extern const size_t DecompositionDataOldPageCount;
+extern const char** DecompositionDataOldPtr;
+extern const size_t* DecompositionDataOldLengthPtr;
+
+extern const size_t UnicodeNFDRecordCount;
+extern const DecompositionRecord* UnicodeNFDRecordPtr;
+extern const size_t UnicodeNFDBoxOffsetCount;
+extern const size_t* UnicodeNFDBoxOffsetPtr;
+
+extern const size_t UnicodeNFKDRecordCount;
+extern const DecompositionRecord* UnicodeNFKDRecordPtr;
+extern const size_t UnicodeNFKDBoxOffsetCount;
+extern const size_t* UnicodeNFKDBoxOffsetPtr;
 
 const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normalization, int32_t* result)
 {
+	const DecompositionRecord* record;
+	size_t record_count;
+	const size_t* box_offset;
+	size_t box_offset_count;
+
 	if (result == 0)
 	{
 		return 0;
 	}
 
-	if (normalization != NormalizationForm_Decomposed &&
-		normalization != NormalizationForm_Compatibility_Decomposed)
+	if (normalization == NormalizationForm_Decomposed)
+	{
+		record = UnicodeNFDRecordPtr;
+		record_count = UnicodeNFDRecordCount;
+
+		box_offset = UnicodeNFDBoxOffsetPtr;
+		box_offset_count = UnicodeNFDBoxOffsetCount;
+	}
+	else if (normalization == NormalizationForm_Compatibility_Decomposed)
+	{
+		record = UnicodeNFKDRecordPtr;
+		record_count = UnicodeNFKDRecordCount;
+
+		box_offset = UnicodeNFKDBoxOffsetPtr;
+		box_offset_count = UnicodeNFKDBoxOffsetCount;
+	}
+	else
 	{
 		*result = FindResult_Invalid;
+		return 0;
+	}
+
+	if (codepoint < record[0].codepoint ||
+		codepoint > record[record_count - 1].codepoint)
+	{
+		*result = FindResult_OutOfBounds;
 		return 0;
 	}
 
@@ -139,7 +176,7 @@ const char* resolvedecomposition(size_t offset, int32_t* result)
 
 	pageIndex = (offset & 0xFF000000) >> 24;
 
-	if (pageIndex >= DecompositionDataPageCount)
+	if (pageIndex >= DecompositionDataOldPageCount)
 	{
 		*result = FindResult_Invalid;
 		return 0;
@@ -147,12 +184,12 @@ const char* resolvedecomposition(size_t offset, int32_t* result)
 
 	offset &= 0x00FFFFFF;
 
-	if (offset >= DecompositionDataLengthPtr[pageIndex])
+	if (offset >= DecompositionDataOldLengthPtr[pageIndex])
 	{
 		*result = FindResult_OutOfBounds;
 		return 0;
 	}
 	
 	*result = FindResult_Found;
-	return DecompositionDataPtr[pageIndex] + offset;
+	return DecompositionDataOldPtr[pageIndex] + offset;
 }
