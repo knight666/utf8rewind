@@ -44,6 +44,9 @@ extern const size_t* UnicodeNFKDBoxOffsetPtr;
 
 const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normalization, int32_t* result)
 {
+	size_t offset_start;
+	size_t offset_end;
+	size_t offset_center;
 	const DecompositionRecord* record;
 	size_t record_count;
 	const size_t* box_offset;
@@ -76,11 +79,27 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normali
 		return 0;
 	}
 
-	if (codepoint < record[0].codepoint ||
-		codepoint > record[record_count - 1].codepoint)
+	offset_start = 0;
+	offset_end = record_count - 1;
+
+	if (codepoint < record[offset_start].codepoint ||
+		codepoint > record[offset_end].codepoint)
 	{
 		*result = FindResult_OutOfBounds;
 		return 0;
+	}
+
+	offset_center = offset_start + ((offset_end - offset_start) / 2);
+
+	if (codepoint == record[offset_start].codepoint)
+	{
+		*result = FindResult_Found;
+		return &record[offset_start];
+	}
+	else if (codepoint == record[offset_end].codepoint)
+	{
+		*result = FindResult_Found;
+		return &record[offset_end];
 	}
 
 	*result = FindResult_Missing;
