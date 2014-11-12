@@ -32,6 +32,23 @@ extern const size_t DecompositionDataPageCount;
 extern const char** DecompositionDataPtr;
 extern const size_t* DecompositionDataLengthPtr;
 
+const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normalization, int32_t* result)
+{
+	if (result == 0)
+	{
+		return 0;
+	}
+
+	if (normalization != NormalizationForm_Decomposed &&
+		normalization != NormalizationForm_Compatibility_Decomposed)
+	{
+		*result = FindResult_Invalid;
+		return 0;
+	}
+
+	return 0;
+}
+
 const CompositionEntry* findcomposition(unicode_t codepoint, int32_t* result)
 {
 	size_t offset_start = 0;
