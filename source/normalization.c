@@ -25,13 +25,6 @@
 
 #include "normalization.h"
 
-extern const size_t CompositionDataCount;
-extern const CompositionEntry* CompositionDataPtr;
-
-extern const size_t DecompositionDataOldPageCount;
-extern const char** DecompositionDataOldPtr;
-extern const size_t* DecompositionDataOldLengthPtr;
-
 extern const size_t UnicodeNFDRecordCount;
 extern const DecompositionRecord* UnicodeNFDRecordPtr;
 
