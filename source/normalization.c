@@ -34,13 +34,9 @@ extern const size_t* DecompositionDataOldLengthPtr;
 
 extern const size_t UnicodeNFDRecordCount;
 extern const DecompositionRecord* UnicodeNFDRecordPtr;
-extern const size_t UnicodeNFDBoxOffsetCount;
-extern const size_t* UnicodeNFDBoxOffsetPtr;
 
 extern const size_t UnicodeNFKDRecordCount;
 extern const DecompositionRecord* UnicodeNFKDRecordPtr;
-extern const size_t UnicodeNFKDBoxOffsetCount;
-extern const size_t* UnicodeNFKDBoxOffsetPtr;
 
 const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normalization, int32_t* result)
 {
