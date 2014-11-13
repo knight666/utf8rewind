@@ -49,8 +49,6 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normali
 	size_t offset_pivot;
 	const DecompositionRecord* record;
 	size_t record_count;
-	const size_t* box_offset;
-	size_t box_offset_count;
 	size_t i;
 
 	if (result == 0)
@@ -62,17 +60,11 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normali
 	{
 		record = UnicodeNFDRecordPtr;
 		record_count = UnicodeNFDRecordCount;
-
-		box_offset = UnicodeNFDBoxOffsetPtr;
-		box_offset_count = UnicodeNFDBoxOffsetCount;
 	}
 	else if (normalization == NormalizationForm_Compatibility_Decomposed)
 	{
 		record = UnicodeNFKDRecordPtr;
 		record_count = UnicodeNFKDRecordCount;
-
-		box_offset = UnicodeNFKDBoxOffsetPtr;
-		box_offset_count = UnicodeNFKDBoxOffsetCount;
 	}
 	else
 	{
