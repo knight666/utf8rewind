@@ -379,36 +379,14 @@ class Database(libs.unicode.UnicodeVisitor):
 		d = datetime.datetime.now()
 		
 		nfd_records = []
-		nfd_box_offsets = []
-		nfd_previous = 0
-		nfd_offset = 0
-		
 		nfkd_records = []
-		nfkd_box_offsets = []
-		nfkd_previous = 0
-		nfkd_offset = 0
 		
 		for r in self.recordsOrdered:
 			if r.offsetNFD <> 0:
-				if nfd_previous == 0 or (r.codepoint - nfd_previous) > 1000:
-					nfd_box_offsets.append(nfd_offset)
-				
-				nfd_previous = r.codepoint
-				nfd_offset += 1
-				
 				nfd_records.append(r)
 			
 			if r.offsetNFKD <> 0:
-				if nfkd_previous == 0 or (r.codepoint - nfkd_previous) > 1000:
-					nfkd_box_offsets.append(nfkd_offset)
-				
-				nfkd_previous = r.codepoint
-				nfkd_offset += 1
-				
 				nfkd_records.append(r)
-		
-		nfd_box_offsets.append(nfd_offset)
-		nfkd_box_offsets.append(nfkd_offset)
 		
 		sliced = libs.blobsplitter.BlobSplitter()
 		sliced.split(self.blob, self.offset)
@@ -450,7 +428,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			if (count % 4) == 0:
 				header.writeIndentation()
 			
-			header.write("{ " + hex(r.codepoint) + ", " + hex(r.offsetNFD) + "},")
+			header.write("{ " + hex(r.codepoint) + ", " + hex(r.offsetNFD) + " },")
 			
 			count += 1
 			if count <> len(nfd_records):
@@ -464,15 +442,6 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.writeLine("};")
 		header.writeLine("const DecompositionRecord* UnicodeNFDRecordPtr = UnicodeNFDRecord;")
 		
-		header.writeLine("const size_t UnicodeNFDBoxOffsetCount = " + str(len(nfd_box_offsets)) + ";")
-		header.write("const size_t UnicodeNFDBoxOffset[" + str(len(nfd_box_offsets)) + "] = { ")
-		header.write(hex(nfd_box_offsets[0]))
-		for o in nfd_box_offsets[1:]:
-			header.write(", " + hex(o))
-		header.write(" };")
-		header.newLine()
-		header.writeLine("const size_t* UnicodeNFDBoxOffsetPtr = UnicodeNFDBoxOffset;")
-		
 		header.newLine()
 		
 		header.writeLine("const size_t UnicodeNFKDRecordCount = " + str(len(nfkd_records)) + ";")
@@ -485,7 +454,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			if (count % 4) == 0:
 				header.writeIndentation()
 			
-			header.write("{ " + hex(r.codepoint) + ", " + hex(r.offsetNFKD) + "},")
+			header.write("{ " + hex(r.codepoint) + ", " + hex(r.offsetNFKD) + " },")
 			
 			count += 1
 			if count <> len(nfkd_records):
@@ -498,15 +467,6 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.outdent()
 		header.writeLine("};")
 		header.writeLine("const DecompositionRecord* UnicodeNFKDRecordPtr = UnicodeNFKDRecord;")
-		
-		header.writeLine("const size_t UnicodeNFKDBoxOffsetCount = " + str(len(nfkd_box_offsets)) + ";")
-		header.write("const size_t UnicodeNFKDBoxOffset[" + str(len(nfkd_box_offsets)) + "] = { ")
-		header.write(hex(nfkd_box_offsets[0]))
-		for o in nfkd_box_offsets[1:]:
-			header.write(", " + hex(o))
-		header.write(" };")
-		header.newLine()
-		header.writeLine("const size_t* UnicodeNFKDBoxOffsetPtr = UnicodeNFKDBoxOffset;")
 		
 		header.newLine()
 		
