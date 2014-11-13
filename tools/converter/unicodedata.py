@@ -484,7 +484,8 @@ class Database(libs.unicode.UnicodeVisitor):
 				header.newLine()
 		
 		header.outdent()
-		header.write(";")
+		header.writeLine(";")
+		header.write("const size_t DecompositionDataLength = " + str(self.offset) + ";")
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')

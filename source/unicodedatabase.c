@@ -2,7 +2,7 @@
 	DO NOT MODIFY, AUTO-GENERATED
 
 	Generated on:
-		2014-11-13T08:28:13
+		2014-11-13T17:48:00
 
 	Command line:
 		D:\Projects\utf8rewind\tools\converter\unicodedata.py
@@ -2678,3 +2678,4 @@ const char* DecompositionData =
 	"\x00\xe3\x80\x94\xe6\x89\x93\xe3\x80\x95\x00\xe3\x80\x94\xe7\x9b\x97\xe3\x80\x95\x00\xe3\x80\x94\xe5"
 	"\x8b\x9d\xe3\x80\x95\x00\xe3\x80\x94\xe6\x95\x97\xe3\x80\x95\x00\xe5\xbe\x97\x00\xe5\x8f\xaf\x00"
 ;
+const size_t DecompositionDataLength = 17749;
