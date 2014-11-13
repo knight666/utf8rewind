@@ -38,6 +38,9 @@ extern const DecompositionRecord* UnicodeNFDRecordPtr;
 extern const size_t UnicodeNFKDRecordCount;
 extern const DecompositionRecord* UnicodeNFKDRecordPtr;
 
+extern const char* DecompositionData;
+extern const size_t DecompositionDataLength;
+
 const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normalization, int32_t* result)
 {
 	size_t offset_start;
@@ -126,29 +129,17 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normali
 
 const char* resolvedecomposition(size_t offset, int32_t* result)
 {
-	size_t pageIndex;
-
 	if (result == 0)
 	{
 		return 0;
 	}
 
-	pageIndex = (offset & 0xFF000000) >> 24;
-
-	if (pageIndex >= DecompositionDataOldPageCount)
-	{
-		*result = FindResult_Invalid;
-		return 0;
-	}
-
-	offset &= 0x00FFFFFF;
-
-	if (offset >= DecompositionDataOldLengthPtr[pageIndex])
+	if (offset >= DecompositionDataLength)
 	{
 		*result = FindResult_OutOfBounds;
 		return 0;
 	}
-	
+
 	*result = FindResult_Found;
-	return DecompositionDataOldPtr[pageIndex] + offset;
+	return DecompositionData + offset;
 }
