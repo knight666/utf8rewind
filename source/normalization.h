@@ -202,8 +202,6 @@ enum NormalizationForm
 
 const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normalization, int32_t* result);
 
-const CompositionEntry* findcomposition(unicode_t codepoint, int32_t* result);
-
 const char* resolvedecomposition(size_t offset, int32_t* result);
 
 #endif
