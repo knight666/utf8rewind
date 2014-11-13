@@ -51,6 +51,7 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normali
 	size_t record_count;
 	const size_t* box_offset;
 	size_t box_offset_count;
+	size_t i;
 
 	if (result == 0)
 	{
@@ -89,7 +90,7 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normali
 		return 0;
 	}
 
-	do 
+	do
 	{
 		offset_pivot = offset_start + ((offset_end - offset_start) / 2);
 
@@ -120,7 +121,16 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normali
 			}
 		}
 	}
-	while (offset_end - offset_start > 1);
+	while (offset_end - offset_start > 32);
+
+	for (i = offset_start; i <= offset_end; ++i)
+	{
+		if (codepoint == record[i].codepoint)
+		{
+			*result = FindResult_Found;
+			return &record[i];
+		}
+	}
 
 	*result = FindResult_Missing;
 	return 0;
