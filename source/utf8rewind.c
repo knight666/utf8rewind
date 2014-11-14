@@ -25,6 +25,8 @@
 
 #include "utf8rewind.h"
 
+#include "normalization.h"
+
 #define MAX_BASIC_MULTILINGUAR_PLANE  0xFFFF
 #define MAX_LEGAL_UNICODE             0x10FFFF
 #define REPLACEMENT_CHARACTER         0xFFFD
@@ -50,6 +52,17 @@ static const size_t Utf8ByteMaximum[6] = {
 	0x0010FFFF,
 	0x0010FFFF
 };
+
+char* safe_strcpy(char* target, size_t targetSize, const char* input, size_t inputSize)
+{
+#if WIN32 || _WINDOWS
+	strncpy_s(target, targetSize, input, inputSize);
+	return target;
+#else
+	size_t copy_size = (targetSize < inputSize) ? targetSize : inputSize;
+	return strncpy(target, input, copy_size);
+#endif
+}
 
 size_t lengthcodepoint(uint8_t input)
 {
@@ -778,4 +791,71 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 		return text;
 
 	}
+}
+
+size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
+{
+	const char* src = input;
+	size_t src_size = inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
+	size_t written = 0;
+	unicode_t codepoint;
+	size_t codepoint_length;
+	const DecompositionRecord* record;
+	int32_t find_result;
+	const char* resolved;
+	size_t resolved_size;
+
+	do
+	{
+		codepoint_length = readcodepoint(&codepoint, src, src_size);
+		if (codepoint_length == 0)
+		{
+			break;
+		}
+		else if (codepoint_length == 1)
+		{
+			*dst++ = *src++;
+
+			written++;
+			dst_size--;
+		}
+		else
+		{
+			record = finddecomposition(codepoint, NormalizationForm_Compatibility_Decomposed, &find_result);
+			if (find_result == FindResult_Found)
+			{
+				resolved = resolvedecomposition(record->offset, &find_result);
+				resolved_size = strlen(resolved);
+				if (resolved_size > 0)
+				{
+					safe_strcpy(dst, resolved_size + 1, resolved, resolved_size);
+
+					dst += resolved_size;
+					written += resolved_size;
+					dst_size -= resolved_size;
+				}
+			}
+			else
+			{
+				safe_strcpy(dst, codepoint_length + 1, src, codepoint_length);
+
+				dst += codepoint_length;
+				written += codepoint_length;
+				dst_size -= codepoint_length;
+			}
+
+			src = utf8seek(src, input, 1, SEEK_CUR);
+		}
+
+		src_size -= codepoint_length;
+	}
+	while (src_size > 0);
+
+	if (errors != 0)
+	{
+		*errors = 0;
+	}
+	return written;
 }
