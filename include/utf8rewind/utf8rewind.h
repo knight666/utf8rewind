@@ -39,10 +39,15 @@
 #include <wchar.h>
 /// @endcond
 
-#define UTF8_ERR_INVALID_DATA (-1)
-#define UTF8_ERR_NOT_ENOUGH_SPACE (-2)
-#define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR (-3)
-#define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR (-4)
+#define UTF8_ERR_INVALID_DATA                   (-1)
+#define UTF8_ERR_NOT_ENOUGH_SPACE               (-2)
+#define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  (-3)
+#define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   (-4)
+
+#define UTF8_TRANSFORM_DECOMPOSED                0x00000001
+#define UTF8_TRANSFORM_COMPOSED                  0x00000002
+#define UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED  0x00000004
+#define UTF8_TRANSFORM_COMPATIBILITY_COMPOSED    0x00000008
 
 //! @defgroup configuration Global configuration
 //! @{
@@ -456,6 +461,8 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 	@return Changed string or no change on error.
 */
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
+
+size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
 
 #if defined(__cplusplus)
 }
