@@ -827,7 +827,7 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 		}
 		else
 		{
-			record = finddecomposition(codepoint, NormalizationForm_Compatibility_Decomposed, &find_result);
+			record = finddecomposition(codepoint, NormalizationForm_Decomposed, &find_result);
 			if (find_result == FindResult_Found)
 			{
 				resolved = resolvedecomposition(record->offset, &find_result);
@@ -867,10 +867,6 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	}
 	while (src_size > 0);
 
-	if (errors != 0)
-	{
-		*errors = 0;
-	}
 	return bytes_written;
 
 outofspace:
