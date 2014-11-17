@@ -853,11 +853,13 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 					goto outofspace;
 				}
 
-				memcpy(dst, src, codepoint_length);
+				resolved_size = writecodepoint(codepoint, &dst, &dst_size, errors);
+				if (resolved_size == 0)
+				{
+					return bytes_written;
+				}
 
-				dst += codepoint_length;
-				bytes_written += codepoint_length;
-				dst_size -= codepoint_length;
+				bytes_written += resolved_size;
 			}
 
 			src = utf8seek(src, input, 1, SEEK_CUR);
