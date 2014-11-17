@@ -799,7 +799,7 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	size_t src_size = inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
-	size_t written = 0;
+	size_t bytes_written = 0;
 	unicode_t codepoint;
 	size_t codepoint_length;
 	const DecompositionRecord* record;
@@ -816,9 +816,13 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 		}
 		else if (codepoint_length == 1)
 		{
-			*dst++ = *src++;
+			if (dst_size < 1)
+			{
+				goto outofspace;
+			}
 
-			written++;
+			*dst++ = *src++;
+			bytes_written++;
 			dst_size--;
 		}
 		else
@@ -830,19 +834,29 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 				resolved_size = strlen(resolved);
 				if (resolved_size > 0)
 				{
+					if (dst_size < resolved_size + 1)
+					{
+						goto outofspace;
+					}
+
 					safe_strcpy(dst, resolved_size + 1, resolved, resolved_size);
 
 					dst += resolved_size;
-					written += resolved_size;
+					bytes_written += resolved_size;
 					dst_size -= resolved_size;
 				}
 			}
 			else
 			{
+				if (dst_size < codepoint_length + 1)
+				{
+					goto outofspace;
+				}
+
 				safe_strcpy(dst, codepoint_length + 1, src, codepoint_length);
 
 				dst += codepoint_length;
-				written += codepoint_length;
+				bytes_written += codepoint_length;
 				dst_size -= codepoint_length;
 			}
 
@@ -857,5 +871,12 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	{
 		*errors = 0;
 	}
-	return written;
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return bytes_written;
 }
