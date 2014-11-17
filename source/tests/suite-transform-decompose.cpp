@@ -121,3 +121,39 @@ TEST(TransformDecompose, NotEnoughSpaceAtStart)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_STREQ("", b);
 }
+
+TEST(TransformDecompose, SurrogatePair)
+{
+	const char* c = "\xED\xA0\x80\xED\xB0\x81";
+	const size_t s = 512;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xEF\xBF\xBD\xEF\xBF\xBD", b);
+}
+
+TEST(TransformDecompose, Overlong)
+{
+	const char* c = "\xF8\x80\x80\x80\xAF";
+	const size_t s = 512;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xEF\xBF\xBD", b);
+}
+
+TEST(TransformDecompose, NotEnoughData)
+{
+	const char* c = "\xED\xAB";
+	const size_t s = 512;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xEF\xBF\xBD", b);
+}
