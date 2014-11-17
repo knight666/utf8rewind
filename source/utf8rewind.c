@@ -834,12 +834,12 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 				resolved_size = strlen(resolved);
 				if (resolved_size > 0)
 				{
-					if (dst_size < resolved_size + 1)
+					if (dst_size < resolved_size)
 					{
 						goto outofspace;
 					}
 
-					safe_strcpy(dst, resolved_size + 1, resolved, resolved_size);
+					memcpy(dst, resolved, resolved_size);
 
 					dst += resolved_size;
 					bytes_written += resolved_size;
@@ -848,12 +848,12 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 			}
 			else
 			{
-				if (dst_size < codepoint_length + 1)
+				if (dst_size < codepoint_length)
 				{
 					goto outofspace;
 				}
 
-				safe_strcpy(dst, codepoint_length + 1, src, codepoint_length);
+				memcpy(dst, src, codepoint_length);
 
 				dst += codepoint_length;
 				bytes_written += codepoint_length;
