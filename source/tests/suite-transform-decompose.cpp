@@ -4,14 +4,24 @@
 
 TEST(TransformDecompose, Decompose)
 {
-	const char* input = "Bj\xC3\xB6rn Zonderland";
-	size_t input_size = strlen(input);
-	const size_t output_size = 512;
-	char output[output_size] = { 0 };
-
+	const char* c = "Bj\xC3\xB6rn Zonderland";
+	const size_t s = 512;
+	char b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(18, utf8transform(input, input_size, output, output_size, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(18, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
 	EXPECT_EQ(0, errors);
-	EXPECT_STREQ("Bjo\xCC\x88rn Zonderland", output);
+	EXPECT_STREQ("Bjo\xCC\x88rn Zonderland", b);
+}
+
+TEST(TransformDecompose, DecomposeNotEnoughSpace)
+{
+	const char* c = "Am\xC3\x87zing";
+	const size_t s = 7;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8transform(c, strlen(c), b, s - 1, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_STREQ("AmC\xCC\xA7z", b);
 }
