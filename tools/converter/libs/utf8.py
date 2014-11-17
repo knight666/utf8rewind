@@ -1,3 +1,5 @@
+import sys
+
 MAX_LEGAL_UNICODE = 0x10FFFF
 REPLACEMENT_CHARACTER = 0xFFFD
 
@@ -33,3 +35,8 @@ def codepointToUtf8(codepoint):
 		result += '\\x' + format((codepoint         & 0x3F) | 0x80, '02x')
 	
 	return result
+
+if __name__ == '__main__':
+	codepoint = int(sys.argv[1], 16)
+	print hex(codepoint)
+	print codepointToUtf8(codepoint)
