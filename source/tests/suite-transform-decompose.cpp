@@ -14,7 +14,7 @@ TEST(TransformDecompose, Decompose)
 	EXPECT_STREQ("Bjo\xCC\x88rn Zonderland", b);
 }
 
-TEST(TransformDecompose, DecomposeOnlyAscii)
+TEST(TransformDecompose, OnlyAscii)
 {
 	const char* c = "Ruler";
 	const size_t s = 512;
@@ -26,7 +26,7 @@ TEST(TransformDecompose, DecomposeOnlyAscii)
 	EXPECT_STREQ("Ruler", b);
 }
 
-TEST(TransformDecompose, DecomposeNoChange)
+TEST(TransformDecompose, NoChange)
 {
 	const char* c = "\xE1\xA2\xA2";
 	const size_t s = 512;
@@ -38,7 +38,7 @@ TEST(TransformDecompose, DecomposeNoChange)
 	EXPECT_STREQ("\xE1\xA2\xA2", b);
 }
 
-TEST(TransformDecompose, DecomposeNoChangeNotEnoughSpace)
+TEST(TransformDecompose, NoChangeNotEnoughSpace)
 {
 	const char* c = "\xE1\xBC\xBF";
 	const size_t s = 4;
@@ -50,7 +50,7 @@ TEST(TransformDecompose, DecomposeNoChangeNotEnoughSpace)
 	EXPECT_STREQ("", b);
 }
 
-TEST(TransformDecompose, DecomposeJustEnoughSpace)
+TEST(TransformDecompose, JustEnoughSpace)
 {
 	const char* c = "Ar\xE1\xB9\x9Eogance";
 	const size_t s = 12;
@@ -62,7 +62,7 @@ TEST(TransformDecompose, DecomposeJustEnoughSpace)
 	EXPECT_STREQ("ArR\xCC\xB1ogance", b);
 }
 
-TEST(TransformDecompose, DecomposeJustEnoughSpaceAtEnd)
+TEST(TransformDecompose, JustEnoughSpaceAtEnd)
 {
 	const char* c = "Pounc\xE1\xB8\x94";
 	const size_t s = 11;
@@ -74,7 +74,7 @@ TEST(TransformDecompose, DecomposeJustEnoughSpaceAtEnd)
 	EXPECT_STREQ("PouncE\xCC\x84\xCC\x80", b);
 }
 
-TEST(TransformDecompose, DecomposeJustEnoughSpaceAtStart)
+TEST(TransformDecompose, JustEnoughSpaceAtStart)
 {
 	const char* c = "\xE1\xB8\x9C";
 	const size_t s = 6;
@@ -86,7 +86,7 @@ TEST(TransformDecompose, DecomposeJustEnoughSpaceAtStart)
 	EXPECT_STREQ("E\xCC\xA7\xCC\x86", b);
 }
 
-TEST(TransformDecompose, DecomposeNotEnoughSpace)
+TEST(TransformDecompose, NotEnoughSpace)
 {
 	const char* c = "Am\xC3\x87zing";
 	const size_t s = 7;
@@ -98,7 +98,7 @@ TEST(TransformDecompose, DecomposeNotEnoughSpace)
 	EXPECT_STREQ("AmC\xCC\xA7z", b);
 }
 
-TEST(TransformDecompose, DecomposeNotEnoughSpaceAtEnd)
+TEST(TransformDecompose, NotEnoughSpaceAtEnd)
 {
 	const char* c = "Brill\xC3\x95";
 	const size_t s = 7;
@@ -110,7 +110,7 @@ TEST(TransformDecompose, DecomposeNotEnoughSpaceAtEnd)
 	EXPECT_STREQ("Brill", b);
 }
 
-TEST(TransformDecompose, DecomposeNotEnoughSpaceAtStart)
+TEST(TransformDecompose, NotEnoughSpaceAtStart)
 {
 	const char* c = "\xE1\xB8\xAE";
 	const size_t s = 4;
