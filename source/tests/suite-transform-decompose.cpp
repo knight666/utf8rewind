@@ -14,6 +14,42 @@ TEST(TransformDecompose, Decompose)
 	EXPECT_STREQ("Bjo\xCC\x88rn Zonderland", b);
 }
 
+TEST(TransformDecompose, DecomposeOnlyAscii)
+{
+	const char* c = "Ruler";
+	const size_t s = 512;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(5, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("Ruler", b);
+}
+
+TEST(TransformDecompose, DecomposeNoChange)
+{
+	const char* c = "\xE1\xA2\xA2";
+	const size_t s = 512;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xE1\xA2\xA2", b);
+}
+
+TEST(TransformDecompose, DecomposeNoChangeNotEnoughSpace)
+{
+	const char* c = "\xE1\xBC\xBF";
+	const size_t s = 4;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8transform(c, strlen(c), b, s - 1, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_STREQ("", b);
+}
+
 TEST(TransformDecompose, DecomposeJustEnoughSpace)
 {
 	const char* c = "Ar\xE1\xB9\x9Eogance";
