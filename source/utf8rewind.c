@@ -807,6 +807,11 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	const char* resolved;
 	size_t resolved_size;
 
+	if (input == 0)
+	{
+		goto invaliddata;
+	}
+
 	do
 	{
 		codepoint_length = readcodepoint(&codepoint, src, src_size);
@@ -815,14 +820,18 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 		{
 			/* ASCII codepoints are already decomposed */
 
-			if (dst_size < 1)
+			if (dst != 0)
 			{
-				goto outofspace;
+				if (dst_size < 1)
+				{
+					goto outofspace;
+				}
+
+				*dst++ = *src++;
+				dst_size--;
 			}
 
-			*dst++ = *src++;
 			bytes_written++;
-			dst_size--;
 		}
 		else
 		{
@@ -831,7 +840,7 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 			{
 				resolved = resolvedecomposition(record->offset, &find_result);
 				resolved_size = strlen(resolved);
-				if (resolved_size > 0)
+				if (dst != 0 && resolved_size > 0)
 				{
 					if (dst_size < resolved_size)
 					{
@@ -841,13 +850,14 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 					memcpy(dst, resolved, resolved_size);
 
 					dst += resolved_size;
-					bytes_written += resolved_size;
 					dst_size -= resolved_size;
 				}
+
+				bytes_written += resolved_size;
 			}
 			else
 			{
-				if (dst_size < codepoint_length)
+				if (dst != 0 && dst_size < codepoint_length)
 				{
 					goto outofspace;
 				}
@@ -862,6 +872,13 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	}
 	while (src_size > 0);
 
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
 	return bytes_written;
 
 outofspace:

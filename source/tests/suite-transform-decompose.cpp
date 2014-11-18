@@ -193,3 +193,38 @@ TEST(TransformDecompose, InvalidCodepointNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_STREQ("", b);
 }
+
+TEST(TransformDecompose, AmountOfBytes)
+{
+	const char* c = "\xCA\xB4";
+	int32_t errors = 0;
+
+	EXPECT_EQ(2, utf8transform(c, strlen(c), nullptr, 0, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(TransformDecompose, AmountOfBytesString)
+{
+	const char* c = "Brill\xC3\x95";
+	int32_t errors = 0;
+
+	EXPECT_EQ(7, utf8transform(c, strlen(c), nullptr, 0, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(TransformDecompose, AmountOfBytesNoChange)
+{
+	const char* c = "\xE9\xAA\x88";
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8transform(c, strlen(c), nullptr, 0, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(TransformDecompose, AmountOfBytesNoData)
+{
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8transform(nullptr, 1, nullptr, 0, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
