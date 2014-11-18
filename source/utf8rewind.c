@@ -810,12 +810,11 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	do
 	{
 		codepoint_length = readcodepoint(&codepoint, src, src_size);
-		if (codepoint_length == 0)
+		
+		if (codepoint_length == 1)
 		{
-			break;
-		}
-		else if (codepoint_length == 1)
-		{
+			/* ASCII codepoints are already decomposed */
+
 			if (dst_size < 1)
 			{
 				goto outofspace;
@@ -853,13 +852,7 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 					goto outofspace;
 				}
 
-				resolved_size = writecodepoint(codepoint, &dst, &dst_size, errors);
-				if (resolved_size == 0)
-				{
-					return bytes_written;
-				}
-
-				bytes_written += resolved_size;
+				bytes_written += writecodepoint(codepoint, &dst, &dst_size, errors);
 			}
 
 			src = utf8seek(src, input, 1, SEEK_CUR);

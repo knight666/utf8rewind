@@ -2,7 +2,7 @@
 
 #include "utf8rewind.h"
 
-TEST(TransformDecompose, Decompose)
+TEST(TransformDecompose, Found)
 {
 	const char* c = "Bj\xC3\xB6rn Zonderland";
 	const size_t s = 512;
@@ -14,16 +14,52 @@ TEST(TransformDecompose, Decompose)
 	EXPECT_STREQ("Bjo\xCC\x88rn Zonderland", b);
 }
 
-TEST(TransformDecompose, OnlyAscii)
+TEST(TransformDecompose, FoundFirst)
 {
-	const char* c = "Ruler";
+	const char* c = "\xC3\x80";
 	const size_t s = 512;
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(5, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(3, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
 	EXPECT_EQ(0, errors);
-	EXPECT_STREQ("Ruler", b);
+	EXPECT_STREQ("A\xCC\x80", b);
+}
+
+TEST(TransformDecompose, FoundLast)
+{
+	const char* c = "\xF0\xAF\xA8\x9D";
+	const size_t s = 512;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xF0\xAA\x98\x80", b);
+}
+
+TEST(TransformDecompose, FoundNotEnoughSpace)
+{
+	const char* c = "\xE1\xB8\xAE";
+	const size_t s = 4;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8transform(c, strlen(c), b, s - 1, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_STREQ("", b);
+}
+
+TEST(TransformDecompose, ExpandedNotEnoughSpace)
+{
+	const char* c = "Am\xC3\x87zing";
+	const size_t s = 7;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8transform(c, strlen(c), b, s - 1, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_STREQ("AmC\xCC\xA7z", b);
 }
 
 TEST(TransformDecompose, NoChange)
@@ -40,14 +76,38 @@ TEST(TransformDecompose, NoChange)
 
 TEST(TransformDecompose, NoChangeNotEnoughSpace)
 {
-	const char* c = "\xE1\xBC\xBF";
-	const size_t s = 4;
+	const char* c = "\xE2\xA0\x81";
+	const size_t s = 3;
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, utf8transform(c, strlen(c), b, s - 1, UTF8_TRANSFORM_DECOMPOSED, &errors));
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_STREQ("", b);
+}
+
+TEST(TransformDecompose, Ascii)
+{
+	const char* c = "Ruler";
+	const size_t s = 512;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(5, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("Ruler", b);
+}
+
+TEST(TransformDecompose, AsciiNotEnoughSpace)
+{
+	const char* c = "Spacebro";
+	const size_t s = 6;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(5, utf8transform(c, strlen(c), b, s - 1, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_STREQ("Space", b);
 }
 
 TEST(TransformDecompose, JustEnoughSpace)
@@ -86,43 +146,7 @@ TEST(TransformDecompose, JustEnoughSpaceAtStart)
 	EXPECT_STREQ("E\xCC\xA7\xCC\x86", b);
 }
 
-TEST(TransformDecompose, NotEnoughSpace)
-{
-	const char* c = "Am\xC3\x87zing";
-	const size_t s = 7;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(6, utf8transform(c, strlen(c), b, s - 1, UTF8_TRANSFORM_DECOMPOSED, &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_STREQ("AmC\xCC\xA7z", b);
-}
-
-TEST(TransformDecompose, NotEnoughSpaceAtEnd)
-{
-	const char* c = "Brill\xC3\x95";
-	const size_t s = 7;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(5, utf8transform(c, strlen(c), b, s - 1, UTF8_TRANSFORM_DECOMPOSED, &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_STREQ("Brill", b);
-}
-
-TEST(TransformDecompose, NotEnoughSpaceAtStart)
-{
-	const char* c = "\xE1\xB8\xAE";
-	const size_t s = 4;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf8transform(c, strlen(c), b, s - 1, UTF8_TRANSFORM_DECOMPOSED, &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-	EXPECT_STREQ("", b);
-}
-
-TEST(TransformDecompose, SurrogatePair)
+TEST(TransformDecompose, InvalidCodepointSurrogatePair)
 {
 	const char* c = "\xED\xA0\x80\xED\xB0\x81";
 	const size_t s = 512;
@@ -134,7 +158,7 @@ TEST(TransformDecompose, SurrogatePair)
 	EXPECT_STREQ("\xEF\xBF\xBD\xEF\xBF\xBD", b);
 }
 
-TEST(TransformDecompose, Overlong)
+TEST(TransformDecompose, InvalidCodepointOverlong)
 {
 	const char* c = "\xF8\x80\x80\x80\xAF";
 	const size_t s = 512;
@@ -146,7 +170,7 @@ TEST(TransformDecompose, Overlong)
 	EXPECT_STREQ("\xEF\xBF\xBD", b);
 }
 
-TEST(TransformDecompose, NotEnoughData)
+TEST(TransformDecompose, InvalidCodepointNotEnoughData)
 {
 	const char* c = "\xED\xAB";
 	const size_t s = 512;
@@ -156,4 +180,16 @@ TEST(TransformDecompose, NotEnoughData)
 	EXPECT_EQ(3, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
 	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xEF\xBF\xBD", b);
+}
+
+TEST(TransformDecompose, InvalidCodepointNotEnoughSpace)
+{
+	const char* c = "\xF0\x91\x88\x81";
+	const size_t s = 3;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_STREQ("", b);
 }
