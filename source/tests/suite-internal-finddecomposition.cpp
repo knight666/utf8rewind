@@ -67,7 +67,7 @@ TEST(FindDecomposition, DecomposedFoundLast)
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0002FA1D, r->codepoint);
-	EXPECT_EQ(0x000043BF, r->offset);
+	EXPECT_EQ(0x00004550, r->offset);
 	EXPECT_EQ(FindResult_Found, e);
 }
 
@@ -78,7 +78,7 @@ TEST(FindDecomposition, DecomposedFoundPivot)
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0000F91E, r->codepoint);
-	EXPECT_EQ(0x00002EEF, r->offset);
+	EXPECT_EQ(0x00002B04, r->offset);
 	EXPECT_EQ(FindResult_Found, e);
 }
 
@@ -100,7 +100,7 @@ TEST(FindDecomposition, DecomposedFoundPivotDown)
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0002F81A, r->codepoint);
-	EXPECT_EQ(0x00002B08, r->offset);
+	EXPECT_EQ(0x00003E02, r->offset);
 	EXPECT_EQ(FindResult_Found, e);
 }
 
@@ -122,7 +122,7 @@ TEST(FindDecomposition, DecomposedFoundMaxDepth)
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0002F9DF, r->codepoint);
-	EXPECT_EQ(0x00003430, r->offset);
+	EXPECT_EQ(0x000030A9, r->offset);
 	EXPECT_EQ(FindResult_Found, e);
 }
 
@@ -182,7 +182,7 @@ TEST(FindDecomposition, CompatibilityDecomposedFoundLast)
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0002FA1D, r->codepoint);
-	EXPECT_EQ(0x000043BF, r->offset);
+	EXPECT_EQ(0x00004550, r->offset);
 	EXPECT_EQ(FindResult_Found, e);
 }
 
@@ -193,7 +193,7 @@ TEST(FindDecomposition, CompatibilityDecomposedFoundPivot)
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0000FB4F, r->codepoint);
-	EXPECT_EQ(0x0000356E, r->offset);
+	EXPECT_EQ(0x000031EB, r->offset);
 	EXPECT_EQ(FindResult_Found, e);
 }
 
