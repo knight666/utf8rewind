@@ -26,6 +26,7 @@ class UnicodeMapping:
 		self.decompositionCodepoints = []
 		self.decomposedNFD = []
 		self.decomposedNFKD = []
+		self.compositionPairs = dict()
 		self.offsetNFC = 0
 		self.offsetNFD = 0
 		self.offsetNFKC = 0
@@ -202,6 +203,7 @@ class UnicodeMapping:
 					if resolved:
 						result += resolved
 				else:
+					print "missing " + hex(c) + " in database"
 					result.append(c)
 		else:
 			result.append(self.codepoint)
@@ -211,6 +213,17 @@ class UnicodeMapping:
 	def decompose(self):
 		self.decomposedNFD = self.resolveCodepoint(False)
 		self.decomposedNFKD = self.resolveCodepoint(True)
+	
+	def compose(self):
+		if self.decompositionCodepoints and self.decompositionType == "DecompositionType_Canonical":
+			c = self.decompositionCodepoints[0]
+			if c in self.db.records:
+				target = self.db.records[c]
+				if len(self.decompositionCodepoints) == 2:
+					target.compositionPairs[self.decompositionCodepoints[1]] = self.codepoint
+			else:
+				print "compose failed, missing " + hex(c) + " in database."
+			
 	
 	def codepointsToString(self, values):
 		result = ""
@@ -265,10 +278,25 @@ class Database(libs.unicode.UnicodeVisitor):
 		return True
 	
 	def resolve(self):
+		print "Adding missing codepoints to database..."
+		
+		missing = []
+		missing += range(0x3401, 0x4DB4) # CJK Ideograph Extension A
+		missing += range(0x4E01, 0x9FCB) # CJK Ideograph
+		missing += range(0xAC01, 0xD7A2) # Hangul Syllable
+		missing += range(0x20001, 0x2A6D5) # CJK Ideograph Extension B
+		missing += range(0x2A701, 0x2B733) # CJK Ideograph Extension C
+		missing += range(0x2B73F, 0x2B81C) # CJK Ideograph Extension D
+		
+		for c in missing:
+			u = UnicodeMapping(self)
+			u.codepoint = c
+			self.recordsOrdered.append(u)
+			self.records[u.codepoint] = u
+		
 		print "Resolving decomposition for codepoints..."
 		
-		for u in self.records:
-			r = self.records[u]
+		for r in self.recordsOrdered:
 			r.decompose()
 			
 			convertedCodepoint = libs.utf8.codepointToUtf8(r.codepoint)
@@ -289,6 +317,21 @@ class Database(libs.unicode.UnicodeVisitor):
 					convertedNFKD += libs.utf8.codepointToUtf8(d)
 				if convertedNFKD <> convertedCodepoint:
 					r.offsetNFKD = self.addTranslation(convertedNFKD + "\\x00")
+		
+		print "Resolving composition for codepoints..."
+		
+		for r in self.recordsOrdered:
+			r.compose()
+		
+		"""
+		for u in self.records:
+			r = self.records[u]
+			if r.compositionPairs:
+				print "> " + hex(r.codepoint) + " " + r.name
+				for p in r.compositionPairs.items():
+					print " + " + hex(p[0]) + " " + self.records[p[0]].name
+					print " = " + hex(p[1]) + " " + self.records[p[1]].name
+		"""
 	
 	def resolveCodepoint(self, codepoint, compatibility):
 		found = self.records[codepoint]
