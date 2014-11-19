@@ -110,6 +110,42 @@ TEST(TransformDecompose, AsciiNotEnoughSpace)
 	EXPECT_STREQ("Space", b);
 }
 
+TEST(TransformDecompose, Hangul)
+{
+	const char* c = "\xED\x9B\xBD";
+	const size_t s = 512;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xE1\x84\x92\xE1\x85\xB0\xE1\x86\xA8", b);
+}
+
+TEST(TransformDecompose, HangulFirst)
+{
+	const char* c = "\xEA\xB0\x80";
+	const size_t s = 512;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xE1\x84\x80\xE1\x85\xA1", b);
+}
+
+TEST(TransformDecompose, HangulLast)
+{
+	const char* c = "\xED\x9E\xA3";
+	const size_t s = 512;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_STREQ("\xE1\x84\x92\xE1\x85\xB5\xE1\x87\x82", b);
+}
+
 TEST(TransformDecompose, JustEnoughSpace)
 {
 	const char* c = "Ar\xE1\xB9\x9Eogance";
