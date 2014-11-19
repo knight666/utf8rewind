@@ -25,9 +25,9 @@ TEST(ResolveDecomposition, FoundFirst)
 TEST(ResolveDecomposition, FoundLast)
 {
 	int32_t r = 0;
-	const char* d = resolvedecomposition(0x00004551, &r);
+	const char* d = resolvedecomposition(0x00004550, &r);
 
-	EXPECT_STREQ("\xE5\x8F\xAF", d);
+	EXPECT_STREQ("\xF0\xAA\x98\x80", d);
 	EXPECT_EQ(FindResult_Found, r);
 }
 
