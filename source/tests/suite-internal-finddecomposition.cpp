@@ -6,12 +6,12 @@ extern "C" {
 
 TEST(FindDecomposition, NoResult)
 {
-	const DecompositionRecord* r = finddecomposition(0x0002F9E5, NormalizationForm_Composed, nullptr);
+	const DecompositionRecord* r = finddecomposition(0x0002F9E5, DecompositionQuery_Decomposed, nullptr);
 
 	EXPECT_EQ(nullptr, r);
 }
 
-TEST(FindDecomposition, InvalidNormalizationForm)
+TEST(FindDecomposition, InvalidQuery)
 {
 	int32_t e = 0;
 	const DecompositionRecord* r = finddecomposition(0x0002F974, 33, &e);
@@ -20,28 +20,10 @@ TEST(FindDecomposition, InvalidNormalizationForm)
 	EXPECT_EQ(FindResult_Invalid, e);
 }
 
-TEST(FindDecomposition, UnhandledNormalizationFormComposed)
-{
-	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x00000F76, NormalizationForm_Composed, &e);
-
-	EXPECT_EQ(nullptr, r);
-	EXPECT_EQ(FindResult_Invalid, e);
-}
-
-TEST(FindDecomposition, UnhandledNormalizationFormCompatibilityComposed)
-{
-	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x00001EE8, NormalizationForm_Compatibility_Composed, &e);
-
-	EXPECT_EQ(nullptr, r);
-	EXPECT_EQ(FindResult_Invalid, e);
-}
-
 TEST(FindDecomposition, DecomposedFound)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x000004E4, NormalizationForm_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x000004E4, DecompositionQuery_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(FindResult_Found, e);
@@ -52,7 +34,7 @@ TEST(FindDecomposition, DecomposedFound)
 TEST(FindDecomposition, DecomposedFoundFirst)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x000000C0, NormalizationForm_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x000000C0, DecompositionQuery_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x000000C0, r->codepoint);
@@ -63,7 +45,7 @@ TEST(FindDecomposition, DecomposedFoundFirst)
 TEST(FindDecomposition, DecomposedFoundLast)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x0002FA1D, NormalizationForm_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x0002FA1D, DecompositionQuery_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0002FA1D, r->codepoint);
@@ -74,7 +56,7 @@ TEST(FindDecomposition, DecomposedFoundLast)
 TEST(FindDecomposition, DecomposedFoundPivot)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x0000F91E, NormalizationForm_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x0000F91E, DecompositionQuery_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0000F91E, r->codepoint);
@@ -85,7 +67,7 @@ TEST(FindDecomposition, DecomposedFoundPivot)
 TEST(FindDecomposition, DecomposedFoundPivotUp)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x00001E63, NormalizationForm_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x00001E63, DecompositionQuery_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x00001E63, r->codepoint);
@@ -96,7 +78,7 @@ TEST(FindDecomposition, DecomposedFoundPivotUp)
 TEST(FindDecomposition, DecomposedFoundPivotDown)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x0002F81A, NormalizationForm_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x0002F81A, DecompositionQuery_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0002F81A, r->codepoint);
@@ -107,7 +89,7 @@ TEST(FindDecomposition, DecomposedFoundPivotDown)
 TEST(FindDecomposition, DecomposedFoundPivotDownDown)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x0000037E, NormalizationForm_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x0000037E, DecompositionQuery_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0000037E, r->codepoint);
@@ -118,7 +100,7 @@ TEST(FindDecomposition, DecomposedFoundPivotDownDown)
 TEST(FindDecomposition, DecomposedFoundMaxDepth)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x0002F9DF, NormalizationForm_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x0002F9DF, DecompositionQuery_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0002F9DF, r->codepoint);
@@ -129,7 +111,7 @@ TEST(FindDecomposition, DecomposedFoundMaxDepth)
 TEST(FindDecomposition, DecomposedMissing)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x0001FFFF, NormalizationForm_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x0001FFFF, DecompositionQuery_Decomposed, &e);
 
 	EXPECT_EQ(nullptr, r);
 	EXPECT_EQ(FindResult_Missing, e);
@@ -138,7 +120,7 @@ TEST(FindDecomposition, DecomposedMissing)
 TEST(FindDecomposition, DecomposedMissingOutOfLowerBounds)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x00000067, NormalizationForm_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x00000067, DecompositionQuery_Decomposed, &e);
 
 	EXPECT_EQ(nullptr, r);
 	EXPECT_EQ(FindResult_OutOfBounds, e);
@@ -147,7 +129,7 @@ TEST(FindDecomposition, DecomposedMissingOutOfLowerBounds)
 TEST(FindDecomposition, DecomposedMissingOutOfUpperBounds)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x0011A26D, NormalizationForm_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x0011A26D, DecompositionQuery_Decomposed, &e);
 
 	EXPECT_EQ(nullptr, r);
 	EXPECT_EQ(FindResult_OutOfBounds, e);
@@ -156,7 +138,7 @@ TEST(FindDecomposition, DecomposedMissingOutOfUpperBounds)
 TEST(FindDecomposition, CompatibilityDecomposedFound)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x000004E4, NormalizationForm_Compatibility_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x000004E4, DecompositionQuery_Compatibility_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(FindResult_Found, e);
@@ -167,7 +149,7 @@ TEST(FindDecomposition, CompatibilityDecomposedFound)
 TEST(FindDecomposition, CompatibilityDecomposedFoundFirst)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x000000A0, NormalizationForm_Compatibility_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x000000A0, DecompositionQuery_Compatibility_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x000000A0, r->codepoint);
@@ -178,7 +160,7 @@ TEST(FindDecomposition, CompatibilityDecomposedFoundFirst)
 TEST(FindDecomposition, CompatibilityDecomposedFoundLast)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x0002FA1D, NormalizationForm_Compatibility_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x0002FA1D, DecompositionQuery_Compatibility_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0002FA1D, r->codepoint);
@@ -189,7 +171,7 @@ TEST(FindDecomposition, CompatibilityDecomposedFoundLast)
 TEST(FindDecomposition, CompatibilityDecomposedFoundPivot)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x0000FB4F, NormalizationForm_Compatibility_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x0000FB4F, DecompositionQuery_Compatibility_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0000FB4F, r->codepoint);
@@ -200,7 +182,7 @@ TEST(FindDecomposition, CompatibilityDecomposedFoundPivot)
 TEST(FindDecomposition, CompatibilityDecomposedFoundPivotUp)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x000024E6, NormalizationForm_Compatibility_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x000024E6, DecompositionQuery_Compatibility_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x000024E6, r->codepoint);
@@ -211,7 +193,7 @@ TEST(FindDecomposition, CompatibilityDecomposedFoundPivotUp)
 TEST(FindDecomposition, CompatibilityDecomposedFoundPivotDown)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x0001D596, NormalizationForm_Compatibility_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x0001D596, DecompositionQuery_Compatibility_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0001D596, r->codepoint);
@@ -222,7 +204,7 @@ TEST(FindDecomposition, CompatibilityDecomposedFoundPivotDown)
 TEST(FindDecomposition, CompatibilityDecomposedFoundPivotDownUp)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x00003342, NormalizationForm_Compatibility_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x00003342, DecompositionQuery_Compatibility_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x00003342, r->codepoint);
@@ -233,7 +215,7 @@ TEST(FindDecomposition, CompatibilityDecomposedFoundPivotDownUp)
 TEST(FindDecomposition, CompatibilityDecomposedFoundMaxDepth)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x0001D4CA, NormalizationForm_Compatibility_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x0001D4CA, DecompositionQuery_Compatibility_Decomposed, &e);
 
 	ASSERT_NE(nullptr, r);
 	EXPECT_EQ(0x0001D4CA, r->codepoint);
@@ -244,7 +226,7 @@ TEST(FindDecomposition, CompatibilityDecomposedFoundMaxDepth)
 TEST(FindDecomposition, CompatibilityDecomposedMissing)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x0001A2AF, NormalizationForm_Compatibility_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x0001A2AF, DecompositionQuery_Compatibility_Decomposed, &e);
 
 	EXPECT_EQ(nullptr, r);
 	EXPECT_EQ(FindResult_Missing, e);
@@ -253,7 +235,7 @@ TEST(FindDecomposition, CompatibilityDecomposedMissing)
 TEST(FindDecomposition, CompatibilityDecomposedMissingOutOfLowerBounds)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x00000023, NormalizationForm_Compatibility_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x00000023, DecompositionQuery_Compatibility_Decomposed, &e);
 
 	EXPECT_EQ(nullptr, r);
 	EXPECT_EQ(FindResult_OutOfBounds, e);
@@ -262,7 +244,7 @@ TEST(FindDecomposition, CompatibilityDecomposedMissingOutOfLowerBounds)
 TEST(FindDecomposition, CompatibilityDecomposedMissingOutOfUpperBounds)
 {
 	int32_t e = 0;
-	const DecompositionRecord* r = finddecomposition(0x00DD2A5D, NormalizationForm_Compatibility_Decomposed, &e);
+	const DecompositionRecord* r = finddecomposition(0x00DD2A5D, DecompositionQuery_Compatibility_Decomposed, &e);
 
 	EXPECT_EQ(nullptr, r);
 	EXPECT_EQ(FindResult_OutOfBounds, e);

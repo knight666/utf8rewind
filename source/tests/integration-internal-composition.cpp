@@ -11,7 +11,7 @@ TEST(Composition, SingletonAngstrom)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x212B, NormalizationForm_Decomposed, &errors);
+		const DecompositionRecord* c = finddecomposition(0x212B, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, c);
 		EXPECT_EQ(0, errors);
 
@@ -39,7 +39,7 @@ TEST(Composition, SingletonAngstrom)
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x212B, NormalizationForm_Compatibility_Decomposed, &errors);
+		const DecompositionRecord* c = finddecomposition(0x212B, DecompositionQuery_Compatibility_Decomposed, &errors);
 		ASSERT_NE(nullptr, c);
 		EXPECT_EQ(0, errors);
 
@@ -72,7 +72,7 @@ TEST(Composition, SingletonOhm)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x2126, NormalizationForm_Decomposed, &errors);
+		const DecompositionRecord* c = finddecomposition(0x2126, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, c);
 		EXPECT_EQ(0, errors);
 
@@ -99,7 +99,7 @@ TEST(Composition, SingletonOhm)
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x2126, NormalizationForm_Compatibility_Decomposed, &errors);
+		const DecompositionRecord* c = finddecomposition(0x2126, DecompositionQuery_Compatibility_Decomposed, &errors);
 		ASSERT_NE(nullptr, c);
 		EXPECT_EQ(0, errors);
 
@@ -131,7 +131,7 @@ TEST(Composition, CanonicalCompositeAWithRing)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0xC5, NormalizationForm_Decomposed, &errors);
+		const DecompositionRecord* c = finddecomposition(0xC5, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, c);
 		EXPECT_EQ(0, errors);
 
@@ -159,7 +159,7 @@ TEST(Composition, CanonicalCompositeAWithRing)
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0xC5, NormalizationForm_Compatibility_Decomposed, &errors);
+		const DecompositionRecord* c = finddecomposition(0xC5, DecompositionQuery_Compatibility_Decomposed, &errors);
 		ASSERT_NE(nullptr, c);
 		EXPECT_EQ(0, errors);
 
@@ -192,7 +192,7 @@ TEST(Composition, CanonicalCompositeOWithCircumflex)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0xF4, NormalizationForm_Decomposed, &errors);
+		const DecompositionRecord* c = finddecomposition(0xF4, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, c);
 		EXPECT_EQ(0, errors);
 
@@ -220,7 +220,7 @@ TEST(Composition, CanonicalCompositeOWithCircumflex)
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0xF4, NormalizationForm_Compatibility_Decomposed, &errors);
+		const DecompositionRecord* c = finddecomposition(0xF4, DecompositionQuery_Compatibility_Decomposed, &errors);
 		ASSERT_NE(nullptr, c);
 		EXPECT_EQ(0, errors);
 
@@ -253,7 +253,7 @@ TEST(Composition, MultipleCombiningMarksSWithDots)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x1E69, NormalizationForm_Decomposed, &errors);
+		const DecompositionRecord* c = finddecomposition(0x1E69, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, c);
 		EXPECT_EQ(0, errors);
 
@@ -282,7 +282,7 @@ TEST(Composition, MultipleCombiningMarksSWithDots)
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x1E69, NormalizationForm_Compatibility_Decomposed, &errors);
+		const DecompositionRecord* c = finddecomposition(0x1E69, DecompositionQuery_Compatibility_Decomposed, &errors);
 		ASSERT_NE(nullptr, c);
 		EXPECT_EQ(0, errors);
 

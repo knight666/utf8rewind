@@ -34,7 +34,7 @@ extern const DecompositionRecord* UnicodeNFKDRecordPtr;
 extern const char* DecompositionData;
 extern const size_t DecompositionDataLength;
 
-const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normalization, int32_t* result)
+const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result)
 {
 	size_t offset_start;
 	size_t offset_end;
@@ -48,12 +48,12 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normali
 		return 0;
 	}
 
-	if (normalization == NormalizationForm_Decomposed)
+	if (query == DecompositionQuery_Decomposed)
 	{
 		record = UnicodeNFDRecordPtr;
 		record_count = UnicodeNFDRecordCount;
 	}
-	else if (normalization == NormalizationForm_Compatibility_Decomposed)
+	else if (query == DecompositionQuery_Compatibility_Decomposed)
 	{
 		record = UnicodeNFKDRecordPtr;
 		record_count = UnicodeNFKDRecordCount;
