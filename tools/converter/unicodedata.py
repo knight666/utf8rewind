@@ -323,15 +323,22 @@ class Database(libs.unicode.UnicodeVisitor):
 		for r in self.recordsOrdered:
 			r.compose()
 		
-		"""
-		for u in self.records:
-			r = self.records[u]
+		composed = []
+		
+		for r in self.recordsOrdered:
 			if r.compositionPairs:
-				print "> " + hex(r.codepoint) + " " + r.name
 				for p in r.compositionPairs.items():
-					print " + " + hex(p[0]) + " " + self.records[p[0]].name
-					print " = " + hex(p[1]) + " " + self.records[p[1]].name
-		"""
+					key = r.codepoint + p[0]
+					if key in composed:
+						print "collision " + hex(key)
+					else:
+						pair = {
+							"key": key,
+							"value": p[1]
+						}
+						composed.append(pair)
+		
+		print "composed", str(len(composed))
 	
 	def resolveCodepoint(self, codepoint, compatibility):
 		found = self.records[codepoint]
