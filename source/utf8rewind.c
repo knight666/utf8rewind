@@ -835,7 +835,7 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 		}
 		else
 		{
-			record = finddecomposition(codepoint, NormalizationForm_Decomposed, &find_result);
+			record = finddecomposition(codepoint, DecompositionQuery_Decomposed, &find_result);
 			if (find_result == FindResult_Found)
 			{
 				resolved = resolvedecomposition(record->offset, &find_result);

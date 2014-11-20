@@ -41,15 +41,16 @@ enum FindResult
 	FindResult_Invalid
 };
 
-enum NormalizationForm
+enum DecompositionQuery
 {
-	NormalizationForm_Decomposed,
-	NormalizationForm_Composed,
-	NormalizationForm_Compatibility_Decomposed,
-	NormalizationForm_Compatibility_Composed,
+	DecompositionQuery_Decomposed,
+	DecompositionQuery_Compatibility_Decomposed,
+	DecompositionQuery_Uppercase,
+	DecompositionQuery_Lowercase,
+	DecompositionQuery_Titlecase
 };
 
-const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t normalization, int32_t* result);
+const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result);
 
 const char* resolvedecomposition(size_t offset, int32_t* result);
 
