@@ -34,6 +34,12 @@ class UnicodeMapping:
 		self.numericType = "NumericType_None"
 		self.numericValue = 0
 		self.bidiMirrored = False
+		self.uppercase = 0
+		self.lowercase = 0
+		self.titlecase = 0
+		self.offsetUppercase = 0
+		self.offsetLowercase = 0
+		self.offsetTitlecase = 0
 	
 	def decomposedToString(self):
 		decomposedCodepoints = ""
@@ -191,6 +197,17 @@ class UnicodeMapping:
 		else:
 			self.bidiMirrored = False
 		
+		# case mapping
+		
+		if matches[12]:
+			self.uppercase = int(matches[12][0], 16)
+		
+		if matches[13]:
+			self.lowercase = int(matches[13][0], 16)
+		
+		if matches[14]:
+			self.titlecase = int(matches[14][0], 16)
+		
 		return True
 	
 	def resolveCodepoint(self, compatibility):
@@ -294,7 +311,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			self.recordsOrdered.append(u)
 			self.records[u.codepoint] = u
 		
-		print "Resolving decomposition for codepoints..."
+		print "Resolving decomposition..."
 		
 		for r in self.recordsOrdered:
 			r.decompose()
@@ -318,7 +335,7 @@ class Database(libs.unicode.UnicodeVisitor):
 				if convertedNFKD <> convertedCodepoint:
 					r.offsetNFKD = self.addTranslation(convertedNFKD + "\\x00")
 		
-		print "Resolving composition for codepoints..."
+		print "Resolving composition..."
 		
 		for r in self.recordsOrdered:
 			r.compose()
@@ -339,6 +356,20 @@ class Database(libs.unicode.UnicodeVisitor):
 						composed.append(pair)
 		
 		print "composed", str(len(composed))
+		
+		print "Resolving case mappings..."
+		
+		for r in self.recordsOrdered:
+			if r.codepoint >= 0x7F: # ignore ASCII
+				if r.uppercase <> 0:
+					converted = libs.utf8.codepointToUtf8(r.uppercase)
+					r.offsetUppercase = self.addTranslation(converted + "\\x00")
+				if r.lowercase <> 0:
+					converted = libs.utf8.codepointToUtf8(r.lowercase)
+					r.offsetLowercase = self.addTranslation(converted + "\\x00")
+				if r.titlecase <> 0:
+					converted = libs.utf8.codepointToUtf8(r.titlecase)
+					r.offsetTitlecase = self.addTranslation(converted + "\\x00")
 	
 	def resolveCodepoint(self, codepoint, compatibility):
 		found = self.records[codepoint]
@@ -418,6 +449,33 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		return result
 	
+	def writeDecompositionRecords(self, header, records, name, field):
+		header.writeLine("const size_t Unicode" + name + "RecordCount = " + str(len(records)) + ";")
+		header.writeLine("const DecompositionRecord Unicode" + name + "Record[" + str(len(records)) + "] = {")
+		header.indent()
+		
+		count = 0
+		
+		for r in records:
+			if (count % 4) == 0:
+				header.writeIndentation()
+			
+			header.write("{ " + hex(r.codepoint) + ", " + hex(r.__dict__[field]) + " },")
+			
+			count += 1
+			if count <> len(records):
+				if (count % 4) == 0:
+					header.newLine()
+				else:
+					header.write(" ")
+		
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.writeLine("const DecompositionRecord* Unicode" + name + "RecordPtr = Unicode" + name + "Record;")
+		
+		header.newLine()
+	
 	def writeSource(self, filepath):
 		print "Writing database to " + filepath + "..."
 		
@@ -430,6 +488,9 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		nfd_records = []
 		nfkd_records = []
+		uppercase_records = []
+		lowercase_records = []
+		titlecase_records = []
 		
 		for r in self.recordsOrdered:
 			if r.offsetNFD <> 0:
@@ -437,6 +498,15 @@ class Database(libs.unicode.UnicodeVisitor):
 			
 			if r.offsetNFKD <> 0:
 				nfkd_records.append(r)
+			
+			if r.offsetUppercase <> 0:
+				uppercase_records.append(r)
+			
+			if r.offsetLowercase <> 0:
+				lowercase_records.append(r)
+			
+			if r.offsetTitlecase <> 0:
+				titlecase_records.append(r)
 		
 		sliced = libs.blobsplitter.BlobSplitter()
 		sliced.split(self.blob, self.offset)
@@ -468,57 +538,14 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# decomposition records
 		
-		header.writeLine("const size_t UnicodeNFDRecordCount = " + str(len(nfd_records)) + ";")
-		header.writeLine("const DecompositionRecord UnicodeNFDRecord[" + str(len(nfd_records)) + "] = {")
-		header.indent()
+		self.writeDecompositionRecords(header, nfd_records, "NFD", "offsetNFD")
+		self.writeDecompositionRecords(header, nfkd_records, "NFKD", "offsetNFKD")
 		
-		count = 0
+		# case mapping records
 		
-		for r in nfd_records:
-			if (count % 4) == 0:
-				header.writeIndentation()
-			
-			header.write("{ " + hex(r.codepoint) + ", " + hex(r.offsetNFD) + " },")
-			
-			count += 1
-			if count <> len(nfd_records):
-				if (count % 4) == 0:
-					header.newLine()
-				else:
-					header.write(" ")
-		
-		header.newLine()
-		header.outdent()
-		header.writeLine("};")
-		header.writeLine("const DecompositionRecord* UnicodeNFDRecordPtr = UnicodeNFDRecord;")
-		
-		header.newLine()
-		
-		header.writeLine("const size_t UnicodeNFKDRecordCount = " + str(len(nfkd_records)) + ";")
-		header.writeLine("const DecompositionRecord UnicodeNFKDRecord[" + str(len(nfkd_records)) + "] = {")
-		header.indent()
-		
-		count = 0
-		
-		for r in nfkd_records:
-			if (count % 4) == 0:
-				header.writeIndentation()
-			
-			header.write("{ " + hex(r.codepoint) + ", " + hex(r.offsetNFKD) + " },")
-			
-			count += 1
-			if count <> len(nfkd_records):
-				if (count % 4) == 0:
-					header.newLine()
-				else:
-					header.write(" ")
-		
-		header.newLine()
-		header.outdent()
-		header.writeLine("};")
-		header.writeLine("const DecompositionRecord* UnicodeNFKDRecordPtr = UnicodeNFKDRecord;")
-		
-		header.newLine()
+		self.writeDecompositionRecords(header, uppercase_records, "Uppercase", "offsetUppercase")
+		self.writeDecompositionRecords(header, lowercase_records, "Lowercase", "offsetLowercase")
+		self.writeDecompositionRecords(header, titlecase_records, "Titlecase", "offsetTitlecase")
 		
 		# decomposition data
 		
