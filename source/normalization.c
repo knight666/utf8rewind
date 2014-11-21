@@ -37,6 +37,9 @@ extern const DecompositionRecord* UnicodeUppercaseRecordPtr;
 extern const size_t UnicodeLowercaseRecordCount;
 extern const DecompositionRecord* UnicodeLowercaseRecordPtr;
 
+extern const size_t UnicodeTitlecaseRecordCount;
+extern const DecompositionRecord* UnicodeTitlecaseRecordPtr;
+
 extern const char* DecompositionData;
 extern const size_t DecompositionDataLength;
 
@@ -73,6 +76,11 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t query, 
 	{
 		record = UnicodeLowercaseRecordPtr;
 		record_count = UnicodeLowercaseRecordCount;
+	}
+	else if (query == DecompositionQuery_Titlecase)
+	{
+		record = UnicodeTitlecaseRecordPtr;
+		record_count = UnicodeTitlecaseRecordCount;
 	}
 	else
 	{
