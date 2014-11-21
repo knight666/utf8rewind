@@ -31,6 +31,9 @@ extern const DecompositionRecord* UnicodeNFDRecordPtr;
 extern const size_t UnicodeNFKDRecordCount;
 extern const DecompositionRecord* UnicodeNFKDRecordPtr;
 
+extern const size_t UnicodeUppercaseRecordCount;
+extern const DecompositionRecord* UnicodeUppercaseRecordPtr;
+
 extern const char* DecompositionData;
 extern const size_t DecompositionDataLength;
 
@@ -57,6 +60,11 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t query, 
 	{
 		record = UnicodeNFKDRecordPtr;
 		record_count = UnicodeNFKDRecordCount;
+	}
+	else if (query == DecompositionQuery_Uppercase)
+	{
+		record = UnicodeUppercaseRecordPtr;
+		record_count = UnicodeUppercaseRecordCount;
 	}
 	else
 	{
