@@ -364,3 +364,118 @@ TEST(FindDecomposition, UppercaseMissingOutOfUpperBounds)
 	EXPECT_EQ(nullptr, r);
 	EXPECT_EQ(FindResult_OutOfBounds, e);
 }
+
+TEST(FindDecomposition, LowercaseFound)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x00000393, DecompositionQuery_Lowercase, &e);
+
+	ASSERT_NE(nullptr, r);
+	EXPECT_EQ(FindResult_Found, e);
+	EXPECT_EQ(0x00000393, r->codepoint);
+	EXPECT_EQ(0x00000973, r->offset);
+}
+
+TEST(FindDecomposition, LowercaseFoundFirst)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x000000C0, DecompositionQuery_Lowercase, &e);
+
+	ASSERT_NE(nullptr, r);
+	EXPECT_EQ(FindResult_Found, e);
+	EXPECT_EQ(0x000000C0, r->codepoint);
+	EXPECT_EQ(0x00004555, r->offset);
+}
+
+TEST(FindDecomposition, LowercaseFoundLast)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x000118BF, DecompositionQuery_Lowercase, &e);
+
+	ASSERT_NE(nullptr, r);
+	EXPECT_EQ(FindResult_Found, e);
+	EXPECT_EQ(0x000118BF, r->codepoint);
+	EXPECT_EQ(0x000061C2, r->offset);
+}
+
+TEST(FindDecomposition, LowercaseFoundPivot)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x00001E62, DecompositionQuery_Lowercase, &e);
+
+	ASSERT_NE(nullptr, r);
+	EXPECT_EQ(FindResult_Found, e);
+	EXPECT_EQ(0x00001E62, r->codepoint);
+	EXPECT_EQ(0x00005114, r->offset);
+}
+
+TEST(FindDecomposition, LowercaseFoundPivotUp)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x00000409, DecompositionQuery_Lowercase, &e);
+
+	ASSERT_NE(nullptr, r);
+	EXPECT_EQ(FindResult_Found, e);
+	EXPECT_EQ(0x00000409, r->codepoint);
+	EXPECT_EQ(0x00004AAC, r->offset);
+}
+
+TEST(FindDecomposition, LowercaseFoundPivotDown)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x00002C62, DecompositionQuery_Lowercase, &e);
+
+	ASSERT_NE(nullptr, r);
+	EXPECT_EQ(FindResult_Found, e);
+	EXPECT_EQ(0x00002C62, r->codepoint);
+	EXPECT_EQ(0x00002A95, r->offset);
+}
+
+TEST(FindDecomposition, LowercaseFoundPivotDownUp)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x00001F9A, DecompositionQuery_Lowercase, &e);
+
+	ASSERT_NE(nullptr, r);
+	EXPECT_EQ(FindResult_Found, e);
+	EXPECT_EQ(0x00001F9A, r->codepoint);
+	EXPECT_EQ(0x00005587, r->offset);
+}
+
+TEST(FindDecomposition, LowercaseFoundMaxDepth)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x0000A728, DecompositionQuery_Lowercase, &e);
+
+	ASSERT_NE(nullptr, r);
+	EXPECT_EQ(FindResult_Found, e);
+	EXPECT_EQ(0x0000A728, r->codepoint);
+	EXPECT_EQ(0x00005D06, r->offset);
+}
+
+TEST(FindDecomposition, LowercaseMissing)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x0000F3AA, DecompositionQuery_Lowercase, &e);
+
+	EXPECT_EQ(nullptr, r);
+	EXPECT_EQ(FindResult_Missing, e);
+}
+
+TEST(FindDecomposition, LowercaseMissingOutOfLowerBounds)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x00000061, DecompositionQuery_Lowercase, &e);
+
+	EXPECT_EQ(nullptr, r);
+	EXPECT_EQ(FindResult_OutOfBounds, e);
+}
+
+TEST(FindDecomposition, LowercaseMissingOutOfUpperBounds)
+{
+	int32_t e = 0;
+	const DecompositionRecord* r = finddecomposition(0x00012000, DecompositionQuery_Lowercase, &e);
+
+	EXPECT_EQ(nullptr, r);
+	EXPECT_EQ(FindResult_OutOfBounds, e);
+}
