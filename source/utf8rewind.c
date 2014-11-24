@@ -793,6 +793,142 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	}
 }
 
+size_t process_default(int8_t query, unicode_t codepoint, size_t codepointLength, char** target, size_t* targetSize, int32_t* errors)
+{
+	const DecompositionRecord* record;
+	int32_t find_result;
+	const char* resolved;
+	size_t resolved_size;
+
+	record = finddecomposition(codepoint, query, &find_result);
+	if (find_result == FindResult_Found)
+	{
+		resolved = resolvedecomposition(record->offset, &find_result);
+		resolved_size = strlen(resolved);
+
+		if (*target != 0 && resolved_size > 0)
+		{
+			if (*targetSize < resolved_size)
+			{
+				goto outofspace;
+			}
+
+			memcpy(*target, resolved, resolved_size);
+
+			*target += resolved_size;
+			*targetSize -= resolved_size;
+		}
+
+		return resolved_size;
+	}
+	else
+	{
+		if (*target != 0 && *targetSize < codepointLength)
+		{
+			return UTF8_ERR_NOT_ENOUGH_SPACE;
+		}
+
+		return writecodepoint(codepoint, target, targetSize, errors);
+	}
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return 0;
+}
+
+size_t process_toupper(unicode_t codepoint, size_t codepointLength, char** target, size_t* targetSize, int32_t* errors)
+{
+	if (codepointLength == 1 && codepoint <= 0x7F)
+	{
+		if (*target != 0 && *targetSize < 1)
+		{
+			goto outofspace;
+		}
+
+		if (codepoint >= 0x61 && codepoint <= 0x7A)
+		{
+			codepoint -= 32;
+		}
+
+		**target = (char)codepoint;
+		*targetSize--;
+
+		return 1;
+	}
+	else
+	{
+		return process_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
+	}
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return 0;
+}
+
+typedef size_t (*ProcessFunc)(unicode_t, size_t, char**, size_t*, int32_t*);
+
+size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+{
+	const char* src = input;
+	size_t src_size = inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
+	size_t bytes_written = 0;
+	unicode_t codepoint;
+	size_t codepoint_length;
+	ProcessFunc process;
+	size_t result;
+
+	if (input == 0)
+	{
+		goto invaliddata;
+	}
+
+	process = &process_toupper;
+
+	do
+	{
+		codepoint_length = readcodepoint(&codepoint, src, src_size);
+
+		result = process(codepoint, codepoint_length, &dst, &targetSize, errors);
+		if (result == 0)
+		{
+			return bytes_written;
+		}
+
+		dst++;
+		dst_size--;
+
+		bytes_written += result;
+
+		src = utf8seek(src, input, 1, SEEK_CUR);
+		src_size -= codepoint_length;
+	}
+	while (src_size > 0);
+
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+invalidtransform:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_TRANSFORM;
+	}
+	return bytes_written;
+}
+
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
 	const char* src = input;
