@@ -793,7 +793,7 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	}
 }
 
-size_t process_default(int8_t query, unicode_t codepoint, size_t codepointLength, char** target, size_t* targetSize, int32_t* errors)
+size_t process_default(int8_t query, unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
 {
 	const DecompositionRecord* record;
 	int32_t find_result;
@@ -806,29 +806,26 @@ size_t process_default(int8_t query, unicode_t codepoint, size_t codepointLength
 		resolved = resolvedecomposition(record->offset, &find_result);
 		resolved_size = strlen(resolved);
 
-		if (*target != 0 && resolved_size > 0)
+		if (target != 0 && resolved_size > 0)
 		{
-			if (*targetSize < resolved_size)
+			if (targetSize < resolved_size)
 			{
 				goto outofspace;
 			}
 
-			memcpy(*target, resolved, resolved_size);
-
-			*target += resolved_size;
-			*targetSize -= resolved_size;
+			memcpy(target, resolved, resolved_size);
 		}
 
 		return resolved_size;
 	}
 	else
 	{
-		if (*target != 0 && *targetSize < codepointLength)
+		if (target != 0 && targetSize < codepointLength)
 		{
 			return UTF8_ERR_NOT_ENOUGH_SPACE;
 		}
 
-		return writecodepoint(codepoint, target, targetSize, errors);
+		return writecodepoint(codepoint, &target, &targetSize, errors);
 	}
 
 outofspace:
@@ -839,22 +836,24 @@ outofspace:
 	return 0;
 }
 
-size_t process_toupper(unicode_t codepoint, size_t codepointLength, char** target, size_t* targetSize, int32_t* errors)
+size_t process_toupper(unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
 {
 	if (codepointLength == 1 && codepoint <= 0x7F)
 	{
-		if (*target != 0 && *targetSize < 1)
+		if (target != 0)
 		{
-			goto outofspace;
-		}
+			if (targetSize < 1)
+			{
+				goto outofspace;
+			}
 
-		if (codepoint >= 0x61 && codepoint <= 0x7A)
-		{
-			codepoint -= 32;
-		}
+			if (codepoint >= 0x61 && codepoint <= 0x7A)
+			{
+				codepoint -= 32;
+			}
 
-		**target = (char)codepoint;
-		*targetSize--;
+			*target = (char)codepoint;
+		}
 
 		return 1;
 	}
@@ -871,7 +870,7 @@ outofspace:
 	return 0;
 }
 
-typedef size_t (*ProcessFunc)(unicode_t, size_t, char**, size_t*, int32_t*);
+typedef size_t (*ProcessFunc)(unicode_t, size_t, char*, size_t, int32_t*);
 
 size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
@@ -896,14 +895,17 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 	{
 		codepoint_length = readcodepoint(&codepoint, src, src_size);
 
-		result = process(codepoint, codepoint_length, &dst, &targetSize, errors);
+		result = process(codepoint, codepoint_length, dst, dst_size, errors);
 		if (result == 0)
 		{
 			return bytes_written;
 		}
 
-		dst++;
-		dst_size--;
+		if (target != 0)
+		{
+			dst += result;
+			dst_size -= result;
+		}
 
 		bytes_written += result;
 
