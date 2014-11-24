@@ -49,3 +49,32 @@ TEST(ToUpper, AsciiAllOther)
 	EXPECT_STREQ(" !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}`", b);
 	EXPECT_EQ(0, errors);
 }
+
+TEST(ToUpper, AsciiAmountOfBytes)
+{
+	char* c = "Magic";
+	int32_t errors = 0;
+
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, AsciiNotEnoughSpace)
+{
+	char* c = "Merde";
+	const size_t s = 4;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s - 1, &errors));
+	EXPECT_STREQ("MER", b);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(ToUpper, AsciiInvalidData)
+{
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8toupper(nullptr, 1, nullptr, 0, &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
