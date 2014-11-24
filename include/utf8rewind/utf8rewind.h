@@ -43,6 +43,7 @@
 #define UTF8_ERR_NOT_ENOUGH_SPACE               (-2)
 #define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  (-3)
 #define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   (-4)
+#define UTF8_ERR_INVALID_TRANSFORM              (-5)
 
 #define UTF8_TRANSFORM_DECOMPOSED                0x00000001
 #define UTF8_TRANSFORM_COMPOSED                  0x00000002
@@ -461,6 +462,8 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 	@return Changed string or no change on error.
 */
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
+
+size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
 
