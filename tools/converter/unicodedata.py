@@ -240,7 +240,66 @@ class UnicodeMapping:
 					target.compositionPairs[self.decompositionCodepoints[1]] = self.codepoint
 			else:
 				print "compose failed, missing " + hex(c) + " in database."
+	
+	def caseMapping(self):
+		# ignore ASCII
+		if self.codepoint < 0x7F:
+			return
 			
+		if self.uppercase <> 0:
+			converted = libs.utf8.codepointToUtf8(self.uppercase)
+			self.offsetUppercase = self.db.addTranslation(converted + "\\x00")
+		if self.lowercase <> 0:
+			converted = libs.utf8.codepointToUtf8(self.lowercase)
+			self.offsetLowercase = self.db.addTranslation(converted + "\\x00")
+		if self.titlecase <> 0:
+			converted = libs.utf8.codepointToUtf8(self.titlecase)
+			self.offsetTitlecase = self.db.addTranslation(converted + "\\x00")
+		
+		"""
+		if self.uppercase == 0 and self.lowercase == 0 and self.titlecase == 0:
+			if len(self.decomposedNFD) > 1:
+				if self.decomposedNFD[0] in self.db.records:
+					resolvedUppercase = [] + self.decomposedNFD
+					resolvedLowercase = [] + self.decomposedNFD
+					resolvedTitlecase = [] + self.decomposedNFD
+					
+					decomposedMain = self.db.records[self.decomposedNFD[0]]
+					if decomposedMain.uppercase <> 0:
+						resolvedUppercase[0] = decomposedMain.uppercase
+					if decomposedMain.lowercase <> 0:
+						resolvedLowercase[0] = decomposedMain.uppercase
+					if decomposedMain.titlecase <> 0:
+						resolvedTitlecase[0] = decomposedMain.titlecase
+					
+					if resolvedUppercase[0] <> self.decomposedNFD[0]:
+						composedUppercase = resolvedUppercase[0]
+						
+						for u in range(1, len(resolvedUppercase)):
+							composedUppercase = self.db.composePair(composedUppercase, resolvedUppercase[u])
+							if not composedUppercase:
+								break
+						
+						if composedUppercase:
+							print self.name
+							for n in self.decomposedNFD:
+								print self.db.records[n].name
+							print ">>> " + self.db.records[composedUppercase].name
+					
+					if resolvedLowercase[0] <> self.decomposedNFD[0]:
+						composedLowercase = resolvedLowercase[0]
+						
+						for u in range(1, len(resolvedLowercase)):
+							composedLowercase = self.db.composePair(composedLowercase, resolvedLowercase[u])
+							if not composedLowercase:
+								break
+						
+						if composedLowercase:
+							print self.name
+							for n in self.decomposedNFD:
+								print self.db.records[n].name
+							print ">>> " + self.db.records[composedLowercase].name
+		"""
 	
 	def codepointsToString(self, values):
 		result = ""
@@ -360,16 +419,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		print "Resolving case mappings..."
 		
 		for r in self.recordsOrdered:
-			if r.codepoint >= 0x7F: # ignore ASCII
-				if r.uppercase <> 0:
-					converted = libs.utf8.codepointToUtf8(r.uppercase)
-					r.offsetUppercase = self.addTranslation(converted + "\\x00")
-				if r.lowercase <> 0:
-					converted = libs.utf8.codepointToUtf8(r.lowercase)
-					r.offsetLowercase = self.addTranslation(converted + "\\x00")
-				if r.titlecase <> 0:
-					converted = libs.utf8.codepointToUtf8(r.titlecase)
-					r.offsetTitlecase = self.addTranslation(converted + "\\x00")
+			r.caseMapping()
 	
 	def resolveCodepoint(self, codepoint, compatibility):
 		found = self.records[codepoint]
@@ -420,6 +470,19 @@ class Database(libs.unicode.UnicodeVisitor):
 		result += "\\x00"
 		
 		return result
+	
+	def composePair(self, left, right):
+		if left not in self.records:
+			return None
+		
+		leftCodepoint = self.records[left]
+		if len(leftCodepoint.compositionPairs) == 0:
+			return None
+		
+		if not right in leftCodepoint.compositionPairs:
+			return None
+		
+		return leftCodepoint.compositionPairs[right]
 	
 	def addTranslation(self, translation):
 		result = 0
