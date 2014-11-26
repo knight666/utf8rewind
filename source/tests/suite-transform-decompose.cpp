@@ -292,7 +292,7 @@ TEST(TransformDecompose, AmountOfBytesString)
 	const char* c = "Brill\xC3\x95";
 	int32_t errors = 0;
 
-	EXPECT_EQ(7, utf8transform(c, strlen(c), nullptr, 0, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_EQ(8, utf8transform(c, strlen(c), nullptr, 0, UTF8_TRANSFORM_DECOMPOSED, &errors));
 	EXPECT_EQ(0, errors);
 }
 
