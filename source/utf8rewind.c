@@ -997,29 +997,22 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 			V = VBase + (SIndex % NCount) / TCount;
 			T = TBase + (SIndex % TCount);
 
-			resolved_size = writecodepoint(L, &dst, &dst_size, errors);
-			if (resolved_size == 0)
+			/* hangul syllables are always three bytes */
+			resolved_size = (T != TBase) ? 9 : 6;
+
+			if (dst != 0 && dst_size < resolved_size)
 			{
 				goto outofspace;
 			}
-			bytes_written += resolved_size;
 
-			resolved_size = writecodepoint(V, &dst, &dst_size, errors);
-			if (resolved_size == 0)
-			{
-				goto outofspace;
-			}
-			bytes_written += resolved_size;
-
+			writecodepoint(L, &dst, &dst_size, errors);
+			writecodepoint(V, &dst, &dst_size, errors);
 			if (T != TBase)
 			{
-				resolved_size = writecodepoint(T, &dst, &dst_size, errors);
-				if (resolved_size == 0)
-				{
-					goto outofspace;
-				}
-				bytes_written += resolved_size;
+				writecodepoint(T, &dst, &dst_size, errors);
 			}
+
+			bytes_written += resolved_size;
 		}
 		else
 		{

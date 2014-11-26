@@ -118,8 +118,8 @@ TEST(TransformDecompose, Hangul)
 	int32_t errors = 0;
 
 	EXPECT_EQ(9, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
-	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xE1\x84\x92\xE1\x85\xB0\xE1\x86\xA8", b);
+	EXPECT_EQ(0, errors);
 }
 
 TEST(TransformDecompose, HangulFirst)
@@ -130,8 +130,8 @@ TEST(TransformDecompose, HangulFirst)
 	int32_t errors = 0;
 
 	EXPECT_EQ(6, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
-	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xE1\x84\x80\xE1\x85\xA1", b);
+	EXPECT_EQ(0, errors);
 }
 
 TEST(TransformDecompose, HangulLast)
@@ -142,8 +142,56 @@ TEST(TransformDecompose, HangulLast)
 	int32_t errors = 0;
 
 	EXPECT_EQ(9, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
-	EXPECT_EQ(0, errors);
 	EXPECT_STREQ("\xE1\x84\x92\xE1\x85\xB5\xE1\x87\x82", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(TransformDecompose, HangulTwoSyllables)
+{
+	const char* c = "\xEA\xB0\x9C";
+	const size_t s = 512;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_STREQ("\xE1\x84\x80\xE1\x85\xA2", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(TransformDecompose, HangulTwoSyllablesNotEnoughSpace)
+{
+	const char* c = "\xEA\xB1\xB0";
+	const size_t s = 5;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8transform(c, strlen(c), b, s - 1, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_STREQ("", b);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(TransformDecompose, HangulThreeSyllables)
+{
+	const char* c = "\xEA\xB1\x95";
+	const size_t s = 512;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_STREQ("\xE1\x84\x80\xE1\x85\xA4\xE1\x86\xA8", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(TransformDecompose, HangulThreeSyllablesNotEnoughSpace)
+{
+	const char* c = "\xEA\xB7\x89";
+	const size_t s = 8;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8transform(c, strlen(c), b, s - 1, UTF8_TRANSFORM_DECOMPOSED, &errors));
+	EXPECT_STREQ("", b);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(TransformDecompose, JustEnoughSpace)
