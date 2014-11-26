@@ -944,6 +944,10 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	int32_t find_result;
 	const char* resolved;
 	size_t resolved_size;
+	unicode_t SIndex;
+	unicode_t L;
+	unicode_t V;
+	unicode_t T;
 
 	if (input == 0)
 	{
@@ -970,6 +974,52 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 			}
 
 			bytes_written++;
+		}
+		else if (codepoint >= 0xAC00 && codepoint <= 0xD7A3)
+		{
+			/*
+				Hangul decomposition
+			
+				Algorithm adapted from Unicode Technical Report #15:
+				http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
+			*/
+
+			static const size_t SBase = 0xAC00;
+			static const size_t LBase = 0x1100;
+			static const size_t VBase = 0x1161;
+			static const size_t TBase = 0x11A7;
+			static const size_t TCount = 28;
+			static const size_t NCount = 588; /* VCount * TCount */
+			static const size_t SCount = 11172; /* LCount * NCount */
+
+			SIndex = codepoint - SBase;
+			L = LBase + (SIndex / NCount);
+			V = VBase + (SIndex % NCount) / TCount;
+			T = TBase + (SIndex % TCount);
+
+			resolved_size = writecodepoint(L, &dst, &dst_size, errors);
+			if (resolved_size == 0)
+			{
+				goto outofspace;
+			}
+			bytes_written += resolved_size;
+
+			resolved_size = writecodepoint(V, &dst, &dst_size, errors);
+			if (resolved_size == 0)
+			{
+				goto outofspace;
+			}
+			bytes_written += resolved_size;
+
+			if (T != TBase)
+			{
+				resolved_size = writecodepoint(T, &dst, &dst_size, errors);
+				if (resolved_size == 0)
+				{
+					goto outofspace;
+				}
+				bytes_written += resolved_size;
+			}
 		}
 		else
 		{
