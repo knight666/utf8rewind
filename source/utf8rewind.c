@@ -793,7 +793,7 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	}
 }
 
-size_t process_default(int8_t query, unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
+size_t transform_default(int8_t query, unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
 {
 	const DecompositionRecord* record;
 	int32_t find_result;
@@ -836,7 +836,7 @@ outofspace:
 	return 0;
 }
 
-size_t process_decomposition(unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
+size_t transform_decomposition(unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
 {
 	size_t resolved_size;
 	unicode_t SIndex;
@@ -901,7 +901,7 @@ size_t process_decomposition(unicode_t codepoint, size_t codepointLength, char* 
 	}
 	else
 	{
-		return process_default(DecompositionQuery_Decomposed, codepoint, codepointLength, target, targetSize, errors);
+		return transform_default(DecompositionQuery_Decomposed, codepoint, codepointLength, target, targetSize, errors);
 	}
 
 outofspace:
@@ -912,7 +912,7 @@ outofspace:
 	return 0;
 }
 
-size_t process_toupper(unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
+size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
 {
 	if (codepointLength == 1 && codepoint <= 0x7F)
 	{
@@ -935,7 +935,7 @@ size_t process_toupper(unicode_t codepoint, size_t codepointLength, char* target
 	}
 	else
 	{
-		return process_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
+		return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
 	}
 
 outofspace:
@@ -946,68 +946,9 @@ outofspace:
 	return 0;
 }
 
-typedef size_t (*ProcessFunc)(unicode_t, size_t, char*, size_t, int32_t*);
+typedef size_t (*TransformFunc)(unicode_t, size_t, char*, size_t, int32_t*);
 
-size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
-{
-	const char* src = input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
-	size_t bytes_written = 0;
-	unicode_t codepoint;
-	size_t codepoint_length;
-	ProcessFunc process;
-	size_t result;
-
-	if (input == 0)
-	{
-		goto invaliddata;
-	}
-
-	process = &process_toupper;
-
-	do
-	{
-		codepoint_length = readcodepoint(&codepoint, src, src_size);
-
-		result = process(codepoint, codepoint_length, dst, dst_size, errors);
-		if (result == 0)
-		{
-			return bytes_written;
-		}
-
-		if (target != 0)
-		{
-			dst += result;
-			dst_size -= result;
-		}
-
-		bytes_written += result;
-
-		src = utf8seek(src, input, 1, SEEK_CUR);
-		src_size -= codepoint_length;
-	}
-	while (src_size > 0);
-
-	return bytes_written;
-
-invaliddata:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_INVALID_DATA;
-	}
-	return bytes_written;
-
-invalidtransform:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_INVALID_TRANSFORM;
-	}
-	return bytes_written;
-}
-
-size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
+size_t processtransform(TransformFunc transform, const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 	const char* src = input;
 	size_t src_size = inputSize;
@@ -1017,29 +958,19 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	size_t bytes_written = 0;
 	unicode_t codepoint;
 	size_t codepoint_length;
-	ProcessFunc process;
 	size_t result;
 
-	if (input == 0)
+	if (input == 0 ||
+		transform == 0)
 	{
 		goto invaliddata;
-	}
-
-	if (flags == UTF8_TRANSFORM_DECOMPOSED)
-	{
-		process = &process_decomposition;
-	}
-
-	if (process == 0)
-	{
-		goto invalidtransform;
 	}
 
 	do
 	{
 		codepoint_length = readcodepoint(&codepoint, src, src_size);
 
-		result = process(codepoint, codepoint_length, dst, dst_size, errors);
+		result = transform(codepoint, codepoint_length, dst, dst_size, errors);
 		if (result == 0)
 		{
 			return bytes_written;
@@ -1066,11 +997,14 @@ invaliddata:
 		*errors = UTF8_ERR_INVALID_DATA;
 	}
 	return bytes_written;
+}
 
-invalidtransform:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_INVALID_TRANSFORM;
-	}
-	return bytes_written;
+size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+{
+	return processtransform(&transform_toupper, input, inputSize, target, targetSize, errors);
+}
+
+size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
+{
+	return processtransform(&transform_decomposition, input, inputSize, target, targetSize, errors);
 }
