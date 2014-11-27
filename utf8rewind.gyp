@@ -69,6 +69,12 @@
 				['OS!="win"', {
 					'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
 				}],
+				['OS=="win"', {
+					'defines': [
+						'GTEST_HAS_PTHREAD=0',
+						'GTEST_HAS_TR1_TUPLE=0'
+					],
+				}],
 			],
 		},
 	],
