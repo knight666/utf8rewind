@@ -626,6 +626,59 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.outdent()
 		header.writeLine(";")
 		header.write("const size_t DecompositionDataLength = " + str(self.offset) + ";")
+	
+	def writeCaseMapping(self, filepath):
+		print "Writing case mapping to " + filepath + "..."
+		
+		command_line = sys.argv[0]
+		arguments = sys.argv[1:]
+		for a in arguments:
+			command_line += " " + a
+		
+		d = datetime.datetime.now()
+		
+		output = libs.header.Header(filepath)
+		
+		# comment header
+		
+		output.writeLine("# DO NOT MODIFY, AUTO-GENERATED")
+		output.writeLine("#")
+		output.writeLine("# Generated on:")
+		output.writeLine("# " + d.strftime("%Y-%m-%dT%H:%M:%S"))
+		output.writeLine("#")
+		output.writeLine("# Command line:")
+		output.writeLine("# " + command_line)
+		output.writeLine("#")
+		output.writeLine("# Data format:")
+		output.writeLine("#")
+		output.writeLine("# Codepoint")
+		output.writeLine("# Uppercase")
+		output.writeLine("# Lowercase")
+		output.writeLine("# Titlecase")
+		output.newLine()
+		
+		# data
+		
+		for r in self.recordsOrdered:
+			if r.uppercase <> 0 or r.lowercase <> 0 or r.titlecase <> 0:
+				output.write("%08x" % r.codepoint + "; ")
+				
+				if r.uppercase <> 0:
+					output.write("%08x" % r.uppercase + "; ")
+				else:
+					output.write("%08x" % r.codepoint + "; ")
+				
+				if r.lowercase <> 0:
+					output.write("%08x" % r.lowercase + "; ")
+				else:
+					output.write("%08x" % r.codepoint + "; ")
+				
+				if r.titlecase <> 0:
+					output.write("%08x" % r.titlecase + "; ")
+				else:
+					output.write("%08x" % r.codepoint + "; ")
+				output.write("# " + r.name)
+				output.newLine()
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
@@ -684,3 +737,4 @@ if __name__ == '__main__':
 	db.resolve()
 	db.executeQuery(args.query)
 	db.writeSource(script_path + '/../../source/unicodedatabase.c')
+	db.writeCaseMapping(script_path + '/../../testdata/CaseMapping.txt')
