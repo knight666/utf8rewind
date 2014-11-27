@@ -79,14 +79,15 @@ class UnicodeDocument:
 					while (1):
 						section_end = entry_sliced.find(';')
 						if section_end == -1:
-							if len(entry_sliced) == 0 or entry_sliced.find('#') <= len(entry_sliced):
-								entry.matches.append([])
+							if len(entry_sliced) > 1:
+								if entry_sliced.find('#') <= len(entry_sliced):
+									entry.matches.append([ entry_sliced ])
 							break
 						
 						sliced = entry_sliced[:section_end]
 						matches = re.findall('([^ ]+)', sliced)
 						entry.matches.append(matches)
-
+						
 						entry_sliced = entry_sliced[section_end + 1:]
 					
 					# comment
