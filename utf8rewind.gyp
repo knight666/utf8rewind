@@ -42,6 +42,7 @@
 				'utf8rewind',
 			],
 			'sources': [
+				'source/tests/integration-casemapping.cpp',
 				'source/tests/integration-conformance.cpp',
 				'source/tests/integration-quickbrown.cpp',
 				'source/tests/integration-internal-composition.cpp',
