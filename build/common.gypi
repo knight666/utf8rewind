@@ -22,6 +22,7 @@
 				'abstract': 1,
 				'conditions': [
 					['OS=="win"', {
+						'defines': [ '_WINDOWS' ],
 						'msvs_configuration_attributes': {
 							'OutputDirectory': '$(SolutionDir)output\\<(platform_name)\\<(architecture_name)\\$(ConfigurationName)',
 							'IntermediateDirectory': '$(SolutionDir)intermediate\\$(ProjectName)\\<(architecture_name)\\$(ConfigurationName)',
