@@ -34,9 +34,9 @@ class UnicodeMapping:
 		self.numericType = "NumericType_None"
 		self.numericValue = 0
 		self.bidiMirrored = False
-		self.uppercase = 0
-		self.lowercase = 0
-		self.titlecase = 0
+		self.uppercase = []
+		self.lowercase = []
+		self.titlecase = []
 		self.offsetUppercase = 0
 		self.offsetLowercase = 0
 		self.offsetTitlecase = 0
@@ -200,13 +200,13 @@ class UnicodeMapping:
 		# case mapping
 		
 		if matches[12]:
-			self.uppercase = int(matches[12][0], 16)
+			self.uppercase.append(int(matches[12][0], 16))
 		
 		if matches[13]:
-			self.lowercase = int(matches[13][0], 16)
+			self.lowercase.append(int(matches[13][0], 16))
 		
 		if len(matches) >= 15 and matches[14]:
-			self.titlecase = int(matches[14][0], 16)
+			self.titlecase.append(int(matches[14][0], 16))
 		
 		return True
 	
@@ -245,61 +245,22 @@ class UnicodeMapping:
 		# ignore ASCII
 		if self.codepoint < 0x7F:
 			return
-			
-		if self.uppercase <> 0:
-			converted = libs.utf8.codepointToUtf8(self.uppercase)
-			self.offsetUppercase = self.db.addTranslation(converted + "\\x00")
-		if self.lowercase <> 0:
-			converted = libs.utf8.codepointToUtf8(self.lowercase)
-			self.offsetLowercase = self.db.addTranslation(converted + "\\x00")
-		if self.titlecase <> 0:
-			converted = libs.utf8.codepointToUtf8(self.titlecase)
-			self.offsetTitlecase = self.db.addTranslation(converted + "\\x00")
 		
-		"""
-		if self.uppercase == 0 and self.lowercase == 0 and self.titlecase == 0:
-			if len(self.decomposedNFD) > 1:
-				if self.decomposedNFD[0] in self.db.records:
-					resolvedUppercase = [] + self.decomposedNFD
-					resolvedLowercase = [] + self.decomposedNFD
-					resolvedTitlecase = [] + self.decomposedNFD
-					
-					decomposedMain = self.db.records[self.decomposedNFD[0]]
-					if decomposedMain.uppercase <> 0:
-						resolvedUppercase[0] = decomposedMain.uppercase
-					if decomposedMain.lowercase <> 0:
-						resolvedLowercase[0] = decomposedMain.uppercase
-					if decomposedMain.titlecase <> 0:
-						resolvedTitlecase[0] = decomposedMain.titlecase
-					
-					if resolvedUppercase[0] <> self.decomposedNFD[0]:
-						composedUppercase = resolvedUppercase[0]
-						
-						for u in range(1, len(resolvedUppercase)):
-							composedUppercase = self.db.composePair(composedUppercase, resolvedUppercase[u])
-							if not composedUppercase:
-								break
-						
-						if composedUppercase:
-							print self.name
-							for n in self.decomposedNFD:
-								print self.db.records[n].name
-							print ">>> " + self.db.records[composedUppercase].name
-					
-					if resolvedLowercase[0] <> self.decomposedNFD[0]:
-						composedLowercase = resolvedLowercase[0]
-						
-						for u in range(1, len(resolvedLowercase)):
-							composedLowercase = self.db.composePair(composedLowercase, resolvedLowercase[u])
-							if not composedLowercase:
-								break
-						
-						if composedLowercase:
-							print self.name
-							for n in self.decomposedNFD:
-								print self.db.records[n].name
-							print ">>> " + self.db.records[composedLowercase].name
-		"""
+		if self.uppercase:
+			converted = ""
+			for u in self.uppercase:
+				converted += libs.utf8.codepointToUtf8(u)
+			self.offsetUppercase = self.db.addTranslation(converted + "\\x00")
+		if self.lowercase:
+			converted = ""
+			for u in self.lowercase:
+				converted += libs.utf8.codepointToUtf8(u)
+			self.offsetLowercase = self.db.addTranslation(converted + "\\x00")
+		if self.titlecase:
+			converted = ""
+			for u in self.titlecase:
+				converted += libs.utf8.codepointToUtf8(u)
+			self.offsetTitlecase = self.db.addTranslation(converted + "\\x00")
 	
 	def codepointsToString(self, values):
 		result = ""
@@ -660,23 +621,33 @@ class Database(libs.unicode.UnicodeVisitor):
 		# data
 		
 		for r in self.recordsOrdered:
-			if r.uppercase <> 0 or r.lowercase <> 0 or r.titlecase <> 0:
+			if r.uppercase or r.lowercase or r.titlecase:
 				output.write("%08x" % r.codepoint + "; ")
 				
-				if r.uppercase <> 0:
-					output.write("%08x" % r.uppercase + "; ")
+				if r.uppercase:
+					output.write("%08x" % r.uppercase[0])
+					for u in r.uppercase[1:]:
+						output.write(" %08x" % u)
+					output.write("; ")
 				else:
 					output.write("%08x" % r.codepoint + "; ")
 				
-				if r.lowercase <> 0:
-					output.write("%08x" % r.lowercase + "; ")
+				if r.lowercase:
+					output.write("%08x" % r.lowercase[0])
+					for u in r.lowercase[1:]:
+						output.write(" %08x" % u)
+					output.write("; ")
 				else:
 					output.write("%08x" % r.codepoint + "; ")
 				
-				if r.titlecase <> 0:
-					output.write("%08x" % r.titlecase + "; ")
+				if r.titlecase:
+					output.write("%08x" % r.titlecase[0])
+					for u in r.titlecase[1:]:
+						output.write(" %08x" % u)
+					output.write("; ")
 				else:
 					output.write("%08x" % r.codepoint + "; ")
+				
 				output.write("# " + r.name)
 				output.newLine()
 
@@ -692,33 +663,28 @@ class SpecialCasing(libs.unicode.UnicodeVisitor):
 		if not entry.matches[0]:
 			return False
 		
+		# ignore entries with special requirements
 		if len(entry.matches) == 5:
 			return True
 		
 		codepoint = int(entry.matches[0][0], 16)
 		
 		if entry.matches[1]:
-			lower = entry.matches[1][0]
-			for u in entry.matches[1][1:]:
-				lower += " " + u
+			convertedLower = self.db.matchToString(entry.matches[1])
 		else:
-			lower = 0
+			convertedLower = ""
 		
 		if entry.matches[2]:
-			title = entry.matches[2][0]
-			for u in entry.matches[2][1:]:
-				title += " " + u
+			convertedTitle = self.db.matchToString(entry.matches[2])
 		else:
-			title = 0
+			convertedTitle = ""
 		
 		if entry.matches[3]:
-			upper = entry.matches[3][0]
-			for u in entry.matches[3][1:]:
-				upper += " " + u
+			convertedUpper = self.db.matchToString(entry.matches[2])
 		else:
-			upper = 0
+			convertedUpper = ""
 		
-		print "lower " + str(lower) + " title " + str(title) + " upper " + str(upper)
+		print "lower " + convertedLower + " title " + convertedTitle + " upper " + convertedUpper
 		
 		return True
 
@@ -778,14 +744,13 @@ if __name__ == '__main__':
 	document.accept(db)
 	db.resolve()
 	
-	db.executeQuery(args.query)
-	
-	db.writeSource(script_path + '/../../source/unicodedatabase.c')
-	
 	document_special_casing = libs.unicode.UnicodeDocument()
 	document_special_casing.parse(script_path + '/data/SpecialCasing.txt')
 	
 	special_casing = SpecialCasing(db)
 	document_special_casing.accept(special_casing)
 	
+	db.executeQuery(args.query)
+	
+	db.writeSource(script_path + '/../../source/unicodedatabase.c')
 	db.writeCaseMapping(script_path + '/../../testdata/CaseMapping.txt')
