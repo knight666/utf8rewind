@@ -205,7 +205,7 @@ class UnicodeMapping:
 		if matches[13]:
 			self.lowercase = int(matches[13][0], 16)
 		
-		if matches[14]:
+		if len(matches) >= 15 and matches[14]:
 			self.titlecase = int(matches[14][0], 16)
 		
 		return True
@@ -692,16 +692,10 @@ class SpecialCasing(libs.unicode.UnicodeVisitor):
 		if not entry.matches[0]:
 			return False
 		
-		if entry.matches[4]:
-			#print entry.matches
-			#print entry.matches[4]
+		if len(entry.matches) == 5:
 			return True
 		
-		print entry.comment
-		
 		codepoint = int(entry.matches[0][0], 16)
-		
-		print entry.matches
 		
 		if entry.matches[1]:
 			lower = entry.matches[1][0]
@@ -780,18 +774,18 @@ if __name__ == '__main__':
 	document.entrySkip = args.entrySkip
 	document.parse(script_path + '/data/UnicodeData.txt')
 	
-	
 	db.pageSize = args.pageSize
 	document.accept(db)
 	db.resolve()
 	
+	db.executeQuery(args.query)
+	
+	db.writeSource(script_path + '/../../source/unicodedatabase.c')
+	
 	document_special_casing = libs.unicode.UnicodeDocument()
-	document_special_casing.entrySkip = 10
 	document_special_casing.parse(script_path + '/data/SpecialCasing.txt')
 	
 	special_casing = SpecialCasing(db)
 	document_special_casing.accept(special_casing)
 	
-	#db.executeQuery(args.query)
-	#db.writeSource(script_path + '/../../source/unicodedatabase.c')
-	#db.writeCaseMapping(script_path + '/../../testdata/CaseMapping.txt')
+	db.writeCaseMapping(script_path + '/../../testdata/CaseMapping.txt')
