@@ -669,22 +669,22 @@ class SpecialCasing(libs.unicode.UnicodeVisitor):
 		
 		codepoint = int(entry.matches[0][0], 16)
 		
+		r = self.db.records[codepoint]
+		
 		if entry.matches[1]:
-			convertedLower = self.db.matchToString(entry.matches[1])
-		else:
-			convertedLower = ""
+			r.lowercase = []
+			for u in entry.matches[1]:
+				r.lowercase.append(int(u, 16))
 		
 		if entry.matches[2]:
-			convertedTitle = self.db.matchToString(entry.matches[2])
-		else:
-			convertedTitle = ""
+			r.titlecase = []
+			for u in entry.matches[2]:
+				r.titlecase.append(int(u, 16))
 		
 		if entry.matches[3]:
-			convertedUpper = self.db.matchToString(entry.matches[2])
-		else:
-			convertedUpper = ""
-		
-		print "lower " + convertedLower + " title " + convertedTitle + " upper " + convertedUpper
+			r.uppercase = []
+			for u in entry.matches[2]:
+				r.uppercase.append(int(u, 16))
 		
 		return True
 
