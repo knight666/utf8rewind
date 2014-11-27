@@ -680,6 +680,54 @@ class Database(libs.unicode.UnicodeVisitor):
 				output.write("# " + r.name)
 				output.newLine()
 
+class SpecialCasing(libs.unicode.UnicodeVisitor):
+	def __init__(self, db):
+		self.db = db
+	
+	def visitDocument(self, document):
+		print "Parsing special case mappings..."
+		return True
+	
+	def visitEntry(self, entry):
+		if not entry.matches[0]:
+			return False
+		
+		if entry.matches[4]:
+			#print entry.matches
+			#print entry.matches[4]
+			return True
+		
+		print entry.comment
+		
+		codepoint = int(entry.matches[0][0], 16)
+		
+		print entry.matches
+		
+		if entry.matches[1]:
+			lower = entry.matches[1][0]
+			for u in entry.matches[1][1:]:
+				lower += " " + u
+		else:
+			lower = 0
+		
+		if entry.matches[2]:
+			title = entry.matches[2][0]
+			for u in entry.matches[2][1:]:
+				title += " " + u
+		else:
+			title = 0
+		
+		if entry.matches[3]:
+			upper = entry.matches[3][0]
+			for u in entry.matches[3][1:]:
+				upper += " " + u
+		else:
+			upper = 0
+		
+		print "lower " + str(lower) + " title " + str(title) + " upper " + str(upper)
+		
+		return True
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
 	parser.add_argument(
@@ -723,18 +771,27 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	
 	script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-
+	
+	db = Database()
+	
 	document = libs.unicode.UnicodeDocument()
 	document.lineLimit = args.lineLimit
 	document.entryLimit = args.entryLimit
 	document.entrySkip = args.entrySkip
 	document.parse(script_path + '/data/UnicodeData.txt')
 	
-	db = Database()
+	
 	db.pageSize = args.pageSize
 	document.accept(db)
-	
 	db.resolve()
-	db.executeQuery(args.query)
-	db.writeSource(script_path + '/../../source/unicodedatabase.c')
-	db.writeCaseMapping(script_path + '/../../testdata/CaseMapping.txt')
+	
+	document_special_casing = libs.unicode.UnicodeDocument()
+	document_special_casing.entrySkip = 10
+	document_special_casing.parse(script_path + '/data/SpecialCasing.txt')
+	
+	special_casing = SpecialCasing(db)
+	document_special_casing.accept(special_casing)
+	
+	#db.executeQuery(args.query)
+	#db.writeSource(script_path + '/../../source/unicodedatabase.c')
+	#db.writeCaseMapping(script_path + '/../../testdata/CaseMapping.txt')
