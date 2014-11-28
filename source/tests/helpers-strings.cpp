@@ -1,15 +1,57 @@
 #include "helpers-strings.hpp"
 
+#define TEST_ENABLE_UPPERCASE (1)
+#define TEST_ENABLE_LOWERCASE (1)
+#define TEST_ENABLE_TITLECASE (0)
+
 namespace helpers {
 
-	std::string CodepointToString(unicode_t codepoint)
+	std::string identifiable(unicode_t codepoint)
 	{
 		std::stringstream ss;
-		ss << "U+" << std::setfill('0') << std::setw(8) << std::hex << codepoint;
+		ss << "[U+" << std::hex << codepoint << "]";
 		return ss.str();
 	}
 
-	std::string CodepointToUppercaseString(unicode_t codepoint)
+	std::string identifiable(const std::string& text)
+	{
+		if (text == "")
+		{
+			return "";
+		}
+
+		std::stringstream ss;
+		ss << std::setfill('0') << std::hex;
+
+		int32_t errors = 0;
+		size_t size_in_bytes = utf8toutf32(text.c_str(), text.size(), nullptr, 0, &errors);
+		if (size_in_bytes == 0 ||
+			errors != 0)
+		{
+			return "";
+		}
+
+		std::vector<unicode_t> converted;
+		converted.resize(size_in_bytes / sizeof(unicode_t));
+
+		utf8toutf32(text.c_str(), text.size(), &converted[0], size_in_bytes, &errors);
+
+		for (std::vector<unicode_t>::iterator it = converted.begin(); it != converted.end(); ++it)
+		{
+			if (*it >= 0x20 && *it <= 0x7F)
+			{
+				ss.put((char)*it);
+			}
+			else
+			{
+				ss << identifiable(*it);
+			}
+		}
+
+		return ss.str();
+	}
+
+	std::string uppercase(unicode_t codepoint)
 	{
 #if TEST_ENABLE_UPPERCASE
 		int32_t errors = 0;
@@ -40,7 +82,26 @@ namespace helpers {
 #endif
 	}
 
-	std::string CodepointToLowercaseString(unicode_t codepoint)
+	std::string uppercase(const std::string& value)
+	{
+		int32_t errors = 0;
+
+		std::string converted;
+
+		size_t l = utf8toupper(value.c_str(), value.size() - 1, nullptr, 0, &errors);
+		if (l == 0 ||
+			errors != 0)
+		{
+			return converted;
+		}
+
+		converted.resize(l + 1);
+		utf8toupper(value.c_str(), value.size() - 1, &converted[0], l, &errors);
+
+		return converted;
+	}
+
+	std::string lowercase(unicode_t codepoint)
 	{
 #if TEST_ENABLE_LOWERCASE
 		int32_t errors = 0;
@@ -71,7 +132,26 @@ namespace helpers {
 #endif
 	}
 
-	std::string CodepointToTitlecaseString(unicode_t codepoint)
+	std::string lowercase(const std::string& value)
+	{
+		int32_t errors = 0;
+
+		std::string converted;
+
+		size_t l = utf8tolower(value.c_str(), value.size() - 1, nullptr, 0, &errors);
+		if (l == 0 ||
+			errors != 0)
+		{
+			return converted;
+		}
+
+		converted.resize(l + 1);
+		utf8tolower(value.c_str(), value.size() - 1, &converted[0], l, &errors);
+
+		return converted;
+	}
+
+	std::string titlecase(unicode_t codepoint)
 	{
 #if TEST_ENABLE_TITLECASE
 		int32_t errors = 0;
@@ -96,43 +176,45 @@ namespace helpers {
 #endif
 	}
 
-	std::string Utf8StringToCodepoints(const std::string& text)
+	std::string utf8(unicode_t codepoint)
 	{
-		if (text == "")
-		{
-			return "U+00000000";
-		}
-
-		std::stringstream ss;
-		ss << std::setfill('0') << std::hex;
+		std::string converted;
 
 		int32_t errors = 0;
-		size_t size_in_bytes = utf8toutf32(text.c_str(), text.size(), nullptr, 0, &errors);
+		size_t size_in_bytes = utf32toutf8(&codepoint, sizeof(unicode_t), nullptr, 0, &errors);
+
 		if (size_in_bytes == 0 ||
 			errors != 0)
 		{
-			return "";
+			return converted;
 		}
 
-		unicode_t* result_utf32 = new unicode_t[size_in_bytes / sizeof(unicode_t)];
+		converted.resize(size_in_bytes);
+		utf32toutf8(&codepoint, sizeof(unicode_t), &converted[0], size_in_bytes, &errors);
 
-		utf8toutf32(text.c_str(), text.size(), result_utf32, size_in_bytes, &errors);
-
-		for (size_t i = 0; i < size_in_bytes / sizeof(unicode_t); ++i)
-		{
-			if (i != 0)
-			{
-				ss << " ";
-			}
-			ss << "U+" << std::setw(8) << result_utf32[i];
-		}
-
-		delete [] result_utf32;
-
-		return ss.str();
+		return converted;
 	}
 
-	std::string Utf8StringPrintable(const std::string& text)
+	std::string utf8(const std::vector<unicode_t>& codepoints)
+	{
+		std::string converted;
+
+		int32_t errors = 0;
+		size_t size_in_bytes = utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), nullptr, 0, &errors);
+
+		if (size_in_bytes == 0 ||
+			errors != 0)
+		{
+			return converted;
+		}
+
+		converted.resize(size_in_bytes);
+		utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), &converted[0], size_in_bytes, &errors);
+
+		return converted;
+	}
+
+	std::string printable(const std::string& text)
 	{
 		std::stringstream ss;
 
@@ -147,45 +229,6 @@ namespace helpers {
 				ss << std::string(it, it + 1);
 			}
 		}
-
-		return ss.str();
-	}
-
-	std::string Utf8StringPrintableCodepoints(const std::string& text)
-	{
-		if (text == "")
-		{
-			return "";
-		}
-
-		std::stringstream ss;
-		ss << std::setfill('0') << std::hex;
-
-		int32_t errors = 0;
-		size_t size_in_bytes = utf8toutf32(text.c_str(), text.size(), nullptr, 0, &errors);
-		if (size_in_bytes == 0 ||
-			errors != 0)
-		{
-			return "";
-		}
-
-		unicode_t* result_utf32 = new unicode_t[size_in_bytes / sizeof(unicode_t)];
-
-		utf8toutf32(text.c_str(), text.size(), result_utf32, size_in_bytes, &errors);
-
-		for (size_t i = 0; i < size_in_bytes / sizeof(unicode_t); ++i)
-		{
-			if (result_utf32[i] >= 0x20 && result_utf32[i] <= 0x7F)
-			{
-				ss.put((char)result_utf32[i]);
-			}
-			else
-			{
-				ss << "[U+" << result_utf32[i] << "]";
-			}
-		}
-
-		delete [] result_utf32;
 
 		return ss.str();
 	}
@@ -248,46 +291,21 @@ namespace helpers {
 		src += offset + 2;
 
 		std::vector<unicode_t> source_uppercase = ReadCodepoints(src, offset);
-		entry->uppercase = CodepointsToUtf8(source_uppercase);
+		entry->uppercase = utf8(source_uppercase);
 		src += offset + 2;
 
 		std::vector<unicode_t> source_lowercase = ReadCodepoints(src, offset);
-		entry->lowercase = CodepointsToUtf8(source_lowercase);
+		entry->lowercase = utf8(source_lowercase);
 		src += offset + 2;
 
 		std::vector<unicode_t> source_titlecase = ReadCodepoints(src, offset);
-		entry->titlecase = CodepointsToUtf8(source_titlecase);
+		entry->titlecase = utf8(source_titlecase);
 		src += offset + 2;
 
 		src += 2;
 		entry->name = src;
 
 		return entry;
-	}
-
-	std::string CaseMappingDatabase::CodepointsToUtf8(const std::vector<unicode_t>& codepoints) const
-	{
-		std::string result;
-
-		int32_t errors = 0;
-		size_t size_in_bytes = utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), nullptr, 0, &errors);
-
-		if (size_in_bytes == 0 ||
-			errors != 0)
-		{
-			return result;
-		}
-
-		char* result_utf8 = new char[size_in_bytes + 1];
-		memset(result_utf8, 0, size_in_bytes + 1);
-
-		utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), result_utf8, size_in_bytes + 1, &errors);
-
-		result = std::string(result_utf8);
-
-		delete [] result_utf8;
-
-		return result;
 	}
 
 	std::vector<unicode_t> CaseMappingDatabase::ReadCodepoints(const char* line, size_t& offset) const
