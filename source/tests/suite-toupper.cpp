@@ -2,7 +2,7 @@
 
 #include "utf8rewind.h"
 
-TEST(ToUpper, Ascii)
+TEST(ToUpper, BasicLatin)
 {
 	char* c = "Hello World!";
 	const size_t s = 256;
@@ -14,7 +14,7 @@ TEST(ToUpper, Ascii)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUpper, AsciiAllLowercase)
+TEST(ToUpper, BasicLatinAllLowercase)
 {
 	char* c = "abcdefghijklmnopqrstuvwxyz";
 	const size_t s = 256;
@@ -26,7 +26,7 @@ TEST(ToUpper, AsciiAllLowercase)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUpper, AsciiAllUppercase)
+TEST(ToUpper, BasicLatinAllUppercase)
 {
 	char* c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	const size_t s = 256;
@@ -38,7 +38,7 @@ TEST(ToUpper, AsciiAllUppercase)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUpper, AsciiAllOther)
+TEST(ToUpper, BasicLatinAllOther)
 {
 	char* c = " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}`";
 	const size_t s = 256;
@@ -50,7 +50,7 @@ TEST(ToUpper, AsciiAllOther)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUpper, AsciiAmountOfBytes)
+TEST(ToUpper, BasicLatinAmountOfBytes)
 {
 	char* c = "Magic";
 	int32_t errors = 0;
@@ -59,7 +59,7 @@ TEST(ToUpper, AsciiAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUpper, AsciiNotEnoughSpace)
+TEST(ToUpper, BasicLatinNotEnoughSpace)
 {
 	char* c = "Merde";
 	const size_t s = 4;
@@ -71,7 +71,7 @@ TEST(ToUpper, AsciiNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(ToUpper, AsciiInvalidData)
+TEST(ToUpper, InvalidData)
 {
 	int32_t errors = 0;
 
