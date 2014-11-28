@@ -6,7 +6,7 @@
 
 inline ::testing::AssertionResult CompareCaseMappingEntry(
 	const char* expressionLeft, const char* expressionRight,
-	const CaseMappingEntry& entryLeft, const CaseMappingEntry& entryRight
+	const helpers::CaseMappingEntry& entryLeft, const helpers::CaseMappingEntry& entryRight
 )
 {
 	if (entryLeft.codepoint == entryRight.codepoint &&
@@ -21,46 +21,46 @@ inline ::testing::AssertionResult CompareCaseMappingEntry(
 		::testing::AssertionResult result = ::testing::AssertionFailure();
 
 		result << std::endl;
-		result <<  entryRight.name << " (" << CodepointToString(entryLeft.codepoint)  << ")" << std::endl;
+		result <<  entryRight.name << " (" << helpers::CodepointToString(entryLeft.codepoint)  << ")" << std::endl;
 		result << std::endl;
 
 		if (entryLeft.uppercase != entryRight.uppercase)
 		{
 			result << std::endl;
 			result << "[Uppercase]" << std::endl;
-			result << "    Actual:    " << Utf8StringPrintable(entryRight.uppercase) << " (" << Utf8StringToCodepoints(entryRight.uppercase) << ")" << std::endl;
-			result << "  Expected:    " << Utf8StringPrintable(entryLeft.uppercase) << " (" << Utf8StringToCodepoints(entryLeft.uppercase) << ")" << std::endl;
+			result << "    Actual:    " << helpers::Utf8StringPrintable(entryRight.uppercase) << " (" << helpers::Utf8StringToCodepoints(entryRight.uppercase) << ")" << std::endl;
+			result << "  Expected:    " << helpers::Utf8StringPrintable(entryLeft.uppercase) << " (" << helpers::Utf8StringToCodepoints(entryLeft.uppercase) << ")" << std::endl;
 			result << std::endl;
 		}
 		else
 		{
-			result << "[Uppercase]    " << Utf8StringPrintable(entryLeft.uppercase) << " (" << Utf8StringToCodepoints(entryLeft.uppercase) << ")" << std::endl;
+			result << "[Uppercase]    " << helpers::Utf8StringPrintable(entryLeft.uppercase) << " (" << helpers::Utf8StringToCodepoints(entryLeft.uppercase) << ")" << std::endl;
 		}
 
 		if (entryLeft.lowercase != entryRight.lowercase)
 		{
 			result << std::endl;
 			result << "[Lowercase]" << std::endl;
-			result << "    Actual:    " << Utf8StringPrintable(entryRight.lowercase) << " (" << Utf8StringToCodepoints(entryRight.lowercase) << ")" << std::endl;
-			result << "  Expected:    " << Utf8StringPrintable(entryLeft.lowercase) << " (" << Utf8StringToCodepoints(entryLeft.lowercase) << ")" << std::endl;
+			result << "    Actual:    " << helpers::Utf8StringPrintable(entryRight.lowercase) << " (" << helpers::Utf8StringToCodepoints(entryRight.lowercase) << ")" << std::endl;
+			result << "  Expected:    " << helpers::Utf8StringPrintable(entryLeft.lowercase) << " (" << helpers::Utf8StringToCodepoints(entryLeft.lowercase) << ")" << std::endl;
 			result << std::endl;
 		}
 		else
 		{
-			result << "[Lowercase]    " << Utf8StringPrintable(entryLeft.lowercase) << " (" << Utf8StringToCodepoints(entryLeft.lowercase) << ")" << std::endl;
+			result << "[Lowercase]    " << helpers::Utf8StringPrintable(entryLeft.lowercase) << " (" << helpers::Utf8StringToCodepoints(entryLeft.lowercase) << ")" << std::endl;
 		}
 
 		if (entryLeft.titlecase != entryRight.titlecase)
 		{
 			result << std::endl;
 			result << "[Titlecase]" << std::endl;
-			result << "    Actual:    " << Utf8StringPrintable(entryRight.titlecase) << " (" << Utf8StringToCodepoints(entryRight.titlecase) << ")" << std::endl;
-			result << "  Expected:    " << Utf8StringPrintable(entryLeft.titlecase) << " (" << Utf8StringToCodepoints(entryLeft.titlecase) << ")" << std::endl;
+			result << "    Actual:    " << helpers::Utf8StringPrintable(entryRight.titlecase) << " (" << helpers::Utf8StringToCodepoints(entryRight.titlecase) << ")" << std::endl;
+			result << "  Expected:    " << helpers::Utf8StringPrintable(entryLeft.titlecase) << " (" << helpers::Utf8StringToCodepoints(entryLeft.titlecase) << ")" << std::endl;
 			result << std::endl;
 		}
 		else
 		{
-			result << "[Titlecase]    " << Utf8StringPrintable(entryLeft.titlecase) << " (" << Utf8StringToCodepoints(entryLeft.titlecase) << ")" << std::endl;
+			result << "[Titlecase]    " << helpers::Utf8StringPrintable(entryLeft.titlecase) << " (" << helpers::Utf8StringToCodepoints(entryLeft.titlecase) << ")" << std::endl;
 		}
 
 		return result;
@@ -68,20 +68,20 @@ inline ::testing::AssertionResult CompareCaseMappingEntry(
 }
 
 #define CHECK_CASE_MAPPING(_codepoint) { \
-	CaseMappingEntry e; \
+	helpers::CaseMappingEntry e; \
 	e.codepoint = _codepoint; \
-	e.lowercase = CodepointToLowercaseString(_codepoint); \
-	e.uppercase = CodepointToUppercaseString(_codepoint); \
-	e.titlecase = CodepointToTitlecaseString(_codepoint); \
-	CaseMappingEntry* a = CaseMappingDatabase::Get().Find(_codepoint); \
+	e.lowercase = helpers::CodepointToLowercaseString(_codepoint); \
+	e.uppercase = helpers::CodepointToUppercaseString(_codepoint); \
+	e.titlecase = helpers::CodepointToTitlecaseString(_codepoint); \
+	helpers::CaseMappingEntry* a = helpers::CaseMappingDatabase::Get().Find(_codepoint); \
 	if (a != nullptr) { \
 		EXPECT_PRED_FORMAT2(CompareCaseMappingEntry, e, *a); \
 	} else { \
-		CaseMappingEntry af; \
+		helpers::CaseMappingEntry af; \
 		af.codepoint = _codepoint; \
-		af.lowercase = CodepointToLowercaseString(_codepoint); \
-		af.uppercase = CodepointToUppercaseString(_codepoint); \
-		af.titlecase = CodepointToTitlecaseString(_codepoint); \
+		af.lowercase = helpers::CodepointToLowercaseString(_codepoint); \
+		af.uppercase = helpers::CodepointToUppercaseString(_codepoint); \
+		af.titlecase = helpers::CodepointToTitlecaseString(_codepoint); \
 		EXPECT_PRED_FORMAT2(CompareCaseMappingEntry, e, af); \
 	} \
 }
@@ -94,7 +94,7 @@ protected:
 
 	void SetUp()
 	{
-		ASSERT_TRUE(CaseMappingDatabase::Get().IsValid());
+		ASSERT_TRUE(helpers::CaseMappingDatabase::Get().IsValid());
 	}
 
 	void TearDown()
