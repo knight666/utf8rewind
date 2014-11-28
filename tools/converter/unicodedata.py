@@ -314,7 +314,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		return True
 	
-	def resolve(self):
+	def resolveMissing(self):
 		print "Adding missing codepoints to database..."
 		
 		missing = []
@@ -330,7 +330,8 @@ class Database(libs.unicode.UnicodeVisitor):
 			u.codepoint = c
 			self.recordsOrdered.append(u)
 			self.records[u.codepoint] = u
-		
+	
+	def resolveDecomposition(self):
 		print "Resolving decomposition..."
 		
 		for r in self.recordsOrdered:
@@ -354,7 +355,8 @@ class Database(libs.unicode.UnicodeVisitor):
 					convertedNFKD += libs.utf8.codepointToUtf8(d)
 				if convertedNFKD <> convertedCodepoint:
 					r.offsetNFKD = self.addTranslation(convertedNFKD + "\\x00")
-		
+	
+	def resolveComposition(self):
 		print "Resolving composition..."
 		
 		for r in self.recordsOrdered:
@@ -376,7 +378,8 @@ class Database(libs.unicode.UnicodeVisitor):
 						composed.append(pair)
 		
 		print "composed", str(len(composed))
-		
+	
+	def resolveCaseMapping(self):
 		print "Resolving case mappings..."
 		
 		for r in self.recordsOrdered:
@@ -683,7 +686,7 @@ class SpecialCasing(libs.unicode.UnicodeVisitor):
 		
 		if entry.matches[3]:
 			r.uppercase = []
-			for u in entry.matches[2]:
+			for u in entry.matches[3]:
 				r.uppercase.append(int(u, 16))
 		
 		return True
@@ -742,13 +745,17 @@ if __name__ == '__main__':
 	
 	db.pageSize = args.pageSize
 	document.accept(db)
-	db.resolve()
+	db.resolveMissing()
+	db.resolveDecomposition()
+	db.resolveComposition()
 	
 	document_special_casing = libs.unicode.UnicodeDocument()
 	document_special_casing.parse(script_path + '/data/SpecialCasing.txt')
 	
 	special_casing = SpecialCasing(db)
 	document_special_casing.accept(special_casing)
+	
+	db.resolveCaseMapping()
 	
 	db.executeQuery(args.query)
 	
