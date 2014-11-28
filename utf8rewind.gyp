@@ -45,6 +45,7 @@
 				'source/tests/helpers-strings.hpp',
 				'source/tests/integration-casemapping.cpp',
 				'source/tests/integration-conformance.cpp',
+				'source/tests/integration-quickbrown-casemapping.cpp',
 				'source/tests/integration-quickbrown.cpp',
 				'source/tests/integration-internal-composition.cpp',
 				'source/tests/suite-decodeutf16.cpp',
