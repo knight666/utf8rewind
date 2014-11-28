@@ -14,8 +14,8 @@ protected:
 	{
 		errors = 0;
 
-		filei.open("testdata/quickbrown.txt", std::ios_base::in);
-		ASSERT_TRUE(filei.is_open());
+		fileRegular.open("testdata/quickbrown.txt", std::ios_base::in);
+		ASSERT_TRUE(fileRegular.is_open());
 
 		fileUppercase.open("testdata/quickbrown_uppercase.txt", std::ios_base::in);
 		ASSERT_TRUE(fileUppercase.is_open());
@@ -28,21 +28,21 @@ protected:
 	{
 		fileUppercase.close();
 		fileLowercase.close();
-		filei.close();
+		fileRegular.close();
 	}
 
 	std::string ReadRegular(size_t position, size_t length)
 	{
 		std::string result;
 
-		filei.seekg(position, std::ios::beg);
-		if (filei.eof())
+		fileRegular.seekg(position, std::ios::beg);
+		if (fileRegular.eof())
 		{
 			return result;
 		}
 
 		result.resize(length + 1);
-		filei.read(&result[0], length);
+		fileRegular.read(&result[0], length);
 
 		return result;
 	}
@@ -113,7 +113,7 @@ protected:
 		return converted;
 	}
 
-	std::fstream filei;
+	std::fstream fileRegular;
 	std::fstream fileUppercase;
 	std::fstream fileLowercase;
 	int32_t errors;
@@ -213,5 +213,29 @@ TEST_F(QuickbrownCaseMapping, GermanThirdLowercase)
 	ASSERT_EQ(0, errors);
 
 	std::string el = ReadLowercase(767, 30);
+	EXPECT_STREQ(el.c_str(), al.c_str());
+}
+
+TEST_F(QuickbrownCaseMapping, GreekFirstUppercase)
+{
+	std::string i = ReadRegular(911, 105);
+	EXPECT_STREQ("  \xCE\x93\xCE\xB1\xCE\xB6\xCE\xAD\xCE\xB5\xCF\x82 \xCE\xBA\xCE\xB1\xE1\xBD\xB6 \xCE\xBC\xCF\x85\xCF\x81\xCF\x84\xCE\xB9\xE1\xBD\xB2\xCF\x82 \xCE\xB4\xE1\xBD\xB2\xCE\xBD \xCE\xB8\xE1\xBD\xB0 \xCE\xB2\xCF\x81\xE1\xBF\xB6 \xCF\x80\xCE\xB9\xE1\xBD\xB0 \xCF\x83\xCF\x84\xE1\xBD\xB8 \xCF\x87\xCF\x81\xCF\x85\xCF\x83\xCE\xB1\xCF\x86\xE1\xBD\xB6 \xCE\xBE\xCE\xAD\xCF\x86\xCF\x89\xCF\x84\xCE\xBF", i.c_str());
+
+	std::string au = ConvertToUppercase(i);
+	ASSERT_EQ(0, errors);
+
+	std::string eu = ReadUppercase(911, 106);
+	EXPECT_STREQ(eu.c_str(), au.c_str());
+}
+
+TEST_F(QuickbrownCaseMapping, GreekFirstLowercase)
+{
+	std::string i = ReadRegular(911, 105);
+	EXPECT_STREQ("  \xCE\x93\xCE\xB1\xCE\xB6\xCE\xAD\xCE\xB5\xCF\x82 \xCE\xBA\xCE\xB1\xE1\xBD\xB6 \xCE\xBC\xCF\x85\xCF\x81\xCF\x84\xCE\xB9\xE1\xBD\xB2\xCF\x82 \xCE\xB4\xE1\xBD\xB2\xCE\xBD \xCE\xB8\xE1\xBD\xB0 \xCE\xB2\xCF\x81\xE1\xBF\xB6 \xCF\x80\xCE\xB9\xE1\xBD\xB0 \xCF\x83\xCF\x84\xE1\xBD\xB8 \xCF\x87\xCF\x81\xCF\x85\xCF\x83\xCE\xB1\xCF\x86\xE1\xBD\xB6 \xCE\xBE\xCE\xAD\xCF\x86\xCF\x89\xCF\x84\xCE\xBF", i.c_str());
+
+	std::string al = ConvertToLowercase(i);
+	ASSERT_EQ(0, errors);
+
+	std::string el = ReadLowercase(911, 105);
 	EXPECT_STREQ(el.c_str(), al.c_str());
 }

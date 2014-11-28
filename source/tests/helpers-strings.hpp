@@ -365,3 +365,42 @@ inline std::string Utf8StringPrintable(const std::string& text)
 
 	return ss.str();
 }
+
+inline std::string Utf8StringPrintableCodepoints(const std::string& text)
+{
+	if (text == "")
+	{
+		return "";
+	}
+
+	std::stringstream ss;
+	ss << std::setfill('0') << std::hex;
+
+	int32_t errors = 0;
+	size_t size_in_bytes = utf8toutf32(text.c_str(), text.size(), nullptr, 0, &errors);
+	if (size_in_bytes == 0 ||
+		errors != 0)
+	{
+		return "";
+	}
+
+	unicode_t* result_utf32 = new unicode_t[size_in_bytes / sizeof(unicode_t)];
+
+	utf8toutf32(text.c_str(), text.size(), result_utf32, size_in_bytes, &errors);
+
+	for (size_t i = 0; i < size_in_bytes / sizeof(unicode_t); ++i)
+	{
+		if (result_utf32[i] >= 0x20 && result_utf32[i] <= 0x7F)
+		{
+			ss.put((char)result_utf32[i]);
+		}
+		else
+		{
+			ss << "[U+" << result_utf32[i] << "]";
+		}
+	}
+
+	delete [] result_utf32;
+
+	return ss.str();
+}
