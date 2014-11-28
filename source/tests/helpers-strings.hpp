@@ -16,7 +16,7 @@
 #include "utf8rewind.h"
 
 #define TEST_ENABLE_UPPERCASE (1)
-#define TEST_ENABLE_LOWERCASE (0)
+#define TEST_ENABLE_LOWERCASE (1)
 #define TEST_ENABLE_TITLECASE (0)
 
 std::string CodepointToString(unicode_t codepoint);
@@ -217,14 +217,14 @@ private:
 	std::map<unicode_t, CaseMappingEntry*> m_Database;
 };
 
-std::string CodepointToString(unicode_t codepoint)
+inline std::string CodepointToString(unicode_t codepoint)
 {
 	std::stringstream ss;
 	ss << "U+" << std::setfill('0') << std::setw(8) << std::hex << codepoint;
 	return ss.str();
 }
 
-std::string CodepointToUppercaseString(unicode_t codepoint)
+inline std::string CodepointToUppercaseString(unicode_t codepoint)
 {
 #if TEST_ENABLE_UPPERCASE
 	int32_t errors = 0;
@@ -255,7 +255,7 @@ std::string CodepointToUppercaseString(unicode_t codepoint)
 #endif
 }
 
-std::string CodepointToLowercaseString(unicode_t codepoint)
+inline std::string CodepointToLowercaseString(unicode_t codepoint)
 {
 #if TEST_ENABLE_LOWERCASE
 	int32_t errors = 0;
@@ -267,8 +267,14 @@ std::string CodepointToLowercaseString(unicode_t codepoint)
 		return "";
 	}
 
-	// TODO: Implement
-	return input_utf8;
+	char result_lower[256] = { 0 };
+	utf8tolower(input_utf8, strlen(input_utf8), result_lower, 256, &errors);
+	if (errors != 0)
+	{
+		return "";
+	}
+
+	return result_lower;
 #else
 	CaseMappingEntry* entry = CaseMappingDatabase::Get().Find(codepoint);
 	if (entry != nullptr)
@@ -280,7 +286,7 @@ std::string CodepointToLowercaseString(unicode_t codepoint)
 #endif
 }
 
-std::string CodepointToTitlecaseString(unicode_t codepoint)
+inline std::string CodepointToTitlecaseString(unicode_t codepoint)
 {
 #if TEST_ENABLE_TITLECASE
 	int32_t errors = 0;
@@ -305,7 +311,7 @@ std::string CodepointToTitlecaseString(unicode_t codepoint)
 #endif
 }
 
-std::string Utf8StringToCodepoints(const std::string& text)
+inline std::string Utf8StringToCodepoints(const std::string& text)
 {
 	if (text == "")
 	{
@@ -341,7 +347,7 @@ std::string Utf8StringToCodepoints(const std::string& text)
 	return ss.str();
 }
 
-std::string Utf8StringPrintable(const std::string& text)
+inline std::string Utf8StringPrintable(const std::string& text)
 {
 	std::stringstream ss;
 
