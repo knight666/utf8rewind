@@ -465,6 +465,8 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 
 size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
+size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
 
 #if defined(__cplusplus)

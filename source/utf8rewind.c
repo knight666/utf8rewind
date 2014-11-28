@@ -946,6 +946,40 @@ outofspace:
 	return 0;
 }
 
+size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
+{
+	if (codepointLength == 1 && codepoint <= 0x7F)
+	{
+		if (target != 0)
+		{
+			if (targetSize < 1)
+			{
+				goto outofspace;
+			}
+
+			if (codepoint >= 0x41 && codepoint <= 0x5A)
+			{
+				codepoint += 32;
+			}
+
+			*target = (char)codepoint;
+		}
+
+		return 1;
+	}
+	else
+	{
+		return transform_default(DecompositionQuery_Lowercase, codepoint, codepointLength, target, targetSize, errors);
+	}
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return 0;
+}
+
 typedef size_t (*TransformFunc)(unicode_t, size_t, char*, size_t, int32_t*);
 
 size_t processtransform(TransformFunc transform, const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
@@ -1002,6 +1036,11 @@ invaliddata:
 size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 	return processtransform(&transform_toupper, input, inputSize, target, targetSize, errors);
+}
+
+size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+{
+	return processtransform(&transform_tolower, input, inputSize, target, targetSize, errors);
 }
 
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
