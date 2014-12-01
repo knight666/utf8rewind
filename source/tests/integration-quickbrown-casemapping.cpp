@@ -229,3 +229,45 @@ TEST_F(QuickbrownCaseMapping, GreekSecondLowercase)
 	std::string el = ReadLowercase(1086, 66);
 	EXPECT_UTF8EQ(el, al);
 }
+
+TEST_F(QuickbrownCaseMapping, EnglishUppercase)
+{
+	std::string i = ReadRegular(1228, 45);
+	EXPECT_UTF8EQ("  The quick brown fox jumps over the lazy dog", i);
+
+	std::string eu = ReadUppercase(1229, 45);
+	EXPECT_UTF8EQ("  THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG", eu);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* au = new char[l + 1];
+	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	au[l] = 0;
+
+	EXPECT_UTF8EQ("  THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG", au);
+
+	delete au;
+}
+
+TEST_F(QuickbrownCaseMapping, EnglishLowercase)
+{
+	std::string i = ReadRegular(1228, 45);
+	EXPECT_UTF8EQ("  The quick brown fox jumps over the lazy dog", i);
+
+	std::string el = ReadLowercase(1228, 45);
+	EXPECT_UTF8EQ("  the quick brown fox jumps over the lazy dog", el);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* al = new char[l + 1];
+	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	al[l] = 0;
+
+	EXPECT_UTF8EQ("  the quick brown fox jumps over the lazy dog", al);
+
+	delete al;
+}
