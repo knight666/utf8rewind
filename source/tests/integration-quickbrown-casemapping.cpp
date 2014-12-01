@@ -217,3 +217,15 @@ TEST_F(QuickbrownCaseMapping, GreekSecondUppercase)
 	std::string eu = ReadUppercase(1087, 66);
 	EXPECT_UTF8EQ(eu, au);
 }
+
+TEST_F(QuickbrownCaseMapping, GreekSecondLowercase)
+{
+	std::string i = ReadRegular(1086, 66);
+	EXPECT_UTF8EQ("  \xCE\x9E\xCE\xB5\xCF\x83\xCE\xBA\xCE\xB5\xCF\x80\xCE\xAC\xCE\xB6\xCF\x89 \xCF\x84\xE1\xBD\xB4\xCE\xBD \xCF\x88\xCF\x85\xCF\x87\xCE\xBF\xCF\x86\xCE\xB8\xCF\x8C\xCF\x81\xCE\xB1 \xCE\xB2\xCE\xB4\xCE\xB5\xCE\xBB\xCF\x85\xCE\xB3\xCE\xBC\xCE\xAF\xCE\xB1", i);
+
+	std::string al = helpers::lowercase(i);
+	ASSERT_EQ(0, errors);
+
+	std::string el = ReadLowercase(1086, 66);
+	EXPECT_UTF8EQ(el, al);
+}
