@@ -9,7 +9,7 @@ namespace helpers {
 	std::string identifiable(unicode_t codepoint)
 	{
 		std::stringstream ss;
-		ss << "[U+" << std::hex << codepoint << "]";
+		ss << "\\u" << std::hex << std::uppercase << codepoint << "";
 		return ss.str();
 	}
 
@@ -371,6 +371,29 @@ namespace helpers {
 		}
 
 		return result;
+	}
+
+	::testing::AssertionResult CompareUtf8Strings(
+		const char* expressionLeft, const char* expressionRight,
+		const std::string& textLeft, const std::string& textRight
+	)
+	{
+		if (!strcmp(textLeft.c_str(), textRight.c_str()))
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << "String mismatch" << std::endl;
+			result << "Expected:" << std::endl;
+			result << helpers::identifiable(textLeft) << std::endl;
+			result << "  Actual:" << std::endl;
+			result << helpers::identifiable(textRight) << std::endl;
+
+			return result;
+		}
 	}
 
 };

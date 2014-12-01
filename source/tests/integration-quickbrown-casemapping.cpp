@@ -95,7 +95,7 @@ TEST_F(QuickbrownCaseMapping, DanishUppercase)
 	ASSERT_EQ(0, errors);
 
 	std::string eu = ReadUppercase(271, 95);
-	EXPECT_STREQ(eu.c_str(), au.c_str());
+	EXPECT_UTF8EQ(eu, au);
 }
 
 TEST_F(QuickbrownCaseMapping, DanishLowercase)
@@ -107,7 +107,7 @@ TEST_F(QuickbrownCaseMapping, DanishLowercase)
 	ASSERT_EQ(0, errors);
 
 	std::string el = ReadLowercase(271, 95);
-	EXPECT_STREQ(el.c_str(), al.c_str());
+	EXPECT_UTF8EQ(el, al);
 }
 
 TEST_F(QuickbrownCaseMapping, GermanFirstUppercase)
@@ -119,7 +119,7 @@ TEST_F(QuickbrownCaseMapping, GermanFirstUppercase)
 	ASSERT_EQ(0, errors);
 
 	std::string eu = ReadUppercase(503, 64);
-	EXPECT_STREQ(eu.c_str(), au.c_str());
+	EXPECT_UTF8EQ(eu, au);
 }
 
 TEST_F(QuickbrownCaseMapping, GermanFirstLowercase)
@@ -131,7 +131,7 @@ TEST_F(QuickbrownCaseMapping, GermanFirstLowercase)
 	ASSERT_EQ(0, errors);
 
 	std::string el = ReadLowercase(503, 64);
-	EXPECT_STREQ(el.c_str(), al.c_str());
+	EXPECT_UTF8EQ(el, al);
 }
 
 TEST_F(QuickbrownCaseMapping, GermanSecondUppercase)
@@ -143,7 +143,7 @@ TEST_F(QuickbrownCaseMapping, GermanSecondUppercase)
 	ASSERT_EQ(0, errors);
 
 	std::string eu = ReadUppercase(642, 59);
-	EXPECT_STREQ(eu.c_str(), au.c_str());
+	EXPECT_UTF8EQ(eu, au);
 }
 
 TEST_F(QuickbrownCaseMapping, GermanSecondLowercase)
@@ -155,7 +155,7 @@ TEST_F(QuickbrownCaseMapping, GermanSecondLowercase)
 	ASSERT_EQ(0, errors);
 
 	std::string el = ReadLowercase(642, 59);
-	EXPECT_STREQ(el.c_str(), al.c_str());
+	EXPECT_UTF8EQ(el, al);
 }
 
 TEST_F(QuickbrownCaseMapping, GermanThirdUppercase)
@@ -167,7 +167,7 @@ TEST_F(QuickbrownCaseMapping, GermanThirdUppercase)
 	ASSERT_EQ(0, errors);
 
 	std::string eu = ReadUppercase(767, 30);
-	EXPECT_STREQ(eu.c_str(), au.c_str());
+	EXPECT_UTF8EQ(eu, au);
 }
 
 TEST_F(QuickbrownCaseMapping, GermanThirdLowercase)
@@ -179,7 +179,7 @@ TEST_F(QuickbrownCaseMapping, GermanThirdLowercase)
 	ASSERT_EQ(0, errors);
 
 	std::string el = ReadLowercase(767, 30);
-	EXPECT_STREQ(el.c_str(), al.c_str());
+	EXPECT_UTF8EQ(el, al);
 }
 
 TEST_F(QuickbrownCaseMapping, GreekFirstUppercase)
@@ -191,7 +191,7 @@ TEST_F(QuickbrownCaseMapping, GreekFirstUppercase)
 	ASSERT_EQ(0, errors);
 
 	std::string eu = ReadUppercase(911, 106);
-	EXPECT_STREQ(eu.c_str(), au.c_str());
+	EXPECT_UTF8EQ(eu, au);
 }
 
 TEST_F(QuickbrownCaseMapping, GreekFirstLowercase)
@@ -203,5 +203,5 @@ TEST_F(QuickbrownCaseMapping, GreekFirstLowercase)
 	ASSERT_EQ(0, errors);
 
 	std::string el = ReadLowercase(911, 105);
-	EXPECT_STREQ(el.c_str(), al.c_str());
+	EXPECT_UTF8EQ(el, al);
 }

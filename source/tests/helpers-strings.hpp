@@ -1,19 +1,10 @@
 #pragma once
 
-// C/C++
-
-#include <stdint.h>
-
-// STL
-
-#include <iomanip>
-#include <fstream>
-#include <map>
-#include <sstream>
-#include <string>
-#include <vector>
+#include "tests-base.hpp"
 
 #include "utf8rewind.h"
+
+#define EXPECT_UTF8EQ(_expected, _actual) EXPECT_PRED_FORMAT2(::helpers::CompareUtf8Strings, _expected, _actual);
 
 namespace helpers {
 
@@ -71,5 +62,10 @@ namespace helpers {
 
 		std::map<unicode_t, CaseMappingEntry*> m_Database;
 	};
+
+	::testing::AssertionResult CompareUtf8Strings(
+		const char* expressionLeft, const char* expressionRight,
+		const std::string& textLeft, const std::string& textRight
+	);
 
 };
