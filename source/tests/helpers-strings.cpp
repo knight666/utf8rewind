@@ -6,10 +6,65 @@
 
 namespace helpers {
 
+	void identifiable(std::stringstream& target, unicode_t codepoint)
+	{
+		if (codepoint < 0x20)
+		{
+			switch (codepoint)
+			{
+
+			case 0:
+				target << "\\0";
+				break;
+
+			case '\a':
+				target << "\\a";
+				break;
+
+			case '\b':
+				target << "\\b";
+				break;
+
+			case '\f':
+				target << "\\f";
+				break;
+
+			case '\n':
+				target << "\\n";
+				break;
+
+			case '\r':
+				target << "\\r";
+				break;
+
+			case '\t':
+				target << "\\t";
+				break;
+
+			case '\v':
+				target << "\\v";
+				break;
+
+			default:
+				target << "\\x" << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << codepoint << "";
+				break;
+
+			}
+		}
+		else if (codepoint <= 0x7F)
+		{
+			target.put((char)codepoint);
+		}
+		else
+		{
+			target << "\\u" << std::hex << std::uppercase << codepoint << "";
+		}
+	}
+
 	std::string identifiable(unicode_t codepoint)
 	{
 		std::stringstream ss;
-		ss << "\\u" << std::hex << std::uppercase << codepoint << "";
+		identifiable(ss, codepoint);
 		return ss.str();
 	}
 
@@ -19,9 +74,6 @@ namespace helpers {
 		{
 			return "";
 		}
-
-		std::stringstream ss;
-		ss << std::setfill('0') << std::hex;
 
 		int32_t errors = 0;
 		size_t size_in_bytes = utf8toutf32(text.c_str(), text.size(), nullptr, 0, &errors);
@@ -36,16 +88,11 @@ namespace helpers {
 
 		utf8toutf32(text.c_str(), text.size(), &converted[0], size_in_bytes, &errors);
 
+		std::stringstream ss;
+
 		for (std::vector<unicode_t>::iterator it = converted.begin(); it != converted.end(); ++it)
 		{
-			if (*it >= 0x20 && *it <= 0x7F)
-			{
-				ss.put((char)*it);
-			}
-			else
-			{
-				ss << identifiable(*it);
-			}
+			identifiable(ss, *it);
 		}
 
 		return ss.str();
