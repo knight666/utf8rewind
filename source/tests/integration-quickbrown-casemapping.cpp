@@ -611,3 +611,45 @@ TEST_F(QuickbrownCaseMapping, FrenchThirdLowercase)
 
 	delete al;
 }
+
+TEST_F(QuickbrownCaseMapping, IrishGaelicUppercase)
+{
+	std::string i = ReadRegular(2196, 76);
+	EXPECT_UTF8EQ("  D'fhuascail \xC3\x8Dosa, \xC3\x9Armhac na h\xC3\x93ighe Beannaithe, p\xC3\xB3r \xC3\x89" "ava agus \xC3\x81" "dhaimh", i);
+
+	std::string eu = ReadUppercase(2197, 76);
+	EXPECT_UTF8EQ("  D'FHUASCAIL \xC3\x8DOSA, \xC3\x9ARMHAC NA H\xC3\x93IGHE BEANNAITHE, P\xC3\x93R \xC3\x89" "AVA AGUS \xC3\x81" "DHAIMH", eu);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* au = new char[l + 1];
+	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	au[l] = 0;
+
+	EXPECT_UTF8EQ("  D'FHUASCAIL \xC3\x8DOSA, \xC3\x9ARMHAC NA H\xC3\x93IGHE BEANNAITHE, P\xC3\x93R \xC3\x89" "AVA AGUS \xC3\x81" "DHAIMH", au);
+
+	delete au;
+}
+
+TEST_F(QuickbrownCaseMapping, IrishGaelicLowercase)
+{
+	std::string i = ReadRegular(2196, 76);
+	EXPECT_UTF8EQ("  D'fhuascail \xC3\x8Dosa, \xC3\x9Armhac na h\xC3\x93ighe Beannaithe, p\xC3\xB3r \xC3\x89" "ava agus \xC3\x81" "dhaimh", i);
+
+	std::string el = ReadLowercase(2196, 76);
+	EXPECT_UTF8EQ("  d'fhuascail \xC3\xADosa, \xC3\xBArmhac na h\xC3\xB3ighe beannaithe, p\xC3\xB3r \xC3\xA9" "ava agus \xC3\xA1" "dhaimh", el);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* al = new char[l + 1];
+	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	al[l] = 0;
+
+	EXPECT_UTF8EQ("  d'fhuascail \xC3\xADosa, \xC3\xBArmhac na h\xC3\xB3ighe beannaithe, p\xC3\xB3r \xC3\xA9" "ava agus \xC3\xA1" "dhaimh", al);
+
+	delete al;
+}
