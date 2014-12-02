@@ -89,10 +89,12 @@ protected:
 TEST_F(QuickbrownCaseMapping, DanishUppercase)
 {
 	std::string i = ReadRegular(271, 95);
-	EXPECT_UTF8EQ("  Quizdeltagerne spiste jordb\xc3\xa6r med fl\xc3\xb8" "de, mens cirkusklovnen\x0a  Wolther spillede p\xc3\xa5 xylofon.", i.c_str());
+	EXPECT_UTF8EQ("  Quizdeltagerne spiste jordb\xc3\xa6r med fl\xC3\xB8" "de, mens cirkusklovnen\n\
+  Wolther spillede p\xC3\xA5 xylofon.", i.c_str());
 
 	std::string eu = ReadUppercase(271, 95);
-	EXPECT_UTF8EQ("  QUIZDELTAGERNE SPISTE JORDB\xc3\x86R MED FL\xc3\x98" "DE, MENS CIRKUSKLOVNEN\x0a  WOLTHER SPILLEDE P\xc3\x85 XYLOFON.", eu.c_str());
+	EXPECT_UTF8EQ("  QUIZDELTAGERNE SPISTE JORDB\xc3\x86R MED FL\xC3\x98" "DE, MENS CIRKUSKLOVNEN\n\
+  WOLTHER SPILLEDE P\xC3\x85 XYLOFON.", eu.c_str());
 	
 	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
 	EXPECT_NE(0, l);
@@ -102,7 +104,8 @@ TEST_F(QuickbrownCaseMapping, DanishUppercase)
 	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
 	au[l] = 0;
 
-	EXPECT_UTF8EQ("  QUIZDELTAGERNE SPISTE JORDB\xc3\x86R MED FL\xc3\x98" "DE, MENS CIRKUSKLOVNEN\x0a  WOLTHER SPILLEDE P\xc3\x85 XYLOFON.", au);
+	EXPECT_UTF8EQ("  QUIZDELTAGERNE SPISTE JORDB\xc3\x86R MED FL\xC3\x98" "DE, MENS CIRKUSKLOVNEN\n\
+  WOLTHER SPILLEDE P\xC3\x85 XYLOFON.", au);
 
 	delete au;
 }
@@ -110,10 +113,12 @@ TEST_F(QuickbrownCaseMapping, DanishUppercase)
 TEST_F(QuickbrownCaseMapping, DanishLowercase)
 {
 	std::string i = ReadRegular(271, 95);
-	EXPECT_UTF8EQ("  Quizdeltagerne spiste jordb\xc3\xa6r med fl\xc3\xb8" "de, mens cirkusklovnen\x0a  Wolther spillede p\xc3\xa5 xylofon.", i.c_str());
+	EXPECT_UTF8EQ("  Quizdeltagerne spiste jordb\xc3\xa6r med fl\xC3\xB8" "de, mens cirkusklovnen\n\
+  Wolther spillede p\xC3\xA5 xylofon.", i.c_str());
 
 	std::string el = ReadLowercase(271, 95);
-	EXPECT_UTF8EQ("  quizdeltagerne spiste jordb\xc3\xa6r med fl\xc3\xb8" "de, mens cirkusklovnen\x0a  wolther spillede p\xc3\xa5 xylofon.", el.c_str());
+	EXPECT_UTF8EQ("  quizdeltagerne spiste jordb\xc3\xa6r med fl\xC3\xB8" "de, mens cirkusklovnen\n\
+  wolther spillede p\xC3\xA5 xylofon.", el.c_str());
 
 	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
 	EXPECT_NE(0, l);
@@ -123,7 +128,8 @@ TEST_F(QuickbrownCaseMapping, DanishLowercase)
 	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
 	al[l] = 0;
 
-	EXPECT_UTF8EQ("  quizdeltagerne spiste jordb\xc3\xa6r med fl\xc3\xb8" "de, mens cirkusklovnen\x0a  wolther spillede p\xc3\xa5 xylofon.", al);
+	EXPECT_UTF8EQ("  quizdeltagerne spiste jordb\xc3\xa6r med fl\xC3\xB8" "de, mens cirkusklovnen\n\
+  wolther spillede p\xC3\xA5 xylofon.", al);
 
 	delete al;
 }
@@ -376,6 +382,54 @@ TEST_F(QuickbrownCaseMapping, EnglishLowercase)
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  the quick brown fox jumps over the lazy dog", al);
+
+	delete al;
+}
+
+TEST_F(QuickbrownCaseMapping, SpanishUppercase)
+{
+	std::string i = ReadRegular(1302, 108);
+	EXPECT_UTF8EQ("  El ping\xC3\xBCino Wenceslao hizo kil\xC3\xB3metros bajo exhaustiva lluvia y \n\
+  fr\xC3\xADo, a\xC3\xB1oraba a su querido cachorro.", i);
+
+	std::string eu = ReadUppercase(1303, 108);
+	EXPECT_UTF8EQ("  EL PING\xC3\x9CINO WENCESLAO HIZO KIL\xC3\x93METROS BAJO EXHAUSTIVA LLUVIA Y \n\
+  FR\xC3\x8DO, A\xC3\x91ORABA A SU QUERIDO CACHORRO.", eu);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* au = new char[l + 1];
+	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	au[l] = 0;
+
+	EXPECT_UTF8EQ("  EL PING\xC3\x9CINO WENCESLAO HIZO KIL\xC3\x93METROS BAJO EXHAUSTIVA LLUVIA Y \n\
+  FR\xC3\x8DO, A\xC3\x91ORABA A SU QUERIDO CACHORRO.", au);
+
+	delete au;
+}
+
+TEST_F(QuickbrownCaseMapping, SpanishLowercase)
+{
+	std::string i = ReadRegular(1302, 108);
+	EXPECT_UTF8EQ("  El ping\xC3\xBCino Wenceslao hizo kil\xC3\xB3metros bajo exhaustiva lluvia y \n\
+  fr\xC3\xADo, a\xC3\xB1oraba a su querido cachorro.", i);
+
+	std::string el = ReadLowercase(1302, 108);
+	EXPECT_UTF8EQ("  el ping\xC3\xBCino wenceslao hizo kil\xC3\xB3metros bajo exhaustiva lluvia y \n\
+  fr\xC3\xADo, a\xC3\xB1oraba a su querido cachorro.", el);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* al = new char[l + 1];
+	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	al[l] = 0;
+
+	EXPECT_UTF8EQ("  el ping\xC3\xBCino wenceslao hizo kil\xC3\xB3metros bajo exhaustiva lluvia y \n\
+  fr\xC3\xADo, a\xC3\xB1oraba a su querido cachorro.", al);
 
 	delete al;
 }
