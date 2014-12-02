@@ -433,3 +433,181 @@ TEST_F(QuickbrownCaseMapping, SpanishLowercase)
 
 	delete al;
 }
+
+TEST_F(QuickbrownCaseMapping, FrenchFirstUppercase)
+{
+	std::string i = ReadRegular(1527, 361);
+	EXPECT_UTF8EQ("  Portez ce vieux whisky au juge blond qui fume sur son \xC3\xAEle int\xC3\xA9rieure, \xC3\xA0\n\
+  c\xC3\xB4t\xC3\xA9 de l'alc\xC3\xB4ve ovo\xC3\xAF" "de, o\xC3\xB9 les b\xC3\xBB" "ches se consument dans l'\xC3\xA2tre, ce\n\
+  qui lui permet de penser \xC3\xA0 la c\xC3\xA6nogen\xC3\xA8se de l'\xC3\xAAtre dont il est question\n\
+  dans la cause ambigu\xC3\xAB entendue \xC3\xA0 Mo\xC3\xBF, dans un capharna\xC3\xBCm qui,\n\
+  pense-t-il, diminue \xC3\xA7\xC3\xA0 et l\xC3\xA0 la qualit\xC3\xA9 de son \xC5\x93uvre. ", i);
+
+	std::string eu = ReadUppercase(1528, 361);
+	EXPECT_UTF8EQ("  PORTEZ CE VIEUX WHISKY AU JUGE BLOND QUI FUME SUR SON \xC3\x8ELE INT\xC3\x89RIEURE, \xC3\x80\n\
+  C\xC3\x94T\xC3\x89 DE L'ALC\xC3\x94VE OVO\xC3\x8F" "DE, O\xC3\x99 LES B\xC3\x9B" "CHES SE CONSUMENT DANS L'\xC3\x82TRE, CE\n\
+  QUI LUI PERMET DE PENSER \xC3\x80 LA C\xC3\x86NOGEN\xC3\x88SE DE L'\xC3\x8ATRE DONT IL EST QUESTION\n\
+  DANS LA CAUSE AMBIGU\xC3\x8B ENTENDUE \xC3\x80 MO\xC5\xB8, DANS UN CAPHARNA\xC3\x9CM QUI,\n\
+  PENSE-T-IL, DIMINUE \xC3\x87\xC3\x80 ET L\xC3\x80 LA QUALIT\xC3\x89 DE SON \xC5\x92UVRE. ", eu);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* au = new char[l + 1];
+	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	au[l] = 0;
+
+	EXPECT_UTF8EQ("  PORTEZ CE VIEUX WHISKY AU JUGE BLOND QUI FUME SUR SON \xC3\x8ELE INT\xC3\x89RIEURE, \xC3\x80\n\
+  C\xC3\x94T\xC3\x89 DE L'ALC\xC3\x94VE OVO\xC3\x8F" "DE, O\xC3\x99 LES B\xC3\x9B" "CHES SE CONSUMENT DANS L'\xC3\x82TRE, CE\n\
+  QUI LUI PERMET DE PENSER \xC3\x80 LA C\xC3\x86NOGEN\xC3\x88SE DE L'\xC3\x8ATRE DONT IL EST QUESTION\n\
+  DANS LA CAUSE AMBIGU\xC3\x8B ENTENDUE \xC3\x80 MO\xC5\xB8, DANS UN CAPHARNA\xC3\x9CM QUI,\n\
+  PENSE-T-IL, DIMINUE \xC3\x87\xC3\x80 ET L\xC3\x80 LA QUALIT\xC3\x89 DE SON \xC5\x92UVRE. ", au);
+
+	delete au;
+}
+
+TEST_F(QuickbrownCaseMapping, FrenchFirstLowercase)
+{
+	std::string i = ReadRegular(1527, 361);
+	EXPECT_UTF8EQ("  Portez ce vieux whisky au juge blond qui fume sur son \xC3\xAEle int\xC3\xA9rieure, \xC3\xA0\n\
+  c\xC3\xB4t\xC3\xA9 de l'alc\xC3\xB4ve ovo\xC3\xAF" "de, o\xC3\xB9 les b\xC3\xBB" "ches se consument dans l'\xC3\xA2tre, ce\n\
+  qui lui permet de penser \xC3\xA0 la c\xC3\xA6nogen\xC3\xA8se de l'\xC3\xAAtre dont il est question\n\
+  dans la cause ambigu\xC3\xAB entendue \xC3\xA0 Mo\xC3\xBF, dans un capharna\xC3\xBCm qui,\n\
+  pense-t-il, diminue \xC3\xA7\xC3\xA0 et l\xC3\xA0 la qualit\xC3\xA9 de son \xC5\x93uvre. ", i);
+
+	std::string el = ReadLowercase(1527, 361);
+	EXPECT_UTF8EQ("  portez ce vieux whisky au juge blond qui fume sur son \xC3\xAEle int\xC3\xA9rieure, \xC3\xA0\n\
+  c\xC3\xB4t\xC3\xA9 de l'alc\xC3\xB4ve ovo\xC3\xAF" "de, o\xC3\xB9 les b\xC3\xBB" "ches se consument dans l'\xC3\xA2tre, ce\n\
+  qui lui permet de penser \xC3\xA0 la c\xC3\xA6nogen\xC3\xA8se de l'\xC3\xAAtre dont il est question\n\
+  dans la cause ambigu\xC3\xAB entendue \xC3\xA0 mo\xC3\xBF, dans un capharna\xC3\xBCm qui,\n\
+  pense-t-il, diminue \xC3\xA7\xC3\xA0 et l\xC3\xA0 la qualit\xC3\xA9 de son \xC5\x93uvre. ", el);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* al = new char[l + 1];
+	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	al[l] = 0;
+
+	EXPECT_UTF8EQ("  portez ce vieux whisky au juge blond qui fume sur son \xC3\xAEle int\xC3\xA9rieure, \xC3\xA0\n\
+  c\xC3\xB4t\xC3\xA9 de l'alc\xC3\xB4ve ovo\xC3\xAF" "de, o\xC3\xB9 les b\xC3\xBB" "ches se consument dans l'\xC3\xA2tre, ce\n\
+  qui lui permet de penser \xC3\xA0 la c\xC3\xA6nogen\xC3\xA8se de l'\xC3\xAAtre dont il est question\n\
+  dans la cause ambigu\xC3\xAB entendue \xC3\xA0 mo\xC3\xBF, dans un capharna\xC3\xBCm qui,\n\
+  pense-t-il, diminue \xC3\xA7\xC3\xA0 et l\xC3\xA0 la qualit\xC3\xA9 de son \xC5\x93uvre. ", al);
+
+	delete al;
+}
+
+TEST_F(QuickbrownCaseMapping, FrenchSecondUppercase)
+{
+	std::string i = ReadRegular(1890, 117);
+	EXPECT_UTF8EQ("  l'\xC3\xAEle exigu\xC3\xAB\n  O\xC3\xB9 l'ob\xC3\xA8se jury m\xC3\xBBr\n\
+  F\xC3\xAAte l'ha\xC3\xAF volap\xC3\xBCk,\n\
+  \xC3\x82ne ex a\xC3\xA9quo au whist,\n\
+  \xC3\x94tez ce v\xC5\x93u d\xC3\xA9\xC3\xA7u.", i);
+
+	std::string eu = ReadUppercase(1891, 117);
+	EXPECT_UTF8EQ("  L'\xC3\x8ELE EXIGU\xC3\x8B\n  O\xC3\x99 L'OB\xC3\x88SE JURY M\xC3\x9BR\n\
+  F\xC3\x8ATE L'HA\xC3\x8F VOLAP\xC3\x9CK,\n\
+  \xC3\x82NE EX A\xC3\x89QUO AU WHIST,\n\
+  \xC3\x94TEZ CE V\xC5\x92U D\xC3\x89\xC3\x87U.", eu);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* au = new char[l + 1];
+	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	au[l] = 0;
+
+	EXPECT_UTF8EQ("  L'\xC3\x8ELE EXIGU\xC3\x8B\n\
+  O\xC3\x99 L'OB\xC3\x88SE JURY M\xC3\x9BR\n\
+  F\xC3\x8ATE L'HA\xC3\x8F VOLAP\xC3\x9CK,\n\
+  \xC3\x82NE EX A\xC3\x89QUO AU WHIST,\n\
+  \xC3\x94TEZ CE V\xC5\x92U D\xC3\x89\xC3\x87U.", au);
+
+	delete au;
+}
+
+TEST_F(QuickbrownCaseMapping, FrenchSecondLowercase)
+{
+	std::string i = ReadRegular(1890, 117);
+	EXPECT_UTF8EQ("  l'\xC3\xAEle exigu\xC3\xAB\n\
+  O\xC3\xB9 l'ob\xC3\xA8se jury m\xC3\xBBr\n\
+  F\xC3\xAAte l'ha\xC3\xAF volap\xC3\xBCk,\n\
+  \xC3\x82ne ex a\xC3\xA9quo au whist,\n\
+  \xC3\x94tez ce v\xC5\x93u d\xC3\xA9\xC3\xA7u.", i);
+
+	std::string el = ReadLowercase(1890, 117);
+	EXPECT_UTF8EQ("  l'\xC3\xAEle exigu\xC3\xAB\n\
+  o\xC3\xB9 l'ob\xC3\xA8se jury m\xC3\xBBr\n\
+  f\xC3\xAAte l'ha\xC3\xAF volap\xC3\xBCk,\n\
+  \xC3\xA2ne ex a\xC3\xA9quo au whist,\n\
+  \xC3\xB4tez ce v\xC5\x93u d\xC3\xA9\xC3\xA7u.", el);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* al = new char[l + 1];
+	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	al[l] = 0;
+
+	EXPECT_UTF8EQ("  l'\xC3\xAEle exigu\xC3\xAB\n\
+  o\xC3\xB9 l'ob\xC3\xA8se jury m\xC3\xBBr\n\
+  f\xC3\xAAte l'ha\xC3\xAF volap\xC3\xBCk,\n\
+  \xC3\xA2ne ex a\xC3\xA9quo au whist,\n\
+  \xC3\xB4tez ce v\xC5\x93u d\xC3\xA9\xC3\xA7u.", al);
+
+	delete al;
+}
+
+TEST_F(QuickbrownCaseMapping, FrenchThirdUppercase)
+{
+	std::string i = ReadRegular(2009, 148);
+	EXPECT_UTF8EQ("  Le c\xC5\x93ur d\xC3\xA9\xC3\xA7u mais l'\xC3\xA2me plut\xC3\xB4t na\xC3\xAFve, Lou\xC3\xBFs r\xC3\xAAva de crapa\xC3\xBCter en\n\
+  cano\xC3\xAB au del\xC3\xA0 des \xC3\xAEles, pr\xC3\xA8s du m\xC3\xA4lstr\xC3\xB6m o\xC3\xB9 br\xC3\xBBlent les nov\xC3\xA6.", i);
+
+	std::string eu = ReadUppercase(2010, 148);
+	EXPECT_UTF8EQ("  LE C\xC5\x92UR D\xC3\x89\xC3\x87U MAIS L'\xC3\x82ME PLUT\xC3\x94T NA\xC3\x8FVE, LOU\xC5\xB8S R\xC3\x8AVA DE CRAPA\xC3\x9CTER EN\n\
+  CANO\xC3\x8B AU DEL\xC3\x80 DES \xC3\x8ELES, PR\xC3\x88S DU M\xC3\x84LSTR\xC3\x96M O\xC3\x99 BR\xC3\x9BLENT LES NOV\xC3\x86.", eu);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* au = new char[l + 1];
+	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	au[l] = 0;
+
+	EXPECT_UTF8EQ("  LE C\xC5\x92UR D\xC3\x89\xC3\x87U MAIS L'\xC3\x82ME PLUT\xC3\x94T NA\xC3\x8FVE, LOU\xC5\xB8S R\xC3\x8AVA DE CRAPA\xC3\x9CTER EN\n\
+  CANO\xC3\x8B AU DEL\xC3\x80 DES \xC3\x8ELES, PR\xC3\x88S DU M\xC3\x84LSTR\xC3\x96M O\xC3\x99 BR\xC3\x9BLENT LES NOV\xC3\x86.", au);
+
+	delete au;
+}
+
+TEST_F(QuickbrownCaseMapping, FrenchThirdLowercase)
+{
+	std::string i = ReadRegular(2009, 148);
+	EXPECT_UTF8EQ("  Le c\xC5\x93ur d\xC3\xA9\xC3\xA7u mais l'\xC3\xA2me plut\xC3\xB4t na\xC3\xAFve, Lou\xC3\xBFs r\xC3\xAAva de crapa\xC3\xBCter en\n\
+  cano\xC3\xAB au del\xC3\xA0 des \xC3\xAEles, pr\xC3\xA8s du m\xC3\xA4lstr\xC3\xB6m o\xC3\xB9 br\xC3\xBBlent les nov\xC3\xA6.", i);
+
+	std::string el = ReadLowercase(2009, 148);
+	EXPECT_UTF8EQ("  le c\xC5\x93ur d\xC3\xA9\xC3\xA7u mais l'\xC3\xA2me plut\xC3\xB4t na\xC3\xAFve, lou\xC3\xBFs r\xC3\xAAva de crapa\xC3\xBCter en\n\
+  cano\xC3\xAB au del\xC3\xA0 des \xC3\xAEles, pr\xC3\xA8s du m\xC3\xA4lstr\xC3\xB6m o\xC3\xB9 br\xC3\xBBlent les nov\xC3\xA6.", el);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* al = new char[l + 1];
+	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	al[l] = 0;
+
+	EXPECT_UTF8EQ("  le c\xC5\x93ur d\xC3\xA9\xC3\xA7u mais l'\xC3\xA2me plut\xC3\xB4t na\xC3\xAFve, lou\xC3\xBFs r\xC3\xAAva de crapa\xC3\xBCter en\n\
+  cano\xC3\xAB au del\xC3\xA0 des \xC3\xAEles, pr\xC3\xA8s du m\xC3\xA4lstr\xC3\xB6m o\xC3\xB9 br\xC3\xBBlent les nov\xC3\xA6.", al);
+
+	delete al;
+}
