@@ -14,7 +14,6 @@ namespace helpers {
 			{
 
 			case 0:
-				target << "\\0";
 				break;
 
 			case '\a':
@@ -261,21 +260,98 @@ namespace helpers {
 		return converted;
 	}
 
+	void printable(std::stringstream& target, bool& wroteHex, char character)
+	{
+		if (character < 0x20)
+		{
+			wroteHex = false;
+
+			switch (character)
+			{
+
+			case 0:
+				break;
+
+			case '\a':
+				target << "\\a";
+				break;
+
+			case '\b':
+				target << "\\b";
+				break;
+
+			case '\f':
+				target << "\\f";
+				break;
+
+			case '\n':
+				target << "\\n";
+				break;
+
+			case '\r':
+				target << "\\r";
+				break;
+
+			case '\t':
+				target << "\\t";
+				break;
+
+			case '\v':
+				target << "\\v";
+				break;
+
+			default:
+				target << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(2) << ((unicode_t)character & 0x000000FF);
+				wroteHex = true;
+				break;
+
+			}
+		}
+		else if (character <= 0x7F)
+		{
+			if (wroteHex)
+			{
+				if ((character >= 'A' && character <= 'F') ||
+					(character >= 'a' && character <= 'f') ||
+					(character >= '0' && character <= '9'))
+				{
+					char head = *(--target.str().end());
+
+					if ((head >= 'A' && head <= 'F') ||
+						(head >= 'a' && head <= 'f') ||
+						(head >= '0' && head <= '9'))
+					{
+						target << "\" \"";
+					}
+				}
+			}
+
+			target.put(character);
+
+			wroteHex = false;
+		}
+		else
+		{
+			target << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(2) << ((unicode_t)character & 0x000000FF);
+
+			wroteHex = true;
+		}
+	}
+
 	std::string printable(const std::string& text)
 	{
 		std::stringstream ss;
 
+		ss << "\"";
+
+		bool wrote_hex = false;
+
 		for (std::string::const_iterator it = text.begin(); it != text.end(); ++it)
 		{
-			if (*it < 0x20 || *it > 0x7F)
-			{
-				ss << "\\x" << std::setfill('0') << std::hex << std::setw(2) << ((unicode_t)*it & 0x000000FF);
-			}
-			else
-			{
-				ss << std::string(it, it + 1);
-			}
+			printable(ss, wrote_hex, *it);
 		}
+
+		ss << "\"";
 
 		return ss.str();
 	}
