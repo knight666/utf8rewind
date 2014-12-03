@@ -695,3 +695,87 @@ TEST_F(QuickbrownCaseMapping, HungarianLowercase)
 
 	delete al;
 }
+
+TEST_F(QuickbrownCaseMapping, IcelandicFirstUppercase)
+{
+	std::string i = ReadRegular(2441, 63);
+	EXPECT_UTF8EQ("  K\xC3\xA6mi n\xC3\xBD \xC3\xB6xi h\xC3\xA9r ykist \xC3\xBEj\xC3\xB3" "fum n\xC3\xBA b\xC3\xA6\xC3\xB0i v\xC3\xADl og \xC3\xA1" "drepa", i);
+
+	std::string eu = ReadUppercase(2442, 63);
+	EXPECT_UTF8EQ("  K\xC3\x86MI N\xC3\x9D \xC3\x96XI H\xC3\x89R YKIST \xC3\x9EJ\xC3\x93" "FUM N\xC3\x9A B\xC3\x86\xC3\x90I V\xC3\x8DL OG \xC3\x81" "DREPA", eu);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* au = new char[l + 1];
+	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	au[l] = 0;
+
+	EXPECT_UTF8EQ("  K\xC3\x86MI N\xC3\x9D \xC3\x96XI H\xC3\x89R YKIST \xC3\x9EJ\xC3\x93" "FUM N\xC3\x9A B\xC3\x86\xC3\x90I V\xC3\x8DL OG \xC3\x81" "DREPA", au);
+
+	delete au;
+}
+
+TEST_F(QuickbrownCaseMapping, IcelandicFirstLowercase)
+{
+	std::string i = ReadRegular(2441, 63);
+	EXPECT_UTF8EQ("  K\xC3\xA6mi n\xC3\xBD \xC3\xB6xi h\xC3\xA9r ykist \xC3\xBEj\xC3\xB3" "fum n\xC3\xBA b\xC3\xA6\xC3\xB0i v\xC3\xADl og \xC3\xA1" "drepa", i);
+
+	std::string el = ReadLowercase(2441, 63);
+	EXPECT_UTF8EQ("  k\xC3\xA6mi n\xC3\xBD \xC3\xB6xi h\xC3\xA9r ykist \xC3\xBEj\xC3\xB3" "fum n\xC3\xBA b\xC3\xA6\xC3\xB0i v\xC3\xADl og \xC3\xA1" "drepa", el);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* al = new char[l + 1];
+	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	al[l] = 0;
+
+	EXPECT_UTF8EQ("  k\xC3\xA6mi n\xC3\xBD \xC3\xB6xi h\xC3\xA9r ykist \xC3\xBEj\xC3\xB3" "fum n\xC3\xBA b\xC3\xA6\xC3\xB0i v\xC3\xADl og \xC3\xA1" "drepa", al);
+
+	delete al;
+}
+
+TEST_F(QuickbrownCaseMapping, IcelandicSecondUppercase)
+{
+	std::string i = ReadRegular(2506, 46);
+	EXPECT_UTF8EQ("  S\xC3\xA6v\xC3\xB6r gr\xC3\xA9t \xC3\xA1\xC3\xB0" "an \xC3\xBEv\xC3\xAD \xC3\xBAlpan var \xC3\xB3n\xC3\xBDt", i);
+
+	std::string eu = ReadUppercase(2507, 46);
+	EXPECT_UTF8EQ("  S\xC3\x86V\xC3\x96R GR\xC3\x89T \xC3\x81\xC3\x90" "AN \xC3\x9EV\xC3\x8D \xC3\x9ALPAN VAR \xC3\x93N\xC3\x9DT", eu);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* au = new char[l + 1];
+	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	au[l] = 0;
+
+	EXPECT_UTF8EQ("  S\xC3\x86V\xC3\x96R GR\xC3\x89T \xC3\x81\xC3\x90" "AN \xC3\x9EV\xC3\x8D \xC3\x9ALPAN VAR \xC3\x93N\xC3\x9DT", au);
+
+	delete au;
+}
+
+TEST_F(QuickbrownCaseMapping, IcelandicSecondLowercase)
+{
+	std::string i = ReadRegular(2506, 46);
+	EXPECT_UTF8EQ("  S\xC3\xA6v\xC3\xB6r gr\xC3\xA9t \xC3\xA1\xC3\xB0" "an \xC3\xBEv\xC3\xAD \xC3\xBAlpan var \xC3\xB3n\xC3\xBDt", i);
+
+	std::string el = ReadLowercase(2506, 46);
+	EXPECT_UTF8EQ("  s\xC3\xA6v\xC3\xB6r gr\xC3\xA9t \xC3\xA1\xC3\xB0" "an \xC3\xBEv\xC3\xAD \xC3\xBAlpan var \xC3\xB3n\xC3\xBDt", el);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* al = new char[l + 1];
+	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	al[l] = 0;
+
+	EXPECT_UTF8EQ("  s\xC3\xA6v\xC3\xB6r gr\xC3\xA9t \xC3\xA1\xC3\xB0" "an \xC3\xBEv\xC3\xAD \xC3\xBAlpan var \xC3\xB3n\xC3\xBDt", al);
+
+	delete al;
+}
