@@ -653,3 +653,45 @@ TEST_F(QuickbrownCaseMapping, IrishGaelicLowercase)
 
 	delete al;
 }
+
+TEST_F(QuickbrownCaseMapping, HungarianUppercase)
+{
+	std::string i = ReadRegular(2305, 33);
+	EXPECT_UTF8EQ("  \xC3\x81rv\xC3\xADzt\xC5\xB1r\xC5\x91 t\xC3\xBCk\xC3\xB6rf\xC3\xBAr\xC3\xB3g\xC3\xA9p", i);
+
+	std::string eu = ReadUppercase(2306, 33);
+	EXPECT_UTF8EQ("  \xC3\x81RV\xC3\x8DZT\xC5\xB0R\xC5\x90 T\xC3\x9CK\xC3\x96RF\xC3\x9AR\xC3\x93G\xC3\x89P", eu);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* au = new char[l + 1];
+	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	au[l] = 0;
+
+	EXPECT_UTF8EQ("  \xC3\x81RV\xC3\x8DZT\xC5\xB0R\xC5\x90 T\xC3\x9CK\xC3\x96RF\xC3\x9AR\xC3\x93G\xC3\x89P", au);
+
+	delete au;
+}
+
+TEST_F(QuickbrownCaseMapping, HungarianLowercase)
+{
+	std::string i = ReadRegular(2305, 33);
+	EXPECT_UTF8EQ("  \xC3\x81rv\xC3\xADzt\xC5\xB1r\xC5\x91 t\xC3\xBCk\xC3\xB6rf\xC3\xBAr\xC3\xB3g\xC3\xA9p", i);
+
+	std::string el = ReadLowercase(2305, 33);
+	EXPECT_UTF8EQ("  \xC3\xA1rv\xC3\xADzt\xC5\xB1r\xC5\x91 t\xC3\xBCk\xC3\xB6rf\xC3\xBAr\xC3\xB3g\xC3\xA9p", el);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* al = new char[l + 1];
+	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	al[l] = 0;
+
+	EXPECT_UTF8EQ("  \xC3\xA1rv\xC3\xADzt\xC5\xB1r\xC5\x91 t\xC3\xBCk\xC3\xB6rf\xC3\xBAr\xC3\xB3g\xC3\xA9p", al);
+
+	delete al;
+}
