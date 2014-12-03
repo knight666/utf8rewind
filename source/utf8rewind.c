@@ -951,6 +951,43 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 
 		return writecodepoint(codepoint, &target, &targetSize, errors);
 	}
+	else if (
+		codepoint >= 0x100 &&
+		codepoint <= 0x17F)
+	{
+		/* Latin Extended-A */
+
+		if ((codepoint >= 0x139 && codepoint <= 0x148) ||
+			(codepoint >= 0x179 && codepoint <= 0x17E))
+		{
+			if ((codepoint & 1) == 0)
+			{
+				/* capital leters are odd, small letters are even */
+
+				codepoint--;
+			}
+		}
+		else if (
+			codepoint == 0x131 ||  /* LATIN SMALL LETTER DOTLESS I */
+			codepoint == 0x149 ||  /* LATIN SMALL LETTER N PRECEDED BY APOSTROPHE */
+			codepoint == 0x17F)    /* LATIN SMALL LETTER LONG S */
+		{
+			return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
+		}
+		else if ((codepoint & 1) == 1)
+		{
+			/* capital leters are even, small letters are odd */
+
+			codepoint--;
+		}
+
+		if (target != 0 && targetSize < codepointLength)
+		{
+			goto outofspace;
+		}
+
+		return writecodepoint(codepoint, &target, &targetSize, errors);
+	}
 	else
 	{
 		return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
