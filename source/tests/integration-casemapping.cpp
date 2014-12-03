@@ -28,8 +28,8 @@ inline ::testing::AssertionResult CompareCaseMappingEntry(
 		{
 			result << std::endl;
 			result << "[Uppercase]" << std::endl;
-			result << "    Actual:    " << helpers::printable(entryRight.uppercase) << " (" << helpers::identifiable(entryRight.uppercase) << ")" << std::endl;
-			result << "  Expected:    " << helpers::printable(entryLeft.uppercase) << " (" << helpers::identifiable(entryLeft.uppercase) << ")" << std::endl;
+			result << "    Actual:    " << helpers::printable(entryLeft.uppercase) << " (" << helpers::identifiable(entryLeft.uppercase) << ")" << std::endl;
+			result << "  Expected:    " << helpers::printable(entryRight.uppercase) << " (" << helpers::identifiable(entryRight.uppercase) << ")" << std::endl;
 			result << std::endl;
 		}
 		else
@@ -41,8 +41,8 @@ inline ::testing::AssertionResult CompareCaseMappingEntry(
 		{
 			result << std::endl;
 			result << "[Lowercase]" << std::endl;
-			result << "    Actual:    " << helpers::printable(entryRight.lowercase) << " (" << helpers::identifiable(entryRight.lowercase) << ")" << std::endl;
-			result << "  Expected:    " << helpers::printable(entryLeft.lowercase) << " (" << helpers::identifiable(entryLeft.lowercase) << ")" << std::endl;
+			result << "    Actual:    " << helpers::printable(entryLeft.lowercase) << " (" << helpers::identifiable(entryLeft.lowercase) << ")" << std::endl;
+			result << "  Expected:    " << helpers::printable(entryRight.lowercase) << " (" << helpers::identifiable(entryRight.lowercase) << ")" << std::endl;
 			result << std::endl;
 		}
 		else
@@ -54,8 +54,8 @@ inline ::testing::AssertionResult CompareCaseMappingEntry(
 		{
 			result << std::endl;
 			result << "[Titlecase]" << std::endl;
-			result << "    Actual:    " << helpers::printable(entryRight.titlecase) << " (" << helpers::identifiable(entryRight.titlecase) << ")" << std::endl;
-			result << "  Expected:    " << helpers::printable(entryLeft.titlecase) << " (" << helpers::identifiable(entryLeft.titlecase) << ")" << std::endl;
+			result << "    Actual:    " << helpers::printable(entryLeft.titlecase) << " (" << helpers::identifiable(entryLeft.titlecase) << ")" << std::endl;
+			result << "  Expected:    " << helpers::printable(entryRight.titlecase) << " (" << helpers::identifiable(entryRight.titlecase) << ")" << std::endl;
 			result << std::endl;
 		}
 		else
@@ -107,6 +107,7 @@ TEST_F(CaseMapping, CreateDatabase)
 {
 }
 
+#ifdef NDEBUG
 TEST_F(CaseMapping, EveryCodepoint)
 {
 	for (size_t i = 0; i < 5; ++i)
@@ -117,6 +118,7 @@ TEST_F(CaseMapping, EveryCodepoint)
 		}
 	}
 }
+#endif
 
 // U+0000 U+007F Basic Latin
 
