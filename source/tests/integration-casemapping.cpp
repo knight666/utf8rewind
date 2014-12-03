@@ -109,9 +109,12 @@ TEST_F(CaseMapping, CreateDatabase)
 
 TEST_F(CaseMapping, EveryCodepoint)
 {
-	for (unicode_t u = 0; u < 0x10FFFF; ++u)
+	for (size_t i = 0; i < 5; ++i)
 	{
-		CHECK_CASE_MAPPING(u);
+		for (unicode_t u = 0; u < 0x10FFFF; ++u)
+		{
+			CHECK_CASE_MAPPING(u);
+		}
 	}
 }
 
