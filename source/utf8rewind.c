@@ -914,8 +914,11 @@ outofspace:
 
 size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
 {
-	if (codepointLength == 1 && codepoint <= 0x7F)
+	if (codepointLength == 1 &&
+		codepoint <= 0x7F)
 	{
+		/* Basic Latin */
+
 		if (target != 0)
 		{
 			if (targetSize < 1)
@@ -933,6 +936,21 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 
 		return 1;
 	}
+	else if (
+		codepoint >= 0xE0 &&
+		codepoint <= 0xFE)
+	{
+		/* Latin-1 Supplement */
+
+		codepoint -= 32;
+
+		if (target != 0 && targetSize < codepointLength)
+		{
+			goto outofspace;
+		}
+
+		return writecodepoint(codepoint, &target, &targetSize, errors);
+	}
 	else
 	{
 		return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
@@ -948,8 +966,11 @@ outofspace:
 
 size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
 {
-	if (codepointLength == 1 && codepoint <= 0x7F)
+	if (codepointLength == 1 &&
+		codepoint <= 0x7F)
 	{
+		/* Basic Latin */
+
 		if (target != 0)
 		{
 			if (targetSize < 1)
@@ -966,6 +987,57 @@ size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* targ
 		}
 
 		return 1;
+	}
+	else if (
+		codepoint >= 0xC0 &&
+		codepoint <= 0xDE)
+	{
+		/* Latin-1 Supplement */
+
+		codepoint += 32;
+
+		if (target != 0 && targetSize < codepointLength)
+		{
+			goto outofspace;
+		}
+
+		return writecodepoint(codepoint, &target, &targetSize, errors);
+	}
+	else if (
+		codepoint >= 0x100 &&
+		codepoint <= 0x17F)
+	{
+		/* Latin Extended-A */
+
+		if ((codepoint >= 0x139 && codepoint <= 0x148) ||
+			(codepoint >= 0x179 && codepoint <= 0x17E))
+		{
+			if ((codepoint & 1) == 1)
+			{
+				/* capital leters are odd, small letters are even */
+
+				codepoint++;
+			}
+		}
+		else if (
+			codepoint == 0x130 ||  /* LATIN CAPITAL LETTER I WITH DOT ABOVE */
+			codepoint == 0x178)    /* LATIN CAPITAL LETTER Y WITH DIAERESIS */
+		{
+			return transform_default(DecompositionQuery_Lowercase, codepoint, codepointLength, target, targetSize, errors);
+		}
+		else if ((codepoint & 1) == 0)
+		{
+			/* capital leters are even, small letters are odd */
+
+			codepoint++;
+		}
+
+		if (target != 0 && targetSize < codepointLength)
+		{
+			goto outofspace;
+		}
+
+		return writecodepoint(codepoint, &target, &targetSize, errors);
 	}
 	else
 	{
