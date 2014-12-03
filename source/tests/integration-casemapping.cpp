@@ -107,6 +107,14 @@ TEST_F(CaseMapping, CreateDatabase)
 {
 }
 
+TEST_F(CaseMapping, EveryCodepoint)
+{
+	for (unicode_t u = 0; u < 0x10FFFF; ++u)
+	{
+		CHECK_CASE_MAPPING(u);
+	}
+}
+
 // U+0000 U+007F Basic Latin
 
 TEST_F(CaseMapping, BasicLatinCapitalLetters)
