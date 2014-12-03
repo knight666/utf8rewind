@@ -929,3 +929,45 @@ TEST_F(QuickbrownCaseMapping, HebrewLowercase)
 
 	delete al;
 }
+
+TEST_F(QuickbrownCaseMapping, PolishUppercase)
+{
+	std::string i = ReadRegular(3105, 51);
+	EXPECT_UTF8EQ("  Pchn\xC4\x85\xC4\x87 w t\xC4\x99 \xC5\x82\xC3\xB3" "d\xC5\xBA je\xC5\xBC" "a lub o\xC5\x9Bm skrzy\xC5\x84 fig", i);
+
+	std::string eu = ReadUppercase(3106, 51);
+	EXPECT_UTF8EQ("  PCHN\xC4\x84\xC4\x86 W T\xC4\x98 \xC5\x81\xC3\x93" "D\xC5\xB9 JE\xC5\xBB" "A LUB O\xC5\x9AM SKRZY\xC5\x83 FIG", eu);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* au = new char[l + 1];
+	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	au[l] = 0;
+
+	EXPECT_UTF8EQ("  PCHN\xC4\x84\xC4\x86 W T\xC4\x98 \xC5\x81\xC3\x93" "D\xC5\xB9 JE\xC5\xBB" "A LUB O\xC5\x9AM SKRZY\xC5\x83 FIG", au);
+
+	delete au;
+}
+
+TEST_F(QuickbrownCaseMapping, PolishLowercase)
+{
+	std::string i = ReadRegular(3105, 51);
+	EXPECT_UTF8EQ("  Pchn\xC4\x85\xC4\x87 w t\xC4\x99 \xC5\x82\xC3\xB3" "d\xC5\xBA je\xC5\xBC" "a lub o\xC5\x9Bm skrzy\xC5\x84 fig", i);
+
+	std::string el = ReadLowercase(3105, 51);
+	EXPECT_UTF8EQ("  pchn\xC4\x85\xC4\x87 w t\xC4\x99 \xC5\x82\xC3\xB3" "d\xC5\xBA je\xC5\xBC" "a lub o\xC5\x9Bm skrzy\xC5\x84 fig", el);
+
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	EXPECT_NE(0, l);
+	ASSERT_EQ(0, errors);
+
+	char* al = new char[l + 1];
+	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	al[l] = 0;
+
+	EXPECT_UTF8EQ("  pchn\xC4\x85\xC4\x87 w t\xC4\x99 \xC5\x82\xC3\xB3" "d\xC5\xBA je\xC5\xBC" "a lub o\xC5\x9Bm skrzy\xC5\x84 fig", al);
+
+	delete al;
+}
