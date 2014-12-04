@@ -1052,6 +1052,194 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 			goto write;
 		}
 	}
+	else if (
+		codepoint >= 0x250 &&
+		codepoint <= 0x2AF)
+	{
+		/* IPA Extensions */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x300 &&
+		codepoint <= 0x36F)
+	{
+		/* Combining Diacritical Marks */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x370 &&
+		codepoint <= 0x3FF)
+	{
+		/* Greek and Coptic */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x400 &&
+		codepoint <= 0x4FF)
+	{
+		/* Cyrillic */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x500 &&
+		codepoint <= 0x52F)
+	{
+		/* Cyrillic Supplement */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x530 &&
+		codepoint <= 0x58F)
+	{
+		/* Armenian */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x10A0 &&
+		codepoint <= 0x10FF)
+	{
+		/* Georgian */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x1D00 &&
+		codepoint <= 0x1D7F)
+	{
+		/* Phonetic Extensions */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x1E00 &&
+		codepoint <= 0x1EFF)
+	{
+		/* Latin Extended Additional */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x1F00 &&
+		codepoint <= 0x1FFF)
+	{
+		/* Greek Extended */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2100 &&
+		codepoint <= 0x214F)
+	{
+		/* Letterlike Symbols */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2150 &&
+		codepoint <= 0x218F)
+	{
+		/* Number Forms */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2460 &&
+		codepoint <= 0x24FF)
+	{
+		/* Enclosed Alphanumerics */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2C00 &&
+		codepoint <= 0x2C5F)
+	{
+		/* Glagolitic */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2C60 &&
+		codepoint <= 0x2C7F)
+	{
+		/* Latin Extended-C */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2C80 &&
+		codepoint <= 0x2CFF)
+	{
+		/* Coptic */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2D00 &&
+		codepoint <= 0x2D2F)
+	{
+		/* Coptic */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0xA640 &&
+		codepoint <= 0xA69F)
+	{
+		/* Cyrillic Extended-B */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0xA720 &&
+		codepoint <= 0xA7FF)
+	{
+		/* Latin Extended-D */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0xFB00 &&
+		codepoint <= 0xFB4F)
+	{
+		/* Alphabetic Presentation Forms */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0xFF00 &&
+		codepoint <= 0xFFEF)
+	{
+		/* Halfwidth and Fullwidth Forms */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x10400 &&
+		codepoint <= 0x1044F)
+	{
+		/* Deseret */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x118A0 &&
+		codepoint <= 0x118FF)
+	{
+		/* Warang Citi */
+
+		goto query;
+	}
+	else
+	{
+		goto write;
+	}
 
 query:
 	return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
@@ -1201,6 +1389,194 @@ size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* targ
 
 			goto write;
 		}
+	}
+	else if (
+		codepoint >= 0x250 &&
+		codepoint <= 0x2AF)
+	{
+		/* IPA Extensions */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x300 &&
+		codepoint <= 0x36F)
+	{
+		/* Combining Diacritical Marks */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x370 &&
+		codepoint <= 0x3FF)
+	{
+		/* Greek and Coptic */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x400 &&
+		codepoint <= 0x4FF)
+	{
+		/* Cyrillic */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x500 &&
+		codepoint <= 0x52F)
+	{
+		/* Cyrillic Supplement */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x530 &&
+		codepoint <= 0x58F)
+	{
+		/* Armenian */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x10A0 &&
+		codepoint <= 0x10FF)
+	{
+		/* Georgian */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x1D00 &&
+		codepoint <= 0x1D7F)
+	{
+		/* Phonetic Extensions */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x1E00 &&
+		codepoint <= 0x1EFF)
+	{
+		/* Latin Extended Additional */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x1F00 &&
+		codepoint <= 0x1FFF)
+	{
+		/* Greek Extended */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2100 &&
+		codepoint <= 0x214F)
+	{
+		/* Letterlike Symbols */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2150 &&
+		codepoint <= 0x218F)
+	{
+		/* Number Forms */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2460 &&
+		codepoint <= 0x24FF)
+	{
+		/* Enclosed Alphanumerics */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2C00 &&
+		codepoint <= 0x2C5F)
+	{
+		/* Glagolitic */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2C60 &&
+		codepoint <= 0x2C7F)
+	{
+		/* Latin Extended-C */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2C80 &&
+		codepoint <= 0x2CFF)
+	{
+		/* Coptic */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x2D00 &&
+		codepoint <= 0x2D2F)
+	{
+		/* Coptic */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0xA640 &&
+		codepoint <= 0xA69F)
+	{
+		/* Cyrillic Extended-B */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0xA720 &&
+		codepoint <= 0xA7FF)
+	{
+		/* Latin Extended-D */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0xFB00 &&
+		codepoint <= 0xFB4F)
+	{
+		/* Alphabetic Presentation Forms */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0xFF00 &&
+		codepoint <= 0xFFEF)
+	{
+		/* Halfwidth and Fullwidth Forms */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x10400 &&
+		codepoint <= 0x1044F)
+	{
+		/* Deseret */
+
+		goto query;
+	}
+	else if (
+		codepoint >= 0x118A0 &&
+		codepoint <= 0x118FF)
+	{
+		/* Warang Citi */
+
+		goto query;
+	}
+	else
+	{
+		goto write;
 	}
 
 query:
