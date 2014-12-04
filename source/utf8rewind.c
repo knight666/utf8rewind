@@ -988,10 +988,80 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 
 		return writecodepoint(codepoint, &target, &targetSize, errors);
 	}
+	else if (
+		codepoint >= 0x180 &&
+		codepoint <= 0x24F)
+	{
+		/* Latin Extended-B */
+
+		if (
+			(codepoint >= 0x246)                       || /* 10 */
+			(codepoint >= 0x1F8 && codepoint <= 0x21F) || /* 40 */
+			(codepoint >= 0x222 && codepoint <= 0x233) || /* 18 */
+			(codepoint >= 0x1DE && codepoint <= 0x1EF) || /* 16 */
+			(codepoint >= 0x1A0 && codepoint <= 0x1A5) || /* 6 */
+			(codepoint >= 0x182 && codepoint <= 0x185) || /* 4 */
+			(codepoint >= 0x1B8 && codepoint <= 0x1BD) || /* 4 */
+			(codepoint == 0x198 || codepoint == 0x199) || /* 2 */
+			(codepoint == 0x1AC || codepoint == 0x1AD) || /* 2 */
+			(codepoint == 0x1F4 || codepoint == 0x1F5))   /* 2 */
+		{
+			if ((codepoint & 1) == 1)
+			{
+				/* capital letters are even, small letters are odd */
+
+				codepoint--;
+			}
+
+			goto write;
+		}
+		else if (
+			(codepoint >= 0x1CD && codepoint <= 0x1DC) || /* 16 */
+			(codepoint >= 0x1B3 && codepoint <= 0x1B6) || /* 4 */
+			(codepoint == 0x18B || codepoint == 0x18C) || /* 4 */
+			(codepoint == 0x191 || codepoint == 0x192) || /* 2 */
+			(codepoint == 0x1A7 || codepoint == 0x1A8) || /* 2 */
+			(codepoint == 0x1AF || codepoint == 0x1A8) || /* 2 */
+			(codepoint == 0x241 || codepoint == 0x242) || /* 2 */
+			(codepoint == 0x23B || codepoint == 0x23C))   /* 2 */
+		{
+			if ((codepoint & 1) == 0)
+			{
+				/* capital letters are odd, small letters are even */
+
+				codepoint--;
+			}
+
+			goto write;
+		}
+		else if (codepoint >= 0x1C4 && codepoint <= 0x1CC) /* 9 */
+		{
+			codepoint -= (codepoint - 0x1C4) % 3;
+
+			goto write;
+		}
+		else if (codepoint >= 0x1F1 && codepoint <= 0x1F3) /* 3 */
+		{
+			codepoint -= (codepoint - 0x1F1) % 3;
+
+			goto write;
+		}
+		else
+		{
+			return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
+		}
+	}
 	else
 	{
 		return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
 	}
+
+write:
+	if (target != 0 && targetSize < codepointLength)
+	{
+		goto outofspace;
+	}
+	return writecodepoint(codepoint, &target, &targetSize, errors);
 
 outofspace:
 	if (errors != 0)
