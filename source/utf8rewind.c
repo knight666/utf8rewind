@@ -944,12 +944,7 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 
 		codepoint -= 32;
 
-		if (target != 0 && targetSize < codepointLength)
-		{
-			goto outofspace;
-		}
-
-		return writecodepoint(codepoint, &target, &targetSize, errors);
+		goto write;
 	}
 	else if (
 		codepoint >= 0x100 &&
@@ -966,27 +961,27 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 
 				codepoint--;
 			}
+
+			goto write;
 		}
 		else if (
 			codepoint == 0x131 ||  /* LATIN SMALL LETTER DOTLESS I */
 			codepoint == 0x149 ||  /* LATIN SMALL LETTER N PRECEDED BY APOSTROPHE */
 			codepoint == 0x17F)    /* LATIN SMALL LETTER LONG S */
 		{
-			return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
+			goto query;
 		}
-		else if ((codepoint & 1) == 1)
+		else
 		{
-			/* capital letters are even, small letters are odd */
+			if ((codepoint & 1) == 1)
+			{
+				/* capital letters are even, small letters are odd */
 
-			codepoint--;
+				codepoint--;
+			}
+
+			goto write;
 		}
-
-		if (target != 0 && targetSize < codepointLength)
-		{
-			goto outofspace;
-		}
-
-		return writecodepoint(codepoint, &target, &targetSize, errors);
 	}
 	else if (
 		codepoint >= 0x180 &&
@@ -1046,15 +1041,10 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 
 			goto write;
 		}
-		else
-		{
-			return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
-		}
 	}
-	else
-	{
-		return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
-	}
+
+query:
+	return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
 
 write:
 	if (target != 0 && targetSize < codepointLength)
@@ -1127,7 +1117,7 @@ size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* targ
 			codepoint == 0x130 ||  /* LATIN CAPITAL LETTER I WITH DOT ABOVE */
 			codepoint == 0x178)    /* LATIN CAPITAL LETTER Y WITH DIAERESIS */
 		{
-			return transform_default(DecompositionQuery_Lowercase, codepoint, codepointLength, target, targetSize, errors);
+			goto query;
 		}
 		else
 		{
@@ -1199,15 +1189,10 @@ size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* targ
 
 			goto write;
 		}
-		else
-		{
-			return transform_default(DecompositionQuery_Lowercase, codepoint, codepointLength, target, targetSize, errors);
-		}
 	}
-	else
-	{
-		return transform_default(DecompositionQuery_Lowercase, codepoint, codepointLength, target, targetSize, errors);
-	}
+
+query:
+	return transform_default(DecompositionQuery_Lowercase, codepoint, codepointLength, target, targetSize, errors);
 
 write:
 	if (target != 0 && targetSize < codepointLength)
