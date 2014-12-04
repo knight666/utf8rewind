@@ -1033,12 +1033,7 @@ size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* targ
 
 		codepoint += 32;
 
-		if (target != 0 && targetSize < codepointLength)
-		{
-			goto outofspace;
-		}
-
-		return writecodepoint(codepoint, &target, &targetSize, errors);
+		goto write;
 	}
 	else if (
 		codepoint >= 0x100 &&
@@ -1055,6 +1050,8 @@ size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* targ
 
 				codepoint++;
 			}
+
+			goto write;
 		}
 		else if (
 			codepoint == 0x130 ||  /* LATIN CAPITAL LETTER I WITH DOT ABOVE */
@@ -1062,19 +1059,17 @@ size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* targ
 		{
 			return transform_default(DecompositionQuery_Lowercase, codepoint, codepointLength, target, targetSize, errors);
 		}
-		else if ((codepoint & 1) == 0)
+		else
 		{
-			/* capital letters are even, small letters are odd */
+			if ((codepoint & 1) == 0)
+			{
+				/* capital letters are even, small letters are odd */
 
-			codepoint++;
+				codepoint++;
+			}
+
+			goto write;
 		}
-
-		if (target != 0 && targetSize < codepointLength)
-		{
-			goto outofspace;
-		}
-
-		return writecodepoint(codepoint, &target, &targetSize, errors);
 	}
 	else if (
 		codepoint >= 0x180 &&
