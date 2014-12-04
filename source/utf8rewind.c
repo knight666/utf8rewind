@@ -937,12 +937,22 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 		return 1;
 	}
 	else if (
-		codepoint >= 0xE0 &&
-		codepoint <= 0xFE)
+		codepoint >= 0x80 &&
+		codepoint <= 0xFF)
 	{
 		/* Latin-1 Supplement */
 
-		codepoint -= 32;
+		if (codepoint >= 0xE0 && codepoint <= 0xFE)
+		{
+			codepoint -= 32;
+		}
+		else if (
+			codepoint == 0xB5 ||  /* MICRO SIGN */
+			codepoint == 0xDF ||  /* LATIN SMALL LETTER SHARP S */
+			codepoint == 0xFF)    /* LATIN SMALL LETTER Y WITH DIAERESIS */
+		{
+			goto query;
+		}
 
 		goto write;
 	}
@@ -1063,8 +1073,7 @@ outofspace:
 
 size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
 {
-	if (codepointLength == 1 &&
-		codepoint <= 0x7F)
+	if (codepoint <= 0x7F)
 	{
 		/* Basic Latin */
 
@@ -1086,12 +1095,15 @@ size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* targ
 		return 1;
 	}
 	else if (
-		codepoint >= 0xC0 &&
-		codepoint <= 0xDE)
+		codepoint >= 0x80 &&
+		codepoint <= 0xFF)
 	{
 		/* Latin-1 Supplement */
 
-		codepoint += 32;
+		if (codepoint >= 0xC0 && codepoint <= 0xDE)
+		{
+			codepoint += 32;
+		}
 
 		goto write;
 	}
