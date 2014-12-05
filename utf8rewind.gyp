@@ -49,6 +49,7 @@
 				'source/tests/integration-quickbrown-casemapping.cpp',
 				'source/tests/integration-quickbrown.cpp',
 				'source/tests/integration-internal-composition.cpp',
+				'source/tests/performance-casemapping.cpp',
 				'source/tests/suite-decodeutf16.cpp',
 				'source/tests/suite-decodeutf32.cpp',
 				'source/tests/suite-encodeutf16.cpp',
