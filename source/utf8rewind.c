@@ -1058,7 +1058,14 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 	{
 		/* IPA Extensions */
 
-		goto query;
+		if (codepoint > 0x29E)
+		{
+			goto write;
+		}
+		else
+		{
+			goto query;
+		}
 	}
 	else if (
 		codepoint >= 0x300 &&
@@ -1066,7 +1073,14 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 	{
 		/* Combining Diacritical Marks */
 
-		goto query;
+		if (codepoint == 0x345) /* COMBINING GREEK YPOGEGRAMMENI */
+		{
+			goto query;
+		}
+		else
+		{
+			goto write;
+		}
 	}
 	else if (
 		codepoint >= 0x370 &&
@@ -1074,7 +1088,52 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 	{
 		/* Greek and Coptic */
 
-		goto query;
+		if (
+			(codepoint >= 0x3D8 && codepoint <= 0x3EF) || /* 24 */
+			(codepoint >= 0x370 && codepoint <= 0x373) || /* 4 */
+			(codepoint == 0x376 || codepoint == 0x377))   /* 2 */
+		{
+			if ((codepoint & 1) == 1)
+			{
+				/* capital letters are even, small letters are odd */
+
+				codepoint--;
+			}
+
+			goto write;
+		}
+		else if (
+			(codepoint >= 0x391 && codepoint <= 0x3AB) || /* 26 */
+			(codepoint >= 0x386 && codepoint <= 0x38A) || /* 4 */
+			(codepoint >= 0x38C && codepoint <= 0x38D))   /* 2 */
+		{
+			goto write;
+		}
+		else if (
+			codepoint >= 0x3B1 && codepoint <= 0x3CB) /* 27 */
+		{
+			codepoint -= (codepoint != 0x3C2) ? 0x20 : 0x1F;
+
+			goto write;
+		}
+		else if (
+			codepoint >= 0x3AC && codepoint <= 0x3AF) /* 4 */
+		{
+			codepoint -= (codepoint != 0x3AC) ? 0x25 : 0x26;
+
+			goto write;
+		}
+		else if (
+			codepoint >= 0x37B && codepoint <= 0x37D) /* 3 */
+		{
+			codepoint += 0x82;
+
+			goto write;
+		}
+		else
+		{
+			goto query;
+		}
 	}
 	else if (
 		codepoint >= 0x400 &&
