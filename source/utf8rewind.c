@@ -1234,7 +1234,15 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 	{
 		/* Phonetic Extensions */
 
-		goto query;
+		if (codepoint == 0x1D79 || /* LATIN SMALL LETTER INSULAR G */
+			codepoint == 0x1D7D)   /* LATIN SMALL LETTER P WITH STROKE */
+		{
+			goto query;
+		}
+		else
+		{
+			goto write;
+		}
 	}
 	else if (
 		codepoint >= 0x1E00 &&
