@@ -1141,7 +1141,45 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 	{
 		/* Cyrillic */
 
-		goto query;
+		if (codepoint <= 0x45F)
+		{
+			if (codepoint >= 0x450)
+			{
+				codepoint -= 0x50;
+			}
+			else if (codepoint >= 0x430)
+			{
+				codepoint -= 0x20;
+			}
+
+			goto write;
+		}
+		else if (codepoint <= 0x4C0 || codepoint >= 0x4D0)
+		{
+			if ((codepoint & 1) == 1)
+			{
+				/* capital letters are even, small letters are odd */
+
+				codepoint--;
+			}
+
+			goto write;
+		}
+		else
+		{
+			if (codepoint == 0x4CF)
+			{
+				codepoint -= 0xF;
+			}
+			else if ((codepoint & 1) == 0)
+			{
+				/* capital letters are odd, small letters are even */
+
+				codepoint--;
+			}
+
+			goto write;
+		}
 	}
 	else if (
 		codepoint >= 0x500 &&
