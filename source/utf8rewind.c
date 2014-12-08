@@ -1226,7 +1226,7 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 	{
 		/* Georgian */
 
-		goto query;
+		goto write;
 	}
 	else if (
 		codepoint >= 0x1D00 &&
