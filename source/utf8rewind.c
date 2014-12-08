@@ -1187,7 +1187,14 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 	{
 		/* Cyrillic Supplement */
 
-		goto query;
+		if ((codepoint & 1) == 1)
+		{
+			/* capital letters are even, small letters are odd */
+
+			codepoint--;
+		}
+
+		goto write;
 	}
 	else if (
 		codepoint >= 0x530 &&
