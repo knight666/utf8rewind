@@ -1202,7 +1202,23 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 	{
 		/* Armenian */
 
-		goto query;
+		if (codepoint >= 0x531 && codepoint <= 0x586)
+		{
+			if (codepoint >= 0x561)
+			{
+				codepoint -= 0x30;
+			}
+
+			goto write;
+		}
+		else if (codepoint == 0x587) /* ARMENIAN SMALL LIGATURE ECH YIWN */
+		{
+			goto query;
+		}
+		else
+		{
+			goto write;
+		}
 	}
 	else if (
 		codepoint >= 0x10A0 &&
