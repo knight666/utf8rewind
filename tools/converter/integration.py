@@ -6,6 +6,9 @@ import libs.header
 import libs.unicode
 import libs.utf8
 
+def codepointToUnicode(codepoint):
+	return "U+%04X" % codepoint
+
 class IntegrationSuite:
 	def __init__(self, db):
 		self.db = db
@@ -35,13 +38,16 @@ class IntegrationSuite:
 		self.header.writeLine(command_line)
 		self.header.outdent()
 		self.header.outdent()
-		self.header.writeLine("*/")
-		self.header.newLine()
+		self.header.write("*/")
 	
 	def close(self):
 		self.header.close()
 	
 	def writeTest(self, codepointRange, name):
+		print "Writing tests " + codepointToUnicode(codepointRange[0]) + " - " + codepointToUnicode(codepointRange[len(codepointRange) - 1]) + " \"" + name + "\""
+		
+		self.header.newLine()
+		self.header.newLine()
 		self.header.writeLine("TEST(AllCaseMapping, " + name + ")")
 		self.header.writeLine("{")
 		self.header.indent()
@@ -68,7 +74,7 @@ class IntegrationSuite:
 			self.header.writeLine("EXPECT_UTF8_CASEMAPPING(" + converted_codepoint + ", \"" + converted_uppercase + "\", \"" + converted_lowercase + "\"); // " + r.name)
 		
 		self.header.outdent()
-		self.header.writeLine("}")
+		self.header.write("}")
 
 if __name__ == '__main__':
 	db = unicodedata.Database()
@@ -76,5 +82,8 @@ if __name__ == '__main__':
 	
 	suite = IntegrationSuite(db)
 	suite.open('/../../source/tests/integration-uppercase.cpp')
-	suite.writeTest(range(0, 0x7F), "BasicLatin")
-	suite.close()		
+	suite.writeTest(range(0x00, 0x80), "BasicLatin")
+	suite.writeTest(range(0x80, 0x100), "Latin1Supplement")
+	suite.writeTest(range(0x100, 0x180), "LatinExtendedA")
+	suite.writeTest(range(0x180, 0x250), "LatinExtendedB")
+	suite.close()
