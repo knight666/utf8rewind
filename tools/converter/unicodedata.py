@@ -291,6 +291,30 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.recordsOrdered = []
 		self.records = dict()
 	
+	def loadFromFiles(self, arguments):
+		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+		
+		document_database = libs.unicode.UnicodeDocument()
+		if arguments:
+			self.pageSize = args.pageSize
+			document_database.lineLimit = arguments.lineLimit
+			document_database.entryLimit = arguments.entryLimit
+			document_database.entrySkip = arguments.entrySkip
+		document_database.parse(script_path + '/data/UnicodeData.txt')
+		document_database.accept(self)
+		
+		self.resolveMissing()
+		self.resolveDecomposition()
+		self.resolveComposition()
+		
+		document_special_casing = libs.unicode.UnicodeDocument()
+		document_special_casing.parse(script_path + '/data/SpecialCasing.txt')
+		
+		special_casing = SpecialCasing(self)
+		document_special_casing.accept(special_casing)
+		
+		self.resolveCaseMapping()
+	
 	def visitDocument(self, document):
 		print "Parsing document to codepoint database..."
 		return True
@@ -736,26 +760,7 @@ if __name__ == '__main__':
 	script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 	
 	db = Database()
-	
-	document = libs.unicode.UnicodeDocument()
-	document.lineLimit = args.lineLimit
-	document.entryLimit = args.entryLimit
-	document.entrySkip = args.entrySkip
-	document.parse(script_path + '/data/UnicodeData.txt')
-	
-	db.pageSize = args.pageSize
-	document.accept(db)
-	db.resolveMissing()
-	db.resolveDecomposition()
-	db.resolveComposition()
-	
-	document_special_casing = libs.unicode.UnicodeDocument()
-	document_special_casing.parse(script_path + '/data/SpecialCasing.txt')
-	
-	special_casing = SpecialCasing(db)
-	document_special_casing.accept(special_casing)
-	
-	db.resolveCaseMapping()
+	db.loadFromFiles(args)
 	
 	db.executeQuery(args.query)
 	
