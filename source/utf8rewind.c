@@ -1158,6 +1158,10 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 
 			goto write;
 		}
+		else if (codepoint >= 0x483 && codepoint <= 0x489)
+		{
+			goto write;
+		}
 		else if (codepoint <= 0x4C0 || codepoint >= 0x4D0)
 		{
 			if ((codepoint & 1) == 1)
