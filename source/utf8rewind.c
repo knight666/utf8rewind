@@ -1014,7 +1014,8 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 			(codepoint == 0x1AC || codepoint == 0x1AD) || /* 2 */
 			(codepoint == 0x1F4 || codepoint == 0x1F5))   /* 2 */
 		{
-			if ((codepoint & 1) == 1)
+			if ((codepoint & 1) == 1 &&
+				codepoint != 0x01BB) /* LATIN LETTER TWO BAR */
 			{
 				/* capital letters are even, small letters are odd */
 
@@ -1497,7 +1498,8 @@ size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* targ
 			(codepoint == 0x1AC || codepoint == 0x1AD) || /* 2 */
 			(codepoint == 0x1F4 || codepoint == 0x1F5))   /* 2 */
 		{
-			if ((codepoint & 1) == 0)
+			if ((codepoint & 1) == 0 &&
+				codepoint != 0x01BA) /* LATIN SMALL LETTER YOGH WITH TAIL */
 			{
 				/* capital letters are even, small letters are odd */
 
