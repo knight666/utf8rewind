@@ -1258,9 +1258,13 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 	{
 		/* Latin Extended Additional */
 
-		if (codepoint >= 0x1E96 && codepoint <= 0x1E9B)
+		if (codepoint >= 0x1E96 && codepoint <= 0x1E9B) /* 6 */
 		{
 			goto query;
+		}
+		else if (codepoint >= 0x1E9C && codepoint <= 0x1E9F) /* 4 */
+		{
+			goto write;
 		}
 		else
 		{
