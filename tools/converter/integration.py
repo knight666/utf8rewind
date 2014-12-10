@@ -12,6 +12,7 @@ def codepointToUnicode(codepoint):
 class IntegrationSuite:
 	def __init__(self, db):
 		self.db = db
+		self.checkValid = False
 	
 	def open(self, filepath):
 		command_line = sys.argv[0]
@@ -57,6 +58,18 @@ class IntegrationSuite:
 				continue
 			
 			r = self.db.records[i]
+			
+			if self.checkValid:
+				valid_categories = [
+					"GeneralCategory_NonspacingMark",
+					"GeneralCategory_LetterNumber",
+					"GeneralCategory_TitlecaseLetter",
+					"GeneralCategory_UppercaseLetter",
+					"GeneralCategory_OtherSymbol",
+					"GeneralCategory_LowercaseLetter"
+				]
+				if r.generalCategory not in valid_categories:
+					continue
 			
 			converted_codepoint = "0x%08x" % r.codepoint
 			
