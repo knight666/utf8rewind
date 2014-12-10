@@ -53,6 +53,9 @@ class IntegrationSuite:
 		self.header.indent()
 		
 		for i in codepointRange:
+			if i not in self.db.records:
+				continue
+			
 			r = self.db.records[i]
 			
 			converted_codepoint = "0x%08x" % r.codepoint
@@ -86,4 +89,27 @@ if __name__ == '__main__':
 	suite.writeTest(range(0x80, 0x100), "Latin1Supplement")
 	suite.writeTest(range(0x100, 0x180), "LatinExtendedA")
 	suite.writeTest(range(0x180, 0x250), "LatinExtendedB")
+	suite.writeTest(range(0x250, 0x2B0), "IPAExtensions")
+	suite.writeTest(range(0x300, 0x370), "CombiningDiacriticalMarks")
+	suite.writeTest(range(0x370, 0x400), "GreekAndCoptic")
+	suite.writeTest(range(0x400, 0x500), "Cyrillic")
+	suite.writeTest(range(0x500, 0x530), "CyrillicSupplement")
+	suite.writeTest(range(0x530, 0x590), "Armenian")
+	suite.writeTest(range(0x10A0, 0x1100), "Georgian")
+	suite.writeTest(range(0x1D00, 0x1D80), "PhoneticExtensions")
+	suite.writeTest(range(0x1E00, 0x1F00), "LatinExtendedAdditional")
+	suite.writeTest(range(0x1F00, 0x2000), "GreekExtended")
+	suite.writeTest(range(0x2100, 0x2150), "LetterlikeSymbols")
+	suite.writeTest(range(0x2150, 0x2190), "NumberForms")
+	suite.writeTest(range(0x2460, 0x2500), "EnclosedAlphanumerics")
+	suite.writeTest(range(0x2C00, 0x2C60), "Glagolitic")
+	suite.writeTest(range(0x2C60, 0x2C80), "LatinExtendedC")
+	suite.writeTest(range(0x2C80, 0x2D00), "Coptic")
+	suite.writeTest(range(0x2D00, 0x2D30), "GeorgianSupplement")
+	suite.writeTest(range(0xA640, 0xA6A0), "CyrillicExtendedB")
+	suite.writeTest(range(0xA720, 0xA800), "LatinExtendedD")
+	suite.writeTest(range(0xFB00, 0xFB50), "AlphabeticPresentationForms")
+	suite.writeTest(range(0xFF00, 0xFFF0), "HalfwidthAndFullwidthForms")
+	suite.writeTest(range(0x10400, 0x10450), "Deseret")
+	suite.writeTest(range(0x118A0, 0x11900), "WarangCiti")
 	suite.close()
