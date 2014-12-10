@@ -42,6 +42,8 @@
 				'utf8rewind',
 			],
 			'sources': [
+				'source/tests/helpers-casemapping.cpp',
+				'source/tests/helpers-casemapping.hpp',
 				'source/tests/helpers-strings.cpp',
 				'source/tests/helpers-strings.hpp',
 				'source/tests/integration-casemapping.cpp',
