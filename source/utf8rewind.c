@@ -944,7 +944,12 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 
 		if (codepoint >= 0xE0 && codepoint <= 0xFE)
 		{
-			codepoint -= 32;
+			if (codepoint != 0xF7) /* DIVISION SIGN */
+			{
+				codepoint -= 32;
+			}
+
+			goto write;
 		}
 		else if (
 			codepoint == 0xB5 ||  /* MICRO SIGN */
@@ -953,8 +958,6 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 		{
 			goto query;
 		}
-
-		goto write;
 	}
 	else if (
 		codepoint >= 0x100 &&
@@ -1432,7 +1435,10 @@ size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* targ
 
 		if (codepoint >= 0xC0 && codepoint <= 0xDE)
 		{
-			codepoint += 32;
+			if (codepoint != 0xD7) /* MULTIPLICATION SIGN */
+			{
+				codepoint += 32;
+			}
 		}
 
 		goto write;
