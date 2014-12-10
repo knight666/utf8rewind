@@ -1449,7 +1449,7 @@ size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* targ
 	{
 		/* Latin Extended-A */
 
-		if ((codepoint >= 0x139 && codepoint <= 0x148) ||
+		if ((codepoint >= 0x138 && codepoint <= 0x148) ||
 			(codepoint >= 0x179 && codepoint <= 0x17E))
 		{
 			if ((codepoint & 1) == 1)
