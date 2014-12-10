@@ -223,6 +223,74 @@ namespace helpers {
 		return result;
 	}
 
+	::testing::AssertionResult CompareUtf8Uppercase(
+		const char* expressionExpected, const char* expressionActual,
+		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
+	{
+		if (entryExpected.codepoint == entryActual.codepoint &&
+			entryExpected.uppercase == entryActual.uppercase)
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << std::endl;
+			result <<  entryActual.name << " (" << helpers::identifiable(entryExpected.codepoint)  << ")" << std::endl;
+			result << std::endl;
+
+			if (entryExpected.uppercase != entryActual.uppercase)
+			{
+				result << std::endl;
+				result << "[Uppercase]" << std::endl;
+				result << "    Actual:    " << helpers::printable(entryExpected.uppercase) << " (" << helpers::identifiable(entryExpected.uppercase) << ")" << std::endl;
+				result << "  Expected:    " << helpers::printable(entryActual.uppercase) << " (" << helpers::identifiable(entryActual.uppercase) << ")" << std::endl;
+				result << std::endl;
+			}
+			else
+			{
+				result << "[Uppercase]    " << helpers::printable(entryExpected.uppercase) << " (" << helpers::identifiable(entryExpected.uppercase) << ")" << std::endl;
+			}
+
+			return result;
+		}
+	}
+
+	::testing::AssertionResult CompareUtf8Lowercase(
+		const char* expressionLeft, const char* expressionRight,
+		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
+	{
+		if (entryExpected.codepoint == entryActual.codepoint &&
+			entryExpected.lowercase == entryActual.lowercase)
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << std::endl;
+			result <<  entryActual.name << " (" << helpers::identifiable(entryExpected.codepoint)  << ")" << std::endl;
+			result << std::endl;
+
+			if (entryExpected.lowercase != entryActual.lowercase)
+			{
+				result << std::endl;
+				result << "[Lowercase]" << std::endl;
+				result << "    Actual:    " << helpers::printable(entryExpected.lowercase) << " (" << helpers::identifiable(entryExpected.lowercase) << ")" << std::endl;
+				result << "  Expected:    " << helpers::printable(entryActual.lowercase) << " (" << helpers::identifiable(entryActual.lowercase) << ")" << std::endl;
+				result << std::endl;
+			}
+			else
+			{
+				result << "[Lowercase]    " << helpers::printable(entryExpected.lowercase) << " (" << helpers::identifiable(entryExpected.lowercase) << ")" << std::endl;
+			}
+
+			return result;
+		}
+	}
+
 	::testing::AssertionResult CompareCaseMappingEntry(
 		const char* expressionExpected, const char* expressionActual,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
