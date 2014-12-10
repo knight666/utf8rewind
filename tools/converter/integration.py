@@ -63,7 +63,7 @@ class IntegrationSuite:
 		self.header.newLine()
 		
 		self.header.newLine()
-		self.header.writeLine("TEST(AllCaseMapping, Uppercase" + name + ")")
+		self.header.writeLine("TEST(CaseMapping, Uppercase" + name + ")")
 		self.header.writeLine("{")
 		self.header.indent()
 		
@@ -92,7 +92,7 @@ class IntegrationSuite:
 		
 		self.header.newLine()
 		
-		self.header.writeLine("TEST(AllCaseMapping, Lowercase" + name + ")")
+		self.header.writeLine("TEST(CaseMapping, Lowercase" + name + ")")
 		self.header.writeLine("{")
 		self.header.indent()
 		
@@ -124,7 +124,7 @@ if __name__ == '__main__':
 	db.loadFromFiles(None)
 	
 	suite = IntegrationSuite(db)
-	suite.open('/../../source/tests/integration-uppercase.cpp')
+	suite.open('/../../source/tests/integration-casemapping.cpp')
 	suite.writeTest(range(0x00, 0x80), "BasicLatin")
 	suite.writeTest(range(0x80, 0x100), "Latin1Supplement")
 	suite.writeTest(range(0x100, 0x180), "LatinExtendedA")
