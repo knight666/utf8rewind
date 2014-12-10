@@ -39,7 +39,11 @@ class IntegrationSuite:
 		self.header.writeLine(command_line)
 		self.header.outdent()
 		self.header.outdent()
-		self.header.write("*/")
+		self.header.writeLine("*/")
+		self.header.newLine()
+		self.header.writeLine("#include \"tests-base.hpp\"")
+		self.header.newLine()
+		self.header.write("#include \"helpers-casemapping.hpp\"")
 	
 	def close(self):
 		self.header.close()
@@ -47,9 +51,19 @@ class IntegrationSuite:
 	def writeTest(self, codepointRange, name):
 		print "Writing tests " + codepointToUnicode(codepointRange[0]) + " - " + codepointToUnicode(codepointRange[len(codepointRange) - 1]) + " \"" + name + "\""
 		
+		valid_categories = [
+			"GeneralCategory_NonspacingMark",
+			"GeneralCategory_LetterNumber",
+			"GeneralCategory_TitlecaseLetter",
+			"GeneralCategory_UppercaseLetter",
+			"GeneralCategory_OtherSymbol",
+			"GeneralCategory_LowercaseLetter"
+		]
+		
 		self.header.newLine()
+		
 		self.header.newLine()
-		self.header.writeLine("TEST(AllCaseMapping, " + name + ")")
+		self.header.writeLine("TEST(AllCaseMapping, Uppercase" + name + ")")
 		self.header.writeLine("{")
 		self.header.indent()
 		
@@ -59,17 +73,8 @@ class IntegrationSuite:
 			
 			r = self.db.records[i]
 			
-			if self.checkValid:
-				valid_categories = [
-					"GeneralCategory_NonspacingMark",
-					"GeneralCategory_LetterNumber",
-					"GeneralCategory_TitlecaseLetter",
-					"GeneralCategory_UppercaseLetter",
-					"GeneralCategory_OtherSymbol",
-					"GeneralCategory_LowercaseLetter"
-				]
-				if r.generalCategory not in valid_categories:
-					continue
+			if self.checkValid and r.generalCategory not in valid_categories:
+				continue
 			
 			converted_codepoint = "0x%08x" % r.codepoint
 			
@@ -80,6 +85,28 @@ class IntegrationSuite:
 			else:
 				converted_uppercase = libs.utf8.codepointToUtf8(r.codepoint)
 			
+			self.header.writeLine("CHECK_UTF8_UPPERCASE(" + converted_codepoint + ", \"" + r.name + "\", \"" + converted_uppercase + "\");")
+		
+		self.header.outdent()
+		self.header.writeLine("}")
+		
+		self.header.newLine()
+		
+		self.header.writeLine("TEST(AllCaseMapping, Lowercase" + name + ")")
+		self.header.writeLine("{")
+		self.header.indent()
+		
+		for i in codepointRange:
+			if i not in self.db.records:
+				continue
+			
+			r = self.db.records[i]
+			
+			if self.checkValid and r.generalCategory not in valid_categories:
+				continue
+			
+			converted_codepoint = "0x%08x" % r.codepoint
+			
 			if r.lowercase:
 				converted_lowercase = ""
 				for u in r.lowercase:
@@ -87,7 +114,7 @@ class IntegrationSuite:
 			else:
 				converted_lowercase = libs.utf8.codepointToUtf8(r.codepoint)
 			
-			self.header.writeLine("EXPECT_UTF8_CASEMAPPING(" + converted_codepoint + ", \"" + converted_uppercase + "\", \"" + converted_lowercase + "\"); // " + r.name)
+			self.header.writeLine("CHECK_UTF8_LOWERCASE(" + converted_codepoint + ", \"" + r.name + "\", \"" + converted_lowercase + "\");")
 		
 		self.header.outdent()
 		self.header.write("}")
