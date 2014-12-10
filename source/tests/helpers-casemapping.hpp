@@ -16,7 +16,7 @@
 	EXPECT_PRED_FORMAT2(::helpers::CompareUtf8Uppercase, e, a); \
 }
 
-#define CHECK_UTF8_UPPERCASE(_codepoint, _name, _expected) { \
+#define CHECK_UTF8_LOWERCASE(_codepoint, _name, _expected) { \
 	::helpers::CaseMappingEntry e; \
 	e.codepoint = _codepoint; \
 	e.lowercase = _expected; \
