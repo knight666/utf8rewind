@@ -30,7 +30,7 @@ def codepointToUtf8(codepoint):
 		result += '\\x' + format((codepoint         & 0x3F) | 0x80, '02x')
 	elif encoded_length == 4:
 		result += '\\x' + format((codepoint  >> 18)         | 0xF0, '02x')
-		result += '\\x' + format((codepoint  >> 12)         | 0x80, '02x')
+		result += '\\x' + format(((codepoint >> 12) & 0x3F) | 0x80, '02x')
 		result += '\\x' + format(((codepoint >>  6) & 0x3F) | 0x80, '02x')
 		result += '\\x' + format((codepoint         & 0x3F) | 0x80, '02x')
 	
