@@ -1284,7 +1284,129 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 	{
 		/* Greek Extended */
 
-		goto query;
+		if (codepoint <= 0x1F0F ||                          /* 16 */
+			(codepoint >= 0x1F20 && codepoint <= 0x1F3F) || /* 32 */
+			(codepoint >= 0x1F60 && codepoint <= 0x1F6F)    /* 16 */)
+		{
+			if ((codepoint & 0x08) == 0)
+			{
+				codepoint += 0x08;
+			}
+
+			goto write;
+		}
+		else if (
+			(codepoint >= 0x1F10 && codepoint <= 0x1F1D) || /* 14 */
+			(codepoint >= 0x1F40 && codepoint <= 0x1F4D)    /* 14 */)
+		{
+			if ((codepoint & 0x08) == 0 &&  /* small letter */
+				(codepoint & 0x06) != 0x06  /* not part of unmapped section */) 
+			{
+				codepoint += 0x08;
+			}
+
+			goto write;
+		}
+		else if (
+			codepoint >= 0x1F50 && codepoint <= 0x1F57  /* 8 */)
+		{
+			if ((codepoint & 0x01) == 1)
+			{
+				codepoint += 0x08;
+
+				goto write;
+			}
+			else
+			{
+				goto query;
+			}
+		}
+		else if (
+			codepoint >= 0x1F58 && codepoint <= 0x1F5F  /* 8 */)
+		{
+			goto write;
+		}
+		else if (
+			codepoint >= 0x1F72 && codepoint <= 0x1F7D /* 12 */)
+		{
+			if ((codepoint & 0x08) == 0)
+			{
+				if ((codepoint & 0x06) == 0x06)
+				{
+					codepoint += 0x64;
+				}
+				else
+				{
+					codepoint += 0x56;
+				}
+			}
+			else
+			{
+				if ((codepoint & 0x04) != 0)
+				{
+					codepoint += 0x7E;
+				}
+				else if ((codepoint & 0x02) != 0)
+				{
+					codepoint += 0x70;
+				}
+				else
+				{
+					codepoint += 0x80;
+				}
+			}
+
+			goto write;
+		}
+		else if (
+			codepoint >= 0x1F80 && codepoint <= 0x1FAf /* 48 */)
+		{
+			/* always in the form U+1Fnn U+0399 */
+
+			if (codepoint >= 0x1FA0)
+			{
+				codepoint -= (0x38 + (codepoint & 0x08));
+			}
+			else if (codepoint >= 0x1F90)
+			{
+				codepoint -= (0x68 + (codepoint & 0x08));
+			}
+			else
+			{
+				codepoint -= (0x78 + (codepoint & 0x08));
+			}
+
+			if (writecodepoint(codepoint, &target, &targetSize, errors) == 0)
+			{
+				return 0;
+			}
+			
+			return writecodepoint(0x399, &target, &targetSize, errors);
+		}
+		else if (
+			(codepoint == 0x1FB0 || codepoint == 0x1FB1))
+		{
+			codepoint += 0x08;
+
+			goto write;
+		}
+		else if (
+			(codepoint >= 0x1FB8 && codepoint <= 0x1FBB) || /* 4 */
+			(codepoint >= 0x1FC8 && codepoint <= 0x1FCB)    /* 4 */)
+		{
+			goto write;
+		}
+		else if (
+			codepoint == 0x1F70 || codepoint == 0x1F71  /* 2 */)
+		{
+			codepoint += 0x4A;
+
+			goto write;
+		}
+		else
+		{
+			goto query;
+		}
 	}
 	else if (
 		codepoint >= 0x2100 &&
