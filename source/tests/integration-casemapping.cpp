@@ -2,7 +2,7 @@
 	DO NOT MODIFY, AUTO-GENERATED
 
 	Generated on:
-		2014-12-10T09:31:04
+		2014-12-11T17:31:09
 
 	Command line:
 		D:\Projects\utf8rewind\tools\converter\integration.py
@@ -1660,7 +1660,7 @@ TEST(CaseMapping, LowercaseCombiningDiacriticalMarks)
 	CHECK_UTF8_LOWERCASE(0x0000036f, "COMBINING LATIN SMALL LETTER X", "\xcd\xaf");
 }
 
-TEST(CaseMapping, UppercaseGreekAndCoptic)
+TEST(CaseMapping, UppercaseGreekandCoptic)
 {
 	CHECK_UTF8_UPPERCASE(0x00000370, "GREEK CAPITAL LETTER HETA", "\xcd\xb0");
 	CHECK_UTF8_UPPERCASE(0x00000371, "GREEK SMALL LETTER HETA", "\xcd\xb0");
@@ -1799,7 +1799,7 @@ TEST(CaseMapping, UppercaseGreekAndCoptic)
 	CHECK_UTF8_UPPERCASE(0x000003ff, "GREEK CAPITAL REVERSED DOTTED LUNATE SIGMA SYMBOL", "\xcf\xbf");
 }
 
-TEST(CaseMapping, LowercaseGreekAndCoptic)
+TEST(CaseMapping, LowercaseGreekandCoptic)
 {
 	CHECK_UTF8_LOWERCASE(0x00000370, "GREEK CAPITAL LETTER HETA", "\xcd\xb1");
 	CHECK_UTF8_LOWERCASE(0x00000371, "GREEK SMALL LETTER HETA", "\xcd\xb1");
@@ -6054,7 +6054,7 @@ TEST(CaseMapping, LowercaseAlphabeticPresentationForms)
 	CHECK_UTF8_LOWERCASE(0x0000fb4f, "HEBREW LIGATURE ALEF LAMED", "\xef\xad\x8f");
 }
 
-TEST(CaseMapping, UppercaseHalfwidthAndFullwidthForms)
+TEST(CaseMapping, UppercaseHalfwidthandFullwidthForms)
 {
 	CHECK_UTF8_UPPERCASE(0x0000ff01, "FULLWIDTH EXCLAMATION MARK", "\xef\xbc\x81");
 	CHECK_UTF8_UPPERCASE(0x0000ff02, "FULLWIDTH QUOTATION MARK", "\xef\xbc\x82");
@@ -6283,7 +6283,7 @@ TEST(CaseMapping, UppercaseHalfwidthAndFullwidthForms)
 	CHECK_UTF8_UPPERCASE(0x0000ffee, "HALFWIDTH WHITE CIRCLE", "\xef\xbf\xae");
 }
 
-TEST(CaseMapping, LowercaseHalfwidthAndFullwidthForms)
+TEST(CaseMapping, LowercaseHalfwidthandFullwidthForms)
 {
 	CHECK_UTF8_LOWERCASE(0x0000ff01, "FULLWIDTH EXCLAMATION MARK", "\xef\xbc\x81");
 	CHECK_UTF8_LOWERCASE(0x0000ff02, "FULLWIDTH QUOTATION MARK", "\xef\xbc\x82");

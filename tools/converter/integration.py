@@ -1,5 +1,6 @@
 import datetime
 import os
+import re
 import sys
 import unicodedata
 import libs.header
@@ -12,7 +13,6 @@ def codepointToUnicode(codepoint):
 class IntegrationSuite:
 	def __init__(self, db):
 		self.db = db
-		self.checkValid = False
 	
 	def open(self, filepath):
 		command_line = sys.argv[0]
@@ -49,16 +49,26 @@ class IntegrationSuite:
 		self.header.close()
 	
 	def writeTest(self, codepointRange, name):
-		print "Writing tests " + codepointToUnicode(codepointRange[0]) + " - " + codepointToUnicode(codepointRange[len(codepointRange) - 1]) + " \"" + name + "\""
+		name = re.sub('[ \-]', '', name)
 		
-		valid_categories = [
-			"GeneralCategory_NonspacingMark",
-			"GeneralCategory_LetterNumber",
-			"GeneralCategory_TitlecaseLetter",
-			"GeneralCategory_UppercaseLetter",
-			"GeneralCategory_OtherSymbol",
-			"GeneralCategory_LowercaseLetter"
-		]
+		if len(codepointRange) > 4000:
+			for i in xrange(0, len(codepointRange), 4000):
+				chunk = codepointRange[i:i + 4000]
+				self.writeTest(chunk, name + "Part" + str((i / 4000) + 1))
+			return
+		
+		records = []
+		
+		for i in codepointRange:
+			if i not in self.db.records:
+				continue
+			
+			records.append(self.db.records[i])
+		
+		if len(records) == 0:
+			return
+		
+		print "Writing tests " + codepointToUnicode(codepointRange[0]) + " - " + codepointToUnicode(codepointRange[len(codepointRange) - 1]) + " \"" + name + "\""
 		
 		self.header.newLine()
 		
@@ -67,15 +77,7 @@ class IntegrationSuite:
 		self.header.writeLine("{")
 		self.header.indent()
 		
-		for i in codepointRange:
-			if i not in self.db.records:
-				continue
-			
-			r = self.db.records[i]
-			
-			if self.checkValid and r.generalCategory not in valid_categories:
-				continue
-			
+		for r in records:
 			converted_codepoint = "0x%08x" % r.codepoint
 			
 			if r.uppercase:
@@ -96,15 +98,7 @@ class IntegrationSuite:
 		self.header.writeLine("{")
 		self.header.indent()
 		
-		for i in codepointRange:
-			if i not in self.db.records:
-				continue
-			
-			r = self.db.records[i]
-			
-			if self.checkValid and r.generalCategory not in valid_categories:
-				continue
-			
+		for r in records:
 			converted_codepoint = "0x%08x" % r.codepoint
 			
 			if r.lowercase:
@@ -125,31 +119,22 @@ if __name__ == '__main__':
 	
 	suite = IntegrationSuite(db)
 	suite.open('/../../source/tests/integration-casemapping.cpp')
-	suite.writeTest(range(0x00, 0x80), "BasicLatin")
-	suite.writeTest(range(0x80, 0x100), "Latin1Supplement")
-	suite.writeTest(range(0x100, 0x180), "LatinExtendedA")
-	suite.writeTest(range(0x180, 0x250), "LatinExtendedB")
-	suite.writeTest(range(0x250, 0x2B0), "IPAExtensions")
-	suite.writeTest(range(0x300, 0x370), "CombiningDiacriticalMarks")
-	suite.writeTest(range(0x370, 0x400), "GreekAndCoptic")
-	suite.writeTest(range(0x400, 0x500), "Cyrillic")
-	suite.writeTest(range(0x500, 0x530), "CyrillicSupplement")
-	suite.writeTest(range(0x530, 0x590), "Armenian")
-	suite.writeTest(range(0x10A0, 0x1100), "Georgian")
-	suite.writeTest(range(0x1D00, 0x1D80), "PhoneticExtensions")
-	suite.writeTest(range(0x1E00, 0x1F00), "LatinExtendedAdditional")
-	suite.writeTest(range(0x1F00, 0x2000), "GreekExtended")
-	suite.writeTest(range(0x2100, 0x2150), "LetterlikeSymbols")
-	suite.writeTest(range(0x2150, 0x2190), "NumberForms")
-	suite.writeTest(range(0x2460, 0x2500), "EnclosedAlphanumerics")
-	suite.writeTest(range(0x2C00, 0x2C60), "Glagolitic")
-	suite.writeTest(range(0x2C60, 0x2C80), "LatinExtendedC")
-	suite.writeTest(range(0x2C80, 0x2D00), "Coptic")
-	suite.writeTest(range(0x2D00, 0x2D30), "GeorgianSupplement")
-	suite.writeTest(range(0xA640, 0xA6A0), "CyrillicExtendedB")
-	suite.writeTest(range(0xA720, 0xA800), "LatinExtendedD")
-	suite.writeTest(range(0xFB00, 0xFB50), "AlphabeticPresentationForms")
-	suite.writeTest(range(0xFF00, 0xFFF0), "HalfwidthAndFullwidthForms")
-	suite.writeTest(range(0x10400, 0x10450), "Deseret")
-	suite.writeTest(range(0x118A0, 0x11900), "WarangCiti")
+	
+	valid_blocks = []
+	
+	print "Checking for valid blocks..."
+	
+	for b in db.blocks:
+		for u in range(b.start, b.end + 1):
+			if u in db.records:
+				r = db.records[u]
+				if r.uppercase or r.lowercase:
+					valid_blocks.append(b)
+					break
+	
+	print "Writing tests..."
+	
+	for b in valid_blocks:
+		suite.writeTest(range(b.start, b.end + 1), b.name)
+	
 	suite.close()

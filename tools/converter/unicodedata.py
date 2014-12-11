@@ -280,6 +280,34 @@ class UnicodeMapping:
 		
 		return "{ " + hex(self.codepoint) + ", " + self.generalCategory + ", " + str(self.canonicalCombiningClass) + ", " + self.bidiClass + ", " + str(self.offsetNFD) + ", " + str(self.offsetNFKD) + ", " + self.numericType + ", " + str(self.numericValue) + ", " + bidiMirroredString + " },"
 
+class UnicodeBlock:
+	def __init__(self, db):
+		self.db = db
+		self.clear()
+	
+	def __str__(self):
+		return "{ name: \"" + self.name + "\", start: " + hex(self.start) + ", end: " + hex(self.end) + " }"
+	
+	def clear(self):
+		self.start = 0
+		self.end = 0
+		self.name = ""
+	
+	def parse(self, matches):
+		self.clear()
+		
+		if not matches[0]:
+			return False
+		
+		matched = re.match('([0-9A-Fa-f]+)\.\.([0-9A-Fa-f]+)', matches[0][0])
+		if matched:
+			self.start = int(matched.groups(1)[0], 16)
+			self.end = int(matched.groups(1)[1], 16)
+		
+		self.name = matches[1][0][1:]
+		
+		return True
+
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
 		self.verbose = False
@@ -290,6 +318,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.hashed = dict()
 		self.recordsOrdered = []
 		self.records = dict()
+		self.blocks = []
 	
 	def loadFromFiles(self, arguments):
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -304,8 +333,20 @@ class Database(libs.unicode.UnicodeVisitor):
 		document_database.accept(self)
 		
 		self.resolveMissing()
+		
+		# groups
+		
+		blocks = Blocks(self)
+		document_blocks = libs.unicode.UnicodeDocument()
+		document_blocks.parse(script_path + '/data/Blocks.txt')
+		document_blocks.accept(blocks)
+		
+		# decomposition
+		
 		self.resolveDecomposition()
 		self.resolveComposition()
+		
+		# case mapping
 		
 		document_special_casing = libs.unicode.UnicodeDocument()
 		document_special_casing.parse(script_path + '/data/SpecialCasing.txt')
@@ -712,6 +753,26 @@ class SpecialCasing(libs.unicode.UnicodeVisitor):
 			r.uppercase = []
 			for u in entry.matches[3]:
 				r.uppercase.append(int(u, 16))
+		
+		return True
+
+class Blocks(libs.unicode.UnicodeVisitor):
+	def __init__(self, db):
+		self.db = db
+	
+	def visitDocument(self, document):
+		print "Parsing block mappings..."
+		return True
+	
+	def visitEntry(self, entry):
+		if not entry.matches[0]:
+			return False
+		
+		block = UnicodeBlock(self.db)
+		if not block.parse(entry.matches):
+			return False
+		
+		self.db.blocks.append(block)
 		
 		return True
 
