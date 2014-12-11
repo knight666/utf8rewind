@@ -52,6 +52,12 @@ class IntegrationSuite:
 	def writeTest(self, codepointRange, name):
 		name = re.sub('[ \-]', '', name)
 		
+		if len(codepointRange) > 4000:
+			for i in xrange(0, len(codepointRange), 4000):
+				chunk = codepointRange[i:i + 4000]
+				self.writeTest(chunk, name + "Part" + str((i / 4000) + 1))
+			return
+		
 		print "Writing tests " + codepointToUnicode(codepointRange[0]) + " - " + codepointToUnicode(codepointRange[len(codepointRange) - 1]) + " \"" + name + "\""
 		
 		valid_categories = [
