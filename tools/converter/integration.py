@@ -58,6 +58,17 @@ class IntegrationSuite:
 				self.writeTest(chunk, name + "Part" + str((i / 4000) + 1))
 			return
 		
+		records = []
+		
+		for i in codepointRange:
+			if i not in self.db.records:
+				continue
+			
+			records.append(self.db.records[i])
+		
+		if len(records) == 0:
+			return
+		
 		print "Writing tests " + codepointToUnicode(codepointRange[0]) + " - " + codepointToUnicode(codepointRange[len(codepointRange) - 1]) + " \"" + name + "\""
 		
 		valid_categories = [
@@ -76,12 +87,7 @@ class IntegrationSuite:
 		self.header.writeLine("{")
 		self.header.indent()
 		
-		for i in codepointRange:
-			if i not in self.db.records:
-				continue
-			
-			r = self.db.records[i]
-			
+		for r in records:
 			if self.checkValid and r.generalCategory not in valid_categories:
 				continue
 			
@@ -105,12 +111,7 @@ class IntegrationSuite:
 		self.header.writeLine("{")
 		self.header.indent()
 		
-		for i in codepointRange:
-			if i not in self.db.records:
-				continue
-			
-			r = self.db.records[i]
-			
+		for r in records:
 			if self.checkValid and r.generalCategory not in valid_categories:
 				continue
 			
