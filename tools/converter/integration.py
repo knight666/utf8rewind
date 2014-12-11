@@ -13,7 +13,6 @@ def codepointToUnicode(codepoint):
 class IntegrationSuite:
 	def __init__(self, db):
 		self.db = db
-		self.checkValid = False
 	
 	def open(self, filepath):
 		command_line = sys.argv[0]
@@ -71,15 +70,6 @@ class IntegrationSuite:
 		
 		print "Writing tests " + codepointToUnicode(codepointRange[0]) + " - " + codepointToUnicode(codepointRange[len(codepointRange) - 1]) + " \"" + name + "\""
 		
-		valid_categories = [
-			"GeneralCategory_NonspacingMark",
-			"GeneralCategory_LetterNumber",
-			"GeneralCategory_TitlecaseLetter",
-			"GeneralCategory_UppercaseLetter",
-			"GeneralCategory_OtherSymbol",
-			"GeneralCategory_LowercaseLetter"
-		]
-		
 		self.header.newLine()
 		
 		self.header.newLine()
@@ -88,9 +78,6 @@ class IntegrationSuite:
 		self.header.indent()
 		
 		for r in records:
-			if self.checkValid and r.generalCategory not in valid_categories:
-				continue
-			
 			converted_codepoint = "0x%08x" % r.codepoint
 			
 			if r.uppercase:
@@ -112,9 +99,6 @@ class IntegrationSuite:
 		self.header.indent()
 		
 		for r in records:
-			if self.checkValid and r.generalCategory not in valid_categories:
-				continue
-			
 			converted_codepoint = "0x%08x" % r.codepoint
 			
 			if r.lowercase:
@@ -135,7 +119,22 @@ if __name__ == '__main__':
 	
 	suite = IntegrationSuite(db)
 	suite.open('/../../source/tests/integration-casemapping.cpp')
+	
+	valid_blocks = []
+	
+	print "Checking for valid blocks..."
+	
 	for b in db.blocks:
+		for u in range(b.start, b.end + 1):
+			if u in db.records:
+				r = db.records[u]
+				if r.uppercase or r.lowercase:
+					valid_blocks.append(b)
+					break
+	
+	print "Writing tests..."
+	
+	for b in valid_blocks:
 		suite.writeTest(range(b.start, b.end + 1), b.name)
 	
 	suite.close()
