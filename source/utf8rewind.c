@@ -1933,7 +1933,130 @@ invaliddata:
 
 size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
-	return processtransform(&transform_toupper, input, inputSize, target, targetSize, errors);
+	const char* src = input;
+	size_t src_size = inputSize;
+	const char* src_end = input + inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
+	size_t bytes_written = 0;
+	unicode_t codepoint;
+	size_t codepoint_length;
+	size_t result;
+
+	if (input == 0)
+	{
+		goto invaliddata;
+	}
+
+	while (src_size > 0)
+	{
+		if ((uint8_t)*src <= 0x7F)
+		{
+			/* Basic Latin */
+
+			if (dst != 0)
+			{
+				if (dst_size < 1)
+				{
+					goto outofspace;
+				}
+
+				*dst++ = (*src >= 0x61 && *src <= 0x7A) ? *src - 0x20 : *src;
+				dst_size--;
+			}
+
+			bytes_written++;
+
+			src++;
+			src_size--;
+		}
+		else
+		{
+			codepoint_length = readcodepoint(&codepoint, src, src_size);
+
+			if ((codepoint >= 0x80 && codepoint <= 0xFF) ||        /* Latin-1 Supplement */
+				(codepoint >= 0x100 && codepoint <= 0x17F) ||      /* Latin Extended-A */
+				(codepoint >= 0x180 && codepoint <= 0x24F) ||      /* Latin Extended-B */
+				(codepoint >= 0x250 && codepoint <= 0x2AF) ||      /* IPA Extensions */
+				(codepoint >= 0x300 && codepoint <= 0x36F) ||      /* Combining Diacritical Marks */
+				(codepoint >= 0x370 && codepoint <= 0x3FF) ||      /* Greek and Coptic */
+				(codepoint >= 0x400 && codepoint <= 0x4FF) ||      /* Cyrillic */
+				(codepoint >= 0x500 && codepoint <= 0x52F) ||      /* Cyrillic Supplement */
+				(codepoint >= 0x530 && codepoint <= 0x58F) ||      /* Armenian */
+				(codepoint >= 0x10A0 && codepoint <= 0x10FF) ||    /* Georgian */
+				(codepoint >= 0x1D00 && codepoint <= 0x1D7F) ||    /* Phonetic Extensions */
+				(codepoint >= 0x1E00 && codepoint <= 0x1EFF) ||    /* Latin Extended Additional */
+				(codepoint >= 0x1F00 && codepoint <= 0x1FFF) ||    /* Greek Extended */
+				(codepoint >= 0x2100 && codepoint <= 0x214F) ||    /* Letterlike Symbols */
+				(codepoint >= 0x2150 && codepoint <= 0x218F) ||    /* Number Forms */
+				(codepoint >= 0x2460 && codepoint <= 0x24FF) ||    /* Enclosed Alphanumerics */
+				(codepoint >= 0x2C00 && codepoint <= 0x2C5F) ||    /* Glagolitic */
+				(codepoint >= 0x2C60 && codepoint <= 0x2C7F) ||    /* Latin Extended-C */
+				(codepoint >= 0x2C80 && codepoint <= 0x2CFF) ||    /* Coptic */
+				(codepoint >= 0x2D00 && codepoint <= 0x2D2F) ||    /* Georgian Supplement */
+				(codepoint >= 0xA640 && codepoint <= 0xA69F) ||    /* Cyrillic Extended-B */
+				(codepoint >= 0xA720 && codepoint <= 0xA7FF) ||    /* Latin Extended-D */
+				(codepoint >= 0xFB00 && codepoint <= 0xFB4F) ||    /* Alphabetic Presentation Forms */
+				(codepoint >= 0xFF00 && codepoint <= 0xFFEF) ||    /* Halfwidth and Fullwidth Forms */
+				(codepoint >= 0x10400 && codepoint <= 0x1044F) ||  /* Deseret */
+				(codepoint >= 0x118A0 && codepoint <= 0x118FF))    /* Warang Citi */
+			{
+				result = transform_default(DecompositionQuery_Uppercase, codepoint, codepoint_length, dst, dst_size, errors);
+				if (result == 0)
+				{
+					break;
+				}
+
+				if (dst != 0)
+				{
+					dst += result;
+					dst_size -= result;
+				}
+
+				bytes_written += result;
+
+				src += codepoint_length;
+				src_size -= codepoint_length;
+			}
+			else
+			{
+				if (dst != 0)
+				{
+					if (dst_size < codepoint_length)
+					{
+						goto outofspace;
+					}
+				}
+
+				result = writecodepoint(codepoint, &dst, &dst_size, errors);
+				if (result == 0)
+				{
+					break;
+				}
+
+				bytes_written += result;
+
+				src += codepoint_length;
+				src_size -= codepoint_length;
+			}
+		}
+	}
+
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return bytes_written;
 }
 
 size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
