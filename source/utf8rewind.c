@@ -793,7 +793,7 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	}
 }
 
-size_t transform_default(int8_t query, unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
+size_t transform_default(int8_t query, unicode_t codepoint, size_t codepointLength, char** target, size_t* targetSize, int32_t* errors)
 {
 	const DecompositionRecord* record;
 	int32_t find_result;
@@ -806,26 +806,24 @@ size_t transform_default(int8_t query, unicode_t codepoint, size_t codepointLeng
 		resolved = resolvedecomposition(record->offset, &find_result);
 		resolved_size = strlen(resolved);
 
-		if (target != 0 && resolved_size > 0)
+		if (*target != 0 && resolved_size > 0)
 		{
-			if (targetSize < resolved_size)
+			if (*targetSize < resolved_size)
 			{
 				goto outofspace;
 			}
 
-			memcpy(target, resolved, resolved_size);
+			memcpy(*target, resolved, resolved_size);
+			*target += resolved_size;
+
+			*targetSize -= resolved_size;
 		}
 
 		return resolved_size;
 	}
 	else
 	{
-		if (target != 0 && targetSize < codepointLength)
-		{
-			goto outofspace;
-		}
-
-		return writecodepoint(codepoint, &target, &targetSize, errors);
+		return writecodepoint(codepoint, target, targetSize, errors);
 	}
 
 outofspace:
@@ -901,7 +899,7 @@ size_t transform_decomposition(unicode_t codepoint, size_t codepointLength, char
 	}
 	else
 	{
-		return transform_default(DecompositionQuery_Decomposed, codepoint, codepointLength, target, targetSize, errors);
+		return transform_default(DecompositionQuery_Decomposed, codepoint, codepointLength, &target, &targetSize, errors);
 	}
 
 outofspace:
@@ -1518,7 +1516,7 @@ size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* targ
 	}
 
 query:
-	return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
+	return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, &target, &targetSize, errors);
 
 write:
 	if (target != 0 && targetSize < codepointLength)
@@ -1860,7 +1858,7 @@ size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* targ
 	}
 
 query:
-	return transform_default(DecompositionQuery_Lowercase, codepoint, codepointLength, target, targetSize, errors);
+	return transform_default(DecompositionQuery_Lowercase, codepoint, codepointLength, &target, &targetSize, errors);
 
 write:
 	if (target != 0 && targetSize < codepointLength)
@@ -2001,44 +1999,22 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 				(codepoint >= 0x10400 && codepoint <= 0x1044F) ||  /* Deseret */
 				(codepoint >= 0x118A0 && codepoint <= 0x118FF))    /* Warang Citi */
 			{
-				result = transform_default(DecompositionQuery_Uppercase, codepoint, codepoint_length, dst, dst_size, errors);
-				if (result == 0)
-				{
-					break;
-				}
-
-				if (dst != 0)
-				{
-					dst += result;
-					dst_size -= result;
-				}
-
-				bytes_written += result;
-
-				src += codepoint_length;
-				src_size -= codepoint_length;
+				result = transform_default(DecompositionQuery_Uppercase, codepoint, codepoint_length, &dst, &dst_size, errors);
 			}
 			else
 			{
-				if (dst != 0)
-				{
-					if (dst_size < codepoint_length)
-					{
-						goto outofspace;
-					}
-				}
-
 				result = writecodepoint(codepoint, &dst, &dst_size, errors);
-				if (result == 0)
-				{
-					break;
-				}
-
-				bytes_written += result;
-
-				src += codepoint_length;
-				src_size -= codepoint_length;
 			}
+
+			if (result == 0)
+			{
+				break;
+			}
+
+			bytes_written += result;
+
+			src += codepoint_length;
+			src_size -= codepoint_length;
 		}
 	}
 
