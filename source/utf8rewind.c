@@ -793,7 +793,7 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	}
 }
 
-size_t transform_default(int8_t query, unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
+size_t transform_default(int8_t query, unicode_t codepoint, size_t codepointLength, char** target, size_t* targetSize, int32_t* errors)
 {
 	const DecompositionRecord* record;
 	int32_t find_result;
@@ -806,26 +806,24 @@ size_t transform_default(int8_t query, unicode_t codepoint, size_t codepointLeng
 		resolved = resolvedecomposition(record->offset, &find_result);
 		resolved_size = strlen(resolved);
 
-		if (target != 0 && resolved_size > 0)
+		if (*target != 0 && resolved_size > 0)
 		{
-			if (targetSize < resolved_size)
+			if (*targetSize < resolved_size)
 			{
 				goto outofspace;
 			}
 
-			memcpy(target, resolved, resolved_size);
+			memcpy(*target, resolved, resolved_size);
+			*target += resolved_size;
+
+			*targetSize -= resolved_size;
 		}
 
 		return resolved_size;
 	}
 	else
 	{
-		if (target != 0 && targetSize < codepointLength)
-		{
-			goto outofspace;
-		}
-
-		return writecodepoint(codepoint, &target, &targetSize, errors);
+		return writecodepoint(codepoint, target, targetSize, errors);
 	}
 
 outofspace:
@@ -901,75 +899,7 @@ size_t transform_decomposition(unicode_t codepoint, size_t codepointLength, char
 	}
 	else
 	{
-		return transform_default(DecompositionQuery_Decomposed, codepoint, codepointLength, target, targetSize, errors);
-	}
-
-outofspace:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
-	}
-	return 0;
-}
-
-size_t transform_toupper(unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
-{
-	if (codepointLength == 1 && codepoint <= 0x7F)
-	{
-		if (target != 0)
-		{
-			if (targetSize < 1)
-			{
-				goto outofspace;
-			}
-
-			if (codepoint >= 0x61 && codepoint <= 0x7A)
-			{
-				codepoint -= 32;
-			}
-
-			*target = (char)codepoint;
-		}
-
-		return 1;
-	}
-	else
-	{
-		return transform_default(DecompositionQuery_Uppercase, codepoint, codepointLength, target, targetSize, errors);
-	}
-
-outofspace:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
-	}
-	return 0;
-}
-
-size_t transform_tolower(unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
-{
-	if (codepointLength == 1 && codepoint <= 0x7F)
-	{
-		if (target != 0)
-		{
-			if (targetSize < 1)
-			{
-				goto outofspace;
-			}
-
-			if (codepoint >= 0x41 && codepoint <= 0x5A)
-			{
-				codepoint += 32;
-			}
-
-			*target = (char)codepoint;
-		}
-
-		return 1;
-	}
-	else
-	{
-		return transform_default(DecompositionQuery_Lowercase, codepoint, codepointLength, target, targetSize, errors);
+		return transform_default(DecompositionQuery_Decomposed, codepoint, codepointLength, &target, &targetSize, errors);
 	}
 
 outofspace:
@@ -1035,12 +965,190 @@ invaliddata:
 
 size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
-	return processtransform(&transform_toupper, input, inputSize, target, targetSize, errors);
+	const char* src = input;
+	size_t src_size = inputSize;
+	const char* src_end = input + inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
+	size_t bytes_written = 0;
+	unicode_t codepoint;
+	size_t codepoint_length;
+	size_t result;
+
+	if (input == 0)
+	{
+		goto invaliddata;
+	}
+
+	while (src_size > 0)
+	{
+		if ((uint8_t)*src <= 0x7F)
+		{
+			/* Basic Latin */
+
+			if (dst != 0)
+			{
+				if (dst_size < 1)
+				{
+					goto outofspace;
+				}
+
+				*dst++ = (*src >= 0x61 && *src <= 0x7A) ? *src - 0x20 : *src;
+				dst_size--;
+			}
+
+			bytes_written++;
+
+			src++;
+			src_size--;
+		}
+		else
+		{
+			codepoint_length = readcodepoint(&codepoint, src, src_size);
+
+			if ((codepoint >= 0x80 && codepoint <= 0x2AF) ||       /* Latin-1 Supplement, Latin Extended-A, Latin Extended-B, IPA Extensions */
+				(codepoint >= 0x300 && codepoint <= 0x58F) ||      /* Combining Diacritical Marks, Greek and Coptic, Cyrillic, Cyrillic Supplement, Armenian */
+				(codepoint >= 0x10A0 && codepoint <= 0x10FF) ||    /* Georgian */
+				(codepoint >= 0x1D00 && codepoint <= 0x1D7F) ||    /* Phonetic Extensions */
+				(codepoint >= 0x1E00 && codepoint <= 0x1FFF) ||    /* Latin Extended Additional, Greek Extended */
+				(codepoint >= 0x2100 && codepoint <= 0x218F) ||    /* Letterlike Symbols, Number Forms */
+				(codepoint >= 0x2460 && codepoint <= 0x24FF) ||    /* Enclosed Alphanumerics */
+				(codepoint >= 0x2C00 && codepoint <= 0x2D2F) ||    /* Glagolitic, Latin Extended-C, Coptic, Georgian Supplement */
+				(codepoint >= 0xA640 && codepoint <= 0xA69F) ||    /* Cyrillic Extended-B */
+				(codepoint >= 0xA720 && codepoint <= 0xA7FF) ||    /* Latin Extended-D */
+				(codepoint >= 0xFB00 && codepoint <= 0xFB4F) ||    /* Alphabetic Presentation Forms */
+				(codepoint >= 0xFF00 && codepoint <= 0xFFEF) ||    /* Halfwidth and Fullwidth Forms */
+				(codepoint >= 0x10400 && codepoint <= 0x1044F) ||  /* Deseret */
+				(codepoint >= 0x118A0 && codepoint <= 0x118FF))    /* Warang Citi */
+			{
+				result = transform_default(DecompositionQuery_Uppercase, codepoint, codepoint_length, &dst, &dst_size, errors);
+			}
+			else
+			{
+				result = writecodepoint(codepoint, &dst, &dst_size, errors);
+			}
+
+			if (result == 0)
+			{
+				break;
+			}
+
+			bytes_written += result;
+
+			src += codepoint_length;
+			src_size -= codepoint_length;
+		}
+	}
+
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return bytes_written;
 }
 
 size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
-	return processtransform(&transform_tolower, input, inputSize, target, targetSize, errors);
+	const char* src = input;
+	size_t src_size = inputSize;
+	const char* src_end = input + inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
+	size_t bytes_written = 0;
+	unicode_t codepoint;
+	size_t codepoint_length;
+	size_t result;
+
+	if (input == 0)
+	{
+		goto invaliddata;
+	}
+
+	while (src_size > 0)
+	{
+		if ((uint8_t)*src <= 0x7F)
+		{
+			/* Basic Latin */
+
+			if (dst != 0)
+			{
+				if (dst_size < 1)
+				{
+					goto outofspace;
+				}
+
+				*dst++ = (*src >= 0x41 && *src <= 0x5A) ? *src + 0x20 : *src;
+				dst_size--;
+			}
+
+			bytes_written++;
+
+			src++;
+			src_size--;
+		}
+		else
+		{
+			codepoint_length = readcodepoint(&codepoint, src, src_size);
+
+			if ((codepoint >= 0x80 && codepoint <= 0x2AF) ||       /* Latin-1 Supplement, Latin Extended-A, Latin Extended-B, IPA Extensions */
+				(codepoint >= 0x300 && codepoint <= 0x58F) ||      /* Combining Diacritical Marks, Greek and Coptic, Cyrillic, Cyrillic Supplement, Armenian */
+				(codepoint >= 0x10A0 && codepoint <= 0x10FF) ||    /* Georgian */
+				(codepoint >= 0x1D00 && codepoint <= 0x1D7F) ||    /* Phonetic Extensions */
+				(codepoint >= 0x1E00 && codepoint <= 0x1FFF) ||    /* Latin Extended Additional, Greek Extended */
+				(codepoint >= 0x2100 && codepoint <= 0x218F) ||    /* Letterlike Symbols, Number Forms */
+				(codepoint >= 0x2460 && codepoint <= 0x24FF) ||    /* Enclosed Alphanumerics */
+				(codepoint >= 0x2C00 && codepoint <= 0x2D2F) ||    /* Glagolitic, Latin Extended-C, Coptic, Georgian Supplement */
+				(codepoint >= 0xA640 && codepoint <= 0xA69F) ||    /* Cyrillic Extended-B */
+				(codepoint >= 0xA720 && codepoint <= 0xA7FF) ||    /* Latin Extended-D */
+				(codepoint >= 0xFB00 && codepoint <= 0xFB4F) ||    /* Alphabetic Presentation Forms */
+				(codepoint >= 0xFF00 && codepoint <= 0xFFEF) ||    /* Halfwidth and Fullwidth Forms */
+				(codepoint >= 0x10400 && codepoint <= 0x1044F) ||  /* Deseret */
+				(codepoint >= 0x118A0 && codepoint <= 0x118FF))    /* Warang Citi */
+			{
+				result = transform_default(DecompositionQuery_Lowercase, codepoint, codepoint_length, &dst, &dst_size, errors);
+			}
+			else
+			{
+				result = writecodepoint(codepoint, &dst, &dst_size, errors);
+			}
+
+			if (result == 0)
+			{
+				break;
+			}
+
+			bytes_written += result;
+
+			src += codepoint_length;
+			src_size -= codepoint_length;
+		}
+	}
+
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return bytes_written;
 }
 
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
