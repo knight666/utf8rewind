@@ -1972,26 +1972,14 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 		{
 			codepoint_length = readcodepoint(&codepoint, src, src_size);
 
-			if ((codepoint >= 0x80 && codepoint <= 0xFF) ||        /* Latin-1 Supplement */
-				(codepoint >= 0x100 && codepoint <= 0x17F) ||      /* Latin Extended-A */
-				(codepoint >= 0x180 && codepoint <= 0x24F) ||      /* Latin Extended-B */
-				(codepoint >= 0x250 && codepoint <= 0x2AF) ||      /* IPA Extensions */
-				(codepoint >= 0x300 && codepoint <= 0x36F) ||      /* Combining Diacritical Marks */
-				(codepoint >= 0x370 && codepoint <= 0x3FF) ||      /* Greek and Coptic */
-				(codepoint >= 0x400 && codepoint <= 0x4FF) ||      /* Cyrillic */
-				(codepoint >= 0x500 && codepoint <= 0x52F) ||      /* Cyrillic Supplement */
-				(codepoint >= 0x530 && codepoint <= 0x58F) ||      /* Armenian */
+			if ((codepoint >= 0x80 && codepoint <= 0x2AF) ||       /* Latin-1 Supplement, Latin Extended-A, Latin Extended-B, IPA Extensions */
+				(codepoint >= 0x300 && codepoint <= 0x58F) ||      /* Combining Diacritical Marks, Greek and Coptic, Cyrillic, Cyrillic Supplement, Armenian */
 				(codepoint >= 0x10A0 && codepoint <= 0x10FF) ||    /* Georgian */
 				(codepoint >= 0x1D00 && codepoint <= 0x1D7F) ||    /* Phonetic Extensions */
-				(codepoint >= 0x1E00 && codepoint <= 0x1EFF) ||    /* Latin Extended Additional */
-				(codepoint >= 0x1F00 && codepoint <= 0x1FFF) ||    /* Greek Extended */
-				(codepoint >= 0x2100 && codepoint <= 0x214F) ||    /* Letterlike Symbols */
-				(codepoint >= 0x2150 && codepoint <= 0x218F) ||    /* Number Forms */
+				(codepoint >= 0x1E00 && codepoint <= 0x1FFF) ||    /* Latin Extended Additional, Greek Extended */
+				(codepoint >= 0x2100 && codepoint <= 0x218F) ||    /* Letterlike Symbols, Number Forms */
 				(codepoint >= 0x2460 && codepoint <= 0x24FF) ||    /* Enclosed Alphanumerics */
-				(codepoint >= 0x2C00 && codepoint <= 0x2C5F) ||    /* Glagolitic */
-				(codepoint >= 0x2C60 && codepoint <= 0x2C7F) ||    /* Latin Extended-C */
-				(codepoint >= 0x2C80 && codepoint <= 0x2CFF) ||    /* Coptic */
-				(codepoint >= 0x2D00 && codepoint <= 0x2D2F) ||    /* Georgian Supplement */
+				(codepoint >= 0x2C00 && codepoint <= 0x2D2F) ||    /* Glagolitic, Latin Extended-C, Coptic, Georgian Supplement */
 				(codepoint >= 0xA640 && codepoint <= 0xA69F) ||    /* Cyrillic Extended-B */
 				(codepoint >= 0xA720 && codepoint <= 0xA7FF) ||    /* Latin Extended-D */
 				(codepoint >= 0xFB00 && codepoint <= 0xFB4F) ||    /* Alphabetic Presentation Forms */
