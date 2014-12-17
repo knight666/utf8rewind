@@ -33,6 +33,11 @@ typedef struct {
 	ptrdiff_t offset;
 } DecompositionRecord;
 
+typedef struct {
+	unicode_t key;
+	unicode_t value;
+} CompositionRecord;
+
 enum FindResult
 {
 	FindResult_Found,
@@ -47,11 +52,15 @@ enum DecompositionQuery
 	DecompositionQuery_Compatibility_Decomposed,
 	DecompositionQuery_Uppercase,
 	DecompositionQuery_Lowercase,
-	DecompositionQuery_Titlecase
+	DecompositionQuery_Titlecase,
+	DecompositionQuery_Composed,
+	DecompositionQuery_Compatibility_Composed
 };
 
 const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result);
 
 const char* resolvedecomposition(size_t offset, int32_t* result);
+
+unicode_t querycomposition(unicode_t left, unicode_t right, int8_t query, int32_t* result);
 
 #endif
