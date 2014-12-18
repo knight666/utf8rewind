@@ -34,7 +34,7 @@ typedef struct {
 } DecompositionRecord;
 
 typedef struct {
-	unicode_t key;
+	uint64_t key;
 	unicode_t value;
 } CompositionRecord;
 
