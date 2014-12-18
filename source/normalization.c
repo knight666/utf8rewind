@@ -164,31 +164,19 @@ const char* resolvedecomposition(size_t offset, int32_t* result)
 	return DecompositionData + offset;
 }
 
-unicode_t querycomposition(unicode_t left, unicode_t right, int8_t query, int32_t* result)
+unicode_t querycomposition(unicode_t left, unicode_t right, int32_t* result)
 {
 	uint64_t key = ((uint64_t)left << 32) + (uint64_t)right;
 	size_t offset_start;
 	size_t offset_end;
 	size_t offset_pivot;
-	const CompositionRecord* record;
-	size_t record_count;
+	const CompositionRecord* record = UnicodeCompositionRecordPtr;
+	size_t record_count = UnicodeCompositionRecordCount;
 	size_t i;
 	unicode_t found = 0;
 
 	if (result == 0)
 	{
-		return 0;
-	}
-
-	if (query == DecompositionQuery_Composed ||
-		query == DecompositionQuery_Compatibility_Composed)
-	{
-		record = UnicodeCompositionRecordPtr;
-		record_count = UnicodeCompositionRecordCount;
-	}
-	else
-	{
-		*result = FindResult_Invalid;
 		return 0;
 	}
 
