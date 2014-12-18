@@ -557,7 +557,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		for r in self.recordsOrdered:
 			if r.compositionPairs:
 				for p in r.compositionPairs.items():
-					key = r.codepoint + p[0]
+					key = (r.codepoint << 32) + p[0]
 					if key in composed:
 						print "collision " + hex(key)
 					else:
