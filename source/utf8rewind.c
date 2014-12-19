@@ -920,6 +920,54 @@ outofspace:
 	return 0;
 }
 
+size_t transform_composition(const char* input, size_t inputSize, char* target, size_t targetSize, size_t* read, int32_t* errors)
+{
+	unicode_t codepoint_left;
+	unicode_t codepoint_right;
+	size_t codepoint_left_length;
+	size_t codepoint_right_length;
+	unicode_t composed;
+	int32_t find_result = 0;
+	size_t result = 0;
+
+	codepoint_left_length = readcodepoint(&codepoint_left, input, inputSize);
+
+	if (inputSize < codepoint_left_length ||
+		inputSize - codepoint_left_length == 0)
+	{
+		*read = codepoint_left_length;
+
+		result += writecodepoint(codepoint_left, &target, &targetSize, errors);
+	}
+
+	input += codepoint_left_length;
+	inputSize -= codepoint_left_length;
+
+	codepoint_right_length = readcodepoint(&codepoint_right, input, inputSize);
+
+	composed = querycomposition(codepoint_left, codepoint_right, &find_result);
+	if (find_result == FindResult_Found)
+	{
+		result += writecodepoint(composed, &target, &targetSize, errors);
+	}
+	else
+	{
+		result += writecodepoint(codepoint_left, &target, &targetSize, errors);
+		result += writecodepoint(codepoint_right, &target, &targetSize, errors);
+	}
+
+	*read = codepoint_left_length + codepoint_right_length;
+
+	return result;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return 0;
+}
+
 typedef size_t (*TransformFunc)(const char*, size_t, char*, size_t, size_t*, int32_t*);
 
 size_t processtransform(TransformFunc transform, const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
@@ -1160,5 +1208,24 @@ outofspace:
 
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
-	return processtransform(&transform_decomposition, input, inputSize, target, targetSize, errors);
+	TransformFunc process = 0;
+
+	if ((flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
+	{
+		process = &transform_decomposition;
+	}
+	else if ((flags & UTF8_TRANSFORM_COMPOSED) != 0)
+	{
+		process = &transform_composition;
+	}
+	else
+	{
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_TRANSFORM;
+		}
+		return 0;
+	}
+
+	return processtransform(process, input, inputSize, target, targetSize, errors);
 }
