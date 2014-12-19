@@ -69,6 +69,7 @@
 				'source/tests/suite-toupper.cpp',
 				'source/tests/suite-toutf8.cpp',
 				'source/tests/suite-towide.cpp',
+				'source/tests/suite-transform-compose.cpp',
 				'source/tests/suite-transform-decompose.cpp',
 				'source/tests/tests-base.hpp',
 				'source/tests/tests-main.cpp',
