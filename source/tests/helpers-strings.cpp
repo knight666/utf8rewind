@@ -227,6 +227,30 @@ namespace helpers {
 		return ss.str();
 	}
 
+	std::string printable(unicode_t codepoint)
+	{
+		return printable(utf8(codepoint));
+	}
+
+	std::string printable(unicode_t* codepoints, size_t codepointsSize)
+	{
+		std::string converted;
+
+		int32_t errors = 0;
+		size_t size_in_bytes = utf32toutf8(codepoints, codepointsSize, nullptr, 0, &errors);
+
+		if (size_in_bytes == 0 ||
+			errors != 0)
+		{
+			return converted;
+		}
+
+		converted.resize(size_in_bytes);
+		utf32toutf8(codepoints, codepointsSize, &converted[0], size_in_bytes, &errors);
+
+		return printable(converted);
+	}
+
 	::testing::AssertionResult CompareUtf8Strings(
 		const char* expressionLeft, const char* expressionRight,
 		const std::string& textLeft, const std::string& textRight
