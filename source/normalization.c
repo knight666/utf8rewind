@@ -173,7 +173,6 @@ unicode_t querycomposition(unicode_t left, unicode_t right, int32_t* result)
 	const CompositionRecord* record = UnicodeCompositionRecordPtr;
 	size_t record_count = UnicodeCompositionRecordCount;
 	size_t i;
-	unicode_t found = 0;
 
 	if (result == 0)
 	{
