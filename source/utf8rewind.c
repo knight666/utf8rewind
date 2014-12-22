@@ -35,6 +35,58 @@
 #define SURROGATE_LOW_START           0xDC00
 #define SURROGATE_LOW_END             0xDFFF
 
+static const int8_t Utf8ByteLength[256] = {
+	/* Basic Latin */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x00 - 0x07 */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x08 - 0x0F */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x10 - 0x17 */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x18 - 0x1F */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x20 - 0x27 */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x28 - 0x2F */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x30 - 0x37 */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x38 - 0x3F */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x40 - 0x47 */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x48 - 0x4F */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x50 - 0x57 */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x58 - 0x5F */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x60 - 0x67 */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x68 - 0x6F */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x70 - 0x77 */
+	1, 1, 1, 1, 1, 1, 1, 1, /* 0x78 - 0x7F */
+
+	/* Malformed continuation byte */
+	0, 0, 0, 0, 0, 0, 0, 0, /* 0x80 - 0x87 */
+	0, 0, 0, 0, 0, 0, 0, 0, /* 0x88 - 0x8F */
+	0, 0, 0, 0, 0, 0, 0, 0, /* 0x90 - 0x97 */
+	0, 0, 0, 0, 0, 0, 0, 0, /* 0x98 - 0x9F */
+	0, 0, 0, 0, 0, 0, 0, 0, /* 0xA0 - 0xA7 */
+	0, 0, 0, 0, 0, 0, 0, 0, /* 0xA8 - 0xAF */
+	0, 0, 0, 0, 0, 0, 0, 0, /* 0xB0 - 0xB7 */
+	0, 0, 0, 0, 0, 0, 0, 0, /* 0xB8 - 0xBF */
+
+	/* Two bytes */
+	2, 2, 2, 2, 2, 2, 2, 2, /* 0xC0 - 0xC7 */
+	2, 2, 2, 2, 2, 2, 2, 2, /* 0xC8 - 0xCF */
+	2, 2, 2, 2, 2, 2, 2, 2, /* 0xD0 - 0xD7 */
+	2, 2, 2, 2, 2, 2, 2, 2, /* 0xD8 - 0xDF */
+
+	/* Three bytes */
+	3, 3, 3, 3, 3, 3, 3, 3, /* 0xE0 - 0xE7 */
+	3, 3, 3, 3, 3, 3, 3, 3, /* 0xE8 - 0xEF */
+
+	/* Four bytes */
+	4, 4, 4, 4, 4, 4, 4, 4, /* 0xF0 - 0xF7 */
+
+	/* Five bytes */
+	5, 5, 5, 5,             /* 0xF8 - 0xFB */
+
+	/* Six bytes */
+	6, 6,                   /* 0xFC - 0xFD */
+	
+	/* Invalid */
+	0, 0                    /* 0xFE - 0xFF */
+};
+
 static const size_t Utf8ByteMinimum[6] = {
 	0x00000000,
 	0x00000080,
@@ -62,41 +114,6 @@ char* safe_strcpy(char* target, size_t targetSize, const char* input, size_t inp
 	size_t copy_size = (targetSize < inputSize) ? targetSize : inputSize;
 	return strncpy(target, input, copy_size);
 #endif
-}
-
-size_t lengthcodepoint(uint8_t input)
-{
-	if ((input & 0x80) == 0) /* ASCII */
-	{
-		return 1;
-	}
-	else if (
-		(input & 0xC0) != 0xC0 || /* Malformed continuation byte */
-		(input & 0xFE) == 0xFE    /* Illegal byte */
-	)
-	{
-		return 0;
-	}
-	else if ((input & 0xE0) == 0xC0)
-	{
-		return 2;
-	}
-	else if ((input & 0xF0) == 0xE0)
-	{
-		return 3;
-	}
-	else if ((input & 0xF8) == 0xF0)
-	{
-		return 4;
-	}
-	else if ((input & 0xFC) == 0xF8)
-	{
-		return 5;
-	}
-	else // (input & 0xFE) == 0xFC
-	{
-		return 6;
-	}
 }
 
 size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t* errors)
@@ -190,7 +207,7 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize)
 		return 1;
 	}
 
-	decoded_length = lengthcodepoint(current);
+	decoded_length = Utf8ByteLength[current];
 	if (decoded_length == 0)
 	{
 		*codepoint = REPLACEMENT_CHARACTER;
@@ -221,10 +238,8 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize)
 	{
 		/* Check for overlong sequences */
 
-		if (
-			(*codepoint < Utf8ByteMinimum[decoded_length - 1] ||
-			*codepoint > Utf8ByteMaximum[decoded_length - 1])
-		)
+		if ((*codepoint < Utf8ByteMinimum[decoded_length - 1] ||
+			*codepoint > Utf8ByteMaximum[decoded_length - 1]))
 		{
 			*codepoint = REPLACEMENT_CHARACTER;
 		}
@@ -233,8 +248,7 @@ size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize)
 
 		else if (
 			(*codepoint >= SURROGATE_HIGH_START && *codepoint <= SURROGATE_HIGH_END) ||
-			(*codepoint >= SURROGATE_LOW_START && *codepoint <= SURROGATE_LOW_END)
-		)
+			(*codepoint >= SURROGATE_LOW_START && *codepoint <= SURROGATE_LOW_END))
 		{
 			*codepoint = REPLACEMENT_CHARACTER;
 		}
@@ -685,7 +699,7 @@ const char* seekforward(const char* src, const char* srcEnd, size_t srcLength, o
 
 	do
 	{
-		size_t codepoint_length = lengthcodepoint(*src);
+		size_t codepoint_length = Utf8ByteLength[(uint8_t)*src];
 		if (codepoint_length == 0)
 		{
 			codepoint_length = 1;
