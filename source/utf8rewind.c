@@ -105,6 +105,15 @@ static const size_t Utf8ByteMaximum[6] = {
 	0x0010FFFF
 };
 
+#define UTF8_HANGUL_FIRST 0xAC00
+#define UTF8_HANGUL_LAST  0xD7A3
+
+#if defined(__GNUC__) && !defined(COMPILER_ICC)
+	#define UTF8_UNUSED(_parameter) _parameter __attribute__ ((unused))
+#else
+	#define UTF8_UNUSED(_parameter) _parameter
+#endif
+
 char* safe_strcpy(char* target, size_t targetSize, const char* input, size_t inputSize)
 {
 #if WIN32 || _WINDOWS
@@ -782,7 +791,7 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	}
 }
 
-size_t transform_default(int8_t query, unicode_t codepoint, size_t codepointLength, char** target, size_t* targetSize, int32_t* errors)
+size_t transform_default(int8_t query, unicode_t codepoint, size_t UTF8_UNUSED(codepointLength), char** target, size_t* targetSize, int32_t* errors)
 {
 	const DecompositionRecord* record;
 	int32_t find_result;
@@ -833,7 +842,7 @@ size_t transform_decomposition(const char* input, size_t inputSize, char* target
 
 	if ((uint8_t)*input <= 0x7F)
 	{
-		/* ASCII codepoints are already decomposed */
+		/* Basic Latin codepoints are already decomposed */
 
 		if (target != 0)
 		{
@@ -854,7 +863,8 @@ size_t transform_decomposition(const char* input, size_t inputSize, char* target
 		unicode_t codepoint;
 		size_t codepoint_length = readcodepoint(&codepoint, input, inputSize);
 
-		if (codepoint >= 0xAC00 && codepoint <= 0xD7A3)
+		if (codepoint >= UTF8_HANGUL_FIRST &&
+			codepoint <= UTF8_HANGUL_LAST)
 		{
 			/*
 				Hangul decomposition
@@ -863,13 +873,12 @@ size_t transform_decomposition(const char* input, size_t inputSize, char* target
 				http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
 			*/
 
-			static const unicode_t SBase = 0xAC00;
+			static const unicode_t SBase = UTF8_HANGUL_FIRST;
 			static const unicode_t LBase = 0x1100;
 			static const unicode_t VBase = 0x1161;
 			static const unicode_t TBase = 0x11A7;
 			static const unicode_t TCount = 28;
 			static const unicode_t NCount = 588; /* VCount * TCount */
-			static const unicode_t SCount = 11172; /* LCount * NCount */
 
 			SIndex = codepoint - SBase;
 			L = LBase + (SIndex / NCount);
@@ -879,7 +888,8 @@ size_t transform_decomposition(const char* input, size_t inputSize, char* target
 			/* hangul syllables are always three bytes */
 			resolved_size = (T != TBase) ? 9 : 6;
 
-			if (target != 0 && targetSize < resolved_size)
+			if (target != 0 &&
+				targetSize < resolved_size)
 			{
 				goto outofspace;
 			}
