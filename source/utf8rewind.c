@@ -944,6 +944,17 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 	int32_t find_result = 0;
 	size_t result = 0;
 
+	if ((uint8_t)input[0] <= 0x7F &&
+		(uint8_t)input[1] <= 0x7F)
+	{
+		*target++ = *input++;
+		*target++ = *input++;
+
+		*read = 2;
+
+		return 2;
+	}
+
 	codepoint_left_length = readcodepoint(&codepoint_left, input, inputSize);
 
 	if (inputSize < codepoint_left_length ||
