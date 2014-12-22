@@ -252,7 +252,7 @@ namespace helpers {
 	}
 
 	::testing::AssertionResult CompareUtf8Strings(
-		const char* expressionLeft, const char* expressionRight,
+		const char* expressionLeft GTEST_ATTRIBUTE_UNUSED_, const char* expressionRight GTEST_ATTRIBUTE_UNUSED_,
 		const std::string& textLeft, const std::string& textRight
 	)
 	{
