@@ -75,6 +75,9 @@
 			'conditions': [
 				['OS!="win"', {
 					'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
+					'defines': [
+						'GTEST_HAS_PTHREAD=0',
+					],
 				}],
 				['OS=="win"', {
 					'defines': [
