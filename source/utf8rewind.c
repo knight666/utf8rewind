@@ -956,7 +956,6 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 {
 	const char* src = input;
 	size_t src_size = inputSize;
-	const char* src_end = input + inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
 	size_t bytes_written = 0;
@@ -1050,7 +1049,6 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 {
 	const char* src = input;
 	size_t src_size = inputSize;
-	const char* src_end = input + inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
 	size_t bytes_written = 0;
