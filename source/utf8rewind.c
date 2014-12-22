@@ -932,8 +932,16 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 	if ((uint8_t)input[0] <= 0x7F &&
 		(uint8_t)input[1] <= 0x7F)
 	{
-		*target++ = *input++;
-		*target++ = *input++;
+		if (target != 0)
+		{
+			if (targetSize < 2)
+			{
+				goto outofspace;
+			}
+
+			target[0] = input[0];
+			target[1] = input[1];
+		}
 
 		*read = 2;
 
@@ -947,6 +955,12 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 	{
 		*read = codepoint_left_length;
 
+		if (target != 0 &&
+			targetSize < codepoint_left_length)
+		{
+			goto outofspace;
+		}
+
 		result += writecodepoint(codepoint_left, &target, &targetSize, errors);
 	}
 
@@ -958,10 +972,22 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 	composed = querycomposition(codepoint_left, codepoint_right, &find_result);
 	if (find_result == FindResult_Found)
 	{
+		if (target != 0 &&
+			targetSize < codepoint_right_length)
+		{
+			goto outofspace;
+		}
+
 		result += writecodepoint(composed, &target, &targetSize, errors);
 	}
 	else
 	{
+		if (target != 0 &&
+			targetSize < codepoint_left_length + codepoint_right_length)
+		{
+			goto outofspace;
+		}
+
 		result += writecodepoint(codepoint_left, &target, &targetSize, errors);
 		result += writecodepoint(codepoint_right, &target, &targetSize, errors);
 	}
@@ -984,7 +1010,6 @@ size_t processtransform(TransformFunc transform, const char* input, size_t input
 {
 	const char* src = input;
 	size_t src_size = inputSize;
-	const char* src_end = input + inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
 	size_t bytes_written = 0;
