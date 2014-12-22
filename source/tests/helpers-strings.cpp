@@ -131,7 +131,7 @@ namespace helpers {
 		return converted;
 	}
 
-	void printable(std::stringstream& target, bool& wroteHex, char character)
+	void printable(std::stringstream& target, bool& wroteHex, uint8_t character)
 	{
 		if (character < 0x20)
 		{
@@ -219,7 +219,7 @@ namespace helpers {
 
 		for (std::string::const_iterator it = text.begin(); it != text.end(); ++it)
 		{
-			printable(ss, wrote_hex, *it);
+			printable(ss, wrote_hex, (uint8_t)*it);
 		}
 
 		ss << "\"";
@@ -252,7 +252,7 @@ namespace helpers {
 	}
 
 	::testing::AssertionResult CompareUtf8Strings(
-		const char* expressionLeft, const char* expressionRight,
+		const char* expressionLeft GTEST_ATTRIBUTE_UNUSED_, const char* expressionRight GTEST_ATTRIBUTE_UNUSED_,
 		const std::string& textLeft, const std::string& textRight
 	)
 	{

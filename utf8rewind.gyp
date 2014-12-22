@@ -41,6 +41,9 @@
 				'dependencies.gyp:gtest',
 				'utf8rewind',
 			],
+			'defines': [
+				'GTEST_HAS_PTHREAD=0',
+			],
 			'sources': [
 				'source/tests/helpers-casemapping.cpp',
 				'source/tests/helpers-casemapping.hpp',
@@ -80,7 +83,6 @@
 				}],
 				['OS=="win"', {
 					'defines': [
-						'GTEST_HAS_PTHREAD=0',
 						'GTEST_HAS_TR1_TUPLE=0'
 					],
 				}],
