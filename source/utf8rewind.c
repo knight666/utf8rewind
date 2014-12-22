@@ -202,60 +202,51 @@ size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t*
 	return encoded_length;
 }
 
-size_t readcodepoint(unicode_t* codepoint, const char* src, size_t srcSize)
+size_t readcodepoint(unicode_t* codepoint, const char* input, size_t inputSize)
 {
-	uint8_t current = (uint8_t)*src;
-	uint8_t mask;
+	const uint8_t* src = (const uint8_t*)input;
 	size_t decoded_length;
-	size_t src_index;
-	size_t src_size = srcSize;
+	static const uint8_t ReadMask[7] = { 0x7F, 0xFF, 0x1F, 0x0F, 0x07, 0x03, 0x01 };
 
-	if (current == 0)
+	if (*src == 0)
 	{
 		*codepoint = 0;
 		return 1;
 	}
 
-	decoded_length = Utf8ByteLength[current];
+	decoded_length = Utf8ByteLength[*src];
 	if (decoded_length == 0)
 	{
 		*codepoint = REPLACEMENT_CHARACTER;
 		return 1;
 	}
 
-	mask = (decoded_length == 1) ? 0xFF : (1 << (7 - decoded_length)) - 1;
-
-	*codepoint = (unicode_t)(current & mask);
-	src++;
-
-	for (src_index = 1; src_index < decoded_length && src_size > 0; ++src_index)
-	{
-		if ((*src & 0x80) == 0)
-		{
-			/* Not a continuation byte for a multi-byte sequence */
-
-			*codepoint = REPLACEMENT_CHARACTER;
-			return src_index;
-		}
-
-		*codepoint = (*codepoint << 6) | (*src & 0x3F);
-		src++;
-		src_size--;
-	}
+	*codepoint = (unicode_t)(*src & ReadMask[decoded_length]);
 
 	if (decoded_length > 1)
 	{
-		/* Check for overlong sequences */
+		size_t src_index;
+		size_t src_size = inputSize;
 
-		if ((*codepoint < Utf8ByteMinimum[decoded_length - 1] ||
-			*codepoint > Utf8ByteMaximum[decoded_length - 1]))
+		for (src_index = 1; src_index < decoded_length; ++src_index)
 		{
-			*codepoint = REPLACEMENT_CHARACTER;
+			src++;
+			src_size--;
+
+			if (src_size == 0 ||    /* Not enough data */
+				(*src & 0x80) == 0) /* Not a continuation byte */
+			{
+				*codepoint = REPLACEMENT_CHARACTER;
+				return src_index;
+			}
+
+			*codepoint = (*codepoint << 6) | (*src & 0x3F);
 		}
 
-		/* Check for surrogate pairs */
+		/* Overlong sequences and surrogate pairs */
 
-		else if (
+		if (*codepoint < Utf8ByteMinimum[decoded_length - 1] ||
+			*codepoint > Utf8ByteMaximum[decoded_length - 1] ||
 			(*codepoint >= SURROGATE_HIGH_START && *codepoint <= SURROGATE_HIGH_END) ||
 			(*codepoint >= SURROGATE_LOW_START && *codepoint <= SURROGATE_LOW_END))
 		{
