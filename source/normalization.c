@@ -40,6 +40,9 @@ extern const DecompositionRecord* UnicodeLowercaseRecordPtr;
 extern const size_t UnicodeTitlecaseRecordCount;
 extern const DecompositionRecord* UnicodeTitlecaseRecordPtr;
 
+extern const size_t UnicodeCompositionRecordCount;
+extern const CompositionRecord* UnicodeCompositionRecordPtr;
+
 extern const char* DecompositionData;
 extern const size_t DecompositionDataLength;
 
@@ -159,4 +162,76 @@ const char* resolvedecomposition(size_t offset, int32_t* result)
 
 	*result = FindResult_Found;
 	return DecompositionData + offset;
+}
+
+unicode_t querycomposition(unicode_t left, unicode_t right, int32_t* result)
+{
+	uint64_t key = ((uint64_t)left << 32) + (uint64_t)right;
+	size_t offset_start;
+	size_t offset_end;
+	size_t offset_pivot;
+	const CompositionRecord* record = UnicodeCompositionRecordPtr;
+	size_t record_count = UnicodeCompositionRecordCount;
+	size_t i;
+	unicode_t found = 0;
+
+	if (result == 0)
+	{
+		return 0;
+	}
+
+	offset_start = 0;
+	offset_end = record_count - 1;
+
+	if (key < record[offset_start].key ||
+		key > record[offset_end].key)
+	{
+		*result = FindResult_OutOfBounds;
+		return 0;
+	}
+
+	do
+	{
+		offset_pivot = offset_start + ((offset_end - offset_start) / 2);
+
+		if (key == record[offset_start].key)
+		{
+			*result = FindResult_Found;
+			return record[offset_start].value;
+		}
+		else if (key == record[offset_end].key)
+		{
+			*result = FindResult_Found;
+			return record[offset_end].value;
+		}
+		else if (key == record[offset_pivot].key)
+		{
+			*result = FindResult_Found;
+			return record[offset_pivot].value;
+		}
+		else
+		{
+			if (key > record[offset_pivot].key)
+			{
+				offset_start = offset_pivot;
+			}
+			else
+			{
+				offset_end = offset_pivot;
+			}
+		}
+	}
+	while (offset_end - offset_start > 32);
+
+	for (i = offset_start; i <= offset_end; ++i)
+	{
+		if (key == record[i].key)
+		{
+			*result = FindResult_Found;
+			return record[i].value;
+		}
+	}
+
+	*result = FindResult_Missing;
+	return 0;
 }

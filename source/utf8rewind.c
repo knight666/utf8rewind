@@ -848,7 +848,7 @@ outofspace:
 	return 0;
 }
 
-size_t transform_decomposition(unicode_t codepoint, size_t codepointLength, char* target, size_t targetSize, int32_t* errors)
+size_t transform_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, size_t* read, int32_t* errors)
 {
 	size_t resolved_size;
 	unicode_t SIndex;
@@ -856,7 +856,7 @@ size_t transform_decomposition(unicode_t codepoint, size_t codepointLength, char
 	unicode_t V;
 	unicode_t T;
 
-	if (codepointLength == 1)
+	if ((uint8_t)*input <= 0x7F)
 	{
 		/* ASCII codepoints are already decomposed */
 
@@ -867,53 +867,63 @@ size_t transform_decomposition(unicode_t codepoint, size_t codepointLength, char
 				goto outofspace;
 			}
 
-			*target = (char)codepoint;
+			*target = *input;
 		}
+
+		*read = 1;
 
 		return 1;
 	}
-	else if (codepoint >= 0xAC00 && codepoint <= 0xD7A3)
-	{
-		/*
-			Hangul decomposition
-			
-			Algorithm adapted from Unicode Technical Report #15:
-			http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
-		*/
-
-		static const unicode_t SBase = 0xAC00;
-		static const unicode_t LBase = 0x1100;
-		static const unicode_t VBase = 0x1161;
-		static const unicode_t TBase = 0x11A7;
-		static const unicode_t TCount = 28;
-		static const unicode_t NCount = 588; /* VCount * TCount */
-		static const unicode_t SCount = 11172; /* LCount * NCount */
-
-		SIndex = codepoint - SBase;
-		L = LBase + (SIndex / NCount);
-		V = VBase + (SIndex % NCount) / TCount;
-		T = TBase + (SIndex % TCount);
-
-		/* hangul syllables are always three bytes */
-		resolved_size = (T != TBase) ? 9 : 6;
-
-		if (target != 0 && targetSize < resolved_size)
-		{
-			goto outofspace;
-		}
-
-		writecodepoint(L, &target, &targetSize, errors);
-		writecodepoint(V, &target, &targetSize, errors);
-		if (T != TBase)
-		{
-			writecodepoint(T, &target, &targetSize, errors);
-		}
-
-		return resolved_size;
-	}
 	else
 	{
-		return transform_default(DecompositionQuery_Decomposed, codepoint, codepointLength, &target, &targetSize, errors);
+		unicode_t codepoint;
+		size_t codepoint_length = readcodepoint(&codepoint, input, inputSize);
+
+		if (codepoint >= 0xAC00 && codepoint <= 0xD7A3)
+		{
+			/*
+				Hangul decomposition
+			
+				Algorithm adapted from Unicode Technical Report #15:
+				http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
+			*/
+
+			static const unicode_t SBase = 0xAC00;
+			static const unicode_t LBase = 0x1100;
+			static const unicode_t VBase = 0x1161;
+			static const unicode_t TBase = 0x11A7;
+			static const unicode_t TCount = 28;
+			static const unicode_t NCount = 588; /* VCount * TCount */
+			static const unicode_t SCount = 11172; /* LCount * NCount */
+
+			SIndex = codepoint - SBase;
+			L = LBase + (SIndex / NCount);
+			V = VBase + (SIndex % NCount) / TCount;
+			T = TBase + (SIndex % TCount);
+
+			/* hangul syllables are always three bytes */
+			resolved_size = (T != TBase) ? 9 : 6;
+
+			if (target != 0 && targetSize < resolved_size)
+			{
+				goto outofspace;
+			}
+
+			writecodepoint(L, &target, &targetSize, errors);
+			writecodepoint(V, &target, &targetSize, errors);
+			if (T != TBase)
+			{
+				writecodepoint(T, &target, &targetSize, errors);
+			}
+		}
+		else
+		{
+			resolved_size = transform_default(DecompositionQuery_Decomposed, codepoint, codepoint_length, &target, &targetSize, errors);
+		}
+
+		*read = codepoint_length;
+
+		return resolved_size;
 	}
 
 outofspace:
@@ -924,7 +934,55 @@ outofspace:
 	return 0;
 }
 
-typedef size_t (*TransformFunc)(unicode_t, size_t, char*, size_t, int32_t*);
+size_t transform_composition(const char* input, size_t inputSize, char* target, size_t targetSize, size_t* read, int32_t* errors)
+{
+	unicode_t codepoint_left;
+	unicode_t codepoint_right;
+	size_t codepoint_left_length;
+	size_t codepoint_right_length;
+	unicode_t composed;
+	int32_t find_result = 0;
+	size_t result = 0;
+
+	codepoint_left_length = readcodepoint(&codepoint_left, input, inputSize);
+
+	if (inputSize < codepoint_left_length ||
+		inputSize - codepoint_left_length == 0)
+	{
+		*read = codepoint_left_length;
+
+		result += writecodepoint(codepoint_left, &target, &targetSize, errors);
+	}
+
+	input += codepoint_left_length;
+	inputSize -= codepoint_left_length;
+
+	codepoint_right_length = readcodepoint(&codepoint_right, input, inputSize);
+
+	composed = querycomposition(codepoint_left, codepoint_right, &find_result);
+	if (find_result == FindResult_Found)
+	{
+		result += writecodepoint(composed, &target, &targetSize, errors);
+	}
+	else
+	{
+		result += writecodepoint(codepoint_left, &target, &targetSize, errors);
+		result += writecodepoint(codepoint_right, &target, &targetSize, errors);
+	}
+
+	*read = codepoint_left_length + codepoint_right_length;
+
+	return result;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return 0;
+}
+
+typedef size_t (*TransformFunc)(const char*, size_t, char*, size_t, size_t*, int32_t*);
 
 size_t processtransform(TransformFunc transform, const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
@@ -934,9 +992,8 @@ size_t processtransform(TransformFunc transform, const char* input, size_t input
 	char* dst = target;
 	size_t dst_size = targetSize;
 	size_t bytes_written = 0;
-	unicode_t codepoint;
-	size_t codepoint_length;
-	size_t result;
+	size_t transform_written = 0;
+	size_t transform_read = 0;
 
 	if (input == 0 ||
 		transform == 0)
@@ -944,28 +1001,26 @@ size_t processtransform(TransformFunc transform, const char* input, size_t input
 		goto invaliddata;
 	}
 
-	do
+	while (src_size > 0)
 	{
-		codepoint_length = readcodepoint(&codepoint, src, src_size);
-
-		result = transform(codepoint, codepoint_length, dst, dst_size, errors);
-		if (result == 0)
+		transform_written = transform(src, src_size, dst, dst_size, &transform_read, errors);
+		if (transform_written == 0 ||
+			transform_read == 0)
 		{
 			return bytes_written;
 		}
 
 		if (target != 0)
 		{
-			dst += result;
-			dst_size -= result;
+			dst += transform_written;
+			dst_size -= transform_written;
 		}
 
-		bytes_written += result;
+		bytes_written += transform_written;
 
-		src = seekforward(src, src_end, src_size, 1);
-		src_size -= codepoint_length;
+		src += transform_read;
+		src_size -= transform_read;
 	}
-	while (src_size > 0);
 
 	return bytes_written;
 
@@ -1167,5 +1222,24 @@ outofspace:
 
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
-	return processtransform(&transform_decomposition, input, inputSize, target, targetSize, errors);
+	TransformFunc process = 0;
+
+	if ((flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
+	{
+		process = &transform_decomposition;
+	}
+	else if ((flags & UTF8_TRANSFORM_COMPOSED) != 0)
+	{
+		process = &transform_composition;
+	}
+	else
+	{
+		if (errors != 0)
+		{
+			*errors = UTF8_ERR_INVALID_TRANSFORM;
+		}
+		return 0;
+	}
+
+	return processtransform(process, input, inputSize, target, targetSize, errors);
 }

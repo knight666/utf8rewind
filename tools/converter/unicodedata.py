@@ -426,23 +426,6 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		for r in self.recordsOrdered:
 			r.compose()
-		
-		composed = []
-		
-		for r in self.recordsOrdered:
-			if r.compositionPairs:
-				for p in r.compositionPairs.items():
-					key = r.codepoint + p[0]
-					if key in composed:
-						print "collision " + hex(key)
-					else:
-						pair = {
-							"key": key,
-							"value": p[1]
-						}
-						composed.append(pair)
-		
-		print "composed", str(len(composed))
 	
 	def resolveCaseMapping(self):
 		print "Resolving case mappings..."
@@ -568,6 +551,50 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		header.newLine()
 	
+	def writeCompositionRecords(self, header):
+		composed = []
+		
+		for r in self.recordsOrdered:
+			if r.compositionPairs:
+				for p in r.compositionPairs.items():
+					key = (r.codepoint << 32) + p[0]
+					if key in composed:
+						print "collision " + hex(key)
+					else:
+						pair = {
+							"key": key,
+							"value": p[1]
+						}
+						composed.append(pair)
+		
+		composed_ordered = sorted(composed, key=lambda item: item["key"])
+		
+		header.writeLine("const size_t UnicodeCompositionRecordCount = " + str(len(composed_ordered)) + ";")
+		header.writeLine("const CompositionRecord UnicodeCompositionRecord[" + str(len(composed_ordered)) + "] = {")
+		header.indent()
+		
+		count = 0
+		
+		for c in composed_ordered:
+			if (count % 4) == 0:
+				header.writeIndentation()
+			
+			header.write("{ " + hex(c["key"]) + ", " + hex(c["value"]) + " },")
+			
+			count += 1
+			if count <> len(composed_ordered):
+				if (count % 4) == 0:
+					header.newLine()
+				else:
+					header.write(" ")
+		
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.writeLine("const CompositionRecord* UnicodeCompositionRecordPtr = UnicodeCompositionRecord;")
+		
+		header.newLine()
+	
 	def writeSource(self, filepath):
 		print "Writing database to " + filepath + "..."
 		
@@ -632,6 +659,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		self.writeDecompositionRecords(header, nfd_records, "NFD", "offsetNFD")
 		self.writeDecompositionRecords(header, nfkd_records, "NFKD", "offsetNFKD")
+		
+		# composition records
+		
+		self.writeCompositionRecords(header)
 		
 		# case mapping records
 		
