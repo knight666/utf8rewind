@@ -281,56 +281,31 @@ size_t utf8len(const char* text)
 	{
 		codepoint = (uint8_t)*text;
 
-		if (codepoint == 0)
+		codepoint_length = Utf8ByteLength[codepoint];
+		if (codepoint_length != 0)
 		{
-			break;
+			/* Check if encoding is valid */
+
+			src = text + 1;
+
+			for (src_index = 1; src_index < codepoint_length; ++src_index)
+			{
+				if ((*src & 0x80) == 0)
+				{
+					/* Not a continuation byte for a multi-byte sequence */
+
+					break;
+				}
+
+				src++;
+			}
 		}
-		else if (
-			(codepoint & 0x80) == 0 ||    /* ASCII */
-			(codepoint & 0xC0) != 0xC0 || /* Malformed continuation byte */
-			(codepoint & 0xFE) == 0xFE    /* Illegal byte */
-		)
+		else
 		{
-			codepoint_length = 1;
-		}
-		else if ((codepoint & 0xE0) == 0xC0)
-		{
-			codepoint_length = 2;
-		}
-		else if ((codepoint & 0xF0) == 0xE0)
-		{
-			codepoint_length = 3;
-		}
-		else if ((codepoint & 0xF8) == 0xF0)
-		{
-			codepoint_length = 4;
-		}
-		else if ((codepoint & 0xFC) == 0xF8)
-		{
-			codepoint_length = 5;
-		}
-		else // (codepoint & 0xFE) == 0xFC
-		{
-			codepoint_length = 6;
+			src_index = 1;
 		}
 
 		length++;
-
-		/* Check if encoding is valid */
-
-		src = text + 1;
-
-		for (src_index = 1; src_index < codepoint_length; ++src_index)
-		{
-			if ((*src & 0x80) == 0)
-			{
-				/* Not a continuation byte for a multi-byte sequence */
-
-				break;
-			}
-
-			src++;
-		}
 
 		if (src_index > text_length)
 		{
