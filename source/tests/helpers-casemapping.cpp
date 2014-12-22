@@ -85,7 +85,7 @@ namespace helpers {
 	}
 
 	::testing::AssertionResult CompareUtf8Uppercase(
-		const char* expressionExpected, const char* expressionActual,
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
 	{
 		if (entryExpected.codepoint == entryActual.codepoint &&
@@ -119,7 +119,7 @@ namespace helpers {
 	}
 
 	::testing::AssertionResult CompareUtf8Lowercase(
-		const char* expressionLeft, const char* expressionRight,
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
 	{
 		if (entryExpected.codepoint == entryActual.codepoint &&
