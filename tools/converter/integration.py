@@ -1,3 +1,4 @@
+import argparse
 import datetime
 import os
 import re
@@ -114,27 +115,55 @@ class IntegrationSuite:
 		self.header.write("}")
 
 if __name__ == '__main__':
+	parser = argparse.ArgumentParser(description='Parse Unicode codepoint database and write integration tests.')
+	parser.add_argument(
+		'-v', '--verbove',
+		dest = 'verbose',
+		action = 'store_true',
+		help = 'verbose output'
+	)
+	parser.add_argument(
+		'--casemapping',
+		dest = 'casemapping',
+		action = 'store_true',
+		help = 'write case mapping tests'
+	)
+	parser.add_argument(
+		'--normalization',
+		dest = 'normalization',
+		action = 'store_true',
+		help = 'write normalization tests'
+	)
+	args = parser.parse_args()
+	
+	if not args.casemapping and not args.normalization:
+		all = True
+	else:
+		all = False
+	
 	db = unicodedata.Database()
 	db.loadFromFiles(None)
 	
-	suite = IntegrationSuite(db)
-	suite.open('/../../source/tests/integration-casemapping.cpp')
+	if all or args.casemapping:
+		suite = IntegrationSuite(db)
+		suite.open('/../../source/tests/integration-casemapping.cpp')
+		
+		valid_blocks = []
+		
+		print "Checking for valid blocks..."
+		
+		for b in db.blocks:
+			for u in range(b.start, b.end + 1):
+				if u in db.records:
+					r = db.records[u]
+					if r.uppercase or r.lowercase:
+						valid_blocks.append(b)
+						break
+		
+		print "Writing tests..."
+		
+		for b in valid_blocks:
+			suite.writeTest(range(b.start, b.end + 1), b.name)
+		
+		suite.close()
 	
-	valid_blocks = []
-	
-	print "Checking for valid blocks..."
-	
-	for b in db.blocks:
-		for u in range(b.start, b.end + 1):
-			if u in db.records:
-				r = db.records[u]
-				if r.uppercase or r.lowercase:
-					valid_blocks.append(b)
-					break
-	
-	print "Writing tests..."
-	
-	for b in valid_blocks:
-		suite.writeTest(range(b.start, b.end + 1), b.name)
-	
-	suite.close()
