@@ -79,7 +79,7 @@ namespace helpers {
 		}
 
 		std::vector<unicode_t> converted;
-		converted.resize(size_in_bytes / sizeof(unicode_t));
+		converted.resize(size_in_bytes / sizeof(unicode_t) + 1);
 
 		utf8toutf32(text.c_str(), text.size(), &converted[0], size_in_bytes, &errors);
 
@@ -106,7 +106,7 @@ namespace helpers {
 			return converted;
 		}
 
-		converted.resize(size_in_bytes);
+		converted.resize(size_in_bytes + 1);
 		utf32toutf8(&codepoint, sizeof(unicode_t), &converted[0], size_in_bytes, &errors);
 
 		return converted;
@@ -125,7 +125,7 @@ namespace helpers {
 			return converted;
 		}
 
-		converted.resize(size_in_bytes);
+		converted.resize(size_in_bytes + 1);
 		utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), &converted[0], size_in_bytes, &errors);
 
 		return converted;
@@ -245,18 +245,18 @@ namespace helpers {
 			return converted;
 		}
 
-		converted.resize(size_in_bytes);
+		converted.resize(size_in_bytes + 1);
 		utf32toutf8(codepoints, codepointsSize, &converted[0], size_in_bytes, &errors);
 
 		return printable(converted);
 	}
 
 	::testing::AssertionResult CompareUtf8Strings(
-		const char* expressionLeft GTEST_ATTRIBUTE_UNUSED_, const char* expressionRight GTEST_ATTRIBUTE_UNUSED_,
-		const char* textLeft, const char* textRight
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
+		const char* textExpected, const char* textActual
 	)
 	{
-		if (!strcmp(textLeft, textRight))
+		if (!strcmp(textActual, textExpected))
 		{
 			return ::testing::AssertionSuccess();
 		}
@@ -265,10 +265,8 @@ namespace helpers {
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
 			result << "String mismatch" << std::endl;
-			result << "Expected:" << std::endl;
-			result << helpers::identifiable(textLeft) << std::endl;
-			result << "  Actual:" << std::endl;
-			result << helpers::identifiable(textRight) << std::endl;
+			result << "  Actual: \"" << helpers::identifiable(textActual) << "\"" << std::endl;
+			result << "Expected: \"" << helpers::identifiable(textExpected) << "\"" << std::endl;
 
 			return result;
 		}
