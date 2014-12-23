@@ -49,6 +49,35 @@ class IntegrationSuite:
 	def close(self):
 		self.header.close()
 	
+	def execute(self):
+		pass
+
+class CaseMappingIntegrationSuite(IntegrationSuite):
+	def __init__(self, db):
+		self.db = db
+	
+	def execute(self):
+		self.open('/../../source/tests/integration-casemapping.cpp')
+		
+		valid_blocks = []
+		
+		print "Checking for valid blocks..."
+		
+		for b in db.blocks:
+			for u in range(b.start, b.end + 1):
+				if u in db.records:
+					r = db.records[u]
+					if r.uppercase or r.lowercase:
+						valid_blocks.append(b)
+						break
+		
+		print "Writing tests..."
+		
+		for b in valid_blocks:
+			self.writeTest(range(b.start, b.end + 1), b.name)
+		
+		self.close()
+	
 	def writeTest(self, codepointRange, name):
 		name = re.sub('[ \-]', '', name)
 		
@@ -145,25 +174,5 @@ if __name__ == '__main__':
 	db.loadFromFiles(None)
 	
 	if all or args.casemapping:
-		suite = IntegrationSuite(db)
-		suite.open('/../../source/tests/integration-casemapping.cpp')
-		
-		valid_blocks = []
-		
-		print "Checking for valid blocks..."
-		
-		for b in db.blocks:
-			for u in range(b.start, b.end + 1):
-				if u in db.records:
-					r = db.records[u]
-					if r.uppercase or r.lowercase:
-						valid_blocks.append(b)
-						break
-		
-		print "Writing tests..."
-		
-		for b in valid_blocks:
-			suite.writeTest(range(b.start, b.end + 1), b.name)
-		
-		suite.close()
-	
+		suite = CaseMappingIntegrationSuite(db)
+		suite.execute()
