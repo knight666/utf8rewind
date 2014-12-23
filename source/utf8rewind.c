@@ -231,7 +231,6 @@ size_t readcodepoint(unicode_t* codepoint, const char* input, size_t inputSize)
 		for (src_index = 1; src_index < decoded_length; ++src_index)
 		{
 			src++;
-			src_size--;
 
 			if (src_size == 0 ||    /* Not enough data */
 				(*src & 0x80) == 0) /* Not a continuation byte */
@@ -239,6 +238,8 @@ size_t readcodepoint(unicode_t* codepoint, const char* input, size_t inputSize)
 				*codepoint = REPLACEMENT_CHARACTER;
 				return src_index;
 			}
+
+			src_size--;
 
 			*codepoint = (*codepoint << 6) | (*src & 0x3F);
 		}
@@ -1234,11 +1235,14 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 {
 	TransformFunc process = 0;
 
-	if ((flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
+	if ((flags & UTF8_TRANSFORM_DECOMPOSED) != 0 ||
+		(flags & UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED) != 0)
 	{
 		process = &transform_decomposition;
 	}
-	else if ((flags & UTF8_TRANSFORM_COMPOSED) != 0)
+	else if (
+		(flags & UTF8_TRANSFORM_COMPOSED) != 0 ||
+		(flags & UTF8_TRANSFORM_COMPATIBILITY_COMPOSED) != 0)
 	{
 		process = &transform_composition;
 	}
