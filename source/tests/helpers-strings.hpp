@@ -20,7 +20,7 @@ namespace helpers {
 
 	::testing::AssertionResult CompareUtf8Strings(
 		const char* expressionLeft, const char* expressionRight,
-		const std::string& textLeft, const std::string& textRight
+		const char* textLeft, const char* textRight
 	);
 
 };
