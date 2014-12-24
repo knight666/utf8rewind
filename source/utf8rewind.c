@@ -954,6 +954,10 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 		}
 
 		result += writecodepoint(codepoint_left, &target, &targetSize, errors);
+
+		*read = codepoint_left_length;
+
+		return result;
 	}
 
 	input += codepoint_left_length;
