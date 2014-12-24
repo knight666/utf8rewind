@@ -44,7 +44,6 @@ class IntegrationSuite:
 		self.header.newLine()
 		self.header.writeLine("#include \"tests-base.hpp\"")
 		self.header.newLine()
-		self.header.write("#include \"helpers-casemapping.hpp\"")
 	
 	def close(self):
 		self.header.close()
@@ -53,12 +52,7 @@ class IntegrationSuite:
 		pass
 
 class CaseMappingIntegrationSuite(IntegrationSuite):
-	def __init__(self, db):
-		self.db = db
-	
 	def execute(self):
-		self.open('/../../source/tests/integration-casemapping.cpp')
-		
 		valid_blocks = []
 		
 		print "Checking for valid blocks..."
@@ -72,6 +66,10 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 						break
 		
 		print "Writing tests..."
+		
+		self.open('/../../source/tests/integration-casemapping.cpp')
+		
+		self.header.write("#include \"helpers-casemapping.hpp\"")
 		
 		for b in valid_blocks:
 			self.writeTest(range(b.start, b.end + 1), b.name)
@@ -143,6 +141,76 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 		self.header.outdent()
 		self.header.write("}")
 
+class NormalizationEntry:
+	def __init__(self):
+		self.source = 0
+		self.nfc = ""
+		self.nfd = ""
+		self.nfkc = ""
+		self.nfkd = ""
+	
+	def __str__(self):
+		return "source " + hex(self.source) + " nfc " + self.nfc + " nfd " + self.nfd + " nfkc " + self.nfkc + " nfkd " + self.nfkd;
+	
+	def parse(self, entry):
+		self.source = int(entry.matches[0][0], 16)
+		
+		self.nfc = self.matchToString(entry.matches[1])
+		self.nfd = self.matchToString(entry.matches[2])
+		self.nfkc = self.matchToString(entry.matches[3])
+		self.nfkd = self.matchToString(entry.matches[4])
+	
+	def matchToString(self, match):
+		result = ""
+		
+		for m in match:
+			result += libs.utf8.codepointToUtf8(int(m, 16))
+		
+		return result
+
+class NormalizationSection:
+	def __init__(self, title):
+		self.title = re.sub('[^\w ]', '', title).title().replace(' ', '')
+		self.entries = []
+
+class NormalizationIntegrationSuite(IntegrationSuite):
+	def __init__(self, db):
+		self.db = db
+		self.current = None
+		self.sections = []
+	
+	def execute(self):
+		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+		
+		document_normalization = libs.unicode.UnicodeDocument()
+		document_normalization.parse(script_path + '/data/NormalizationTest.txt')
+		document_normalization.accept(self)
+		
+		self.open('/../../source/tests/integration-normalization.cpp')
+		self.close()
+	
+	def visitDocument(self, document):
+		print "Parsing normalization tests..."
+		return True
+	
+	def visitSection(self, section):
+		title = re.sub('[^\w ]', '', section.title).title()
+		title = title.replace(' ', '')
+		
+		self.current = NormalizationSection(section.title)
+		self.sections.append(self.current)
+		
+		return True
+	
+	def visitEntry(self, entry):
+		normalization = NormalizationEntry()
+		normalization.parse(entry)
+		self.current.entries.append(normalization)
+		
+		print normalization
+		
+		return True
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Parse Unicode codepoint database and write integration tests.')
 	parser.add_argument(
@@ -171,8 +239,12 @@ if __name__ == '__main__':
 		all = False
 	
 	db = unicodedata.Database()
-	db.loadFromFiles(None)
+	#db.loadFromFiles(None)
 	
 	if all or args.casemapping:
 		suite = CaseMappingIntegrationSuite(db)
+		suite.execute()
+	
+	if all or args.normalization:
+		suite = NormalizationIntegrationSuite(db)
 		suite.execute()
