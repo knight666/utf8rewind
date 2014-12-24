@@ -170,7 +170,7 @@ class NormalizationEntry:
 
 class NormalizationSection:
 	def __init__(self, title):
-		self.title = re.sub('[^\w ]', '', title).title().replace(' ', '')
+		self.title = title
 		self.entries = []
 
 class NormalizationIntegrationSuite(IntegrationSuite):
@@ -187,6 +187,30 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		document_normalization.accept(self)
 		
 		self.open('/../../source/tests/integration-normalization.cpp')
+		
+		self.header.newLine()
+		self.header.writeLine("#include \"helpers-normalization.hpp\"")
+		self.header.write("#include \"helpers-strings.hpp\"")
+		
+		for s in self.sections:
+			print "Writing tests for \"" + s.title + "\""
+			
+			title = re.sub('[^\w ]', '', s.title).title()
+			title = title.replace(' ', '')
+			
+			self.header.newLine()
+			
+			self.header.newLine()
+			self.header.writeLine("TEST(Normalization, " + title + ")")
+			self.header.writeLine("{")
+			self.header.indent()
+			
+			for e in s.entries:
+				self.header.writeLine("CHECK_NORMALIZE(0x" + format(e.source, '08X') + ", \"" + e.nfd + "\", \"" + e.nfc + "\");")
+			
+			self.header.outdent()
+			self.header.write("}")
+		
 		self.close()
 	
 	def visitDocument(self, document):
@@ -206,8 +230,6 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		normalization = NormalizationEntry()
 		normalization.parse(entry)
 		self.current.entries.append(normalization)
-		
-		print normalization
 		
 		return True
 
@@ -239,7 +261,8 @@ if __name__ == '__main__':
 		all = False
 	
 	db = unicodedata.Database()
-	#db.loadFromFiles(None)
+	if all or args.casemapping:
+		db.loadFromFiles(None)
 	
 	if all or args.casemapping:
 		suite = CaseMappingIntegrationSuite(db)
