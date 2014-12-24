@@ -40,6 +40,7 @@ class UnicodeMapping:
 		self.offsetUppercase = 0
 		self.offsetLowercase = 0
 		self.offsetTitlecase = 0
+		self.block = None
 	
 	def decomposedToString(self):
 		decomposedCodepoints = ""
@@ -247,19 +248,13 @@ class UnicodeMapping:
 			return
 		
 		if self.uppercase:
-			converted = ""
-			for u in self.uppercase:
-				converted += libs.utf8.codepointToUtf8(u)
+			converted = libs.utf8.unicodeToUtf8(self.uppercase)
 			self.offsetUppercase = self.db.addTranslation(converted + "\\x00")
 		if self.lowercase:
-			converted = ""
-			for u in self.lowercase:
-				converted += libs.utf8.codepointToUtf8(u)
+			converted = libs.utf8.unicodeToUtf8(self.lowercase)
 			self.offsetLowercase = self.db.addTranslation(converted + "\\x00")
 		if self.titlecase:
-			converted = ""
-			for u in self.titlecase:
-				converted += libs.utf8.codepointToUtf8(u)
+			converted = libs.utf8.unicodeToUtf8(self.titlecase)
 			self.offsetTitlecase = self.db.addTranslation(converted + "\\x00")
 	
 	def codepointsToString(self, values):
@@ -341,6 +336,8 @@ class Database(libs.unicode.UnicodeVisitor):
 		document_blocks.parse(script_path + '/data/Blocks.txt')
 		document_blocks.accept(blocks)
 		
+		self.resolveBlocks()
+		
 		# decomposition
 		
 		self.resolveDecomposition()
@@ -383,12 +380,12 @@ class Database(libs.unicode.UnicodeVisitor):
 		print "Adding missing codepoints to database..."
 		
 		missing = []
-		missing += range(0x3401, 0x4DB4) # CJK Ideograph Extension A
-		missing += range(0x4E01, 0x9FCB) # CJK Ideograph
-		missing += range(0xAC01, 0xD7A2) # Hangul Syllable
-		missing += range(0x20001, 0x2A6D5) # CJK Ideograph Extension B
-		missing += range(0x2A701, 0x2B733) # CJK Ideograph Extension C
-		missing += range(0x2B73F, 0x2B81C) # CJK Ideograph Extension D
+		missing += range(0x3401, 0x4DB5) # CJK Ideograph Extension A
+		missing += range(0x4E01, 0x9FCC) # CJK Ideograph
+		missing += range(0xAC01, 0xD7A3) # Hangul Syllable
+		missing += range(0x20001, 0x2A6D6) # CJK Ideograph Extension B
+		missing += range(0x2A701, 0x2B734) # CJK Ideograph Extension C
+		missing += range(0x2B73F, 0x2B81D) # CJK Ideograph Extension D
 		
 		for c in missing:
 			u = UnicodeMapping(self)
@@ -396,28 +393,36 @@ class Database(libs.unicode.UnicodeVisitor):
 			self.recordsOrdered.append(u)
 			self.records[u.codepoint] = u
 	
+	def resolveBlocks(self):
+		print "Resolving blocks for entries..."
+		
+		block_index = 0
+		block_current = self.blocks[block_index]
+		
+		for r in self.recordsOrdered:
+			if r.codepoint > block_current.end:
+				block_index += 1
+				block_current = self.blocks[block_index]
+			r.block = block_current
+	
 	def resolveDecomposition(self):
 		print "Resolving decomposition..."
 		
 		for r in self.recordsOrdered:
 			r.decompose()
 			
-			convertedCodepoint = libs.utf8.codepointToUtf8(r.codepoint)
+			convertedCodepoint = libs.utf8.codepointToUtf8(r.codepoint)[0]
 			
 			r.offsetNFD = 0
 			r.offsetNFKD = 0
 			
 			if r.decomposedNFD:
-				convertedNFD = ""
-				for d in r.decomposedNFD:
-					convertedNFD += libs.utf8.codepointToUtf8(d)
+				convertedNFD = libs.utf8.unicodeToUtf8(r.decomposedNFD)
 				if convertedNFD <> convertedCodepoint:
 					r.offsetNFD = self.addTranslation(convertedNFD + "\\x00")
 			
 			if r.decomposedNFKD:
-				convertedNFKD = ""
-				for d in r.decomposedNFKD:
-					convertedNFKD += libs.utf8.codepointToUtf8(d)
+				convertedNFKD = libs.utf8.unicodeToUtf8(r.decomposedNFKD)
 				if convertedNFKD <> convertedCodepoint:
 					r.offsetNFKD = self.addTranslation(convertedNFKD + "\\x00")
 	
@@ -469,16 +474,16 @@ class Database(libs.unicode.UnicodeVisitor):
 			print self.resolveCodepoint(queryCodepoint, True)
 
 	def matchToString(self, match):
-		result = ""
-		
 		if match == None:
-			return result
+			return ""
+		
+		codepoints = []
 		
 		for group in match:
 			if group <> None:
-				codepoint = int(group, 16)
-				converted = libs.utf8.codepointToUtf8(codepoint)
-				result += converted
+				codepoints.append(int(group, 16))
+		
+		result = libs.utf8.unicodeToUtf8(codepoints)
 		result += "\\x00"
 		
 		return result
