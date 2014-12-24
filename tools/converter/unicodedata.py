@@ -327,9 +327,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		document_database.parse(script_path + '/data/UnicodeData.txt')
 		document_database.accept(self)
 		
-		self.resolveMissing()
-		
-		# groups
+		# blocks
 		
 		blocks = Blocks(self)
 		document_blocks = libs.unicode.UnicodeDocument()
@@ -337,6 +335,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		document_blocks.accept(blocks)
 		
 		self.resolveBlocks()
+		
+		# missing codepoints
+		
+		self.resolveMissing()
 		
 		# decomposition
 		
@@ -376,22 +378,31 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		return True
 	
+	def getBlockByName(self, name):
+		for b in self.blocks:
+			if b.name == name:
+				return b
+		return None
+	
 	def resolveMissing(self):
 		print "Adding missing codepoints to database..."
 		
-		missing = []
-		missing += range(0x3401, 0x4DB5) # CJK Ideograph Extension A
-		missing += range(0x4E01, 0x9FCC) # CJK Ideograph
-		missing += range(0xAC01, 0xD7A3) # Hangul Syllable
-		missing += range(0x20001, 0x2A6D6) # CJK Ideograph Extension B
-		missing += range(0x2A701, 0x2B734) # CJK Ideograph Extension C
-		missing += range(0x2B73F, 0x2B81D) # CJK Ideograph Extension D
+		missing = [
+			self.getBlockByName("CJK Unified Ideographs Extension A"),
+			self.getBlockByName("CJK Unified Ideographs"),
+			self.getBlockByName("Hangul Syllables"),
+			self.getBlockByName("CJK Unified Ideographs Extension B"),
+			self.getBlockByName("CJK Unified Ideographs Extension C"),
+			self.getBlockByName("CJK Unified Ideographs Extension D"),
+		]
 		
-		for c in missing:
-			u = UnicodeMapping(self)
-			u.codepoint = c
-			self.recordsOrdered.append(u)
-			self.records[u.codepoint] = u
+		for b in missing:
+			for c in range(b.start + 1, b.end):
+				u = UnicodeMapping(self)
+				u.codepoint = c
+				u.block = b
+				self.recordsOrdered.append(u)
+				self.records[u.codepoint] = u
 	
 	def resolveBlocks(self):
 		print "Resolving blocks for entries..."
