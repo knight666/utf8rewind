@@ -161,12 +161,12 @@ class NormalizationEntry:
 		self.nfkd = self.matchToString(entry.matches[4])
 	
 	def matchToString(self, match):
-		result = ""
+		codepoints = []
 		
 		for m in match:
-			result += libs.utf8.codepointToUtf8(int(m, 16))
+			codepoints.append(int(m, 16))
 		
-		return result
+		return libs.utf8.unicodeToUtf8(codepoints)
 
 class NormalizationSection:
 	def __init__(self, title):
@@ -193,25 +193,45 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		self.header.write("#include \"helpers-strings.hpp\"")
 		
 		for s in self.sections:
-			print "Writing tests for \"" + s.title + "\""
+			print "" + s.title + ":"
 			
-			title = re.sub('[^\w ]', '', s.title).title()
-			title = title.replace(' ', '')
-			
-			self.header.newLine()
-			
-			self.header.newLine()
-			self.header.writeLine("TEST(Normalization, " + title + ")")
-			self.header.writeLine("{")
-			self.header.indent()
-			
-			for e in s.entries:
-				self.header.writeLine("CHECK_NORMALIZE(0x" + format(e.source, '08X') + ", \"" + e.nfd + "\", \"" + e.nfc + "\");")
-			
-			self.header.outdent()
-			self.header.write("}")
+			title = re.sub('[^\w ]', '', s.title).title().replace(' ', '')
+			self.writeTest(s.entries, title, False)
+			self.writeTest(s.entries, title, True)
 		
 		self.close()
+	
+	def writeTest(self, entries, title, compatibility):
+		compilier_limit = 2000
+		if len(entries) > compilier_limit:
+			for i in xrange(0, len(entries), compilier_limit):
+				chunk = entries[i:i + compilier_limit]
+				self.writeTest(chunk, title + "Part" + str((i / compilier_limit) + 1), compatibility)
+			return
+		
+		if compatibility:
+			title = "Compatibility" + title
+		
+		print "Writing tests \"" + title + "\""
+		
+		self.header.newLine()
+		
+		self.header.newLine()
+		self.header.writeLine("TEST(Normalization, " + title + ")")
+		self.header.writeLine("{")
+		self.header.indent()
+		
+		for e in entries:
+			self.header.writeIndentation()
+			if compatibility:
+				self.header.write("CHECK_NORMALIZE")
+			else:
+				self.header.write("CHECK_NORMALIZE_COMPATIBILITY")
+			self.header.write("(0x" + format(e.source, '08X') + ", \"" + e.nfd + "\", \"" + e.nfc + "\");")
+			self.header.newLine()
+		
+		self.header.outdent()
+		self.header.write("}")
 	
 	def visitDocument(self, document):
 		print "Parsing normalization tests..."
