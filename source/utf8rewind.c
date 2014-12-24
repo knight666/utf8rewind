@@ -824,7 +824,7 @@ outofspace:
 	return 0;
 }
 
-size_t transform_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, size_t* read, int32_t* errors)
+size_t transform_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, size_t* read, uint8_t transformType, int32_t* errors)
 {
 	size_t resolved_size;
 	unicode_t SIndex;
@@ -895,7 +895,7 @@ size_t transform_decomposition(const char* input, size_t inputSize, char* target
 		}
 		else
 		{
-			resolved_size = transform_default(DecompositionQuery_Decomposed, codepoint, codepoint_length, &target, &targetSize, errors);
+			resolved_size = transform_default(transformType, codepoint, codepoint_length, &target, &targetSize, errors);
 		}
 
 		*read = codepoint_length;
@@ -911,7 +911,7 @@ outofspace:
 	return 0;
 }
 
-size_t transform_composition(const char* input, size_t inputSize, char* target, size_t targetSize, size_t* read, int32_t* errors)
+size_t transform_composition(const char* input, size_t inputSize, char* target, size_t targetSize, size_t* read, UTF8_UNUSED(uint8_t transformType), int32_t* errors)
 {
 	unicode_t codepoint_left;
 	unicode_t codepoint_right;
@@ -1000,9 +1000,9 @@ outofspace:
 	return 0;
 }
 
-typedef size_t (*TransformFunc)(const char*, size_t, char*, size_t, size_t*, int32_t*);
+typedef size_t (*TransformFunc)(const char*, size_t, char*, size_t, size_t*, uint8_t, int32_t*);
 
-size_t processtransform(TransformFunc transform, const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t processtransform(TransformFunc transform, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t transformType, int32_t* errors)
 {
 	const char* src = input;
 	size_t src_size = inputSize;
@@ -1020,7 +1020,7 @@ size_t processtransform(TransformFunc transform, const char* input, size_t input
 
 	while (src_size > 0)
 	{
-		transform_written = transform(src, src_size, dst, dst_size, &transform_read, errors);
+		transform_written = transform(src, src_size, dst, dst_size, &transform_read, transformType, errors);
 		if (transform_written == 0 ||
 			transform_read == 0)
 		{
@@ -1034,6 +1034,11 @@ size_t processtransform(TransformFunc transform, const char* input, size_t input
 		}
 
 		bytes_written += transform_written;
+
+		if (transform_read > src_size)
+		{
+			break;
+		}
 
 		src += transform_read;
 		src_size -= transform_read;
@@ -1238,11 +1243,18 @@ outofspace:
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
 	TransformFunc process = 0;
+	uint8_t transformType = -1;
 
-	if ((flags & UTF8_TRANSFORM_DECOMPOSED) != 0 ||
+	if ((flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
+	{
+		process = &transform_decomposition;
+		transformType = DecompositionQuery_Decomposed;
+	}
+	else if (
 		(flags & UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED) != 0)
 	{
 		process = &transform_decomposition;
+		transformType = DecompositionQuery_Compatibility_Decomposed;
 	}
 	else if (
 		(flags & UTF8_TRANSFORM_COMPOSED) != 0 ||
@@ -1259,5 +1271,5 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 		return 0;
 	}
 
-	return processtransform(process, input, inputSize, target, targetSize, errors);
+	return processtransform(process, input, inputSize, target, targetSize, transformType, errors);
 }
