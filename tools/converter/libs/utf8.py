@@ -1,9 +1,10 @@
+import re
 import sys
 
 MAX_LEGAL_UNICODE = 0x10FFFF
 REPLACEMENT_CHARACTER = 0xFFFD
 
-def codepointToUtf8(codepoint):
+def codepointToUtf8(codepoint, wroteHex = False):
 	encoded_length = 0
 	result = ""
 	
@@ -32,11 +33,19 @@ def codepointToUtf8(codepoint):
 			0x22: "\\\"", # must be escaped
 		}
 		if codepoint in conversion:
-			result = conversion[codepoint]
+			result += conversion[codepoint]
+			
+			return result,False
 		elif codepoint < 0x20:
-			result = '\\x' + format(codepoint, '02X')
+			result += '\\x' + format(codepoint, '02X')
 		else:
-			result = "%c" % codepoint
+			isHex = (codepoint >= 0x41 and codepoint <= 0x46) or (codepoint >= 0x61 and codepoint <= 0x76) or (codepoint >= 0x30 and codepoint <= 0x39)
+			
+			if wroteHex and isHex:
+				result += "\" \""
+			result += "%c" % codepoint
+			
+			return result,False
 	elif encoded_length == 2:
 		result += '\\x' + format((codepoint >>   6)         | 0xC0, '02X')
 		result += '\\x' + format((codepoint         & 0x3F) | 0x80, '02X')
@@ -50,6 +59,14 @@ def codepointToUtf8(codepoint):
 		result += '\\x' + format(((codepoint >>  6) & 0x3F) | 0x80, '02X')
 		result += '\\x' + format((codepoint         & 0x3F) | 0x80, '02X')
 	
+	return result,True
+
+def unicodeToUtf8(unicode):
+	result = ""
+	wroteHex = False
+	for u in unicode:
+		converted,wroteHex = codepointToUtf8(u, wroteHex)
+		result += converted
 	return result
 
 if __name__ == '__main__':
