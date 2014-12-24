@@ -151,7 +151,7 @@ class NormalizationEntry:
 		self.nfkd = ""
 	
 	def __str__(self):
-		return "source " + hex(self.source) + " nfc " + self.nfc + " nfd " + self.nfd + " nfkc " + self.nfkc + " nfkd " + self.nfkd;
+		return "{ codepoint " + hex(self.codepoint) + " source " + self.source + " nfc " + self.nfc + " nfd " + self.nfd + " nfkc " + self.nfkc + " nfkd " + self.nfkd + " }";
 	
 	def parse(self, entry):
 		if len(entry.matches[0]) == 1:
@@ -170,6 +170,11 @@ class NormalizationEntry:
 		
 		return libs.utf8.unicodeToUtf8(codepoints)
 
+class NormalizationGroup:
+	def __init__(self, block):
+		self.block = block
+		self.entries = []
+
 class NormalizationSection:
 	def __init__(self, title):
 		self.title = title
@@ -180,6 +185,7 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		self.db = db
 		self.current = None
 		self.sections = []
+		self.blockGroups = dict()
 	
 	def execute(self):
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -188,32 +194,61 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		document_normalization.parse(script_path + '/data/NormalizationTest.txt')
 		document_normalization.accept(self)
 		
+		groups = dict()
+		
+		for u in self.sections[1].entries:
+			e = self.db.records[u.codepoint]
+			if e.block.name in groups:
+				group = groups[e.block.name]
+			else:
+				group = NormalizationGroup(e.block)
+				groups[e.block.name] = group
+			group.entries.append(u)
+		
+		self.blockGroups = sorted(groups.iteritems(), key=lambda item: item[1].block.start)
+		
 		self.open('/../../source/tests/integration-normalization.cpp')
 		
-		self.header.newLine()
 		self.header.writeLine("#include \"helpers-normalization.hpp\"")
 		self.header.write("#include \"helpers-strings.hpp\"")
 		
+		# block group tests
+		
+		print self.sections[1].title + ":"
+		
+		for g in self.blockGroups:
+			self.writeTest(g[1].entries, g[0], False)
+			self.writeTest(g[1].entries, g[0], True)
+		
+		# others
+		
 		for s in self.sections:
-			if len(s.entries) > 0:
-				print "" + s.title + ":"
-				
-				title = re.sub('[^\w ]', '', s.title).title().replace(' ', '')
-				self.writeTest(s.entries, title, False)
-				self.writeTest(s.entries, title, True)
+			if s <> self.sections[1]:
+				self.writeSection(s)
 		
 		self.close()
 	
-	def writeTest(self, entries, title, compatibility):
-		compilier_limit = 2000
-		if len(entries) > compilier_limit:
-			for i in xrange(0, len(entries), compilier_limit):
-				chunk = entries[i:i + compilier_limit]
-				self.writeTest(chunk, title + "Part" + str((i / compilier_limit) + 1), compatibility)
+	def writeSection(self, section):
+		if len(section.entries) == 0:
 			return
+		
+		self.writeTest(section.entries, section.title, False)
+		self.writeTest(section.entries, section.title, True)
+	
+	def writeTest(self, entries, title, compatibility):
+		compiler_limit = 2000
+		if len(entries) > compiler_limit:
+			for i in xrange(0, len(entries), compiler_limit):
+				chunk = entries[i:i + compiler_limit]
+				self.writeTest(chunk, title + " Part" + str((i / compiler_limit) + 1), compatibility)
+			return
+		
+		title = re.sub('[^\w ]', '', title.title()).replace(' ', '')
 		
 		if compatibility:
 			title = "Compatibility" + title
+		else:
+			title = "Regular" + title
 		
 		print "Writing tests \"" + title + "\""
 		
@@ -285,8 +320,7 @@ if __name__ == '__main__':
 		all = False
 	
 	db = unicodedata.Database()
-	if all or args.casemapping:
-		db.loadFromFiles(None)
+	db.loadFromFiles(None)
 	
 	if all or args.casemapping:
 		suite = CaseMappingIntegrationSuite(db)
