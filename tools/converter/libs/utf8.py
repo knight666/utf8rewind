@@ -22,7 +22,7 @@ def codepointToUtf8(codepoint, wroteHex = False):
 	
 	if encoded_length == 1:
 		conversion = {
-			0x00: "",
+			0x00: "\\0",
 			0x07: "\\a",
 			0x08: "\\b",
 			0x09: "\\t",

@@ -2,10 +2,10 @@
 	DO NOT MODIFY, AUTO-GENERATED
 
 	Generated on:
-		2014-12-24T16:21:59
+		2014-12-24T16:38:21
 
 	Command line:
-		E:\Projects\utf8rewind\tools\converter\integration.py --normalization
+		E:\Projects\utf8rewind\tools\converter\integration.py
 */
 
 #include "tests-base.hpp"
