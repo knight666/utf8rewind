@@ -20,21 +20,21 @@ def codepointToUtf8(codepoint):
 		encoded_length = 3
 	
 	if encoded_length == 1:
-		if codepoint < 0x20:
-			conversion = {
-				0x00: "",
-				0x07: "\\a",
-				0x08: "\\b",
-				0x09: "\\t",
-				0x0A: "\\n",
-				0x0B: "\\v",
-				0x0C: "\\f",
-				0x0D: "\\r",
-			}
-			if codepoint in conversion:
-				result = conversion[codepoint]
-			else:
-				result = '\\x' + format(codepoint, '02X')
+		conversion = {
+			0x00: "",
+			0x07: "\\a",
+			0x08: "\\b",
+			0x09: "\\t",
+			0x0A: "\\n",
+			0x0B: "\\v",
+			0x0C: "\\f",
+			0x0D: "\\r",
+			0x22: "\\\"", # must be escaped
+		}
+		if codepoint in conversion:
+			result = conversion[codepoint]
+		elif codepoint < 0x20:
+			result = '\\x' + format(codepoint, '02X')
 		else:
 			result = "%c" % codepoint
 	elif encoded_length == 2:
