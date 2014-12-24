@@ -143,6 +143,7 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 
 class NormalizationEntry:
 	def __init__(self):
+		self.codepoint = 0
 		self.source = ""
 		self.nfc = ""
 		self.nfd = ""
@@ -153,6 +154,8 @@ class NormalizationEntry:
 		return "source " + hex(self.source) + " nfc " + self.nfc + " nfd " + self.nfd + " nfkc " + self.nfkc + " nfkd " + self.nfkd;
 	
 	def parse(self, entry):
+		if len(entry.matches[0]) == 1:
+			self.codepoint = int(entry.matches[0][0], 16)
 		self.source = self.matchToString(entry.matches[0])
 		self.nfc = self.matchToString(entry.matches[1])
 		self.nfd = self.matchToString(entry.matches[2])
@@ -192,11 +195,12 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		self.header.write("#include \"helpers-strings.hpp\"")
 		
 		for s in self.sections:
-			print "" + s.title + ":"
-			
-			title = re.sub('[^\w ]', '', s.title).title().replace(' ', '')
-			self.writeTest(s.entries, title, False)
-			self.writeTest(s.entries, title, True)
+			if len(s.entries) > 0:
+				print "" + s.title + ":"
+				
+				title = re.sub('[^\w ]', '', s.title).title().replace(' ', '')
+				self.writeTest(s.entries, title, False)
+				self.writeTest(s.entries, title, True)
 		
 		self.close()
 	
@@ -248,7 +252,8 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 	def visitEntry(self, entry):
 		normalization = NormalizationEntry()
 		normalization.parse(entry)
-		self.current.entries.append(normalization)
+		if normalization.codepoint <> 0:
+			self.current.entries.append(normalization)
 		
 		return True
 
