@@ -106,14 +106,12 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 		self.header.indent()
 		
 		for r in records:
-			converted_codepoint = "0x%08x" % r.codepoint
+			converted_codepoint = "0x%08X" % r.codepoint
 			
 			if r.uppercase:
-				converted_uppercase = ""
-				for u in r.uppercase:
-					converted_uppercase += libs.utf8.codepointToUtf8(u)
+				converted_uppercase = libs.utf8.unicodeToUtf8(r.uppercase)
 			else:
-				converted_uppercase = libs.utf8.codepointToUtf8(r.codepoint)
+				converted_uppercase = libs.utf8.codepointToUtf8(r.codepoint)[0]
 			
 			self.header.writeLine("CHECK_UTF8_UPPERCASE(" + converted_codepoint + ", \"" + r.name + "\", \"" + converted_uppercase + "\");")
 		
@@ -127,14 +125,12 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 		self.header.indent()
 		
 		for r in records:
-			converted_codepoint = "0x%08x" % r.codepoint
+			converted_codepoint = "0x%08X" % r.codepoint
 			
 			if r.lowercase:
-				converted_lowercase = ""
-				for u in r.lowercase:
-					converted_lowercase += libs.utf8.codepointToUtf8(u)
+				converted_lowercase = libs.utf8.unicodeToUtf8(r.lowercase)
 			else:
-				converted_lowercase = libs.utf8.codepointToUtf8(r.codepoint)
+				converted_lowercase = libs.utf8.codepointToUtf8(r.codepoint)[0]
 			
 			self.header.writeLine("CHECK_UTF8_LOWERCASE(" + converted_codepoint + ", \"" + r.name + "\", \"" + converted_lowercase + "\");")
 		
@@ -234,6 +230,8 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 	def writeSection(self, section):
 		if len(section.entries) == 0:
 			return
+		
+		print section.title + ":"
 		
 		self.writeTest(section.entries, section.title)
 	
