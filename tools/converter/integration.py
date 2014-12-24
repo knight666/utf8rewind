@@ -221,8 +221,7 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 				# ignore hangul syllables
 				continue
 			
-			self.writeTest(g[1].entries, g[0], False)
-			self.writeTest(g[1].entries, g[0], True)
+			self.writeTest(g[1].entries, "Characters " + g[0])
 		
 		# others
 		
@@ -236,23 +235,17 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		if len(section.entries) == 0:
 			return
 		
-		self.writeTest(section.entries, section.title, False)
-		self.writeTest(section.entries, section.title, True)
+		self.writeTest(section.entries, section.title)
 	
-	def writeTest(self, entries, title, compatibility):
+	def writeTest(self, entries, title):
 		compiler_limit = 2000
 		if len(entries) > compiler_limit:
 			for i in xrange(0, len(entries), compiler_limit):
 				chunk = entries[i:i + compiler_limit]
-				self.writeTest(chunk, title + " Part" + str((i / compiler_limit) + 1), compatibility)
+				self.writeTest(chunk, title + " Part" + str((i / compiler_limit) + 1))
 			return
 		
 		title = re.sub('[^\w ]', '', title.title()).replace(' ', '')
-		
-		if compatibility:
-			title = "Compatibility" + title
-		else:
-			title = "Regular" + title
 		
 		print "Writing tests \"" + title + "\""
 		
@@ -265,11 +258,8 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		
 		for e in entries:
 			self.header.writeIndentation()
-			if compatibility:
-				self.header.write("CHECK_NORMALIZE_COMPATIBILITY")
-			else:
-				self.header.write("CHECK_NORMALIZE")
-			self.header.write("(0x" + format(e.codepoint, '08X') + ", \"" + e.nfd + "\", \"" + e.nfc + "\", \"" + self.db.records[e.codepoint].name + "\");")
+			self.header.write("CHECK_NORMALIZE")
+			self.header.write("(0x" + format(e.codepoint, '08X') + ", \"" + e.nfd + "\", \"" + e.nfc + "\", \"" + e.nfkd + "\", \"" + e.nfkc + "\", \"" + self.db.records[e.codepoint].name + "\");")
 			self.header.newLine()
 		
 		self.header.outdent()
