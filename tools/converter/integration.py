@@ -262,10 +262,10 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		for e in entries:
 			self.header.writeIndentation()
 			if compatibility:
-				self.header.write("CHECK_NORMALIZE")
-			else:
 				self.header.write("CHECK_NORMALIZE_COMPATIBILITY")
-			self.header.write("(\"" + e.source + "\", \"" + e.nfd + "\", \"" + e.nfc + "\");")
+			else:
+				self.header.write("CHECK_NORMALIZE")
+			self.header.write("(0x" + format(e.codepoint, '08X') + ", \"" + e.nfd + "\", \"" + e.nfc + "\", \"" + self.db.records[e.codepoint].name + "\");")
 			self.header.newLine()
 		
 		self.header.outdent()
