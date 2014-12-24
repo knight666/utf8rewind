@@ -143,7 +143,7 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 
 class NormalizationEntry:
 	def __init__(self):
-		self.source = 0
+		self.source = ""
 		self.nfc = ""
 		self.nfd = ""
 		self.nfkc = ""
@@ -153,8 +153,7 @@ class NormalizationEntry:
 		return "source " + hex(self.source) + " nfc " + self.nfc + " nfd " + self.nfd + " nfkc " + self.nfkc + " nfkd " + self.nfkd;
 	
 	def parse(self, entry):
-		self.source = int(entry.matches[0][0], 16)
-		
+		self.source = self.matchToString(entry.matches[0])
 		self.nfc = self.matchToString(entry.matches[1])
 		self.nfd = self.matchToString(entry.matches[2])
 		self.nfkc = self.matchToString(entry.matches[3])
@@ -227,7 +226,7 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 				self.header.write("CHECK_NORMALIZE")
 			else:
 				self.header.write("CHECK_NORMALIZE_COMPATIBILITY")
-			self.header.write("(0x" + format(e.source, '08X') + ", \"" + e.nfd + "\", \"" + e.nfc + "\");")
+			self.header.write("(\"" + e.source + "\", \"" + e.nfd + "\", \"" + e.nfc + "\");")
 			self.header.newLine()
 		
 		self.header.outdent()

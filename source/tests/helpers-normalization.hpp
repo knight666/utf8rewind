@@ -4,14 +4,28 @@
 
 #include "utf8rewind.h"
 
-#define CHECK_NORMALIZE(_source, _nfd, _nfc) { \
-	EXPECT_UTF8EQ(_nfd, helpers::nfd(_source).c_str()); \
-	EXPECT_UTF8EQ(_nfc, helpers::nfc(helpers::nfd(_source)).c_str()); \
+#define CHECK_NORMALIZE(_source, _decomposed, _composed) { \
+	::helpers::NormalizationEntry e; \
+	e.source = _source; \
+	e.decomposed = _decomposed; \
+	e.composed = _composed; \
+	::helpers::NormalizationEntry a; \
+	a.source = _source; \
+	a.decomposed = helpers::nfd(_source); \
+	a.composed = helpers::nfc(helpers::nfd(_source)); \
+	EXPECT_PRED_FORMAT2(::helpers::CompareNormalization, e, a); \
 }
 
-#define CHECK_NORMALIZE_COMPATIBILITY(_source, _nfkd, _nfkc) { \
-	EXPECT_UTF8EQ(_nfkd, helpers::nfkd(_source).c_str()); \
-	EXPECT_UTF8EQ(_nfkc, helpers::nfkc(helpers::nfkd(_source)).c_str()); \
+#define CHECK_NORMALIZE_COMPATIBILITY(_source, _decomposed, _composed) { \
+	::helpers::NormalizationEntry e; \
+	e.source = _source; \
+	e.decomposed = _decomposed; \
+	e.composed = _composed; \
+	::helpers::NormalizationEntry a; \
+	a.source = _source; \
+	a.decomposed = helpers::nfkd(_source); \
+	a.composed = helpers::nfkc(helpers::nfkd(_source)); \
+	EXPECT_PRED_FORMAT2(::helpers::CompareNormalization, e, a); \
 }
 
 namespace helpers {
@@ -27,5 +41,16 @@ namespace helpers {
 
 	std::string nfkd(unicode_t codepoint);
 	std::string nfkd(const std::string& text);
+
+	struct NormalizationEntry
+	{
+		std::string source;
+		std::string decomposed;
+		std::string composed;
+	};
+
+	::testing::AssertionResult CompareNormalization(
+		const char* expressionExpected, const char* expressionActual,
+		const NormalizationEntry& entryExpected, const NormalizationEntry& entryActual);
 
 };

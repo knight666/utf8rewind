@@ -108,4 +108,51 @@ namespace helpers {
 		return converted;
 	}
 
+	::testing::AssertionResult CompareNormalization(
+		const char* expressionExpected, const char* expressionActual,
+		const NormalizationEntry& entryExpected, const NormalizationEntry& entryActual)
+	{
+		if (entryExpected.decomposed == entryActual.decomposed &&
+			entryExpected.composed == entryActual.composed)
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << std::endl;
+			result << printable(entryExpected.source) << " (" << identifiable(entryExpected.source) << ")" << std::endl;
+			result << std::endl;
+
+			if (entryExpected.decomposed != entryActual.decomposed)
+			{
+				result << std::endl;
+				result << "[Decomposed]" << std::endl;
+				result << "    Actual:   " << printable(entryActual.decomposed) << " (" << identifiable(entryActual.decomposed) << ")" << std::endl;
+				result << "  Expected:   " << printable(entryExpected.decomposed) << " (" << identifiable(entryExpected.decomposed) << ")" << std::endl;
+				result << std::endl;
+			}
+			else
+			{
+				result << "[Decomposed]  " << printable(entryActual.decomposed) << " (" << identifiable(entryActual.decomposed) << ")" << std::endl;
+			}
+
+			if (entryExpected.composed != entryActual.composed)
+			{
+				result << std::endl;
+				result << "[Composed]" << std::endl;
+				result << "    Actual:   " << printable(entryActual.composed) << " (" << identifiable(entryActual.composed) << ")" << std::endl;
+				result << "  Expected:   " << printable(entryExpected.composed) << " (" << identifiable(entryExpected.composed) << ")" << std::endl;
+				result << std::endl;
+			}
+			else
+			{
+				result << "[Composed]    " << printable(entryActual.composed) << " (" << identifiable(entryActual.composed) << ")" << std::endl;
+			}
+
+			return result;
+		}
+	}
+
 };
