@@ -217,6 +217,10 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		print self.sections[1].title + ":"
 		
 		for g in self.blockGroups:
+			if g[1].block.start == 0xAC00 and g[1].block.end == 0xD7AF:
+				# ignore hangul syllables
+				continue
+			
 			self.writeTest(g[1].entries, g[0], False)
 			self.writeTest(g[1].entries, g[0], True)
 		
