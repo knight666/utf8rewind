@@ -30,7 +30,10 @@ def codepointToUtf8(codepoint, wroteHex = False):
 			0x0B: "\\v",
 			0x0C: "\\f",
 			0x0D: "\\r",
-			0x22: "\\\"", # must be escaped
+			
+			# must be escaped
+			0x22: "\\\"",
+			0x5C: "\\\\",
 		}
 		if codepoint in conversion:
 			result += conversion[codepoint]
