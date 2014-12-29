@@ -28,10 +28,10 @@ class UnicodeMapping:
 		self.decomposedNFKD = []
 		self.compositionPairs = dict()
 		self.compositionExcluded = False
-		self.quickCheckNFC = 2
-		self.quickCheckNFD = 2
-		self.quickCheckNFKC = 2
-		self.quickCheckNFKD = 2
+		self.quickCheckNFC = 0
+		self.quickCheckNFD = 0
+		self.quickCheckNFKC = 0
+		self.quickCheckNFKD = 0
 		self.offsetNFC = 0
 		self.offsetNFD = 0
 		self.offsetNFKC = 0
@@ -653,6 +653,42 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		header.newLine()
 	
+	def writeQuickCheck(self, header):
+		qc = []
+		for r in self.recordsOrdered:
+			value = (r.quickCheckNFC << 24) | (r.quickCheckNFD << 16) | (r.quickCheckNFKC << 8) | (r.quickCheckNFKD)
+			if value <> 0:
+				qc.append({
+					"codepoint": r.codepoint,
+					"value": value
+				})
+		
+		header.writeLine("const size_t UnicodeQuickCheckCount = " + str(len(qc)) + ";")
+		header.writeLine("const QuickCheckRecord UnicodeQuickCheckRecord[" + str(len(qc)) + "] = {")
+		header.indent()
+		
+		count = 0
+		
+		for c in qc:
+			if (count % 4) == 0:
+				header.writeIndentation()
+			
+			header.write("{ " + hex(c["codepoint"]) + ", " + format(c["value"], '08x') + " },")
+			
+			count += 1
+			if count <> len(qc):
+				if (count % 4) == 0:
+					header.newLine()
+				else:
+					header.write(" ")
+		
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.writeLine("const QuickCheckRecord* UnicodeQuickCheckRecordPtr = UnicodeCompositionRecord;")
+		
+		header.newLine()
+	
 	def writeSource(self, filepath):
 		print "Writing database to " + filepath + "..."
 		
@@ -712,6 +748,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		header.writeLine("#include \"normalization.h\"")
 		header.newLine()
+		
+		# quick check records
+		
+		self.writeQuickCheck(header)
 		
 		# decomposition records
 		
@@ -883,9 +923,9 @@ class Normalization(libs.unicode.UnicodeVisitor):
 				"NFKC_QC": "quickCheckNFKC",
 			}
 			nf_value = {
-				"N": 0,
+				"N": 2,
 				"M": 1,
-				"Y": 2,
+				"Y": 0,
 			}
 			#print "property: " + property + " member: " + nf_member[property] + " value: " + str(nf_value[matches[2][0]])
 			record.__dict__[nf_member[property]] = nf_value[matches[2][0]]
