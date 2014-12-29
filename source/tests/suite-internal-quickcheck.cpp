@@ -71,6 +71,27 @@ TEST(QuickCheck, DecomposedOutOfUpperBounds)
 	EXPECT_EQ(QuickCheckResult_Yes, r);
 }
 
+TEST(QuickCheck, DecomposedHangulSyllable)
+{
+	uint8_t r = quickcheck(0xB1A1, NormalizationForm_Decomposed);
+
+	EXPECT_EQ(QuickCheckResult_No, r);
+}
+
+TEST(QuickCheck, DecomposedHangulSyllableStart)
+{
+	uint8_t r = quickcheck(0xAC00, NormalizationForm_Decomposed);
+
+	EXPECT_EQ(QuickCheckResult_No, r);
+}
+
+TEST(QuickCheck, DecomposedHangulSyllableEnd)
+{
+	uint8_t r = quickcheck(0xD7A3, NormalizationForm_Decomposed);
+
+	EXPECT_EQ(QuickCheckResult_No, r);
+}
+
 // Compatibility composed
 
 TEST(QuickCheck, CompatibilityComposedFoundNo)
@@ -122,4 +143,25 @@ TEST(QuickCheck, CompatibilityDecomposedOutOfUpperBounds)
 	uint8_t r = quickcheck(0x30000, NormalizationForm_Compatibility_Decomposed);
 
 	EXPECT_EQ(QuickCheckResult_Yes, r);
+}
+
+TEST(QuickCheck, CompatibilityDecomposedHangulSyllable)
+{
+	uint8_t r = quickcheck(0xCCCA, NormalizationForm_Compatibility_Decomposed);
+
+	EXPECT_EQ(QuickCheckResult_No, r);
+}
+
+TEST(QuickCheck, CompatibilityDecomposedHangulSyllableStart)
+{
+	uint8_t r = quickcheck(0xAC00, NormalizationForm_Compatibility_Decomposed);
+
+	EXPECT_EQ(QuickCheckResult_No, r);
+}
+
+TEST(QuickCheck, CompatibilityDecomposedHangulSyllableEnd)
+{
+	uint8_t r = quickcheck(0xD7A3, NormalizationForm_Compatibility_Decomposed);
+
+	EXPECT_EQ(QuickCheckResult_No, r);
 }
