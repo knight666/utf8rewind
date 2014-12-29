@@ -965,6 +965,11 @@ class Normalization(libs.unicode.UnicodeVisitor):
 			codepoint = int(match.group(1), 16)
 			if match.group(2):
 				codepoint_end = int(match.group(2), 16)
+				
+				# skip hangul syllables
+				if codepoint == 0xAC00 and codepoint_end == 0xD7A3:
+					return True
+				
 				for u in range(codepoint, codepoint_end + 1):
 					self.parseEntry(u, entry.matches)
 			else:
