@@ -64,6 +64,7 @@
 				'source/tests/suite-encodeutf32.cpp',
 				'source/tests/suite-internal-finddecomposition.cpp',
 				'source/tests/suite-internal-querycomposition.cpp',
+				'source/tests/suite-internal-quickcheck.cpp',
 				'source/tests/suite-internal-resolvedecomposition.cpp',
 				'source/tests/suite-len.cpp',
 				'source/tests/suite-seek.cpp',
