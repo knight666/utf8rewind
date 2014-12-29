@@ -28,6 +28,10 @@ class UnicodeMapping:
 		self.decomposedNFKD = []
 		self.compositionPairs = dict()
 		self.compositionExcluded = False
+		self.quickCheckNFC = 2
+		self.quickCheckNFD = 2
+		self.quickCheckNFKC = 2
+		self.quickCheckNFKD = 2
 		self.offsetNFC = 0
 		self.offsetNFD = 0
 		self.offsetNFKC = 0
@@ -388,6 +392,13 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		return True
 	
+	def getBlockByCodepoint(self, codepoint):
+		print hex(codepoint)
+		for b in self.blocks:
+			if codepoint >= b.start and codepoint <= b.end:
+				return b
+		return None
+	
 	def getBlockByName(self, name):
 		for b in self.blocks:
 			if b.name == name:
@@ -398,21 +409,28 @@ class Database(libs.unicode.UnicodeVisitor):
 		print "Adding missing codepoints to database..."
 		
 		missing = [
-			self.getBlockByName("CJK Unified Ideographs Extension A"),
-			self.getBlockByName("CJK Unified Ideographs"),
-			self.getBlockByName("Hangul Syllables"),
-			self.getBlockByName("CJK Unified Ideographs Extension B"),
-			self.getBlockByName("CJK Unified Ideographs Extension C"),
-			self.getBlockByName("CJK Unified Ideographs Extension D"),
+			self.getBlockByName("General Punctuation"), # 2000..206F
+			self.getBlockByName("CJK Unified Ideographs Extension A"), # 3400..4DBF
+			self.getBlockByName("CJK Unified Ideographs"), # 4E00..9FFF
+			self.getBlockByName("Hangul Syllables"), # AC00..D7AF
+			self.getBlockByName("Specials"), # FFF0..FFFF
+			self.getBlockByName("CJK Unified Ideographs Extension B"), # 20000..2A6DF
+			self.getBlockByName("CJK Unified Ideographs Extension C"), # 2A700..2B73F
+			self.getBlockByName("CJK Unified Ideographs Extension D"), # 2B740..2B81F
+			self.getBlockByName("Tags"), # E0000..E007F
+			self.getBlockByName("Variation Selectors Supplement"), # E0100..E01EF
+			self.getBlockByName("<reserved-E0080>..<reserved-E00FF>"), # E0080..E00FF
+			self.getBlockByName("<reserved-E01F0>..<reserved-E0FFF>"), # E01F0..E0FFF
 		]
 		
 		for b in missing:
-			for c in range(b.start + 1, b.end):
-				u = UnicodeMapping(self)
-				u.codepoint = c
-				u.block = b
-				self.recordsOrdered.append(u)
-				self.records[u.codepoint] = u
+			for c in range(b.start, b.end + 1):
+				if c not in self.records:
+					u = UnicodeMapping(self)
+					u.codepoint = c
+					u.block = b
+					self.recordsOrdered.append(u)
+					self.records[u.codepoint] = u
 	
 	def resolveBlocks(self):
 		print "Resolving blocks for entries..."
@@ -425,6 +443,20 @@ class Database(libs.unicode.UnicodeVisitor):
 				block_index += 1
 				block_current = self.blocks[block_index]
 			r.block = block_current
+		
+		# missing from blocks data file
+		
+		block_reserved1 = UnicodeBlock(self)
+		block_reserved1.start = 0xE0080
+		block_reserved1.end = 0xE00FF
+		block_reserved1.name = "<reserved-E0080>..<reserved-E00FF>"
+		self.blocks.append(block_reserved1)
+		
+		block_reserved2 = UnicodeBlock(self)
+		block_reserved2.start = 0xE01F0
+		block_reserved2.end = 0xE0FFF
+		block_reserved2.name = "<reserved-E01F0>..<reserved-E0FFF>"
+		self.blocks.append(block_reserved2)
 	
 	def resolveDecomposition(self):
 		print "Resolving decomposition..."
@@ -839,19 +871,45 @@ class Normalization(libs.unicode.UnicodeVisitor):
 	
 	def parseEntry(self, codepoint, matches):
 		property = matches[1][0]
-		types = [
-			"Full_Composition_Exclusion",
-			"NFD_QC",
-			"NFC_QC",
-			"NFKD_QC",
-			"NFKC_QC",
-			"NFKC_CF",
-			"Changes_When_NFKC_Casefolded",
-		]
-		if property in types:
-			if property == "Full_Composition_Exclusion":
-				r = self.db.records[codepoint]
-				r.compositionExcluded = True
+		
+		def full_composition_exclusion(property, record):
+			record.compositionExcluded = True
+		
+		def quick_check(property, record):
+			nf_member = {
+				"NFD_QC": "quickCheckNFD",
+				"NFC_QC": "quickCheckNFC",
+				"NFKD_QC": "quickCheckNFKD",
+				"NFKC_QC": "quickCheckNFKC",
+			}
+			nf_value = {
+				"N": 0,
+				"M": 1,
+				"Y": 2,
+			}
+			#print "property: " + property + " member: " + nf_member[property] + " value: " + str(nf_value[matches[2][0]])
+			record.__dict__[nf_member[property]] = nf_value[matches[2][0]]
+		
+		def case_fold(property, record):
+			pass
+		
+		def changes_when_nfkc_casefolded(property, record):
+			pass
+		
+		property_values = {
+			"Full_Composition_Exclusion": full_composition_exclusion,
+			"NFD_QC": quick_check,
+			"NFC_QC": quick_check,
+			"NFKD_QC": quick_check,
+			"NFKC_QC": quick_check,
+			"NFKC_CF": case_fold,
+			"Changes_When_NFKC_Casefolded": changes_when_nfkc_casefolded,
+		}
+		if property in property_values:
+			if codepoint in self.db.records:
+				property_values[property](property, self.db.records[codepoint])
+			else:
+				print "missing " + hex(codepoint) + " in database (\"" + self.db.getBlockByCodepoint(codepoint).name + "\")"
 	
 	def visitDocument(self, document):
 		print "Parsing derived normalization properties..."
