@@ -656,14 +656,14 @@ class Database(libs.unicode.UnicodeVisitor):
 	def writeQuickCheck(self, header):
 		qc = []
 		for r in self.recordsOrdered:
-			value = (r.quickCheckNFC << 24) | (r.quickCheckNFD << 16) | (r.quickCheckNFKC << 8) | (r.quickCheckNFKD)
+			value = (r.quickCheckNFKD << 24) | (r.quickCheckNFKC << 16) | (r.quickCheckNFD << 8) | (r.quickCheckNFC)
 			if value <> 0:
 				qc.append({
 					"codepoint": r.codepoint,
 					"value": value
 				})
 		
-		header.writeLine("const size_t UnicodeQuickCheckCount = " + str(len(qc)) + ";")
+		header.writeLine("const size_t UnicodeQuickCheckRecordCount = " + str(len(qc)) + ";")
 		header.writeLine("const QuickCheckRecord UnicodeQuickCheckRecord[" + str(len(qc)) + "] = {")
 		header.indent()
 		
@@ -673,7 +673,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			if (count % 4) == 0:
 				header.writeIndentation()
 			
-			header.write("{ " + hex(c["codepoint"]) + ", " + format(c["value"], '08x') + " },")
+			header.write("{ " + hex(c["codepoint"]) + ", 0x" + format(c["value"], '08x') + " },")
 			
 			count += 1
 			if count <> len(qc):
@@ -685,7 +685,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.newLine()
 		header.outdent()
 		header.writeLine("};")
-		header.writeLine("const QuickCheckRecord* UnicodeQuickCheckRecordPtr = UnicodeCompositionRecord;")
+		header.writeLine("const QuickCheckRecord* UnicodeQuickCheckRecordPtr = UnicodeQuickCheckRecord;")
 		
 		header.newLine()
 	
