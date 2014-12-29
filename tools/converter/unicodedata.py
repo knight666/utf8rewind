@@ -248,13 +248,13 @@ class UnicodeMapping:
 			return
 		
 		if self.uppercase:
-			converted = libs.utf8.unicodeToUtf8(self.uppercase)
+			converted = libs.utf8.unicodeToUtf8Hex(self.uppercase)
 			self.offsetUppercase = self.db.addTranslation(converted + "\\x00")
 		if self.lowercase:
-			converted = libs.utf8.unicodeToUtf8(self.lowercase)
+			converted = libs.utf8.unicodeToUtf8Hex(self.lowercase)
 			self.offsetLowercase = self.db.addTranslation(converted + "\\x00")
 		if self.titlecase:
-			converted = libs.utf8.unicodeToUtf8(self.titlecase)
+			converted = libs.utf8.unicodeToUtf8Hex(self.titlecase)
 			self.offsetTitlecase = self.db.addTranslation(converted + "\\x00")
 	
 	def codepointsToString(self, values):
@@ -299,7 +299,9 @@ class UnicodeBlock:
 			self.start = int(matched.groups(1)[0], 16)
 			self.end = int(matched.groups(1)[1], 16)
 		
-		self.name = matches[1][0][1:]
+		self.name = matches[1][0]
+		for m in matches[1][1:]:
+			self.name += " " + m
 		
 		return True
 
@@ -422,18 +424,18 @@ class Database(libs.unicode.UnicodeVisitor):
 		for r in self.recordsOrdered:
 			r.decompose()
 			
-			convertedCodepoint = libs.utf8.codepointToUtf8(r.codepoint)[0]
+			convertedCodepoint = libs.utf8.codepointToUtf8Hex(r.codepoint)
 			
 			r.offsetNFD = 0
 			r.offsetNFKD = 0
 			
 			if r.decomposedNFD:
-				convertedNFD = libs.utf8.unicodeToUtf8(r.decomposedNFD)
+				convertedNFD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFD)
 				if convertedNFD <> convertedCodepoint:
 					r.offsetNFD = self.addTranslation(convertedNFD + "\\x00")
 			
 			if r.decomposedNFKD:
-				convertedNFKD = libs.utf8.unicodeToUtf8(r.decomposedNFKD)
+				convertedNFKD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFKD)
 				if convertedNFKD <> convertedCodepoint:
 					r.offsetNFKD = self.addTranslation(convertedNFKD + "\\x00")
 	
@@ -494,7 +496,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			if group <> None:
 				codepoints.append(int(group, 16))
 		
-		result = libs.utf8.unicodeToUtf8(codepoints)
+		result = libs.utf8.unicodeToUtf8Hex(codepoints)
 		result += "\\x00"
 		
 		return result
@@ -737,31 +739,31 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		for r in self.recordsOrdered:
 			if r.uppercase or r.lowercase or r.titlecase:
-				output.write("%08x" % r.codepoint + "; ")
+				output.write("%08X" % r.codepoint + "; ")
 				
 				if r.uppercase:
-					output.write("%08x" % r.uppercase[0])
+					output.write("%08X" % r.uppercase[0])
 					for u in r.uppercase[1:]:
-						output.write(" %08x" % u)
+						output.write(" %08X" % u)
 					output.write("; ")
 				else:
-					output.write("%08x" % r.codepoint + "; ")
+					output.write("%08X" % r.codepoint + "; ")
 				
 				if r.lowercase:
-					output.write("%08x" % r.lowercase[0])
+					output.write("%08X" % r.lowercase[0])
 					for u in r.lowercase[1:]:
-						output.write(" %08x" % u)
+						output.write(" %08X" % u)
 					output.write("; ")
 				else:
-					output.write("%08x" % r.codepoint + "; ")
+					output.write("%08X" % r.codepoint + "; ")
 				
 				if r.titlecase:
-					output.write("%08x" % r.titlecase[0])
+					output.write("%08X" % r.titlecase[0])
 					for u in r.titlecase[1:]:
-						output.write(" %08x" % u)
+						output.write(" %08X" % u)
 					output.write("; ")
 				else:
-					output.write("%08x" % r.codepoint + "; ")
+					output.write("%08X" % r.codepoint + "; ")
 				
 				output.write("# " + r.name)
 				output.newLine()
