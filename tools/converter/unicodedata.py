@@ -28,10 +28,6 @@ class UnicodeMapping:
 		self.decomposedNFKD = []
 		self.compositionPairs = dict()
 		self.compositionExcluded = False
-		self.quickCheckNFC = 0
-		self.quickCheckNFD = 0
-		self.quickCheckNFKC = 0
-		self.quickCheckNFKD = 0
 		self.offsetNFC = 0
 		self.offsetNFD = 0
 		self.offsetNFKC = 0
@@ -310,6 +306,13 @@ class UnicodeBlock:
 		
 		return True
 
+class QuickCheckRecord:
+	def __init__(self, db):
+		self.start = 0
+		self.count = 0
+		self.end = 0
+		self.value = 0
+
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
 		self.verbose = False
@@ -321,6 +324,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.recordsOrdered = []
 		self.records = dict()
 		self.blocks = []
+		self.qc_nfc_records = []
+		self.qc_nfd_records = []
+		self.qc_nfkc_records = []
+		self.qc_nfkd_records = []
 	
 	def loadFromFiles(self, arguments):
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -353,6 +360,8 @@ class Database(libs.unicode.UnicodeVisitor):
 		document_normalization = libs.unicode.UnicodeDocument()
 		document_normalization.parse(script_path + '/data/DerivedNormalizationProps.txt')
 		document_normalization.accept(normalization)
+		
+		self.resolveQuickCheck()
 		
 		# decomposition
 		
@@ -460,6 +469,53 @@ class Database(libs.unicode.UnicodeVisitor):
 		block_reserved2.name = "<reserved-E01F0>..<reserved-E0FFF>"
 		self.blocks.append(block_reserved2)
 	
+	def resolveQuickCheck(self):
+		print "Resolving quick check entries..."
+		
+		# NFC
+		
+		self.qc_nfc_records = sorted(self.qc_nfc_records, key=lambda record: record.start)
+		nfc_length = len(self.qc_nfc_records)
+		nfc_last = self.qc_nfc_records[nfc_length - 1]
+		nfc_last.end = nfc_last.start + nfc_last.count
+		
+		for i in range(0, nfc_length - 1):
+			current = self.qc_nfc_records[i]
+			self.qc_nfc_records[i].end = self.qc_nfc_records[i + 1].start - 1
+		
+		# NFD
+		
+		self.qc_nfd_records = sorted(self.qc_nfd_records, key=lambda record: record.start)
+		nfd_length = len(self.qc_nfd_records)
+		nfd_last = self.qc_nfd_records[nfd_length - 1]
+		nfd_last.end = nfd_last.start + nfd_last.count
+		
+		for i in range(0, nfd_length - 1):
+			current = self.qc_nfd_records[i]
+			self.qc_nfd_records[i].end = self.qc_nfd_records[i + 1].start - 1
+		
+		# NFKC
+		
+		self.qc_nfkc_records = sorted(self.qc_nfkc_records, key=lambda record: record.start)
+		nfkc_length = len(self.qc_nfkc_records)
+		nfkc_last = self.qc_nfkc_records[nfkc_length - 1]
+		nfkc_last.end = nfkc_last.start + nfkc_last.count
+		
+		for i in range(0, nfkc_length - 1):
+			current = self.qc_nfkc_records[i]
+			self.qc_nfkc_records[i].end = self.qc_nfkc_records[i + 1].start - 1
+		
+		# NFKD
+		
+		self.qc_nfkd_records = sorted(self.qc_nfkd_records, key=lambda record: record.start)
+		nfkd_length = len(self.qc_nfkd_records)
+		nfkd_last = self.qc_nfkd_records[nfkd_length - 1]
+		nfkd_last.end = nfkd_last.start + nfkd_last.count
+		
+		for i in range(0, nfkd_length - 1):
+			current = self.qc_nfkd_records[i]
+			self.qc_nfkd_records[i].end = self.qc_nfkd_records[i + 1].start - 1
+		
 	def resolveDecomposition(self):
 		print "Resolving decomposition..."
 		
@@ -655,30 +711,22 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		header.newLine()
 	
-	def writeQuickCheck(self, header):
-		qc = []
-		for r in self.recordsOrdered:
-			value = (r.quickCheckNFKD << 24) | (r.quickCheckNFKC << 16) | (r.quickCheckNFD << 8) | (r.quickCheckNFC)
-			if value <> 0:
-				qc.append({
-					"codepoint": r.codepoint,
-					"value": value
-				})
-		
-		header.writeLine("const size_t UnicodeQuickCheckRecordCount = " + str(len(qc)) + ";")
-		header.writeLine("const QuickCheckRecord UnicodeQuickCheckRecord[" + str(len(qc)) + "] = {")
+	def writeQuickCheck(self, header, records, name):
+		header.writeLine("const size_t UnicodeQuickCheck" + name + "RecordCount = " + str(len(records)) + ";")
+		header.writeLine("const QuickCheckRecord UnicodeQuickCheck" + name + "Record[" + str(len(records)) + "] = {")
 		header.indent()
 		
 		count = 0
 		
-		for c in qc:
+		for r in records:
 			if (count % 4) == 0:
 				header.writeIndentation()
 			
-			header.write("{ " + hex(c["codepoint"]) + ", 0x" + format(c["value"], '08x') + " },")
+			value = (r.value << 24) | r.count
+			header.write("{ " + hex(r.start) + ", " + hex(r.end) + ", " + hex(value) + " },")
 			
 			count += 1
-			if count <> len(qc):
+			if count <> len(records):
 				if (count % 4) == 0:
 					header.newLine()
 				else:
@@ -687,7 +735,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.newLine()
 		header.outdent()
 		header.writeLine("};")
-		header.writeLine("const QuickCheckRecord* UnicodeQuickCheckRecordPtr = UnicodeQuickCheckRecord;")
+		header.writeLine("const QuickCheckRecord* UnicodeQuickCheck" + name + "RecordPtr = UnicodeQuickCheck" + name + "Record;")
 		
 		header.newLine()
 	
@@ -753,7 +801,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# quick check records
 		
-		self.writeQuickCheck(header)
+		self.writeQuickCheck(header, self.qc_nfc_records, "NFC")
+		self.writeQuickCheck(header, self.qc_nfd_records, "NFD")
+		self.writeQuickCheck(header, self.qc_nfkc_records, "NFKC")
+		self.writeQuickCheck(header, self.qc_nfkd_records, "NFKD")
 		
 		# decomposition records
 		
@@ -911,30 +962,40 @@ class Normalization(libs.unicode.UnicodeVisitor):
 	def __init__(self, db):
 		self.db = db
 	
-	def parseEntry(self, codepoint, matches):
+	def parseEntry(self, start, count, matches):
 		property = matches[1][0]
 		
-		def full_composition_exclusion(property, record):
-			record.compositionExcluded = True
+		def full_composition_exclusion(property):
+			if start in self.db.records:
+				record = self.db.records[start]
+				record.compositionExcluded = True
+			else:
+				print "missing " + hex(start) + " in database (\"" + self.db.getBlockByCodepoint(start).name + "\")"
 		
-		def quick_check(property, record):
+		def quick_check(property):
 			nf_member = {
-				"NFD_QC": "quickCheckNFD",
-				"NFC_QC": "quickCheckNFC",
-				"NFKD_QC": "quickCheckNFKD",
-				"NFKC_QC": "quickCheckNFKC",
+				"NFD_QC": "qc_nfd_records",
+				"NFC_QC": "qc_nfc_records",
+				"NFKD_QC": "qc_nfkd_records",
+				"NFKC_QC": "qc_nfkc_records",
 			}
 			nf_value = {
 				"N": 2,
 				"M": 1,
 				"Y": 0,
 			}
-			record.__dict__[nf_member[property]] = nf_value[matches[2][0]]
+			
+			qc = QuickCheckRecord(self.db)
+			qc.start = start
+			qc.count = count
+			qc.value = nf_value[matches[2][0]]
+			
+			self.db.__dict__[nf_member[property]].append(qc)
 		
-		def case_fold(property, record):
+		def case_fold(property):
 			pass
 		
-		def changes_when_nfkc_casefolded(property, record):
+		def changes_when_nfkc_casefolded(property):
 			pass
 		
 		property_values = {
@@ -947,10 +1008,8 @@ class Normalization(libs.unicode.UnicodeVisitor):
 			"Changes_When_NFKC_Casefolded": changes_when_nfkc_casefolded,
 		}
 		if property in property_values:
-			if codepoint in self.db.records:
-				property_values[property](property, self.db.records[codepoint])
-			else:
-				print "missing " + hex(codepoint) + " in database (\"" + self.db.getBlockByCodepoint(codepoint).name + "\")"
+			property_values[property](property)
+		
 	
 	def visitDocument(self, document):
 		print "Parsing derived normalization properties..."
@@ -962,18 +1021,13 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		match = re.match('([0-9A-Fa-f]+)\.?\.?([0-9A-Fa-f]+)?', entry.matches[0][0])
 		if match:
-			codepoint = int(match.group(1), 16)
+			start = int(match.group(1), 16)
 			if match.group(2):
-				codepoint_end = int(match.group(2), 16)
-				
-				# skip hangul syllables
-				if codepoint == 0xAC00 and codepoint_end == 0xD7A3:
-					return True
-				
-				for u in range(codepoint, codepoint_end + 1):
-					self.parseEntry(u, entry.matches)
+				count = int(match.group(2), 16) - start
 			else:
-				self.parseEntry(codepoint, entry.matches)
+				count = 0
+			
+			self.parseEntry(start, count, entry.matches)
 		
 		return True
 
