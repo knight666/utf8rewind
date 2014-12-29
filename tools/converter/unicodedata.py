@@ -431,6 +431,8 @@ class Database(libs.unicode.UnicodeVisitor):
 					u.block = b
 					self.recordsOrdered.append(u)
 					self.records[u.codepoint] = u
+		
+		self.recordsOrdered = sorted(self.recordsOrdered, key=lambda record: record.codepoint)
 	
 	def resolveBlocks(self):
 		print "Resolving blocks for entries..."
@@ -927,7 +929,6 @@ class Normalization(libs.unicode.UnicodeVisitor):
 				"M": 1,
 				"Y": 0,
 			}
-			#print "property: " + property + " member: " + nf_member[property] + " value: " + str(nf_value[matches[2][0]])
 			record.__dict__[nf_member[property]] = nf_value[matches[2][0]]
 		
 		def case_fold(property, record):
