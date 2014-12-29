@@ -27,6 +27,7 @@ class UnicodeMapping:
 		self.decomposedNFD = []
 		self.decomposedNFKD = []
 		self.compositionPairs = dict()
+		self.compositionExcluded = False
 		self.offsetNFC = 0
 		self.offsetNFD = 0
 		self.offsetNFKC = 0
@@ -233,7 +234,7 @@ class UnicodeMapping:
 		self.decomposedNFKD = self.resolveCodepoint(True)
 	
 	def compose(self):
-		if self.decompositionCodepoints and self.decompositionType == "DecompositionType_Canonical":
+		if not self.compositionExcluded and self.decompositionCodepoints and self.decompositionType == "DecompositionType_Canonical":
 			c = self.decompositionCodepoints[0]
 			if c in self.db.records:
 				target = self.db.records[c]
@@ -341,6 +342,13 @@ class Database(libs.unicode.UnicodeVisitor):
 		# missing codepoints
 		
 		self.resolveMissing()
+		
+		# derived normalization properties
+		
+		normalization = Normalization(self)
+		document_normalization = libs.unicode.UnicodeDocument()
+		document_normalization.parse(script_path + '/data/DerivedNormalizationProps.txt')
+		document_normalization.accept(normalization)
 		
 		# decomposition
 		
@@ -822,6 +830,46 @@ class Blocks(libs.unicode.UnicodeVisitor):
 			return False
 		
 		self.db.blocks.append(block)
+		
+		return True
+
+class Normalization(libs.unicode.UnicodeVisitor):
+	def __init__(self, db):
+		self.db = db
+	
+	def parseEntry(self, codepoint, matches):
+		property = matches[1][0]
+		types = [
+			"Full_Composition_Exclusion",
+			"NFD_QC",
+			"NFC_QC",
+			"NFKD_QC",
+			"NFKC_QC",
+			"NFKC_CF",
+			"Changes_When_NFKC_Casefolded",
+		]
+		if property in types:
+			if property == "Full_Composition_Exclusion":
+				r = self.db.records[codepoint]
+				r.compositionExcluded = True
+	
+	def visitDocument(self, document):
+		print "Parsing derived normalization properties..."
+		return True
+	
+	def visitEntry(self, entry):
+		if not entry.matches[0]:
+			return False
+		
+		match = re.match('([0-9A-Fa-f]+)\.?\.?([0-9A-Fa-f]+)?', entry.matches[0][0])
+		if match:
+			codepoint = int(match.group(1), 16)
+			if match.group(2):
+				codepoint_end = int(match.group(2), 16)
+				for u in range(codepoint, codepoint_end + 1):
+					self.parseEntry(u, entry.matches)
+			else:
+				self.parseEntry(codepoint, entry.matches)
 		
 		return True
 
