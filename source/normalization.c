@@ -73,6 +73,17 @@ uint8_t quickcheck(unicode_t codepoint, uint8_t normalizationForm)
 		return QuickCheckResult_Yes;
 	}
 
+	/* Check for Hangul Syllables when decomposing */
+
+	if ((normalizationForm & 0x01) != 0)
+	{
+		if (codepoint >= 0xAC00 &&
+			codepoint <= 0xD7A3)
+		{
+			return QuickCheckResult_No;
+		}
+	}
+
 	do
 	{
 		offset_pivot = offset_start + ((offset_end - offset_start) / 2);
