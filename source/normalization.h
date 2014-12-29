@@ -30,6 +30,11 @@
 
 typedef struct {
 	unicode_t codepoint;
+	uint32_t value;
+} QuickCheckRecord;
+
+typedef struct {
+	unicode_t codepoint;
 	ptrdiff_t offset;
 } DecompositionRecord;
 
@@ -37,6 +42,22 @@ typedef struct {
 	uint64_t key;
 	unicode_t value;
 } CompositionRecord;
+
+enum QuickCheckResult
+{
+	QuickCheckResult_Yes,
+	QuickCheckResult_Maybe,
+	QuickCheckResult_No,
+	QuickCheckResult_Invalid
+};
+
+enum NormalizationForm
+{
+	NormalizationForm_Composed,
+	NormalizationForm_Decomposed,
+	NormalizationForm_Compatibility_Composed,
+	NormalizationForm_Compatibility_Decomposed,
+};
 
 enum FindResult
 {
@@ -54,6 +75,8 @@ enum DecompositionQuery
 	DecompositionQuery_Lowercase,
 	DecompositionQuery_Titlecase,
 };
+
+uint8_t quickcheck(unicode_t codepoint, uint8_t normalizationForm);
 
 const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result);
 

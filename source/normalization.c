@@ -25,6 +25,9 @@
 
 #include "normalization.h"
 
+extern const size_t UnicodeQuickCheckRecordCount;
+extern const QuickCheckRecord* UnicodeQuickCheckRecordPtr;
+
 extern const size_t UnicodeNFDRecordCount;
 extern const DecompositionRecord* UnicodeNFDRecordPtr;
 
@@ -45,6 +48,78 @@ extern const CompositionRecord* UnicodeCompositionRecordPtr;
 
 extern const char* DecompositionData;
 extern const size_t DecompositionDataLength;
+
+uint8_t quickcheck(unicode_t codepoint, uint8_t normalizationForm)
+{
+	size_t offset_start;
+	size_t offset_end;
+	size_t offset_pivot;
+	const QuickCheckRecord* record = UnicodeQuickCheckRecordPtr;
+	size_t record_count = UnicodeQuickCheckRecordCount;
+	const QuickCheckRecord* record_found = 0;
+	size_t i;
+
+	if (normalizationForm > NormalizationForm_Compatibility_Decomposed)
+	{
+		return QuickCheckResult_Invalid;
+	}
+
+	offset_start = 0;
+	offset_end = record_count - 1;
+
+	if (codepoint < record[offset_start].codepoint ||
+		codepoint > record[offset_end].codepoint)
+	{
+		return QuickCheckResult_Yes;
+	}
+
+	do
+	{
+		offset_pivot = offset_start + ((offset_end - offset_start) / 2);
+
+		if (codepoint == record[offset_start].codepoint)
+		{
+			record_found = &record[offset_start]; 
+			goto found;
+		}
+		else if (codepoint == record[offset_end].codepoint)
+		{
+			record_found = &record[offset_end]; 
+			goto found;
+		}
+		else if (codepoint == record[offset_pivot].codepoint)
+		{
+			record_found = &record[offset_pivot]; 
+			goto found;
+		}
+		else
+		{
+			if (codepoint > record[offset_pivot].codepoint)
+			{
+				offset_start = offset_pivot;
+			}
+			else
+			{
+				offset_end = offset_pivot;
+			}
+		}
+	}
+	while (offset_end - offset_start > 32);
+
+	for (i = offset_start; i <= offset_end; ++i)
+	{
+		if (codepoint == record[i].codepoint)
+		{
+			record_found = &record[i]; 
+			goto found;
+		}
+	}
+
+	return QuickCheckResult_Yes;
+
+found:
+	return (uint8_t)((record_found->value >> (normalizationForm * 8)) & 0x03);
+}
 
 const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result)
 {
