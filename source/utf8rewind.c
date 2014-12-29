@@ -125,6 +125,30 @@ char* safe_strcpy(char* target, size_t targetSize, const char* input, size_t inp
 #endif
 }
 
+size_t lengthcodepoint(unicode_t codepoint)
+{
+	if (codepoint < 0x80)
+	{
+		return 1;
+	}
+	else if (codepoint < 0x800)
+	{
+		return 2;
+	}
+	else if (codepoint < 0x10000)
+	{
+		return 3;
+	}
+	else if (codepoint <= MAX_LEGAL_UNICODE)
+	{
+		return 4;
+	}
+	else
+	{
+		return 3;
+	}
+}
+
 size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t* errors)
 {
 	char* target;
@@ -1240,10 +1264,38 @@ outofspace:
 	return bytes_written;
 }
 
+size_t quickcheckutf8(const char* input, size_t inputSize, unicode_t* codepoint, uint8_t* result, uint8_t normalizationForm)
+{
+	/* Basic Latin is unaffected by all normalization forms. */
+
+	if ((input[0] & 0x80) == 0)
+	{
+		*codepoint = (unicode_t)input[0];
+		*result = QuickCheckResult_Yes;
+
+		return 1;
+	}
+	else
+	{
+		size_t read = readcodepoint(codepoint, input, inputSize);
+		*result = quickcheck(*codepoint, normalizationForm);
+
+		return read;
+	}
+}
+
+enum CompositionResult
+{
+	CompositionResult_Combine,
+	CompositionResult_Both,
+	CompositionResult_FindStarter,
+};
+
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
 	TransformFunc process = 0;
 	uint8_t transformType = -1;
+	size_t bytes_written = 0;
 
 	if ((flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
 	{
@@ -1256,9 +1308,127 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 		process = &transform_decomposition;
 		transformType = DecompositionQuery_Compatibility_Decomposed;
 	}
-	else if (
-		(flags & UTF8_TRANSFORM_COMPOSED) != 0 ||
-		(flags & UTF8_TRANSFORM_COMPATIBILITY_COMPOSED) != 0)
+	else if ((flags & UTF8_TRANSFORM_COMPOSED) != 0)
+	{
+		const char* src = input;
+		size_t src_size = inputSize;
+		char* dst = target;
+		size_t dst_size = targetSize;
+		size_t transform_written = 0;
+		size_t transform_read = 0;
+		const char* starter = input;
+		unicode_t cp_left = 0;
+		size_t cp_left_length = 0;
+		uint8_t qc_left = QuickCheckResult_Yes;
+		unicode_t cp_right = 0;
+		size_t cp_right_length = 0;
+		uint8_t qc_right = QuickCheckResult_No;
+		uint8_t swap = 0;
+		uint8_t composed_count;
+
+		if (src == 0 ||
+			src_size == 0)
+		{
+			goto invaliddata;
+		}
+
+		while (src_size > 0)
+		{
+			unicode_t composed;
+			int32_t composition_result = CompositionResult_FindStarter;
+			size_t written;
+
+			cp_left_length = quickcheckutf8(src, src_size, &cp_left, &qc_left, NormalizationForm_Composed);
+
+			/*if (src_size <= cp_left_length)
+			{
+				if (dst != 0 &&
+					dst_size < cp_left_length)
+				{
+					goto outofspace;
+				}
+
+				bytes_written += writecodepoint(cp_left, &dst, &dst_size, errors);
+
+				return bytes_written;
+			}*/
+
+			src += cp_left_length;
+			src_size -= cp_left_length;
+
+			/*cp_right_length = quickcheckutf8(src, src_size, &cp_right, &qc_right, NormalizationForm_Composed);
+
+			if (src_size >= cp_right_length)
+			{
+				src += cp_right_length;
+				src_size -= cp_right_length;
+			}*/
+
+			composed_count = 0;
+
+			while (qc_right != QuickCheckResult_Yes)
+			{
+				int32_t find_result;
+
+				if (src_size > 0)
+				{
+					cp_right_length = quickcheckutf8(src, src_size, &cp_right, &qc_right, NormalizationForm_Composed);
+				}
+
+				composed = querycomposition(cp_left, cp_right, &find_result);
+				if (find_result != FindResult_Found)
+				{
+					if (composed_count > 0)
+					{
+						cp_right = 0;
+						cp_right_length = 0;
+					}
+
+					break;
+				}
+
+				composed_count++;
+
+				cp_left = composed;
+				cp_left_length = lengthcodepoint(composed);
+				qc_left = quickcheck(composed, NormalizationForm_Composed);
+
+				if (src_size < cp_right_length)
+				{
+					break;
+				}
+
+				src += cp_right_length;
+				src_size -= cp_right_length;
+			}
+
+			if (dst != 0 &&
+				dst_size < (cp_left_length + cp_right_length))
+			{
+				goto outofspace;
+			}
+
+			written = writecodepoint(cp_left, &dst, &dst_size, errors);
+			if (written == 0)
+			{
+				break;
+			}
+			bytes_written += written;
+
+			if (cp_right != 0)
+			{
+				written = writecodepoint(cp_right, &dst, &dst_size, errors);
+				if (written == 0)
+				{
+					break;
+				}
+				bytes_written += written;
+			}
+		}
+
+		return bytes_written;
+	}
+	else if ((flags & UTF8_TRANSFORM_COMPATIBILITY_COMPOSED) != 0)
 	{
 		process = &transform_composition;
 	}
@@ -1272,4 +1442,18 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	}
 
 	return processtransform(process, input, inputSize, target, targetSize, transformType, errors);
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return bytes_written;
 }
