@@ -29,8 +29,9 @@
 #include "utf8rewind.h"
 
 typedef struct {
-	unicode_t codepoint;
-	uint32_t value;
+	unicode_t start;
+	unicode_t end;
+	unicode_t count_and_value;
 } QuickCheckRecord;
 
 typedef struct {
