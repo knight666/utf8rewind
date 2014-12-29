@@ -34,6 +34,20 @@ TEST(QuickCheck, ComposedFoundMaybe)
 	EXPECT_EQ(QuickCheckResult_Maybe, r);
 }
 
+TEST(QuickCheck, ComposedFoundFirst)
+{
+	uint8_t r = quickcheck(0x0300, NormalizationForm_Composed);
+
+	EXPECT_EQ(QuickCheckResult_Maybe, r);
+}
+
+TEST(QuickCheck, ComposedFoundLast)
+{
+	uint8_t r = quickcheck(0x2FA1D, NormalizationForm_Composed);
+
+	EXPECT_EQ(QuickCheckResult_No, r);
+}
+
 TEST(QuickCheck, ComposedOutOfLowerBounds)
 {
 	uint8_t r = quickcheck(0x00FF, NormalizationForm_Composed);
@@ -48,11 +62,32 @@ TEST(QuickCheck, ComposedOutOfUpperBounds)
 	EXPECT_EQ(QuickCheckResult_Yes, r);
 }
 
+TEST(QuickCheck, ComposedBetweenBlocks)
+{
+	uint8_t r = quickcheck(0x2B81, NormalizationForm_Composed);
+
+	EXPECT_EQ(QuickCheckResult_Yes, r);
+}
+
 // Decomposed
 
 TEST(QuickCheck, DecomposedFoundNo)
 {
 	uint8_t r = quickcheck(0x0374, NormalizationForm_Decomposed);
+
+	EXPECT_EQ(QuickCheckResult_No, r);
+}
+
+TEST(QuickCheck, DecomposedFoundFirst)
+{
+	uint8_t r = quickcheck(0x00C0, NormalizationForm_Decomposed);
+
+	EXPECT_EQ(QuickCheckResult_No, r);
+}
+
+TEST(QuickCheck, DecomposedFoundLast)
+{
+	uint8_t r = quickcheck(0x2FA1D, NormalizationForm_Decomposed);
 
 	EXPECT_EQ(QuickCheckResult_No, r);
 }
@@ -67,6 +102,13 @@ TEST(QuickCheck, DecomposedOutOfLowerBounds)
 TEST(QuickCheck, DecomposedOutOfUpperBounds)
 {
 	uint8_t r = quickcheck(0x30000, NormalizationForm_Decomposed);
+
+	EXPECT_EQ(QuickCheckResult_Yes, r);
+}
+
+TEST(QuickCheck, DecomposedBetweenBlocks)
+{
+	uint8_t r = quickcheck(0xFB20, NormalizationForm_Decomposed);
 
 	EXPECT_EQ(QuickCheckResult_Yes, r);
 }
@@ -108,6 +150,20 @@ TEST(QuickCheck, CompatibilityComposedFoundMaybe)
 	EXPECT_EQ(QuickCheckResult_Maybe, r);
 }
 
+TEST(QuickCheck, CompatibilityComposedFoundFirst)
+{
+	uint8_t r = quickcheck(0x00A0, NormalizationForm_Compatibility_Composed);
+
+	EXPECT_EQ(QuickCheckResult_No, r);
+}
+
+TEST(QuickCheck, CompatibilityComposedFoundLast)
+{
+	uint8_t r = quickcheck(0x2FA1D, NormalizationForm_Compatibility_Composed);
+
+	EXPECT_EQ(QuickCheckResult_No, r);
+}
+
 TEST(QuickCheck, CompatibilityComposedOutOfLowerBounds)
 {
 	uint8_t r = quickcheck(0x007F, NormalizationForm_Compatibility_Composed);
@@ -122,11 +178,32 @@ TEST(QuickCheck, CompatibilityComposedOutOfUpperBounds)
 	EXPECT_EQ(QuickCheckResult_Yes, r);
 }
 
+TEST(QuickCheck, CompatibilityComposedBetweenBlocks)
+{
+	uint8_t r = quickcheck(0x1EE5C, NormalizationForm_Compatibility_Composed);
+
+	EXPECT_EQ(QuickCheckResult_Yes, r);
+}
+
 // Compatibility decomposed
 
 TEST(QuickCheck, CompatibilityDecomposedFoundNo)
 {
 	uint8_t r = quickcheck(0x03F9, NormalizationForm_Compatibility_Decomposed);
+
+	EXPECT_EQ(QuickCheckResult_No, r);
+}
+
+TEST(QuickCheck, CompatibilityDecomposedFoundFirst)
+{
+	uint8_t r = quickcheck(0x00A0, NormalizationForm_Compatibility_Decomposed);
+
+	EXPECT_EQ(QuickCheckResult_No, r);
+}
+
+TEST(QuickCheck, CompatibilityDecomposedFoundLast)
+{
+	uint8_t r = quickcheck(0x2FA1D, NormalizationForm_Compatibility_Decomposed);
 
 	EXPECT_EQ(QuickCheckResult_No, r);
 }
@@ -141,6 +218,13 @@ TEST(QuickCheck, CompatibilityDecomposedOutOfLowerBounds)
 TEST(QuickCheck, CompatibilityDecomposedOutOfUpperBounds)
 {
 	uint8_t r = quickcheck(0x30000, NormalizationForm_Compatibility_Decomposed);
+
+	EXPECT_EQ(QuickCheckResult_Yes, r);
+}
+
+TEST(QuickCheck, CompatibilityDecomposedBetweenBlocks)
+{
+	uint8_t r = quickcheck(0x038D, NormalizationForm_Compatibility_Decomposed);
 
 	EXPECT_EQ(QuickCheckResult_Yes, r);
 }
