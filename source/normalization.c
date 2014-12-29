@@ -25,8 +25,17 @@
 
 #include "normalization.h"
 
-extern const size_t UnicodeQuickCheckRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckRecordPtr;
+extern const size_t UnicodeQuickCheckNFCRecordCount;
+extern const QuickCheckRecord* UnicodeQuickCheckNFCRecordPtr;
+
+extern const size_t UnicodeQuickCheckNFDRecordCount;
+extern const QuickCheckRecord* UnicodeQuickCheckNFDRecordPtr;
+
+extern const size_t UnicodeQuickCheckNFKCRecordCount;
+extern const QuickCheckRecord* UnicodeQuickCheckNFKCRecordPtr;
+
+extern const size_t UnicodeQuickCheckNFKDRecordCount;
+extern const QuickCheckRecord* UnicodeQuickCheckNFKDRecordPtr;
 
 extern const size_t UnicodeNFDRecordCount;
 extern const DecompositionRecord* UnicodeNFDRecordPtr;
@@ -51,61 +60,78 @@ extern const size_t DecompositionDataLength;
 
 uint8_t quickcheck(unicode_t codepoint, uint8_t normalizationForm)
 {
+	const QuickCheckRecord* record;
+	size_t record_count;
+	const QuickCheckRecord* record_found = 0;
 	size_t offset_start;
 	size_t offset_end;
 	size_t offset_pivot;
-	const QuickCheckRecord* record = UnicodeQuickCheckRecordPtr;
-	size_t record_count = UnicodeQuickCheckRecordCount;
-	const QuickCheckRecord* record_found = 0;
 	size_t i;
 
-	if (normalizationForm > NormalizationForm_Compatibility_Decomposed)
+	switch (normalizationForm)
 	{
+
+	case NormalizationForm_Composed:
+		record = UnicodeQuickCheckNFCRecordPtr;
+		record_count = UnicodeQuickCheckNFCRecordCount;
+		break;
+
+	case NormalizationForm_Decomposed:
+		record = UnicodeQuickCheckNFDRecordPtr;
+		record_count = UnicodeQuickCheckNFDRecordCount;
+		break;
+
+	case NormalizationForm_Compatibility_Composed:
+		record = UnicodeQuickCheckNFKCRecordPtr;
+		record_count = UnicodeQuickCheckNFKCRecordCount;
+		break;
+
+	case NormalizationForm_Compatibility_Decomposed:
+		record = UnicodeQuickCheckNFKDRecordPtr;
+		record_count = UnicodeQuickCheckNFKDRecordCount;
+		break;
+
+	default:
 		return QuickCheckResult_Invalid;
+
 	}
 
 	offset_start = 0;
 	offset_end = record_count - 1;
 
-	if (codepoint < record[offset_start].codepoint ||
-		codepoint > record[offset_end].codepoint)
+	if (codepoint < record[offset_start].start ||
+		codepoint > record[offset_end].end)
 	{
 		return QuickCheckResult_Yes;
-	}
-
-	/* Check for Hangul Syllables when decomposing */
-
-	if ((normalizationForm & 0x01) != 0)
-	{
-		if (codepoint >= 0xAC00 &&
-			codepoint <= 0xD7A3)
-		{
-			return QuickCheckResult_No;
-		}
 	}
 
 	do
 	{
 		offset_pivot = offset_start + ((offset_end - offset_start) / 2);
 
-		if (codepoint == record[offset_start].codepoint)
+		if (codepoint >= record[offset_start].start &&
+			codepoint <= record[offset_start].end)
 		{
 			record_found = &record[offset_start]; 
 			goto found;
 		}
-		else if (codepoint == record[offset_end].codepoint)
+		else if (
+			codepoint >= record[offset_end].start &&
+			codepoint <= record[offset_end].end)
 		{
 			record_found = &record[offset_end]; 
 			goto found;
 		}
-		else if (codepoint == record[offset_pivot].codepoint)
+		else if (
+			codepoint >= record[offset_pivot].start &&
+			codepoint <= record[offset_pivot].end)
 		{
 			record_found = &record[offset_pivot]; 
 			goto found;
 		}
 		else
 		{
-			if (codepoint > record[offset_pivot].codepoint)
+			if (codepoint > record[offset_pivot].end)
 			{
 				offset_start = offset_pivot;
 			}
@@ -115,13 +141,14 @@ uint8_t quickcheck(unicode_t codepoint, uint8_t normalizationForm)
 			}
 		}
 	}
-	while (offset_end - offset_start > 32);
+	while (offset_end - offset_start > 8);
 
 	for (i = offset_start; i <= offset_end; ++i)
 	{
-		if (codepoint == record[i].codepoint)
+		if (codepoint >= record[i].start &&
+			codepoint <= record[i].end)
 		{
-			record_found = &record[i]; 
+			record_found = &record[i];
 			goto found;
 		}
 	}
@@ -129,7 +156,14 @@ uint8_t quickcheck(unicode_t codepoint, uint8_t normalizationForm)
 	return QuickCheckResult_Yes;
 
 found:
-	return (uint8_t)((record_found->value >> (normalizationForm * 8)) & 0x03);
+	if (codepoint <= (record_found->start + (record_found->count_and_value & 0x00FFFFFF)))
+	{
+		return ((record_found->count_and_value & 0xFF000000) >> 24);
+	}
+	else
+	{
+		return QuickCheckResult_Yes;
+	}
 }
 
 const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result)
