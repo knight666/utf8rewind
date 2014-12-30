@@ -1317,14 +1317,13 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 		size_t transform_written = 0;
 		size_t transform_read = 0;
 		const char* starter = input;
-		unicode_t cp_left = 0;
-		size_t cp_left_length = 0;
-		uint8_t qc_left = QuickCheckResult_Yes;
-		unicode_t cp_right = 0;
-		size_t cp_right_length = 0;
-		uint8_t qc_right = QuickCheckResult_No;
 		uint8_t swap = 0;
 		uint8_t composed_count;
+		unicode_t cp[2];
+		size_t cp_length[2];
+		uint8_t qc[2];
+		uint8_t current = 0;
+		uint8_t next = 1;
 
 		if (src == 0 ||
 			src_size == 0)
@@ -1332,101 +1331,96 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 			goto invaliddata;
 		}
 
+		memset(cp, 0, sizeof(cp));
+		memset(cp_length, 0, sizeof(cp_length));
+		memset(qc, 0, sizeof(qc));
+
+		cp_length[current] = quickcheckutf8(src, src_size, &cp[current], &qc[current], NormalizationForm_Composed);
+
+		if (src_size <= cp_length[current])
+		{
+			if (dst != 0 &&
+				dst_size < cp_length[current])
+			{
+				goto outofspace;
+			}
+
+			bytes_written += writecodepoint(cp[current], &dst, &dst_size, errors);
+
+			return bytes_written;
+		}
+
+		src += cp_length[current];
+		src_size -= cp_length[current];
+
 		while (src_size > 0)
 		{
-			unicode_t composed;
 			int32_t composition_result = CompositionResult_FindStarter;
 			size_t written;
-
-			cp_left_length = quickcheckutf8(src, src_size, &cp_left, &qc_left, NormalizationForm_Composed);
-
-			/*if (src_size <= cp_left_length)
-			{
-				if (dst != 0 &&
-					dst_size < cp_left_length)
-				{
-					goto outofspace;
-				}
-
-				bytes_written += writecodepoint(cp_left, &dst, &dst_size, errors);
-
-				return bytes_written;
-			}*/
-
-			src += cp_left_length;
-			src_size -= cp_left_length;
-
-			/*cp_right_length = quickcheckutf8(src, src_size, &cp_right, &qc_right, NormalizationForm_Composed);
-
-			if (src_size >= cp_right_length)
-			{
-				src += cp_right_length;
-				src_size -= cp_right_length;
-			}*/
+			uint8_t at_end = 0;
 
 			composed_count = 0;
 
-			while (qc_right != QuickCheckResult_Yes)
+			while (!at_end)
 			{
+				unicode_t composed;
 				int32_t find_result;
 
 				if (src_size > 0)
 				{
-					cp_right_length = quickcheckutf8(src, src_size, &cp_right, &qc_right, NormalizationForm_Composed);
+					cp_length[next] = quickcheckutf8(src, src_size, &cp[next], &qc[next], NormalizationForm_Composed);
 
-					if (src_size >= cp_right_length)
+					if (src_size >= cp_length[next])
 					{
-						src += cp_right_length;
-						src_size -= cp_right_length;
+						src += cp_length[next];
+						src_size -= cp_length[next];
 					}
 					else
 					{
-						qc_right = QuickCheckResult_Yes;
+						at_end = 1;
 					}
 				}
 
-				composed = querycomposition(cp_left, cp_right, &find_result);
+				if (qc[current] == QuickCheckResult_Yes &&
+					qc[next] == QuickCheckResult_Yes)
+				{
+					break;
+				}
+
+				composed = querycomposition(cp[current], cp[next], &find_result);
 
 				if (find_result != FindResult_Found)
 				{
-					if (composed_count > 0)
-					{
-						cp_right = 0;
-						cp_right_length = 0;
-					}
-
 					break;
 				}
 
 				composed_count++;
 
-				cp_left = composed;
-				cp_left_length = lengthcodepoint(composed);
-				qc_left = quickcheck(composed, NormalizationForm_Composed);
+				cp[current] = composed;
+				cp_length[current] = lengthcodepoint(composed);
+				qc[current] = quickcheck(composed, NormalizationForm_Composed);
 			}
 
 			if (dst != 0 &&
-				dst_size < (cp_left_length + cp_right_length))
+				dst_size < (cp_length[current] + cp_length[next]))
 			{
 				goto outofspace;
 			}
 
-			written = writecodepoint(cp_left, &dst, &dst_size, errors);
+			written = writecodepoint(cp[current], &dst, &dst_size, errors);
 			if (written == 0)
 			{
 				break;
 			}
 			bytes_written += written;
 
-			if (cp_right != 0)
-			{
-				written = writecodepoint(cp_right, &dst, &dst_size, errors);
-				if (written == 0)
-				{
-					break;
-				}
-				bytes_written += written;
-			}
+			current = (current + 1) % 2;
+			next = (next + 1) % 2;
+		}
+
+		if (qc[current] == QuickCheckResult_Yes)
+		{
+			bytes_written += writecodepoint(cp[current], &dst, &dst_size, errors);
 		}
 
 		return bytes_written;
