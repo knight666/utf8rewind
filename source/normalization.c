@@ -281,23 +281,6 @@ found:
 	}
 }
 
-const char* resolvedecomposition(size_t offset, int32_t* result)
-{
-	if (result == 0)
-	{
-		return 0;
-	}
-
-	if (offset >= DecompositionDataLength)
-	{
-		*result = FindResult_OutOfBounds;
-		return 0;
-	}
-
-	*result = FindResult_Found;
-	return DecompositionData + offset;
-}
-
 unicode_t querycomposition(unicode_t left, unicode_t right, int32_t* result)
 {
 	uint64_t key = ((uint64_t)left << 32) + (uint64_t)right;
