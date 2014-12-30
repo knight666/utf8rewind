@@ -966,11 +966,12 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		property = matches[1][0]
 		
 		def full_composition_exclusion(property):
-			if start in self.db.records:
-				record = self.db.records[start]
-				record.compositionExcluded = True
-			else:
-				print "missing " + hex(start) + " in database (\"" + self.db.getBlockByCodepoint(start).name + "\")"
+			for i in range(start, start + count + 1):
+				if i in self.db.records:
+					record = self.db.records[i]
+					record.compositionExcluded = True
+				else:
+					print "missing " + hex(start) + " in database (\"" + self.db.getBlockByCodepoint(start).name + "\")"
 		
 		def quick_check(property):
 			nf_member = {
