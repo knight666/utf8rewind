@@ -1017,7 +1017,7 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 					src_size -= cp_length[next];
 				}
 				
-				at_end = (src_size < cp_length[next]);
+				at_end = !(src_size >= cp_length[next] || src_size > 0);
 			}
 
 			if (cp_check[current] == QuickCheckResult_Yes &&
@@ -1034,6 +1034,8 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 			}
 			else if (cp_check[next] == QuickCheckResult_Maybe)
 			{
+				/* if the composition succeeded but there's no data left, don't output the second codepoint */
+
 				cp_check[next] = at_end ? QuickCheckResult_No : QuickCheckResult_Yes;
 			}
 
