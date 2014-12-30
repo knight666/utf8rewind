@@ -1373,9 +1373,20 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 				if (src_size > 0)
 				{
 					cp_right_length = quickcheckutf8(src, src_size, &cp_right, &qc_right, NormalizationForm_Composed);
+
+					if (src_size >= cp_right_length)
+					{
+						src += cp_right_length;
+						src_size -= cp_right_length;
+					}
+					else
+					{
+						qc_right = QuickCheckResult_Yes;
+					}
 				}
 
 				composed = querycomposition(cp_left, cp_right, &find_result);
+
 				if (find_result != FindResult_Found)
 				{
 					if (composed_count > 0)
@@ -1392,14 +1403,6 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 				cp_left = composed;
 				cp_left_length = lengthcodepoint(composed);
 				qc_left = quickcheck(composed, NormalizationForm_Composed);
-
-				if (src_size < cp_right_length)
-				{
-					break;
-				}
-
-				src += cp_right_length;
-				src_size -= cp_right_length;
 			}
 
 			if (dst != 0 &&

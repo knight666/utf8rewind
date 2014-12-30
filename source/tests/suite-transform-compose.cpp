@@ -13,7 +13,7 @@ TEST(TransformCompose, Found)
 
 	EXPECT_EQ(3, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_COMPOSED, &errors));
 	EXPECT_EQ(0, errors);
-	EXPECT_STREQ("\xE1\xB8\x8A", b);
+	EXPECT_UTF8EQ("\xE1\xB8\x8A", b);
 }
 
 TEST(TransformCompose, LeftBasicLatin)
@@ -25,7 +25,7 @@ TEST(TransformCompose, LeftBasicLatin)
 
 	EXPECT_EQ(4, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_COMPOSED, &errors));
 	EXPECT_EQ(0, errors);
-	EXPECT_STREQ("z\xE0\xA9\x82", b);
+	EXPECT_UTF8EQ("z\xE0\xA9\x82", b);
 }
 
 TEST(TransformCompose, RightBasicLatin)
@@ -37,7 +37,7 @@ TEST(TransformCompose, RightBasicLatin)
 
 	EXPECT_EQ(3, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_COMPOSED, &errors));
 	EXPECT_EQ(0, errors);
-	EXPECT_STREQ("\xC6\x99t", b);
+	EXPECT_UTF8EQ("\xC6\x99t", b);
 }
 
 TEST(TransformCompose, BothBasicLatin)
@@ -49,5 +49,5 @@ TEST(TransformCompose, BothBasicLatin)
 
 	EXPECT_EQ(2, utf8transform(c, strlen(c), b, s, UTF8_TRANSFORM_COMPOSED, &errors));
 	EXPECT_EQ(0, errors);
-	EXPECT_STREQ("AV", b);
+	EXPECT_UTF8EQ("AV", b);
 }
