@@ -328,6 +328,9 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.qc_nfd_records = []
 		self.qc_nfkc_records = []
 		self.qc_nfkd_records = []
+		self.qcLowercase = []
+		self.qcUppercase = []
+		self.qcTitlecase = []
 	
 	def loadFromFiles(self, arguments):
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -546,8 +549,48 @@ class Database(libs.unicode.UnicodeVisitor):
 	def resolveCaseMapping(self):
 		print "Resolving case mappings..."
 		
+		group_uppercase = None
+		group_lowercase = None
+		group_titlecase = None
+		
 		for r in self.recordsOrdered:
 			r.caseMapping()
+			
+			if r.uppercase:
+				if not group_uppercase or r.codepoint <> (group_uppercase.start + group_uppercase.count + 1):
+					if group_uppercase:
+						group_uppercase.end = r.codepoint - 1
+					group_uppercase = QuickCheckRecord(self)
+					group_uppercase.start = r.codepoint
+					group_uppercase.value = 1
+					self.qcUppercase.append(group_uppercase)
+				else:
+					group_uppercase.count += 1
+			
+			if r.lowercase:
+				if not group_lowercase or r.codepoint <> (group_lowercase.start + group_lowercase.count + 1):
+					if group_lowercase:
+						group_lowercase.end = r.codepoint - 1
+					group_lowercase = QuickCheckRecord(self)
+					group_lowercase.start = r.codepoint
+					group_lowercase.value = 1
+					self.qcLowercase.append(group_lowercase)
+				else:
+					group_lowercase.count += 1
+					
+			if r.titlecase:
+				if not group_titlecase or r.codepoint <> (group_titlecase.start + group_titlecase.count + 1):
+					if group_titlecase:
+						group_titlecase.end = r.codepoint - 1
+					group_titlecase = QuickCheckRecord(self)
+					group_titlecase.start = r.codepoint
+					group_titlecase.value = 1
+					self.qcTitlecase.append(group_titlecase)
+				else:
+					group_titlecase.count += 1
+		
+		if group_uppercase:
+			group_uppercase.end = group_uppercase.start + group_uppercase.count
 	
 	def resolveCodepoint(self, codepoint, compatibility):
 		found = self.records[codepoint]
@@ -805,6 +848,9 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.writeQuickCheck(header, self.qc_nfd_records, "NFD")
 		self.writeQuickCheck(header, self.qc_nfkc_records, "NFKC")
 		self.writeQuickCheck(header, self.qc_nfkd_records, "NFKD")
+		self.writeQuickCheck(header, self.qcUppercase, "Uppercase")
+		self.writeQuickCheck(header, self.qcLowercase, "Lowercase")
+		self.writeQuickCheck(header, self.qcTitlecase, "Titlecase")
 		
 		# decomposition records
 		
