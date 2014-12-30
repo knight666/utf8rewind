@@ -105,8 +105,23 @@ static const size_t Utf8ByteMaximum[6] = {
 	0x0010FFFF
 };
 
-#define UTF8_HANGUL_FIRST 0xAC00
-#define UTF8_HANGUL_LAST  0xD7A3
+#define HANGUL_L_FIRST 0x1100
+#define HANGUL_L_LAST 0x1112
+#define HANGUL_L_COUNT 19
+
+#define HANGUL_V_FIRST 0x1161
+#define HANGUL_V_LAST 0x1175
+#define HANGUL_V_COUNT 21
+
+#define HANGUL_T_FIRST 0x11A7
+#define HANGUL_T_LAST 0x11C2
+#define HANGUL_T_COUNT 28
+
+#define HANGUL_N_COUNT 588 /* VCount * TCount */
+
+#define HANGUL_S_FIRST 0xAC00
+#define HANGUL_S_LAST 0xD7A3
+#define HANGUL_S_COUNT 11172 /* LCount * NCount */
 
 #if defined(__GNUC__) && !defined(COMPILER_ICC)
 	#define UTF8_UNUSED(_parameter) _parameter __attribute__ ((unused))
@@ -870,10 +885,6 @@ outofspace:
 size_t transform_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, size_t* read, uint8_t transformType, int32_t* errors)
 {
 	size_t resolved_size;
-	unicode_t SIndex;
-	unicode_t L;
-	unicode_t V;
-	unicode_t T;
 
 	if ((uint8_t)*input <= 0x7F)
 	{
@@ -898,8 +909,8 @@ size_t transform_decomposition(const char* input, size_t inputSize, char* target
 		unicode_t codepoint;
 		size_t codepoint_length = readcodepoint(&codepoint, input, inputSize);
 
-		if (codepoint >= UTF8_HANGUL_FIRST &&
-			codepoint <= UTF8_HANGUL_LAST)
+		if (codepoint >= HANGUL_S_FIRST &&
+			codepoint <= HANGUL_S_LAST)
 		{
 			/*
 				Hangul decomposition
@@ -908,20 +919,13 @@ size_t transform_decomposition(const char* input, size_t inputSize, char* target
 				http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
 			*/
 
-			static const unicode_t SBase = UTF8_HANGUL_FIRST;
-			static const unicode_t LBase = 0x1100;
-			static const unicode_t VBase = 0x1161;
-			static const unicode_t TBase = 0x11A7;
-			static const unicode_t TCount = 28;
-			static const unicode_t NCount = 588; /* VCount * TCount */
-
-			SIndex = codepoint - SBase;
-			L = LBase + (SIndex / NCount);
-			V = VBase + (SIndex % NCount) / TCount;
-			T = TBase + (SIndex % TCount);
+			unicode_t s_index = codepoint - HANGUL_S_FIRST;
+			unicode_t l = HANGUL_L_FIRST + (s_index / HANGUL_N_COUNT);
+			unicode_t v = HANGUL_V_FIRST + (s_index % HANGUL_N_COUNT) / HANGUL_T_COUNT;
+			unicode_t t = HANGUL_T_FIRST + (s_index % HANGUL_T_COUNT);
 
 			/* hangul syllables are always three bytes */
-			resolved_size = (T != TBase) ? 9 : 6;
+			resolved_size = (t != HANGUL_T_FIRST) ? 9 : 6;
 
 			if (target != 0 &&
 				targetSize < resolved_size)
@@ -929,11 +933,11 @@ size_t transform_decomposition(const char* input, size_t inputSize, char* target
 				goto outofspace;
 			}
 
-			writecodepoint(L, &target, &targetSize, errors);
-			writecodepoint(V, &target, &targetSize, errors);
-			if (T != TBase)
+			writecodepoint(l, &target, &targetSize, errors);
+			writecodepoint(v, &target, &targetSize, errors);
+			if (t != HANGUL_T_FIRST)
 			{
-				writecodepoint(T, &target, &targetSize, errors);
+				writecodepoint(t, &target, &targetSize, errors);
 			}
 		}
 		else
@@ -1000,11 +1004,12 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 	while (src_size > 0)
 	{
 		size_t written;
-		unicode_t composed = 0;
 		uint8_t at_end = 0;
 
 		while (!at_end)
 		{
+			unicode_t composed = 0;
+
 			int32_t find_result;
 
 			if (src_size > 0)
@@ -1026,15 +1031,63 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 				break;
 			}
 
-			composed = querycomposition(cp[current], cp[next], &find_result);
+			/*
+				Hangul composition
+			
+				Algorithm adapted from Unicode Technical Report #15:
+				http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
+			*/
 
-			if (find_result != FindResult_Found)
+			if (cp[current] >= HANGUL_L_FIRST &&
+				cp[current] <= HANGUL_L_LAST)
+			{
+				/* Check for Hangul LV pair */ 
+
+				if (cp[next] >= HANGUL_V_FIRST &&
+					cp[next] <= HANGUL_V_LAST)
+				{
+					unicode_t l_index = cp[current] - HANGUL_L_FIRST;
+					unicode_t v_index = cp[next] - HANGUL_V_FIRST;
+
+					composed = HANGUL_S_FIRST + (((l_index * HANGUL_V_COUNT) + v_index) * HANGUL_T_COUNT);
+				}
+				else
+				{
+					break;
+				}
+			}
+			else if (
+				cp[current] >= HANGUL_S_FIRST &&
+				cp[current] <= HANGUL_S_LAST)
+			{
+				/* Check for Hangul LV and T pair */ 
+
+				if (cp[next] >= HANGUL_T_FIRST &&
+					cp[next] <= HANGUL_T_LAST)
+				{
+					unicode_t t_index = cp[next] - HANGUL_T_FIRST;
+
+					composed = cp[current] + t_index;
+				}
+				else
+				{
+					break;
+				}
+			}
+			else
+			{
+				/* Check database for composition */
+
+				composed = querycomposition(cp[current], cp[next], &find_result);
+			}
+
+			if (composed == 0)
 			{
 				break;
 			}
 			else if (cp_check[next] == QuickCheckResult_Maybe)
 			{
-				/* if the composition succeeded but there's no data left, don't output the second codepoint */
+				/* If the composition succeeded but there's no data left, don't output the second codepoint */
 
 				cp_check[next] = at_end ? QuickCheckResult_No : QuickCheckResult_Yes;
 			}
