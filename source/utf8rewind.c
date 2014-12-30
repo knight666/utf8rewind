@@ -282,6 +282,25 @@ size_t readcodepoint(unicode_t* codepoint, const char* input, size_t inputSize)
 	return decoded_length;
 }
 
+/* TODO: Move to internal header */
+uint8_t quickcheckutf8(const char* input, size_t inputSize, unicode_t* codepoint, size_t* codepointLength, uint8_t normalizationForm)
+{
+	/* Basic Latin is unaffected by all normalization forms. */
+
+	if ((input[0] & 0x80) == 0)
+	{
+		*codepoint = (unicode_t)input[0];
+		*codepointLength = 1;
+
+		return QuickCheckResult_Yes;
+	}
+	else
+	{
+		*codepointLength = readcodepoint(codepoint, input, inputSize);
+		return quickcheck(*codepoint, normalizationForm);
+	}
+}
+
 size_t utf8len(const char* text)
 {
 	const char* src;
@@ -935,93 +954,131 @@ outofspace:
 	return 0;
 }
 
-size_t transform_composition(const char* input, size_t inputSize, char* target, size_t targetSize, size_t* read, UTF8_UNUSED(uint8_t transformType), int32_t* errors)
+size_t transform_composition(const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t transformType, int32_t* errors)
 {
-	unicode_t codepoint_left;
-	unicode_t codepoint_right;
-	size_t codepoint_left_length;
-	size_t codepoint_right_length;
-	unicode_t composed;
-	int32_t find_result = 0;
-	size_t result = 0;
+	size_t bytes_written = 0;
+	const char* src = input;
+	size_t src_size = inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
+	unicode_t cp[2];
+	size_t cp_length[2];
+	uint8_t cp_check[2];
+	uint8_t current = 0;
+	uint8_t next = 1;
 
-	if ((uint8_t)input[0] <= 0x7F &&
-		(uint8_t)input[1] <= 0x7F)
+	if (src == 0 ||
+		src_size == 0)
 	{
-		if (target != 0)
+		goto invaliddata;
+	}
+
+	memset(cp, 0, sizeof(cp));
+	memset(cp_length, 0, sizeof(cp_length));
+	memset(cp_check, 0, sizeof(cp_check));
+
+	/* read the first codepoint */
+
+	cp_check[current] = quickcheckutf8(src, src_size, &cp[current], &cp_length[current], transformType);
+
+	if (src_size <= cp_length[current])
+	{
+		if (dst != 0 &&
+			dst_size < cp_length[current])
 		{
-			if (targetSize < 2)
+			goto outofspace;
+		}
+
+		bytes_written += writecodepoint(cp[current], &dst, &dst_size, errors);
+
+		return bytes_written;
+	}
+
+	src += cp_length[current];
+	src_size -= cp_length[current];
+
+	while (src_size > 0)
+	{
+		size_t written;
+		unicode_t composed = 0;
+		uint8_t at_end = 0;
+
+		while (!at_end)
+		{
+			int32_t find_result;
+
+			if (src_size > 0)
 			{
-				goto outofspace;
+				cp_check[next] = quickcheckutf8(src, src_size, &cp[next], &cp_length[next], transformType);
+
+				if (src_size >= cp_length[next])
+				{
+					src += cp_length[next];
+					src_size -= cp_length[next];
+				}
+				
+				at_end = (src_size < cp_length[next]);
 			}
 
-			target[0] = input[0];
-			target[1] = input[1];
+			if (cp_check[current] == QuickCheckResult_Yes &&
+				cp_check[next] == QuickCheckResult_Yes)
+			{
+				break;
+			}
+
+			composed = querycomposition(cp[current], cp[next], &find_result);
+
+			if (find_result != FindResult_Found)
+			{
+				break;
+			}
+			else if (cp_check[next] == QuickCheckResult_Maybe)
+			{
+				cp_check[next] = at_end ? QuickCheckResult_No : QuickCheckResult_Yes;
+			}
+
+			cp[current] = composed;
+			cp_length[current] = lengthcodepoint(composed);
+			cp_check[current] = quickcheck(composed, transformType);
 		}
 
-		*read = 2;
-
-		return 2;
-	}
-
-	codepoint_left_length = readcodepoint(&codepoint_left, input, inputSize);
-
-	if (inputSize < codepoint_left_length ||
-		inputSize - codepoint_left_length == 0)
-	{
-		*read = codepoint_left_length;
-
-		if (target != 0 &&
-			targetSize < codepoint_left_length)
+		if (dst != 0 &&
+			dst_size < cp_length[current])
 		{
 			goto outofspace;
 		}
 
-		result += writecodepoint(codepoint_left, &target, &targetSize, errors);
-
-		*read = codepoint_left_length;
-
-		return result;
-	}
-
-	input += codepoint_left_length;
-	inputSize -= codepoint_left_length;
-
-	codepoint_right_length = readcodepoint(&codepoint_right, input, inputSize);
-
-	composed = querycomposition(codepoint_left, codepoint_right, &find_result);
-	if (find_result == FindResult_Found)
-	{
-		if (target != 0 &&
-			targetSize < codepoint_right_length)
+		written = writecodepoint(cp[current], &dst, &dst_size, errors);
+		if (written == 0)
 		{
-			goto outofspace;
+			break;
 		}
+		bytes_written += written;
 
-		result += writecodepoint(composed, &target, &targetSize, errors);
+		current = (current + 1) % 2;
+		next = (next + 1) % 2;
 	}
-	else
+
+	if (cp_check[current] != QuickCheckResult_No)
 	{
-		if (target != 0 &&
-			targetSize < codepoint_left_length + codepoint_right_length)
-		{
-			goto outofspace;
-		}
-
-		result += writecodepoint(codepoint_left, &target, &targetSize, errors);
-		result += writecodepoint(codepoint_right, &target, &targetSize, errors);
+		bytes_written += writecodepoint(cp[current], &dst, &dst_size, errors);
 	}
 
-	*read = codepoint_left_length + codepoint_right_length;
+	return bytes_written;
 
-	return result;
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
 
 outofspace:
 	if (errors != 0)
 	{
 		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
 	}
-	return 0;
+	return bytes_written;
 }
 
 typedef size_t (*TransformFunc)(const char*, size_t, char*, size_t, size_t*, uint8_t, int32_t*);
@@ -1264,38 +1321,10 @@ outofspace:
 	return bytes_written;
 }
 
-size_t quickcheckutf8(const char* input, size_t inputSize, unicode_t* codepoint, uint8_t* result, uint8_t normalizationForm)
-{
-	/* Basic Latin is unaffected by all normalization forms. */
-
-	if ((input[0] & 0x80) == 0)
-	{
-		*codepoint = (unicode_t)input[0];
-		*result = QuickCheckResult_Yes;
-
-		return 1;
-	}
-	else
-	{
-		size_t read = readcodepoint(codepoint, input, inputSize);
-		*result = quickcheck(*codepoint, normalizationForm);
-
-		return read;
-	}
-}
-
-enum CompositionResult
-{
-	CompositionResult_Combine,
-	CompositionResult_Both,
-	CompositionResult_FindStarter,
-};
-
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
 	TransformFunc process = 0;
 	uint8_t transformType = -1;
-	size_t bytes_written = 0;
 
 	if ((flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
 	{
@@ -1310,124 +1339,11 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	}
 	else if ((flags & UTF8_TRANSFORM_COMPOSED) != 0)
 	{
-		const char* src = input;
-		size_t src_size = inputSize;
-		char* dst = target;
-		size_t dst_size = targetSize;
-		size_t transform_written = 0;
-		size_t transform_read = 0;
-		const char* starter = input;
-		uint8_t swap = 0;
-		uint8_t composed_count;
-		unicode_t cp[2];
-		size_t cp_length[2];
-		uint8_t qc[2];
-		uint8_t current = 0;
-		uint8_t next = 1;
-
-		if (src == 0 ||
-			src_size == 0)
-		{
-			goto invaliddata;
-		}
-
-		memset(cp, 0, sizeof(cp));
-		memset(cp_length, 0, sizeof(cp_length));
-		memset(qc, 0, sizeof(qc));
-
-		cp_length[current] = quickcheckutf8(src, src_size, &cp[current], &qc[current], NormalizationForm_Composed);
-
-		if (src_size <= cp_length[current])
-		{
-			if (dst != 0 &&
-				dst_size < cp_length[current])
-			{
-				goto outofspace;
-			}
-
-			bytes_written += writecodepoint(cp[current], &dst, &dst_size, errors);
-
-			return bytes_written;
-		}
-
-		src += cp_length[current];
-		src_size -= cp_length[current];
-
-		while (src_size > 0)
-		{
-			int32_t composition_result = CompositionResult_FindStarter;
-			size_t written;
-			uint8_t at_end = 0;
-
-			composed_count = 0;
-
-			while (!at_end)
-			{
-				unicode_t composed;
-				int32_t find_result;
-
-				if (src_size > 0)
-				{
-					cp_length[next] = quickcheckutf8(src, src_size, &cp[next], &qc[next], NormalizationForm_Composed);
-
-					if (src_size >= cp_length[next])
-					{
-						src += cp_length[next];
-						src_size -= cp_length[next];
-					}
-					else
-					{
-						at_end = 1;
-					}
-				}
-
-				if (qc[current] == QuickCheckResult_Yes &&
-					qc[next] == QuickCheckResult_Yes)
-				{
-					break;
-				}
-
-				composed = querycomposition(cp[current], cp[next], &find_result);
-
-				if (find_result != FindResult_Found)
-				{
-					break;
-				}
-
-				composed_count++;
-
-				cp[current] = composed;
-				cp_length[current] = lengthcodepoint(composed);
-				qc[current] = quickcheck(composed, NormalizationForm_Composed);
-			}
-
-			if (dst != 0 &&
-				dst_size < (cp_length[current] + cp_length[next]))
-			{
-				goto outofspace;
-			}
-
-			written = writecodepoint(cp[current], &dst, &dst_size, errors);
-			if (written == 0)
-			{
-				break;
-			}
-			bytes_written += written;
-
-			current = (current + 1) % 2;
-			next = (next + 1) % 2;
-		}
-
-		if (qc[current] == QuickCheckResult_Yes)
-		{
-			bytes_written += writecodepoint(cp[current], &dst, &dst_size, errors);
-		}
-
-		return bytes_written;
+		return transform_composition(input, inputSize, target, targetSize, NormalizationForm_Composed, errors);
 	}
 	else if ((flags & UTF8_TRANSFORM_COMPATIBILITY_COMPOSED) != 0)
 	{
-		process = &transform_composition;
+		return transform_composition(input, inputSize, target, targetSize, NormalizationForm_Compatibility_Composed, errors);
 	}
 	else
 	{
@@ -1439,18 +1355,4 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	}
 
 	return processtransform(process, input, inputSize, target, targetSize, transformType, errors);
-
-invaliddata:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_INVALID_DATA;
-	}
-	return bytes_written;
-
-outofspace:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
-	}
-	return bytes_written;
 }
