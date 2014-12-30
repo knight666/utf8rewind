@@ -1393,11 +1393,11 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	}
 	else if ((flags & UTF8_TRANSFORM_COMPOSED) != 0)
 	{
-		return transform_composition(input, inputSize, target, targetSize, NormalizationForm_Composed, errors);
+		return transform_composition(input, inputSize, target, targetSize, QuickCheck_Normalize_Composed, errors);
 	}
 	else if ((flags & UTF8_TRANSFORM_COMPATIBILITY_COMPOSED) != 0)
 	{
-		return transform_composition(input, inputSize, target, targetSize, NormalizationForm_Compatibility_Composed, errors);
+		return transform_composition(input, inputSize, target, targetSize, QuickCheck_Normalize_Compatibility_Composed, errors);
 	}
 	else
 	{

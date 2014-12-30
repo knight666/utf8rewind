@@ -52,12 +52,15 @@ enum QuickCheckResult
 	QuickCheckResult_Invalid
 };
 
-enum NormalizationForm
+enum QuickCheck
 {
-	NormalizationForm_Composed,
-	NormalizationForm_Decomposed,
-	NormalizationForm_Compatibility_Composed,
-	NormalizationForm_Compatibility_Decomposed,
+	QuickCheck_Normalize_Composed,
+	QuickCheck_Normalize_Decomposed,
+	QuickCheck_Normalize_Compatibility_Composed,
+	QuickCheck_Normalize_Compatibility_Decomposed,
+	QuickCheck_Uppercase,
+	QuickCheck_Lowercase,
+	QuickCheck_Titlecase,
 };
 
 enum FindResult
@@ -77,7 +80,7 @@ enum DecompositionQuery
 	DecompositionQuery_Titlecase,
 };
 
-uint8_t quickcheck(unicode_t codepoint, uint8_t normalizationForm);
+uint8_t quickcheck(unicode_t codepoint, uint8_t checkType);
 
 const char* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result);
 
