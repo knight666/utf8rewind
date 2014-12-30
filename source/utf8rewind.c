@@ -843,18 +843,17 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 
 size_t transform_default(int8_t query, unicode_t codepoint, size_t UTF8_UNUSED(codepointLength), char** target, size_t* targetSize, int32_t* errors)
 {
-	const DecompositionRecord* record;
 	int32_t find_result;
 	const char* resolved;
 	size_t resolved_size;
 
-	record = finddecomposition(codepoint, query, &find_result);
+	resolved = finddecomposition(codepoint, query, &find_result);
 	if (find_result == FindResult_Found)
 	{
-		resolved = resolvedecomposition(record->offset, &find_result);
 		resolved_size = strlen(resolved);
 
-		if (*target != 0 && resolved_size > 0)
+		if (*target != 0 &&
+			resolved_size > 0)
 		{
 			if (*targetSize < resolved_size)
 			{

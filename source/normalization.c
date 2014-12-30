@@ -166,13 +166,14 @@ found:
 	}
 }
 
-const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result)
+const char* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result)
 {
+	const DecompositionRecord* record;
+	size_t record_count;
+	const DecompositionRecord* record_found = 0;
 	size_t offset_start;
 	size_t offset_end;
 	size_t offset_pivot;
-	const DecompositionRecord* record;
-	size_t record_count;
 	size_t i;
 
 	if (result == 0)
@@ -227,18 +228,18 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t query, 
 
 		if (codepoint == record[offset_start].codepoint)
 		{
-			*result = FindResult_Found;
-			return &record[offset_start];
+			record_found = &record[offset_start];
+			goto found;
 		}
 		else if (codepoint == record[offset_end].codepoint)
 		{
-			*result = FindResult_Found;
-			return &record[offset_end];
+			record_found = &record[offset_end];
+			goto found;
 		}
 		else if (codepoint == record[offset_pivot].codepoint)
 		{
-			*result = FindResult_Found;
-			return &record[offset_pivot];
+			record_found = &record[offset_pivot];
+			goto found;
 		}
 		else
 		{
@@ -258,13 +259,26 @@ const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t query, 
 	{
 		if (codepoint == record[i].codepoint)
 		{
-			*result = FindResult_Found;
-			return &record[i];
+			record_found = &record[i];
+			goto found;
 		}
 	}
 
 	*result = FindResult_Missing;
 	return 0;
+
+found:
+	if (record_found->offset == 0 ||
+		record_found->offset >= DecompositionDataLength)
+	{
+		*result = FindResult_OutOfBounds;
+		return 0;
+	}
+	else
+	{
+		*result = FindResult_Found;
+		return DecompositionData + record_found->offset;
+	}
 }
 
 const char* resolvedecomposition(size_t offset, int32_t* result)

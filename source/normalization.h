@@ -36,7 +36,7 @@ typedef struct {
 
 typedef struct {
 	unicode_t codepoint;
-	ptrdiff_t offset;
+	size_t offset;
 } DecompositionRecord;
 
 typedef struct {
@@ -79,7 +79,7 @@ enum DecompositionQuery
 
 uint8_t quickcheck(unicode_t codepoint, uint8_t normalizationForm);
 
-const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result);
+const char* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result);
 
 const char* resolvedecomposition(size_t offset, int32_t* result);
 
