@@ -32,9 +32,9 @@ TEST(QueryComposition, FoundFirst)
 TEST(QueryComposition, FoundLast)
 {
 	int32_t e = 0;
-	unicode_t r = querycomposition(0x0001D1BC, 0x0001D16F, &e);
+	unicode_t r = querycomposition(0x000115B9, 0x000115AF, &e);
 
-	EXPECT_EQ(0x0001D1C0, r);
+	EXPECT_EQ(0x000115BB, r);
 	EXPECT_EQ(FindResult_Found, e);
 }
 
