@@ -58,7 +58,7 @@ extern const CompositionRecord* UnicodeCompositionRecordPtr;
 extern const char* DecompositionData;
 extern const size_t DecompositionDataLength;
 
-uint8_t quickcheck(unicode_t codepoint, uint8_t normalizationForm)
+uint8_t quickcheck(unicode_t codepoint, uint8_t checkType)
 {
 	const QuickCheckRecord* record;
 	size_t record_count;
@@ -68,25 +68,25 @@ uint8_t quickcheck(unicode_t codepoint, uint8_t normalizationForm)
 	size_t offset_pivot;
 	size_t i;
 
-	switch (normalizationForm)
+	switch (checkType)
 	{
 
-	case NormalizationForm_Composed:
+	case QuickCheck_Normalize_Composed:
 		record = UnicodeQuickCheckNFCRecordPtr;
 		record_count = UnicodeQuickCheckNFCRecordCount;
 		break;
 
-	case NormalizationForm_Decomposed:
+	case QuickCheck_Normalize_Decomposed:
 		record = UnicodeQuickCheckNFDRecordPtr;
 		record_count = UnicodeQuickCheckNFDRecordCount;
 		break;
 
-	case NormalizationForm_Compatibility_Composed:
+	case QuickCheck_Normalize_Compatibility_Composed:
 		record = UnicodeQuickCheckNFKCRecordPtr;
 		record_count = UnicodeQuickCheckNFKCRecordCount;
 		break;
 
-	case NormalizationForm_Compatibility_Decomposed:
+	case QuickCheck_Normalize_Compatibility_Decomposed:
 		record = UnicodeQuickCheckNFKDRecordPtr;
 		record_count = UnicodeQuickCheckNFKDRecordCount;
 		break;
