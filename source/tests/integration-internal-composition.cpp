@@ -4,6 +4,8 @@ extern "C" {
 	#include "../normalization.h"
 }
 
+#include "helpers-strings.hpp"
+
 TEST(Composition, SingletonAngstrom)
 {
 	int32_t errors = 0;
@@ -11,57 +13,23 @@ TEST(Composition, SingletonAngstrom)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x212B, DecompositionQuery_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0x212B, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("\x41\xCC\x8A", d);
-
-		unicode_t* u = nullptr;
-		size_t ul = utf8toutf32(d, strlen(d), nullptr, 0, &errors);
-		EXPECT_EQ(0, errors);
-
-		u = new unicode_t[ul / sizeof(unicode_t)];
-		utf8toutf32(d, strlen(d), u, ul, &errors);
-		EXPECT_EQ(0, errors);
-
-		EXPECT_EQ(2 * sizeof(unicode_t), ul);
-		EXPECT_EQ(0x00000041, u[0]);
-		EXPECT_EQ(0x0000030A, u[1]);
-
-		delete u;
+		EXPECT_UTF8EQ("A\xCC\x8A", d);
+		EXPECT_STREQ("A\\u30A", helpers::identifiable(d).c_str());
 	}
 
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x212B, DecompositionQuery_Compatibility_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0x212B, DecompositionQuery_Compatibility_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("\x41\xCC\x8A", d);
-
-		unicode_t* u = nullptr;
-		size_t ul = utf8toutf32(d, strlen(d), nullptr, 0, &errors);
-		EXPECT_EQ(0, errors);
-
-		u = new unicode_t[ul / sizeof(unicode_t)];
-		utf8toutf32(d, strlen(d), u, ul, &errors);
-		EXPECT_EQ(0, errors);
-
-		EXPECT_EQ(2 * sizeof(unicode_t), ul);
-		EXPECT_EQ(0x00000041, u[0]);
-		EXPECT_EQ(0x0000030A, u[1]);
-
-		delete u;
+		EXPECT_UTF8EQ("A\xCC\x8A", d);
+		EXPECT_STREQ("A\\u30A", helpers::identifiable(d).c_str());
 	}
 }
 
@@ -72,55 +40,23 @@ TEST(Composition, SingletonOhm)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x2126, DecompositionQuery_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0x2126, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("\xCE\xA9", d);
-
-		unicode_t* u = nullptr;
-		size_t ul = utf8toutf32(d, strlen(d), nullptr, 0, &errors);
-		EXPECT_EQ(0, errors);
-
-		u = new unicode_t[ul / sizeof(unicode_t)];
-		utf8toutf32(d, strlen(d), u, ul, &errors);
-		EXPECT_EQ(0, errors);
-
-		EXPECT_EQ(1 * sizeof(unicode_t), ul);
-		EXPECT_EQ(0x000003A9, u[0]);
-
-		delete u;
+		EXPECT_UTF8EQ("\xCE\xA9", d);
+		EXPECT_STREQ("\\u3A9", helpers::identifiable(d).c_str());
 	}
 
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x2126, DecompositionQuery_Compatibility_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0x2126, DecompositionQuery_Compatibility_Decomposed, &errors);;
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("\xCE\xA9", d);
-
-		unicode_t* u = nullptr;
-		size_t ul = utf8toutf32(d, strlen(d), nullptr, 0, &errors);
-		EXPECT_EQ(0, errors);
-
-		u = new unicode_t[ul / sizeof(unicode_t)];
-		utf8toutf32(d, strlen(d), u, ul, &errors);
-		EXPECT_EQ(0, errors);
-
-		EXPECT_EQ(1 * sizeof(unicode_t), ul);
-		EXPECT_EQ(0x000003A9, u[0]);
-
-		delete u;
+		EXPECT_UTF8EQ("\xCE\xA9", d);
+		EXPECT_STREQ("\\u3A9", helpers::identifiable(d).c_str());
 	}
 }
 
@@ -131,57 +67,23 @@ TEST(Composition, CanonicalCompositeAWithRing)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0xC5, DecompositionQuery_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0xC5, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("\x41\xCC\x8A", d);
-
-		unicode_t* u = nullptr;
-		size_t ul = utf8toutf32(d, strlen(d), nullptr, 0, &errors);
-		EXPECT_EQ(0, errors);
-
-		u = new unicode_t[ul / sizeof(unicode_t)];
-		utf8toutf32(d, strlen(d), u, ul, &errors);
-		EXPECT_EQ(0, errors);
-
-		EXPECT_EQ(2 * sizeof(unicode_t), ul);
-		EXPECT_EQ(0x00000041, u[0]);
-		EXPECT_EQ(0x0000030A, u[1]);
-
-		delete u;
+		EXPECT_UTF8EQ("A\xCC\x8A", d);
+		EXPECT_STREQ("A\\u30A", helpers::identifiable(d).c_str());
 	}
 
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0xC5, DecompositionQuery_Compatibility_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0xC5, DecompositionQuery_Compatibility_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("\x41\xCC\x8A", d);
-
-		unicode_t* u = nullptr;
-		size_t ul = utf8toutf32(d, strlen(d), nullptr, 0, &errors);
-		EXPECT_EQ(0, errors);
-
-		u = new unicode_t[ul / sizeof(unicode_t)];
-		utf8toutf32(d, strlen(d), u, ul, &errors);
-		EXPECT_EQ(0, errors);
-
-		EXPECT_EQ(2 * sizeof(unicode_t), ul);
-		EXPECT_EQ(0x00000041, u[0]);
-		EXPECT_EQ(0x0000030A, u[1]);
-
-		delete u;
+		EXPECT_UTF8EQ("A\xCC\x8A", d);
+		EXPECT_STREQ("A\\u30A", helpers::identifiable(d).c_str());
 	}
 }
 
@@ -192,57 +94,23 @@ TEST(Composition, CanonicalCompositeOWithCircumflex)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0xF4, DecompositionQuery_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0xF4, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("\x6F\xCC\x82", d);
-
-		unicode_t* u = nullptr;
-		size_t ul = utf8toutf32(d, strlen(d), nullptr, 0, &errors);
-		EXPECT_EQ(0, errors);
-
-		u = new unicode_t[ul / sizeof(unicode_t)];
-		utf8toutf32(d, strlen(d), u, ul, &errors);
-		EXPECT_EQ(0, errors);
-
-		EXPECT_EQ(2 * sizeof(unicode_t), ul);
-		EXPECT_EQ(0x0000006F, u[0]);
-		EXPECT_EQ(0x00000302, u[1]);
-
-		delete u;
+		EXPECT_UTF8EQ("o\xCC\x82", d);
+		EXPECT_STREQ("o\\u302", helpers::identifiable(d).c_str());
 	}
 
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0xF4, DecompositionQuery_Compatibility_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0xF4, DecompositionQuery_Compatibility_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("\x6F\xCC\x82", d);
-
-		unicode_t* u = nullptr;
-		size_t ul = utf8toutf32(d, strlen(d), nullptr, 0, &errors);
-		EXPECT_EQ(0, errors);
-
-		u = new unicode_t[ul / sizeof(unicode_t)];
-		utf8toutf32(d, strlen(d), u, ul, &errors);
-		EXPECT_EQ(0, errors);
-
-		EXPECT_EQ(2 * sizeof(unicode_t), ul);
-		EXPECT_EQ(0x0000006F, u[0]);
-		EXPECT_EQ(0x00000302, u[1]);
-
-		delete u;
+		EXPECT_UTF8EQ("o\xCC\x82", d);
+		EXPECT_STREQ("o\\u302", helpers::identifiable(d).c_str());
 	}
 }
 
@@ -253,58 +121,22 @@ TEST(Composition, MultipleCombiningMarksSWithDots)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x1E69, DecompositionQuery_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0x1E69, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("\x73\xCC\xA3\xCC\x87", d);
-
-		unicode_t* u = nullptr;
-		size_t ul = utf8toutf32(d, strlen(d), nullptr, 0, &errors);
-		EXPECT_EQ(0, errors);
-
-		u = new unicode_t[ul / sizeof(unicode_t)];
-		utf8toutf32(d, strlen(d), u, ul, &errors);
-		EXPECT_EQ(0, errors);
-
-		EXPECT_EQ(3 * sizeof(unicode_t), ul);
-		EXPECT_EQ(0x00000073, u[0]);
-		EXPECT_EQ(0x00000323, u[1]);
-		EXPECT_EQ(0x00000307, u[2]);
-
-		delete u;
+		EXPECT_UTF8EQ("s\xCC\xA3\xCC\x87", d);
+		EXPECT_STREQ("s\\u323\\u307", helpers::identifiable(d).c_str());
 	}
 
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x1E69, DecompositionQuery_Compatibility_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0x1E69, DecompositionQuery_Compatibility_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("\x73\xCC\xA3\xCC\x87", d);
-
-		unicode_t* u = nullptr;
-		size_t ul = utf8toutf32(d, strlen(d), nullptr, 0, &errors);
-		EXPECT_EQ(0, errors);
-
-		u = new unicode_t[ul / sizeof(unicode_t)];
-		utf8toutf32(d, strlen(d), u, ul, &errors);
-		EXPECT_EQ(0, errors);
-
-		EXPECT_EQ(3 * sizeof(unicode_t), ul);
-		EXPECT_EQ(0x00000073, u[0]);
-		EXPECT_EQ(0x00000323, u[1]);
-		EXPECT_EQ(0x00000307, u[2]);
-
-		delete u;
+		EXPECT_UTF8EQ("s\xCC\xA3\xCC\x87", d);
+		EXPECT_STREQ("s\\u323\\u307", helpers::identifiable(d).c_str());
 	}
 }

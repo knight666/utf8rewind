@@ -79,7 +79,7 @@ namespace helpers {
 		}
 
 		std::vector<unicode_t> converted;
-		converted.resize(size_in_bytes / sizeof(unicode_t));
+		converted.resize(size_in_bytes / sizeof(unicode_t) + 1);
 
 		utf8toutf32(text.c_str(), text.size(), &converted[0], size_in_bytes, &errors);
 
@@ -95,21 +95,18 @@ namespace helpers {
 
 	std::string utf8(unicode_t codepoint)
 	{
-		std::string converted;
-
 		int32_t errors = 0;
 		size_t size_in_bytes = utf32toutf8(&codepoint, sizeof(unicode_t), nullptr, 0, &errors);
 
 		if (size_in_bytes == 0 ||
 			errors != 0)
 		{
-			return converted;
+			return "";
 		}
 
-		converted.resize(size_in_bytes);
-		utf32toutf8(&codepoint, sizeof(unicode_t), &converted[0], size_in_bytes, &errors);
-
-		return converted;
+		char buffer[32] = { 0 };
+		utf32toutf8(&codepoint, sizeof(unicode_t), buffer, 31, &errors);
+		return std::string(buffer);
 	}
 
 	std::string utf8(const std::vector<unicode_t>& codepoints)
@@ -125,13 +122,18 @@ namespace helpers {
 			return converted;
 		}
 
-		converted.resize(size_in_bytes);
-		utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), &converted[0], size_in_bytes, &errors);
+		char* buffer = new char[size_in_bytes + 1];
+		utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), buffer, size_in_bytes, &errors);
+		buffer[size_in_bytes] = 0;
+
+		converted = buffer;
+
+		delete [] buffer;
 
 		return converted;
 	}
 
-	void printable(std::stringstream& target, bool& wroteHex, char character)
+	void printable(std::stringstream& target, bool& wroteHex, uint8_t character)
 	{
 		if (character < 0x20)
 		{
@@ -219,7 +221,7 @@ namespace helpers {
 
 		for (std::string::const_iterator it = text.begin(); it != text.end(); ++it)
 		{
-			printable(ss, wrote_hex, *it);
+			printable(ss, wrote_hex, (uint8_t)*it);
 		}
 
 		ss << "\"";
@@ -227,12 +229,36 @@ namespace helpers {
 		return ss.str();
 	}
 
+	std::string printable(unicode_t codepoint)
+	{
+		return printable(utf8(codepoint));
+	}
+
+	std::string printable(unicode_t* codepoints, size_t codepointsSize)
+	{
+		std::string converted;
+
+		int32_t errors = 0;
+		size_t size_in_bytes = utf32toutf8(codepoints, codepointsSize, nullptr, 0, &errors);
+
+		if (size_in_bytes == 0 ||
+			errors != 0)
+		{
+			return converted;
+		}
+
+		converted.resize(size_in_bytes + 1);
+		utf32toutf8(codepoints, codepointsSize, &converted[0], size_in_bytes, &errors);
+
+		return printable(converted);
+	}
+
 	::testing::AssertionResult CompareUtf8Strings(
-		const char* expressionLeft, const char* expressionRight,
-		const std::string& textLeft, const std::string& textRight
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
+		const char* textExpected, const char* textActual
 	)
 	{
-		if (!strcmp(textLeft.c_str(), textRight.c_str()))
+		if (!strcmp(textActual, textExpected))
 		{
 			return ::testing::AssertionSuccess();
 		}
@@ -241,10 +267,8 @@ namespace helpers {
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
 			result << "String mismatch" << std::endl;
-			result << "Expected:" << std::endl;
-			result << helpers::identifiable(textLeft) << std::endl;
-			result << "  Actual:" << std::endl;
-			result << helpers::identifiable(textRight) << std::endl;
+			result << "  Actual: \"" << helpers::identifiable(textActual) << "\"" << std::endl;
+			result << "Expected: \"" << helpers::identifiable(textExpected) << "\"" << std::endl;
 
 			return result;
 		}

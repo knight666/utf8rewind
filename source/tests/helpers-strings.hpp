@@ -15,10 +15,12 @@ namespace helpers {
 	std::string utf8(const std::vector<unicode_t>& codepoints);
 
 	std::string printable(const std::string& text);
+	std::string printable(unicode_t codepoint);
+	std::string printable(unicode_t* codepoints, size_t codepointsSize);
 
 	::testing::AssertionResult CompareUtf8Strings(
-		const char* expressionLeft, const char* expressionRight,
-		const std::string& textLeft, const std::string& textRight
+		const char* expressionExpected, const char* expressionActual,
+		const char* textExpected, const char* textActual
 	);
 
 };
