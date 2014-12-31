@@ -81,7 +81,8 @@ class UnicodeDocument:
 						if section_end == -1:
 							if len(entry_sliced) > 1:
 								if entry_sliced.find('#') <= len(entry_sliced):
-									entry.matches.append([ entry_sliced ])
+									matches = re.findall('([^ ]+)', entry_sliced)
+									entry.matches.append(matches)
 							break
 						
 						sliced = entry_sliced[:section_end]

@@ -13,11 +13,7 @@ TEST(Composition, SingletonAngstrom)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x212B, DecompositionQuery_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0x212B, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -28,11 +24,7 @@ TEST(Composition, SingletonAngstrom)
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x212B, DecompositionQuery_Compatibility_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0x212B, DecompositionQuery_Compatibility_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -48,11 +40,7 @@ TEST(Composition, SingletonOhm)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x2126, DecompositionQuery_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0x2126, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -63,11 +51,7 @@ TEST(Composition, SingletonOhm)
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x2126, DecompositionQuery_Compatibility_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0x2126, DecompositionQuery_Compatibility_Decomposed, &errors);;
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -83,11 +67,7 @@ TEST(Composition, CanonicalCompositeAWithRing)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0xC5, DecompositionQuery_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0xC5, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -98,11 +78,7 @@ TEST(Composition, CanonicalCompositeAWithRing)
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0xC5, DecompositionQuery_Compatibility_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0xC5, DecompositionQuery_Compatibility_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -118,30 +94,22 @@ TEST(Composition, CanonicalCompositeOWithCircumflex)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0xF4, DecompositionQuery_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0xF4, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("o\xCC\x82", d);
+		EXPECT_UTF8EQ("o\xCC\x82", d);
 		EXPECT_STREQ("o\\u302", helpers::identifiable(d).c_str());
 	}
 
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0xF4, DecompositionQuery_Compatibility_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0xF4, DecompositionQuery_Compatibility_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("o\xCC\x82", d);
+		EXPECT_UTF8EQ("o\xCC\x82", d);
 		EXPECT_STREQ("o\\u302", helpers::identifiable(d).c_str());
 	}
 }
@@ -153,30 +121,22 @@ TEST(Composition, MultipleCombiningMarksSWithDots)
 	// NFD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x1E69, DecompositionQuery_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0x1E69, DecompositionQuery_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("s\xCC\xA3\xCC\x87", d);
+		EXPECT_UTF8EQ("s\xCC\xA3\xCC\x87", d);
 		EXPECT_STREQ("s\\u323\\u307", helpers::identifiable(d).c_str());
 	}
 
 	// NFKD
 
 	{
-		const DecompositionRecord* c = finddecomposition(0x1E69, DecompositionQuery_Compatibility_Decomposed, &errors);
-		ASSERT_NE(nullptr, c);
-		EXPECT_EQ(0, errors);
-
-		const char* d = resolvedecomposition(c->offset, &errors);
+		const char* d = finddecomposition(0x1E69, DecompositionQuery_Compatibility_Decomposed, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
-		EXPECT_STREQ("s\xCC\xA3\xCC\x87", d);
+		EXPECT_UTF8EQ("s\xCC\xA3\xCC\x87", d);
 		EXPECT_STREQ("s\\u323\\u307", helpers::identifiable(d).c_str());
 	}
 }

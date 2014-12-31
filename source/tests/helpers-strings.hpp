@@ -19,8 +19,8 @@ namespace helpers {
 	std::string printable(unicode_t* codepoints, size_t codepointsSize);
 
 	::testing::AssertionResult CompareUtf8Strings(
-		const char* expressionLeft, const char* expressionRight,
-		const char* textLeft, const char* textRight
+		const char* expressionExpected, const char* expressionActual,
+		const char* textExpected, const char* textActual
 	);
 
 };
