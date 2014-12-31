@@ -1213,17 +1213,147 @@ outofspace:
 	return 0;
 }
 
-typedef size_t (*TransformFunc)(const char*, size_t, char*, size_t, size_t*, int32_t*);
+struct TransformState;
+
+typedef size_t (*TransformFunc)(struct TransformState* state);
+
+struct TransformState
+{
+	TransformFunc transform;
+
+	uint8_t type;
+	const char* src;
+	size_t src_size;
+	char* dst;
+	size_t dst_size;
+	int32_t* errors;
+};
+
+size_t transformfunc_decomposition(struct TransformState* state)
+{
+	if ((*state->src & 0x80) == 0)
+	{
+		/* Basic Latin codepoints are already decomposed */
+
+		if (state->dst != 0)
+		{
+			if (state->dst_size < 1)
+			{
+				goto outofspace;
+			}
+
+			*state->dst = *state->src;
+
+			state->dst++;
+			state->dst_size--;
+		}
+
+		state->src++;
+		state->src_size--;
+
+		return 1;
+	}
+	else
+	{
+		size_t resolved_size = 0;
+		unicode_t codepoint;
+		size_t codepoint_length = readcodepoint(&codepoint, state->src, state->src_size);
+		uint8_t property_type = (state->type == UTF8_TRANSFORM_DECOMPOSED) ? UnicodeProperty_QC_NFD : UnicodeProperty_QC_NFKD;
+
+		if (queryproperty(codepoint, property_type) == QuickCheckResult_No)
+		{
+			if (codepoint >= HANGUL_S_FIRST &&
+				codepoint <= HANGUL_S_LAST)
+			{
+				/*
+					Hangul decomposition
+			
+					Algorithm adapted from Unicode Technical Report #15:
+					http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
+				*/
+
+				unicode_t s_index = codepoint - HANGUL_S_FIRST;
+				unicode_t l = HANGUL_L_FIRST + (s_index / HANGUL_N_COUNT);
+				unicode_t v = HANGUL_V_FIRST + (s_index % HANGUL_N_COUNT) / HANGUL_T_COUNT;
+				unicode_t t = HANGUL_T_FIRST + (s_index % HANGUL_T_COUNT);
+
+				/* Hangul syllables are always three bytes */
+				resolved_size = (t != HANGUL_T_FIRST) ? 9 : 6;
+
+				if (state->dst != 0 &&
+					state->dst_size < resolved_size)
+				{
+					goto outofspace;
+				}
+
+				writecodepoint(l, &state->dst, &state->dst_size, state->errors);
+				writecodepoint(v, &state->dst, &state->dst_size, state->errors);
+				if (t != HANGUL_T_FIRST)
+				{
+					writecodepoint(t, &state->dst, &state->dst_size, state->errors);
+				}
+			}
+			else
+			{
+				uint8_t transform_type = (state->type == UTF8_TRANSFORM_DECOMPOSED) ? DecompositionQuery_Decomposed : DecompositionQuery_Compatibility_Decomposed;
+				int32_t find_result;
+				const char* resolved = finddecomposition(codepoint, transform_type, &find_result);
+
+				if (find_result == FindResult_Found)
+				{
+					resolved_size = strlen(resolved);
+
+					if (state->dst != 0 &&
+						resolved_size > 0)
+					{
+						if (state->dst_size < resolved_size)
+						{
+							goto outofspace;
+						}
+
+						memcpy(state->dst, resolved, resolved_size);
+
+						state->dst += resolved_size;
+						state->dst_size -= resolved_size;
+					}
+				}
+				else
+				{
+					resolved_size = writecodepoint(codepoint, &state->dst, &state->dst_size, state->errors);
+				}
+			}
+		}
+		else
+		{
+			resolved_size = writecodepoint(codepoint, &state->dst, &state->dst_size, state->errors);
+		}
+
+		if (state->src_size < codepoint_length)
+		{
+			goto notenoughdata;
+		}
+
+		state->src += codepoint_length;
+		state->src_size -= codepoint_length;
+
+		return resolved_size;
+	}
+
+notenoughdata:
+	return 0;
+
+outofspace:
+	if (state->errors != 0)
+	{
+		*state->errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return 0;
+}
 
 size_t processtransform(TransformFunc transform, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t transformType, int32_t* errors)
 {
-	const char* src = input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
+	struct TransformState state;
 	size_t bytes_written = 0;
-	size_t transform_written = 0;
-	size_t transform_read = 0;
 
 	if (input == 0 ||
 		transform == 0)
@@ -1248,7 +1378,7 @@ size_t processtransform(TransformFunc transform, const char* input, size_t input
 		}
 
 		bytes_written += written;
-	}
+	} 
 
 	return bytes_written;
 
@@ -1477,11 +1607,13 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	{
 		return processtransform(transformfunc_decomposition, input, inputSize, target, targetSize, UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED, errors);
 	}
-	else if ((flags & UTF8_TRANSFORM_COMPOSED) != 0)
+	else if (
+		(flags & UTF8_TRANSFORM_COMPOSED) != 0)
 	{
 		return transform_composition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFC, errors);
 	}
-	else if ((flags & UTF8_TRANSFORM_COMPATIBILITY_COMPOSED) != 0)
+	else if (
+		(flags & UTF8_TRANSFORM_COMPATIBILITY_COMPOSED) != 0)
 	{
 		return transform_composition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFKC, errors);
 	}
