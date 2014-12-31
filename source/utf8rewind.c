@@ -862,80 +862,143 @@ outofspace:
 	return 0;
 }
 
-size_t transform_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, size_t* read, uint8_t transformType, int32_t* errors)
+size_t transform_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t propertyType, uint8_t transformType, int32_t* errors)
 {
-	size_t resolved_size;
+	size_t bytes_written = 0;
+	const char* src = input;
+	size_t src_size = inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
 
-	if ((uint8_t)*input <= 0x7F)
+	if (src == 0 ||
+		src_size == 0)
 	{
-		/* Basic Latin codepoints are already decomposed */
-
-		if (target != 0)
-		{
-			if (targetSize < 1)
-			{
-				goto outofspace;
-			}
-
-			*target = *input;
-		}
-
-		*read = 1;
-
-		return 1;
+		goto invaliddata;
 	}
-	else
+
+	while (src_size > 0)
 	{
-		unicode_t codepoint;
-		size_t codepoint_length = readcodepoint(&codepoint, input, inputSize);
-
-		if (codepoint >= HANGUL_S_FIRST &&
-			codepoint <= HANGUL_S_LAST)
+		if ((*src & 0x80) == 0)
 		{
-			/*
-				Hangul decomposition
-			
-				Algorithm adapted from Unicode Technical Report #15:
-				http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
-			*/
+			/* Basic Latin codepoints are already decomposed */
 
-			unicode_t s_index = codepoint - HANGUL_S_FIRST;
-			unicode_t l = HANGUL_L_FIRST + (s_index / HANGUL_N_COUNT);
-			unicode_t v = HANGUL_V_FIRST + (s_index % HANGUL_N_COUNT) / HANGUL_T_COUNT;
-			unicode_t t = HANGUL_T_FIRST + (s_index % HANGUL_T_COUNT);
-
-			/* hangul syllables are always three bytes */
-			resolved_size = (t != HANGUL_T_FIRST) ? 9 : 6;
-
-			if (target != 0 &&
-				targetSize < resolved_size)
+			if (dst != 0)
 			{
-				goto outofspace;
+				if (dst_size < 1)
+				{
+					goto outofspace;
+				}
+
+				*dst = *src;
+
+				dst++;
+				dst_size--;
 			}
 
-			writecodepoint(l, &target, &targetSize, errors);
-			writecodepoint(v, &target, &targetSize, errors);
-			if (t != HANGUL_T_FIRST)
-			{
-				writecodepoint(t, &target, &targetSize, errors);
-			}
+			bytes_written++;
+
+			src++;
+			src_size--;
 		}
 		else
 		{
-			resolved_size = transform_default(transformType, codepoint, codepoint_length, &target, &targetSize, errors);
+			size_t resolved_size = 0;
+			unicode_t codepoint;
+			size_t codepoint_length = readcodepoint(&codepoint, src, src_size);
+
+			if (queryproperty(codepoint, propertyType) == QuickCheckResult_No)
+			{
+				if (codepoint >= HANGUL_S_FIRST &&
+					codepoint <= HANGUL_S_LAST)
+				{
+					/*
+						Hangul decomposition
+			
+						Algorithm adapted from Unicode Technical Report #15:
+						http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
+					*/
+
+					unicode_t s_index = codepoint - HANGUL_S_FIRST;
+					unicode_t l = HANGUL_L_FIRST + (s_index / HANGUL_N_COUNT);
+					unicode_t v = HANGUL_V_FIRST + (s_index % HANGUL_N_COUNT) / HANGUL_T_COUNT;
+					unicode_t t = HANGUL_T_FIRST + (s_index % HANGUL_T_COUNT);
+
+					/* Hangul syllables are always three bytes */
+					resolved_size = (t != HANGUL_T_FIRST) ? 9 : 6;
+
+					if (dst != 0 &&
+						dst_size < resolved_size)
+					{
+						goto outofspace;
+					}
+
+					writecodepoint(l, &dst, &dst_size, errors);
+					writecodepoint(v, &dst, &dst_size, errors);
+					if (t != HANGUL_T_FIRST)
+					{
+						writecodepoint(t, &dst, &dst_size, errors);
+					}
+				}
+				else
+				{
+					int32_t find_result;
+					const char* resolved = finddecomposition(codepoint, transformType, &find_result);
+
+					if (find_result == FindResult_Found)
+					{
+						resolved_size = strlen(resolved);
+
+						if (dst != 0 &&
+							resolved_size > 0)
+						{
+							if (dst_size < resolved_size)
+							{
+								goto outofspace;
+							}
+
+							memcpy(dst, resolved, resolved_size);
+
+							dst += resolved_size;
+							dst_size -= resolved_size;
+						}
+					}
+					else
+					{
+						resolved_size = writecodepoint(codepoint, &dst, &dst_size, errors);
+					}
+				}
+			}
+			else
+			{
+				resolved_size = writecodepoint(codepoint, &dst, &dst_size, errors);
+			}
+
+			if (resolved_size == 0)
+			{
+				break;
+			}
+			bytes_written += resolved_size;
+
+			src += codepoint_length;
+			src_size -= codepoint_length;
 		}
-
-		*read = codepoint_length;
-
-		return resolved_size;
 	}
+
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
 
 outofspace:
 	if (errors != 0)
 	{
 		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
 	}
-	return 0;
+	return bytes_written;
 }
 
 size_t transform_composition(const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t transformType, int32_t* errors)
@@ -1380,19 +1443,14 @@ outofspace:
 
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
-	TransformFunc process = 0;
-	uint8_t transformType = -1;
-
 	if ((flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
 	{
-		process = &transform_decomposition;
-		transformType = DecompositionQuery_Decomposed;
+		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFD, DecompositionQuery_Decomposed, errors);
 	}
 	else if (
 		(flags & UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED) != 0)
 	{
-		process = &transform_decomposition;
-		transformType = DecompositionQuery_Compatibility_Decomposed;
+		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFKD, DecompositionQuery_Compatibility_Decomposed, errors);
 	}
 	else if ((flags & UTF8_TRANSFORM_COMPOSED) != 0)
 	{
@@ -1411,5 +1469,5 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 		return 0;
 	}
 
-	return processtransform(process, input, inputSize, target, targetSize, transformType, errors);
+	return 0;
 }
