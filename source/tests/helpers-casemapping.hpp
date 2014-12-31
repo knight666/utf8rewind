@@ -4,28 +4,16 @@
 
 #include "utf8rewind.h"
 
-#define CHECK_UTF8_UPPERCASE(_codepoint, _name, _expected) { \
+#define CHECK_UTF8_CASEMAPPING(_codepoint, _uppercase, _lowercase, _name) { \
 	::helpers::CaseMappingEntry e; \
 	e.codepoint = _codepoint; \
-	e.uppercase = _expected; \
+	e.uppercase = _uppercase; \
+	e.lowercase = _lowercase; \
 	e.name = _name; \
 	::helpers::CaseMappingEntry a; \
-	a.codepoint = _codepoint; \
 	a.uppercase = ::helpers::uppercase(_codepoint); \
-	a.name = _name; \
-	EXPECT_PRED_FORMAT2(::helpers::CompareUtf8Uppercase, e, a); \
-}
-
-#define CHECK_UTF8_LOWERCASE(_codepoint, _name, _expected) { \
-	::helpers::CaseMappingEntry e; \
-	e.codepoint = _codepoint; \
-	e.lowercase = _expected; \
-	e.name = _name; \
-	::helpers::CaseMappingEntry a; \
-	a.codepoint = _codepoint; \
 	a.lowercase = ::helpers::lowercase(_codepoint); \
-	a.name = _name; \
-	EXPECT_PRED_FORMAT2(::helpers::CompareUtf8Lowercase, e, a); \
+	EXPECT_PRED_FORMAT2(::helpers::CompareCasemapping, e, a); \
 }
 
 namespace helpers {
@@ -49,12 +37,8 @@ namespace helpers {
 		std::string name;
 	};
 
-	::testing::AssertionResult CompareUtf8Uppercase(
+	::testing::AssertionResult CompareCasemapping(
 		const char* expressionExpected, const char* expressionActual,
-		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual);
-
-	::testing::AssertionResult CompareUtf8Lowercase(
-		const char* expressionLeft, const char* expressionRight,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual);
 
 };

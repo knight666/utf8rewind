@@ -84,12 +84,12 @@ namespace helpers {
 		return converted;
 	}
 
-	::testing::AssertionResult CompareUtf8Uppercase(
+	::testing::AssertionResult CompareCasemapping(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
 	{
-		if (entryExpected.codepoint == entryActual.codepoint &&
-			entryExpected.uppercase == entryActual.uppercase)
+		if (entryExpected.uppercase == entryActual.uppercase &&
+			entryExpected.lowercase == entryActual.lowercase)
 		{
 			return ::testing::AssertionSuccess();
 		}
@@ -113,27 +113,6 @@ namespace helpers {
 			{
 				result << "[Uppercase]    " << helpers::printable(entryActual.uppercase) << " (" << helpers::identifiable(entryActual.uppercase) << ")" << std::endl;
 			}
-
-			return result;
-		}
-	}
-
-	::testing::AssertionResult CompareUtf8Lowercase(
-		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
-		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
-	{
-		if (entryExpected.codepoint == entryActual.codepoint &&
-			entryExpected.lowercase == entryActual.lowercase)
-		{
-			return ::testing::AssertionSuccess();
-		}
-		else
-		{
-			::testing::AssertionResult result = ::testing::AssertionFailure();
-
-			result << std::endl;
-			result <<  entryExpected.name << " (" << helpers::identifiable(entryExpected.codepoint)  << ")" << std::endl;
-			result << std::endl;
 
 			if (entryExpected.lowercase != entryActual.lowercase)
 			{
