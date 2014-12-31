@@ -312,7 +312,7 @@ uint8_t quickcheckutf8(const char* input, size_t inputSize, unicode_t* codepoint
 	else
 	{
 		*codepointLength = readcodepoint(codepoint, input, inputSize);
-		return quickcheck(*codepoint, normalizationForm);
+		return queryproperty(*codepoint, normalizationForm);
 	}
 }
 
@@ -1093,7 +1093,7 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 
 			cp[current] = composed;
 			cp_length[current] = lengthcodepoint(composed);
-			cp_check[current] = quickcheck(composed, transformType);
+			cp_check[current] = queryproperty(composed, transformType);
 		}
 
 		if (dst != 0 &&
@@ -1393,11 +1393,11 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	}
 	else if ((flags & UTF8_TRANSFORM_COMPOSED) != 0)
 	{
-		return transform_composition(input, inputSize, target, targetSize, QuickCheck_Normalize_Composed, errors);
+		return transform_composition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFC, errors);
 	}
 	else if ((flags & UTF8_TRANSFORM_COMPATIBILITY_COMPOSED) != 0)
 	{
-		return transform_composition(input, inputSize, target, targetSize, QuickCheck_Normalize_Compatibility_Composed, errors);
+		return transform_composition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFKC, errors);
 	}
 	else
 	{
