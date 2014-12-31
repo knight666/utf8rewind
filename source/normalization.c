@@ -67,7 +67,7 @@ extern const CompositionRecord* UnicodeCompositionRecordPtr;
 extern const char* DecompositionData;
 extern const size_t DecompositionDataLength;
 
-uint8_t quickcheck(unicode_t codepoint, uint8_t checkType)
+uint8_t queryproperty(unicode_t codepoint, uint8_t checkType)
 {
 	const QuickCheckRecord* record;
 	size_t record_count;
@@ -80,37 +80,37 @@ uint8_t quickcheck(unicode_t codepoint, uint8_t checkType)
 	switch (checkType)
 	{
 
-	case QuickCheck_Normalize_Composed:
+	case UnicodeProperty_QC_NFC:
 		record = UnicodeQuickCheckNFCRecordPtr;
 		record_count = UnicodeQuickCheckNFCRecordCount;
 		break;
 
-	case QuickCheck_Normalize_Decomposed:
+	case UnicodeProperty_QC_NFD:
 		record = UnicodeQuickCheckNFDRecordPtr;
 		record_count = UnicodeQuickCheckNFDRecordCount;
 		break;
 
-	case QuickCheck_Normalize_Compatibility_Composed:
+	case UnicodeProperty_QC_NFKC:
 		record = UnicodeQuickCheckNFKCRecordPtr;
 		record_count = UnicodeQuickCheckNFKCRecordCount;
 		break;
 
-	case QuickCheck_Normalize_Compatibility_Decomposed:
+	case UnicodeProperty_QC_NFKD:
 		record = UnicodeQuickCheckNFKDRecordPtr;
 		record_count = UnicodeQuickCheckNFKDRecordCount;
 		break;
 
-	case QuickCheck_Uppercase:
+	case UnicodeProperty_Uppercase:
 		record = UnicodeQuickCheckUppercaseRecordPtr;
 		record_count = UnicodeQuickCheckUppercaseRecordCount;
 		break;
 
-	case QuickCheck_Lowercase:
+	case UnicodeProperty_Lowercase:
 		record = UnicodeQuickCheckLowercaseRecordPtr;
 		record_count = UnicodeQuickCheckLowercaseRecordCount;
 		break;
 
-	case QuickCheck_Titlecase:
+	case UnicodeProperty_Titlecase:
 		record = UnicodeQuickCheckTitlecaseRecordPtr;
 		record_count = UnicodeQuickCheckTitlecaseRecordCount;
 		break;

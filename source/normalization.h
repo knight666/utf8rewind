@@ -52,15 +52,15 @@ enum QuickCheckResult
 	QuickCheckResult_Invalid
 };
 
-enum QuickCheck
+enum UnicodeProperty
 {
-	QuickCheck_Normalize_Composed,
-	QuickCheck_Normalize_Decomposed,
-	QuickCheck_Normalize_Compatibility_Composed,
-	QuickCheck_Normalize_Compatibility_Decomposed,
-	QuickCheck_Uppercase,
-	QuickCheck_Lowercase,
-	QuickCheck_Titlecase,
+	UnicodeProperty_QC_NFC,
+	UnicodeProperty_QC_NFD,
+	UnicodeProperty_QC_NFKC,
+	UnicodeProperty_QC_NFKD,
+	UnicodeProperty_Uppercase,
+	UnicodeProperty_Lowercase,
+	UnicodeProperty_Titlecase,
 };
 
 enum FindResult
@@ -80,7 +80,7 @@ enum DecompositionQuery
 	DecompositionQuery_Titlecase,
 };
 
-uint8_t quickcheck(unicode_t codepoint, uint8_t checkType);
+uint8_t queryproperty(unicode_t codepoint, uint8_t property);
 
 const char* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result);
 
