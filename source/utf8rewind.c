@@ -1231,30 +1231,23 @@ size_t processtransform(TransformFunc transform, const char* input, size_t input
 		goto invaliddata;
 	}
 
-	while (src_size > 0)
+	state.transform = transform;
+	state.type = transformType;
+	state.src = input;
+	state.src_size = inputSize;
+	state.dst = target;
+	state.dst_size = targetSize;
+	state.errors = errors;
+
+	while (state.src_size > 0)
 	{
-		transform_written = transform(src, src_size, dst, dst_size, &transform_read, transformType, errors);
-		if (transform_written == 0 ||
-			transform_read == 0)
-		{
-			return bytes_written;
-		}
-
-		if (target != 0)
-		{
-			dst += transform_written;
-			dst_size -= transform_written;
-		}
-
-		bytes_written += transform_written;
-
-		if (transform_read > src_size)
+		size_t written = state.transform(&state);
+		if (written == 0)
 		{
 			break;
 		}
 
-		src += transform_read;
-		src_size -= transform_read;
+		bytes_written += written;
 	}
 
 	return bytes_written;
@@ -1477,12 +1470,12 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 {
 	if ((flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
 	{
-		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFD, DecompositionQuery_Decomposed, errors);
+		return processtransform(transformfunc_decomposition, input, inputSize, target, targetSize, UTF8_TRANSFORM_DECOMPOSED, errors);
 	}
 	else if (
 		(flags & UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED) != 0)
 	{
-		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFKD, DecompositionQuery_Compatibility_Decomposed, errors);
+		return processtransform(transformfunc_decomposition, input, inputSize, target, targetSize, UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED, errors);
 	}
 	else if ((flags & UTF8_TRANSFORM_COMPOSED) != 0)
 	{
