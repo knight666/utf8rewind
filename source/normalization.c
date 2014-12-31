@@ -37,6 +37,15 @@ extern const QuickCheckRecord* UnicodeQuickCheckNFKCRecordPtr;
 extern const size_t UnicodeQuickCheckNFKDRecordCount;
 extern const QuickCheckRecord* UnicodeQuickCheckNFKDRecordPtr;
 
+extern const size_t UnicodeQuickCheckUppercaseRecordCount;
+extern const QuickCheckRecord* UnicodeQuickCheckUppercaseRecordPtr;
+
+extern const size_t UnicodeQuickCheckLowercaseRecordCount;
+extern const QuickCheckRecord* UnicodeQuickCheckLowercaseRecordPtr;
+
+extern const size_t UnicodeQuickCheckTitlecaseRecordCount;
+extern const QuickCheckRecord* UnicodeQuickCheckTitlecaseRecordPtr;
+
 extern const size_t UnicodeNFDRecordCount;
 extern const DecompositionRecord* UnicodeNFDRecordPtr;
 
@@ -91,6 +100,21 @@ uint8_t quickcheck(unicode_t codepoint, uint8_t checkType)
 		record_count = UnicodeQuickCheckNFKDRecordCount;
 		break;
 
+	case QuickCheck_Uppercase:
+		record = UnicodeQuickCheckUppercaseRecordPtr;
+		record_count = UnicodeQuickCheckUppercaseRecordCount;
+		break;
+
+	case QuickCheck_Lowercase:
+		record = UnicodeQuickCheckLowercaseRecordPtr;
+		record_count = UnicodeQuickCheckLowercaseRecordCount;
+		break;
+
+	case QuickCheck_Titlecase:
+		record = UnicodeQuickCheckTitlecaseRecordPtr;
+		record_count = UnicodeQuickCheckTitlecaseRecordCount;
+		break;
+
 	default:
 		return QuickCheckResult_Invalid;
 
@@ -102,7 +126,7 @@ uint8_t quickcheck(unicode_t codepoint, uint8_t checkType)
 	if (codepoint < record[offset_start].start ||
 		codepoint > record[offset_end].end)
 	{
-		return QuickCheckResult_Yes;
+		return 0;
 	}
 
 	do
@@ -153,7 +177,7 @@ uint8_t quickcheck(unicode_t codepoint, uint8_t checkType)
 		}
 	}
 
-	return QuickCheckResult_Yes;
+	return 0;
 
 found:
 	if (codepoint <= (record_found->start + (record_found->count_and_value & 0x00FFFFFF)))
@@ -162,7 +186,7 @@ found:
 	}
 	else
 	{
-		return QuickCheckResult_Yes;
+		return 0;
 	}
 }
 

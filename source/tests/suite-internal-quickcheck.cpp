@@ -249,3 +249,99 @@ TEST(QuickCheck, CompatibilityDecomposedHangulSyllableEnd)
 
 	EXPECT_EQ(QuickCheckResult_No, r);
 }
+
+// Uppercase
+
+TEST(QuickCheck, UppercaseFound)
+{
+	EXPECT_EQ(1, quickcheck(0x0101, QuickCheck_Uppercase));
+}
+
+TEST(QuickCheck, UppercaseFoundFirst)
+{
+	EXPECT_EQ(1, quickcheck(0x0061, QuickCheck_Uppercase));
+}
+
+TEST(QuickCheck, UppercaseFoundLast)
+{
+	EXPECT_EQ(1, quickcheck(0x118DF, QuickCheck_Uppercase));
+}
+
+TEST(QuickCheck, UppercaseOutOfLowerBounds)
+{
+	EXPECT_EQ(0, quickcheck(0x0020, QuickCheck_Uppercase));
+}
+
+TEST(QuickCheck, UppercaseOutOfUpperBounds)
+{
+	EXPECT_EQ(0, quickcheck(0x0020, QuickCheck_Uppercase));
+}
+
+TEST(QuickCheck, UppercaseBetweenBlocks)
+{
+	EXPECT_EQ(0, quickcheck(0x2C5F, QuickCheck_Uppercase));
+}
+
+// Lowercase
+
+TEST(QuickCheck, LowercaseFound)
+{
+	EXPECT_EQ(1, quickcheck(0x01B5, QuickCheck_Lowercase));
+}
+
+TEST(QuickCheck, LowercaseFoundFirst)
+{
+	EXPECT_EQ(1, quickcheck(0x0041, QuickCheck_Lowercase));
+}
+
+TEST(QuickCheck, LowercaseFoundLast)
+{
+	EXPECT_EQ(1, quickcheck(0x118Bf, QuickCheck_Lowercase));
+}
+
+TEST(QuickCheck, LowercaseOutOfLowerBounds)
+{
+	EXPECT_EQ(0, quickcheck(0x002F, QuickCheck_Lowercase));
+}
+
+TEST(QuickCheck, LowercaseOutOfUpperBounds)
+{
+	EXPECT_EQ(0, quickcheck(0x121F4, QuickCheck_Lowercase));
+}
+
+TEST(QuickCheck, LowercaseBetweenBlocks)
+{
+	EXPECT_EQ(0, quickcheck(0x2180, QuickCheck_Lowercase));
+}
+
+// Titlecase
+
+TEST(QuickCheck, TitlecaseFound)
+{
+	EXPECT_EQ(1, quickcheck(0x028B, QuickCheck_Titlecase));
+}
+
+TEST(QuickCheck, TitlecaseFoundFirst)
+{
+	EXPECT_EQ(1, quickcheck(0x0061, QuickCheck_Titlecase));
+}
+
+TEST(QuickCheck, TitlecaseFoundLast)
+{
+	EXPECT_EQ(1, quickcheck(0x118DF, QuickCheck_Titlecase));
+}
+
+TEST(QuickCheck, TitlecaseOutOfLowerBounds)
+{
+	EXPECT_EQ(0, quickcheck(0x0018, QuickCheck_Titlecase));
+}
+
+TEST(QuickCheck, TitlecaseOutOfUpperBounds)
+{
+	EXPECT_EQ(0, quickcheck(0x1D20FF, QuickCheck_Titlecase));
+}
+
+TEST(QuickCheck, TitlecaseBetweenBlocks)
+{
+	EXPECT_EQ(0, quickcheck(0x2180, QuickCheck_Titlecase));
+}
