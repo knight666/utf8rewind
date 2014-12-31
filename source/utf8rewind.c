@@ -297,25 +297,6 @@ size_t readcodepoint(unicode_t* codepoint, const char* input, size_t inputSize)
 	return decoded_length;
 }
 
-/* TODO: Move to internal header */
-uint8_t quickcheckutf8(const char* input, size_t inputSize, unicode_t* codepoint, size_t* codepointLength, uint8_t normalizationForm)
-{
-	/* Basic Latin is unaffected by all normalization forms. */
-
-	if ((input[0] & 0x80) == 0)
-	{
-		*codepoint = (unicode_t)input[0];
-		*codepointLength = 1;
-
-		return QuickCheckResult_Yes;
-	}
-	else
-	{
-		*codepointLength = readcodepoint(codepoint, input, inputSize);
-		return queryproperty(*codepoint, normalizationForm);
-	}
-}
-
 size_t utf8len(const char* text)
 {
 	const char* src;
@@ -982,7 +963,8 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 
 	/* read the first codepoint */
 
-	cp_check[current] = quickcheckutf8(src, src_size, &cp[current], &cp_length[current], transformType);
+	cp_length[current] = readcodepoint(&cp[current], src, src_size);
+	cp_check[current] = queryproperty(cp[current], transformType);
 
 	if (src_size <= cp_length[current])
 	{
@@ -1013,7 +995,8 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 
 			if (src_size > 0)
 			{
-				cp_check[next] = quickcheckutf8(src, src_size, &cp[next], &cp_length[next], transformType);
+				cp_length[next] = readcodepoint(&cp[next], src, src_size);
+				cp_check[next] = queryproperty(cp[next], transformType);
 
 				if (src_size >= cp_length[next])
 				{
