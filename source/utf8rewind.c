@@ -1210,7 +1210,7 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 	while (src_size > 0)
 	{
-		if ((uint8_t)*src <= 0x7F)
+		if ((*src & 0x80) == 0)
 		{
 			/* Basic Latin */
 
@@ -1243,21 +1243,23 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 				if (find_result == FindResult_Found)
 				{
-					result = strlen(resolved);
+					size_t resolved_size = strlen(resolved);
 
 					if (dst != 0 &&
-						result > 0)
+						resolved_size > 0)
 					{
-						if (dst_size < result)
+						if (dst_size < resolved_size)
 						{
 							goto outofspace;
 						}
 
-						memcpy(dst, resolved, result);
+						memcpy(dst, resolved, resolved_size);
 
-						dst += result;
-						dst_size -= result;
+						dst += resolved_size;
+						dst_size -= resolved_size;
 					}
+
+					result = resolved_size;
 				}
 				else
 				{
@@ -1313,7 +1315,7 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 	while (src_size > 0)
 	{
-		if ((uint8_t)*src <= 0x7F)
+		if ((*src & 0x80) == 0)
 		{
 			/* Basic Latin */
 
@@ -1346,21 +1348,23 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 				if (find_result == FindResult_Found)
 				{
-					result = strlen(resolved);
+					size_t resolved_size = strlen(resolved);
 
 					if (dst != 0 &&
-						result > 0)
+						resolved_size > 0)
 					{
-						if (dst_size < result)
+						if (dst_size < resolved_size)
 						{
 							goto outofspace;
 						}
 
-						memcpy(dst, resolved, result);
+						memcpy(dst, resolved, resolved_size);
 
-						dst += result;
-						dst_size -= result;
+						dst += resolved_size;
+						dst_size -= resolved_size;
 					}
+
+					result = resolved_size;
 				}
 				else
 				{
