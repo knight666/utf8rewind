@@ -28,6 +28,8 @@
 
 #include "utf8rewind.h"
 
+#define UTF8_INVALID_PROPERTY (uint8_t)-1
+
 typedef struct {
 	unicode_t start;
 	unicode_t end;
@@ -49,7 +51,6 @@ enum QuickCheckResult
 	QuickCheckResult_Yes,
 	QuickCheckResult_Maybe,
 	QuickCheckResult_No,
-	QuickCheckResult_Invalid
 };
 
 enum UnicodeProperty

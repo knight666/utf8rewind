@@ -11,7 +11,7 @@ TEST(QueryProperty, NoResult)
 
 TEST(QueryProperty, InvalidNormalizationForm)
 {
-	EXPECT_EQ(QuickCheckResult_Invalid, queryproperty(0x00C0, 198));
+	EXPECT_EQ(UTF8_INVALID_PROPERTY, queryproperty(0x00C0, 198));
 }
 
 // Composed

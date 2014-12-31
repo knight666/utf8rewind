@@ -116,7 +116,7 @@ uint8_t queryproperty(unicode_t codepoint, uint8_t checkType)
 		break;
 
 	default:
-		return QuickCheckResult_Invalid;
+		return UTF8_INVALID_PROPERTY;
 
 	}
 
