@@ -591,6 +591,12 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		if group_uppercase:
 			group_uppercase.end = group_uppercase.start + group_uppercase.count
+		
+		if group_lowercase:
+			group_lowercase.end = group_lowercase.start + group_lowercase.count
+		
+		if group_titlecase:
+			group_titlecase.end = group_titlecase.start + group_titlecase.count
 	
 	def resolveCodepoint(self, codepoint, compatibility):
 		found = self.records[codepoint]
