@@ -822,46 +822,6 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	}
 }
 
-size_t transform_default(int8_t query, unicode_t codepoint, size_t UTF8_UNUSED(codepointLength), char** target, size_t* targetSize, int32_t* errors)
-{
-	int32_t find_result;
-	const char* resolved;
-	size_t resolved_size;
-
-	resolved = finddecomposition(codepoint, query, &find_result);
-	if (find_result == FindResult_Found)
-	{
-		resolved_size = strlen(resolved);
-
-		if (*target != 0 &&
-			resolved_size > 0)
-		{
-			if (*targetSize < resolved_size)
-			{
-				goto outofspace;
-			}
-
-			memcpy(*target, resolved, resolved_size);
-			*target += resolved_size;
-
-			*targetSize -= resolved_size;
-		}
-
-		return resolved_size;
-	}
-	else
-	{
-		return writecodepoint(codepoint, target, targetSize, errors);
-	}
-
-outofspace:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
-	}
-	return 0;
-}
-
 size_t transform_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t propertyType, uint8_t transformType, int32_t* errors)
 {
 	size_t bytes_written = 0;
