@@ -27,6 +27,7 @@ class UnicodeMapping:
 		self.decomposedNFD = []
 		self.decomposedNFKD = []
 		self.compositionPairs = dict()
+		self.compositionExcluded = False
 		self.offsetNFC = 0
 		self.offsetNFD = 0
 		self.offsetNFKC = 0
@@ -40,6 +41,7 @@ class UnicodeMapping:
 		self.offsetUppercase = 0
 		self.offsetLowercase = 0
 		self.offsetTitlecase = 0
+		self.block = None
 	
 	def decomposedToString(self):
 		decomposedCodepoints = ""
@@ -232,7 +234,7 @@ class UnicodeMapping:
 		self.decomposedNFKD = self.resolveCodepoint(True)
 	
 	def compose(self):
-		if self.decompositionCodepoints and self.decompositionType == "DecompositionType_Canonical":
+		if not self.compositionExcluded and self.decompositionCodepoints and self.decompositionType == "DecompositionType_Canonical":
 			c = self.decompositionCodepoints[0]
 			if c in self.db.records:
 				target = self.db.records[c]
@@ -247,19 +249,13 @@ class UnicodeMapping:
 			return
 		
 		if self.uppercase:
-			converted = ""
-			for u in self.uppercase:
-				converted += libs.utf8.codepointToUtf8(u)
+			converted = libs.utf8.unicodeToUtf8Hex(self.uppercase)
 			self.offsetUppercase = self.db.addTranslation(converted + "\\x00")
 		if self.lowercase:
-			converted = ""
-			for u in self.lowercase:
-				converted += libs.utf8.codepointToUtf8(u)
+			converted = libs.utf8.unicodeToUtf8Hex(self.lowercase)
 			self.offsetLowercase = self.db.addTranslation(converted + "\\x00")
 		if self.titlecase:
-			converted = ""
-			for u in self.titlecase:
-				converted += libs.utf8.codepointToUtf8(u)
+			converted = libs.utf8.unicodeToUtf8Hex(self.titlecase)
 			self.offsetTitlecase = self.db.addTranslation(converted + "\\x00")
 	
 	def codepointsToString(self, values):
@@ -304,9 +300,18 @@ class UnicodeBlock:
 			self.start = int(matched.groups(1)[0], 16)
 			self.end = int(matched.groups(1)[1], 16)
 		
-		self.name = matches[1][0][1:]
+		self.name = matches[1][0]
+		for m in matches[1][1:]:
+			self.name += " " + m
 		
 		return True
+
+class QuickCheckRecord:
+	def __init__(self, db):
+		self.start = 0
+		self.count = 0
+		self.end = 0
+		self.value = 0
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
@@ -319,6 +324,13 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.recordsOrdered = []
 		self.records = dict()
 		self.blocks = []
+		self.qc_nfc_records = []
+		self.qc_nfd_records = []
+		self.qc_nfkc_records = []
+		self.qc_nfkd_records = []
+		self.qcLowercase = []
+		self.qcUppercase = []
+		self.qcTitlecase = []
 	
 	def loadFromFiles(self, arguments):
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -332,14 +344,27 @@ class Database(libs.unicode.UnicodeVisitor):
 		document_database.parse(script_path + '/data/UnicodeData.txt')
 		document_database.accept(self)
 		
-		self.resolveMissing()
-		
-		# groups
+		# blocks
 		
 		blocks = Blocks(self)
 		document_blocks = libs.unicode.UnicodeDocument()
 		document_blocks.parse(script_path + '/data/Blocks.txt')
 		document_blocks.accept(blocks)
+		
+		self.resolveBlocks()
+		
+		# missing codepoints
+		
+		self.resolveMissing()
+		
+		# derived normalization properties
+		
+		normalization = Normalization(self)
+		document_normalization = libs.unicode.UnicodeDocument()
+		document_normalization.parse(script_path + '/data/DerivedNormalizationProps.txt')
+		document_normalization.accept(normalization)
+		
+		self.resolveQuickCheck()
 		
 		# decomposition
 		
@@ -379,45 +404,139 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		return True
 	
+	def getBlockByCodepoint(self, codepoint):
+		print hex(codepoint)
+		for b in self.blocks:
+			if codepoint >= b.start and codepoint <= b.end:
+				return b
+		return None
+	
+	def getBlockByName(self, name):
+		for b in self.blocks:
+			if b.name == name:
+				return b
+		return None
+	
 	def resolveMissing(self):
 		print "Adding missing codepoints to database..."
 		
-		missing = []
-		missing += range(0x3401, 0x4DB4) # CJK Ideograph Extension A
-		missing += range(0x4E01, 0x9FCB) # CJK Ideograph
-		missing += range(0xAC01, 0xD7A2) # Hangul Syllable
-		missing += range(0x20001, 0x2A6D5) # CJK Ideograph Extension B
-		missing += range(0x2A701, 0x2B733) # CJK Ideograph Extension C
-		missing += range(0x2B73F, 0x2B81C) # CJK Ideograph Extension D
+		missing = [
+			self.getBlockByName("General Punctuation"), # 2000..206F
+			self.getBlockByName("CJK Unified Ideographs Extension A"), # 3400..4DBF
+			self.getBlockByName("CJK Unified Ideographs"), # 4E00..9FFF
+			self.getBlockByName("Hangul Syllables"), # AC00..D7AF
+			self.getBlockByName("Specials"), # FFF0..FFFF
+			self.getBlockByName("CJK Unified Ideographs Extension B"), # 20000..2A6DF
+			self.getBlockByName("CJK Unified Ideographs Extension C"), # 2A700..2B73F
+			self.getBlockByName("CJK Unified Ideographs Extension D"), # 2B740..2B81F
+			self.getBlockByName("Tags"), # E0000..E007F
+			self.getBlockByName("Variation Selectors Supplement"), # E0100..E01EF
+			self.getBlockByName("<reserved-E0080>..<reserved-E00FF>"), # E0080..E00FF
+			self.getBlockByName("<reserved-E01F0>..<reserved-E0FFF>"), # E01F0..E0FFF
+		]
 		
-		for c in missing:
-			u = UnicodeMapping(self)
-			u.codepoint = c
-			self.recordsOrdered.append(u)
-			self.records[u.codepoint] = u
+		for b in missing:
+			for c in range(b.start, b.end + 1):
+				if c not in self.records:
+					u = UnicodeMapping(self)
+					u.codepoint = c
+					u.block = b
+					self.recordsOrdered.append(u)
+					self.records[u.codepoint] = u
+		
+		self.recordsOrdered = sorted(self.recordsOrdered, key=lambda record: record.codepoint)
 	
+	def resolveBlocks(self):
+		print "Resolving blocks for entries..."
+		
+		block_index = 0
+		block_current = self.blocks[block_index]
+		
+		for r in self.recordsOrdered:
+			if r.codepoint > block_current.end:
+				block_index += 1
+				block_current = self.blocks[block_index]
+			r.block = block_current
+		
+		# missing from blocks data file
+		
+		block_reserved1 = UnicodeBlock(self)
+		block_reserved1.start = 0xE0080
+		block_reserved1.end = 0xE00FF
+		block_reserved1.name = "<reserved-E0080>..<reserved-E00FF>"
+		self.blocks.append(block_reserved1)
+		
+		block_reserved2 = UnicodeBlock(self)
+		block_reserved2.start = 0xE01F0
+		block_reserved2.end = 0xE0FFF
+		block_reserved2.name = "<reserved-E01F0>..<reserved-E0FFF>"
+		self.blocks.append(block_reserved2)
+	
+	def resolveQuickCheck(self):
+		print "Resolving quick check entries..."
+		
+		# NFC
+		
+		self.qc_nfc_records = sorted(self.qc_nfc_records, key=lambda record: record.start)
+		nfc_length = len(self.qc_nfc_records)
+		nfc_last = self.qc_nfc_records[nfc_length - 1]
+		nfc_last.end = nfc_last.start + nfc_last.count
+		
+		for i in range(0, nfc_length - 1):
+			current = self.qc_nfc_records[i]
+			self.qc_nfc_records[i].end = self.qc_nfc_records[i + 1].start - 1
+		
+		# NFD
+		
+		self.qc_nfd_records = sorted(self.qc_nfd_records, key=lambda record: record.start)
+		nfd_length = len(self.qc_nfd_records)
+		nfd_last = self.qc_nfd_records[nfd_length - 1]
+		nfd_last.end = nfd_last.start + nfd_last.count
+		
+		for i in range(0, nfd_length - 1):
+			current = self.qc_nfd_records[i]
+			self.qc_nfd_records[i].end = self.qc_nfd_records[i + 1].start - 1
+		
+		# NFKC
+		
+		self.qc_nfkc_records = sorted(self.qc_nfkc_records, key=lambda record: record.start)
+		nfkc_length = len(self.qc_nfkc_records)
+		nfkc_last = self.qc_nfkc_records[nfkc_length - 1]
+		nfkc_last.end = nfkc_last.start + nfkc_last.count
+		
+		for i in range(0, nfkc_length - 1):
+			current = self.qc_nfkc_records[i]
+			self.qc_nfkc_records[i].end = self.qc_nfkc_records[i + 1].start - 1
+		
+		# NFKD
+		
+		self.qc_nfkd_records = sorted(self.qc_nfkd_records, key=lambda record: record.start)
+		nfkd_length = len(self.qc_nfkd_records)
+		nfkd_last = self.qc_nfkd_records[nfkd_length - 1]
+		nfkd_last.end = nfkd_last.start + nfkd_last.count
+		
+		for i in range(0, nfkd_length - 1):
+			current = self.qc_nfkd_records[i]
+			self.qc_nfkd_records[i].end = self.qc_nfkd_records[i + 1].start - 1
+		
 	def resolveDecomposition(self):
 		print "Resolving decomposition..."
 		
 		for r in self.recordsOrdered:
 			r.decompose()
 			
-			convertedCodepoint = libs.utf8.codepointToUtf8(r.codepoint)
+			convertedCodepoint = libs.utf8.codepointToUtf8Hex(r.codepoint)
 			
 			r.offsetNFD = 0
 			r.offsetNFKD = 0
 			
 			if r.decomposedNFD:
-				convertedNFD = ""
-				for d in r.decomposedNFD:
-					convertedNFD += libs.utf8.codepointToUtf8(d)
+				convertedNFD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFD)
 				if convertedNFD <> convertedCodepoint:
 					r.offsetNFD = self.addTranslation(convertedNFD + "\\x00")
 			
 			if r.decomposedNFKD:
-				convertedNFKD = ""
-				for d in r.decomposedNFKD:
-					convertedNFKD += libs.utf8.codepointToUtf8(d)
+				convertedNFKD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFKD)
 				if convertedNFKD <> convertedCodepoint:
 					r.offsetNFKD = self.addTranslation(convertedNFKD + "\\x00")
 	
@@ -426,29 +545,58 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		for r in self.recordsOrdered:
 			r.compose()
-		
-		composed = []
-		
-		for r in self.recordsOrdered:
-			if r.compositionPairs:
-				for p in r.compositionPairs.items():
-					key = r.codepoint + p[0]
-					if key in composed:
-						print "collision " + hex(key)
-					else:
-						pair = {
-							"key": key,
-							"value": p[1]
-						}
-						composed.append(pair)
-		
-		print "composed", str(len(composed))
 	
 	def resolveCaseMapping(self):
 		print "Resolving case mappings..."
 		
+		group_uppercase = None
+		group_lowercase = None
+		group_titlecase = None
+		
 		for r in self.recordsOrdered:
 			r.caseMapping()
+			
+			if r.uppercase:
+				if not group_uppercase or r.codepoint <> (group_uppercase.start + group_uppercase.count + 1):
+					if group_uppercase:
+						group_uppercase.end = r.codepoint - 1
+					group_uppercase = QuickCheckRecord(self)
+					group_uppercase.start = r.codepoint
+					group_uppercase.value = 1
+					self.qcUppercase.append(group_uppercase)
+				else:
+					group_uppercase.count += 1
+			
+			if r.lowercase:
+				if not group_lowercase or r.codepoint <> (group_lowercase.start + group_lowercase.count + 1):
+					if group_lowercase:
+						group_lowercase.end = r.codepoint - 1
+					group_lowercase = QuickCheckRecord(self)
+					group_lowercase.start = r.codepoint
+					group_lowercase.value = 1
+					self.qcLowercase.append(group_lowercase)
+				else:
+					group_lowercase.count += 1
+					
+			if r.titlecase:
+				if not group_titlecase or r.codepoint <> (group_titlecase.start + group_titlecase.count + 1):
+					if group_titlecase:
+						group_titlecase.end = r.codepoint - 1
+					group_titlecase = QuickCheckRecord(self)
+					group_titlecase.start = r.codepoint
+					group_titlecase.value = 1
+					self.qcTitlecase.append(group_titlecase)
+				else:
+					group_titlecase.count += 1
+		
+		if group_uppercase:
+			group_uppercase.end = group_uppercase.start + group_uppercase.count
+		
+		if group_lowercase:
+			group_lowercase.end = group_lowercase.start + group_lowercase.count
+		
+		if group_titlecase:
+			group_titlecase.end = group_titlecase.start + group_titlecase.count
 	
 	def resolveCodepoint(self, codepoint, compatibility):
 		found = self.records[codepoint]
@@ -486,16 +634,16 @@ class Database(libs.unicode.UnicodeVisitor):
 			print self.resolveCodepoint(queryCodepoint, True)
 
 	def matchToString(self, match):
-		result = ""
-		
 		if match == None:
-			return result
+			return ""
+		
+		codepoints = []
 		
 		for group in match:
 			if group <> None:
-				codepoint = int(group, 16)
-				converted = libs.utf8.codepointToUtf8(codepoint)
-				result += converted
+				codepoints.append(int(group, 16))
+		
+		result = libs.utf8.unicodeToUtf8Hex(codepoints)
 		result += "\\x00"
 		
 		return result
@@ -568,6 +716,78 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		header.newLine()
 	
+	def writeCompositionRecords(self, header):
+		composed = []
+		
+		for r in self.recordsOrdered:
+			if r.compositionPairs:
+				for p in r.compositionPairs.items():
+					key = (r.codepoint << 32) + p[0]
+					if key in composed:
+						print "collision " + hex(key)
+					else:
+						pair = {
+							"key": key,
+							"value": p[1]
+						}
+						composed.append(pair)
+		
+		composed_ordered = sorted(composed, key=lambda item: item["key"])
+		
+		header.writeLine("const size_t UnicodeCompositionRecordCount = " + str(len(composed_ordered)) + ";")
+		header.writeLine("const CompositionRecord UnicodeCompositionRecord[" + str(len(composed_ordered)) + "] = {")
+		header.indent()
+		
+		count = 0
+		
+		for c in composed_ordered:
+			if (count % 4) == 0:
+				header.writeIndentation()
+			
+			header.write("{ " + hex(c["key"]) + ", " + hex(c["value"]) + " },")
+			
+			count += 1
+			if count <> len(composed_ordered):
+				if (count % 4) == 0:
+					header.newLine()
+				else:
+					header.write(" ")
+		
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.writeLine("const CompositionRecord* UnicodeCompositionRecordPtr = UnicodeCompositionRecord;")
+		
+		header.newLine()
+	
+	def writeQuickCheck(self, header, records, name):
+		header.writeLine("const size_t UnicodeQuickCheck" + name + "RecordCount = " + str(len(records)) + ";")
+		header.writeLine("const QuickCheckRecord UnicodeQuickCheck" + name + "Record[" + str(len(records)) + "] = {")
+		header.indent()
+		
+		count = 0
+		
+		for r in records:
+			if (count % 4) == 0:
+				header.writeIndentation()
+			
+			value = (r.value << 24) | r.count
+			header.write("{ " + hex(r.start) + ", " + hex(r.end) + ", " + hex(value) + " },")
+			
+			count += 1
+			if count <> len(records):
+				if (count % 4) == 0:
+					header.newLine()
+				else:
+					header.write(" ")
+		
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.writeLine("const QuickCheckRecord* UnicodeQuickCheck" + name + "RecordPtr = UnicodeQuickCheck" + name + "Record;")
+		
+		header.newLine()
+	
 	def writeSource(self, filepath):
 		print "Writing database to " + filepath + "..."
 		
@@ -628,10 +848,24 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.writeLine("#include \"normalization.h\"")
 		header.newLine()
 		
+		# quick check records
+		
+		self.writeQuickCheck(header, self.qc_nfc_records, "NFC")
+		self.writeQuickCheck(header, self.qc_nfd_records, "NFD")
+		self.writeQuickCheck(header, self.qc_nfkc_records, "NFKC")
+		self.writeQuickCheck(header, self.qc_nfkd_records, "NFKD")
+		self.writeQuickCheck(header, self.qcUppercase, "Uppercase")
+		self.writeQuickCheck(header, self.qcLowercase, "Lowercase")
+		self.writeQuickCheck(header, self.qcTitlecase, "Titlecase")
+		
 		# decomposition records
 		
 		self.writeDecompositionRecords(header, nfd_records, "NFD", "offsetNFD")
 		self.writeDecompositionRecords(header, nfkd_records, "NFKD", "offsetNFKD")
+		
+		# composition records
+		
+		self.writeCompositionRecords(header)
 		
 		# case mapping records
 		
@@ -690,31 +924,31 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		for r in self.recordsOrdered:
 			if r.uppercase or r.lowercase or r.titlecase:
-				output.write("%08x" % r.codepoint + "; ")
+				output.write("%08X" % r.codepoint + "; ")
 				
 				if r.uppercase:
-					output.write("%08x" % r.uppercase[0])
+					output.write("%08X" % r.uppercase[0])
 					for u in r.uppercase[1:]:
-						output.write(" %08x" % u)
+						output.write(" %08X" % u)
 					output.write("; ")
 				else:
-					output.write("%08x" % r.codepoint + "; ")
+					output.write("%08X" % r.codepoint + "; ")
 				
 				if r.lowercase:
-					output.write("%08x" % r.lowercase[0])
+					output.write("%08X" % r.lowercase[0])
 					for u in r.lowercase[1:]:
-						output.write(" %08x" % u)
+						output.write(" %08X" % u)
 					output.write("; ")
 				else:
-					output.write("%08x" % r.codepoint + "; ")
+					output.write("%08X" % r.codepoint + "; ")
 				
 				if r.titlecase:
-					output.write("%08x" % r.titlecase[0])
+					output.write("%08X" % r.titlecase[0])
 					for u in r.titlecase[1:]:
-						output.write(" %08x" % u)
+						output.write(" %08X" % u)
 					output.write("; ")
 				else:
-					output.write("%08x" % r.codepoint + "; ")
+					output.write("%08X" % r.codepoint + "; ")
 				
 				output.write("# " + r.name)
 				output.newLine()
@@ -773,6 +1007,80 @@ class Blocks(libs.unicode.UnicodeVisitor):
 			return False
 		
 		self.db.blocks.append(block)
+		
+		return True
+
+class Normalization(libs.unicode.UnicodeVisitor):
+	def __init__(self, db):
+		self.db = db
+	
+	def parseEntry(self, start, count, matches):
+		property = matches[1][0]
+		
+		def full_composition_exclusion(property):
+			for i in range(start, start + count + 1):
+				if i in self.db.records:
+					record = self.db.records[i]
+					record.compositionExcluded = True
+				else:
+					print "missing " + hex(start) + " in database (\"" + self.db.getBlockByCodepoint(start).name + "\")"
+		
+		def quick_check(property):
+			nf_member = {
+				"NFD_QC": "qc_nfd_records",
+				"NFC_QC": "qc_nfc_records",
+				"NFKD_QC": "qc_nfkd_records",
+				"NFKC_QC": "qc_nfkc_records",
+			}
+			nf_value = {
+				"N": 2,
+				"M": 1,
+				"Y": 0,
+			}
+			
+			qc = QuickCheckRecord(self.db)
+			qc.start = start
+			qc.count = count
+			qc.value = nf_value[matches[2][0]]
+			
+			self.db.__dict__[nf_member[property]].append(qc)
+		
+		def case_fold(property):
+			pass
+		
+		def changes_when_nfkc_casefolded(property):
+			pass
+		
+		property_values = {
+			"Full_Composition_Exclusion": full_composition_exclusion,
+			"NFD_QC": quick_check,
+			"NFC_QC": quick_check,
+			"NFKD_QC": quick_check,
+			"NFKC_QC": quick_check,
+			"NFKC_CF": case_fold,
+			"Changes_When_NFKC_Casefolded": changes_when_nfkc_casefolded,
+		}
+		if property in property_values:
+			property_values[property](property)
+		
+	
+	def visitDocument(self, document):
+		print "Parsing derived normalization properties..."
+		return True
+	
+	def visitEntry(self, entry):
+		if not entry.matches[0]:
+			return False
+		
+		match = re.match('([0-9A-Fa-f]+)\.?\.?([0-9A-Fa-f]+)?', entry.matches[0][0])
+		if match:
+			start = int(match.group(1), 16)
+			if match.group(2):
+				count = int(match.group(2), 16) - start
+			else:
+				count = 0
+			
+			self.parseEntry(start, count, entry.matches)
 		
 		return True
 

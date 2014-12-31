@@ -28,10 +28,41 @@
 
 #include "utf8rewind.h"
 
+#define UTF8_INVALID_PROPERTY (uint8_t)-1
+
+typedef struct {
+	unicode_t start;
+	unicode_t end;
+	unicode_t count_and_value;
+} QuickCheckRecord;
+
 typedef struct {
 	unicode_t codepoint;
-	ptrdiff_t offset;
+	size_t offset;
 } DecompositionRecord;
+
+typedef struct {
+	uint64_t key;
+	unicode_t value;
+} CompositionRecord;
+
+enum QuickCheckResult
+{
+	QuickCheckResult_Yes,
+	QuickCheckResult_Maybe,
+	QuickCheckResult_No,
+};
+
+enum UnicodeProperty
+{
+	UnicodeProperty_QC_NFC,
+	UnicodeProperty_QC_NFD,
+	UnicodeProperty_QC_NFKC,
+	UnicodeProperty_QC_NFKD,
+	UnicodeProperty_Uppercase,
+	UnicodeProperty_Lowercase,
+	UnicodeProperty_Titlecase,
+};
 
 enum FindResult
 {
@@ -47,11 +78,13 @@ enum DecompositionQuery
 	DecompositionQuery_Compatibility_Decomposed,
 	DecompositionQuery_Uppercase,
 	DecompositionQuery_Lowercase,
-	DecompositionQuery_Titlecase
+	DecompositionQuery_Titlecase,
 };
 
-const DecompositionRecord* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result);
+uint8_t queryproperty(unicode_t codepoint, uint8_t property);
 
-const char* resolvedecomposition(size_t offset, int32_t* result);
+const char* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result);
+
+unicode_t querycomposition(unicode_t left, unicode_t right, int32_t* result);
 
 #endif

@@ -4,7 +4,7 @@
 
 TEST(ToLower, BasicLatin)
 {
-	char* c = "Hello World!";
+	const char* c = "Hello World!";
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -16,7 +16,7 @@ TEST(ToLower, BasicLatin)
 
 TEST(ToLower, BasicLatinAllUppercase)
 {
-	char* c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	const char* c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -28,7 +28,7 @@ TEST(ToLower, BasicLatinAllUppercase)
 
 TEST(ToLower, BasicLatinAllLowercase)
 {
-	char* c = "abcdefghijklmnopqrstuvwxyz";
+	const char* c = "abcdefghijklmnopqrstuvwxyz";
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -40,7 +40,7 @@ TEST(ToLower, BasicLatinAllLowercase)
 
 TEST(ToLower, BasicLatinAllOther)
 {
-	char* c = " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}`";
+	const char* c = " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}`";
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -52,7 +52,7 @@ TEST(ToLower, BasicLatinAllOther)
 
 TEST(ToLower, BasicLatinAmountOfBytes)
 {
-	char* c = "Playable";
+	const char* c = "Playable";
 	int32_t errors = 0;
 
 	EXPECT_EQ(8, utf8tolower(c, strlen(c), nullptr, 0, &errors));
@@ -61,7 +61,7 @@ TEST(ToLower, BasicLatinAmountOfBytes)
 
 TEST(ToLower, BasicLatinNotEnoughSpace)
 {
-	char* c = "VERY important";
+	const char* c = "VERY important";
 	const size_t s = 9;
 	char b[s] = { 0 };
 	int32_t errors = 0;

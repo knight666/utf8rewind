@@ -4,7 +4,7 @@
 
 TEST(ToUpper, BasicLatin)
 {
-	char* c = "Hello World!";
+	const char* c = "Hello World!";
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -16,7 +16,7 @@ TEST(ToUpper, BasicLatin)
 
 TEST(ToUpper, BasicLatinAllLowercase)
 {
-	char* c = "abcdefghijklmnopqrstuvwxyz";
+	const char* c = "abcdefghijklmnopqrstuvwxyz";
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -28,7 +28,7 @@ TEST(ToUpper, BasicLatinAllLowercase)
 
 TEST(ToUpper, BasicLatinAllUppercase)
 {
-	char* c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	const char* c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -40,7 +40,7 @@ TEST(ToUpper, BasicLatinAllUppercase)
 
 TEST(ToUpper, BasicLatinAllOther)
 {
-	char* c = " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}`";
+	const char* c = " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}`";
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
@@ -52,7 +52,7 @@ TEST(ToUpper, BasicLatinAllOther)
 
 TEST(ToUpper, BasicLatinAmountOfBytes)
 {
-	char* c = "Magic";
+	const char* c = "Magic";
 	int32_t errors = 0;
 
 	EXPECT_EQ(5, utf8toupper(c, strlen(c), nullptr, 0, &errors));
@@ -61,7 +61,7 @@ TEST(ToUpper, BasicLatinAmountOfBytes)
 
 TEST(ToUpper, BasicLatinNotEnoughSpace)
 {
-	char* c = "Merde";
+	const char* c = "Merde";
 	const size_t s = 4;
 	char b[s] = { 0 };
 	int32_t errors = 0;
