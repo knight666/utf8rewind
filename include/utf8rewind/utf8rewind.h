@@ -52,6 +52,7 @@
 #define UTF8_TRANSFORM_COMPOSED                  0x00000010
 #define UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED  0x00000020
 #define UTF8_TRANSFORM_COMPATIBILITY_COMPOSED    0x00000040
+#define UTF8_TRANSFORM_NORMALIZED                0x10000000
 
 //! @defgroup configuration Global configuration
 //! @{
