@@ -215,16 +215,12 @@ namespace helpers {
 	{
 		std::stringstream ss;
 
-		ss << "\"";
-
 		bool wrote_hex = false;
 
 		for (std::string::const_iterator it = text.begin(); it != text.end(); ++it)
 		{
 			printable(ss, wrote_hex, (uint8_t)*it);
 		}
-
-		ss << "\"";
 
 		return ss.str();
 	}
@@ -267,8 +263,18 @@ namespace helpers {
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
 			result << "String mismatch" << std::endl;
-			result << "  Actual: \"" << helpers::identifiable(textActual) << "\"" << std::endl;
-			result << "Expected: \"" << helpers::identifiable(textExpected) << "\"" << std::endl;
+
+			result << std::endl;
+
+			result << "[UTF-8]" << std::endl;
+			result << "  Expected: " << "\"" << printable(textExpected) << "\"" << std::endl;
+			result << "    Actual: " << "\"" << printable(textActual) << "\"" << std::endl;
+
+			result << std::endl;
+
+			result << "[Codepoints]" << std::endl;
+			result << "  Expected: " << "\"" << identifiable(textExpected) << "\"" << std::endl;
+			result << "    Actual: " << "\"" << identifiable(textActual) << "\"" << std::endl;
 
 			return result;
 		}

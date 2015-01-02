@@ -932,10 +932,6 @@ TEST_F(QuickbrownCaseMapping, HebrewLowercase)
 
 TEST_F(QuickbrownCaseMapping, PolishUppercase)
 {
-	std::string pi = helpers::printable(ReadRegular  (3105, 51));
-	std::string pu = helpers::printable(ReadUppercase(3106, 51));
-	std::string pl = helpers::printable(ReadLowercase(3105, 51));
-
 	std::string i = ReadRegular(3105, 51);
 	EXPECT_UTF8EQ("  Pchn\xC4\x85\xC4\x87 w t\xC4\x99 \xC5\x82\xC3\xB3" "d\xC5\xBA je\xC5\xBC" "a lub o\xC5\x9Bm skrzy\xC5\x84 fig", i.c_str());
 
