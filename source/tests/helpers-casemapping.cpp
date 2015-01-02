@@ -84,45 +84,11 @@ namespace helpers {
 		return converted;
 	}
 
-	::testing::AssertionResult CompareUtf8Uppercase(
+	::testing::AssertionResult CompareCasemapping(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
 	{
-		if (entryExpected.codepoint == entryActual.codepoint &&
-			entryExpected.uppercase == entryActual.uppercase)
-		{
-			return ::testing::AssertionSuccess();
-		}
-		else
-		{
-			::testing::AssertionResult result = ::testing::AssertionFailure();
-
-			result << std::endl;
-			result <<  entryExpected.name << " (" << helpers::identifiable(entryExpected.codepoint)  << ")" << std::endl;
-			result << std::endl;
-
-			if (entryExpected.uppercase != entryActual.uppercase)
-			{
-				result << std::endl;
-				result << "[Uppercase]" << std::endl;
-				result << "  Expected:    " << helpers::printable(entryExpected.uppercase) << " (" << helpers::identifiable(entryExpected.uppercase) << ")" << std::endl;
-				result << "    Actual:    " << helpers::printable(entryActual.uppercase) << " (" << helpers::identifiable(entryActual.uppercase) << ")" << std::endl;
-				result << std::endl;
-			}
-			else
-			{
-				result << "[Uppercase]    " << helpers::printable(entryActual.uppercase) << " (" << helpers::identifiable(entryActual.uppercase) << ")" << std::endl;
-			}
-
-			return result;
-		}
-	}
-
-	::testing::AssertionResult CompareUtf8Lowercase(
-		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
-		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
-	{
-		if (entryExpected.codepoint == entryActual.codepoint &&
+		if (entryExpected.uppercase == entryActual.uppercase &&
 			entryExpected.lowercase == entryActual.lowercase)
 		{
 			return ::testing::AssertionSuccess();
@@ -131,21 +97,32 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << std::endl;
 			result <<  entryExpected.name << " (" << helpers::identifiable(entryExpected.codepoint)  << ")" << std::endl;
+
+			result << std::endl;
+
+			if (entryExpected.uppercase != entryActual.uppercase)
+			{
+				result << "[Uppercase]" << std::endl;
+				result << "  Expected:  \"" << helpers::printable(entryExpected.uppercase) << "\" (" << helpers::identifiable(entryExpected.uppercase) << ")" << std::endl;
+				result << "    Actual:  \"" << helpers::printable(entryActual.uppercase) << "\" (" << helpers::identifiable(entryActual.uppercase) << ")" << std::endl;
+			}
+			else
+			{
+				result << "[Uppercase]  \"" << helpers::printable(entryActual.uppercase) << "\" (" << helpers::identifiable(entryActual.uppercase) << ")" << std::endl;
+			}
+
 			result << std::endl;
 
 			if (entryExpected.lowercase != entryActual.lowercase)
 			{
-				result << std::endl;
 				result << "[Lowercase]" << std::endl;
-				result << "  Expected:    " << helpers::printable(entryExpected.lowercase) << " (" << helpers::identifiable(entryExpected.lowercase) << ")" << std::endl;
-				result << "    Actual:    " << helpers::printable(entryActual.lowercase) << " (" << helpers::identifiable(entryActual.lowercase) << ")" << std::endl;
-				result << std::endl;
+				result << "  Expected:  \"" << helpers::printable(entryExpected.lowercase) << "\" (" << helpers::identifiable(entryExpected.lowercase) << ")" << std::endl;
+				result << "    Actual:  \"" << helpers::printable(entryActual.lowercase) << "\" (" << helpers::identifiable(entryActual.lowercase) << ")" << std::endl;
 			}
 			else
 			{
-				result << "[Lowercase]    " << helpers::printable(entryExpected.lowercase) << " (" << helpers::identifiable(entryExpected.lowercase) << ")" << std::endl;
+				result << "[Lowercase]  \"" << helpers::printable(entryExpected.lowercase) << "\" (" << helpers::identifiable(entryExpected.lowercase) << ")" << std::endl;
 			}
 
 			return result;
