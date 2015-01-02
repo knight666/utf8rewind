@@ -1141,7 +1141,7 @@ outofspace:
 	return bytes_written;
 }
 
-size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t transform_uppercase(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 	const char* src = input;
 	size_t src_size = inputSize;
@@ -1247,7 +1247,7 @@ outofspace:
 	return bytes_written;
 }
 
-size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t transform_lowercase(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 	const char* src = input;
 	size_t src_size = inputSize;
@@ -1353,9 +1353,29 @@ outofspace:
 	return bytes_written;
 }
 
+size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+{
+	return utf8transform(input, inputSize, target, targetSize, UTF8_TRANSFORM_UPPERCASE, errors);
+}
+
+size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+{
+	return utf8transform(input, inputSize, target, targetSize, UTF8_TRANSFORM_LOWERCASE, errors);
+}
+
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
-	if ((flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
+	if ((flags & UTF8_TRANSFORM_UPPERCASE) != 0)
+	{
+		return transform_uppercase(input, inputSize, target, targetSize, errors);
+	}
+	else if (
+		(flags & UTF8_TRANSFORM_LOWERCASE) != 0)
+	{
+		return transform_lowercase(input, inputSize, target, targetSize, errors);
+	}
+	else if (
+		(flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
 	{
 		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFD, DecompositionQuery_Decomposed, errors);
 	}
