@@ -822,6 +822,156 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	}
 }
 
+typedef struct {
+	const char** src;
+	size_t* src_size;
+	uint8_t transform;
+	uint8_t finished;
+	unicode_t codepoint[2];
+	size_t length[2];
+	uint8_t check[2];
+	uint8_t current;
+	uint8_t next;
+} ComposeState;
+
+uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inputSize, uint8_t transformType)
+{
+	memset(state, 0, sizeof(ComposeState));
+
+	state->src = input;
+	state->src_size = inputSize;
+	state->transform = transformType;
+
+	state->check[0] = QuickCheckResult_No;
+	state->check[1] = QuickCheckResult_No;
+
+	state->current = 0;
+	state->next = 1;
+
+	/* read the first codepoint */
+
+	state->length[state->current] = readcodepoint(&state->codepoint[state->current], *state->src, *state->src_size);
+	state->check[state->current] = queryproperty(state->codepoint[state->current], state->transform);
+
+	if (*state->src_size > state->length[state->current])
+	{
+		*state->src += state->length[state->current];
+		*state->src_size -= state->length[state->current];
+	}
+	else
+	{
+		state->finished = 1;
+	}
+
+	return 1;
+}
+
+uint8_t compose_execute(ComposeState* state)
+{
+	while (!state->finished)
+	{
+		unicode_t composed = 0;
+
+		if (*state->src_size > 0)
+		{
+			state->length[state->next] = readcodepoint(&state->codepoint[state->next], *state->src, *state->src_size);
+			state->check[state->next] = queryproperty(state->codepoint[state->next], state->transform);
+
+			if (*state->src_size >= state->length[state->next])
+			{
+				*state->src += state->length[state->next];
+				*state->src_size -= state->length[state->next];
+
+				state->finished = (*state->src_size == 0);
+			}
+			else
+			{
+				state->finished = 1;
+			}
+		}
+
+		if (state->check[state->current] == QuickCheckResult_Yes &&
+			state->check[state->next] == QuickCheckResult_Yes)
+		{
+			break;
+		}
+
+		/*
+			Hangul composition
+			
+			Algorithm adapted from Unicode Technical Report #15:
+			http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
+		*/
+
+		if (state->codepoint[state->current] >= HANGUL_L_FIRST &&
+			state->codepoint[state->current] <= HANGUL_L_LAST)
+		{
+			/* Check for Hangul LV pair */ 
+
+			if (state->codepoint[state->next] >= HANGUL_V_FIRST &&
+				state->codepoint[state->next] <= HANGUL_V_LAST)
+			{
+				unicode_t l_index = state->codepoint[state->current] - HANGUL_L_FIRST;
+				unicode_t v_index = state->codepoint[state->next] - HANGUL_V_FIRST;
+
+				composed = HANGUL_S_FIRST + (((l_index * HANGUL_V_COUNT) + v_index) * HANGUL_T_COUNT);
+			}
+			else
+			{
+				break;
+			}
+		}
+		else if (
+			state->codepoint[state->current] >= HANGUL_S_FIRST &&
+			state->codepoint[state->current] <= HANGUL_S_LAST)
+		{
+			/* Check for Hangul LV and T pair */ 
+
+			if (state->codepoint[state->next] >= HANGUL_T_FIRST &&
+				state->codepoint[state->next] <= HANGUL_T_LAST)
+			{
+				unicode_t t_index = state->codepoint[state->next] - HANGUL_T_FIRST;
+
+				composed = state->codepoint[state->current] + t_index;
+			}
+			else
+			{
+				break;
+			}
+		}
+		else
+		{
+			/* Check database for composition */
+
+			int32_t find_result;
+			composed = querycomposition(state->codepoint[state->current], state->codepoint[state->next], &find_result);
+		}
+
+		if (composed == 0)
+		{
+			break;
+		}
+		
+		if (state->check[state->next] == QuickCheckResult_Maybe)
+		{
+			/* If the composition succeeded but there's no data left, don't output the second codepoint */
+
+			state->check[state->next] = state->finished ? QuickCheckResult_No : QuickCheckResult_Yes;
+		}
+
+		state->codepoint[state->current] = composed;
+		state->length[state->current] = lengthcodepoint(composed);
+		state->check[state->current] = queryproperty(composed, state->transform);
+	}
+
+	/* Swap buffers */
+
+	state->current = (state->current + 1) % 2;
+	state->next = (state->next + 1) % 2;
+
+	return 1;
+}
+
 size_t transform_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t propertyType, uint8_t transformType, int32_t* errors)
 {
 	size_t bytes_written = 0;
@@ -968,11 +1118,7 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 	size_t src_size = inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
-	unicode_t cp[2];
-	size_t cp_length[2];
-	uint8_t cp_check[2];
-	uint8_t current = 0;
-	uint8_t next = 1;
+	ComposeState state;
 
 	if (src == 0 ||
 		src_size == 0)
@@ -980,148 +1126,38 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 		goto invaliddata;
 	}
 
-	memset(cp, 0, sizeof(cp));
-	memset(cp_length, 0, sizeof(cp_length));
-	memset(cp_check, 0, sizeof(cp_check));
+	compose_initialize(&state, &src, &src_size, transformType);
 
-	/* read the first codepoint */
-
-	cp_length[current] = readcodepoint(&cp[current], src, src_size);
-	cp_check[current] = queryproperty(cp[current], transformType);
-
-	if (src_size <= cp_length[current])
-	{
-		if (dst != 0 &&
-			dst_size < cp_length[current])
-		{
-			goto outofspace;
-		}
-
-		bytes_written += writecodepoint(cp[current], &dst, &dst_size, errors);
-
-		return bytes_written;
-	}
-
-	src += cp_length[current];
-	src_size -= cp_length[current];
-
-	while (src_size > 0)
+	do
 	{
 		size_t written;
-		uint8_t at_end = 0;
 
-		while (!at_end)
-		{
-			unicode_t composed = 0;
-
-			int32_t find_result;
-
-			if (src_size > 0)
-			{
-				cp_length[next] = readcodepoint(&cp[next], src, src_size);
-				cp_check[next] = queryproperty(cp[next], transformType);
-
-				if (src_size >= cp_length[next])
-				{
-					src += cp_length[next];
-					src_size -= cp_length[next];
-				}
-				
-				at_end = !(src_size >= cp_length[next] || src_size > 0);
-			}
-
-			if (cp_check[current] == QuickCheckResult_Yes &&
-				cp_check[next] == QuickCheckResult_Yes)
-			{
-				break;
-			}
-
-			/*
-				Hangul composition
-			
-				Algorithm adapted from Unicode Technical Report #15:
-				http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
-			*/
-
-			if (cp[current] >= HANGUL_L_FIRST &&
-				cp[current] <= HANGUL_L_LAST)
-			{
-				/* Check for Hangul LV pair */ 
-
-				if (cp[next] >= HANGUL_V_FIRST &&
-					cp[next] <= HANGUL_V_LAST)
-				{
-					unicode_t l_index = cp[current] - HANGUL_L_FIRST;
-					unicode_t v_index = cp[next] - HANGUL_V_FIRST;
-
-					composed = HANGUL_S_FIRST + (((l_index * HANGUL_V_COUNT) + v_index) * HANGUL_T_COUNT);
-				}
-				else
-				{
-					break;
-				}
-			}
-			else if (
-				cp[current] >= HANGUL_S_FIRST &&
-				cp[current] <= HANGUL_S_LAST)
-			{
-				/* Check for Hangul LV and T pair */ 
-
-				if (cp[next] >= HANGUL_T_FIRST &&
-					cp[next] <= HANGUL_T_LAST)
-				{
-					unicode_t t_index = cp[next] - HANGUL_T_FIRST;
-
-					composed = cp[current] + t_index;
-				}
-				else
-				{
-					break;
-				}
-			}
-			else
-			{
-				/* Check database for composition */
-
-				composed = querycomposition(cp[current], cp[next], &find_result);
-			}
-
-			if (composed == 0)
-			{
-				break;
-			}
-			else if (cp_check[next] == QuickCheckResult_Maybe)
-			{
-				/* If the composition succeeded but there's no data left, don't output the second codepoint */
-
-				cp_check[next] = at_end ? QuickCheckResult_No : QuickCheckResult_Yes;
-			}
-
-			cp[current] = composed;
-			cp_length[current] = lengthcodepoint(composed);
-			cp_check[current] = queryproperty(composed, transformType);
-		}
+		compose_execute(&state);
 
 		if (dst != 0 &&
-			dst_size < cp_length[current])
+			dst_size < state.length[state.next])
 		{
 			goto outofspace;
 		}
 
-		written = writecodepoint(cp[current], &dst, &dst_size, errors);
+		written = writecodepoint(state.codepoint[state.next], &dst, &dst_size, errors);
 		if (written == 0)
 		{
 			break;
 		}
 		bytes_written += written;
-
-		current = (current + 1) % 2;
-		next = (next + 1) % 2;
 	}
+	while (!state.finished);
 
-	if (cp_check[current] != QuickCheckResult_No)
+	if (state.check[state.current] != QuickCheckResult_No)
 	{
-		bytes_written += writecodepoint(cp[current], &dst, &dst_size, errors);
+		if (dst != 0 &&
+			dst_size < state.length[state.current])
+		{
+			goto outofspace;
+		}
+
+		bytes_written += writecodepoint(state.codepoint[state.current], &dst, &dst_size, errors);
 	}
 
 	return bytes_written;
