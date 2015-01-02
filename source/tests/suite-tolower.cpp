@@ -142,6 +142,75 @@ TEST(ToLower, TwoBytesNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(ToLower, ThreeBytes)
+{
+	const char* c = "You're number \xE2\x85\xA0";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(17, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("you're number \xE2\x85\xB0", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, ThreeBytesUppercase)
+{
+	const char* c = "\xE2\x85\xAF";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("\xE2\x85\xBF", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, ThreeBytesLowercase)
+{
+	const char* c = "\xE2\x85\xB6";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("\xE2\x85\xB6", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, ThreeBytesUnaffected)
+{
+	const char* c = "\xE2\x86\x89";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("\xE2\x86\x89", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, ThreeBytesAmountOfBytes)
+{
+	const char* c = "That's \xE2\x93\xA9" "any";
+	int32_t errors = 0;
+
+	EXPECT_EQ(13, utf8tolower(c, strlen(c), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, ThreeBytesNotEnoughSpace)
+{
+	const char* c = "Whole Lotta \xE2\x93\xA1osie";
+	const size_t s = 14;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(12, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("whole lotta ", b);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST(ToLower, InvalidData)
 {
 	int32_t errors = 0;
