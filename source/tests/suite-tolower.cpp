@@ -211,6 +211,87 @@ TEST(ToLower, ThreeBytesNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(ToLower, FourBytes)
+{
+	const char* c = "Bring a t\xF0\x91\xA2\xA9wel";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(16, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("bring a t\xF0\x91\xA3\x89wel", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, FourBytesUppercase)
+{
+	const char* c = "\xF0\x91\xA2\xB2";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("\xF0\x91\xA3\x92", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, FourBytesLowercase)
+{
+	const char* c = "\xF0\x90\x90\xB6";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("\xF0\x90\x90\xB6", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, FourBytesUnaffected)
+{
+	const char* c = "\xF0\x91\xA3\xA4";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("\xF0\x91\xA3\xA4", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, FourBytesAmountOfBytes)
+{
+	const char* c = "Say \xF0\x91\xA2\xB9";
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8tolower(c, strlen(c), nullptr, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, FourBytesNotEnoughSpace)
+{
+	const char* c = "My \xF0\x91\xA3\x8Eurt";
+	const size_t s = 5;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("my ", b);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(ToLower, InvalidCodepoint)
+{
+	const char* c = "\xF0\x92";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", b);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(ToLower, InvalidData)
 {
 	int32_t errors = 0;
