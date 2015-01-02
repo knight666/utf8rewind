@@ -1283,6 +1283,90 @@ outofspace:
 
 size_t transform_lowercase(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
+	size_t bytes_written = 0;
+	const char* src = input;
+	size_t src_size = inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
+	ComposeState state;
+
+	if (src == 0 ||
+		src_size == 0)
+	{
+		goto invaliddata;
+	}
+
+	compose_initialize(&state, &src, &src_size, UnicodeProperty_QC_NFC);
+
+	while (state.finished != 2)
+	{
+		uint8_t index;
+		size_t written;
+
+		index = compose_execute(&state);
+
+		if (queryproperty(state.codepoint[index], UnicodeProperty_Lowercase) == 1)
+		{
+			int32_t find_result;
+			const char* resolved = finddecomposition(state.codepoint[index], DecompositionQuery_Lowercase, &find_result);
+
+			if (find_result == FindResult_Found)
+			{
+				size_t resolved_size = strlen(resolved);
+
+				if (dst != 0 &&
+					resolved_size > 0)
+				{
+					if (dst_size < resolved_size)
+					{
+						goto outofspace;
+					}
+
+					memcpy(dst, resolved, resolved_size);
+
+					dst += resolved_size;
+					dst_size -= resolved_size;
+				}
+
+				written = resolved_size;
+			}
+			else
+			{
+				written = writecodepoint(state.codepoint[index], &dst, &dst_size, errors);
+			}
+		}
+		else
+		{
+			written = writecodepoint(state.codepoint[index], &dst, &dst_size, errors);
+		}
+
+		if (written == 0)
+		{
+			break;
+		}
+
+		bytes_written += written;
+	}
+
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return bytes_written;
+}
+
+size_t transform_lowercase_fast(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+{
 	const char* src = input;
 	size_t src_size = inputSize;
 	char* dst = target;
@@ -1394,7 +1478,7 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
-	return utf8transform(input, inputSize, target, targetSize, UTF8_TRANSFORM_LOWERCASE, errors);
+	return utf8transform(input, inputSize, target, targetSize, UTF8_TRANSFORM_LOWERCASE | UTF8_TRANSFORM_NORMALIZED, errors);
 }
 
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
@@ -1406,7 +1490,14 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	else if (
 		(flags & UTF8_TRANSFORM_LOWERCASE) != 0)
 	{
-		return transform_lowercase(input, inputSize, target, targetSize, errors);
+		if ((flags & UTF8_TRANSFORM_NORMALIZED) != 0)
+		{
+			return transform_lowercase_fast(input, inputSize, target, targetSize, errors);
+		}
+		else
+		{
+			return transform_lowercase(input, inputSize, target, targetSize, errors);
+		}
 	}
 	else if (
 		(flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
