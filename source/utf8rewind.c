@@ -848,15 +848,15 @@ uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inpu
 	state->current = 0;
 	state->next = 1;
 
-	/* read the first codepoint */
+	/* Read the first codepoint */
 
-	state->length[state->current] = readcodepoint(&state->codepoint[state->current], *state->src, *state->src_size);
-	state->check[state->current] = queryproperty(state->codepoint[state->current], state->transform);
+	state->length[0] = readcodepoint(&state->codepoint[0], *state->src, *state->src_size);
+	state->check[0] = queryproperty(state->codepoint[0], state->transform);
 
-	if (*state->src_size > state->length[state->current])
+	if (*state->src_size > state->length[0])
 	{
-		*state->src += state->length[state->current];
-		*state->src_size -= state->length[state->current];
+		*state->src += state->length[0];
+		*state->src_size -= state->length[0];
 	}
 	else
 	{
@@ -868,7 +868,13 @@ uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inpu
 
 uint8_t compose_execute(ComposeState* state)
 {
-	while (!state->finished)
+	if (state->finished >= 1)
+	{
+		state->finished = 2;
+		return state->current;
+	}
+
+	while (state->finished == 0)
 	{
 		unicode_t composed = 0;
 
@@ -969,7 +975,7 @@ uint8_t compose_execute(ComposeState* state)
 	state->current = (state->current + 1) % 2;
 	state->next = (state->next + 1) % 2;
 
-	return 1;
+	return state->next;
 }
 
 size_t transform_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t propertyType, uint8_t transformType, int32_t* errors)
@@ -1128,36 +1134,28 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 
 	compose_initialize(&state, &src, &src_size, transformType);
 
-	do
+	while (state.finished != 2)
 	{
+		uint8_t index;
 		size_t written;
 
-		compose_execute(&state);
+		index = compose_execute(&state);
 
-		if (dst != 0 &&
-			dst_size < state.length[state.next])
+		if (state.check[index] != QuickCheckResult_No)
 		{
-			goto outofspace;
-		}
+			if (dst != 0 &&
+				dst_size < state.length[index])
+			{
+				goto outofspace;
+			}
 
-		written = writecodepoint(state.codepoint[state.next], &dst, &dst_size, errors);
-		if (written == 0)
-		{
-			break;
+			written = writecodepoint(state.codepoint[index], &dst, &dst_size, errors);
+			if (written == 0)
+			{
+				break;
+			}
+			bytes_written += written;
 		}
-		bytes_written += written;
-	}
-	while (!state.finished);
-
-	if (state.check[state.current] != QuickCheckResult_No)
-	{
-		if (dst != 0 &&
-			dst_size < state.length[state.current])
-		{
-			goto outofspace;
-		}
-
-		bytes_written += writecodepoint(state.codepoint[state.current], &dst, &dst_size, errors);
 	}
 
 	return bytes_written;
