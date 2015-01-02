@@ -1141,61 +1141,7 @@ outofspace:
 	return bytes_written;
 }
 
-typedef size_t (*TransformFunc)(const char*, size_t, char*, size_t, size_t*, uint8_t, int32_t*);
-
-size_t processtransform(TransformFunc transform, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t transformType, int32_t* errors)
-{
-	const char* src = input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
-	size_t bytes_written = 0;
-	size_t transform_written = 0;
-	size_t transform_read = 0;
-
-	if (input == 0 ||
-		transform == 0)
-	{
-		goto invaliddata;
-	}
-
-	while (src_size > 0)
-	{
-		transform_written = transform(src, src_size, dst, dst_size, &transform_read, transformType, errors);
-		if (transform_written == 0 ||
-			transform_read == 0)
-		{
-			return bytes_written;
-		}
-
-		if (target != 0)
-		{
-			dst += transform_written;
-			dst_size -= transform_written;
-		}
-
-		bytes_written += transform_written;
-
-		if (transform_read > src_size)
-		{
-			break;
-		}
-
-		src += transform_read;
-		src_size -= transform_read;
-	}
-
-	return bytes_written;
-
-invaliddata:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_INVALID_DATA;
-	}
-	return bytes_written;
-}
-
-size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t transform_uppercase(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 	const char* src = input;
 	size_t src_size = inputSize;
@@ -1203,14 +1149,15 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 	size_t dst_size = targetSize;
 	size_t bytes_written = 0;
 
-	if (input == 0)
+	if (src == 0 ||
+		src_size == 0)
 	{
 		goto invaliddata;
 	}
 
 	while (src_size > 0)
 	{
-		if ((uint8_t)*src <= 0x7F)
+		if ((*src & 0x80) == 0)
 		{
 			/* Basic Latin */
 
@@ -1243,21 +1190,23 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 				if (find_result == FindResult_Found)
 				{
-					result = strlen(resolved);
+					size_t resolved_size = strlen(resolved);
 
 					if (dst != 0 &&
-						result > 0)
+						resolved_size > 0)
 					{
-						if (dst_size < result)
+						if (dst_size < resolved_size)
 						{
 							goto outofspace;
 						}
 
-						memcpy(dst, resolved, result);
+						memcpy(dst, resolved, resolved_size);
 
-						dst += result;
-						dst_size -= result;
+						dst += resolved_size;
+						dst_size -= resolved_size;
 					}
+
+					result = resolved_size;
 				}
 				else
 				{
@@ -1298,7 +1247,7 @@ outofspace:
 	return bytes_written;
 }
 
-size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t transform_lowercase(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 	const char* src = input;
 	size_t src_size = inputSize;
@@ -1306,14 +1255,15 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 	size_t dst_size = targetSize;
 	size_t bytes_written = 0;
 
-	if (input == 0)
+	if (src == 0 ||
+		src_size == 0)
 	{
 		goto invaliddata;
 	}
 
 	while (src_size > 0)
 	{
-		if ((uint8_t)*src <= 0x7F)
+		if ((*src & 0x80) == 0)
 		{
 			/* Basic Latin */
 
@@ -1346,21 +1296,23 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 				if (find_result == FindResult_Found)
 				{
-					result = strlen(resolved);
+					size_t resolved_size = strlen(resolved);
 
 					if (dst != 0 &&
-						result > 0)
+						resolved_size > 0)
 					{
-						if (dst_size < result)
+						if (dst_size < resolved_size)
 						{
 							goto outofspace;
 						}
 
-						memcpy(dst, resolved, result);
+						memcpy(dst, resolved, resolved_size);
 
-						dst += result;
-						dst_size -= result;
+						dst += resolved_size;
+						dst_size -= resolved_size;
 					}
+
+					result = resolved_size;
 				}
 				else
 				{
@@ -1401,9 +1353,29 @@ outofspace:
 	return bytes_written;
 }
 
+size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+{
+	return utf8transform(input, inputSize, target, targetSize, UTF8_TRANSFORM_UPPERCASE, errors);
+}
+
+size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+{
+	return utf8transform(input, inputSize, target, targetSize, UTF8_TRANSFORM_LOWERCASE, errors);
+}
+
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
-	if ((flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
+	if ((flags & UTF8_TRANSFORM_UPPERCASE) != 0)
+	{
+		return transform_uppercase(input, inputSize, target, targetSize, errors);
+	}
+	else if (
+		(flags & UTF8_TRANSFORM_LOWERCASE) != 0)
+	{
+		return transform_lowercase(input, inputSize, target, targetSize, errors);
+	}
+	else if (
+		(flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
 	{
 		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFD, DecompositionQuery_Decomposed, errors);
 	}
@@ -1412,11 +1384,13 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	{
 		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFKD, DecompositionQuery_Compatibility_Decomposed, errors);
 	}
-	else if ((flags & UTF8_TRANSFORM_COMPOSED) != 0)
+	else if (
+		(flags & UTF8_TRANSFORM_COMPOSED) != 0)
 	{
 		return transform_composition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFC, errors);
 	}
-	else if ((flags & UTF8_TRANSFORM_COMPATIBILITY_COMPOSED) != 0)
+	else if (
+		(flags & UTF8_TRANSFORM_COMPATIBILITY_COMPOSED) != 0)
 	{
 		return transform_composition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFKC, errors);
 	}
@@ -1428,6 +1402,4 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 		}
 		return 0;
 	}
-
-	return 0;
 }
