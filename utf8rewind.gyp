@@ -11,6 +11,8 @@
 			],
 			'sources': [
 				'include/utf8rewind/utf8rewind.h',
+				'source/internal/codepoint.h',
+				'source/internal/codepoint.c',
 				'source/normalization.h',
 				'source/normalization.c',
 				'source/unicodedatabase.c',
