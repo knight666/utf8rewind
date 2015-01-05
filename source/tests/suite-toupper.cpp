@@ -232,6 +232,18 @@ TEST(ToUpper, DecomposedLowercase)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(ToUpper, DecomposedCouldNotCompose)
+{
+	const char* c = "\xE1\xBF\xBD";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xE1\xBF\xBD", b);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(ToUpper, AmountOfBytes)
 {
 	const char* c = "Magic";
@@ -371,13 +383,13 @@ TEST(ToUpperNormalize, ThreeBytesLowercase)
 
 TEST(ToUpperNormalize, ThreeBytesUnaffected)
 {
-	const char* c = "\xE1\xBF\xBD";
+	const char* c = "\xE1\x83\xBB";
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
 	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xE1\xBF\xBD", b);
+	EXPECT_UTF8EQ("\xE1\x83\xBB", b);
 	EXPECT_EQ(0, errors);
 }
 
@@ -425,7 +437,7 @@ TEST(ToUpperNormalize, Decomposed)
 	int32_t errors = 0;
 
 	EXPECT_EQ(6, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xC8\x82\xD0\x80\xC4\xB2", b);
+	EXPECT_UTF8EQ("\xC8\x82\xD0\x81\xC4\xB2", b);
 	EXPECT_EQ(0, errors);
 }
 
@@ -450,6 +462,18 @@ TEST(ToUpperNormalize, DecomposedLowercase)
 
 	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
 	EXPECT_UTF8EQ("\xC5\xA2", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpperNormalize, DecomposedCouldNotCompose)
+{
+	const char* c = "\xE1\xBF\xBD";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
+	EXPECT_UTF8EQ("", b);
 	EXPECT_EQ(0, errors);
 }
 

@@ -1222,13 +1222,14 @@ outofspace:
 	return bytes_written;
 }
 
-size_t transform_uppercase(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
+	size_t bytes_written = 0;
 	const char* src = input;
 	size_t src_size = inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
-	size_t bytes_written = 0;
+	ComposeState state;
 
 	if (src == 0 ||
 		src_size == 0)
@@ -1236,78 +1237,74 @@ size_t transform_uppercase(const char* input, size_t inputSize, char* target, si
 		goto invaliddata;
 	}
 
-	while (src_size > 0)
+	if ((flags & UTF8_TRANSFORM_NORMALIZED) != 0)
 	{
-		if ((*src & 0x80) == 0)
-		{
-			/* Basic Latin */
+		/* Normalize to NFC before attempting to uppercase */
 
-			if (dst != 0)
+		compose_initialize(&state, &src, &src_size, UnicodeProperty_Normalization_Compose);
+
+		while (state.stage <= ComposeStage_OutOfInput)
+		{
+			uint8_t index = compose_execute(&state);
+
+			if (index != (uint8_t)-1)
 			{
-				if (dst_size < 1)
+				size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, UnicodeProperty_Uppercase, errors);
+
+				if (written == 0)
 				{
-					goto outofspace;
+					break;
 				}
 
-				*dst++ = (*src >= 0x61 && *src <= 0x7A) ? *src - 0x20 : *src;
-				dst_size--;
+				bytes_written += written;
 			}
-
-			bytes_written++;
-
-			src++;
-			src_size--;
 		}
-		else
+	}
+	else
+	{
+		/* Assume input is already NKC */
+
+		while (src_size > 0)
 		{
-			size_t result = 0;
-			unicode_t codepoint;
-			size_t codepoint_length = readcodepoint(&codepoint, src, src_size);
-
-			if (queryproperty(codepoint, UnicodeProperty_Uppercase) == 1)
+			if ((*src & 0x80) == 0)
 			{
-				int32_t find_result;
-				const char* resolved = finddecomposition(codepoint, UnicodeProperty_Uppercase, &find_result);
+				/* Basic Latin */
 
-				if (find_result == FindResult_Found)
+				if (dst != 0)
 				{
-					size_t resolved_size = strlen(resolved);
-
-					if (dst != 0 &&
-						resolved_size > 0)
+					if (dst_size < 1)
 					{
-						if (dst_size < resolved_size)
-						{
-							goto outofspace;
-						}
-
-						memcpy(dst, resolved, resolved_size);
-
-						dst += resolved_size;
-						dst_size -= resolved_size;
+						goto outofspace;
 					}
 
-					result = resolved_size;
+					*dst = (*src >= 0x61 && *src <= 0x7A) ? *src - 0x20 : *src;
+
+					dst++;
+					dst_size--;
 				}
-				else
-				{
-					result = writecodepoint(codepoint, &dst, &dst_size, errors);
-				}
+
+				bytes_written++;
+
+				src++;
+				src_size--;
 			}
 			else
 			{
-				result = writecodepoint(codepoint, &dst, &dst_size, errors);
+				unicode_t codepoint;
+				size_t codepoint_length = readcodepoint(&codepoint, src, src_size);
+
+				size_t written = casemapping_execute(codepoint, &dst, &dst_size, UnicodeProperty_Uppercase, errors);
+
+				if (written == 0)
+				{
+					break;
+				}
+
+				bytes_written += written;
+
+				src += codepoint_length;
+				src_size -= codepoint_length;
 			}
-
-			if (result == 0)
-			{
-				break;
-			}
-
-			bytes_written += result;
-
-			src += codepoint_length;
-			src_size -= codepoint_length;
 		}
 	}
 
@@ -1326,11 +1323,6 @@ outofspace:
 		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
 	}
 	return bytes_written;
-}
-
-size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
-{
-	return utf8transform(input, inputSize, target, targetSize, UTF8_TRANSFORM_UPPERCASE, errors);
 }
 
 size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
@@ -1438,11 +1430,7 @@ outofspace:
 
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
-	if ((flags & UTF8_TRANSFORM_UPPERCASE) != 0)
-	{
-		return transform_uppercase(input, inputSize, target, targetSize, errors);
-	}
-	else if (
+	if (
 		(flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
 	{
 		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Decompose, UnicodeProperty_Normalization_Decompose, errors);
