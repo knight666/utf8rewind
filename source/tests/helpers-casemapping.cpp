@@ -16,7 +16,7 @@ namespace helpers {
 		}
 
 		char result_upper[256] = { 0 };
-		utf8toupper(input_utf8, strlen(input_utf8), result_upper, 256, &errors);
+		utf8toupper(input_utf8, strlen(input_utf8), result_upper, 256, 0, &errors);
 		if (errors != 0)
 		{
 			return "";
@@ -31,7 +31,7 @@ namespace helpers {
 
 		std::string converted;
 
-		size_t l = utf8toupper(value.c_str(), value.size() - 1, nullptr, 0, &errors);
+		size_t l = utf8toupper(value.c_str(), value.size() - 1, nullptr, 0, 0, &errors);
 		if (l == 0 ||
 			errors != 0)
 		{
@@ -39,7 +39,7 @@ namespace helpers {
 		}
 
 		converted.resize(l + 1);
-		utf8toupper(value.c_str(), value.size() - 1, &converted[0], l, &errors);
+		utf8toupper(value.c_str(), value.size() - 1, &converted[0], l, 0, &errors);
 
 		return converted;
 	}
@@ -56,7 +56,7 @@ namespace helpers {
 		}
 
 		char result_lower[256] = { 0 };
-		utf8tolower(input_utf8, strlen(input_utf8), result_lower, 256, &errors);
+		utf8tolower(input_utf8, strlen(input_utf8), result_lower, 256, 0, &errors);
 		if (errors != 0)
 		{
 			return "";
@@ -71,7 +71,7 @@ namespace helpers {
 
 		std::string converted;
 
-		size_t l = utf8tolower(value.c_str(), value.size() - 1, nullptr, 0, &errors);
+		size_t l = utf8tolower(value.c_str(), value.size() - 1, nullptr, 0, 0, &errors);
 		if (l == 0 ||
 			errors != 0)
 		{
@@ -79,7 +79,7 @@ namespace helpers {
 		}
 
 		converted.resize(l + 1);
-		utf8tolower(value.c_str(), value.size() - 1, &converted[0], l, &errors);
+		utf8tolower(value.c_str(), value.size() - 1, &converted[0], l, 0, &errors);
 
 		return converted;
 	}

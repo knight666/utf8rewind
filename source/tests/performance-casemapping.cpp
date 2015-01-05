@@ -12,7 +12,7 @@ TEST(PerformanceCaseMapping, EveryCodepointUppercase)
 	for (unicode_t u = 0; u < 0x10FFFF; ++u)
 	{
 		utf32toutf8(&u, sizeof(unicode_t), d, 16, nullptr);
-		utf8toupper(d, 16, du, 16, nullptr);
+		utf8toupper(d, 16, du, 16, 0, nullptr);
 	}
 }
 
@@ -24,7 +24,7 @@ TEST(PerformanceCaseMapping, EveryCodepointLowercase)
 	for (unicode_t u = 0; u < 0x10FFFF; ++u)
 	{
 		utf32toutf8(&u, sizeof(unicode_t), d, 16, nullptr);
-		utf8tolower(d, 16, dl, 16, nullptr);
+		utf8tolower(d, 16, dl, 16, 0, nullptr);
 	}
 }
 
@@ -38,7 +38,7 @@ TEST(PerformanceCaseMapping, QuickbrownUppercase)
 	ASSERT_EQ(4833, strlen(i));
 
 	char o[8192] = { 0 };
-	utf8toupper(i, strlen(i), o, 8192, nullptr);
+	utf8toupper(i, strlen(i), o, 8192, 0, nullptr);
 }
 
 TEST(PerformanceCaseMapping, QuickbrownLowercase)
@@ -51,5 +51,5 @@ TEST(PerformanceCaseMapping, QuickbrownLowercase)
 	ASSERT_EQ(4833, strlen(i));
 
 	char o[8192] = { 0 };
-	utf8tolower(i, strlen(i), o, 8192, nullptr);
+	utf8tolower(i, strlen(i), o, 8192, 0, nullptr);
 }

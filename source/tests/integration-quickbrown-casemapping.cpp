@@ -96,12 +96,12 @@ TEST_F(QuickbrownCaseMapping, DanishUppercase)
 	EXPECT_UTF8EQ("  QUIZDELTAGERNE SPISTE JORDB\xc3\x86R MED FL\xC3\x98" "DE, MENS CIRKUSKLOVNEN\n\
   WOLTHER SPILLEDE P\xC3\x85 XYLOFON.", eu.c_str());
 	
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  QUIZDELTAGERNE SPISTE JORDB\xc3\x86R MED FL\xC3\x98" "DE, MENS CIRKUSKLOVNEN\n\
@@ -120,12 +120,12 @@ TEST_F(QuickbrownCaseMapping, DanishLowercase)
 	EXPECT_UTF8EQ("  quizdeltagerne spiste jordb\xc3\xa6r med fl\xC3\xB8" "de, mens cirkusklovnen\n\
   wolther spillede p\xC3\xA5 xylofon.", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  quizdeltagerne spiste jordb\xc3\xa6r med fl\xC3\xB8" "de, mens cirkusklovnen\n\
@@ -142,12 +142,12 @@ TEST_F(QuickbrownCaseMapping, GermanFirstUppercase)
 	std::string eu = ReadUppercase(503, 64);
 	EXPECT_UTF8EQ("  FALSCHES \xc3\x9c" "BEN VON XYLOPHONMUSIK QU\xc3\x84LT JEDEN GR\xC3\x96SSEREN ZWERG", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  FALSCHES \xC3\x9C" "BEN VON XYLOPHONMUSIK QU\xC3\x84LT JEDEN GR\xC3\x96SSEREN ZWERG", au);
@@ -163,12 +163,12 @@ TEST_F(QuickbrownCaseMapping, GermanFirstLowercase)
 	std::string el = ReadLowercase(503, 64);
 	EXPECT_UTF8EQ("  falsches \xC3\xBC" "ben von xylophonmusik qu\xC3\xA4lt jeden gr\xC3\xB6\xC3\x9F" "eren zwerg", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  falsches \xC3\xBC" "ben von xylophonmusik qu\xC3\xA4lt jeden gr\xC3\xB6\xC3\x9F" "eren zwerg", al);
@@ -184,12 +184,12 @@ TEST_F(QuickbrownCaseMapping, GermanSecondUppercase)
 	std::string eu = ReadUppercase(642, 59);
 	EXPECT_UTF8EQ("  ZW\xC3\x96LF BOXK\xC3\x84MPFER JAGTEN EVA QUER \xC3\x9C" "BER DEN SYLTER DEICH", eu.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  ZW\xC3\x96LF BOXK\xC3\x84MPFER JAGTEN EVA QUER \xC3\x9C" "BER DEN SYLTER DEICH", au);
@@ -205,12 +205,12 @@ TEST_F(QuickbrownCaseMapping, GermanSecondLowercase)
 	std::string el = ReadLowercase(642, 59);
 	EXPECT_UTF8EQ("  zw\xC3\xB6lf boxk\xC3\xA4mpfer jagten eva quer \xC3\xBC" "ber den sylter deich", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  zw\xC3\xB6lf boxk\xC3\xA4mpfer jagten eva quer \xC3\xBC" "ber den sylter deich", al);
@@ -226,12 +226,12 @@ TEST_F(QuickbrownCaseMapping, GermanThirdUppercase)
 	std::string eu = ReadUppercase(767, 30);
 	EXPECT_UTF8EQ("  HEIZ\xC3\x96LR\xC3\x9C" "CKSTOSSABD\xC3\x84MPFUNG", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  HEIZ\xC3\x96LR\xC3\x9C" "CKSTOSSABD\xC3\x84MPFUNG", au);
@@ -247,12 +247,12 @@ TEST_F(QuickbrownCaseMapping, GermanThirdLowercase)
 	std::string el = ReadLowercase(767, 30);
 	EXPECT_UTF8EQ("  heiz\xC3\xB6lr\xC3\xBC" "cksto\xC3\x9F" "abd\xC3\xA4mpfung", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  heiz\xC3\xB6lr\xC3\xBC" "cksto\xC3\x9F" "abd\xC3\xA4mpfung", al);
@@ -268,12 +268,12 @@ TEST_F(QuickbrownCaseMapping, GreekFirstUppercase)
 	std::string eu = ReadUppercase(911, 106);
 	EXPECT_UTF8EQ("  \xCE\x93\xCE\x91\xCE\x96\xCE\x88\xCE\x95\xCE\xA3 \xCE\x9A\xCE\x91\xE1\xBF\x9A \xCE\x9C\xCE\xA5\xCE\xA1\xCE\xA4\xCE\x99\xE1\xBF\x88\xCE\xA3 \xCE\x94\xE1\xBF\x88\xCE\x9D \xCE\x98\xE1\xBE\xBA \xCE\x92\xCE\xA1\xCE\xA9\xCD\x82 \xCE\xA0\xCE\x99\xE1\xBE\xBA \xCE\xA3\xCE\xA4\xE1\xBF\xB8 \xCE\xA7\xCE\xA1\xCE\xA5\xCE\xA3\xCE\x91\xCE\xA6\xE1\xBF\x9A \xCE\x9E\xCE\x88\xCE\xA6\xCE\xA9\xCE\xA4\xCE\x9F", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  \xCE\x93\xCE\x91\xCE\x96\xCE\x88\xCE\x95\xCE\xA3 \xCE\x9A\xCE\x91\xE1\xBF\x9A \xCE\x9C\xCE\xA5\xCE\xA1\xCE\xA4\xCE\x99\xE1\xBF\x88\xCE\xA3 \xCE\x94\xE1\xBF\x88\xCE\x9D \xCE\x98\xE1\xBE\xBA \xCE\x92\xCE\xA1\xCE\xA9\xCD\x82 \xCE\xA0\xCE\x99\xE1\xBE\xBA \xCE\xA3\xCE\xA4\xE1\xBF\xB8 \xCE\xA7\xCE\xA1\xCE\xA5\xCE\xA3\xCE\x91\xCE\xA6\xE1\xBF\x9A \xCE\x9E\xCE\x88\xCE\xA6\xCE\xA9\xCE\xA4\xCE\x9F", au);
@@ -289,12 +289,12 @@ TEST_F(QuickbrownCaseMapping, GreekFirstLowercase)
 	std::string el = ReadLowercase(911, 105);
 	EXPECT_UTF8EQ("  \xCE\xB3\xCE\xB1\xCE\xB6\xCE\xAD\xCE\xB5\xCF\x82 \xCE\xBA\xCE\xB1\xE1\xBD\xB6 \xCE\xBC\xCF\x85\xCF\x81\xCF\x84\xCE\xB9\xE1\xBD\xB2\xCF\x82 \xCE\xB4\xE1\xBD\xB2\xCE\xBD \xCE\xB8\xE1\xBD\xB0 \xCE\xB2\xCF\x81\xE1\xBF\xB6 \xCF\x80\xCE\xB9\xE1\xBD\xB0 \xCF\x83\xCF\x84\xE1\xBD\xB8 \xCF\x87\xCF\x81\xCF\x85\xCF\x83\xCE\xB1\xCF\x86\xE1\xBD\xB6 \xCE\xBE\xCE\xAD\xCF\x86\xCF\x89\xCF\x84\xCE\xBF", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  \xCE\xB3\xCE\xB1\xCE\xB6\xCE\xAD\xCE\xB5\xCF\x82 \xCE\xBA\xCE\xB1\xE1\xBD\xB6 \xCE\xBC\xCF\x85\xCF\x81\xCF\x84\xCE\xB9\xE1\xBD\xB2\xCF\x82 \xCE\xB4\xE1\xBD\xB2\xCE\xBD \xCE\xB8\xE1\xBD\xB0 \xCE\xB2\xCF\x81\xE1\xBF\xB6 \xCF\x80\xCE\xB9\xE1\xBD\xB0 \xCF\x83\xCF\x84\xE1\xBD\xB8 \xCF\x87\xCF\x81\xCF\x85\xCF\x83\xCE\xB1\xCF\x86\xE1\xBD\xB6 \xCE\xBE\xCE\xAD\xCF\x86\xCF\x89\xCF\x84\xCE\xBF", al);
@@ -310,12 +310,12 @@ TEST_F(QuickbrownCaseMapping, GreekSecondUppercase)
 	std::string eu = ReadUppercase(1087, 66);
 	EXPECT_UTF8EQ("  \xCE\x9E\xCE\x95\xCE\xA3\xCE\x9A\xCE\x95\xCE\xA0\xCE\x86\xCE\x96\xCE\xA9 \xCE\xA4\xE1\xBF\x8A\xCE\x9D \xCE\xA8\xCE\xA5\xCE\xA7\xCE\x9F\xCE\xA6\xCE\x98\xCE\x8C\xCE\xA1\xCE\x91 \xCE\x92\xCE\x94\xCE\x95\xCE\x9B\xCE\xA5\xCE\x93\xCE\x9C\xCE\x8A\xCE\x91", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  \xCE\x9E\xCE\x95\xCE\xA3\xCE\x9A\xCE\x95\xCE\xA0\xCE\x86\xCE\x96\xCE\xA9 \xCE\xA4\xE1\xBF\x8A\xCE\x9D \xCE\xA8\xCE\xA5\xCE\xA7\xCE\x9F\xCE\xA6\xCE\x98\xCE\x8C\xCE\xA1\xCE\x91 \xCE\x92\xCE\x94\xCE\x95\xCE\x9B\xCE\xA5\xCE\x93\xCE\x9C\xCE\x8A\xCE\x91", au);
@@ -331,12 +331,12 @@ TEST_F(QuickbrownCaseMapping, GreekSecondLowercase)
 	std::string el = ReadLowercase(1086, 66);
 	EXPECT_UTF8EQ("  \xCE\xBE\xCE\xB5\xCF\x83\xCE\xBA\xCE\xB5\xCF\x80\xCE\xAC\xCE\xB6\xCF\x89 \xCF\x84\xE1\xBD\xB4\xCE\xBD \xCF\x88\xCF\x85\xCF\x87\xCE\xBF\xCF\x86\xCE\xB8\xCF\x8C\xCF\x81\xCE\xB1 \xCE\xB2\xCE\xB4\xCE\xB5\xCE\xBB\xCF\x85\xCE\xB3\xCE\xBC\xCE\xAF\xCE\xB1", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  \xCE\xBE\xCE\xB5\xCF\x83\xCE\xBA\xCE\xB5\xCF\x80\xCE\xAC\xCE\xB6\xCF\x89 \xCF\x84\xE1\xBD\xB4\xCE\xBD \xCF\x88\xCF\x85\xCF\x87\xCE\xBF\xCF\x86\xCE\xB8\xCF\x8C\xCF\x81\xCE\xB1 \xCE\xB2\xCE\xB4\xCE\xB5\xCE\xBB\xCF\x85\xCE\xB3\xCE\xBC\xCE\xAF\xCE\xB1", al);
@@ -352,12 +352,12 @@ TEST_F(QuickbrownCaseMapping, EnglishUppercase)
 	std::string eu = ReadUppercase(1229, 45);
 	EXPECT_UTF8EQ("  THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG", au);
@@ -373,12 +373,12 @@ TEST_F(QuickbrownCaseMapping, EnglishLowercase)
 	std::string el = ReadLowercase(1228, 45);
 	EXPECT_UTF8EQ("  the quick brown fox jumps over the lazy dog", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  the quick brown fox jumps over the lazy dog", al);
@@ -396,12 +396,12 @@ TEST_F(QuickbrownCaseMapping, SpanishUppercase)
 	EXPECT_UTF8EQ("  EL PING\xC3\x9CINO WENCESLAO HIZO KIL\xC3\x93METROS BAJO EXHAUSTIVA LLUVIA Y \n\
   FR\xC3\x8DO, A\xC3\x91ORABA A SU QUERIDO CACHORRO.", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  EL PING\xC3\x9CINO WENCESLAO HIZO KIL\xC3\x93METROS BAJO EXHAUSTIVA LLUVIA Y \n\
@@ -420,12 +420,12 @@ TEST_F(QuickbrownCaseMapping, SpanishLowercase)
 	EXPECT_UTF8EQ("  el ping\xC3\xBCino wenceslao hizo kil\xC3\xB3metros bajo exhaustiva lluvia y \n\
   fr\xC3\xADo, a\xC3\xB1oraba a su querido cachorro.", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  el ping\xC3\xBCino wenceslao hizo kil\xC3\xB3metros bajo exhaustiva lluvia y \n\
@@ -450,12 +450,12 @@ TEST_F(QuickbrownCaseMapping, FrenchFirstUppercase)
   DANS LA CAUSE AMBIGU\xC3\x8B ENTENDUE \xC3\x80 MO\xC5\xB8, DANS UN CAPHARNA\xC3\x9CM QUI,\n\
   PENSE-T-IL, DIMINUE \xC3\x87\xC3\x80 ET L\xC3\x80 LA QUALIT\xC3\x89 DE SON \xC5\x92UVRE. ", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  PORTEZ CE VIEUX WHISKY AU JUGE BLOND QUI FUME SUR SON \xC3\x8ELE INT\xC3\x89RIEURE, \xC3\x80\n\
@@ -483,12 +483,12 @@ TEST_F(QuickbrownCaseMapping, FrenchFirstLowercase)
   dans la cause ambigu\xC3\xAB entendue \xC3\xA0 mo\xC3\xBF, dans un capharna\xC3\xBCm qui,\n\
   pense-t-il, diminue \xC3\xA7\xC3\xA0 et l\xC3\xA0 la qualit\xC3\xA9 de son \xC5\x93uvre. ", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  portez ce vieux whisky au juge blond qui fume sur son \xC3\xAEle int\xC3\xA9rieure, \xC3\xA0\n\
@@ -514,12 +514,12 @@ TEST_F(QuickbrownCaseMapping, FrenchSecondUppercase)
   \xC3\x82NE EX A\xC3\x89QUO AU WHIST,\n\
   \xC3\x94TEZ CE V\xC5\x92U D\xC3\x89\xC3\x87U.", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  L'\xC3\x8ELE EXIGU\xC3\x8B\n\
@@ -547,12 +547,12 @@ TEST_F(QuickbrownCaseMapping, FrenchSecondLowercase)
   \xC3\xA2ne ex a\xC3\xA9quo au whist,\n\
   \xC3\xB4tez ce v\xC5\x93u d\xC3\xA9\xC3\xA7u.", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  l'\xC3\xAEle exigu\xC3\xAB\n\
@@ -574,12 +574,12 @@ TEST_F(QuickbrownCaseMapping, FrenchThirdUppercase)
 	EXPECT_UTF8EQ("  LE C\xC5\x92UR D\xC3\x89\xC3\x87U MAIS L'\xC3\x82ME PLUT\xC3\x94T NA\xC3\x8FVE, LOU\xC5\xB8S R\xC3\x8AVA DE CRAPA\xC3\x9CTER EN\n\
   CANO\xC3\x8B AU DEL\xC3\x80 DES \xC3\x8ELES, PR\xC3\x88S DU M\xC3\x84LSTR\xC3\x96M O\xC3\x99 BR\xC3\x9BLENT LES NOV\xC3\x86.", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  LE C\xC5\x92UR D\xC3\x89\xC3\x87U MAIS L'\xC3\x82ME PLUT\xC3\x94T NA\xC3\x8FVE, LOU\xC5\xB8S R\xC3\x8AVA DE CRAPA\xC3\x9CTER EN\n\
@@ -598,12 +598,12 @@ TEST_F(QuickbrownCaseMapping, FrenchThirdLowercase)
 	EXPECT_UTF8EQ("  le c\xC5\x93ur d\xC3\xA9\xC3\xA7u mais l'\xC3\xA2me plut\xC3\xB4t na\xC3\xAFve, lou\xC3\xBFs r\xC3\xAAva de crapa\xC3\xBCter en\n\
   cano\xC3\xAB au del\xC3\xA0 des \xC3\xAEles, pr\xC3\xA8s du m\xC3\xA4lstr\xC3\xB6m o\xC3\xB9 br\xC3\xBBlent les nov\xC3\xA6.", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  le c\xC5\x93ur d\xC3\xA9\xC3\xA7u mais l'\xC3\xA2me plut\xC3\xB4t na\xC3\xAFve, lou\xC3\xBFs r\xC3\xAAva de crapa\xC3\xBCter en\n\
@@ -620,12 +620,12 @@ TEST_F(QuickbrownCaseMapping, IrishGaelicUppercase)
 	std::string eu = ReadUppercase(2197, 76);
 	EXPECT_UTF8EQ("  D'FHUASCAIL \xC3\x8DOSA, \xC3\x9ARMHAC NA H\xC3\x93IGHE BEANNAITHE, P\xC3\x93R \xC3\x89" "AVA AGUS \xC3\x81" "DHAIMH", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  D'FHUASCAIL \xC3\x8DOSA, \xC3\x9ARMHAC NA H\xC3\x93IGHE BEANNAITHE, P\xC3\x93R \xC3\x89" "AVA AGUS \xC3\x81" "DHAIMH", au);
@@ -641,12 +641,12 @@ TEST_F(QuickbrownCaseMapping, IrishGaelicLowercase)
 	std::string el = ReadLowercase(2196, 76);
 	EXPECT_UTF8EQ("  d'fhuascail \xC3\xADosa, \xC3\xBArmhac na h\xC3\xB3ighe beannaithe, p\xC3\xB3r \xC3\xA9" "ava agus \xC3\xA1" "dhaimh", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  d'fhuascail \xC3\xADosa, \xC3\xBArmhac na h\xC3\xB3ighe beannaithe, p\xC3\xB3r \xC3\xA9" "ava agus \xC3\xA1" "dhaimh", al);
@@ -662,12 +662,12 @@ TEST_F(QuickbrownCaseMapping, HungarianUppercase)
 	std::string eu = ReadUppercase(2306, 33);
 	EXPECT_UTF8EQ("  \xC3\x81RV\xC3\x8DZT\xC5\xB0R\xC5\x90 T\xC3\x9CK\xC3\x96RF\xC3\x9AR\xC3\x93G\xC3\x89P", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  \xC3\x81RV\xC3\x8DZT\xC5\xB0R\xC5\x90 T\xC3\x9CK\xC3\x96RF\xC3\x9AR\xC3\x93G\xC3\x89P", au);
@@ -683,12 +683,12 @@ TEST_F(QuickbrownCaseMapping, HungarianLowercase)
 	std::string el = ReadLowercase(2305, 33);
 	EXPECT_UTF8EQ("  \xC3\xA1rv\xC3\xADzt\xC5\xB1r\xC5\x91 t\xC3\xBCk\xC3\xB6rf\xC3\xBAr\xC3\xB3g\xC3\xA9p", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  \xC3\xA1rv\xC3\xADzt\xC5\xB1r\xC5\x91 t\xC3\xBCk\xC3\xB6rf\xC3\xBAr\xC3\xB3g\xC3\xA9p", al);
@@ -704,12 +704,12 @@ TEST_F(QuickbrownCaseMapping, IcelandicFirstUppercase)
 	std::string eu = ReadUppercase(2442, 63);
 	EXPECT_UTF8EQ("  K\xC3\x86MI N\xC3\x9D \xC3\x96XI H\xC3\x89R YKIST \xC3\x9EJ\xC3\x93" "FUM N\xC3\x9A B\xC3\x86\xC3\x90I V\xC3\x8DL OG \xC3\x81" "DREPA", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  K\xC3\x86MI N\xC3\x9D \xC3\x96XI H\xC3\x89R YKIST \xC3\x9EJ\xC3\x93" "FUM N\xC3\x9A B\xC3\x86\xC3\x90I V\xC3\x8DL OG \xC3\x81" "DREPA", au);
@@ -725,12 +725,12 @@ TEST_F(QuickbrownCaseMapping, IcelandicFirstLowercase)
 	std::string el = ReadLowercase(2441, 63);
 	EXPECT_UTF8EQ("  k\xC3\xA6mi n\xC3\xBD \xC3\xB6xi h\xC3\xA9r ykist \xC3\xBEj\xC3\xB3" "fum n\xC3\xBA b\xC3\xA6\xC3\xB0i v\xC3\xADl og \xC3\xA1" "drepa", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  k\xC3\xA6mi n\xC3\xBD \xC3\xB6xi h\xC3\xA9r ykist \xC3\xBEj\xC3\xB3" "fum n\xC3\xBA b\xC3\xA6\xC3\xB0i v\xC3\xADl og \xC3\xA1" "drepa", al);
@@ -746,12 +746,12 @@ TEST_F(QuickbrownCaseMapping, IcelandicSecondUppercase)
 	std::string eu = ReadUppercase(2507, 46);
 	EXPECT_UTF8EQ("  S\xC3\x86V\xC3\x96R GR\xC3\x89T \xC3\x81\xC3\x90" "AN \xC3\x9EV\xC3\x8D \xC3\x9ALPAN VAR \xC3\x93N\xC3\x9DT", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  S\xC3\x86V\xC3\x96R GR\xC3\x89T \xC3\x81\xC3\x90" "AN \xC3\x9EV\xC3\x8D \xC3\x9ALPAN VAR \xC3\x93N\xC3\x9DT", au);
@@ -767,12 +767,12 @@ TEST_F(QuickbrownCaseMapping, IcelandicSecondLowercase)
 	std::string el = ReadLowercase(2506, 46);
 	EXPECT_UTF8EQ("  s\xC3\xA6v\xC3\xB6r gr\xC3\xA9t \xC3\xA1\xC3\xB0" "an \xC3\xBEv\xC3\xAD \xC3\xBAlpan var \xC3\xB3n\xC3\xBDt", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  s\xC3\xA6v\xC3\xB6r gr\xC3\xA9t \xC3\xA1\xC3\xB0" "an \xC3\xBEv\xC3\xAD \xC3\xBAlpan var \xC3\xB3n\xC3\xBDt", al);
@@ -794,12 +794,12 @@ TEST_F(QuickbrownCaseMapping, JapaneseFirstUppercase)
   \xE3\x81\x86\xE3\x82\x90\xE3\x81\xAE\xE3\x81\x8A\xE3\x81\x8F\xE3\x82\x84\xE3\x81\xBE\xE3\x81\x91\xE3\x81\xB5\xE3\x81\x93\xE3\x81\x88\xE3\x81\xA6\n\
   \xE3\x81\x82\xE3\x81\x95\xE3\x81\x8D\xE3\x82\x86\xE3\x82\x81\xE3\x81\xBF\xE3\x81\x97\xE3\x82\x91\xE3\x81\xB2\xE3\x82\x82\xE3\x81\x9B\xE3\x81\x99", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  \xE3\x81\x84\xE3\x82\x8D\xE3\x81\xAF\xE3\x81\xAB\xE3\x81\xBB\xE3\x81\xB8\xE3\x81\xA8\xE3\x81\xA1\xE3\x82\x8A\xE3\x81\xAC\xE3\x82\x8B\xE3\x82\x92\n\
@@ -824,12 +824,12 @@ TEST_F(QuickbrownCaseMapping, JapaneseFirstLowercase)
   \xE3\x81\x86\xE3\x82\x90\xE3\x81\xAE\xE3\x81\x8A\xE3\x81\x8F\xE3\x82\x84\xE3\x81\xBE\xE3\x81\x91\xE3\x81\xB5\xE3\x81\x93\xE3\x81\x88\xE3\x81\xA6\n\
   \xE3\x81\x82\xE3\x81\x95\xE3\x81\x8D\xE3\x82\x86\xE3\x82\x81\xE3\x81\xBF\xE3\x81\x97\xE3\x82\x91\xE3\x81\xB2\xE3\x82\x82\xE3\x81\x9B\xE3\x81\x99", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  \xE3\x81\x84\xE3\x82\x8D\xE3\x81\xAF\xE3\x81\xAB\xE3\x81\xBB\xE3\x81\xB8\xE3\x81\xA8\xE3\x81\xA1\xE3\x82\x8A\xE3\x81\xAC\xE3\x82\x8B\xE3\x82\x92\n\
@@ -850,12 +850,12 @@ TEST_F(QuickbrownCaseMapping, JapaneseSecondUppercase)
 	EXPECT_UTF8EQ("  \xE3\x82\xA4\xE3\x83\xAD\xE3\x83\x8F\xE3\x83\x8B\xE3\x83\x9B\xE3\x83\x98\xE3\x83\x88 \xE3\x83\x81\xE3\x83\xAA\xE3\x83\x8C\xE3\x83\xAB\xE3\x83\xB2 \xE3\x83\xAF\xE3\x82\xAB\xE3\x83\xA8\xE3\x82\xBF\xE3\x83\xAC\xE3\x82\xBD \xE3\x83\x84\xE3\x83\x8D\xE3\x83\x8A\xE3\x83\xA9\xE3\x83\xA0\n\
   \xE3\x82\xA6\xE3\x83\xB0\xE3\x83\x8E\xE3\x82\xAA\xE3\x82\xAF\xE3\x83\xA4\xE3\x83\x9E \xE3\x82\xB1\xE3\x83\x95\xE3\x82\xB3\xE3\x82\xA8\xE3\x83\x86 \xE3\x82\xA2\xE3\x82\xB5\xE3\x82\xAD\xE3\x83\xA6\xE3\x83\xA1\xE3\x83\x9F\xE3\x82\xB7 \xE3\x83\xB1\xE3\x83\x92\xE3\x83\xA2\xE3\x82\xBB\xE3\x82\xB9\xE3\x83\xB3", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  \xE3\x82\xA4\xE3\x83\xAD\xE3\x83\x8F\xE3\x83\x8B\xE3\x83\x9B\xE3\x83\x98\xE3\x83\x88 \xE3\x83\x81\xE3\x83\xAA\xE3\x83\x8C\xE3\x83\xAB\xE3\x83\xB2 \xE3\x83\xAF\xE3\x82\xAB\xE3\x83\xA8\xE3\x82\xBF\xE3\x83\xAC\xE3\x82\xBD \xE3\x83\x84\xE3\x83\x8D\xE3\x83\x8A\xE3\x83\xA9\xE3\x83\xA0\n\
@@ -874,12 +874,12 @@ TEST_F(QuickbrownCaseMapping, JapaneseSecondLowercase)
 	EXPECT_UTF8EQ("  \xE3\x82\xA4\xE3\x83\xAD\xE3\x83\x8F\xE3\x83\x8B\xE3\x83\x9B\xE3\x83\x98\xE3\x83\x88 \xE3\x83\x81\xE3\x83\xAA\xE3\x83\x8C\xE3\x83\xAB\xE3\x83\xB2 \xE3\x83\xAF\xE3\x82\xAB\xE3\x83\xA8\xE3\x82\xBF\xE3\x83\xAC\xE3\x82\xBD \xE3\x83\x84\xE3\x83\x8D\xE3\x83\x8A\xE3\x83\xA9\xE3\x83\xA0\n\
   \xE3\x82\xA6\xE3\x83\xB0\xE3\x83\x8E\xE3\x82\xAA\xE3\x82\xAF\xE3\x83\xA4\xE3\x83\x9E \xE3\x82\xB1\xE3\x83\x95\xE3\x82\xB3\xE3\x82\xA8\xE3\x83\x86 \xE3\x82\xA2\xE3\x82\xB5\xE3\x82\xAD\xE3\x83\xA6\xE3\x83\xA1\xE3\x83\x9F\xE3\x82\xB7 \xE3\x83\xB1\xE3\x83\x92\xE3\x83\xA2\xE3\x82\xBB\xE3\x82\xB9\xE3\x83\xB3", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  \xE3\x82\xA4\xE3\x83\xAD\xE3\x83\x8F\xE3\x83\x8B\xE3\x83\x9B\xE3\x83\x98\xE3\x83\x88 \xE3\x83\x81\xE3\x83\xAA\xE3\x83\x8C\xE3\x83\xAB\xE3\x83\xB2 \xE3\x83\xAF\xE3\x82\xAB\xE3\x83\xA8\xE3\x82\xBF\xE3\x83\xAC\xE3\x82\xBD \xE3\x83\x84\xE3\x83\x8D\xE3\x83\x8A\xE3\x83\xA9\xE3\x83\xA0\n\
@@ -896,12 +896,12 @@ TEST_F(QuickbrownCaseMapping, HebrewUppercase)
 	std::string eu = ReadUppercase(2985, 94);
 	EXPECT_UTF8EQ("  ? \xD7\x93\xD7\x92 \xD7\xA1\xD7\xA7\xD7\xA8\xD7\x9F \xD7\xA9\xD7\x98 \xD7\x91\xD7\x99\xD7\x9D \xD7\x9E\xD7\x90\xD7\x95\xD7\x9B\xD7\x96\xD7\x91 \xD7\x95\xD7\x9C\xD7\xA4\xD7\xAA\xD7\xA2 \xD7\x9E\xD7\xA6\xD7\x90 \xD7\x9C\xD7\x95 \xD7\x97\xD7\x91\xD7\xA8\xD7\x94 \xD7\x90\xD7\x99\xD7\x9A \xD7\x94\xD7\xA7\xD7\x9C\xD7\x99\xD7\x98\xD7\x94", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  ? \xD7\x93\xD7\x92 \xD7\xA1\xD7\xA7\xD7\xA8\xD7\x9F \xD7\xA9\xD7\x98 \xD7\x91\xD7\x99\xD7\x9D \xD7\x9E\xD7\x90\xD7\x95\xD7\x9B\xD7\x96\xD7\x91 \xD7\x95\xD7\x9C\xD7\xA4\xD7\xAA\xD7\xA2 \xD7\x9E\xD7\xA6\xD7\x90 \xD7\x9C\xD7\x95 \xD7\x97\xD7\x91\xD7\xA8\xD7\x94 \xD7\x90\xD7\x99\xD7\x9A \xD7\x94\xD7\xA7\xD7\x9C\xD7\x99\xD7\x98\xD7\x94", au);
@@ -917,12 +917,12 @@ TEST_F(QuickbrownCaseMapping, HebrewLowercase)
 	std::string el = ReadLowercase(2984, 94);
 	EXPECT_UTF8EQ("  ? \xD7\x93\xD7\x92 \xD7\xA1\xD7\xA7\xD7\xA8\xD7\x9F \xD7\xA9\xD7\x98 \xD7\x91\xD7\x99\xD7\x9D \xD7\x9E\xD7\x90\xD7\x95\xD7\x9B\xD7\x96\xD7\x91 \xD7\x95\xD7\x9C\xD7\xA4\xD7\xAA\xD7\xA2 \xD7\x9E\xD7\xA6\xD7\x90 \xD7\x9C\xD7\x95 \xD7\x97\xD7\x91\xD7\xA8\xD7\x94 \xD7\x90\xD7\x99\xD7\x9A \xD7\x94\xD7\xA7\xD7\x9C\xD7\x99\xD7\x98\xD7\x94", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  ? \xD7\x93\xD7\x92 \xD7\xA1\xD7\xA7\xD7\xA8\xD7\x9F \xD7\xA9\xD7\x98 \xD7\x91\xD7\x99\xD7\x9D \xD7\x9E\xD7\x90\xD7\x95\xD7\x9B\xD7\x96\xD7\x91 \xD7\x95\xD7\x9C\xD7\xA4\xD7\xAA\xD7\xA2 \xD7\x9E\xD7\xA6\xD7\x90 \xD7\x9C\xD7\x95 \xD7\x97\xD7\x91\xD7\xA8\xD7\x94 \xD7\x90\xD7\x99\xD7\x9A \xD7\x94\xD7\xA7\xD7\x9C\xD7\x99\xD7\x98\xD7\x94", al);
@@ -938,12 +938,12 @@ TEST_F(QuickbrownCaseMapping, PolishUppercase)
 	std::string eu = ReadUppercase(3106, 51);
 	EXPECT_UTF8EQ("  PCHN\xC4\x84\xC4\x86 W T\xC4\x98 \xC5\x81\xC3\x93" "D\xC5\xB9 JE\xC5\xBB" "A LUB O\xC5\x9AM SKRZY\xC5\x83 FIG", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  PCHN\xC4\x84\xC4\x86 W T\xC4\x98 \xC5\x81\xC3\x93" "D\xC5\xB9 JE\xC5\xBB" "A LUB O\xC5\x9AM SKRZY\xC5\x83 FIG", au);
@@ -959,12 +959,12 @@ TEST_F(QuickbrownCaseMapping, PolishLowercase)
 	std::string el = ReadLowercase(3105, 51);
 	EXPECT_UTF8EQ("  pchn\xC4\x85\xC4\x87 w t\xC4\x99 \xC5\x82\xC3\xB3" "d\xC5\xBA je\xC5\xBC" "a lub o\xC5\x9Bm skrzy\xC5\x84 fig", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  pchn\xC4\x85\xC4\x87 w t\xC4\x99 \xC5\x82\xC3\xB3" "d\xC5\xBA je\xC5\xBC" "a lub o\xC5\x9Bm skrzy\xC5\x84 fig", al);
@@ -980,12 +980,12 @@ TEST_F(QuickbrownCaseMapping, RussianFirstUppercase)
 	std::string eu = ReadUppercase(3246, 98);
 	EXPECT_UTF8EQ("  \xD0\x92 \xD0\xA7\xD0\x90\xD0\xA9\xD0\x90\xD0\xA5 \xD0\xAE\xD0\x93\xD0\x90 \xD0\x96\xD0\x98\xD0\x9B \xD0\x91\xD0\xAB \xD0\xA6\xD0\x98\xD0\xA2\xD0\xA0\xD0\xA3\xD0\xA1? \xD0\x94\xD0\x90, \xD0\x9D\xD0\x9E \xD0\xA4\xD0\x90\xD0\x9B\xD0\xAC\xD0\xA8\xD0\x98\xD0\x92\xD0\xAB\xD0\x99 \xD0\xAD\xD0\x9A\xD0\x97\xD0\x95\xD0\x9C\xD0\x9F\xD0\x9B\xD0\xAF\xD0\xA0!", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  \xD0\x92 \xD0\xA7\xD0\x90\xD0\xA9\xD0\x90\xD0\xA5 \xD0\xAE\xD0\x93\xD0\x90 \xD0\x96\xD0\x98\xD0\x9B \xD0\x91\xD0\xAB \xD0\xA6\xD0\x98\xD0\xA2\xD0\xA0\xD0\xA3\xD0\xA1? \xD0\x94\xD0\x90, \xD0\x9D\xD0\x9E \xD0\xA4\xD0\x90\xD0\x9B\xD0\xAC\xD0\xA8\xD0\x98\xD0\x92\xD0\xAB\xD0\x99 \xD0\xAD\xD0\x9A\xD0\x97\xD0\x95\xD0\x9C\xD0\x9F\xD0\x9B\xD0\xAF\xD0\xA0!", au);
@@ -1001,12 +1001,12 @@ TEST_F(QuickbrownCaseMapping, RussianFirstLowercase)
 	std::string el = ReadLowercase(3245, 98);
 	EXPECT_UTF8EQ("  \xD0\xB2 \xD1\x87\xD0\xB0\xD1\x89\xD0\xB0\xD1\x85 \xD1\x8E\xD0\xB3\xD0\xB0 \xD0\xB6\xD0\xB8\xD0\xBB \xD0\xB1\xD1\x8B \xD1\x86\xD0\xB8\xD1\x82\xD1\x80\xD1\x83\xD1\x81? \xD0\xB4\xD0\xB0, \xD0\xBD\xD0\xBE \xD1\x84\xD0\xB0\xD0\xBB\xD1\x8C\xD1\x88\xD0\xB8\xD0\xB2\xD1\x8B\xD0\xB9 \xD1\x8D\xD0\xBA\xD0\xB7\xD0\xB5\xD0\xBC\xD0\xBF\xD0\xBB\xD1\x8F\xD1\x80!", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  \xD0\xB2 \xD1\x87\xD0\xB0\xD1\x89\xD0\xB0\xD1\x85 \xD1\x8E\xD0\xB3\xD0\xB0 \xD0\xB6\xD0\xB8\xD0\xBB \xD0\xB1\xD1\x8B \xD1\x86\xD0\xB8\xD1\x82\xD1\x80\xD1\x83\xD1\x81? \xD0\xB4\xD0\xB0, \xD0\xBD\xD0\xBE \xD1\x84\xD0\xB0\xD0\xBB\xD1\x8C\xD1\x88\xD0\xB8\xD0\xB2\xD1\x8B\xD0\xB9 \xD1\x8D\xD0\xBA\xD0\xB7\xD0\xB5\xD0\xBC\xD0\xBF\xD0\xBB\xD1\x8F\xD1\x80!", al);
@@ -1022,12 +1022,12 @@ TEST_F(QuickbrownCaseMapping, RussianSecondUppercase)
 	std::string eu = ReadUppercase(3422, 103);
 	EXPECT_UTF8EQ("  \xD0\xA1\xD0\xAA\xD0\x95\xD0\xA8\xD0\xAC \xD0\x96\xD0\x95 \xD0\x95\xD0\xA9\xD0\x81 \xD0\xAD\xD0\xA2\xD0\x98\xD0\xA5 \xD0\x9C\xD0\xAF\xD0\x93\xD0\x9A\xD0\x98\xD0\xA5 \xD0\xA4\xD0\xA0\xD0\x90\xD0\x9D\xD0\xA6\xD0\xA3\xD0\x97\xD0\xA1\xD0\x9A\xD0\x98\xD0\xA5 \xD0\x91\xD0\xA3\xD0\x9B\xD0\x9E\xD0\x9A \xD0\x94\xD0\x90 \xD0\x92\xD0\xAB\xD0\x9F\xD0\x95\xD0\x99 \xD0\xA7\xD0\x90\xD0\xAE", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  \xD0\xA1\xD0\xAA\xD0\x95\xD0\xA8\xD0\xAC \xD0\x96\xD0\x95 \xD0\x95\xD0\xA9\xD0\x81 \xD0\xAD\xD0\xA2\xD0\x98\xD0\xA5 \xD0\x9C\xD0\xAF\xD0\x93\xD0\x9A\xD0\x98\xD0\xA5 \xD0\xA4\xD0\xA0\xD0\x90\xD0\x9D\xD0\xA6\xD0\xA3\xD0\x97\xD0\xA1\xD0\x9A\xD0\x98\xD0\xA5 \xD0\x91\xD0\xA3\xD0\x9B\xD0\x9E\xD0\x9A \xD0\x94\xD0\x90 \xD0\x92\xD0\xAB\xD0\x9F\xD0\x95\xD0\x99 \xD0\xA7\xD0\x90\xD0\xAE", au);
@@ -1043,12 +1043,12 @@ TEST_F(QuickbrownCaseMapping, RussianSecondLowercase)
 	std::string el = ReadLowercase(3421, 103);
 	EXPECT_UTF8EQ("  \xD1\x81\xD1\x8A\xD0\xB5\xD1\x88\xD1\x8C \xD0\xB6\xD0\xB5 \xD0\xB5\xD1\x89\xD1\x91 \xD1\x8D\xD1\x82\xD0\xB8\xD1\x85 \xD0\xBC\xD1\x8F\xD0\xB3\xD0\xBA\xD0\xB8\xD1\x85 \xD1\x84\xD1\x80\xD0\xB0\xD0\xBD\xD1\x86\xD1\x83\xD0\xB7\xD1\x81\xD0\xBA\xD0\xB8\xD1\x85 \xD0\xB1\xD1\x83\xD0\xBB\xD0\xBE\xD0\xBA \xD0\xB4\xD0\xB0 \xD0\xB2\xD1\x8B\xD0\xBF\xD0\xB5\xD0\xB9 \xD1\x87\xD0\xB0\xD1\x8E", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  \xD1\x81\xD1\x8A\xD0\xB5\xD1\x88\xD1\x8C \xD0\xB6\xD0\xB5 \xD0\xB5\xD1\x89\xD1\x91 \xD1\x8D\xD1\x82\xD0\xB8\xD1\x85 \xD0\xBC\xD1\x8F\xD0\xB3\xD0\xBA\xD0\xB8\xD1\x85 \xD1\x84\xD1\x80\xD0\xB0\xD0\xBD\xD1\x86\xD1\x83\xD0\xB7\xD1\x81\xD0\xBA\xD0\xB8\xD1\x85 \xD0\xB1\xD1\x83\xD0\xBB\xD0\xBE\xD0\xBA \xD0\xB4\xD0\xB0 \xD0\xB2\xD1\x8B\xD0\xBF\xD0\xB5\xD0\xB9 \xD1\x87\xD0\xB0\xD1\x8E", al);
@@ -1070,12 +1070,12 @@ TEST_F(QuickbrownCaseMapping, ThaiUppercase)
   \xE0\xB9\x84\xE0\xB8\xA1\xE0\xB9\x88\xE0\xB8\x96\xE0\xB8\xB7\xE0\xB8\xAD\xE0\xB9\x82\xE0\xB8\x97\xE0\xB8\xA9\xE0\xB9\x82\xE0\xB8\x81\xE0\xB8\xA3\xE0\xB8\x98\xE0\xB9\x81\xE0\xB8\x8A\xE0\xB9\x88\xE0\xB8\x87\xE0\xB8\x8B\xE0\xB8\xB1\xE0\xB8\x94\xE0\xB8\xAE\xE0\xB8\xB6\xE0\xB8\x94\xE0\xB8\xAE\xE0\xB8\xB1\xE0\xB8\x94\xE0\xB8\x94\xE0\xB9\x88\xE0\xB8\xB2     \xE0\xB8\xAB\xE0\xB8\xB1\xE0\xB8\x94\xE0\xB8\xAD\xE0\xB8\xA0\xE0\xB8\xB1\xE0\xB8\xA2\xE0\xB9\x80\xE0\xB8\xAB\xE0\xB8\xA1\xE0\xB8\xB7\xE0\xB8\xAD\xE0\xB8\x99\xE0\xB8\x81\xE0\xB8\xB5\xE0\xB8\xAC\xE0\xB8\xB2\xE0\xB8\xAD\xE0\xB8\xB1\xE0\xB8\x8A\xE0\xB8\x8C\xE0\xB8\xB2\xE0\xB8\xAA\xE0\xB8\xB1\xE0\xB8\xA2\n\
   \xE0\xB8\x9B\xE0\xB8\x8F\xE0\xB8\xB4\xE0\xB8\x9A\xE0\xB8\xB1\xE0\xB8\x95\xE0\xB8\xB4\xE0\xB8\x9B\xE0\xB8\xA3\xE0\xB8\xB0\xE0\xB8\x9E\xE0\xB8\xA4\xE0\xB8\x95\xE0\xB8\xB4\xE0\xB8\x81\xE0\xB8\x8E\xE0\xB8\x81\xE0\xB8\xB3\xE0\xB8\xAB\xE0\xB8\x99\xE0\xB8\x94\xE0\xB9\x83\xE0\xB8\x88        \xE0\xB8\x9E\xE0\xB8\xB9\xE0\xB8\x94\xE0\xB8\x88\xE0\xB8\xB2\xE0\xB9\x83\xE0\xB8\xAB\xE0\xB9\x89\xE0\xB8\x88\xE0\xB9\x8A\xE0\xB8\xB0\xE0\xB9\x86 \xE0\xB8\x88\xE0\xB9\x8B\xE0\xB8\xB2\xE0\xB9\x86 \xE0\xB8\x99\xE0\xB9\x88\xE0\xB8\xB2\xE0\xB8\x9F\xE0\xB8\xB1\xE0\xB8\x87\xE0\xB9\x80\xE0\xB8\xAD\xE0\xB8\xA2 \xE0\xB8\xAF", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  \xE0\xB9\x8F \xE0\xB9\x80\xE0\xB8\x9B\xE0\xB9\x87\xE0\xB8\x99\xE0\xB8\xA1\xE0\xB8\x99\xE0\xB8\xB8\xE0\xB8\xA9\xE0\xB8\xA2\xE0\xB9\x8C\xE0\xB8\xAA\xE0\xB8\xB8\xE0\xB8\x94\xE0\xB8\x9B\xE0\xB8\xA3\xE0\xB8\xB0\xE0\xB9\x80\xE0\xB8\xAA\xE0\xB8\xA3\xE0\xB8\xB4\xE0\xB8\x90\xE0\xB9\x80\xE0\xB8\xA5\xE0\xB8\xB4\xE0\xB8\xA8\xE0\xB8\x84\xE0\xB8\xB8\xE0\xB8\x93\xE0\xB8\x84\xE0\xB9\x88\xE0\xB8\xB2  \xE0\xB8\x81\xE0\xB8\xA7\xE0\xB9\x88\xE0\xB8\xB2\xE0\xB8\x9A\xE0\xB8\xA3\xE0\xB8\xA3\xE0\xB8\x94\xE0\xB8\xB2\xE0\xB8\x9D\xE0\xB8\xB9\xE0\xB8\x87\xE0\xB8\xAA\xE0\xB8\xB1\xE0\xB8\x95\xE0\xB8\xA7\xE0\xB9\x8C\xE0\xB9\x80\xE0\xB8\x94\xE0\xB8\xA3\xE0\xB8\xB1\xE0\xB8\x88\xE0\xB8\x89\xE0\xB8\xB2\xE0\xB8\x99\n\
@@ -1100,12 +1100,12 @@ TEST_F(QuickbrownCaseMapping, ThaiLowercase)
   \xE0\xB9\x84\xE0\xB8\xA1\xE0\xB9\x88\xE0\xB8\x96\xE0\xB8\xB7\xE0\xB8\xAD\xE0\xB9\x82\xE0\xB8\x97\xE0\xB8\xA9\xE0\xB9\x82\xE0\xB8\x81\xE0\xB8\xA3\xE0\xB8\x98\xE0\xB9\x81\xE0\xB8\x8A\xE0\xB9\x88\xE0\xB8\x87\xE0\xB8\x8B\xE0\xB8\xB1\xE0\xB8\x94\xE0\xB8\xAE\xE0\xB8\xB6\xE0\xB8\x94\xE0\xB8\xAE\xE0\xB8\xB1\xE0\xB8\x94\xE0\xB8\x94\xE0\xB9\x88\xE0\xB8\xB2     \xE0\xB8\xAB\xE0\xB8\xB1\xE0\xB8\x94\xE0\xB8\xAD\xE0\xB8\xA0\xE0\xB8\xB1\xE0\xB8\xA2\xE0\xB9\x80\xE0\xB8\xAB\xE0\xB8\xA1\xE0\xB8\xB7\xE0\xB8\xAD\xE0\xB8\x99\xE0\xB8\x81\xE0\xB8\xB5\xE0\xB8\xAC\xE0\xB8\xB2\xE0\xB8\xAD\xE0\xB8\xB1\xE0\xB8\x8A\xE0\xB8\x8C\xE0\xB8\xB2\xE0\xB8\xAA\xE0\xB8\xB1\xE0\xB8\xA2\n\
   \xE0\xB8\x9B\xE0\xB8\x8F\xE0\xB8\xB4\xE0\xB8\x9A\xE0\xB8\xB1\xE0\xB8\x95\xE0\xB8\xB4\xE0\xB8\x9B\xE0\xB8\xA3\xE0\xB8\xB0\xE0\xB8\x9E\xE0\xB8\xA4\xE0\xB8\x95\xE0\xB8\xB4\xE0\xB8\x81\xE0\xB8\x8E\xE0\xB8\x81\xE0\xB8\xB3\xE0\xB8\xAB\xE0\xB8\x99\xE0\xB8\x94\xE0\xB9\x83\xE0\xB8\x88        \xE0\xB8\x9E\xE0\xB8\xB9\xE0\xB8\x94\xE0\xB8\x88\xE0\xB8\xB2\xE0\xB9\x83\xE0\xB8\xAB\xE0\xB9\x89\xE0\xB8\x88\xE0\xB9\x8A\xE0\xB8\xB0\xE0\xB9\x86 \xE0\xB8\x88\xE0\xB9\x8B\xE0\xB8\xB2\xE0\xB9\x86 \xE0\xB8\x99\xE0\xB9\x88\xE0\xB8\xB2\xE0\xB8\x9F\xE0\xB8\xB1\xE0\xB8\x87\xE0\xB9\x80\xE0\xB8\xAD\xE0\xB8\xA2 \xE0\xB8\xAF", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  \xE0\xB9\x8F \xE0\xB9\x80\xE0\xB8\x9B\xE0\xB9\x87\xE0\xB8\x99\xE0\xB8\xA1\xE0\xB8\x99\xE0\xB8\xB8\xE0\xB8\xA9\xE0\xB8\xA2\xE0\xB9\x8C\xE0\xB8\xAA\xE0\xB8\xB8\xE0\xB8\x94\xE0\xB8\x9B\xE0\xB8\xA3\xE0\xB8\xB0\xE0\xB9\x80\xE0\xB8\xAA\xE0\xB8\xA3\xE0\xB8\xB4\xE0\xB8\x90\xE0\xB9\x80\xE0\xB8\xA5\xE0\xB8\xB4\xE0\xB8\xA8\xE0\xB8\x84\xE0\xB8\xB8\xE0\xB8\x93\xE0\xB8\x84\xE0\xB9\x88\xE0\xB8\xB2  \xE0\xB8\x81\xE0\xB8\xA7\xE0\xB9\x88\xE0\xB8\xB2\xE0\xB8\x9A\xE0\xB8\xA3\xE0\xB8\xA3\xE0\xB8\x94\xE0\xB8\xB2\xE0\xB8\x9D\xE0\xB8\xB9\xE0\xB8\x87\xE0\xB8\xAA\xE0\xB8\xB1\xE0\xB8\x95\xE0\xB8\xA7\xE0\xB9\x8C\xE0\xB9\x80\xE0\xB8\x94\xE0\xB8\xA3\xE0\xB8\xB1\xE0\xB8\x88\xE0\xB8\x89\xE0\xB8\xB2\xE0\xB8\x99\n\
@@ -1124,12 +1124,12 @@ TEST_F(QuickbrownCaseMapping, TurkishUppercase)
 	std::string eu = ReadUppercase(4509, 52);
 	EXPECT_UTF8EQ("  PIJAMALI HASTA, YA\xC4\x9EIZ \xC5\x9EOF\xC3\x96RE \xC3\x87" "ABUCAK G\xC3\x9CVENDI.", eu.c_str());
 
-	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8toupper(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* au = new char[l + 1];
-	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
+	utf8toupper(i.c_str(), i.size() - 1, au, l, 0, &errors);
 	au[l] = 0;
 
 	EXPECT_UTF8EQ("  PIJAMALI HASTA, YA\xC4\x9EIZ \xC5\x9EOF\xC3\x96RE \xC3\x87" "ABUCAK G\xC3\x9CVENDI.", au);
@@ -1145,12 +1145,12 @@ TEST_F(QuickbrownCaseMapping, TurkishLowercase)
 	std::string el = ReadLowercase(4508, 54);
 	EXPECT_UTF8EQ("  pijamal\xC4\xB1 hasta, ya\xC4\x9F\xC4\xB1z \xC5\x9Fof\xC3\xB6re \xC3\xA7" "abucak g\xC3\xBCvendi.", el.c_str());
 
-	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, &errors);
+	size_t l = utf8tolower(i.c_str(), i.size() - 1, nullptr, 0, 0, &errors);
 	EXPECT_NE(0, l);
 	ASSERT_EQ(0, errors);
 
 	char* al = new char[l + 1];
-	utf8tolower(i.c_str(), i.size() - 1, al, l, &errors);
+	utf8tolower(i.c_str(), i.size() - 1, al, l, 0, &errors);
 	al[l] = 0;
 
 	EXPECT_UTF8EQ("  pijamal\xC4\xB1 hasta, ya\xC4\x9F\xC4\xB1z \xC5\x9Fof\xC3\xB6re \xC3\xA7" "abucak g\xC3\xBCvendi.", al);
