@@ -72,18 +72,9 @@ enum FindResult
 	FindResult_Invalid
 };
 
-enum DecompositionQuery
-{
-	DecompositionQuery_Decomposed,
-	DecompositionQuery_Compatibility_Decomposed,
-	DecompositionQuery_Uppercase,
-	DecompositionQuery_Lowercase,
-	DecompositionQuery_Titlecase,
-};
-
 uint8_t queryproperty(unicode_t codepoint, uint8_t property);
 
-const char* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result);
+const char* finddecomposition(unicode_t codepoint, uint8_t property, int32_t* result);
 
 unicode_t querycomposition(unicode_t left, unicode_t right, int32_t* result);
 

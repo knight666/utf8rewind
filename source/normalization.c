@@ -190,7 +190,7 @@ found:
 	}
 }
 
-const char* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result)
+const char* finddecomposition(unicode_t codepoint, uint8_t property, int32_t* result)
 {
 	const DecompositionRecord* record;
 	size_t record_count;
@@ -205,35 +205,38 @@ const char* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result
 		return 0;
 	}
 
-	if (query == DecompositionQuery_Decomposed)
+	switch (property)
 	{
+
+	case UnicodeProperty_Normalization_Decompose:
 		record = UnicodeNFDRecordPtr;
 		record_count = UnicodeNFDRecordCount;
-	}
-	else if (query == DecompositionQuery_Compatibility_Decomposed)
-	{
+		break;
+
+	case UnicodeProperty_Normalization_Compatibility_Decompose:
 		record = UnicodeNFKDRecordPtr;
 		record_count = UnicodeNFKDRecordCount;
-	}
-	else if (query == DecompositionQuery_Uppercase)
-	{
+		break;
+
+	case UnicodeProperty_Uppercase:
 		record = UnicodeUppercaseRecordPtr;
 		record_count = UnicodeUppercaseRecordCount;
-	}
-	else if (query == DecompositionQuery_Lowercase)
-	{
+		break;
+
+	case UnicodeProperty_Lowercase:
 		record = UnicodeLowercaseRecordPtr;
 		record_count = UnicodeLowercaseRecordCount;
-	}
-	else if (query == DecompositionQuery_Titlecase)
-	{
+		break;
+
+	case UnicodeProperty_Titlecase:
 		record = UnicodeTitlecaseRecordPtr;
 		record_count = UnicodeTitlecaseRecordCount;
-	}
-	else
-	{
+		break;
+
+	default:
 		*result = FindResult_Invalid;
 		return 0;
+
 	}
 
 	offset_start = 0;
