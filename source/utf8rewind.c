@@ -822,11 +822,18 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	}
 }
 
+enum ComposeStage
+{
+	ComposeStage_Processing,
+	ComposeStage_OutOfInput,
+	ComposeStage_WriteLast,
+};
+
 typedef struct {
 	const char** src;
 	size_t* src_size;
 	uint8_t transform;
-	uint8_t finished;
+	uint8_t stage;
 	unicode_t codepoint[2];
 	size_t length[2];
 	uint8_t check[2];
@@ -860,7 +867,7 @@ uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inpu
 	}
 	else
 	{
-		state->finished = 1;
+		state->stage = ComposeStage_OutOfInput;
 	}
 
 	return 1;
@@ -868,13 +875,14 @@ uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inpu
 
 uint8_t compose_execute(ComposeState* state)
 {
-	if (state->finished >= 1)
+	if (state->stage >= ComposeStage_OutOfInput)
 	{
-		state->finished = 2;
-		return state->current;
+		state->stage = ComposeStage_WriteLast;
+
+		return (state->check[state->current] != QuickCheckResult_No) ? state->current : (uint8_t)-1;
 	}
 
-	while (state->finished == 0)
+	while (state->stage == ComposeStage_Processing)
 	{
 		unicode_t composed = 0;
 
@@ -888,11 +896,14 @@ uint8_t compose_execute(ComposeState* state)
 				*state->src += state->length[state->next];
 				*state->src_size -= state->length[state->next];
 
-				state->finished = (*state->src_size == 0);
+				if (*state->src_size == 0)
+				{
+					state->stage = ComposeStage_OutOfInput;
+				}
 			}
 			else
 			{
-				state->finished = 1;
+				state->stage = ComposeStage_OutOfInput;
 			}
 		}
 
@@ -962,7 +973,7 @@ uint8_t compose_execute(ComposeState* state)
 		{
 			/* If the composition succeeded but there's no data left, don't output the second codepoint */
 
-			state->check[state->next] = state->finished ? QuickCheckResult_No : QuickCheckResult_Yes;
+			state->check[state->next] = (state->stage >= ComposeStage_OutOfInput) ? QuickCheckResult_No : QuickCheckResult_Yes;
 		}
 
 		state->codepoint[state->current] = composed;
@@ -1170,14 +1181,14 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 
 	compose_initialize(&state, &src, &src_size, transformType);
 
-	while (state.finished != 2)
+	while (state.stage <= ComposeStage_OutOfInput)
 	{
 		uint8_t index;
 		size_t written;
 
 		index = compose_execute(&state);
 
-		if (state.check[index] != QuickCheckResult_No)
+		if (index != (uint8_t)-1)
 		{
 			if (dst != 0 &&
 				dst_size < state.length[index])
@@ -1339,6 +1350,29 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 	if ((flags & UTF8_TRANSFORM_NORMALIZED) != 0)
 	{
+		/* Normalize to NFC before attempting to lowercase */
+
+		compose_initialize(&state, &src, &src_size, UnicodeProperty_Normalization_Compose);
+
+		while (state.stage <= ComposeStage_OutOfInput)
+		{
+			uint8_t index = compose_execute(&state);
+
+			if (index != (uint8_t)-1)
+			{
+				size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, UnicodeProperty_Lowercase, errors);
+
+				if (written == 0)
+				{
+					break;
+				}
+
+				bytes_written += written;
+			}
+		}
+	}
+	else
+	{
 		/* Assume input is already NKC */
 
 		while (src_size > 0)
@@ -1382,26 +1416,6 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 				src += codepoint_length;
 				src_size -= codepoint_length;
 			}
-		}
-	}
-	else
-	{
-		/* Normalize to NFC before attempting to lowercase */
-
-		compose_initialize(&state, &src, &src_size, UnicodeProperty_Normalization_Compose);
-
-		while (state.finished != 2)
-		{
-			uint8_t index = compose_execute(&state);
-
-			size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, UnicodeProperty_Lowercase, errors);
-
-			if (written == 0)
-			{
-				break;
-			}
-
-			bytes_written += written;
 		}
 	}
 
