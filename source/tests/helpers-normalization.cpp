@@ -142,8 +142,8 @@ namespace helpers {
 			if (entryExpected.decomposed != entryActual.decomposed)
 			{
 				result << "[NFD] " << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.decomposed) << "\" (" << identifiable(entryExpected.decomposed) << ")" << std::endl;
 				result << "    Actual:  \"" << printable(entryActual.decomposed) << "\" (" << identifiable(entryActual.decomposed) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.decomposed) << "\" (" << identifiable(entryExpected.decomposed) << ")" << std::endl;
 			}
 			else
 			{
@@ -156,8 +156,8 @@ namespace helpers {
 			if (entryExpected.composed != entryActual.composed)
 			{
 				result << "[NFC] " << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.composed) << "\" (" << identifiable(entryExpected.composed) << ")" << std::endl;
 				result << "    Actual:  \"" << printable(entryActual.composed) << "\" (" << identifiable(entryActual.composed) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.composed) << "\" (" << identifiable(entryExpected.composed) << ")" << std::endl;
 			}
 			else
 			{
@@ -170,8 +170,8 @@ namespace helpers {
 			if (entryExpected.decomposedCompatibility != entryActual.decomposedCompatibility)
 			{
 				result << "[NFKD]" << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.decomposedCompatibility) << "\" (" << identifiable(entryExpected.decomposedCompatibility) << ")" << std::endl;
 				result << "    Actual:  \"" << printable(entryActual.decomposedCompatibility) << "\" (" << identifiable(entryActual.decomposedCompatibility) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.decomposedCompatibility) << "\" (" << identifiable(entryExpected.decomposedCompatibility) << ")" << std::endl;
 			}
 			else
 			{
@@ -184,8 +184,8 @@ namespace helpers {
 			if (entryExpected.composedCompatibility != entryActual.composedCompatibility)
 			{
 				result << "[NFKC]" << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.composedCompatibility) << "\" (" << identifiable(entryExpected.composedCompatibility) << ")" << std::endl;
 				result << "    Actual:  \"" << printable(entryActual.composedCompatibility) << "\" (" << identifiable(entryActual.composedCompatibility) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.composedCompatibility) << "\" (" << identifiable(entryExpected.composedCompatibility) << ")" << std::endl;
 			}
 			else
 			{

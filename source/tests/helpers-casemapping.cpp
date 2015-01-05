@@ -104,8 +104,8 @@ namespace helpers {
 			if (entryExpected.uppercase != entryActual.uppercase)
 			{
 				result << "[Uppercase]" << std::endl;
-				result << "  Expected:  \"" << helpers::printable(entryExpected.uppercase) << "\" (" << helpers::identifiable(entryExpected.uppercase) << ")" << std::endl;
 				result << "    Actual:  \"" << helpers::printable(entryActual.uppercase) << "\" (" << helpers::identifiable(entryActual.uppercase) << ")" << std::endl;
+				result << "  Expected:  \"" << helpers::printable(entryExpected.uppercase) << "\" (" << helpers::identifiable(entryExpected.uppercase) << ")" << std::endl;
 			}
 			else
 			{
@@ -117,8 +117,8 @@ namespace helpers {
 			if (entryExpected.lowercase != entryActual.lowercase)
 			{
 				result << "[Lowercase]" << std::endl;
-				result << "  Expected:  \"" << helpers::printable(entryExpected.lowercase) << "\" (" << helpers::identifiable(entryExpected.lowercase) << ")" << std::endl;
 				result << "    Actual:  \"" << helpers::printable(entryActual.lowercase) << "\" (" << helpers::identifiable(entryActual.lowercase) << ")" << std::endl;
+				result << "  Expected:  \"" << helpers::printable(entryExpected.lowercase) << "\" (" << helpers::identifiable(entryExpected.lowercase) << ")" << std::endl;
 			}
 			else
 			{
