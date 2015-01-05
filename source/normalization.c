@@ -80,22 +80,22 @@ uint8_t queryproperty(unicode_t codepoint, uint8_t checkType)
 	switch (checkType)
 	{
 
-	case UnicodeProperty_QC_NFC:
+	case UnicodeProperty_Normalization_Compose:
 		record = UnicodeQuickCheckNFCRecordPtr;
 		record_count = UnicodeQuickCheckNFCRecordCount;
 		break;
 
-	case UnicodeProperty_QC_NFD:
+	case UnicodeProperty_Normalization_Decompose:
 		record = UnicodeQuickCheckNFDRecordPtr;
 		record_count = UnicodeQuickCheckNFDRecordCount;
 		break;
 
-	case UnicodeProperty_QC_NFKC:
+	case UnicodeProperty_Normalization_Compatibility_Compose:
 		record = UnicodeQuickCheckNFKCRecordPtr;
 		record_count = UnicodeQuickCheckNFKCRecordCount;
 		break;
 
-	case UnicodeProperty_QC_NFKD:
+	case UnicodeProperty_Normalization_Compatibility_Decompose:
 		record = UnicodeQuickCheckNFKDRecordPtr;
 		record_count = UnicodeQuickCheckNFKDRecordCount;
 		break;
