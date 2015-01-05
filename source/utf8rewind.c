@@ -822,11 +822,18 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	}
 }
 
+enum ComposeStage
+{
+	ComposeStage_Processing,
+	ComposeStage_OutOfInput,
+	ComposeStage_WriteLast,
+};
+
 typedef struct {
 	const char** src;
 	size_t* src_size;
 	uint8_t transform;
-	uint8_t finished;
+	uint8_t stage;
 	unicode_t codepoint[2];
 	size_t length[2];
 	uint8_t check[2];
@@ -860,7 +867,7 @@ uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inpu
 	}
 	else
 	{
-		state->finished = 1;
+		state->stage = ComposeStage_OutOfInput;
 	}
 
 	return 1;
@@ -868,13 +875,14 @@ uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inpu
 
 uint8_t compose_execute(ComposeState* state)
 {
-	if (state->finished >= 1)
+	if (state->stage >= ComposeStage_OutOfInput)
 	{
-		state->finished = 2;
-		return state->current;
+		state->stage = ComposeStage_WriteLast;
+
+		return (state->check[state->current] != QuickCheckResult_No) ? state->current : (uint8_t)-1;
 	}
 
-	while (state->finished == 0)
+	while (state->stage == ComposeStage_Processing)
 	{
 		unicode_t composed = 0;
 
@@ -888,11 +896,14 @@ uint8_t compose_execute(ComposeState* state)
 				*state->src += state->length[state->next];
 				*state->src_size -= state->length[state->next];
 
-				state->finished = (*state->src_size == 0);
+				if (*state->src_size == 0)
+				{
+					state->stage = ComposeStage_OutOfInput;
+				}
 			}
 			else
 			{
-				state->finished = 1;
+				state->stage = ComposeStage_OutOfInput;
 			}
 		}
 
@@ -962,7 +973,7 @@ uint8_t compose_execute(ComposeState* state)
 		{
 			/* If the composition succeeded but there's no data left, don't output the second codepoint */
 
-			state->check[state->next] = state->finished ? QuickCheckResult_No : QuickCheckResult_Yes;
+			state->check[state->next] = (state->stage >= ComposeStage_OutOfInput) ? QuickCheckResult_No : QuickCheckResult_Yes;
 		}
 
 		state->codepoint[state->current] = composed;
@@ -976,6 +987,42 @@ uint8_t compose_execute(ComposeState* state)
 	state->next = (state->next + 1) % 2;
 
 	return state->next;
+}
+
+size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t propertyType, int32_t* errors)
+{
+	if (queryproperty(codepoint, propertyType) == 1)
+	{
+		int32_t find_result;
+		const char* resolved = finddecomposition(codepoint, propertyType, &find_result);
+
+		if (find_result == FindResult_Found)
+		{
+			size_t resolved_size = strlen(resolved);
+
+			if (*target != 0 &&
+				resolved_size > 0)
+			{
+				if (*targetSize < resolved_size)
+				{
+					if (errors != 0)
+					{
+						*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+					}
+					return 0;
+				}
+
+				memcpy(*target, resolved, resolved_size);
+
+				*target += resolved_size;
+				*targetSize -= resolved_size;
+			}
+
+			return resolved_size;
+		}
+	}
+
+	return writecodepoint(codepoint, target, targetSize, errors);
 }
 
 size_t transform_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t propertyType, uint8_t transformType, int32_t* errors)
@@ -1134,14 +1181,14 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 
 	compose_initialize(&state, &src, &src_size, transformType);
 
-	while (state.finished != 2)
+	while (state.stage <= ComposeStage_OutOfInput)
 	{
 		uint8_t index;
 		size_t written;
 
 		index = compose_execute(&state);
 
-		if (state.check[index] != QuickCheckResult_No)
+		if (index != (uint8_t)-1)
 		{
 			if (dst != 0 &&
 				dst_size < state.length[index])
@@ -1175,240 +1222,215 @@ outofspace:
 	return bytes_written;
 }
 
-size_t transform_uppercase(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
-{
-	const char* src = input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
-	size_t bytes_written = 0;
-
-	if (src == 0 ||
-		src_size == 0)
-	{
-		goto invaliddata;
-	}
-
-	while (src_size > 0)
-	{
-		if ((*src & 0x80) == 0)
-		{
-			/* Basic Latin */
-
-			if (dst != 0)
-			{
-				if (dst_size < 1)
-				{
-					goto outofspace;
-				}
-
-				*dst++ = (*src >= 0x61 && *src <= 0x7A) ? *src - 0x20 : *src;
-				dst_size--;
-			}
-
-			bytes_written++;
-
-			src++;
-			src_size--;
-		}
-		else
-		{
-			size_t result = 0;
-			unicode_t codepoint;
-			size_t codepoint_length = readcodepoint(&codepoint, src, src_size);
-
-			if (queryproperty(codepoint, UnicodeProperty_Uppercase) == 1)
-			{
-				int32_t find_result;
-				const char* resolved = finddecomposition(codepoint, UnicodeProperty_Uppercase, &find_result);
-
-				if (find_result == FindResult_Found)
-				{
-					size_t resolved_size = strlen(resolved);
-
-					if (dst != 0 &&
-						resolved_size > 0)
-					{
-						if (dst_size < resolved_size)
-						{
-							goto outofspace;
-						}
-
-						memcpy(dst, resolved, resolved_size);
-
-						dst += resolved_size;
-						dst_size -= resolved_size;
-					}
-
-					result = resolved_size;
-				}
-				else
-				{
-					result = writecodepoint(codepoint, &dst, &dst_size, errors);
-				}
-			}
-			else
-			{
-				result = writecodepoint(codepoint, &dst, &dst_size, errors);
-			}
-
-			if (result == 0)
-			{
-				break;
-			}
-
-			bytes_written += result;
-
-			src += codepoint_length;
-			src_size -= codepoint_length;
-		}
-	}
-
-	return bytes_written;
-
-invaliddata:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_INVALID_DATA;
-	}
-	return bytes_written;
-
-outofspace:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
-	}
-	return bytes_written;
-}
-
-size_t transform_lowercase(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
-{
-	const char* src = input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
-	size_t bytes_written = 0;
-
-	if (src == 0 ||
-		src_size == 0)
-	{
-		goto invaliddata;
-	}
-
-	while (src_size > 0)
-	{
-		if ((*src & 0x80) == 0)
-		{
-			/* Basic Latin */
-
-			if (dst != 0)
-			{
-				if (dst_size < 1)
-				{
-					goto outofspace;
-				}
-
-				*dst++ = (*src >= 0x41 && *src <= 0x5A) ? *src + 0x20 : *src;
-				dst_size--;
-			}
-
-			bytes_written++;
-
-			src++;
-			src_size--;
-		}
-		else
-		{
-			size_t result = 0;
-			unicode_t codepoint;
-			size_t codepoint_length = readcodepoint(&codepoint, src, src_size);
-
-			if (queryproperty(codepoint, UnicodeProperty_Lowercase) == 1)
-			{
-				int32_t find_result;
-				const char* resolved = finddecomposition(codepoint, UnicodeProperty_Lowercase, &find_result);
-
-				if (find_result == FindResult_Found)
-				{
-					size_t resolved_size = strlen(resolved);
-
-					if (dst != 0 &&
-						resolved_size > 0)
-					{
-						if (dst_size < resolved_size)
-						{
-							goto outofspace;
-						}
-
-						memcpy(dst, resolved, resolved_size);
-
-						dst += resolved_size;
-						dst_size -= resolved_size;
-					}
-
-					result = resolved_size;
-				}
-				else
-				{
-					result = writecodepoint(codepoint, &dst, &dst_size, errors);
-				}
-			}
-			else
-			{
-				result = writecodepoint(codepoint, &dst, &dst_size, errors);
-			}
-
-			if (result == 0)
-			{
-				break;
-			}
-
-			bytes_written += result;
-
-			src += codepoint_length;
-			src_size -= codepoint_length;
-		}
-	}
-
-	return bytes_written;
-
-invaliddata:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_INVALID_DATA;
-	}
-	return bytes_written;
-
-outofspace:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
-	}
-	return bytes_written;
-}
-
 size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
-	return utf8transform(input, inputSize, target, targetSize, UTF8_TRANSFORM_UPPERCASE, errors);
+	size_t bytes_written = 0;
+	const char* src = input;
+	size_t src_size = inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
+	ComposeState state;
+
+	if (src == 0 ||
+		src_size == 0)
+	{
+		goto invaliddata;
+	}
+
+	if ((flags & UTF8_TRANSFORM_NORMALIZED) != 0)
+	{
+		/* Normalize to NFC before attempting to uppercase */
+
+		compose_initialize(&state, &src, &src_size, UnicodeProperty_Normalization_Compose);
+
+		while (state.stage <= ComposeStage_OutOfInput)
+		{
+			uint8_t index = compose_execute(&state);
+
+			if (index != (uint8_t)-1)
+			{
+				size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, UnicodeProperty_Uppercase, errors);
+
+				if (written == 0)
+				{
+					break;
+				}
+
+				bytes_written += written;
+			}
+		}
+	}
+	else
+	{
+		/* Assume input is already NKC */
+
+		while (src_size > 0)
+		{
+			if ((*src & 0x80) == 0)
+			{
+				/* Basic Latin */
+
+				if (dst != 0)
+				{
+					if (dst_size < 1)
+					{
+						goto outofspace;
+					}
+
+					*dst = (*src >= 0x61 && *src <= 0x7A) ? *src - 0x20 : *src;
+
+					dst++;
+					dst_size--;
+				}
+
+				bytes_written++;
+
+				src++;
+				src_size--;
+			}
+			else
+			{
+				unicode_t codepoint;
+				size_t codepoint_length = readcodepoint(&codepoint, src, src_size);
+
+				size_t written = casemapping_execute(codepoint, &dst, &dst_size, UnicodeProperty_Uppercase, errors);
+
+				if (written == 0)
+				{
+					break;
+				}
+
+				bytes_written += written;
+
+				src += codepoint_length;
+				src_size -= codepoint_length;
+			}
+		}
+	}
+
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return bytes_written;
 }
 
 size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
-	return utf8transform(input, inputSize, target, targetSize, UTF8_TRANSFORM_LOWERCASE, errors);
+	size_t bytes_written = 0;
+	const char* src = input;
+	size_t src_size = inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
+	ComposeState state;
+
+	if (src == 0 ||
+		src_size == 0)
+	{
+		goto invaliddata;
+	}
+
+	if ((flags & UTF8_TRANSFORM_NORMALIZED) != 0)
+	{
+		/* Normalize to NFC before attempting to lowercase */
+
+		compose_initialize(&state, &src, &src_size, UnicodeProperty_Normalization_Compose);
+
+		while (state.stage <= ComposeStage_OutOfInput)
+		{
+			uint8_t index = compose_execute(&state);
+
+			if (index != (uint8_t)-1)
+			{
+				size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, UnicodeProperty_Lowercase, errors);
+
+				if (written == 0)
+				{
+					break;
+				}
+
+				bytes_written += written;
+			}
+		}
+	}
+	else
+	{
+		/* Assume input is already NKC */
+
+		while (src_size > 0)
+		{
+			if ((*src & 0x80) == 0)
+			{
+				/* Basic Latin */
+
+				if (dst != 0)
+				{
+					if (dst_size < 1)
+					{
+						goto outofspace;
+					}
+
+					*dst = (*src >= 0x41 && *src <= 0x5A) ? *src + 0x20 : *src;
+
+					dst++;
+					dst_size--;
+				}
+
+				bytes_written++;
+
+				src++;
+				src_size--;
+			}
+			else
+			{
+				unicode_t codepoint;
+				size_t codepoint_length = readcodepoint(&codepoint, src, src_size);
+
+				size_t written = casemapping_execute(codepoint, &dst, &dst_size, UnicodeProperty_Lowercase, errors);
+
+				if (written == 0)
+				{
+					break;
+				}
+
+				bytes_written += written;
+
+				src += codepoint_length;
+				src_size -= codepoint_length;
+			}
+		}
+	}
+
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return bytes_written;
 }
 
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
-	if ((flags & UTF8_TRANSFORM_UPPERCASE) != 0)
-	{
-		return transform_uppercase(input, inputSize, target, targetSize, errors);
-	}
-	else if (
-		(flags & UTF8_TRANSFORM_LOWERCASE) != 0)
-	{
-		return transform_lowercase(input, inputSize, target, targetSize, errors);
-	}
-	else if (
+	if (
 		(flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
 	{
 		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Decompose, UnicodeProperty_Normalization_Decompose, errors);
