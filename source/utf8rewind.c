@@ -25,6 +25,7 @@
 
 #include "utf8rewind.h"
 
+#include "internal/casemapping.h"
 #include "internal/codepoint.h"
 #include "internal/composition.h"
 #include "normalization.h"
@@ -569,42 +570,6 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 		return text;
 
 	}
-}
-
-size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t propertyType, int32_t* errors)
-{
-	if (queryproperty(codepoint, propertyType) == 1)
-	{
-		int32_t find_result;
-		const char* resolved = finddecomposition(codepoint, propertyType, &find_result);
-
-		if (find_result == FindResult_Found)
-		{
-			size_t resolved_size = strlen(resolved);
-
-			if (*target != 0 &&
-				resolved_size > 0)
-			{
-				if (*targetSize < resolved_size)
-				{
-					if (errors != 0)
-					{
-						*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
-					}
-					return 0;
-				}
-
-				memcpy(*target, resolved, resolved_size);
-
-				*target += resolved_size;
-				*targetSize -= resolved_size;
-			}
-
-			return resolved_size;
-		}
-	}
-
-	return codepoint_write(codepoint, target, targetSize, errors);
 }
 
 size_t transform_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t propertyType, uint8_t transformType, int32_t* errors)
