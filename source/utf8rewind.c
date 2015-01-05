@@ -978,12 +978,12 @@ uint8_t compose_execute(ComposeState* state)
 	return state->next;
 }
 
-size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t propertyType, uint8_t queryType, int32_t* errors)
+size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t propertyType, int32_t* errors)
 {
 	if (queryproperty(codepoint, propertyType) == 1)
 	{
 		int32_t find_result;
-		const char* resolved = finddecomposition(codepoint, queryType, &find_result);
+		const char* resolved = finddecomposition(codepoint, propertyType, &find_result);
 
 		if (find_result == FindResult_Found)
 		{
@@ -1365,7 +1365,7 @@ size_t transform_lowercase(const char* input, size_t inputSize, char* target, si
 				unicode_t codepoint;
 				size_t codepoint_length = readcodepoint(&codepoint, src, src_size);
 
-				size_t written = casemapping_execute(codepoint, &dst, &dst_size, UnicodeProperty_Lowercase, UnicodeProperty_Lowercase, errors);
+				size_t written = casemapping_execute(codepoint, &dst, &dst_size, UnicodeProperty_Lowercase, errors);
 
 				if (written == 0)
 				{
@@ -1389,7 +1389,7 @@ size_t transform_lowercase(const char* input, size_t inputSize, char* target, si
 		{
 			uint8_t index = compose_execute(&state);
 
-			size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, UnicodeProperty_Lowercase, UnicodeProperty_Lowercase, errors);
+			size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, UnicodeProperty_Lowercase, errors);
 
 			if (written == 0)
 			{
