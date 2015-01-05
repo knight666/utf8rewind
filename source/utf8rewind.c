@@ -1220,7 +1220,7 @@ size_t transform_uppercase(const char* input, size_t inputSize, char* target, si
 			if (queryproperty(codepoint, UnicodeProperty_Uppercase) == 1)
 			{
 				int32_t find_result;
-				const char* resolved = finddecomposition(codepoint, DecompositionQuery_Uppercase, &find_result);
+				const char* resolved = finddecomposition(codepoint, UnicodeProperty_Uppercase, &find_result);
 
 				if (find_result == FindResult_Found)
 				{
@@ -1326,7 +1326,7 @@ size_t transform_lowercase(const char* input, size_t inputSize, char* target, si
 			if (queryproperty(codepoint, UnicodeProperty_Lowercase) == 1)
 			{
 				int32_t find_result;
-				const char* resolved = finddecomposition(codepoint, DecompositionQuery_Lowercase, &find_result);
+				const char* resolved = finddecomposition(codepoint, UnicodeProperty_Lowercase, &find_result);
 
 				if (find_result == FindResult_Found)
 				{
@@ -1411,12 +1411,12 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	else if (
 		(flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
 	{
-		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Decompose, DecompositionQuery_Decomposed, errors);
+		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Decompose, UnicodeProperty_Normalization_Decompose, errors);
 	}
 	else if (
 		(flags & UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED) != 0)
 	{
-		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compatibility_Decompose, DecompositionQuery_Compatibility_Decomposed, errors);
+		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compatibility_Decompose, UnicodeProperty_Normalization_Compatibility_Decompose, errors);
 	}
 	else if (
 		(flags & UTF8_TRANSFORM_COMPOSED) != 0)

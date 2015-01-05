@@ -13,7 +13,7 @@ TEST(Composition, SingletonAngstrom)
 	// NFD
 
 	{
-		const char* d = finddecomposition(0x212B, DecompositionQuery_Decomposed, &errors);
+		const char* d = finddecomposition(0x212B, UnicodeProperty_Normalization_Decompose, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -24,7 +24,7 @@ TEST(Composition, SingletonAngstrom)
 	// NFKD
 
 	{
-		const char* d = finddecomposition(0x212B, DecompositionQuery_Compatibility_Decomposed, &errors);
+		const char* d = finddecomposition(0x212B, UnicodeProperty_Normalization_Compatibility_Decompose, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -40,7 +40,7 @@ TEST(Composition, SingletonOhm)
 	// NFD
 
 	{
-		const char* d = finddecomposition(0x2126, DecompositionQuery_Decomposed, &errors);
+		const char* d = finddecomposition(0x2126, UnicodeProperty_Normalization_Decompose, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -51,7 +51,7 @@ TEST(Composition, SingletonOhm)
 	// NFKD
 
 	{
-		const char* d = finddecomposition(0x2126, DecompositionQuery_Compatibility_Decomposed, &errors);;
+		const char* d = finddecomposition(0x2126, UnicodeProperty_Normalization_Compatibility_Decompose, &errors);;
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -67,7 +67,7 @@ TEST(Composition, CanonicalCompositeAWithRing)
 	// NFD
 
 	{
-		const char* d = finddecomposition(0xC5, DecompositionQuery_Decomposed, &errors);
+		const char* d = finddecomposition(0xC5, UnicodeProperty_Normalization_Decompose, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -78,7 +78,7 @@ TEST(Composition, CanonicalCompositeAWithRing)
 	// NFKD
 
 	{
-		const char* d = finddecomposition(0xC5, DecompositionQuery_Compatibility_Decomposed, &errors);
+		const char* d = finddecomposition(0xC5, UnicodeProperty_Normalization_Compatibility_Decompose, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -94,7 +94,7 @@ TEST(Composition, CanonicalCompositeOWithCircumflex)
 	// NFD
 
 	{
-		const char* d = finddecomposition(0xF4, DecompositionQuery_Decomposed, &errors);
+		const char* d = finddecomposition(0xF4, UnicodeProperty_Normalization_Decompose, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -105,7 +105,7 @@ TEST(Composition, CanonicalCompositeOWithCircumflex)
 	// NFKD
 
 	{
-		const char* d = finddecomposition(0xF4, DecompositionQuery_Compatibility_Decomposed, &errors);
+		const char* d = finddecomposition(0xF4, UnicodeProperty_Normalization_Compatibility_Decompose, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -121,7 +121,7 @@ TEST(Composition, MultipleCombiningMarksSWithDots)
 	// NFD
 
 	{
-		const char* d = finddecomposition(0x1E69, DecompositionQuery_Decomposed, &errors);
+		const char* d = finddecomposition(0x1E69, UnicodeProperty_Normalization_Decompose, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
@@ -132,7 +132,7 @@ TEST(Composition, MultipleCombiningMarksSWithDots)
 	// NFKD
 
 	{
-		const char* d = finddecomposition(0x1E69, DecompositionQuery_Compatibility_Decomposed, &errors);
+		const char* d = finddecomposition(0x1E69, UnicodeProperty_Normalization_Compatibility_Decompose, &errors);
 		ASSERT_NE(nullptr, d);
 		EXPECT_EQ(0, errors);
 
