@@ -232,6 +232,18 @@ TEST(ToLower, DecomposedLowercase)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(ToLower, DecomposedCouldNotCompose)
+{
+	const char* c = "\xE1\xBF\xBD";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xE1\xBF\xBD", b);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(ToLower, AmountOfBytes)
 {
 	const char* c = "Say \xF0\x91\xA2\xB9";
@@ -462,6 +474,18 @@ TEST(ToLowerNormalize, DecomposedLowercase)
 
 	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
 	EXPECT_UTF8EQ("\xC3\xA1", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLowerNormalize, DecomposedCouldNotCompose)
+{
+	const char* c = "\xE1\xBF\xBD";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
+	EXPECT_UTF8EQ("", b);
 	EXPECT_EQ(0, errors);
 }
 
