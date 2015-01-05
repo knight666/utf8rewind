@@ -1387,12 +1387,12 @@ outofspace:
 	return bytes_written;
 }
 
-size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
 	return utf8transform(input, inputSize, target, targetSize, UTF8_TRANSFORM_UPPERCASE, errors);
 }
 
-size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
 	return utf8transform(input, inputSize, target, targetSize, UTF8_TRANSFORM_LOWERCASE, errors);
 }
