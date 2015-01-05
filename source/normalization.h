@@ -55,10 +55,10 @@ enum QuickCheckResult
 
 enum UnicodeProperty
 {
-	UnicodeProperty_QC_NFC,
-	UnicodeProperty_QC_NFD,
-	UnicodeProperty_QC_NFKC,
-	UnicodeProperty_QC_NFKD,
+	UnicodeProperty_Normalization_Compose,
+	UnicodeProperty_Normalization_Decompose,
+	UnicodeProperty_Normalization_Compatibility_Compose,
+	UnicodeProperty_Normalization_Compatibility_Decompose,
 	UnicodeProperty_Uppercase,
 	UnicodeProperty_Lowercase,
 	UnicodeProperty_Titlecase,

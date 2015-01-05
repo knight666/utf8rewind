@@ -1411,22 +1411,22 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	else if (
 		(flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
 	{
-		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFD, DecompositionQuery_Decomposed, errors);
+		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Decompose, DecompositionQuery_Decomposed, errors);
 	}
 	else if (
 		(flags & UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED) != 0)
 	{
-		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFKD, DecompositionQuery_Compatibility_Decomposed, errors);
+		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compatibility_Decompose, DecompositionQuery_Compatibility_Decomposed, errors);
 	}
 	else if (
 		(flags & UTF8_TRANSFORM_COMPOSED) != 0)
 	{
-		return transform_composition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFC, errors);
+		return transform_composition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compose, errors);
 	}
 	else if (
 		(flags & UTF8_TRANSFORM_COMPATIBILITY_COMPOSED) != 0)
 	{
-		return transform_composition(input, inputSize, target, targetSize, UnicodeProperty_QC_NFKC, errors);
+		return transform_composition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compatibility_Compose, errors);
 	}
 	else
 	{

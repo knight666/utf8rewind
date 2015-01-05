@@ -6,7 +6,7 @@ extern "C" {
 
 TEST(QueryProperty, NoResult)
 {
-	EXPECT_EQ(0, queryproperty(0x81288, UnicodeProperty_QC_NFC));
+	EXPECT_EQ(0, queryproperty(0x81288, UnicodeProperty_Normalization_Compose));
 }
 
 TEST(QueryProperty, InvalidNormalizationForm)
@@ -18,168 +18,168 @@ TEST(QueryProperty, InvalidNormalizationForm)
 
 TEST(QueryProperty, ComposedFoundNo)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x1FEE, UnicodeProperty_QC_NFC));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x1FEE, UnicodeProperty_Normalization_Compose));
 }
 
 TEST(QueryProperty, ComposedFoundMaybe)
 {
-	EXPECT_EQ(QuickCheckResult_Maybe, queryproperty(0x0DCF, UnicodeProperty_QC_NFC));
+	EXPECT_EQ(QuickCheckResult_Maybe, queryproperty(0x0DCF, UnicodeProperty_Normalization_Compose));
 }
 
 TEST(QueryProperty, ComposedFoundFirst)
 {
-	EXPECT_EQ(QuickCheckResult_Maybe, queryproperty(0x0300, UnicodeProperty_QC_NFC));
+	EXPECT_EQ(QuickCheckResult_Maybe, queryproperty(0x0300, UnicodeProperty_Normalization_Compose));
 }
 
 TEST(QueryProperty, ComposedFoundLast)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x2FA1D, UnicodeProperty_QC_NFC));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x2FA1D, UnicodeProperty_Normalization_Compose));
 }
 
 TEST(QueryProperty, ComposedOutOfLowerBounds)
 {
-	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x00FF, UnicodeProperty_QC_NFC));
+	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x00FF, UnicodeProperty_Normalization_Compose));
 }
 
 TEST(QueryProperty, ComposedOutOfUpperBounds)
 {
-	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x30000, UnicodeProperty_QC_NFC));
+	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x30000, UnicodeProperty_Normalization_Compose));
 }
 
 TEST(QueryProperty, ComposedBetweenBlocks)
 {
-	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x2B81, UnicodeProperty_QC_NFC));
+	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x2B81, UnicodeProperty_Normalization_Compose));
 }
 
 // Decomposed
 
 TEST(QueryProperty, DecomposedFoundNo)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x0374, UnicodeProperty_QC_NFD));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x0374, UnicodeProperty_Normalization_Decompose));
 }
 
 TEST(QueryProperty, DecomposedFoundFirst)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x00C0, UnicodeProperty_QC_NFD));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x00C0, UnicodeProperty_Normalization_Decompose));
 }
 
 TEST(QueryProperty, DecomposedFoundLast)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x2FA1D, UnicodeProperty_QC_NFD));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x2FA1D, UnicodeProperty_Normalization_Decompose));
 }
 
 TEST(QueryProperty, DecomposedOutOfLowerBounds)
 {
-	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x007F, UnicodeProperty_QC_NFD));
+	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x007F, UnicodeProperty_Normalization_Decompose));
 }
 
 TEST(QueryProperty, DecomposedOutOfUpperBounds)
 {
-	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x30000, UnicodeProperty_QC_NFD));
+	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x30000, UnicodeProperty_Normalization_Decompose));
 }
 
 TEST(QueryProperty, DecomposedBetweenBlocks)
 {
-	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0xFB20, UnicodeProperty_QC_NFD));
+	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0xFB20, UnicodeProperty_Normalization_Decompose));
 }
 
 TEST(QueryProperty, DecomposedHangulSyllable)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0xB1A1, UnicodeProperty_QC_NFD));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0xB1A1, UnicodeProperty_Normalization_Decompose));
 }
 
 TEST(QueryProperty, DecomposedHangulSyllableStart)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0xAC00, UnicodeProperty_QC_NFD));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0xAC00, UnicodeProperty_Normalization_Decompose));
 }
 
 TEST(QueryProperty, DecomposedHangulSyllableEnd)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0xD7A3, UnicodeProperty_QC_NFD));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0xD7A3, UnicodeProperty_Normalization_Decompose));
 }
 
 // Compatibility composed
 
 TEST(QueryProperty, CompatibilityComposedFoundNo)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x0A5B, UnicodeProperty_QC_NFKC));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x0A5B, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
 TEST(QueryProperty, CompatibilityComposedFoundMaybe)
 {
-	EXPECT_EQ(QuickCheckResult_Maybe, queryproperty(0x0B57, UnicodeProperty_QC_NFKC));
+	EXPECT_EQ(QuickCheckResult_Maybe, queryproperty(0x0B57, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
 TEST(QueryProperty, CompatibilityComposedFoundFirst)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x00A0, UnicodeProperty_QC_NFKC));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x00A0, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
 TEST(QueryProperty, CompatibilityComposedFoundLast)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x2FA1D, UnicodeProperty_QC_NFKC));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x2FA1D, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
 TEST(QueryProperty, CompatibilityComposedOutOfLowerBounds)
 {
-	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x007F, UnicodeProperty_QC_NFKC));
+	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x007F, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
 TEST(QueryProperty, CompatibilityComposedOutOfUpperBounds)
 {
-	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x30000, UnicodeProperty_QC_NFKC));
+	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x30000, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
 TEST(QueryProperty, CompatibilityComposedBetweenBlocks)
 {
-	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x1EE5C, UnicodeProperty_QC_NFKC));
+	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x1EE5C, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
 // Compatibility decomposed
 
 TEST(QueryProperty, CompatibilityDecomposedFoundNo)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x03F9, UnicodeProperty_QC_NFKD));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x03F9, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
 TEST(QueryProperty, CompatibilityDecomposedFoundFirst)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x00A0, UnicodeProperty_QC_NFKD));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x00A0, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
 TEST(QueryProperty, CompatibilityDecomposedFoundLast)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x2FA1D, UnicodeProperty_QC_NFKD));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0x2FA1D, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
 TEST(QueryProperty, CompatibilityDecomposedOutOfLowerBounds)
 {
-	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x007F, UnicodeProperty_QC_NFKD));
+	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x007F, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
 TEST(QueryProperty, CompatibilityDecomposedOutOfUpperBounds)
 {
-	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x30000, UnicodeProperty_QC_NFKD));
+	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x30000, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
 TEST(QueryProperty, CompatibilityDecomposedBetweenBlocks)
 {
-	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x038D, UnicodeProperty_QC_NFKD));
+	EXPECT_EQ(QuickCheckResult_Yes, queryproperty(0x038D, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
 TEST(QueryProperty, CompatibilityDecomposedHangulSyllable)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0xCCCA, UnicodeProperty_QC_NFKD));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0xCCCA, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
 TEST(QueryProperty, CompatibilityDecomposedHangulSyllableStart)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0xAC00, UnicodeProperty_QC_NFKD));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0xAC00, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
 TEST(QueryProperty, CompatibilityDecomposedHangulSyllableEnd)
 {
-	EXPECT_EQ(QuickCheckResult_No, queryproperty(0xD7A3, UnicodeProperty_QC_NFKD));
+	EXPECT_EQ(QuickCheckResult_No, queryproperty(0xD7A3, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
 // Uppercase
