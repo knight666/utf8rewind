@@ -244,10 +244,6 @@ class UnicodeMapping:
 				print "compose failed, missing " + hex(c) + " in database."
 	
 	def caseMapping(self):
-		# ignore ASCII
-		if self.codepoint < 0x7F:
-			return
-		
 		if self.uppercase:
 			converted = libs.utf8.unicodeToUtf8Hex(self.uppercase)
 			self.offsetUppercase = self.db.addTranslation(converted + "\\x00")
