@@ -13,6 +13,24 @@ TEST(FindDecomposition, NoResult)
 	EXPECT_EQ(nullptr, r);
 }
 
+TEST(FindDecomposition, Compose)
+{
+	int32_t e = 0;
+	const char* r = finddecomposition(0x0000011A, UnicodeProperty_Normalization_Compose, &e);
+
+	EXPECT_EQ(nullptr, r);
+	EXPECT_EQ(FindResult_Invalid, e);
+}
+
+TEST(FindDecomposition, CompatibilityCompose)
+{
+	int32_t e = 0;
+	const char* r = finddecomposition(0x0000009B, UnicodeProperty_Normalization_Compatibility_Compose, &e);
+
+	EXPECT_EQ(nullptr, r);
+	EXPECT_EQ(FindResult_Invalid, e);
+}
+
 TEST(FindDecomposition, InvalidQuery)
 {
 	int32_t e = 0;
