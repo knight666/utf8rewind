@@ -25,7 +25,7 @@
 
 #include "codepoint.h"
 
-const int8_t Utf8ByteLength[256] = {
+const int8_t codepoint_decoded_length[256] = {
 	/* Basic Latin */
 	1, 1, 1, 1, 1, 1, 1, 1, /* 0x00 - 0x07 */
 	1, 1, 1, 1, 1, 1, 1, 1, /* 0x08 - 0x0F */
@@ -95,7 +95,7 @@ static const size_t Utf8ByteMaximum[6] = {
 	0x0010FFFF
 };
 
-size_t lengthcodepoint(unicode_t codepoint)
+size_t codepoint_encoded_length(unicode_t codepoint)
 {
 	if (codepoint < 0x80)
 	{
@@ -119,7 +119,7 @@ size_t lengthcodepoint(unicode_t codepoint)
 	}
 }
 
-size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t* errors)
+size_t codepoint_write(unicode_t codepoint, char** dst, size_t* dstSize, int32_t* errors)
 {
 	char* target;
 	size_t encoded_length;
@@ -196,7 +196,7 @@ size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t*
 	return encoded_length;
 }
 
-size_t readcodepoint(unicode_t* codepoint, const char* input, size_t inputSize)
+size_t codepoint_read(unicode_t* codepoint, const char* input, size_t inputSize)
 {
 	const uint8_t* src = (const uint8_t*)input;
 	size_t decoded_length;
@@ -208,7 +208,7 @@ size_t readcodepoint(unicode_t* codepoint, const char* input, size_t inputSize)
 		return 1;
 	}
 
-	decoded_length = Utf8ByteLength[*src];
+	decoded_length = codepoint_decoded_length[*src];
 	if (decoded_length == 0)
 	{
 		*codepoint = REPLACEMENT_CHARACTER;

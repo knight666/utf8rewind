@@ -51,12 +51,12 @@
 #define HANGUL_S_LAST                 0xD7A3
 #define HANGUL_S_COUNT                11172 /* LCount * NCount */
 
-extern const int8_t Utf8ByteLength[256];
+extern const int8_t codepoint_decoded_length[256];
 
-size_t lengthcodepoint(unicode_t codepoint);
+size_t codepoint_encoded_length(unicode_t codepoint);
 
-size_t writecodepoint(unicode_t codepoint, char** dst, size_t* dstSize, int32_t* errors);
+size_t codepoint_write(unicode_t codepoint, char** dst, size_t* dstSize, int32_t* errors);
 
-size_t readcodepoint(unicode_t* codepoint, const char* input, size_t inputSize);
+size_t codepoint_read(unicode_t* codepoint, const char* input, size_t inputSize);
 
 #endif
