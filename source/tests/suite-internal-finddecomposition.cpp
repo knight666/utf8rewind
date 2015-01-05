@@ -435,7 +435,7 @@ TEST(FindDecomposition, LowercaseMissing)
 TEST(FindDecomposition, LowercaseMissingOutOfLowerBounds)
 {
 	int32_t e = 0;
-	const char* r = finddecomposition(0x00000061, DecompositionQuery_Lowercase, &e);
+	const char* r = finddecomposition(0x00000021, DecompositionQuery_Lowercase, &e);
 
 	EXPECT_EQ(nullptr, r);
 	EXPECT_EQ(FindResult_OutOfBounds, e);
@@ -542,7 +542,7 @@ TEST(FindDecomposition, TitlecaseMissing)
 TEST(FindDecomposition, TitlecaseMissingOutOfLowerBounds)
 {
 	int32_t e = 0;
-	const char* r = finddecomposition(0x00000072, DecompositionQuery_Titlecase, &e);
+	const char* r = finddecomposition(0x0000001A, DecompositionQuery_Titlecase, &e);
 
 	EXPECT_EQ(nullptr, r);
 	EXPECT_EQ(FindResult_OutOfBounds, e);

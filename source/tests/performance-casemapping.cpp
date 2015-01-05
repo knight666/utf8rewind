@@ -24,7 +24,19 @@ TEST(PerformanceCaseMapping, EveryCodepointLowercase)
 	for (unicode_t u = 0; u < 0x10FFFF; ++u)
 	{
 		utf32toutf8(&u, sizeof(unicode_t), d, 16, nullptr);
-		utf8tolower(d, 16, dl, 16, nullptr);
+		utf8transform(d, 16, dl, 16, UTF8_TRANSFORM_LOWERCASE, nullptr);
+	}
+}
+
+TEST(PerformanceCaseMapping, EveryCodepointLowercaseNormalized)
+{
+	char d[16] = { 0 };
+	char dl[16] = { 0 };
+
+	for (unicode_t u = 0; u < 0x10FFFF; ++u)
+	{
+		utf32toutf8(&u, sizeof(unicode_t), d, 16, nullptr);
+		utf8transform(d, 16, dl, 16, UTF8_TRANSFORM_LOWERCASE | UTF8_TRANSFORM_NORMALIZED, nullptr);
 	}
 }
 
@@ -51,5 +63,18 @@ TEST(PerformanceCaseMapping, QuickbrownLowercase)
 	ASSERT_EQ(4833, strlen(i));
 
 	char o[8192] = { 0 };
-	utf8tolower(i, strlen(i), o, 8192, nullptr);
+	utf8transform(i, strlen(i), o, 8192, UTF8_TRANSFORM_LOWERCASE, nullptr);
+}
+
+TEST(PerformanceCaseMapping, QuickbrownLowercaseNormalized)
+{
+	std::fstream f("testdata/quickbrown.txt", std::ios_base::in);
+	ASSERT_TRUE(f.is_open());
+
+	char i[8192] = { 0 };
+	f.read(i, 8192);
+	ASSERT_EQ(4833, strlen(i));
+
+	char o[8192] = { 0 };
+	utf8transform(i, strlen(i), o, 8192, UTF8_TRANSFORM_LOWERCASE | UTF8_TRANSFORM_NORMALIZED, nullptr);
 }
