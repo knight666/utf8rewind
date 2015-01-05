@@ -69,7 +69,7 @@ size_t utf8len(const char* text)
 	{
 		codepoint = (uint8_t)*text;
 
-		codepoint_length = Utf8ByteLength[codepoint];
+		codepoint_length = codepoint_decoded_length[codepoint];
 		if (codepoint_length != 0)
 		{
 			/* Check if encoding is valid */
@@ -180,7 +180,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 			codepoint = (unicode_t)current;
 		}
 
-		encoded_length = writecodepoint(codepoint, &dst, &dst_size, errors);
+		encoded_length = codepoint_write(codepoint, &dst, &dst_size, errors);
 		if (encoded_length == 0)
 		{
 			return bytes_written;
@@ -263,7 +263,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 				((codepoint - SURROGATE_HIGH_START) << 10);
 		}
 
-		encoded_length = writecodepoint(codepoint, &dst, &dst_size, errors);
+		encoded_length = codepoint_write(codepoint, &dst, &dst_size, errors);
 		if (encoded_length == 0)
 		{
 			return bytes_written;
@@ -319,7 +319,7 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 
 	while (src_length > 0)
 	{
-		decoded_length = readcodepoint(&codepoint, src, src_length);
+		decoded_length = codepoint_read(&codepoint, src, src_length);
 
 		if (codepoint <= MAX_BASIC_MULTILINGUAR_PLANE)
 		{
@@ -410,7 +410,7 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 
 	while (src_length > 0)
 	{
-		decoded_length = readcodepoint(&codepoint, src, src_length);
+		decoded_length = codepoint_read(&codepoint, src, src_length);
 
 		if (dst != 0)
 		{
@@ -462,7 +462,7 @@ const char* seekforward(const char* src, const char* srcEnd, size_t srcLength, o
 
 	do
 	{
-		size_t codepoint_length = Utf8ByteLength[(uint8_t)*src];
+		size_t codepoint_length = codepoint_decoded_length[(uint8_t)*src];
 		if (codepoint_length == 0)
 		{
 			codepoint_length = 1;
@@ -605,7 +605,7 @@ uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inpu
 
 	/* Read the first codepoint */
 
-	state->length[0] = readcodepoint(&state->codepoint[0], *state->src, *state->src_size);
+	state->length[0] = codepoint_read(&state->codepoint[0], *state->src, *state->src_size);
 	state->check[0] = queryproperty(state->codepoint[0], state->transform);
 
 	if (*state->src_size > state->length[0])
@@ -636,7 +636,7 @@ uint8_t compose_execute(ComposeState* state)
 
 		if (*state->src_size > 0)
 		{
-			state->length[state->next] = readcodepoint(&state->codepoint[state->next], *state->src, *state->src_size);
+			state->length[state->next] = codepoint_read(&state->codepoint[state->next], *state->src, *state->src_size);
 			state->check[state->next] = queryproperty(state->codepoint[state->next], state->transform);
 
 			if (*state->src_size >= state->length[state->next])
@@ -725,7 +725,7 @@ uint8_t compose_execute(ComposeState* state)
 		}
 
 		state->codepoint[state->current] = composed;
-		state->length[state->current] = lengthcodepoint(composed);
+		state->length[state->current] = codepoint_encoded_length(composed);
 		state->check[state->current] = queryproperty(composed, state->transform);
 	}
 
@@ -770,7 +770,7 @@ size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSiz
 		}
 	}
 
-	return writecodepoint(codepoint, target, targetSize, errors);
+	return codepoint_write(codepoint, target, targetSize, errors);
 }
 
 size_t transform_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t propertyType, uint8_t transformType, int32_t* errors)
@@ -815,7 +815,7 @@ size_t transform_decomposition(const char* input, size_t inputSize, char* target
 		{
 			size_t resolved_size = 0;
 			unicode_t codepoint;
-			size_t codepoint_length = readcodepoint(&codepoint, src, src_size);
+			size_t codepoint_length = codepoint_read(&codepoint, src, src_size);
 
 			if (queryproperty(codepoint, propertyType) == QuickCheckResult_No)
 			{
@@ -843,11 +843,11 @@ size_t transform_decomposition(const char* input, size_t inputSize, char* target
 						goto outofspace;
 					}
 
-					writecodepoint(l, &dst, &dst_size, errors);
-					writecodepoint(v, &dst, &dst_size, errors);
+					codepoint_write(l, &dst, &dst_size, errors);
+					codepoint_write(v, &dst, &dst_size, errors);
 					if (t != HANGUL_T_FIRST)
 					{
-						writecodepoint(t, &dst, &dst_size, errors);
+						codepoint_write(t, &dst, &dst_size, errors);
 					}
 				}
 				else
@@ -875,13 +875,13 @@ size_t transform_decomposition(const char* input, size_t inputSize, char* target
 					}
 					else
 					{
-						resolved_size = writecodepoint(codepoint, &dst, &dst_size, errors);
+						resolved_size = codepoint_write(codepoint, &dst, &dst_size, errors);
 					}
 				}
 			}
 			else
 			{
-				resolved_size = writecodepoint(codepoint, &dst, &dst_size, errors);
+				resolved_size = codepoint_write(codepoint, &dst, &dst_size, errors);
 			}
 
 			if (resolved_size == 0)
@@ -944,7 +944,7 @@ size_t transform_composition(const char* input, size_t inputSize, char* target, 
 				goto outofspace;
 			}
 
-			written = writecodepoint(state.codepoint[index], &dst, &dst_size, errors);
+			written = codepoint_write(state.codepoint[index], &dst, &dst_size, errors);
 			if (written == 0)
 			{
 				break;
@@ -1039,7 +1039,7 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 			else
 			{
 				unicode_t codepoint;
-				size_t codepoint_length = readcodepoint(&codepoint, src, src_size);
+				size_t codepoint_length = codepoint_read(&codepoint, src, src_size);
 
 				size_t written = casemapping_execute(codepoint, &dst, &dst_size, UnicodeProperty_Uppercase, errors);
 
@@ -1142,7 +1142,7 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 			else
 			{
 				unicode_t codepoint;
-				size_t codepoint_length = readcodepoint(&codepoint, src, src_size);
+				size_t codepoint_length = codepoint_read(&codepoint, src, src_size);
 
 				size_t written = casemapping_execute(codepoint, &dst, &dst_size, UnicodeProperty_Lowercase, errors);
 
