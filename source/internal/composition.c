@@ -147,8 +147,7 @@ uint8_t compose_execute(ComposeState* state)
 		{
 			/* Check database for composition */
 
-			int32_t find_result;
-			composed = database_querycomposition(state->codepoint[state->current], state->codepoint[state->next], &find_result);
+			composed = database_querycomposition(state->codepoint[state->current], state->codepoint[state->next]);
 		}
 
 		if (composed == 0)
