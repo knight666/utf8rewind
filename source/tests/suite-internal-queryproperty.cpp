@@ -4,276 +4,271 @@ extern "C" {
 	#include "../internal/database.h"
 }
 
-TEST(QueryProperty, NoResult)
-{
-	EXPECT_EQ(0, database_queryproperty(0x81288, UnicodeProperty_Normalization_Compose));
-}
-
-TEST(QueryProperty, InvalidNormalizationForm)
+TEST(QueryProperty, InvalidProperty)
 {
 	EXPECT_EQ(UTF8_INVALID_PROPERTY, database_queryproperty(0x00C0, 198));
 }
 
 // Composed
 
-TEST(QueryProperty, ComposedFoundNo)
+TEST(QueryPropertyComposed, FoundNo)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0x1FEE, UnicodeProperty_Normalization_Compose));
 }
 
-TEST(QueryProperty, ComposedFoundMaybe)
+TEST(QueryPropertyComposed, FoundMaybe)
 {
 	EXPECT_EQ(QuickCheckResult_Maybe, database_queryproperty(0x0DCF, UnicodeProperty_Normalization_Compose));
 }
 
-TEST(QueryProperty, ComposedFoundFirst)
+TEST(QueryPropertyComposed, FoundFirst)
 {
 	EXPECT_EQ(QuickCheckResult_Maybe, database_queryproperty(0x0300, UnicodeProperty_Normalization_Compose));
 }
 
-TEST(QueryProperty, ComposedFoundLast)
+TEST(QueryPropertyComposed, FoundLast)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0x2FA1D, UnicodeProperty_Normalization_Compose));
 }
 
-TEST(QueryProperty, ComposedOutOfLowerBounds)
+TEST(QueryPropertyComposed, OutOfLowerBounds)
 {
 	EXPECT_EQ(QuickCheckResult_Yes, database_queryproperty(0x00FF, UnicodeProperty_Normalization_Compose));
 }
 
-TEST(QueryProperty, ComposedOutOfUpperBounds)
+TEST(QueryPropertyComposed, OutOfUpperBounds)
 {
 	EXPECT_EQ(QuickCheckResult_Yes, database_queryproperty(0x30000, UnicodeProperty_Normalization_Compose));
 }
 
-TEST(QueryProperty, ComposedBetweenBlocks)
+TEST(QueryPropertyComposed, BetweenBlocks)
 {
 	EXPECT_EQ(QuickCheckResult_Yes, database_queryproperty(0x2B81, UnicodeProperty_Normalization_Compose));
 }
 
 // Decomposed
 
-TEST(QueryProperty, DecomposedFoundNo)
+TEST(QueryPropertyDecomposed, FoundNo)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0x0374, UnicodeProperty_Normalization_Decompose));
 }
 
-TEST(QueryProperty, DecomposedFoundFirst)
+TEST(QueryPropertyDecomposed, FoundFirst)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0x00C0, UnicodeProperty_Normalization_Decompose));
 }
 
-TEST(QueryProperty, DecomposedFoundLast)
+TEST(QueryPropertyDecomposed, FoundLast)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0x2FA1D, UnicodeProperty_Normalization_Decompose));
 }
 
-TEST(QueryProperty, DecomposedOutOfLowerBounds)
+TEST(QueryPropertyDecomposed, OutOfLowerBounds)
 {
 	EXPECT_EQ(QuickCheckResult_Yes, database_queryproperty(0x007F, UnicodeProperty_Normalization_Decompose));
 }
 
-TEST(QueryProperty, DecomposedOutOfUpperBounds)
+TEST(QueryPropertyDecomposed, OutOfUpperBounds)
 {
 	EXPECT_EQ(QuickCheckResult_Yes, database_queryproperty(0x30000, UnicodeProperty_Normalization_Decompose));
 }
 
-TEST(QueryProperty, DecomposedBetweenBlocks)
+TEST(QueryPropertyDecomposed, BetweenBlocks)
 {
 	EXPECT_EQ(QuickCheckResult_Yes, database_queryproperty(0xFB20, UnicodeProperty_Normalization_Decompose));
 }
 
-TEST(QueryProperty, DecomposedHangulSyllable)
+TEST(QueryPropertyDecomposed, HangulSyllable)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0xB1A1, UnicodeProperty_Normalization_Decompose));
 }
 
-TEST(QueryProperty, DecomposedHangulSyllableStart)
+TEST(QueryPropertyDecomposed, HangulSyllableStart)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0xAC00, UnicodeProperty_Normalization_Decompose));
 }
 
-TEST(QueryProperty, DecomposedHangulSyllableEnd)
+TEST(QueryPropertyDecomposed, HangulSyllableEnd)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0xD7A3, UnicodeProperty_Normalization_Decompose));
 }
 
 // Compatibility composed
 
-TEST(QueryProperty, CompatibilityComposedFoundNo)
+TEST(QueryPropertyCompatibilityComposed, FoundNo)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0x0A5B, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
-TEST(QueryProperty, CompatibilityComposedFoundMaybe)
+TEST(QueryPropertyCompatibilityComposed, FoundMaybe)
 {
 	EXPECT_EQ(QuickCheckResult_Maybe, database_queryproperty(0x0B57, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
-TEST(QueryProperty, CompatibilityComposedFoundFirst)
+TEST(QueryPropertyCompatibilityComposed, FoundFirst)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0x00A0, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
-TEST(QueryProperty, CompatibilityComposedFoundLast)
+TEST(QueryPropertyCompatibilityComposed, FoundLast)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0x2FA1D, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
-TEST(QueryProperty, CompatibilityComposedOutOfLowerBounds)
+TEST(QueryPropertyCompatibilityComposed, OutOfLowerBounds)
 {
 	EXPECT_EQ(QuickCheckResult_Yes, database_queryproperty(0x007F, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
-TEST(QueryProperty, CompatibilityComposedOutOfUpperBounds)
+TEST(QueryPropertyCompatibilityComposed, OutOfUpperBounds)
 {
 	EXPECT_EQ(QuickCheckResult_Yes, database_queryproperty(0x30000, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
-TEST(QueryProperty, CompatibilityComposedBetweenBlocks)
+TEST(QueryPropertyCompatibilityComposed, BetweenBlocks)
 {
 	EXPECT_EQ(QuickCheckResult_Yes, database_queryproperty(0x1EE5C, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
 // Compatibility decomposed
 
-TEST(QueryProperty, CompatibilityDecomposedFoundNo)
+TEST(QueryPropertyCompatibilityDecomposed, FoundNo)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0x03F9, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
-TEST(QueryProperty, CompatibilityDecomposedFoundFirst)
+TEST(QueryPropertyCompatibilityDecomposed, FoundFirst)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0x00A0, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
-TEST(QueryProperty, CompatibilityDecomposedFoundLast)
+TEST(QueryPropertyCompatibilityDecomposed, FoundLast)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0x2FA1D, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
-TEST(QueryProperty, CompatibilityDecomposedOutOfLowerBounds)
+TEST(QueryPropertyCompatibilityDecomposed, OutOfLowerBounds)
 {
 	EXPECT_EQ(QuickCheckResult_Yes, database_queryproperty(0x007F, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
-TEST(QueryProperty, CompatibilityDecomposedOutOfUpperBounds)
+TEST(QueryPropertyCompatibilityDecomposed, OutOfUpperBounds)
 {
 	EXPECT_EQ(QuickCheckResult_Yes, database_queryproperty(0x30000, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
-TEST(QueryProperty, CompatibilityDecomposedBetweenBlocks)
+TEST(QueryPropertyCompatibilityDecomposed, BetweenBlocks)
 {
 	EXPECT_EQ(QuickCheckResult_Yes, database_queryproperty(0x038D, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
-TEST(QueryProperty, CompatibilityDecomposedHangulSyllable)
+TEST(QueryPropertyCompatibilityDecomposed, HangulSyllable)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0xCCCA, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
-TEST(QueryProperty, CompatibilityDecomposedHangulSyllableStart)
+TEST(QueryPropertyCompatibilityDecomposed, HangulSyllableStart)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0xAC00, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
-TEST(QueryProperty, CompatibilityDecomposedHangulSyllableEnd)
+TEST(QueryPropertyCompatibilityDecomposed, HangulSyllableEnd)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0xD7A3, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
 // Uppercase
 
-TEST(QueryProperty, UppercaseFound)
+TEST(QueryPropertyUppercase, Found)
 {
 	EXPECT_EQ(1, database_queryproperty(0x0101, UnicodeProperty_Uppercase));
 }
 
-TEST(QueryProperty, UppercaseFoundFirst)
+TEST(QueryPropertyUppercase, FoundFirst)
 {
 	EXPECT_EQ(1, database_queryproperty(0x0061, UnicodeProperty_Uppercase));
 }
 
-TEST(QueryProperty, UppercaseFoundLast)
+TEST(QueryPropertyUppercase, FoundLast)
 {
 	EXPECT_EQ(1, database_queryproperty(0x118DF, UnicodeProperty_Uppercase));
 }
 
-TEST(QueryProperty, UppercaseOutOfLowerBounds)
+TEST(QueryPropertyUppercase, OutOfLowerBounds)
 {
 	EXPECT_EQ(0, database_queryproperty(0x0020, UnicodeProperty_Uppercase));
 }
 
-TEST(QueryProperty, UppercaseOutOfUpperBounds)
+TEST(QueryPropertyUppercase, OutOfUpperBounds)
 {
 	EXPECT_EQ(0, database_queryproperty(0x0020, UnicodeProperty_Uppercase));
 }
 
-TEST(QueryProperty, UppercaseBetweenBlocks)
+TEST(QueryPropertyUppercase, BetweenBlocks)
 {
 	EXPECT_EQ(0, database_queryproperty(0x2C5F, UnicodeProperty_Uppercase));
 }
 
 // Lowercase
 
-TEST(QueryProperty, LowercaseFound)
+TEST(QueryPropertyLowercase, Found)
 {
 	EXPECT_EQ(1, database_queryproperty(0x01B5, UnicodeProperty_Lowercase));
 }
 
-TEST(QueryProperty, LowercaseFoundFirst)
+TEST(QueryPropertyLowercase, FoundFirst)
 {
 	EXPECT_EQ(1, database_queryproperty(0x0041, UnicodeProperty_Lowercase));
 }
 
-TEST(QueryProperty, LowercaseFoundLast)
+TEST(QueryPropertyLowercase, FoundLast)
 {
 	EXPECT_EQ(1, database_queryproperty(0x118Bf, UnicodeProperty_Lowercase));
 }
 
-TEST(QueryProperty, LowercaseOutOfLowerBounds)
+TEST(QueryPropertyLowercase, OutOfLowerBounds)
 {
 	EXPECT_EQ(0, database_queryproperty(0x002F, UnicodeProperty_Lowercase));
 }
 
-TEST(QueryProperty, LowercaseOutOfUpperBounds)
+TEST(QueryPropertyLowercase, OutOfUpperBounds)
 {
 	EXPECT_EQ(0, database_queryproperty(0x121F4, UnicodeProperty_Lowercase));
 }
 
-TEST(QueryProperty, LowercaseBetweenBlocks)
+TEST(QueryPropertyLowercase, BetweenBlocks)
 {
 	EXPECT_EQ(0, database_queryproperty(0x2180, UnicodeProperty_Lowercase));
 }
 
 // Titlecase
 
-TEST(QueryProperty, TitlecaseFound)
+TEST(QueryPropertyTitlecase, Found)
 {
 	EXPECT_EQ(1, database_queryproperty(0x028B, UnicodeProperty_Titlecase));
 }
 
-TEST(QueryProperty, TitlecaseFoundFirst)
+TEST(QueryPropertyTitlecase, FoundFirst)
 {
 	EXPECT_EQ(1, database_queryproperty(0x0061, UnicodeProperty_Titlecase));
 }
 
-TEST(QueryProperty, TitlecaseFoundLast)
+TEST(QueryPropertyTitlecase, FoundLast)
 {
 	EXPECT_EQ(1, database_queryproperty(0x118DF, UnicodeProperty_Titlecase));
 }
 
-TEST(QueryProperty, TitlecaseOutOfLowerBounds)
+TEST(QueryPropertyTitlecase, OutOfLowerBounds)
 {
 	EXPECT_EQ(0, database_queryproperty(0x0018, UnicodeProperty_Titlecase));
 }
 
-TEST(QueryProperty, TitlecaseOutOfUpperBounds)
+TEST(QueryPropertyTitlecase, OutOfUpperBounds)
 {
 	EXPECT_EQ(0, database_queryproperty(0x1D20FF, UnicodeProperty_Titlecase));
 }
 
-TEST(QueryProperty, TitlecaseBetweenBlocks)
+TEST(QueryPropertyTitlecase, BetweenBlocks)
 {
 	EXPECT_EQ(0, database_queryproperty(0x2180, UnicodeProperty_Titlecase));
 }

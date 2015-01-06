@@ -6,20 +6,22 @@ extern "C" {
 
 #include "helpers-strings.hpp"
 
-TEST(QueryDecomposition, PropertyComposeProperty)
+TEST(QueryDecomposition, ComposeProperty)
 {
 	EXPECT_EQ(nullptr, database_querydecomposition(0x0000011A, UnicodeProperty_Normalization_Compose));
 }
 
-TEST(QueryDecomposition, PropertyCompatibilityComposeProperty)
+TEST(QueryDecomposition, CompatibilityComposeProperty)
 {
 	EXPECT_EQ(nullptr, database_querydecomposition(0x0000009B, UnicodeProperty_Normalization_Compatibility_Compose));
 }
 
-TEST(QueryDecomposition, PropertyInvalid)
+TEST(QueryDecomposition, InvalidProperty)
 {
 	EXPECT_EQ(nullptr, database_querydecomposition(0x0002F974, 33));
 }
+
+// Decomposed
 
 TEST(QueryDecompositionDecomposed, Found)
 {
@@ -76,6 +78,8 @@ TEST(QueryDecompositionDecomposed, MissingOutOfUpperBounds)
 	EXPECT_EQ(nullptr, database_querydecomposition(0x0011A26D, UnicodeProperty_Normalization_Decompose));
 }
 
+// Compatibility decomposed
+
 TEST(QueryDecompositionCompatibilityDecomposed, Found)
 {
 	EXPECT_UTF8EQ("\xD0\x98\xCC\x88", database_querydecomposition(0x000004E4, UnicodeProperty_Normalization_Compatibility_Decompose));
@@ -130,6 +134,8 @@ TEST(QueryDecompositionCompatibilityDecomposed, MissingOutOfUpperBounds)
 {
 	EXPECT_EQ(nullptr, database_querydecomposition(0x00DD2A5D, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
+
+// Uppercase
 
 TEST(QueryDecompositionUppercase, Found)
 {
@@ -186,6 +192,8 @@ TEST(QueryDecompositionUppercase, MissingOutOfUpperBounds)
 	EXPECT_EQ(nullptr, database_querydecomposition(0x00101111, UnicodeProperty_Uppercase));
 }
 
+// Lowercase
+
 TEST(QueryDecompositionLowercase, Found)
 {
 	EXPECT_UTF8EQ("\xCE\xB3", database_querydecomposition(0x00000393, UnicodeProperty_Lowercase));
@@ -240,6 +248,8 @@ TEST(QueryDecompositionLowercase, MissingOutOfUpperBounds)
 {
 	EXPECT_EQ(nullptr, database_querydecomposition(0x00012000, UnicodeProperty_Lowercase));
 }
+
+// Titlecase
 
 TEST(QueryDecompositionTitlecase, Found)
 {
