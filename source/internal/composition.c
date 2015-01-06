@@ -25,8 +25,8 @@
 
 #include "composition.h"
 
-#include "../normalization.h"
 #include "codepoint.h"
+#include "database.h"
 
 uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inputSize, uint8_t propertyType)
 {

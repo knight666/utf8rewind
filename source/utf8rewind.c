@@ -28,8 +28,8 @@
 #include "internal/casemapping.h"
 #include "internal/codepoint.h"
 #include "internal/composition.h"
+#include "internal/database.h"
 #include "internal/seeking.h"
-#include "normalization.h"
 
 #if defined(__GNUC__) && !defined(COMPILER_ICC)
 	#define UTF8_UNUSED(_parameter) _parameter __attribute__ ((unused))
