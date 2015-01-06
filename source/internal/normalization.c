@@ -73,7 +73,7 @@ size_t normalize_decomposition(const char* input, size_t inputSize, char* target
 			unicode_t codepoint;
 			size_t codepoint_length = codepoint_read(&codepoint, src, src_size);
 
-			if (queryproperty(codepoint, propertyType) == QuickCheckResult_No)
+			if (database_queryproperty(codepoint, propertyType) == QuickCheckResult_No)
 			{
 				if (codepoint >= HANGUL_S_FIRST &&
 					codepoint <= HANGUL_S_LAST)
@@ -109,7 +109,7 @@ size_t normalize_decomposition(const char* input, size_t inputSize, char* target
 				else
 				{
 					int32_t find_result;
-					const char* resolved = finddecomposition(codepoint, propertyType, &find_result);
+					const char* resolved = database_querydecomposition(codepoint, propertyType, &find_result);
 
 					if (find_result == FindResult_Found)
 					{
