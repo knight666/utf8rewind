@@ -1,7 +1,7 @@
 #include "tests-base.hpp"
 
 extern "C" {
-	#include "../normalization.h"
+	#include "../internal/database.h"
 }
 
 #include "helpers-strings.hpp"
