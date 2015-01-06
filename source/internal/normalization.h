@@ -28,8 +28,8 @@
 
 #include "utf8rewind.h"
 
-size_t transform_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t propertyType, uint8_t transformType, int32_t* errors);
+size_t normalize_decomposition(const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t propertyType, int32_t* errors);
 
-size_t transform_composition(const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t propertyType, int32_t* errors);
+size_t normalize_composition(const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t propertyType, int32_t* errors);
 
 #endif

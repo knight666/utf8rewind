@@ -707,22 +707,22 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	if (
 		(flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
 	{
-		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Decompose, UnicodeProperty_Normalization_Decompose, errors);
+		return normalize_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Decompose, errors);
 	}
 	else if (
 		(flags & UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED) != 0)
 	{
-		return transform_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compatibility_Decompose, UnicodeProperty_Normalization_Compatibility_Decompose, errors);
+		return normalize_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compatibility_Decompose, errors);
 	}
 	else if (
 		(flags & UTF8_TRANSFORM_COMPOSED) != 0)
 	{
-		return transform_composition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compose, errors);
+		return normalize_composition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compose, errors);
 	}
 	else if (
 		(flags & UTF8_TRANSFORM_COMPATIBILITY_COMPOSED) != 0)
 	{
-		return transform_composition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compatibility_Compose, errors);
+		return normalize_composition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compatibility_Compose, errors);
 	}
 	else
 	{
