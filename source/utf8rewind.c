@@ -38,17 +38,6 @@
 	#define UTF8_UNUSED(_parameter) _parameter
 #endif
 
-char* safe_strcpy(char* target, size_t targetSize, const char* input, size_t inputSize)
-{
-#if WIN32 || _WINDOWS
-	strncpy_s(target, targetSize, input, inputSize);
-	return target;
-#else
-	size_t copy_size = (targetSize < inputSize) ? targetSize : inputSize;
-	return strncpy(target, input, copy_size);
-#endif
-}
-
 size_t utf8len(const char* text)
 {
 	const char* src;
