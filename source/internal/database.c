@@ -23,9 +23,9 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "normalization.h"
+#include "database.h"
 
-#include "unicodedatabase.h"
+#include "../unicodedatabase.h"
 
 uint8_t queryproperty(unicode_t codepoint, uint8_t checkType)
 {

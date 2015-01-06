@@ -25,8 +25,8 @@
 
 #include "casemapping.h"
 
-#include "../normalization.h"
 #include "codepoint.h"
+#include "database.h"
 
 size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t propertyType, int32_t* errors)
 {
