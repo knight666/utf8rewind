@@ -28,8 +28,8 @@
 
 #include "utf8rewind.h"
 
-const char* seekforward(const char* src, const char* srcEnd, size_t srcLength, off_t offset);
+const char* seeking_forward(const char* src, const char* srcEnd, size_t srcLength, off_t offset);
 
-const char* seekrewind(const char* srcStart, const char* src, size_t srcLength, off_t offset);
+const char* seeking_rewind(const char* srcStart, const char* src, size_t srcLength, off_t offset);
 
 #endif

@@ -251,4 +251,3 @@ size_t codepoint_read(unicode_t* codepoint, const char* input, size_t inputSize)
 
 	return decoded_length;
 }
-
