@@ -17,6 +17,8 @@
 				'source/internal/codepoint.h',
 				'source/internal/composition.c',
 				'source/internal/composition.h',
+				'source/internal/seeking.c',
+				'source/internal/seeking.h',
 				'source/normalization.h',
 				'source/normalization.c',
 				'source/unicodedatabase.c',
