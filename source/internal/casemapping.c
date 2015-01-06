@@ -30,10 +30,10 @@
 
 size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t propertyType, int32_t* errors)
 {
-	if (queryproperty(codepoint, propertyType) == 1)
+	if (database_queryproperty(codepoint, propertyType) == 1)
 	{
 		int32_t find_result;
-		const char* resolved = finddecomposition(codepoint, propertyType, &find_result);
+		const char* resolved = database_querydecomposition(codepoint, propertyType, &find_result);
 
 		if (find_result == FindResult_Found)
 		{

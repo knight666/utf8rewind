@@ -56,10 +56,10 @@ enum FindResult
 	FindResult_Invalid
 };
 
-uint8_t queryproperty(unicode_t codepoint, uint8_t property);
+uint8_t database_queryproperty(unicode_t codepoint, uint8_t property);
 
-const char* finddecomposition(unicode_t codepoint, uint8_t property, int32_t* result);
+const char* database_querydecomposition(unicode_t codepoint, uint8_t property, int32_t* result);
 
-unicode_t querycomposition(unicode_t left, unicode_t right, int32_t* result);
+unicode_t database_querycomposition(unicode_t left, unicode_t right, int32_t* result);
 
 #endif

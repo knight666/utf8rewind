@@ -27,7 +27,7 @@
 
 #include "../unicodedatabase.h"
 
-uint8_t queryproperty(unicode_t codepoint, uint8_t checkType)
+uint8_t database_queryproperty(unicode_t codepoint, uint8_t checkType)
 {
 	const QuickCheckRecord* record;
 	size_t record_count;
@@ -150,7 +150,7 @@ found:
 	}
 }
 
-const char* finddecomposition(unicode_t codepoint, uint8_t property, int32_t* result)
+const char* database_querydecomposition(unicode_t codepoint, uint8_t property, int32_t* result)
 {
 	const DecompositionRecord* record;
 	size_t record_count;
@@ -268,7 +268,7 @@ found:
 	}
 }
 
-unicode_t querycomposition(unicode_t left, unicode_t right, int32_t* result)
+unicode_t database_querycomposition(unicode_t left, unicode_t right, int32_t* result)
 {
 	uint64_t key = ((uint64_t)left << 32) + (uint64_t)right;
 	size_t offset_start;

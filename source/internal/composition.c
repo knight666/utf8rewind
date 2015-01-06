@@ -45,7 +45,7 @@ uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inpu
 	/* Read the first codepoint */
 
 	state->length[0] = codepoint_read(&state->codepoint[0], *state->src, *state->src_size);
-	state->check[0] = queryproperty(state->codepoint[0], state->property);
+	state->check[0] = database_queryproperty(state->codepoint[0], state->property);
 
 	if (*state->src_size > state->length[0])
 	{
@@ -76,7 +76,7 @@ uint8_t compose_execute(ComposeState* state)
 		if (*state->src_size > 0)
 		{
 			state->length[state->next] = codepoint_read(&state->codepoint[state->next], *state->src, *state->src_size);
-			state->check[state->next] = queryproperty(state->codepoint[state->next], state->property);
+			state->check[state->next] = database_queryproperty(state->codepoint[state->next], state->property);
 
 			if (*state->src_size >= state->length[state->next])
 			{
@@ -148,7 +148,7 @@ uint8_t compose_execute(ComposeState* state)
 			/* Check database for composition */
 
 			int32_t find_result;
-			composed = querycomposition(state->codepoint[state->current], state->codepoint[state->next], &find_result);
+			composed = database_querycomposition(state->codepoint[state->current], state->codepoint[state->next], &find_result);
 		}
 
 		if (composed == 0)
@@ -165,7 +165,7 @@ uint8_t compose_execute(ComposeState* state)
 
 		state->codepoint[state->current] = composed;
 		state->length[state->current] = codepoint_encoded_length(composed);
-		state->check[state->current] = queryproperty(composed, state->property);
+		state->check[state->current] = database_queryproperty(composed, state->property);
 	}
 
 	/* Swap buffers */
