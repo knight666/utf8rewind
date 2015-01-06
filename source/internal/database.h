@@ -30,13 +30,6 @@
 
 #define UTF8_INVALID_PROPERTY (uint8_t)-1
 
-enum QuickCheckResult
-{
-	QuickCheckResult_Yes,
-	QuickCheckResult_Maybe,
-	QuickCheckResult_No,
-};
-
 enum UnicodeProperty
 {
 	UnicodeProperty_Normalization_Compose,
@@ -48,12 +41,11 @@ enum UnicodeProperty
 	UnicodeProperty_Titlecase,
 };
 
-enum FindResult
+enum QuickCheckResult
 {
-	FindResult_Found,
-	FindResult_Missing,
-	FindResult_OutOfBounds,
-	FindResult_Invalid
+	QuickCheckResult_Yes,
+	QuickCheckResult_Maybe,
+	QuickCheckResult_No,
 };
 
 uint8_t database_queryproperty(unicode_t codepoint, uint8_t property);
