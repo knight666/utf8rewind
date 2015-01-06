@@ -108,10 +108,8 @@ size_t normalize_decomposition(const char* input, size_t inputSize, char* target
 				}
 				else
 				{
-					int32_t find_result;
-					const char* resolved = database_querydecomposition(codepoint, propertyType, &find_result);
-
-					if (find_result == FindResult_Found)
+					const char* resolved = database_querydecomposition(codepoint, propertyType);
+					if (resolved != 0)
 					{
 						resolved_size = strlen(resolved);
 
