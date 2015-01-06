@@ -23,49 +23,9 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "normalization.h"
+#include "database.h"
 
-extern const size_t UnicodeQuickCheckNFCRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckNFCRecordPtr;
-
-extern const size_t UnicodeQuickCheckNFDRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckNFDRecordPtr;
-
-extern const size_t UnicodeQuickCheckNFKCRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckNFKCRecordPtr;
-
-extern const size_t UnicodeQuickCheckNFKDRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckNFKDRecordPtr;
-
-extern const size_t UnicodeQuickCheckUppercaseRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckUppercaseRecordPtr;
-
-extern const size_t UnicodeQuickCheckLowercaseRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckLowercaseRecordPtr;
-
-extern const size_t UnicodeQuickCheckTitlecaseRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckTitlecaseRecordPtr;
-
-extern const size_t UnicodeNFDRecordCount;
-extern const DecompositionRecord* UnicodeNFDRecordPtr;
-
-extern const size_t UnicodeNFKDRecordCount;
-extern const DecompositionRecord* UnicodeNFKDRecordPtr;
-
-extern const size_t UnicodeUppercaseRecordCount;
-extern const DecompositionRecord* UnicodeUppercaseRecordPtr;
-
-extern const size_t UnicodeLowercaseRecordCount;
-extern const DecompositionRecord* UnicodeLowercaseRecordPtr;
-
-extern const size_t UnicodeTitlecaseRecordCount;
-extern const DecompositionRecord* UnicodeTitlecaseRecordPtr;
-
-extern const size_t UnicodeCompositionRecordCount;
-extern const CompositionRecord* UnicodeCompositionRecordPtr;
-
-extern const char* DecompositionData;
-extern const size_t DecompositionDataLength;
+#include "../unicodedatabase.h"
 
 uint8_t queryproperty(unicode_t codepoint, uint8_t checkType)
 {

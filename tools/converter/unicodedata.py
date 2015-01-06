@@ -822,6 +822,15 @@ class Database(libs.unicode.UnicodeVisitor):
 		# comment header
 		
 		header = libs.header.Header(filepath)
+		
+		header.writeLine("/*")
+		header.indent()
+		header.copyrightNotice()
+		header.outdent()
+		header.writeLine("*/")
+		
+		header.newLine()
+		
 		header.writeLine("/*")
 		header.indent()
 		header.writeLine("DO NOT MODIFY, AUTO-GENERATED")
@@ -837,11 +846,13 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.outdent()
 		header.outdent()
 		header.writeLine("*/")
+		
 		header.newLine()
 		
 		# includes
 		
-		header.writeLine("#include \"normalization.h\"")
+		header.writeLine("#include \"unicodedatabase.h\"")
+		
 		header.newLine()
 		
 		# quick check records
