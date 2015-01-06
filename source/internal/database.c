@@ -256,28 +256,17 @@ found:
 	return DecompositionData + record_found->offset;
 }
 
-unicode_t database_querycomposition(unicode_t left, unicode_t right, int32_t* result)
+unicode_t database_querycomposition(unicode_t left, unicode_t right)
 {
 	uint64_t key = ((uint64_t)left << 32) + (uint64_t)right;
-	size_t offset_start;
-	size_t offset_end;
+	size_t offset_start = 0;
+	size_t offset_end = UnicodeCompositionRecordCount - 1;
 	size_t offset_pivot;
-	const CompositionRecord* record = UnicodeCompositionRecordPtr;
-	size_t record_count = UnicodeCompositionRecordCount;
 	size_t i;
 
-	if (result == 0)
+	if (key < UnicodeCompositionRecordPtr[offset_start].key ||
+		key > UnicodeCompositionRecordPtr[offset_end].key)
 	{
-		return 0;
-	}
-
-	offset_start = 0;
-	offset_end = record_count - 1;
-
-	if (key < record[offset_start].key ||
-		key > record[offset_end].key)
-	{
-		*result = FindResult_OutOfBounds;
 		return 0;
 	}
 
@@ -285,24 +274,21 @@ unicode_t database_querycomposition(unicode_t left, unicode_t right, int32_t* re
 	{
 		offset_pivot = offset_start + ((offset_end - offset_start) / 2);
 
-		if (key == record[offset_start].key)
+		if (key == UnicodeCompositionRecordPtr[offset_start].key)
 		{
-			*result = FindResult_Found;
-			return record[offset_start].value;
+			return UnicodeCompositionRecordPtr[offset_start].value;
 		}
-		else if (key == record[offset_end].key)
+		else if (key == UnicodeCompositionRecordPtr[offset_end].key)
 		{
-			*result = FindResult_Found;
-			return record[offset_end].value;
+			return UnicodeCompositionRecordPtr[offset_end].value;
 		}
-		else if (key == record[offset_pivot].key)
+		else if (key == UnicodeCompositionRecordPtr[offset_pivot].key)
 		{
-			*result = FindResult_Found;
-			return record[offset_pivot].value;
+			return UnicodeCompositionRecordPtr[offset_pivot].value;
 		}
 		else
 		{
-			if (key > record[offset_pivot].key)
+			if (key > UnicodeCompositionRecordPtr[offset_pivot].key)
 			{
 				offset_start = offset_pivot;
 			}
@@ -316,13 +302,11 @@ unicode_t database_querycomposition(unicode_t left, unicode_t right, int32_t* re
 
 	for (i = offset_start; i <= offset_end; ++i)
 	{
-		if (key == record[i].key)
+		if (key == UnicodeCompositionRecordPtr[i].key)
 		{
-			*result = FindResult_Found;
-			return record[i].value;
+			return UnicodeCompositionRecordPtr[i].value;
 		}
 	}
 
-	*result = FindResult_Missing;
 	return 0;
 }

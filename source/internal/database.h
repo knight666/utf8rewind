@@ -60,6 +60,6 @@ uint8_t database_queryproperty(unicode_t codepoint, uint8_t property);
 
 const char* database_querydecomposition(unicode_t codepoint, uint8_t property);
 
-unicode_t database_querycomposition(unicode_t left, unicode_t right, int32_t* result);
+unicode_t database_querycomposition(unicode_t left, unicode_t right);
 
 #endif
