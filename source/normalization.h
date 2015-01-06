@@ -30,22 +30,6 @@
 
 #define UTF8_INVALID_PROPERTY (uint8_t)-1
 
-typedef struct {
-	unicode_t start;
-	unicode_t end;
-	unicode_t count_and_value;
-} QuickCheckRecord;
-
-typedef struct {
-	unicode_t codepoint;
-	size_t offset;
-} DecompositionRecord;
-
-typedef struct {
-	uint64_t key;
-	unicode_t value;
-} CompositionRecord;
-
 enum QuickCheckResult
 {
 	QuickCheckResult_Yes,
