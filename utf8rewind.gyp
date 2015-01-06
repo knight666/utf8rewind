@@ -19,6 +19,8 @@
 				'source/internal/composition.h',
 				'source/internal/database.c',
 				'source/internal/database.h',
+				'source/internal/normalization.c',
+				'source/internal/normalization.h',
 				'source/internal/seeking.c',
 				'source/internal/seeking.h',
 				'source/unicodedatabase.c',
