@@ -150,7 +150,7 @@ found:
 	}
 }
 
-const char* database_querydecomposition(unicode_t codepoint, uint8_t property, int32_t* result)
+const char* database_querydecomposition(unicode_t codepoint, uint8_t property)
 {
 	const DecompositionRecord* record;
 	size_t record_count;
@@ -159,11 +159,6 @@ const char* database_querydecomposition(unicode_t codepoint, uint8_t property, i
 	size_t offset_end;
 	size_t offset_pivot;
 	size_t i;
-
-	if (result == 0)
-	{
-		return 0;
-	}
 
 	switch (property)
 	{
@@ -194,7 +189,6 @@ const char* database_querydecomposition(unicode_t codepoint, uint8_t property, i
 		break;
 
 	default:
-		*result = FindResult_Invalid;
 		return 0;
 
 	}
@@ -205,7 +199,6 @@ const char* database_querydecomposition(unicode_t codepoint, uint8_t property, i
 	if (codepoint < record[offset_start].codepoint ||
 		codepoint > record[offset_end].codepoint)
 	{
-		*result = FindResult_OutOfBounds;
 		return 0;
 	}
 
@@ -251,21 +244,16 @@ const char* database_querydecomposition(unicode_t codepoint, uint8_t property, i
 		}
 	}
 
-	*result = FindResult_Missing;
 	return 0;
 
 found:
 	if (record_found->offset == 0 ||
 		record_found->offset >= DecompositionDataLength)
 	{
-		*result = FindResult_OutOfBounds;
 		return 0;
 	}
-	else
-	{
-		*result = FindResult_Found;
-		return DecompositionData + record_found->offset;
-	}
+
+	return DecompositionData + record_found->offset;
 }
 
 unicode_t database_querycomposition(unicode_t left, unicode_t right, int32_t* result)
