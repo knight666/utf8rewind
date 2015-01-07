@@ -177,6 +177,40 @@ TEST(QueryPropertyCompatibilityDecomposed, HangulSyllableEnd)
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0xD7A3, UnicodeProperty_Normalization_Compatibility_Decompose));
 }
 
+// General category
+
+TEST(QueryPropertyGeneralCategory, Found)
+{
+	EXPECT_EQ(GeneralCategory_Letter, database_queryproperty(0x671, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_CaseMapped | GeneralCategory_Letter, database_queryproperty(0x10400, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_Mark, database_queryproperty(0x16AF0, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_Number, database_queryproperty(0x10B78, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_Punctuation, database_queryproperty(0x111C5, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_Symbol, database_queryproperty(0x1FED, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_Separator, database_queryproperty(0x1680, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_Other, database_queryproperty(0x200B, UnicodeProperty_GeneralCategory));
+}
+
+TEST(QueryPropertyGeneralCategory, FoundFirst)
+{
+	EXPECT_EQ(GeneralCategory_Other, database_queryproperty(0x0000, UnicodeProperty_GeneralCategory));
+}
+
+TEST(QueryPropertyGeneralCategory, FoundLast)
+{
+	EXPECT_EQ(GeneralCategory_Other, database_queryproperty(0xF0003, UnicodeProperty_GeneralCategory));
+}
+
+TEST(QueryPropertyGeneralCategory, OutOfUpperBounds)
+{
+	EXPECT_EQ(0, database_queryproperty(0x1F001A, UnicodeProperty_GeneralCategory));
+}
+
+TEST(QueryPropertyGeneralCategory, BetweenBlocks)
+{
+	EXPECT_EQ(0, database_queryproperty(0x110FC, UnicodeProperty_GeneralCategory));
+}
+
 // Uppercase
 
 TEST(QueryPropertyUppercase, Found)
