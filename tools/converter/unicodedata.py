@@ -251,12 +251,15 @@ class UnicodeMapping:
 		
 		if matches[12]:
 			self.uppercase.append(int(matches[12][0], 16))
+			self.generalCategoryCombined |= 0x02
 		
 		if matches[13]:
 			self.lowercase.append(int(matches[13][0], 16))
+			self.generalCategoryCombined |= 0x02
 		
 		if len(matches) >= 15 and matches[14]:
 			self.titlecase.append(int(matches[14][0], 16))
+			self.generalCategoryCombined |= 0x02
 		
 		return True
 	
