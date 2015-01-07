@@ -60,6 +60,11 @@ uint8_t database_queryproperty(unicode_t codepoint, uint8_t checkType)
 		record_count = UnicodeQuickCheckNFKDRecordCount;
 		break;
 
+	case UnicodeProperty_GeneralCategory:
+		record = UnicodeQuickCheckGeneralCategoryRecordPtr;
+		record_count = UnicodeQuickCheckGeneralCategoryRecordCount;
+		break;
+
 	case UnicodeProperty_Uppercase:
 		record = UnicodeQuickCheckUppercaseRecordPtr;
 		record_count = UnicodeQuickCheckUppercaseRecordCount;
