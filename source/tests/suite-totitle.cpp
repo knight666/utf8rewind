@@ -40,6 +40,42 @@ TEST(ToTitle, BasicLatinUnaffected)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(ToTitle, MultiByteUppercase)
+{
+	const char* c = "\xC7\x84";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(2, utf8totitle(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xC7\x85", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToTitle, MultiByteLowercase)
+{
+	const char* c = "\xEF\xAC\x97";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8totitle(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xD5\x84\xD5\xAD", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToTitle, MultiByteTitlecase)
+{
+	const char* c = "\xC7\xB2";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(2, utf8totitle(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xC7\xB2", b);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(ToTitle, Word)
 {
 	const char* c = "ApplE";
@@ -98,4 +134,45 @@ TEST(ToTitle, SentencePunctuation)
 	EXPECT_EQ(12, utf8totitle(c, strlen(c), b, s - 1, 0, &errors));
 	EXPECT_UTF8EQ("Re/Wind=Cool", b);
 	EXPECT_EQ(0, errors);
+}
+
+TEST(ToTitle, AmountOfBytes)
+{
+	const char* c = "tiny \xEA\x9E\xAA";
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8totitle(c, strlen(c), nullptr, 0, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToTitle, NotEnoughSpace)
+{
+	const char* c = "SMALL \xCE\x90";
+	const size_t s = 7;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8totitle(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("Small ", b);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(ToTitle, InvalidCodepoint)
+{
+	const char* c = "\xF0\x92";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8totitle(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToTitle, InvalidData)
+{
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8totitle(nullptr, 1, nullptr, 0, 0, &errors));
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
