@@ -30,31 +30,39 @@
 
 size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t propertyType, int32_t* errors)
 {
-	if (database_queryproperty(codepoint, propertyType) == 1)
+	const char* resolved;
+	size_t resolved_size;
+
+	if (database_queryproperty(codepoint, propertyType) == 0)
 	{
-		const char* resolved = database_querydecomposition(codepoint, propertyType);
-		if (resolved != 0)
-		{
-			size_t resolved_size = strlen(resolved);
-
-			if (*target != 0 &&
-				resolved_size > 0)
-			{
-				if (*targetSize < resolved_size)
-				{
-					goto outofspace;
-				}
-
-				memcpy(*target, resolved, resolved_size);
-
-				*target += resolved_size;
-				*targetSize -= resolved_size;
-			}
-
-			return resolved_size;
-		}
+		goto unresolved;
+	}
+	
+	resolved = database_querydecomposition(codepoint, propertyType);
+	if (resolved == 0)
+	{
+		goto unresolved;
 	}
 
+	resolved_size = strlen(resolved);
+
+	if (*target != 0 &&
+		resolved_size > 0)
+	{
+		if (*targetSize < resolved_size)
+		{
+			goto outofspace;
+		}
+
+		memcpy(*target, resolved, resolved_size);
+
+		*target += resolved_size;
+		*targetSize -= resolved_size;
+	}
+
+	return resolved_size;
+
+unresolved:
 	return codepoint_write(codepoint, target, targetSize, errors);
 
 outofspace:
