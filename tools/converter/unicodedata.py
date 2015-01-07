@@ -611,11 +611,12 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		for r in self.recordsOrdered:
 			if r.generalCategoryCombined:
-				if not group_category or r.generalCategoryCombined <> group_category.value:
+				if not group_category or r.codepoint <> (group_category.start + group_category.count + 1) or r.generalCategoryCombined <> group_category.value:
 					if group_category:
 						group_category.end = r.codepoint - 1
 					group_category = QuickCheckRecord(self)
 					group_category.start = r.codepoint
+					group_category.end = r.codepoint
 					group_category.value = r.generalCategoryCombined
 					self.qcGeneralCategory.append(group_category)
 				else:
@@ -627,6 +628,7 @@ class Database(libs.unicode.UnicodeVisitor):
 						group_uppercase.end = r.codepoint - 1
 					group_uppercase = QuickCheckRecord(self)
 					group_uppercase.start = r.codepoint
+					group_uppercase.end = r.codepoint
 					group_uppercase.value = 1
 					self.qcUppercase.append(group_uppercase)
 				else:
