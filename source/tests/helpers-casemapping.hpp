@@ -24,6 +24,9 @@ namespace helpers {
 	std::string lowercase(unicode_t codepoint);
 	std::string lowercase(const std::string& text);
 
+	std::string titlecase(unicode_t codepoint);
+	std::string titlecase(const std::string& text);
+
 	struct CaseMappingEntry
 	{
 		CaseMappingEntry()

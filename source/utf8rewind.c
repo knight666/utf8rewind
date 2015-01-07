@@ -691,6 +691,11 @@ outofspace:
 	return bytes_written;
 }
 
+size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
+{
+	return utf8toupper(input, inputSize, target, targetSize, flags, errors);
+}
+
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
 	if (

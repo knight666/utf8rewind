@@ -25,13 +25,13 @@ namespace helpers {
 		return result_upper;
 	}
 
-	std::string uppercase(const std::string& value)
+	std::string uppercase(const std::string& text)
 	{
 		int32_t errors = 0;
 
 		std::string converted;
 
-		size_t l = utf8toupper(value.c_str(), value.size() - 1, nullptr, 0, 0, &errors);
+		size_t l = utf8toupper(text.c_str(), text.size() - 1, nullptr, 0, 0, &errors);
 		if (l == 0 ||
 			errors != 0)
 		{
@@ -39,7 +39,7 @@ namespace helpers {
 		}
 
 		converted.resize(l + 1);
-		utf8toupper(value.c_str(), value.size() - 1, &converted[0], l, 0, &errors);
+		utf8toupper(text.c_str(), text.size() - 1, &converted[0], l, 0, &errors);
 
 		return converted;
 	}
@@ -65,13 +65,13 @@ namespace helpers {
 		return result_lower;
 	}
 
-	std::string lowercase(const std::string& value)
+	std::string lowercase(const std::string& text)
 	{
 		int32_t errors = 0;
 
 		std::string converted;
 
-		size_t l = utf8tolower(value.c_str(), value.size() - 1, nullptr, 0, 0, &errors);
+		size_t l = utf8tolower(text.c_str(), text.size() - 1, nullptr, 0, 0, &errors);
 		if (l == 0 ||
 			errors != 0)
 		{
@@ -79,7 +79,47 @@ namespace helpers {
 		}
 
 		converted.resize(l + 1);
-		utf8tolower(value.c_str(), value.size() - 1, &converted[0], l, 0, &errors);
+		utf8tolower(text.c_str(), text.size() - 1, &converted[0], l, 0, &errors);
+
+		return converted;
+	}
+
+	std::string titlecase(unicode_t codepoint)
+	{
+		int32_t errors = 0;
+
+		char input_utf8[16] = { 0 };
+		utf32toutf8(&codepoint, sizeof(unicode_t), input_utf8, 16, &errors);
+		if (errors != 0)
+		{
+			return "";
+		}
+
+		char result_title[256] = { 0 };
+		utf8totitle(input_utf8, strlen(input_utf8), result_title, 256, 0, &errors);
+		if (errors != 0)
+		{
+			return "";
+		}
+
+		return result_title;
+	}
+
+	std::string titlecase(const std::string& text)
+	{
+		int32_t errors = 0;
+
+		std::string converted;
+
+		size_t l = utf8totitle(text.c_str(), text.size() - 1, nullptr, 0, 0, &errors);
+		if (l == 0 ||
+			errors != 0)
+		{
+			return converted;
+		}
+
+		converted.resize(l + 1);
+		utf8totitle(text.c_str(), text.size() - 1, &converted[0], l, 0, &errors);
 
 		return converted;
 	}
