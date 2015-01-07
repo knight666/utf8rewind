@@ -129,7 +129,8 @@ namespace helpers {
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
 	{
 		if (entryExpected.uppercase == entryActual.uppercase &&
-			entryExpected.lowercase == entryActual.lowercase)
+			entryExpected.lowercase == entryActual.lowercase &&
+			entryExpected.titlecase == entryActual.titlecase)
 		{
 			return ::testing::AssertionSuccess();
 		}
@@ -163,6 +164,19 @@ namespace helpers {
 			else
 			{
 				result << "[Lowercase]  \"" << helpers::printable(entryExpected.lowercase) << "\" (" << helpers::identifiable(entryExpected.lowercase) << ")" << std::endl;
+			}
+
+			result << std::endl;
+
+			if (entryExpected.titlecase != entryActual.titlecase)
+			{
+				result << "[Titlecase]" << std::endl;
+				result << "    Actual:  \"" << helpers::printable(entryActual.titlecase) << "\" (" << helpers::identifiable(entryActual.titlecase) << ")" << std::endl;
+				result << "  Expected:  \"" << helpers::printable(entryExpected.titlecase) << "\" (" << helpers::identifiable(entryExpected.titlecase) << ")" << std::endl;
+			}
+			else
+			{
+				result << "[Titlecase]  \"" << helpers::printable(entryExpected.titlecase) << "\" (" << helpers::identifiable(entryExpected.titlecase) << ")" << std::endl;
 			}
 
 			return result;
