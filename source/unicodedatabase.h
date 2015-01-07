@@ -56,6 +56,9 @@ extern const QuickCheckRecord* UnicodeQuickCheckNFKCRecordPtr;
 extern const size_t UnicodeQuickCheckNFKDRecordCount;
 extern const QuickCheckRecord* UnicodeQuickCheckNFKDRecordPtr;
 
+extern const size_t UnicodeQuickCheckGeneralCategoryRecordCount;
+extern const QuickCheckRecord* UnicodeQuickCheckGeneralCategoryRecordPtr;
+
 extern const size_t UnicodeQuickCheckUppercaseRecordCount;
 extern const QuickCheckRecord* UnicodeQuickCheckUppercaseRecordPtr;
 
