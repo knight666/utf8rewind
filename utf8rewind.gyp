@@ -84,6 +84,7 @@
 				'source/tests/suite-seek-forward.cpp',
 				'source/tests/suite-seek-set.cpp',
 				'source/tests/suite-tolower.cpp',
+				'source/tests/suite-totitle.cpp',
 				'source/tests/suite-toupper.cpp',
 				'source/tests/suite-toutf8.cpp',
 				'source/tests/suite-towide.cpp',
