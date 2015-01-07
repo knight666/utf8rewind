@@ -374,3 +374,103 @@ TEST(CaseMappingExecuteLowercase, FourBytesUnaffected)
 	EXPECT_EQ(251, s);
 	EXPECT_EQ(0, e);
 }
+
+// Titlecase
+
+TEST(CaseMappingExecuteTitlecase, BasicLatinUppercase)
+{
+	int32_t e = 0;
+	size_t s = 255;
+	char d[256] = { 0 };
+	char* dp = d;
+
+	EXPECT_EQ(1, casemapping_execute(0x00000056, &dp, &s, UnicodeProperty_Titlecase, &e));
+	EXPECT_UTF8EQ("V", d);
+	EXPECT_EQ(d + 1, dp);
+	EXPECT_EQ(254, s);
+	EXPECT_EQ(0, e);
+}
+
+TEST(CaseMappingExecuteTitlecase, BasicLatinLowercase)
+{
+	int32_t e = 0;
+	size_t s = 255;
+	char d[256] = { 0 };
+	char* dp = d;
+
+	EXPECT_EQ(1, casemapping_execute(0x0000006F, &dp, &s, UnicodeProperty_Titlecase, &e));
+	EXPECT_UTF8EQ("O", d);
+	EXPECT_EQ(d + 1, dp);
+	EXPECT_EQ(254, s);
+	EXPECT_EQ(0, e);
+}
+
+TEST(CaseMappingExecuteTitlecase, BasicLatinUnaffected)
+{
+	int32_t e = 0;
+	size_t s = 255;
+	char d[256] = { 0 };
+	char* dp = d;
+
+	EXPECT_EQ(1, casemapping_execute(0x00000036, &dp, &s, UnicodeProperty_Titlecase, &e));
+	EXPECT_UTF8EQ("6", d);
+	EXPECT_EQ(d + 1, dp);
+	EXPECT_EQ(254, s);
+	EXPECT_EQ(0, e);
+}
+
+TEST(CaseMappingExecuteTitlecase, MultiByteUppercase)
+{
+	int32_t e = 0;
+	size_t s = 255;
+	char d[256] = { 0 };
+	char* dp = d;
+
+	EXPECT_EQ(2, casemapping_execute(0x000001F2, &dp, &s, UnicodeProperty_Titlecase, &e));
+	EXPECT_UTF8EQ("\xC7\xB2", d);
+	EXPECT_EQ(d + 2, dp);
+	EXPECT_EQ(253, s);
+	EXPECT_EQ(0, e);
+}
+
+TEST(CaseMappingExecuteTitlecase, MultiByteLowercase)
+{
+	int32_t e = 0;
+	size_t s = 255;
+	char d[256] = { 0 };
+	char* dp = d;
+
+	EXPECT_EQ(4, casemapping_execute(0x00000587, &dp, &s, UnicodeProperty_Titlecase, &e));
+	EXPECT_UTF8EQ("\xD4\xB5\xD6\x82", d);
+	EXPECT_EQ(d + 4, dp);
+	EXPECT_EQ(251, s);
+	EXPECT_EQ(0, e);
+}
+
+TEST(CaseMappingExecuteTitlecase, MultiByteTitlecase)
+{
+	int32_t e = 0;
+	size_t s = 255;
+	char d[256] = { 0 };
+	char* dp = d;
+
+	EXPECT_EQ(2, casemapping_execute(0x000001C8, &dp, &s, UnicodeProperty_Titlecase, &e));
+	EXPECT_UTF8EQ("\xC7\x88", d);
+	EXPECT_EQ(d + 2, dp);
+	EXPECT_EQ(253, s);
+	EXPECT_EQ(0, e);
+}
+
+TEST(CaseMappingExecuteTitlecase, MultiByteUnaffected)
+{
+	int32_t e = 0;
+	size_t s = 255;
+	char d[256] = { 0 };
+	char* dp = d;
+
+	EXPECT_EQ(2, casemapping_execute(0x000000F7, &dp, &s, UnicodeProperty_Titlecase, &e));
+	EXPECT_UTF8EQ("\xC3\xB7", d);
+	EXPECT_EQ(d + 2, dp);
+	EXPECT_EQ(253, s);
+	EXPECT_EQ(0, e);
+}
