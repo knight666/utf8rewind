@@ -33,7 +33,7 @@ size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSiz
 	const char* resolved;
 	size_t resolved_size;
 
-	if (database_queryproperty(codepoint, propertyType) == 0)
+	if ((database_queryproperty(codepoint, UnicodeProperty_GeneralCategory) & GeneralCategory_CaseMapped) == 0)
 	{
 		goto unresolved;
 	}
