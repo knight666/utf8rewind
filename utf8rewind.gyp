@@ -69,6 +69,7 @@
 				'source/tests/integration-quickbrown-casemapping.cpp',
 				'source/tests/integration-quickbrown.cpp',
 				'source/tests/performance-casemapping.cpp',
+				'source/tests/suite-casemapping-execute.cpp',
 				'source/tests/suite-database-querycomposition.cpp',
 				'source/tests/suite-database-querydecomposition.cpp',
 				'source/tests/suite-database-queryproperty.cpp',
