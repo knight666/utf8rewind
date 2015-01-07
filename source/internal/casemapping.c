@@ -33,11 +33,38 @@ size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSiz
 	const char* resolved;
 	size_t resolved_size;
 
+	if (codepoint <= 0x7A)
+	{
+		/* Basic Latin */
+
+		if (*targetSize < 1)
+		{
+			goto outofspace;
+		}
+
+		if (propertyType == UnicodeProperty_Lowercase)
+		{
+			if (codepoint >= 0x41 && codepoint <= 0x5A)
+			{
+				codepoint += 0x20;
+			}
+		}
+		else
+		{
+			if (codepoint >= 0x61)
+			{
+				codepoint -= 0x20;
+			}
+		}
+
+		return codepoint_write(codepoint, target, targetSize, errors);
+	}
+	
 	if ((database_queryproperty(codepoint, UnicodeProperty_GeneralCategory) & GeneralCategory_CaseMapped) == 0)
 	{
 		goto unresolved;
 	}
-	
+
 	resolved = database_querydecomposition(codepoint, propertyType);
 	if (resolved == 0)
 	{
