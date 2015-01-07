@@ -20,6 +20,7 @@ class UnicodeMapping:
 		self.codepoint = 0
 		self.name = ""
 		self.generalCategory = ""
+		self.generalCategoryCombined = 0
 		self.canonicalCombiningClass = 0
 		self.bidiClass = ""
 		self.decompositionType = ""
@@ -105,6 +106,53 @@ class UnicodeMapping:
 			self.generalCategory = generalCategoryMapping[matches[2][0]]
 		except:
 			raise KeyError("Failed to find general category mapping for value \"" + matches[2][0] + "\"")
+		
+		mapping = [
+			{
+				"name": "Cased_Letter",
+				"check": [ "Lu", "Ll", "Lt" ],
+				"value": 0x03,
+			},
+			{
+				"name": "Letter",
+				"check": [ "Lu", "Ll", "Lt", "Lm", "Lo" ],
+				"value": 0x01,
+			},
+			{
+				"name": "Mark",
+				"check": [ "Mn", "Mc", "Me" ],
+				"value": 0x04,
+			},
+			{
+				"name": "Number",
+				"check": [ "Nd", "Nl", "No" ],
+				"value": 0x08,
+			},
+			{
+				"name": "Punctuation",
+				"check": [ "Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po" ],
+				"value": 0x10,
+			},
+			{
+				"name": "Symbol",
+				"check": [ "Sm", "Sc", "Sk", "So" ],
+				"value": 0x20,
+			},
+			{
+				"name": "Separator",
+				"check": [ "Zs", "Zl", "Zp" ],
+				"value": 0x40,
+			},
+			{
+				"name": "Other",
+				"check": [ "Cc", "Cf", "Cs", "Co", "Cn" ],
+				"value": 0x80,
+			},
+		]
+		for m in mapping:
+			if matches[2][0] in m["check"]:
+				self.generalCategoryCombined = m["value"]
+				break
 		
 		# canonical combining class
 		
@@ -327,6 +375,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.qcLowercase = []
 		self.qcUppercase = []
 		self.qcTitlecase = []
+		self.qcGeneralCategory = []
 	
 	def loadFromFiles(self, arguments):
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -376,6 +425,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		document_special_casing.accept(special_casing)
 		
 		self.resolveCaseMapping()
+		
+		# properties
+		
+		self.resolveProperties()
 	
 	def visitDocument(self, document):
 		print "Parsing document to codepoint database..."
@@ -545,12 +598,28 @@ class Database(libs.unicode.UnicodeVisitor):
 	def resolveCaseMapping(self):
 		print "Resolving case mappings..."
 		
+		for r in self.recordsOrdered:
+			r.caseMapping()
+	
+	def resolveProperties(self):
+		print "Resolving codepoint properties..."
+		
+		group_category = None
 		group_uppercase = None
 		group_lowercase = None
 		group_titlecase = None
 		
 		for r in self.recordsOrdered:
-			r.caseMapping()
+			if r.generalCategoryCombined:
+				if not group_category or r.generalCategoryCombined <> group_category.value:
+					if group_category:
+						group_category.end = r.codepoint - 1
+					group_category = QuickCheckRecord(self)
+					group_category.start = r.codepoint
+					group_category.value = r.generalCategoryCombined
+					self.qcGeneralCategory.append(group_category)
+				else:
+					group_category.count += 1
 			
 			if r.uppercase:
 				if not group_uppercase or r.codepoint <> (group_uppercase.start + group_uppercase.count + 1):
@@ -584,6 +653,9 @@ class Database(libs.unicode.UnicodeVisitor):
 					self.qcTitlecase.append(group_titlecase)
 				else:
 					group_titlecase.count += 1
+		
+		if group_category:
+			group_category.end = group_category.start + group_category.count
 		
 		if group_uppercase:
 			group_uppercase.end = group_uppercase.start + group_uppercase.count
@@ -861,6 +933,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.writeQuickCheck(header, self.qc_nfd_records, "NFD")
 		self.writeQuickCheck(header, self.qc_nfkc_records, "NFKC")
 		self.writeQuickCheck(header, self.qc_nfkd_records, "NFKD")
+		self.writeQuickCheck(header, self.qcGeneralCategory, "GeneralCategory")
 		self.writeQuickCheck(header, self.qcUppercase, "Uppercase")
 		self.writeQuickCheck(header, self.qcLowercase, "Lowercase")
 		self.writeQuickCheck(header, self.qcTitlecase, "Titlecase")
