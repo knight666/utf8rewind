@@ -49,6 +49,36 @@ TEST(CaseMappingExecute, NotEnoughSpaceDecomposed)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, e);
 }
 
+TEST(CaseMappingExecute, AmountOfBytesBasicLatin)
+{
+	int32_t e = 0;
+	size_t s = 0;
+	char* d = nullptr;
+
+	EXPECT_EQ(1, casemapping_execute(0x00000042, &d, &s, UnicodeProperty_Titlecase, &e));
+	EXPECT_EQ(0, e);
+}
+
+TEST(CaseMappingExecute, AmountOfBytesUnaffected)
+{
+	int32_t e = 0;
+	size_t s = 0;
+	char* d = nullptr;
+
+	EXPECT_EQ(2, casemapping_execute(0x000000F7, &d, &s, UnicodeProperty_Lowercase, &e));
+	EXPECT_EQ(0, e);
+}
+
+TEST(CaseMappingExecute, AmountOfBytesDecomposed)
+{
+	int32_t e = 0;
+	size_t s = 0;
+	char* d = nullptr;
+
+	EXPECT_EQ(2, casemapping_execute(0x000001F0, &d, &s, UnicodeProperty_Lowercase, &e));
+	EXPECT_EQ(0, e);
+}
+
 // Uppercase
 
 TEST(CaseMappingExecuteUppercase, BasicLatinUppercase)

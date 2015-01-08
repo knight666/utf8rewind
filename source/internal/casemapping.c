@@ -37,7 +37,8 @@ size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSiz
 	{
 		/* Basic Latin */
 
-		if (*targetSize < 1)
+		if (*target != 0 &&
+			*targetSize < 1)
 		{
 			goto outofspace;
 		}
