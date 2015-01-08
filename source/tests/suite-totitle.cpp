@@ -124,7 +124,7 @@ TEST(ToTitle, SentenceTwoWords)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToTitle, SentencePunctuation)
+TEST(ToTitle, SentencePunctuationInMiddle)
 {
 	const char* c = "RE/wind=cool";
 	const size_t s = 256;
@@ -133,6 +133,30 @@ TEST(ToTitle, SentencePunctuation)
 
 	EXPECT_EQ(12, utf8totitle(c, strlen(c), b, s - 1, 0, &errors));
 	EXPECT_UTF8EQ("Re/Wind=Cool", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToTitle, SentencePunctuationAtStart)
+{
+	const char* c = "/!\\alert imminent";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(17, utf8totitle(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("/!\\Alert Imminent", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToTitle, SentencePunctuationAtEnd)
+{
+	const char* c = "you tell me ;)";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(14, utf8totitle(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("You Tell Me ;)", b);
 	EXPECT_EQ(0, errors);
 }
 
