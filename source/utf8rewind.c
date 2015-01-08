@@ -713,9 +713,8 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 		unicode_t codepoint;
 		size_t codepoint_length = codepoint_read(&codepoint, src, src_size);
 		uint8_t generalCategory = database_queryproperty(codepoint, UnicodeProperty_GeneralCategory);
-		size_t written;
 
-		written = casemapping_execute(codepoint, &dst, &dst_size, generalCategory, property, errors);
+		size_t written = casemapping_execute(codepoint, &dst, &dst_size, generalCategory, property, errors);
 		if (written == 0)
 		{
 			break;
@@ -723,7 +722,10 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 
 		if (property == UnicodeProperty_Titlecase)
 		{
-			property = UnicodeProperty_Lowercase;
+			if ((generalCategory & GeneralCategory_Letter) != 0)
+			{
+				property = UnicodeProperty_Lowercase;
+			}
 		}
 		else if ((generalCategory & GeneralCategory_Letter) == 0)
 		{
