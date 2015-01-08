@@ -198,7 +198,7 @@ TEST(QueryPropertyGeneralCategory, FoundFirst)
 
 TEST(QueryPropertyGeneralCategory, FoundLast)
 {
-	EXPECT_EQ(GeneralCategory_Other, database_queryproperty(0xF0003, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_Other, database_queryproperty(0x10FFFD, UnicodeProperty_GeneralCategory));
 }
 
 TEST(QueryPropertyGeneralCategory, OutOfUpperBounds)
