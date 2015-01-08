@@ -65,21 +65,6 @@ uint8_t database_queryproperty(unicode_t codepoint, uint8_t checkType)
 		record_count = UnicodeQuickCheckGeneralCategoryRecordCount;
 		break;
 
-	case UnicodeProperty_Uppercase:
-		record = UnicodeQuickCheckUppercaseRecordPtr;
-		record_count = UnicodeQuickCheckUppercaseRecordCount;
-		break;
-
-	case UnicodeProperty_Lowercase:
-		record = UnicodeQuickCheckLowercaseRecordPtr;
-		record_count = UnicodeQuickCheckLowercaseRecordCount;
-		break;
-
-	case UnicodeProperty_Titlecase:
-		record = UnicodeQuickCheckTitlecaseRecordPtr;
-		record_count = UnicodeQuickCheckTitlecaseRecordCount;
-		break;
-
 	default:
 		return UTF8_INVALID_PROPERTY;
 

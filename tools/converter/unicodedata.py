@@ -371,13 +371,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.recordsOrdered = []
 		self.records = dict()
 		self.blocks = []
-		self.qc_nfc_records = []
-		self.qc_nfd_records = []
-		self.qc_nfkc_records = []
-		self.qc_nfkd_records = []
-		self.qcLowercase = []
-		self.qcUppercase = []
-		self.qcTitlecase = []
+		self.qcNFCRecords = []
+		self.qcNFDRecords = []
+		self.qcNFKCRecords = []
+		self.qcNFKDRecords = []
 		self.qcGeneralCategory = []
 	
 	def loadFromFiles(self, arguments):
@@ -529,47 +526,47 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# NFC
 		
-		self.qc_nfc_records = sorted(self.qc_nfc_records, key=lambda record: record.start)
-		nfc_length = len(self.qc_nfc_records)
-		nfc_last = self.qc_nfc_records[nfc_length - 1]
+		self.qcNFCRecords = sorted(self.qcNFCRecords, key=lambda record: record.start)
+		nfc_length = len(self.qcNFCRecords)
+		nfc_last = self.qcNFCRecords[nfc_length - 1]
 		nfc_last.end = nfc_last.start + nfc_last.count
 		
 		for i in range(0, nfc_length - 1):
-			current = self.qc_nfc_records[i]
-			self.qc_nfc_records[i].end = self.qc_nfc_records[i + 1].start - 1
+			current = self.qcNFCRecords[i]
+			self.qcNFCRecords[i].end = self.qcNFCRecords[i + 1].start - 1
 		
 		# NFD
 		
-		self.qc_nfd_records = sorted(self.qc_nfd_records, key=lambda record: record.start)
-		nfd_length = len(self.qc_nfd_records)
-		nfd_last = self.qc_nfd_records[nfd_length - 1]
+		self.qcNFDRecords = sorted(self.qcNFDRecords, key=lambda record: record.start)
+		nfd_length = len(self.qcNFDRecords)
+		nfd_last = self.qcNFDRecords[nfd_length - 1]
 		nfd_last.end = nfd_last.start + nfd_last.count
 		
 		for i in range(0, nfd_length - 1):
-			current = self.qc_nfd_records[i]
-			self.qc_nfd_records[i].end = self.qc_nfd_records[i + 1].start - 1
+			current = self.qcNFDRecords[i]
+			self.qcNFDRecords[i].end = self.qcNFDRecords[i + 1].start - 1
 		
 		# NFKC
 		
-		self.qc_nfkc_records = sorted(self.qc_nfkc_records, key=lambda record: record.start)
-		nfkc_length = len(self.qc_nfkc_records)
-		nfkc_last = self.qc_nfkc_records[nfkc_length - 1]
+		self.qcNFKCRecords = sorted(self.qcNFKCRecords, key=lambda record: record.start)
+		nfkc_length = len(self.qcNFKCRecords)
+		nfkc_last = self.qcNFKCRecords[nfkc_length - 1]
 		nfkc_last.end = nfkc_last.start + nfkc_last.count
 		
 		for i in range(0, nfkc_length - 1):
-			current = self.qc_nfkc_records[i]
-			self.qc_nfkc_records[i].end = self.qc_nfkc_records[i + 1].start - 1
+			current = self.qcNFKCRecords[i]
+			self.qcNFKCRecords[i].end = self.qcNFKCRecords[i + 1].start - 1
 		
 		# NFKD
 		
-		self.qc_nfkd_records = sorted(self.qc_nfkd_records, key=lambda record: record.start)
-		nfkd_length = len(self.qc_nfkd_records)
-		nfkd_last = self.qc_nfkd_records[nfkd_length - 1]
+		self.qcNFKDRecords = sorted(self.qcNFKDRecords, key=lambda record: record.start)
+		nfkd_length = len(self.qcNFKDRecords)
+		nfkd_last = self.qcNFKDRecords[nfkd_length - 1]
 		nfkd_last.end = nfkd_last.start + nfkd_last.count
 		
 		for i in range(0, nfkd_length - 1):
-			current = self.qc_nfkd_records[i]
-			self.qc_nfkd_records[i].end = self.qc_nfkd_records[i + 1].start - 1
+			current = self.qcNFKDRecords[i]
+			self.qcNFKDRecords[i].end = self.qcNFKDRecords[i + 1].start - 1
 		
 	def resolveDecomposition(self):
 		print "Resolving decomposition..."
@@ -608,9 +605,6 @@ class Database(libs.unicode.UnicodeVisitor):
 		print "Resolving codepoint properties..."
 		
 		group_category = None
-		group_uppercase = None
-		group_lowercase = None
-		group_titlecase = None
 		
 		for r in self.recordsOrdered:
 			if r.generalCategoryCombined:
@@ -624,52 +618,9 @@ class Database(libs.unicode.UnicodeVisitor):
 					self.qcGeneralCategory.append(group_category)
 				else:
 					group_category.count += 1
-			
-			if r.uppercase:
-				if not group_uppercase or r.codepoint <> (group_uppercase.start + group_uppercase.count + 1):
-					if group_uppercase:
-						group_uppercase.end = r.codepoint - 1
-					group_uppercase = QuickCheckRecord(self)
-					group_uppercase.start = r.codepoint
-					group_uppercase.end = r.codepoint
-					group_uppercase.value = 1
-					self.qcUppercase.append(group_uppercase)
-				else:
-					group_uppercase.count += 1
-			
-			if r.lowercase:
-				if not group_lowercase or r.codepoint <> (group_lowercase.start + group_lowercase.count + 1):
-					if group_lowercase:
-						group_lowercase.end = r.codepoint - 1
-					group_lowercase = QuickCheckRecord(self)
-					group_lowercase.start = r.codepoint
-					group_lowercase.value = 1
-					self.qcLowercase.append(group_lowercase)
-				else:
-					group_lowercase.count += 1
-					
-			if r.titlecase:
-				if not group_titlecase or r.codepoint <> (group_titlecase.start + group_titlecase.count + 1):
-					if group_titlecase:
-						group_titlecase.end = r.codepoint - 1
-					group_titlecase = QuickCheckRecord(self)
-					group_titlecase.start = r.codepoint
-					group_titlecase.value = 1
-					self.qcTitlecase.append(group_titlecase)
-				else:
-					group_titlecase.count += 1
 		
 		if group_category:
 			group_category.end = group_category.start + group_category.count
-		
-		if group_uppercase:
-			group_uppercase.end = group_uppercase.start + group_uppercase.count
-		
-		if group_lowercase:
-			group_lowercase.end = group_lowercase.start + group_lowercase.count
-		
-		if group_titlecase:
-			group_titlecase.end = group_titlecase.start + group_titlecase.count
 	
 	def resolveCodepoint(self, codepoint, compatibility):
 		found = self.records[codepoint]
@@ -934,14 +885,11 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# quick check records
 		
-		self.writeQuickCheck(header, self.qc_nfc_records, "NFC")
-		self.writeQuickCheck(header, self.qc_nfd_records, "NFD")
-		self.writeQuickCheck(header, self.qc_nfkc_records, "NFKC")
-		self.writeQuickCheck(header, self.qc_nfkd_records, "NFKD")
 		self.writeQuickCheck(header, self.qcGeneralCategory, "GeneralCategory")
-		self.writeQuickCheck(header, self.qcUppercase, "Uppercase")
-		self.writeQuickCheck(header, self.qcLowercase, "Lowercase")
-		self.writeQuickCheck(header, self.qcTitlecase, "Titlecase")
+		self.writeQuickCheck(header, self.qcNFCRecords, "NFC")
+		self.writeQuickCheck(header, self.qcNFDRecords, "NFD")
+		self.writeQuickCheck(header, self.qcNFKCRecords, "NFKC")
+		self.writeQuickCheck(header, self.qcNFKDRecords, "NFKD")
 		
 		# decomposition records
 		
@@ -1112,10 +1060,10 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		def quick_check(property):
 			nf_member = {
-				"NFD_QC": "qc_nfd_records",
-				"NFC_QC": "qc_nfc_records",
-				"NFKD_QC": "qc_nfkd_records",
-				"NFKC_QC": "qc_nfkc_records",
+				"NFD_QC": "qcNFDRecords",
+				"NFC_QC": "qcNFCRecords",
+				"NFKD_QC": "qcNFKDRecords",
+				"NFKC_QC": "qcNFKCRecords",
 			}
 			nf_value = {
 				"N": 2,

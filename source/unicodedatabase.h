@@ -44,6 +44,9 @@ typedef struct {
 	unicode_t value;
 } CompositionRecord;
 
+extern const size_t UnicodeQuickCheckGeneralCategoryRecordCount;
+extern const QuickCheckRecord* UnicodeQuickCheckGeneralCategoryRecordPtr;
+
 extern const size_t UnicodeQuickCheckNFCRecordCount;
 extern const QuickCheckRecord* UnicodeQuickCheckNFCRecordPtr;
 
@@ -55,18 +58,6 @@ extern const QuickCheckRecord* UnicodeQuickCheckNFKCRecordPtr;
 
 extern const size_t UnicodeQuickCheckNFKDRecordCount;
 extern const QuickCheckRecord* UnicodeQuickCheckNFKDRecordPtr;
-
-extern const size_t UnicodeQuickCheckGeneralCategoryRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckGeneralCategoryRecordPtr;
-
-extern const size_t UnicodeQuickCheckUppercaseRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckUppercaseRecordPtr;
-
-extern const size_t UnicodeQuickCheckLowercaseRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckLowercaseRecordPtr;
-
-extern const size_t UnicodeQuickCheckTitlecaseRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckTitlecaseRecordPtr;
 
 extern const size_t UnicodeNFDRecordCount;
 extern const DecompositionRecord* UnicodeNFDRecordPtr;
