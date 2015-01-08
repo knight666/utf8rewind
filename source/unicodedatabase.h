@@ -47,6 +47,9 @@ typedef struct {
 extern const size_t UnicodeQuickCheckGeneralCategoryRecordCount;
 extern const QuickCheckRecord* UnicodeQuickCheckGeneralCategoryRecordPtr;
 
+extern const size_t UnicodeQuickCheckCanonicalCombiningClassRecordCount;
+extern const QuickCheckRecord* UnicodeQuickCheckCanonicalCombiningClassRecordPtr;
+
 extern const size_t UnicodeQuickCheckNFCRecordCount;
 extern const QuickCheckRecord* UnicodeQuickCheckNFCRecordPtr;
 

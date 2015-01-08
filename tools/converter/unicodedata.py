@@ -371,11 +371,12 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.recordsOrdered = []
 		self.records = dict()
 		self.blocks = []
+		self.qcGeneralCategory = []
+		self.qcCanonicalCombiningClass = []
 		self.qcNFCRecords = []
 		self.qcNFDRecords = []
 		self.qcNFKCRecords = []
 		self.qcNFKDRecords = []
-		self.qcGeneralCategory = []
 	
 	def loadFromFiles(self, arguments):
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -605,6 +606,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		print "Resolving codepoint properties..."
 		
 		group_category = None
+		group_ccc = None
 		
 		for r in self.recordsOrdered:
 			if r.generalCategoryCombined:
@@ -618,9 +620,24 @@ class Database(libs.unicode.UnicodeVisitor):
 					self.qcGeneralCategory.append(group_category)
 				else:
 					group_category.count += 1
+			
+			if r.canonicalCombiningClass:
+				if not group_ccc or r.codepoint <> (group_ccc.start + group_ccc.count + 1) or r.canonicalCombiningClass <> group_ccc.value:
+					if group_ccc:
+						group_ccc.end = r.codepoint - 1
+					group_ccc = QuickCheckRecord(self)
+					group_ccc.start = r.codepoint
+					group_ccc.end = r.codepoint
+					group_ccc.value = r.canonicalCombiningClass
+					self.qcCanonicalCombiningClass.append(group_ccc)
+				else:
+					group_ccc.count += 1
 		
 		if group_category:
 			group_category.end = group_category.start + group_category.count
+		
+		if group_ccc:
+			group_ccc.end = group_ccc.start + group_ccc.count
 	
 	def resolveCodepoint(self, codepoint, compatibility):
 		found = self.records[codepoint]
@@ -886,6 +903,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		# quick check records
 		
 		self.writeQuickCheck(header, self.qcGeneralCategory, "GeneralCategory")
+		self.writeQuickCheck(header, self.qcCanonicalCombiningClass, "CanonicalCombiningClass")
 		self.writeQuickCheck(header, self.qcNFCRecords, "NFC")
 		self.writeQuickCheck(header, self.qcNFDRecords, "NFD")
 		self.writeQuickCheck(header, self.qcNFKCRecords, "NFKC")
