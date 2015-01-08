@@ -28,7 +28,7 @@
 #include "codepoint.h"
 #include "database.h"
 
-size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t propertyType, int32_t* errors)
+size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t generalCategory, uint8_t propertyType, int32_t* errors)
 {
 	const char* resolved;
 	size_t resolved_size;
@@ -61,7 +61,7 @@ size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSiz
 		return codepoint_write(codepoint, target, targetSize, errors);
 	}
 	
-	if ((database_queryproperty(codepoint, UnicodeProperty_GeneralCategory) & GeneralCategory_CaseMapped) == 0)
+	if ((generalCategory & GeneralCategory_CaseMapped) == 0)
 	{
 		goto unresolved;
 	}
