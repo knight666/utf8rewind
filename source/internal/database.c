@@ -40,6 +40,16 @@ uint8_t database_queryproperty(unicode_t codepoint, uint8_t checkType)
 	switch (checkType)
 	{
 
+	case UnicodeProperty_GeneralCategory:
+		record = UnicodeQuickCheckGeneralCategoryRecordPtr;
+		record_count = UnicodeQuickCheckGeneralCategoryRecordCount;
+		break;
+
+	case UnicodeProperty_CanonicalCombiningClass:
+		record = UnicodeQuickCheckCanonicalCombiningClassRecordPtr;
+		record_count = UnicodeQuickCheckCanonicalCombiningClassRecordCount;
+		break;
+
 	case UnicodeProperty_Normalization_Compose:
 		record = UnicodeQuickCheckNFCRecordPtr;
 		record_count = UnicodeQuickCheckNFCRecordCount;
@@ -58,11 +68,6 @@ uint8_t database_queryproperty(unicode_t codepoint, uint8_t checkType)
 	case UnicodeProperty_Normalization_Compatibility_Decompose:
 		record = UnicodeQuickCheckNFKDRecordPtr;
 		record_count = UnicodeQuickCheckNFKDRecordCount;
-		break;
-
-	case UnicodeProperty_GeneralCategory:
-		record = UnicodeQuickCheckGeneralCategoryRecordPtr;
-		record_count = UnicodeQuickCheckGeneralCategoryRecordCount;
 		break;
 
 	default:

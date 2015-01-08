@@ -9,6 +9,72 @@ TEST(QueryProperty, InvalidProperty)
 	EXPECT_EQ(UTF8_INVALID_PROPERTY, database_queryproperty(0x00C0, 198));
 }
 
+// General category
+
+TEST(QueryPropertyGeneralCategory, Found)
+{
+	EXPECT_EQ(GeneralCategory_Letter, database_queryproperty(0x671, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_CaseMapped | GeneralCategory_Letter, database_queryproperty(0x10400, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_Mark, database_queryproperty(0x16AF0, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_Number, database_queryproperty(0x10B78, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_Punctuation, database_queryproperty(0x111C5, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_Symbol, database_queryproperty(0x1FED, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_Separator, database_queryproperty(0x1680, UnicodeProperty_GeneralCategory));
+	EXPECT_EQ(GeneralCategory_Other, database_queryproperty(0x200B, UnicodeProperty_GeneralCategory));
+}
+
+TEST(QueryPropertyGeneralCategory, FoundFirst)
+{
+	EXPECT_EQ(GeneralCategory_Other, database_queryproperty(0x0000, UnicodeProperty_GeneralCategory));
+}
+
+TEST(QueryPropertyGeneralCategory, FoundLast)
+{
+	EXPECT_EQ(GeneralCategory_Other, database_queryproperty(0x10FFFD, UnicodeProperty_GeneralCategory));
+}
+
+TEST(QueryPropertyGeneralCategory, OutOfUpperBounds)
+{
+	EXPECT_EQ(0, database_queryproperty(0x1F001A, UnicodeProperty_GeneralCategory));
+}
+
+TEST(QueryPropertyGeneralCategory, BetweenBlocks)
+{
+	EXPECT_EQ(0, database_queryproperty(0x110FC, UnicodeProperty_GeneralCategory));
+}
+
+// Canonical combining class
+
+TEST(QueryPropertyCanonicalCombiningClass, Found)
+{
+	EXPECT_EQ(0xDC, database_queryproperty(0x0655, UnicodeProperty_CanonicalCombiningClass));
+}
+
+TEST(QueryPropertyCanonicalCombiningClass, FoundFirst)
+{
+	EXPECT_EQ(0xE6, database_queryproperty(0x0300, UnicodeProperty_CanonicalCombiningClass));
+}
+
+TEST(QueryPropertyCanonicalCombiningClass, FoundLast)
+{
+	EXPECT_EQ(0xDC, database_queryproperty(0x1E8D6, UnicodeProperty_CanonicalCombiningClass));
+}
+
+TEST(QueryPropertyCanonicalCombiningClass, OutOfLowerBounds)
+{
+	EXPECT_EQ(0, database_queryproperty(0x0118, UnicodeProperty_CanonicalCombiningClass));
+}
+
+TEST(QueryPropertyCanonicalCombiningClass, OutOfUpperBounds)
+{
+	EXPECT_EQ(0, database_queryproperty(0x2A2BB, UnicodeProperty_CanonicalCombiningClass));
+}
+
+TEST(QueryPropertyCanonicalCombiningClass, BetweenBlocks)
+{
+	EXPECT_EQ(0, database_queryproperty(0x0A5C, UnicodeProperty_CanonicalCombiningClass));
+}
+
 // Composed
 
 TEST(QueryPropertyComposed, FoundNo)
@@ -175,38 +241,4 @@ TEST(QueryPropertyCompatibilityDecomposed, HangulSyllableStart)
 TEST(QueryPropertyCompatibilityDecomposed, HangulSyllableEnd)
 {
 	EXPECT_EQ(QuickCheckResult_No, database_queryproperty(0xD7A3, UnicodeProperty_Normalization_Compatibility_Decompose));
-}
-
-// General category
-
-TEST(QueryPropertyGeneralCategory, Found)
-{
-	EXPECT_EQ(GeneralCategory_Letter, database_queryproperty(0x671, UnicodeProperty_GeneralCategory));
-	EXPECT_EQ(GeneralCategory_CaseMapped | GeneralCategory_Letter, database_queryproperty(0x10400, UnicodeProperty_GeneralCategory));
-	EXPECT_EQ(GeneralCategory_Mark, database_queryproperty(0x16AF0, UnicodeProperty_GeneralCategory));
-	EXPECT_EQ(GeneralCategory_Number, database_queryproperty(0x10B78, UnicodeProperty_GeneralCategory));
-	EXPECT_EQ(GeneralCategory_Punctuation, database_queryproperty(0x111C5, UnicodeProperty_GeneralCategory));
-	EXPECT_EQ(GeneralCategory_Symbol, database_queryproperty(0x1FED, UnicodeProperty_GeneralCategory));
-	EXPECT_EQ(GeneralCategory_Separator, database_queryproperty(0x1680, UnicodeProperty_GeneralCategory));
-	EXPECT_EQ(GeneralCategory_Other, database_queryproperty(0x200B, UnicodeProperty_GeneralCategory));
-}
-
-TEST(QueryPropertyGeneralCategory, FoundFirst)
-{
-	EXPECT_EQ(GeneralCategory_Other, database_queryproperty(0x0000, UnicodeProperty_GeneralCategory));
-}
-
-TEST(QueryPropertyGeneralCategory, FoundLast)
-{
-	EXPECT_EQ(GeneralCategory_Other, database_queryproperty(0x10FFFD, UnicodeProperty_GeneralCategory));
-}
-
-TEST(QueryPropertyGeneralCategory, OutOfUpperBounds)
-{
-	EXPECT_EQ(0, database_queryproperty(0x1F001A, UnicodeProperty_GeneralCategory));
-}
-
-TEST(QueryPropertyGeneralCategory, BetweenBlocks)
-{
-	EXPECT_EQ(0, database_queryproperty(0x110FC, UnicodeProperty_GeneralCategory));
 }

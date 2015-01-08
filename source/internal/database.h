@@ -32,11 +32,12 @@
 
 enum UnicodeProperty
 {
+	UnicodeProperty_GeneralCategory,
+	UnicodeProperty_CanonicalCombiningClass,
 	UnicodeProperty_Normalization_Compose,
 	UnicodeProperty_Normalization_Decompose,
 	UnicodeProperty_Normalization_Compatibility_Compose,
 	UnicodeProperty_Normalization_Compatibility_Decompose,
-	UnicodeProperty_GeneralCategory,
 	UnicodeProperty_Uppercase,
 	UnicodeProperty_Lowercase,
 	UnicodeProperty_Titlecase,
