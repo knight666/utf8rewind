@@ -30,11 +30,16 @@
 
 uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inputSize, uint8_t propertyType)
 {
+	unicode_t codepoint;
+	uint8_t length;
+
 	memset(state, 0, sizeof(ComposeState));
 
+	state->stage = ComposeStage_Processing;
 	state->src = input;
 	state->src_size = inputSize;
 	state->property = propertyType;
+	state->stable = 1;
 
 	state->check[0] = QuickCheckResult_No;
 	state->check[1] = QuickCheckResult_No;
@@ -42,27 +47,21 @@ uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inpu
 	state->current = 0;
 	state->next = 1;
 
-	/* Read the first codepoint */
-
-	state->length[0] = codepoint_read(&state->codepoint[0], *state->src, *state->src_size);
-	state->check[0] = database_queryproperty(state->codepoint[0], state->property);
-
-	if (*state->src_size > state->length[0])
-	{
-		*state->src += state->length[0];
-		*state->src_size -= state->length[0];
-	}
-	else
-	{
-		state->stage = ComposeStage_OutOfInput;
-	}
-
 	return 1;
 }
 
 uint8_t compose_execute(ComposeState* state)
 {
-	if (state->stage >= ComposeStage_OutOfInput)
+	if (state->stage == ComposeStage_Flush)
+	{
+		if (state->current >= 1)
+		{
+			state->stream_cp[0] = state->stream_cp[state->current - 1];
+		}
+
+		state->stage = ComposeStage_Processing;
+	}
+	else if (state->stage >= ComposeStage_OutOfInput)
 	{
 		state->stage = ComposeStage_WriteLast;
 
@@ -73,10 +72,19 @@ uint8_t compose_execute(ComposeState* state)
 	{
 		unicode_t composed = 0;
 
+		uint8_t result = compose_readcodepoint(state);
+		if (result == 0)
+		{
+			break;
+		}
+#if 0
 		if (*state->src_size > 0)
 		{
+			/* Read the next codepoint */
+
 			state->length[state->next] = codepoint_read(&state->codepoint[state->next], *state->src, *state->src_size);
 			state->check[state->next] = database_queryproperty(state->codepoint[state->next], state->property);
+			state->canonical_combining_class[state->next] = database_queryproperty(state->codepoint[state->next], UnicodeProperty_CanonicalCombiningClass);
 
 			if (*state->src_size >= state->length[state->next])
 			{
@@ -101,10 +109,10 @@ uint8_t compose_execute(ComposeState* state)
 		}
 
 		/*
-		Hangul composition
+			Hangul composition
 
-		Algorithm adapted from Unicode Technical Report #15:
-		http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
+			Algorithm adapted from Unicode Technical Report #15:
+			http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
 		*/
 
 		if (state->codepoint[state->current] >= HANGUL_L_FIRST &&
@@ -165,6 +173,49 @@ uint8_t compose_execute(ComposeState* state)
 		state->codepoint[state->current] = composed;
 		state->length[state->current] = codepoint_encoded_length(composed);
 		state->check[state->current] = database_queryproperty(composed, state->property);
+		state->canonical_combining_class[state->current] = database_queryproperty(composed, UnicodeProperty_CanonicalCombiningClass);
+#endif
+	}
+
+	if (state->stable == 0)
+	{
+		uint8_t dirty = 1;
+
+		/* Reorder */
+
+		//last_combining_class = database_queryproperty(state->stream[i], UnicodeProperty_CanonicalCombiningClass);
+
+		// stable - 0
+		// unstable - 67
+		// unstable - 112
+
+		while (dirty == 1)
+		{
+			uint8_t last_combining_class = 0;
+			uint8_t i = state->current - 1;
+
+			dirty = 0;
+
+			for ( ; i >= 1; i--)
+			{
+				if (last_combining_class != 0 &&
+					state->stream_ccc[i] > last_combining_class)
+				{
+					unicode_t swap_cp = state->stream_cp[i];
+					uint8_t swap_ccc = state->stream_ccc[i];
+
+					state->stream_cp[i] = state->stream_cp[i - 1];
+					state->stream_cp[i - 1] = swap_cp;
+
+					state->stream_ccc[i] = state->stream_ccc[i - 1];
+					state->stream_ccc[i - 1] = swap_ccc;
+
+					dirty = 1;
+				}
+
+				last_combining_class = state->stream_ccc[i];
+			}
+		}
 	}
 
 	/* Swap buffers */
@@ -175,3 +226,58 @@ uint8_t compose_execute(ComposeState* state)
 	return state->next;
 }
 
+uint8_t compose_readcodepoint(ComposeState* state)
+{
+	uint8_t length;
+	uint8_t qc;
+	uint8_t ccc;
+
+	if (state->current + 1 >= COMPOSITION_MAX)
+	{
+		goto flush;
+	}
+
+	length = codepoint_read(&state->stream_cp[state->current], *state->src, *state->src_size);
+	if (*state->src_size > length)
+	{
+		*state->src += length;
+		*state->src_size -= length;
+	}
+	else
+	{
+		goto outofinput;
+	}
+
+	qc = database_queryproperty(state->stream_cp[state->current], state->property);
+	ccc = database_queryproperty(state->stream_cp[state->current], UnicodeProperty_CanonicalCombiningClass);
+
+	state->stream_ccc[state->current] = ccc;
+	state->current++;
+
+	if (qc != QuickCheckResult_Yes ||
+		ccc > 0)
+	{
+		if (ccc < state->last_canonical_combining_class)
+		{
+			state->stable = 0;
+		}
+	}
+	else
+	{
+		if (state->current > 1)
+		{
+			goto flush;
+		}
+	}
+
+	state->last_canonical_combining_class = ccc;
+	return 1;
+
+flush:
+	state->stage = ComposeStage_Flush;
+	return 0;
+
+outofinput:
+	state->stage = ComposeStage_OutOfInput;
+	return 0;
+}
