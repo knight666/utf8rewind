@@ -60,8 +60,12 @@ typedef struct {
 	uint8_t stage;
 	uint8_t stable;
 	uint8_t last_canonical_combining_class;
+	unicode_t composed;
 	unicode_t stream_cp[COMPOSITION_MAX];
+	uint8_t stream_qc[COMPOSITION_MAX];
 	uint8_t stream_ccc[COMPOSITION_MAX];
+	unicode_t stream_flush[COMPOSITION_MAX];
+	uint8_t stream_flush_count;
 	unicode_t codepoint[2];
 	size_t length[2];
 	uint8_t check[2];

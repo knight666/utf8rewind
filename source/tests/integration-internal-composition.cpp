@@ -1,8 +1,8 @@
 #include "tests-base.hpp"
 
 extern "C" {
-	#include "../internal/composition.h"
 	#include "../internal/database.h"
+	#include "../internal/normalization.h"
 }
 
 #include "helpers-strings.hpp"
@@ -11,10 +11,19 @@ TEST(Composition, CanonicalCombiningClass)
 {
 	const char* c = "a\xCC\x95\xCC\x80\xD6\xAE\xCC\x80" "b";
 	size_t cl = strlen(c);
+	char d[256] = { 0 };
+	size_t dl = 255;
+	int32_t errors = 0;
 
-	ComposeState state;
+	/*ComposeState state;
 	compose_initialize(&state, &c, &cl, UnicodeProperty_Normalization_Compose);
-	compose_execute(&state);
+	compose_execute(&state);*/
+
+	normalize_composition(c, cl, d, dl, UnicodeProperty_Normalization_Compose, &errors);
+
+	EXPECT_UTF8EQ("\xC3\xA0\xD6\xAE\xCC\x80\xCC\x95" "b", d);
+
+	int i = 0;
 }
 
 TEST(Composition, SingletonAngstrom)
