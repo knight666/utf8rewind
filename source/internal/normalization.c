@@ -190,6 +190,35 @@ size_t normalize_composition(const char* input, size_t inputSize, char* target, 
 
 		index = compose_execute(&state);
 
+		if (state.stage == ComposeStage_Flush)
+		{
+			uint8_t last_combining_class = 0;
+			uint8_t i = 0;
+
+			/* Reorder */
+
+			for ( ; i < state.current; ++i)
+			{
+				uint8_t combining_class = database_queryproperty(state.stream_cp[i], UnicodeProperty_CanonicalCombiningClass);
+				if (combining_class > last_combining_class &&
+					last_combining_class != 0)
+				{
+					unicode_t swap = state.stream_cp[i];
+					state.stream_cp[i] = state.stream_cp[i - 1];
+					state.stream_cp[i - 1] = swap;
+
+					last_combining_class = 0;
+					i = 0;
+				}
+			}
+
+			/* Write */
+
+			for ( ; i < state.current; ++i)
+			{
+			}
+		}
+
 		if (index != (uint8_t)-1)
 		{
 			if (dst != 0 &&

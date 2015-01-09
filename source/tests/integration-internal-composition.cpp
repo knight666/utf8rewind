@@ -1,10 +1,21 @@
 #include "tests-base.hpp"
 
 extern "C" {
+	#include "../internal/composition.h"
 	#include "../internal/database.h"
 }
 
 #include "helpers-strings.hpp"
+
+TEST(Composition, CanonicalCombiningClass)
+{
+	const char* c = "a\xCC\x95\xCC\x80\xD6\xAE\xCC\x80" "b";
+	size_t cl = strlen(c);
+
+	ComposeState state;
+	compose_initialize(&state, &c, &cl, UnicodeProperty_Normalization_Compose);
+	compose_execute(&state);
+}
 
 TEST(Composition, SingletonAngstrom)
 {
