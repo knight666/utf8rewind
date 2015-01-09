@@ -183,13 +183,27 @@ size_t normalize_composition(const char* input, size_t inputSize, char* target, 
 
 	compose_initialize(&state, &src, &src_size, propertyType);
 
-	while (state.stage <= ComposeStage_OutOfInput)
+	while (state.stage < ComposeStage_OutOfInput)
 	{
 		uint8_t index;
 		size_t written;
 
 		index = compose_execute(&state);
 
+		//if (state.stage == ComposeStage_Flush)
+		{
+			uint8_t i;
+			for (i = 0; i < state.stream_flush_count; ++i)
+			{
+				written = codepoint_write(state.stream_flush[i], &dst, &dst_size, errors);
+				if (written == 0)
+				{
+					return bytes_written;
+				}
+				bytes_written += written;
+			}
+		}
+#if 0
 		if (state.stage == ComposeStage_Flush)
 		{
 			uint8_t last_combining_class = 0;
@@ -234,6 +248,7 @@ size_t normalize_composition(const char* input, size_t inputSize, char* target, 
 			}
 			bytes_written += written;
 		}
+#endif
 	}
 
 	return bytes_written;

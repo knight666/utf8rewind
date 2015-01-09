@@ -52,12 +52,47 @@ uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inpu
 
 uint8_t compose_execute(ComposeState* state)
 {
+	uint8_t i;
+	unicode_t composed;
+	uint8_t qc[2];
+	uint8_t read_index = 1;
+	uint8_t write_index = 0;
+
 	if (state->stage == ComposeStage_Flush)
 	{
 		if (state->current >= 1)
 		{
-			state->stream_cp[0] = state->stream_cp[state->current - 1];
+			uint8_t last = state->current;
+
+			state->stream_cp[0] = state->stream_cp[last];
+			state->stream_ccc[0] = state->stream_ccc[last];
+			state->stream_qc[0] = state->stream_qc[last];
+
+			for (i = 1; i <= state->current; ++i)
+			{
+				state->stream_cp[i] = 0;
+				state->stream_ccc[i] = 0;
+				state->stream_qc[i] = 0;
+			}
+
+			state->stable = (state->stream_qc[0] == QuickCheckResult_Yes);
+			state->current = 1;
 		}
+		else
+		{
+			for (i = 0; i <= state->current; ++i)
+			{
+				state->stream_cp[i] = 0;
+				state->stream_ccc[i] = 0;
+				state->stream_qc[i] = 0;
+			}
+
+			state->stable = 1;
+			state->current = 0;
+		}
+
+		memset(state->stream_flush, 0, state->stream_flush_count * sizeof(unicode_t));
+		state->stream_flush_count = 0;
 
 		state->stage = ComposeStage_Processing;
 	}
@@ -183,29 +218,25 @@ uint8_t compose_execute(ComposeState* state)
 
 		/* Reorder */
 
-		//last_combining_class = database_queryproperty(state->stream[i], UnicodeProperty_CanonicalCombiningClass);
-
-		// stable - 0
-		// unstable - 67
-		// unstable - 112
-
 		while (dirty == 1)
 		{
 			uint8_t last_combining_class = 0;
-			uint8_t i = state->current - 1;
 
 			dirty = 0;
 
-			for ( ; i >= 1; i--)
+			for (i = 1; i < state->current; i++)
 			{
-				if (last_combining_class != 0 &&
-					state->stream_ccc[i] > last_combining_class)
+				if (state->stream_ccc[i] < last_combining_class)
 				{
 					unicode_t swap_cp = state->stream_cp[i];
+					uint8_t swap_qc = state->stream_qc[i];
 					uint8_t swap_ccc = state->stream_ccc[i];
 
 					state->stream_cp[i] = state->stream_cp[i - 1];
 					state->stream_cp[i - 1] = swap_cp;
+
+					state->stream_qc[i] = state->stream_qc[i - 1];
+					state->stream_qc[i - 1] = swap_qc;
 
 					state->stream_ccc[i] = state->stream_ccc[i - 1];
 					state->stream_ccc[i - 1] = swap_ccc;
@@ -218,20 +249,56 @@ uint8_t compose_execute(ComposeState* state)
 		}
 	}
 
-	/* Swap buffers */
+	/* Compose */
 
-	state->current = (state->current + 1) % 2;
-	state->next = (state->next + 1) % 2;
+	composed = state->stream_cp[0];
+	qc[0] = state->stream_qc[0];
 
-	return state->next;
+	for (i = 1; i < state->current; ++i)
+	{
+		qc[1] = state->stream_qc[read_index];
+
+		while (
+			qc[0] != QuickCheckResult_Yes ||
+			qc[1] != QuickCheckResult_Yes)
+		{
+			/* Check database for composition */
+
+			unicode_t local_composed = database_querycomposition(composed, state->stream_cp[read_index]);
+			if (local_composed != 0)
+			{
+				composed = local_composed;
+				qc[0] = database_queryproperty(local_composed, state->property);
+
+				read_index++;
+				qc[1] = state->stream_qc[read_index];
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		state->stream_flush[state->stream_flush_count++] = composed;
+
+		composed = state->stream_cp[read_index];
+		read_index++;
+
+		qc[0] = qc[1];
+	}
+
+	if (qc[0] == QuickCheckResult_Maybe)
+	{
+		state->stream_flush[state->stream_flush_count++] = composed;
+	}
+
+	return 1;
 }
 
 uint8_t compose_readcodepoint(ComposeState* state)
 {
 	uint8_t length;
-	uint8_t qc;
-	uint8_t ccc;
-
+	
 	if (state->current + 1 >= COMPOSITION_MAX)
 	{
 		goto flush;
@@ -248,29 +315,36 @@ uint8_t compose_readcodepoint(ComposeState* state)
 		goto outofinput;
 	}
 
-	qc = database_queryproperty(state->stream_cp[state->current], state->property);
-	ccc = database_queryproperty(state->stream_cp[state->current], UnicodeProperty_CanonicalCombiningClass);
+	state->stream_qc[state->current] = database_queryproperty(state->stream_cp[state->current], state->property);
+	state->stream_ccc[state->current] = database_queryproperty(state->stream_cp[state->current], UnicodeProperty_CanonicalCombiningClass);
 
-	state->stream_ccc[state->current] = ccc;
-	state->current++;
+	state->last_canonical_combining_class = state->stream_ccc[state->current];
 
-	if (qc != QuickCheckResult_Yes ||
-		ccc > 0)
+	if (state->current > 0)
 	{
-		if (ccc < state->last_canonical_combining_class)
+		uint8_t previous = state->current - 1;
+
+		if (state->stream_qc[previous] != QuickCheckResult_Yes)
 		{
-			state->stable = 0;
-		}
-	}
-	else
-	{
-		if (state->current > 1)
-		{
+			if (state->stream_ccc[previous] > 0)
+			{
+				state->stable = 0;
+			}
+
 			goto flush;
 		}
+		else
+		{
+			if (state->stream_ccc[previous] == 0 &&
+				previous > 1)
+			{
+				goto flush;
+			}
+		}
 	}
 
-	state->last_canonical_combining_class = ccc;
+	state->current++;
+
 	return 1;
 
 flush:
