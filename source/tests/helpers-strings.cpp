@@ -267,14 +267,14 @@ namespace helpers {
 			result << std::endl;
 
 			result << "[UTF-8]" << std::endl;
-			result << "  Expected: " << "\"" << printable(textExpected) << "\"" << std::endl;
 			result << "    Actual: " << "\"" << printable(textActual) << "\"" << std::endl;
+			result << "  Expected: " << "\"" << printable(textExpected) << "\"" << std::endl;
 
 			result << std::endl;
 
 			result << "[Codepoints]" << std::endl;
-			result << "  Expected: " << "\"" << identifiable(textExpected) << "\"" << std::endl;
 			result << "    Actual: " << "\"" << identifiable(textActual) << "\"" << std::endl;
+			result << "  Expected: " << "\"" << identifiable(textExpected) << "\"" << std::endl;
 
 			return result;
 		}

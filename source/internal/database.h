@@ -23,28 +23,37 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef _UTF8NORMALIZATION_H_
-#define _UTF8NORMALIZATION_H_
+#ifndef _UTF8REWIND_INTERNAL_DATABASE_H_
+#define _UTF8REWIND_INTERNAL_DATABASE_H_
 
 #include "utf8rewind.h"
 
 #define UTF8_INVALID_PROPERTY (uint8_t)-1
 
-typedef struct {
-	unicode_t start;
-	unicode_t end;
-	unicode_t count_and_value;
-} QuickCheckRecord;
+enum UnicodeProperty
+{
+	UnicodeProperty_GeneralCategory,
+	UnicodeProperty_CanonicalCombiningClass,
+	UnicodeProperty_Normalization_Compose,
+	UnicodeProperty_Normalization_Decompose,
+	UnicodeProperty_Normalization_Compatibility_Compose,
+	UnicodeProperty_Normalization_Compatibility_Decompose,
+	UnicodeProperty_Uppercase,
+	UnicodeProperty_Lowercase,
+	UnicodeProperty_Titlecase,
+};
 
-typedef struct {
-	unicode_t codepoint;
-	size_t offset;
-} DecompositionRecord;
-
-typedef struct {
-	uint64_t key;
-	unicode_t value;
-} CompositionRecord;
+enum GeneralCategory
+{
+	GeneralCategory_Letter = 0x01,
+	GeneralCategory_CaseMapped = 0x02,
+	GeneralCategory_Mark = 0x04,
+	GeneralCategory_Number = 0x08,
+	GeneralCategory_Punctuation = 0x10,
+	GeneralCategory_Symbol = 0x20,
+	GeneralCategory_Separator = 0x40,
+	GeneralCategory_Other = 0x80,
+};
 
 enum QuickCheckResult
 {
@@ -53,38 +62,10 @@ enum QuickCheckResult
 	QuickCheckResult_No,
 };
 
-enum UnicodeProperty
-{
-	UnicodeProperty_QC_NFC,
-	UnicodeProperty_QC_NFD,
-	UnicodeProperty_QC_NFKC,
-	UnicodeProperty_QC_NFKD,
-	UnicodeProperty_Uppercase,
-	UnicodeProperty_Lowercase,
-	UnicodeProperty_Titlecase,
-};
+uint8_t database_queryproperty(unicode_t codepoint, uint8_t property);
 
-enum FindResult
-{
-	FindResult_Found,
-	FindResult_Missing,
-	FindResult_OutOfBounds,
-	FindResult_Invalid
-};
+const char* database_querydecomposition(unicode_t codepoint, uint8_t property);
 
-enum DecompositionQuery
-{
-	DecompositionQuery_Decomposed,
-	DecompositionQuery_Compatibility_Decomposed,
-	DecompositionQuery_Uppercase,
-	DecompositionQuery_Lowercase,
-	DecompositionQuery_Titlecase,
-};
-
-uint8_t queryproperty(unicode_t codepoint, uint8_t property);
-
-const char* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result);
-
-unicode_t querycomposition(unicode_t left, unicode_t right, int32_t* result);
+unicode_t database_querycomposition(unicode_t left, unicode_t right);
 
 #endif

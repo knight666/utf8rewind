@@ -23,51 +23,11 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "normalization.h"
+#include "database.h"
 
-extern const size_t UnicodeQuickCheckNFCRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckNFCRecordPtr;
+#include "../unicodedatabase.h"
 
-extern const size_t UnicodeQuickCheckNFDRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckNFDRecordPtr;
-
-extern const size_t UnicodeQuickCheckNFKCRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckNFKCRecordPtr;
-
-extern const size_t UnicodeQuickCheckNFKDRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckNFKDRecordPtr;
-
-extern const size_t UnicodeQuickCheckUppercaseRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckUppercaseRecordPtr;
-
-extern const size_t UnicodeQuickCheckLowercaseRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckLowercaseRecordPtr;
-
-extern const size_t UnicodeQuickCheckTitlecaseRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckTitlecaseRecordPtr;
-
-extern const size_t UnicodeNFDRecordCount;
-extern const DecompositionRecord* UnicodeNFDRecordPtr;
-
-extern const size_t UnicodeNFKDRecordCount;
-extern const DecompositionRecord* UnicodeNFKDRecordPtr;
-
-extern const size_t UnicodeUppercaseRecordCount;
-extern const DecompositionRecord* UnicodeUppercaseRecordPtr;
-
-extern const size_t UnicodeLowercaseRecordCount;
-extern const DecompositionRecord* UnicodeLowercaseRecordPtr;
-
-extern const size_t UnicodeTitlecaseRecordCount;
-extern const DecompositionRecord* UnicodeTitlecaseRecordPtr;
-
-extern const size_t UnicodeCompositionRecordCount;
-extern const CompositionRecord* UnicodeCompositionRecordPtr;
-
-extern const char* DecompositionData;
-extern const size_t DecompositionDataLength;
-
-uint8_t queryproperty(unicode_t codepoint, uint8_t checkType)
+uint8_t database_queryproperty(unicode_t codepoint, uint8_t checkType)
 {
 	const QuickCheckRecord* record;
 	size_t record_count;
@@ -80,39 +40,34 @@ uint8_t queryproperty(unicode_t codepoint, uint8_t checkType)
 	switch (checkType)
 	{
 
-	case UnicodeProperty_QC_NFC:
+	case UnicodeProperty_GeneralCategory:
+		record = UnicodeQuickCheckGeneralCategoryRecordPtr;
+		record_count = UnicodeQuickCheckGeneralCategoryRecordCount;
+		break;
+
+	case UnicodeProperty_CanonicalCombiningClass:
+		record = UnicodeQuickCheckCanonicalCombiningClassRecordPtr;
+		record_count = UnicodeQuickCheckCanonicalCombiningClassRecordCount;
+		break;
+
+	case UnicodeProperty_Normalization_Compose:
 		record = UnicodeQuickCheckNFCRecordPtr;
 		record_count = UnicodeQuickCheckNFCRecordCount;
 		break;
 
-	case UnicodeProperty_QC_NFD:
+	case UnicodeProperty_Normalization_Decompose:
 		record = UnicodeQuickCheckNFDRecordPtr;
 		record_count = UnicodeQuickCheckNFDRecordCount;
 		break;
 
-	case UnicodeProperty_QC_NFKC:
+	case UnicodeProperty_Normalization_Compatibility_Compose:
 		record = UnicodeQuickCheckNFKCRecordPtr;
 		record_count = UnicodeQuickCheckNFKCRecordCount;
 		break;
 
-	case UnicodeProperty_QC_NFKD:
+	case UnicodeProperty_Normalization_Compatibility_Decompose:
 		record = UnicodeQuickCheckNFKDRecordPtr;
 		record_count = UnicodeQuickCheckNFKDRecordCount;
-		break;
-
-	case UnicodeProperty_Uppercase:
-		record = UnicodeQuickCheckUppercaseRecordPtr;
-		record_count = UnicodeQuickCheckUppercaseRecordCount;
-		break;
-
-	case UnicodeProperty_Lowercase:
-		record = UnicodeQuickCheckLowercaseRecordPtr;
-		record_count = UnicodeQuickCheckLowercaseRecordCount;
-		break;
-
-	case UnicodeProperty_Titlecase:
-		record = UnicodeQuickCheckTitlecaseRecordPtr;
-		record_count = UnicodeQuickCheckTitlecaseRecordCount;
 		break;
 
 	default:
@@ -190,7 +145,7 @@ found:
 	}
 }
 
-const char* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result)
+const char* database_querydecomposition(unicode_t codepoint, uint8_t property)
 {
 	const DecompositionRecord* record;
 	size_t record_count;
@@ -200,40 +155,37 @@ const char* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result
 	size_t offset_pivot;
 	size_t i;
 
-	if (result == 0)
+	switch (property)
 	{
-		return 0;
-	}
 
-	if (query == DecompositionQuery_Decomposed)
-	{
+	case UnicodeProperty_Normalization_Decompose:
 		record = UnicodeNFDRecordPtr;
 		record_count = UnicodeNFDRecordCount;
-	}
-	else if (query == DecompositionQuery_Compatibility_Decomposed)
-	{
+		break;
+
+	case UnicodeProperty_Normalization_Compatibility_Decompose:
 		record = UnicodeNFKDRecordPtr;
 		record_count = UnicodeNFKDRecordCount;
-	}
-	else if (query == DecompositionQuery_Uppercase)
-	{
+		break;
+
+	case UnicodeProperty_Uppercase:
 		record = UnicodeUppercaseRecordPtr;
 		record_count = UnicodeUppercaseRecordCount;
-	}
-	else if (query == DecompositionQuery_Lowercase)
-	{
+		break;
+
+	case UnicodeProperty_Lowercase:
 		record = UnicodeLowercaseRecordPtr;
 		record_count = UnicodeLowercaseRecordCount;
-	}
-	else if (query == DecompositionQuery_Titlecase)
-	{
+		break;
+
+	case UnicodeProperty_Titlecase:
 		record = UnicodeTitlecaseRecordPtr;
 		record_count = UnicodeTitlecaseRecordCount;
-	}
-	else
-	{
-		*result = FindResult_Invalid;
+		break;
+
+	default:
 		return 0;
+
 	}
 
 	offset_start = 0;
@@ -242,7 +194,6 @@ const char* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result
 	if (codepoint < record[offset_start].codepoint ||
 		codepoint > record[offset_end].codepoint)
 	{
-		*result = FindResult_OutOfBounds;
 		return 0;
 	}
 
@@ -288,45 +239,29 @@ const char* finddecomposition(unicode_t codepoint, int8_t query, int32_t* result
 		}
 	}
 
-	*result = FindResult_Missing;
 	return 0;
 
 found:
 	if (record_found->offset == 0 ||
 		record_found->offset >= DecompositionDataLength)
 	{
-		*result = FindResult_OutOfBounds;
 		return 0;
 	}
-	else
-	{
-		*result = FindResult_Found;
-		return DecompositionData + record_found->offset;
-	}
+
+	return DecompositionData + record_found->offset;
 }
 
-unicode_t querycomposition(unicode_t left, unicode_t right, int32_t* result)
+unicode_t database_querycomposition(unicode_t left, unicode_t right)
 {
 	uint64_t key = ((uint64_t)left << 32) + (uint64_t)right;
-	size_t offset_start;
-	size_t offset_end;
+	size_t offset_start = 0;
+	size_t offset_end = UnicodeCompositionRecordCount - 1;
 	size_t offset_pivot;
-	const CompositionRecord* record = UnicodeCompositionRecordPtr;
-	size_t record_count = UnicodeCompositionRecordCount;
 	size_t i;
 
-	if (result == 0)
+	if (key < UnicodeCompositionRecordPtr[offset_start].key ||
+		key > UnicodeCompositionRecordPtr[offset_end].key)
 	{
-		return 0;
-	}
-
-	offset_start = 0;
-	offset_end = record_count - 1;
-
-	if (key < record[offset_start].key ||
-		key > record[offset_end].key)
-	{
-		*result = FindResult_OutOfBounds;
 		return 0;
 	}
 
@@ -334,24 +269,21 @@ unicode_t querycomposition(unicode_t left, unicode_t right, int32_t* result)
 	{
 		offset_pivot = offset_start + ((offset_end - offset_start) / 2);
 
-		if (key == record[offset_start].key)
+		if (key == UnicodeCompositionRecordPtr[offset_start].key)
 		{
-			*result = FindResult_Found;
-			return record[offset_start].value;
+			return UnicodeCompositionRecordPtr[offset_start].value;
 		}
-		else if (key == record[offset_end].key)
+		else if (key == UnicodeCompositionRecordPtr[offset_end].key)
 		{
-			*result = FindResult_Found;
-			return record[offset_end].value;
+			return UnicodeCompositionRecordPtr[offset_end].value;
 		}
-		else if (key == record[offset_pivot].key)
+		else if (key == UnicodeCompositionRecordPtr[offset_pivot].key)
 		{
-			*result = FindResult_Found;
-			return record[offset_pivot].value;
+			return UnicodeCompositionRecordPtr[offset_pivot].value;
 		}
 		else
 		{
-			if (key > record[offset_pivot].key)
+			if (key > UnicodeCompositionRecordPtr[offset_pivot].key)
 			{
 				offset_start = offset_pivot;
 			}
@@ -365,13 +297,11 @@ unicode_t querycomposition(unicode_t left, unicode_t right, int32_t* result)
 
 	for (i = offset_start; i <= offset_end; ++i)
 	{
-		if (key == record[i].key)
+		if (key == UnicodeCompositionRecordPtr[i].key)
 		{
-			*result = FindResult_Found;
-			return record[i].value;
+			return UnicodeCompositionRecordPtr[i].value;
 		}
 	}
 
-	*result = FindResult_Missing;
 	return 0;
 }
