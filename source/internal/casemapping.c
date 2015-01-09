@@ -28,33 +28,69 @@
 #include "codepoint.h"
 #include "database.h"
 
-size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t propertyType, int32_t* errors)
+size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t generalCategory, uint8_t propertyType, int32_t* errors)
 {
-	if (database_queryproperty(codepoint, propertyType) == 1)
+	const char* resolved;
+	size_t resolved_size;
+
+	if (codepoint <= 0x7A)
 	{
-		const char* resolved = database_querydecomposition(codepoint, propertyType);
-		if (resolved != 0)
+		/* Basic Latin */
+
+		if (*target != 0 &&
+			*targetSize < 1)
 		{
-			size_t resolved_size = strlen(resolved);
-
-			if (*target != 0 &&
-				resolved_size > 0)
-			{
-				if (*targetSize < resolved_size)
-				{
-					goto outofspace;
-				}
-
-				memcpy(*target, resolved, resolved_size);
-
-				*target += resolved_size;
-				*targetSize -= resolved_size;
-			}
-
-			return resolved_size;
+			goto outofspace;
 		}
+
+		if (propertyType == UnicodeProperty_Lowercase)
+		{
+			if (codepoint >= 0x41 && codepoint <= 0x5A)
+			{
+				codepoint += 0x20;
+			}
+		}
+		else
+		{
+			if (codepoint >= 0x61)
+			{
+				codepoint -= 0x20;
+			}
+		}
+
+		return codepoint_write(codepoint, target, targetSize, errors);
+	}
+	
+	if ((generalCategory & GeneralCategory_CaseMapped) == 0)
+	{
+		goto unresolved;
 	}
 
+	resolved = database_querydecomposition(codepoint, propertyType);
+	if (resolved == 0)
+	{
+		goto unresolved;
+	}
+
+	resolved_size = strlen(resolved);
+
+	if (*target != 0 &&
+		resolved_size > 0)
+	{
+		if (*targetSize < resolved_size)
+		{
+			goto outofspace;
+		}
+
+		memcpy(*target, resolved, resolved_size);
+
+		*target += resolved_size;
+		*targetSize -= resolved_size;
+	}
+
+	return resolved_size;
+
+unresolved:
 	return codepoint_write(codepoint, target, targetSize, errors);
 
 outofspace:

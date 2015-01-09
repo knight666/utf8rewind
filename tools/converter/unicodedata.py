@@ -20,6 +20,7 @@ class UnicodeMapping:
 		self.codepoint = 0
 		self.name = ""
 		self.generalCategory = ""
+		self.generalCategoryCombined = 0
 		self.canonicalCombiningClass = 0
 		self.bidiClass = ""
 		self.decompositionType = ""
@@ -105,6 +106,53 @@ class UnicodeMapping:
 			self.generalCategory = generalCategoryMapping[matches[2][0]]
 		except:
 			raise KeyError("Failed to find general category mapping for value \"" + matches[2][0] + "\"")
+		
+		mapping = [
+			{
+				"name": "Cased_Letter",
+				"check": [ "Lu", "Ll", "Lt" ],
+				"value": 0x03,
+			},
+			{
+				"name": "Letter",
+				"check": [ "Lu", "Ll", "Lt", "Lm", "Lo" ],
+				"value": 0x01,
+			},
+			{
+				"name": "Mark",
+				"check": [ "Mn", "Mc", "Me" ],
+				"value": 0x04,
+			},
+			{
+				"name": "Number",
+				"check": [ "Nd", "Nl", "No" ],
+				"value": 0x08,
+			},
+			{
+				"name": "Punctuation",
+				"check": [ "Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po" ],
+				"value": 0x10,
+			},
+			{
+				"name": "Symbol",
+				"check": [ "Sm", "Sc", "Sk", "So" ],
+				"value": 0x20,
+			},
+			{
+				"name": "Separator",
+				"check": [ "Zs", "Zl", "Zp" ],
+				"value": 0x40,
+			},
+			{
+				"name": "Other",
+				"check": [ "Cc", "Cf", "Cs", "Co", "Cn" ],
+				"value": 0x80,
+			},
+		]
+		for m in mapping:
+			if matches[2][0] in m["check"]:
+				self.generalCategoryCombined = m["value"]
+				break
 		
 		# canonical combining class
 		
@@ -203,12 +251,15 @@ class UnicodeMapping:
 		
 		if matches[12]:
 			self.uppercase.append(int(matches[12][0], 16))
+			self.generalCategoryCombined |= 0x02
 		
 		if matches[13]:
 			self.lowercase.append(int(matches[13][0], 16))
+			self.generalCategoryCombined |= 0x02
 		
 		if len(matches) >= 15 and matches[14]:
 			self.titlecase.append(int(matches[14][0], 16))
+			self.generalCategoryCombined |= 0x02
 		
 		return True
 	
@@ -320,13 +371,12 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.recordsOrdered = []
 		self.records = dict()
 		self.blocks = []
-		self.qc_nfc_records = []
-		self.qc_nfd_records = []
-		self.qc_nfkc_records = []
-		self.qc_nfkd_records = []
-		self.qcLowercase = []
-		self.qcUppercase = []
-		self.qcTitlecase = []
+		self.qcGeneralCategory = []
+		self.qcCanonicalCombiningClass = []
+		self.qcNFCRecords = []
+		self.qcNFDRecords = []
+		self.qcNFKCRecords = []
+		self.qcNFKDRecords = []
 	
 	def loadFromFiles(self, arguments):
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -376,6 +426,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		document_special_casing.accept(special_casing)
 		
 		self.resolveCaseMapping()
+		
+		# properties
+		
+		self.resolveProperties()
 	
 	def visitDocument(self, document):
 		print "Parsing document to codepoint database..."
@@ -473,47 +527,47 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# NFC
 		
-		self.qc_nfc_records = sorted(self.qc_nfc_records, key=lambda record: record.start)
-		nfc_length = len(self.qc_nfc_records)
-		nfc_last = self.qc_nfc_records[nfc_length - 1]
+		self.qcNFCRecords = sorted(self.qcNFCRecords, key=lambda record: record.start)
+		nfc_length = len(self.qcNFCRecords)
+		nfc_last = self.qcNFCRecords[nfc_length - 1]
 		nfc_last.end = nfc_last.start + nfc_last.count
 		
 		for i in range(0, nfc_length - 1):
-			current = self.qc_nfc_records[i]
-			self.qc_nfc_records[i].end = self.qc_nfc_records[i + 1].start - 1
+			current = self.qcNFCRecords[i]
+			self.qcNFCRecords[i].end = self.qcNFCRecords[i + 1].start - 1
 		
 		# NFD
 		
-		self.qc_nfd_records = sorted(self.qc_nfd_records, key=lambda record: record.start)
-		nfd_length = len(self.qc_nfd_records)
-		nfd_last = self.qc_nfd_records[nfd_length - 1]
+		self.qcNFDRecords = sorted(self.qcNFDRecords, key=lambda record: record.start)
+		nfd_length = len(self.qcNFDRecords)
+		nfd_last = self.qcNFDRecords[nfd_length - 1]
 		nfd_last.end = nfd_last.start + nfd_last.count
 		
 		for i in range(0, nfd_length - 1):
-			current = self.qc_nfd_records[i]
-			self.qc_nfd_records[i].end = self.qc_nfd_records[i + 1].start - 1
+			current = self.qcNFDRecords[i]
+			self.qcNFDRecords[i].end = self.qcNFDRecords[i + 1].start - 1
 		
 		# NFKC
 		
-		self.qc_nfkc_records = sorted(self.qc_nfkc_records, key=lambda record: record.start)
-		nfkc_length = len(self.qc_nfkc_records)
-		nfkc_last = self.qc_nfkc_records[nfkc_length - 1]
+		self.qcNFKCRecords = sorted(self.qcNFKCRecords, key=lambda record: record.start)
+		nfkc_length = len(self.qcNFKCRecords)
+		nfkc_last = self.qcNFKCRecords[nfkc_length - 1]
 		nfkc_last.end = nfkc_last.start + nfkc_last.count
 		
 		for i in range(0, nfkc_length - 1):
-			current = self.qc_nfkc_records[i]
-			self.qc_nfkc_records[i].end = self.qc_nfkc_records[i + 1].start - 1
+			current = self.qcNFKCRecords[i]
+			self.qcNFKCRecords[i].end = self.qcNFKCRecords[i + 1].start - 1
 		
 		# NFKD
 		
-		self.qc_nfkd_records = sorted(self.qc_nfkd_records, key=lambda record: record.start)
-		nfkd_length = len(self.qc_nfkd_records)
-		nfkd_last = self.qc_nfkd_records[nfkd_length - 1]
+		self.qcNFKDRecords = sorted(self.qcNFKDRecords, key=lambda record: record.start)
+		nfkd_length = len(self.qcNFKDRecords)
+		nfkd_last = self.qcNFKDRecords[nfkd_length - 1]
 		nfkd_last.end = nfkd_last.start + nfkd_last.count
 		
 		for i in range(0, nfkd_length - 1):
-			current = self.qc_nfkd_records[i]
-			self.qc_nfkd_records[i].end = self.qc_nfkd_records[i + 1].start - 1
+			current = self.qcNFKDRecords[i]
+			self.qcNFKDRecords[i].end = self.qcNFKDRecords[i + 1].start - 1
 		
 	def resolveDecomposition(self):
 		print "Resolving decomposition..."
@@ -545,54 +599,45 @@ class Database(libs.unicode.UnicodeVisitor):
 	def resolveCaseMapping(self):
 		print "Resolving case mappings..."
 		
-		group_uppercase = None
-		group_lowercase = None
-		group_titlecase = None
-		
 		for r in self.recordsOrdered:
 			r.caseMapping()
+	
+	def resolveProperties(self):
+		print "Resolving codepoint properties..."
+		
+		group_category = None
+		group_ccc = None
+		
+		for r in self.recordsOrdered:
+			if r.generalCategoryCombined:
+				if not group_category or r.codepoint <> (group_category.start + group_category.count + 1) or r.generalCategoryCombined <> group_category.value:
+					if group_category:
+						group_category.end = r.codepoint - 1
+					group_category = QuickCheckRecord(self)
+					group_category.start = r.codepoint
+					group_category.end = r.codepoint
+					group_category.value = r.generalCategoryCombined
+					self.qcGeneralCategory.append(group_category)
+				else:
+					group_category.count += 1
 			
-			if r.uppercase:
-				if not group_uppercase or r.codepoint <> (group_uppercase.start + group_uppercase.count + 1):
-					if group_uppercase:
-						group_uppercase.end = r.codepoint - 1
-					group_uppercase = QuickCheckRecord(self)
-					group_uppercase.start = r.codepoint
-					group_uppercase.value = 1
-					self.qcUppercase.append(group_uppercase)
+			if r.canonicalCombiningClass:
+				if not group_ccc or r.codepoint <> (group_ccc.start + group_ccc.count + 1) or r.canonicalCombiningClass <> group_ccc.value:
+					if group_ccc:
+						group_ccc.end = r.codepoint - 1
+					group_ccc = QuickCheckRecord(self)
+					group_ccc.start = r.codepoint
+					group_ccc.end = r.codepoint
+					group_ccc.value = r.canonicalCombiningClass
+					self.qcCanonicalCombiningClass.append(group_ccc)
 				else:
-					group_uppercase.count += 1
-			
-			if r.lowercase:
-				if not group_lowercase or r.codepoint <> (group_lowercase.start + group_lowercase.count + 1):
-					if group_lowercase:
-						group_lowercase.end = r.codepoint - 1
-					group_lowercase = QuickCheckRecord(self)
-					group_lowercase.start = r.codepoint
-					group_lowercase.value = 1
-					self.qcLowercase.append(group_lowercase)
-				else:
-					group_lowercase.count += 1
-					
-			if r.titlecase:
-				if not group_titlecase or r.codepoint <> (group_titlecase.start + group_titlecase.count + 1):
-					if group_titlecase:
-						group_titlecase.end = r.codepoint - 1
-					group_titlecase = QuickCheckRecord(self)
-					group_titlecase.start = r.codepoint
-					group_titlecase.value = 1
-					self.qcTitlecase.append(group_titlecase)
-				else:
-					group_titlecase.count += 1
+					group_ccc.count += 1
 		
-		if group_uppercase:
-			group_uppercase.end = group_uppercase.start + group_uppercase.count
+		if group_category:
+			group_category.end = group_category.start + group_category.count
 		
-		if group_lowercase:
-			group_lowercase.end = group_lowercase.start + group_lowercase.count
-		
-		if group_titlecase:
-			group_titlecase.end = group_titlecase.start + group_titlecase.count
+		if group_ccc:
+			group_ccc.end = group_ccc.start + group_ccc.count
 	
 	def resolveCodepoint(self, codepoint, compatibility):
 		found = self.records[codepoint]
@@ -857,13 +902,12 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# quick check records
 		
-		self.writeQuickCheck(header, self.qc_nfc_records, "NFC")
-		self.writeQuickCheck(header, self.qc_nfd_records, "NFD")
-		self.writeQuickCheck(header, self.qc_nfkc_records, "NFKC")
-		self.writeQuickCheck(header, self.qc_nfkd_records, "NFKD")
-		self.writeQuickCheck(header, self.qcUppercase, "Uppercase")
-		self.writeQuickCheck(header, self.qcLowercase, "Lowercase")
-		self.writeQuickCheck(header, self.qcTitlecase, "Titlecase")
+		self.writeQuickCheck(header, self.qcGeneralCategory, "GeneralCategory")
+		self.writeQuickCheck(header, self.qcCanonicalCombiningClass, "CanonicalCombiningClass")
+		self.writeQuickCheck(header, self.qcNFCRecords, "NFC")
+		self.writeQuickCheck(header, self.qcNFDRecords, "NFD")
+		self.writeQuickCheck(header, self.qcNFKCRecords, "NFKC")
+		self.writeQuickCheck(header, self.qcNFKDRecords, "NFKD")
 		
 		# decomposition records
 		
@@ -1034,10 +1078,10 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		def quick_check(property):
 			nf_member = {
-				"NFD_QC": "qc_nfd_records",
-				"NFC_QC": "qc_nfc_records",
-				"NFKD_QC": "qc_nfkd_records",
-				"NFKC_QC": "qc_nfkc_records",
+				"NFD_QC": "qcNFDRecords",
+				"NFC_QC": "qcNFCRecords",
+				"NFKD_QC": "qcNFKDRecords",
+				"NFKC_QC": "qcNFKCRecords",
 			}
 			nf_value = {
 				"N": 2,

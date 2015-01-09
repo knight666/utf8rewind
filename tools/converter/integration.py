@@ -53,6 +53,8 @@ class IntegrationSuite:
 
 class CaseMappingIntegrationSuite(IntegrationSuite):
 	def execute(self):
+		print "Executing case mapping tests..."
+		
 		valid_blocks = []
 		
 		print "Checking for valid blocks..."
@@ -61,11 +63,11 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 			for u in range(b.start, b.end + 1):
 				if u in db.records:
 					r = db.records[u]
-					if r.uppercase or r.lowercase:
+					if r.uppercase or r.lowercase or r.titlecase:
 						valid_blocks.append(b)
 						break
 		
-		print "Writing tests..."
+		print "Writing case mapping tests..."
 		
 		self.open('/../../source/tests/integration-casemapping.cpp')
 		
@@ -118,7 +120,12 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 			else:
 				converted_lowercase = libs.utf8.codepointToUtf8(r.codepoint)[0]
 			
-			self.header.writeLine("CHECK_UTF8_CASEMAPPING(" + converted_codepoint + ", \"" + converted_uppercase + "\", \"" + converted_lowercase + "\", \"" + r.name + "\");")
+			if r.titlecase:
+				converted_titlecase = libs.utf8.unicodeToUtf8(r.titlecase)
+			else:
+				converted_titlecase = libs.utf8.codepointToUtf8(r.codepoint)[0]
+			
+			self.header.writeLine("CHECK_UTF8_CASEMAPPING(" + converted_codepoint + ", \"" + converted_uppercase + "\", \"" + converted_lowercase + "\", \"" + converted_titlecase + "\", \"" + r.name + "\");")
 		
 		self.header.outdent()
 		self.header.write("}")
@@ -170,6 +177,8 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		self.blockGroups = dict()
 	
 	def execute(self):
+		print "Executing normalization tests..."
+		
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 		
 		document_normalization = libs.unicode.UnicodeDocument()
@@ -188,6 +197,8 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 			group.entries.append(u)
 		
 		self.blockGroups = sorted(groups.iteritems(), key=lambda item: item[1].block.start)
+		
+		print "Writing normalization tests..."
 		
 		self.open('/../../source/tests/integration-normalization.cpp')
 		
