@@ -512,8 +512,9 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 			if (index != (uint8_t)-1)
 			{
-				size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, UnicodeProperty_Uppercase, errors);
+				uint8_t generalCategory = database_queryproperty(state.codepoint[index], UnicodeProperty_GeneralCategory);
 
+				size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, generalCategory, UnicodeProperty_Uppercase, errors);
 				if (written == 0)
 				{
 					break;
@@ -555,9 +556,9 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 			{
 				unicode_t codepoint;
 				size_t codepoint_length = codepoint_read(&codepoint, src, src_size);
+				uint8_t generalCategory = database_queryproperty(codepoint, UnicodeProperty_GeneralCategory);
 
-				size_t written = casemapping_execute(codepoint, &dst, &dst_size, UnicodeProperty_Uppercase, errors);
-
+				size_t written = casemapping_execute(codepoint, &dst, &dst_size, generalCategory, UnicodeProperty_Uppercase, errors);
 				if (written == 0)
 				{
 					break;
@@ -615,8 +616,9 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 			if (index != (uint8_t)-1)
 			{
-				size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, UnicodeProperty_Lowercase, errors);
+				uint8_t generalCategory = database_queryproperty(state.codepoint[index], UnicodeProperty_GeneralCategory);
 
+				size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, generalCategory, UnicodeProperty_Lowercase, errors);
 				if (written == 0)
 				{
 					break;
@@ -658,9 +660,9 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 			{
 				unicode_t codepoint;
 				size_t codepoint_length = codepoint_read(&codepoint, src, src_size);
+				uint8_t generalCategory = database_queryproperty(codepoint, UnicodeProperty_GeneralCategory);
 
-				size_t written = casemapping_execute(codepoint, &dst, &dst_size, UnicodeProperty_Lowercase, errors);
-
+				size_t written = casemapping_execute(codepoint, &dst, &dst_size, generalCategory, UnicodeProperty_Lowercase, errors);
 				if (written == 0)
 				{
 					break;
@@ -687,6 +689,61 @@ outofspace:
 	if (errors != 0)
 	{
 		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return bytes_written;
+}
+
+size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
+{
+	size_t bytes_written = 0;
+	const char* src = input;
+	size_t src_size = inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
+	uint8_t property = UnicodeProperty_Titlecase;
+
+	if (src == 0 ||
+		src_size == 0)
+	{
+		goto invaliddata;
+	}
+
+	while (src_size > 0)
+	{
+		unicode_t codepoint;
+		size_t codepoint_length = codepoint_read(&codepoint, src, src_size);
+		uint8_t generalCategory = database_queryproperty(codepoint, UnicodeProperty_GeneralCategory);
+
+		size_t written = casemapping_execute(codepoint, &dst, &dst_size, generalCategory, property, errors);
+		if (written == 0)
+		{
+			break;
+		}
+
+		if (property == UnicodeProperty_Titlecase)
+		{
+			if ((generalCategory & GeneralCategory_Letter) != 0)
+			{
+				property = UnicodeProperty_Lowercase;
+			}
+		}
+		else if ((generalCategory & GeneralCategory_Letter) == 0)
+		{
+			property = UnicodeProperty_Titlecase;
+		}
+
+		bytes_written += written;
+
+		src += codepoint_length;
+		src_size -= codepoint_length;
+	}
+
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
 	}
 	return bytes_written;
 }

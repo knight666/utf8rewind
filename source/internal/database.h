@@ -32,6 +32,8 @@
 
 enum UnicodeProperty
 {
+	UnicodeProperty_GeneralCategory,
+	UnicodeProperty_CanonicalCombiningClass,
 	UnicodeProperty_Normalization_Compose,
 	UnicodeProperty_Normalization_Decompose,
 	UnicodeProperty_Normalization_Compatibility_Compose,
@@ -39,6 +41,18 @@ enum UnicodeProperty
 	UnicodeProperty_Uppercase,
 	UnicodeProperty_Lowercase,
 	UnicodeProperty_Titlecase,
+};
+
+enum GeneralCategory
+{
+	GeneralCategory_Letter = 0x01,
+	GeneralCategory_CaseMapped = 0x02,
+	GeneralCategory_Mark = 0x04,
+	GeneralCategory_Number = 0x08,
+	GeneralCategory_Punctuation = 0x10,
+	GeneralCategory_Symbol = 0x20,
+	GeneralCategory_Separator = 0x40,
+	GeneralCategory_Other = 0x80,
 };
 
 enum QuickCheckResult
