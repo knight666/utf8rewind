@@ -23,8 +23,8 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef _UTFREWIND_INTERNAL_STREAM_H_
-#define _UTFREWIND_INTERNAL_STREAM_H_
+#ifndef _UTFREWIND_INTERNAL_STREAMING_H_
+#define _UTFREWIND_INTERNAL_STREAMING_H_
 
 #include "utf8rewind.h"
 
@@ -63,4 +63,4 @@ enum ReorderResult
 
 uint8_t stream_readcodepoint(StreamState* state);
 
-#endif // _UTFREWIND_INTERNAL_REORDER_H_
+#endif // _UTFREWIND_INTERNAL_STREAMING_H_
