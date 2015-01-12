@@ -3,37 +3,10 @@
 extern "C" {
 	#include "../internal/database.h"
 	#include "../internal/normalization.h"
-	#include "../internal/reorder.h"
 }
 
 #include "helpers-strings.hpp"
 #include "helpers-normalization.hpp"
-
-TEST(Composition, CanonicalCombiningClass)
-{
-	const char* c = "a\xCC\x95\xCC\x80\xD6\xAE\xCC\x80" "b";
-	size_t cl = strlen(c);
-	char d[256] = { 0 };
-	size_t dl = 255;
-	int32_t errors = 0;
-
-	/*ComposeState state;
-	compose_initialize(&state, &c, &cl, UnicodeProperty_Normalization_Compose);
-	compose_execute(&state);*/
-
-	StreamState state;
-	stream_initialize(&state, &c, &cl, &d, &dl, UnicodeProperty_Normalization_Compose);
-	stream_execute(&state);
-
-	std::string nfd = helpers::nfd("a\xCC\x95\xCC\x80\xD6\xAE\xCC\x80" "b");
-	std::string id = helpers::identifiable(nfd);
-
-	normalize_composition(c, cl, d, dl, UnicodeProperty_Normalization_Compose, &errors);
-
-	EXPECT_UTF8EQ("\xC3\xA0\xD6\xAE\xCC\x80\xCC\x95" "b", d);
-
-	int i = 0;
-}
 
 TEST(Composition, SingletonAngstrom)
 {

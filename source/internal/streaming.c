@@ -23,7 +23,7 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "stream.h"
+#include "streaming.h"
 
 #include "codepoint.h"
 #include "database.h"
@@ -37,7 +37,7 @@ uint8_t stream_initialize(StreamState* state, const char** input, size_t* inputS
 	state->property = property;
 
 	state->stable = 1;
-	state->stable = ReorderResult_Next;
+	state->stage = ReorderResult_Next;
 
 	return 1;
 }
@@ -137,15 +137,6 @@ uint8_t stream_readcodepoint(StreamState* state)
 	}
 
 	length = codepoint_read(&state->codepoint[state->current], *state->src, *state->src_size);
-	if (*state->src_size > length)
-	{
-		*state->src += length;
-		*state->src_size -= length;
-	}
-	else
-	{
-		goto outofinput;
-	}
 
 	state->quick_check[state->current] = database_queryproperty(state->codepoint[state->current], state->property);
 	state->canonical_combining_class[state->current] = database_queryproperty(state->codepoint[state->current], UnicodeProperty_CanonicalCombiningClass);
@@ -154,28 +145,28 @@ uint8_t stream_readcodepoint(StreamState* state)
 	{
 		uint8_t previous = state->current - 1;
 
-		if (state->quick_check[previous] != QuickCheckResult_Yes)
+		if (state->quick_check[state->current] == QuickCheckResult_Yes &&
+			state->canonical_combining_class[state->current] == 0)
 		{
-			if (state->canonical_combining_class[previous] > 0)
-			{
-				state->stable = 0;
-			}
-
 			goto flush;
 		}
 		else
 		{
-			if (state->canonical_combining_class[previous] == 0 &&
-				previous > 1)
-			{
-				goto flush;
-			}
+			state->stable = 0;
 		}
 	}
 
 	state->current++;
 
-	return 1;
+	if (*state->src_size <= length)
+	{
+		goto outofinput;
+	}
+
+	*state->src += length;
+	*state->src_size -= length;
+
+	return ReorderResult_Next;
 
 flush:
 	return ReorderResult_Flush;
