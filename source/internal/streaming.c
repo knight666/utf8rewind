@@ -63,7 +63,18 @@ uint8_t stream_execute(StreamState* state)
 				state->quick_check[i] = 0;
 			}
 
-			state->stable = (state->quick_check[0] == QuickCheckResult_Yes);
+			if (state->quick_check[0] == QuickCheckResult_Yes &&
+				state->canonical_combining_class[0] == 0)
+			{
+				state->starter_count = 1;
+				state->stable = 1;
+			}
+			else
+			{
+				state->starter_count = 0;
+				state->stable = 0;
+			}
+
 			state->current = 1;
 		}
 		else
@@ -75,7 +86,9 @@ uint8_t stream_execute(StreamState* state)
 				state->quick_check[i] = 0;
 			}
 
+			state->starter_count = 0;
 			state->stable = 1;
+
 			state->current = 0;
 		}
 
@@ -130,60 +143,42 @@ uint8_t stream_execute(StreamState* state)
 uint8_t stream_readcodepoint(StreamState* state)
 {
 	uint8_t current = state->current;
-	size_t length;
 
 	if (current + 1 >= STREAM_BUFFER_MAX)
 	{
-		goto flush;
+		return ReorderResult_Flush;
 	}
 
-	length = codepoint_read(&state->codepoint[current], *state->src, *state->src_size);
-	state->current++;
+	if (state->last_length > 0)
+	{
+		if (*state->src_size <= state->last_length)
+		{
+			return ReorderResult_Flush;
+		}
 
+		*state->src += state->last_length;
+		*state->src_size -= state->last_length;
+	}
+
+	state->last_length = codepoint_read(&state->codepoint[current], *state->src, *state->src_size);
 	state->quick_check[current] = database_queryproperty(state->codepoint[current], state->property);
 	state->canonical_combining_class[current] = database_queryproperty(state->codepoint[current], UnicodeProperty_CanonicalCombiningClass);
 
-	if (*state->src_size <= length)
+	if (state->quick_check[current] == QuickCheckResult_Yes &&
+		state->canonical_combining_class[current] == 0)
 	{
-		goto outofinput;
-	}
-
-	*state->src += length;
-	*state->src_size -= length;
-
-	if (current > 0)
-	{
-		uint8_t previous = current - 1;
-
-		if (state->quick_check[current] == QuickCheckResult_Yes &&
-			state->canonical_combining_class[current] == 0)
+		state->starter_count++;
+		if (state->starter_count > 1)
 		{
-			goto flush;
-		}
-		else
-		{
-			state->stable = 0;
+			return ReorderResult_Flush;
 		}
 	}
+	else
+	{
+		state->stable = 0;
+	}
+
+	state->current++;
 
 	return ReorderResult_Next;
-
-flush:
-	state->current--;
-
-	return ReorderResult_Flush;
-
-outofinput:
-	if (state->current > 1)
-	{
-		uint8_t previous = state->current - 1;
-
-		if (state->quick_check[previous] == QuickCheckResult_Yes &&
-			state->canonical_combining_class[previous] == 0)
-		{
-			state->current = previous;
-		}
-	}
-
-	return ReorderResult_Flush;
 }
