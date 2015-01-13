@@ -99,7 +99,7 @@ TEST(Streaming, MultipleReorder)
 
 TEST(Streaming, MultipleInvalidCodepoint)
 {
-	const char* i = "\xF4\x9A\xF2";
+	const char* i = "\xF4\x9A\x13";
 	size_t il = strlen(i);
 
 	StreamState state;
@@ -111,5 +111,5 @@ TEST(Streaming, MultipleInvalidCodepoint)
 
 	stream_execute(&state);
 	EXPECT_EQ(1, state.current);
-	EXPECT_UTF8EQ("\xEF\xBF\xBD", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+	EXPECT_UTF8EQ("\x13", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 }
