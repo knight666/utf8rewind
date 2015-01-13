@@ -44,7 +44,6 @@ typedef struct {
 	uint8_t property;
 	uint8_t current;
 	uint8_t stable;
-	uint8_t stage;
 	uint8_t starter_count;
 	size_t last_length;
 	unicode_t codepoint[STREAM_BUFFER_MAX];
@@ -55,14 +54,5 @@ typedef struct {
 uint8_t stream_initialize(StreamState* state, const char** input, size_t* inputSize, uint8_t property);
 
 uint8_t stream_execute(StreamState* state);
-
-enum ReorderResult
-{
-	ReorderResult_Next,
-	ReorderResult_Flush,
-	ReorderResult_OutOfData,
-};
-
-uint8_t stream_readcodepoint(StreamState* state);
 
 #endif // _UTFREWIND_INTERNAL_STREAMING_H_
