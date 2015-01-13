@@ -99,7 +99,7 @@ TEST(Streaming, MultipleReorder)
 
 TEST(Streaming, MultipleInvalidCodepoint)
 {
-	const char* i = "\xF4\xDE\xF2";
+	const char* i = "\xF4\x9A\xF2";
 	size_t il = strlen(i);
 
 	StreamState state;

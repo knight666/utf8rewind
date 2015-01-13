@@ -129,34 +129,19 @@ uint8_t stream_execute(StreamState* state)
 
 uint8_t stream_readcodepoint(StreamState* state)
 {
-	uint8_t length;
+	uint8_t current = state->current;
+	size_t length;
 
-	if (state->current + 1 >= STREAM_BUFFER_MAX)
+	if (current + 1 >= STREAM_BUFFER_MAX)
 	{
 		goto flush;
 	}
 
-	length = codepoint_read(&state->codepoint[state->current], *state->src, *state->src_size);
-
-	state->quick_check[state->current] = database_queryproperty(state->codepoint[state->current], state->property);
-	state->canonical_combining_class[state->current] = database_queryproperty(state->codepoint[state->current], UnicodeProperty_CanonicalCombiningClass);
-
-	if (state->current > 0)
-	{
-		uint8_t previous = state->current - 1;
-
-		if (state->quick_check[state->current] == QuickCheckResult_Yes &&
-			state->canonical_combining_class[state->current] == 0)
-		{
-			goto flush;
-		}
-		else
-		{
-			state->stable = 0;
-		}
-	}
-
+	length = codepoint_read(&state->codepoint[current], *state->src, *state->src_size);
 	state->current++;
+
+	state->quick_check[current] = database_queryproperty(state->codepoint[current], state->property);
+	state->canonical_combining_class[current] = database_queryproperty(state->codepoint[current], UnicodeProperty_CanonicalCombiningClass);
 
 	if (*state->src_size <= length)
 	{
@@ -166,11 +151,39 @@ uint8_t stream_readcodepoint(StreamState* state)
 	*state->src += length;
 	*state->src_size -= length;
 
+	if (current > 0)
+	{
+		uint8_t previous = current - 1;
+
+		if (state->quick_check[current] == QuickCheckResult_Yes &&
+			state->canonical_combining_class[current] == 0)
+		{
+			goto flush;
+		}
+		else
+		{
+			state->stable = 0;
+		}
+	}
+
 	return ReorderResult_Next;
 
 flush:
+	state->current--;
+
 	return ReorderResult_Flush;
 
 outofinput:
-	return ReorderResult_OutOfData;
+	if (state->current > 1)
+	{
+		uint8_t previous = state->current - 1;
+
+		if (state->quick_check[previous] == QuickCheckResult_Yes &&
+			state->canonical_combining_class[previous] == 0)
+		{
+			state->current = previous;
+		}
+	}
+
+	return ReorderResult_Flush;
 }
