@@ -21,7 +21,6 @@ TEST(Streaming, Initialized)
 	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.property);
 	EXPECT_EQ(0, state.current);
 	EXPECT_EQ(1, state.stable);
-	EXPECT_EQ(ReorderResult_Next, state.stage);
 }
 
 TEST(Streaming, SingleNoChange)

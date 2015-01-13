@@ -37,67 +37,79 @@ uint8_t stream_initialize(StreamState* state, const char** input, size_t* inputS
 	state->property = property;
 
 	state->stable = 1;
-	state->stage = ReorderResult_Next;
 
 	return 1;
 }
 
 uint8_t stream_execute(StreamState* state)
 {
-	uint8_t i;
-
-	if (state->stage == ReorderResult_Flush)
+	if (state->current >= 1)
 	{
-		if (state->current >= 1)
+		uint8_t i;
+
+		state->codepoint[0] = state->codepoint[state->current];
+		state->canonical_combining_class[0] = state->canonical_combining_class[state->current];
+		state->quick_check[0] = state->quick_check[state->current];
+
+		for (i = 1; i <= state->current; ++i)
 		{
-			uint8_t last = state->current;
+			state->codepoint[i] = 0;
+			state->canonical_combining_class[i] = 0;
+			state->quick_check[i] = 0;
+		}
 
-			state->codepoint[0] = state->codepoint[last];
-			state->canonical_combining_class[0] = state->canonical_combining_class[last];
-			state->quick_check[0] = state->quick_check[last];
-
-			for (i = 1; i <= state->current; ++i)
-			{
-				state->codepoint[i] = 0;
-				state->canonical_combining_class[i] = 0;
-				state->quick_check[i] = 0;
-			}
-
-			if (state->quick_check[0] == QuickCheckResult_Yes &&
-				state->canonical_combining_class[0] == 0)
-			{
-				state->starter_count = 1;
-				state->stable = 1;
-			}
-			else
-			{
-				state->starter_count = 0;
-				state->stable = 0;
-			}
-
-			state->current = 1;
+		if (state->quick_check[0] == QuickCheckResult_Yes &&
+			state->canonical_combining_class[0] == 0)
+		{
+			state->starter_count = 1;
+			state->stable = 1;
 		}
 		else
 		{
-			for (i = 0; i <= state->current; ++i)
-			{
-				state->codepoint[i] = 0;
-				state->canonical_combining_class[i] = 0;
-				state->quick_check[i] = 0;
-			}
-
 			state->starter_count = 0;
-			state->stable = 1;
-
-			state->current = 0;
+			state->stable = 0;
 		}
 
-		state->stage = ReorderResult_Next;
+		state->current = 1;
 	}
 
-	while (state->stage == ReorderResult_Next)
+	while (1)
 	{
-		state->stage = stream_readcodepoint(state);
+		if (state->current + 1 >= STREAM_BUFFER_MAX)
+		{
+			break;
+		}
+
+		if (state->last_length > 0)
+		{
+			if (*state->src_size <= state->last_length)
+			{
+				break;
+			}
+
+			*state->src += state->last_length;
+			*state->src_size -= state->last_length;
+		}
+
+		state->last_length = codepoint_read(&state->codepoint[state->current], *state->src, *state->src_size);
+
+		state->quick_check[state->current] = database_queryproperty(state->codepoint[state->current], state->property);
+		state->canonical_combining_class[state->current] = database_queryproperty(state->codepoint[state->current], UnicodeProperty_CanonicalCombiningClass);
+
+		if (state->quick_check[state->current] == QuickCheckResult_Yes &&
+			state->canonical_combining_class[state->current] == 0)
+		{
+			if (++state->starter_count > 1)
+			{
+				break;
+			}
+		}
+		else if (state->current > 0)
+		{
+			state->stable = 0;
+		}
+
+		state->current++;
 	}
 
 	if (state->stable == 0)
@@ -108,6 +120,7 @@ uint8_t stream_execute(StreamState* state)
 
 		while (dirty == 1)
 		{
+			uint8_t i;
 			uint8_t last_combining_class = 0;
 
 			dirty = 0;
@@ -116,16 +129,19 @@ uint8_t stream_execute(StreamState* state)
 			{
 				if (state->canonical_combining_class[i] < last_combining_class)
 				{
-					unicode_t swap_cp = state->codepoint[i];
-					uint8_t swap_qc = state->quick_check[i];
-					uint8_t swap_ccc = state->canonical_combining_class[i];
+					unicode_t swap_cp;
+					uint8_t swap_qc;
+					uint8_t swap_ccc;
 
+					swap_cp = state->codepoint[i];
 					state->codepoint[i] = state->codepoint[i - 1];
 					state->codepoint[i - 1] = swap_cp;
 
+					swap_qc = state->quick_check[i];
 					state->quick_check[i] = state->quick_check[i - 1];
 					state->quick_check[i - 1] = swap_qc;
 
+					swap_ccc = state->canonical_combining_class[i];
 					state->canonical_combining_class[i] = state->canonical_combining_class[i - 1];
 					state->canonical_combining_class[i - 1] = swap_ccc;
 
@@ -137,48 +153,5 @@ uint8_t stream_execute(StreamState* state)
 		}
 	}
 
-	return state->stage;
-}
-
-uint8_t stream_readcodepoint(StreamState* state)
-{
-	uint8_t current = state->current;
-
-	if (current + 1 >= STREAM_BUFFER_MAX)
-	{
-		return ReorderResult_Flush;
-	}
-
-	if (state->last_length > 0)
-	{
-		if (*state->src_size <= state->last_length)
-		{
-			return ReorderResult_Flush;
-		}
-
-		*state->src += state->last_length;
-		*state->src_size -= state->last_length;
-	}
-
-	state->last_length = codepoint_read(&state->codepoint[current], *state->src, *state->src_size);
-	state->quick_check[current] = database_queryproperty(state->codepoint[current], state->property);
-	state->canonical_combining_class[current] = database_queryproperty(state->codepoint[current], UnicodeProperty_CanonicalCombiningClass);
-
-	if (state->quick_check[current] == QuickCheckResult_Yes &&
-		state->canonical_combining_class[current] == 0)
-	{
-		state->starter_count++;
-		if (state->starter_count > 1)
-		{
-			return ReorderResult_Flush;
-		}
-	}
-	else
-	{
-		state->stable = 0;
-	}
-
-	state->current++;
-
-	return ReorderResult_Next;
+	return 1;
 }
