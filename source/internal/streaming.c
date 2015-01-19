@@ -47,6 +47,15 @@ uint8_t stream_execute(StreamState* state)
 	{
 		uint8_t i;
 
+		if (*state->src_size <= state->last_length &&
+			state->codepoint[state->current] == 0)
+		{
+			*state->src_size = 0;
+			state->current = 0;
+
+			return 0;
+		}
+
 		state->codepoint[0] = state->codepoint[state->current];
 		state->canonical_combining_class[0] = state->canonical_combining_class[state->current];
 		state->quick_check[0] = state->quick_check[state->current];
@@ -89,6 +98,11 @@ uint8_t stream_execute(StreamState* state)
 
 			*state->src += state->last_length;
 			*state->src_size -= state->last_length;
+
+			if (*state->src_size == 0)
+			{
+				break;
+			}
 		}
 
 		state->last_length = codepoint_read(&state->codepoint[state->current], *state->src, *state->src_size);
