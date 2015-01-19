@@ -28,7 +28,7 @@
 #include "codepoint.h"
 #include "database.h"
 
-uint8_t stream_initialize(StreamState* state, const char** input, size_t* inputSize, uint8_t property)
+uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSize, uint8_t property)
 {
 	memset(state, 0, sizeof(StreamState));
 
@@ -43,14 +43,16 @@ uint8_t stream_initialize(StreamState* state, const char** input, size_t* inputS
 
 uint8_t stream_execute(StreamState* state)
 {
+	/* Reset after the first frame */
+
 	if (state->current >= 1)
 	{
 		uint8_t i;
 
-		if (*state->src_size <= state->last_length &&
+		if (state->src_size <= state->last_length &&
 			state->codepoint[state->current] == 0)
 		{
-			*state->src_size = 0;
+			state->src_size = 0;
 			state->current = 0;
 
 			return 0;
@@ -82,6 +84,8 @@ uint8_t stream_execute(StreamState* state)
 		state->current = 1;
 	}
 
+	/* Read codepoints */
+
 	while (1)
 	{
 		if (state->current + 1 >= STREAM_BUFFER_MAX)
@@ -91,29 +95,27 @@ uint8_t stream_execute(StreamState* state)
 
 		if (state->last_length > 0)
 		{
-			if (*state->src_size <= state->last_length)
+			if (state->src_size <= state->last_length)
 			{
 				break;
 			}
 
-			*state->src += state->last_length;
-			*state->src_size -= state->last_length;
-
-			if (*state->src_size == 0)
-			{
-				break;
-			}
+			state->src += state->last_length;
+			state->src_size -= state->last_length;
 		}
 
-		state->last_length = codepoint_read(&state->codepoint[state->current], *state->src, *state->src_size);
+		state->last_length = codepoint_read(&state->codepoint[state->current], state->src, state->src_size);
 
 		state->quick_check[state->current] = database_queryproperty(state->codepoint[state->current], state->property);
 		state->canonical_combining_class[state->current] = database_queryproperty(state->codepoint[state->current], UnicodeProperty_CanonicalCombiningClass);
 
+		/* Check if codepoint is a starter */
+
 		if (state->quick_check[state->current] == QuickCheckResult_Yes &&
 			state->canonical_combining_class[state->current] == 0)
 		{
-			if (++state->starter_count > 1)
+			state->starter_count++;
+			if (state->starter_count > 1)
 			{
 				break;
 			}
@@ -126,11 +128,11 @@ uint8_t stream_execute(StreamState* state)
 		state->current++;
 	}
 
+	/* Reorder codepoints if potentially unstable */
+
 	if (state->stable == 0)
 	{
 		uint8_t dirty = 1;
-
-		/* Reorder */
 
 		while (dirty == 1)
 		{

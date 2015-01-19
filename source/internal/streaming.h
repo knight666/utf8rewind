@@ -39,8 +39,8 @@
 #define STREAM_BUFFER_MAX 32
 
 typedef struct {
-	const char** src;
-	size_t* src_size;
+	const char* src;
+	size_t src_size;
 	uint8_t property;
 	uint8_t current;
 	uint8_t stable;
@@ -51,7 +51,7 @@ typedef struct {
 	uint8_t canonical_combining_class[STREAM_BUFFER_MAX];
 } StreamState;
 
-uint8_t stream_initialize(StreamState* state, const char** input, size_t* inputSize, uint8_t property);
+uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSize, uint8_t property);
 
 uint8_t stream_execute(StreamState* state);
 
