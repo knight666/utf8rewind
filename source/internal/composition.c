@@ -45,7 +45,7 @@ unicode_t compose_execute(ComposeState* state)
 	unicode_t composed;
 	uint8_t write_index = 0;
 
-	if (state->stream_current == state->stream_total)
+	if (state->stream_total == 0)
 	{
 		uint8_t result = stream_execute(&state->streaming);
 		if (result == 0)
