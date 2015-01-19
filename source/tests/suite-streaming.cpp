@@ -14,7 +14,7 @@ TEST(Streaming, Initialized)
 	size_t il = strlen(i);
 
 	StreamState state;
-	stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose);
+	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(i, *state.src);
 	EXPECT_EQ(&il, state.src_size);
@@ -29,11 +29,15 @@ TEST(Streaming, SingleNoChange)
 	size_t il = strlen(i);
 
 	StreamState state;
-	stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose);
+	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
 
-	stream_execute(&state);
+	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(2, state.current);
 	EXPECT_UTF8EQ("A\xCC\x83", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(0, stream_execute(&state));
+	EXPECT_EQ(0, state.current);
+	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 }
 
 TEST(Streaming, SingleReorder)
@@ -42,11 +46,15 @@ TEST(Streaming, SingleReorder)
 	size_t il = strlen(i);
 
 	StreamState state;
-	stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose);
+	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
 
-	stream_execute(&state);
+	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(3, state.current);
 	EXPECT_UTF8EQ("A\xCC\x83\xCC\x82", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(0, stream_execute(&state));
+	EXPECT_EQ(0, state.current);
+	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 }
 
 TEST(Streaming, SingleInvalidCodepoint)
@@ -55,11 +63,15 @@ TEST(Streaming, SingleInvalidCodepoint)
 	size_t il = strlen(i);
 
 	StreamState state;
-	stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose);
+	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
 
-	stream_execute(&state);
+	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
 	EXPECT_UTF8EQ("\xEF\xBF\xBD", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(0, stream_execute(&state));
+	EXPECT_EQ(0, state.current);
+	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 }
 
 TEST(Streaming, MultipleNoChange)
@@ -68,15 +80,19 @@ TEST(Streaming, MultipleNoChange)
 	size_t il = strlen(i);
 
 	StreamState state;
-	stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose);
+	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
 
-	stream_execute(&state);
+	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(3, state.current);
 	EXPECT_UTF8EQ("a\xCC\x80\xCC\x81", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 
-	stream_execute(&state);
+	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(2, state.current);
 	EXPECT_UTF8EQ("E\xCC\x8C", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(0, stream_execute(&state));
+	EXPECT_EQ(0, state.current);
+	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 }
 
 TEST(Streaming, MultipleReorder)
@@ -85,15 +101,19 @@ TEST(Streaming, MultipleReorder)
 	size_t il = strlen(i);
 
 	StreamState state;
-	stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose);
+	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
 
-	stream_execute(&state);
+	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(5, state.current);
 	EXPECT_UTF8EQ("a\xD6\xAE\xCC\x80\xCC\x80\xCC\x95", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 
-	stream_execute(&state);
+	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
 	EXPECT_UTF8EQ("b", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(0, stream_execute(&state));
+	EXPECT_EQ(0, state.current);
+	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 }
 
 TEST(Streaming, MultipleInvalidCodepoint)
@@ -102,13 +122,17 @@ TEST(Streaming, MultipleInvalidCodepoint)
 	size_t il = strlen(i);
 
 	StreamState state;
-	stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose);
+	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
 
-	stream_execute(&state);
+	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
 	EXPECT_UTF8EQ("\xEF\xBF\xBD", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 
-	stream_execute(&state);
+	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
 	EXPECT_UTF8EQ("\x13", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(0, stream_execute(&state));
+	EXPECT_EQ(0, state.current);
+	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 }
