@@ -29,6 +29,20 @@ TEST(ComposeExecute, SingleNoChange)
 	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(0x1E0A, compose_execute(&state));
+	EXPECT_EQ(0, compose_execute(&state));
+}
 
+TEST(ComposeExecute, MultipleNoChange)
+{
+	const char* i = "\xC4\x92\xE1\xB8\x94\xCC\x84\xC3\x80";
+	size_t il = strlen(i);
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(0x0112, compose_execute(&state));
+	EXPECT_EQ(0x1E14, compose_execute(&state));
+	EXPECT_EQ(0x0304, compose_execute(&state));
+	EXPECT_EQ(0x00C0, compose_execute(&state));
 	EXPECT_EQ(0, compose_execute(&state));
 }
