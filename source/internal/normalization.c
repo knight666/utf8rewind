@@ -79,10 +79,10 @@ size_t normalize_decomposition(const char* input, size_t inputSize, char* target
 					codepoint <= HANGUL_S_LAST)
 				{
 					/*
-					Hangul decomposition
+						Hangul decomposition
 
-					Algorithm adapted from Unicode Technical Report #15:
-					http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
+						Algorithm adapted from Unicode Technical Report #15:
+						http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
 					*/
 
 					unicode_t s_index = codepoint - HANGUL_S_FIRST;
@@ -181,74 +181,11 @@ size_t normalize_composition(const char* input, size_t inputSize, char* target, 
 		goto invaliddata;
 	}
 
-	compose_initialize(&state, &src, &src_size, propertyType);
+	compose_initialize(&state, input, inputSize, propertyType);
 
 	while (state.stage < ComposeStage_OutOfInput)
 	{
-		uint8_t index;
-		size_t written;
-
-		index = compose_execute(&state);
-
-		//if (state.stage == ComposeStage_Flush)
-		{
-			uint8_t i;
-			for (i = 0; i < state.stream_flush_count; ++i)
-			{
-				written = codepoint_write(state.stream_flush[i], &dst, &dst_size, errors);
-				if (written == 0)
-				{
-					return bytes_written;
-				}
-				bytes_written += written;
-			}
-		}
-#if 0
-		if (state.stage == ComposeStage_Flush)
-		{
-			uint8_t last_combining_class = 0;
-			uint8_t i = 0;
-
-			/* Reorder */
-
-			for ( ; i < state.current; ++i)
-			{
-				uint8_t combining_class = database_queryproperty(state.stream_cp[i], UnicodeProperty_CanonicalCombiningClass);
-				if (combining_class > last_combining_class &&
-					last_combining_class != 0)
-				{
-					unicode_t swap = state.stream_cp[i];
-					state.stream_cp[i] = state.stream_cp[i - 1];
-					state.stream_cp[i - 1] = swap;
-
-					last_combining_class = 0;
-					i = 0;
-				}
-			}
-
-			/* Write */
-
-			for ( ; i < state.current; ++i)
-			{
-			}
-		}
-
-		if (index != (uint8_t)-1)
-		{
-			if (dst != 0 &&
-				dst_size < state.length[index])
-			{
-				goto outofspace;
-			}
-
-			written = codepoint_write(state.codepoint[index], &dst, &dst_size, errors);
-			if (written == 0)
-			{
-				break;
-			}
-			bytes_written += written;
-		}
-#endif
+		unicode_t result = compose_execute(&state);
 	}
 
 	return bytes_written;

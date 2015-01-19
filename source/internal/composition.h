@@ -27,6 +27,7 @@
 #define _UTFREWIND_INTERNAL_COMPOSITION_H_
 
 #include "utf8rewind.h"
+#include "streaming.h"
 
 enum ComposeStage
 {
@@ -54,14 +55,14 @@ typedef struct {
 } CodepointState;
 
 typedef struct {
-	const char** src;
-	size_t* src_size;
-	uint8_t property;
+	StreamState streaming;
+	uint8_t stream_current;
+	uint8_t stream_total;
 	uint8_t stage;
 	uint8_t stable;
 	uint8_t last_canonical_combining_class;
 	unicode_t composed;
-	unicode_t stream_cp[COMPOSITION_MAX];
+	unicode_t stream_codepoint[COMPOSITION_MAX];
 	uint8_t stream_qc[COMPOSITION_MAX];
 	uint8_t stream_ccc[COMPOSITION_MAX];
 	unicode_t stream_flush[COMPOSITION_MAX];
@@ -75,10 +76,8 @@ typedef struct {
 	uint8_t next;
 } ComposeState;
 
-uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inputSize, uint8_t propertyType);
+uint8_t compose_initialize(ComposeState* state, const char* input, size_t inputSize, uint8_t propertyType);
 
-uint8_t compose_execute(ComposeState* state);
-
-uint8_t compose_readcodepoint(ComposeState* state);
+unicode_t compose_execute(ComposeState* state);
 
 #endif
