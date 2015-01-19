@@ -504,7 +504,7 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 	{
 		/* Normalize to NFC before attempting to uppercase */
 
-		compose_initialize(&state, &src, &src_size, UnicodeProperty_Normalization_Compose);
+		compose_initialize(&state, src, src_size, UnicodeProperty_Normalization_Compose);
 
 		while (state.stage <= ComposeStage_OutOfInput)
 		{
@@ -608,7 +608,7 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 	{
 		/* Normalize to NFC before attempting to lowercase */
 
-		compose_initialize(&state, &src, &src_size, UnicodeProperty_Normalization_Compose);
+		compose_initialize(&state, src, src_size, UnicodeProperty_Normalization_Compose);
 
 		while (state.stage <= ComposeStage_OutOfInput)
 		{
