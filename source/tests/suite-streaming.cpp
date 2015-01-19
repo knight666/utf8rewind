@@ -14,10 +14,10 @@ TEST(Streaming, Initialized)
 	size_t il = strlen(i);
 
 	StreamState state;
-	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
-	EXPECT_EQ(i, *state.src);
-	EXPECT_EQ(&il, state.src_size);
+	EXPECT_EQ(i, state.src);
+	EXPECT_EQ(il, state.src_size);
 	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.property);
 	EXPECT_EQ(0, state.current);
 	EXPECT_EQ(1, state.stable);
@@ -29,7 +29,7 @@ TEST(Streaming, SingleNoChange)
 	size_t il = strlen(i);
 
 	StreamState state;
-	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(2, state.current);
@@ -46,7 +46,7 @@ TEST(Streaming, SingleReorder)
 	size_t il = strlen(i);
 
 	StreamState state;
-	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(3, state.current);
@@ -63,7 +63,7 @@ TEST(Streaming, SingleInvalidCodepoint)
 	size_t il = strlen(i);
 
 	StreamState state;
-	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
@@ -80,7 +80,7 @@ TEST(Streaming, MultipleNoChange)
 	size_t il = strlen(i);
 
 	StreamState state;
-	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(3, state.current);
@@ -101,7 +101,7 @@ TEST(Streaming, MultipleReorder)
 	size_t il = strlen(i);
 
 	StreamState state;
-	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(5, state.current);
@@ -122,7 +122,7 @@ TEST(Streaming, MultipleInvalidCodepoint)
 	size_t il = strlen(i);
 
 	StreamState state;
-	EXPECT_EQ(1, stream_initialize(&state, &i, &il, UnicodeProperty_Normalization_Compose));
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
