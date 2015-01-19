@@ -4,56 +4,12 @@ namespace helpers {
 
 	void identifiable(std::stringstream& target, unicode_t codepoint)
 	{
-		if (codepoint < 0x20)
+		if (codepoint == 0)
 		{
-			switch (codepoint)
-			{
-
-			case 0:
-				break;
-
-			case '\a':
-				target << "\\a";
-				break;
-
-			case '\b':
-				target << "\\b";
-				break;
-
-			case '\f':
-				target << "\\f";
-				break;
-
-			case '\n':
-				target << "\\n";
-				break;
-
-			case '\r':
-				target << "\\r";
-				break;
-
-			case '\t':
-				target << "\\t";
-				break;
-
-			case '\v':
-				target << "\\v";
-				break;
-
-			default:
-				target << "\\x" << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << codepoint << "";
-				break;
-
-			}
+			return;
 		}
-		else if (codepoint <= 0x7F)
-		{
-			target.put((char)codepoint);
-		}
-		else
-		{
-			target << "\\u" << std::hex << std::uppercase << codepoint << "";
-		}
+		
+		target << "U+" << std::hex << std::setfill('0') << std::setw(4) << std::uppercase << codepoint;
 	}
 
 	std::string identifiable(unicode_t codepoint)
@@ -67,8 +23,11 @@ namespace helpers {
 	{
 		std::stringstream ss;
 
-		for (size_t i = 0; i < codepointsSize / sizeof(unicode_t); ++i)
+		identifiable(ss, codepoint[0]);
+
+		for (size_t i = 1; i < codepointsSize / sizeof(unicode_t); ++i)
 		{
+			ss << " ";
 			identifiable(ss, codepoint[i]);
 		}
 
@@ -99,6 +58,11 @@ namespace helpers {
 
 		for (std::vector<unicode_t>::iterator it = converted.begin(); it != converted.end(); ++it)
 		{
+			if (it != converted.begin() &&
+				it != converted.end() - 1)
+			{
+				ss << " ";
+			}
 			identifiable(ss, *it);
 		}
 
