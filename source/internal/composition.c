@@ -54,15 +54,15 @@ unicode_t compose_execute(ComposeState* state)
 
 	if (state->stream_total == 0)
 	{
+		if (state->stage == ComposeStage_OutOfInput)
+		{
+			return 0;
+		}
+
 		state->stream_current = 0;
 
 		if (stream_execute(&state->streaming) == 0)
 		{
-			if (state->stage == ComposeStage_OutOfInput)
-			{
-				return 0;
-			}
-
 			state->stage = ComposeStage_OutOfInput;
 		}
 		else
@@ -166,7 +166,7 @@ unicode_t compose_execute(ComposeState* state)
 			}
 		}
 	}
-	else
+	else if (state->stream_total > 0)
 	{
 		/* Only one codepoint left, nothing to compose */
 
