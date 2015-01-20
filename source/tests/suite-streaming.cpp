@@ -8,7 +8,7 @@ extern "C" {
 #include "helpers-normalization.hpp"
 #include "helpers-strings.hpp"
 
-TEST(Streaming, Initialized)
+TEST(Streaming, Initialize)
 {
 	const char* i = "loneliness";
 	size_t il = strlen(i);
@@ -23,7 +23,7 @@ TEST(Streaming, Initialized)
 	EXPECT_EQ(1, state.stable);
 }
 
-TEST(Streaming, SingleNoChange)
+TEST(Streaming, Unchanged)
 {
 	const char* i = "A\xCC\x83";
 	size_t il = strlen(i);
@@ -40,7 +40,7 @@ TEST(Streaming, SingleNoChange)
 	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 }
 
-TEST(Streaming, SingleReorder)
+TEST(Streaming, Reordered)
 {
 	const char* i = "A\xCC\x83\xCC\x82";
 	size_t il = strlen(i);
@@ -57,7 +57,7 @@ TEST(Streaming, SingleReorder)
 	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 }
 
-TEST(Streaming, SingleInvalidCodepoint)
+TEST(Streaming, InvalidCodepoint)
 {
 	const char* i = "\xF4";
 	size_t il = strlen(i);
@@ -74,7 +74,7 @@ TEST(Streaming, SingleInvalidCodepoint)
 	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 }
 
-TEST(Streaming, MultipleNoChange)
+TEST(Streaming, MultipleUnchanged)
 {
 	const char* i = "a\xCC\x80\xCC\x81" "E\xCC\x8C";
 	size_t il = strlen(i);
@@ -95,7 +95,7 @@ TEST(Streaming, MultipleNoChange)
 	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 }
 
-TEST(Streaming, MultipleReorder)
+TEST(Streaming, MultipleReordered)
 {
 	const char* i = "a\xCC\x95\xCC\x80\xD6\xAE\xCC\x80" "b";
 	size_t il = strlen(i);
@@ -116,7 +116,7 @@ TEST(Streaming, MultipleReorder)
 	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 }
 
-TEST(Streaming, MultipleInvalidCodepoint)
+TEST(Streaming, MultipleInvalidCodepoints)
 {
 	const char* i = "\xF4\x9A\x13";
 	size_t il = strlen(i);
