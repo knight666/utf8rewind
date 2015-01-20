@@ -33,9 +33,24 @@ uint8_t compose_initialize(ComposeState* state, const char* input, size_t inputS
 	memset(state, 0, sizeof(ComposeState));
 
 	stream_initialize(&state->streaming, input, inputSize, propertyType);
+	if (stream_execute(&state->streaming) == 0)
+	{
+		return 0;
+	}
+
+	state->stage = ComposeStage_Processing;
+
+	state->stream_current = 0;
+	state->stream_total = state->streaming.current;
 	
 	state->current = 0;
 	state->next = 1;
+
+	state->codepoint[state->current] = state->streaming.codepoint[state->stream_current];
+	state->check[state->current] = state->streaming.quick_check[state->stream_current];
+
+	state->stream_current++;
+	state->stream_total--;
 
 	return 1;
 }
@@ -43,32 +58,44 @@ uint8_t compose_initialize(ComposeState* state, const char* input, size_t inputS
 unicode_t compose_execute(ComposeState* state)
 {
 	unicode_t composed;
-	uint8_t write_index = 0;
 
 	if (state->stream_total == 0)
 	{
-		uint8_t result = stream_execute(&state->streaming);
-		if (result == 0)
-		{
-			return 0;
-		}
-
 		state->stream_current = 0;
-		state->stream_total = state->streaming.current;
+
+		if (stream_execute(&state->streaming) == 0)
+		{
+			if (state->stage == ComposeStage_OutOfInput)
+			{
+				return 0;
+			}
+
+			state->stage = ComposeStage_OutOfInput;
+		}
+		else
+		{
+			state->stream_total = state->streaming.current;
+		}
 	}
 
-	state->codepoint[state->next] = state->streaming.codepoint[state->stream_current];
-	state->check[state->next] =
-		(state->streaming.quick_check[state->stream_current] != QuickCheckResult_Yes) &&
-		(state->streaming.canonical_combining_class[state->stream_current] != 0);
+	if (state->stream_total > 0)
+	{
+		state->codepoint[state->next] = state->streaming.codepoint[state->stream_current];
+		state->check[state->next] = state->streaming.quick_check[state->stream_current];
 
-	state->stream_current++;
-	state->stream_total--;
+		state->stream_current++;
+		state->stream_total--;
+	}
+	else
+	{
+		state->codepoint[state->next] = 0;
+		state->check[state->next] = QuickCheckResult_Yes;
+	}
 
 	composed = 0;
 
-	if (state->check[state->current] &&
-		state->check[state->next])
+	if ((state->check[state->current] != QuickCheckResult_Yes) ||
+		(state->check[state->next] != QuickCheckResult_Yes))
 	{
 		/*
 			Hangul composition
@@ -112,23 +139,21 @@ unicode_t compose_execute(ComposeState* state)
 			composed = database_querycomposition(state->codepoint[state->current], state->codepoint[state->next]);
 		}
 	}
-
+	
 	if (composed != 0)
 	{
 		state->codepoint[state->current] = composed;
-		state->check[state->current] =
-			(database_queryproperty(composed, state->streaming.property) != QuickCheckResult_Yes) &&
-			(database_queryproperty(composed, UnicodeProperty_CanonicalCombiningClass) != 0);
+		state->check[state->current] = database_queryproperty(composed, state->streaming.property);
 	}
 	else
 	{
-		composed = state->codepoint[state->next];
+		composed = state->codepoint[state->current];
+
+		/* Swap buffers */
+
+		state->current = (state->current + 1) % 2;
+		state->next = (state->next + 1) % 2;
 	}
-
-	/* Swap buffers */
-
-	state->current = (state->current + 1) % 2;
-	state->next = (state->next + 1) % 2;
 
 	return composed;
 }
