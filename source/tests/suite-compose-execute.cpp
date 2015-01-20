@@ -15,8 +15,8 @@ TEST(ComposeExecute, InitializeBasicLatin)
 	ComposeState state;
 	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
-	EXPECT_EQ(i + 1, state.streaming.src);
-	EXPECT_EQ(il - 1, state.streaming.src_size);
+	EXPECT_EQ(i, state.streaming.src);
+	EXPECT_EQ(il, state.streaming.src_size);
 	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.streaming.property);
 	EXPECT_EQ(0, state.current);
 	EXPECT_EQ(1, state.next);
@@ -30,14 +30,14 @@ TEST(ComposeExecute, InitializeMultiByte)
 	ComposeState state;
 	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
-	EXPECT_EQ(i + 2, state.streaming.src);
-	EXPECT_EQ(il - 2, state.streaming.src_size);
+	EXPECT_EQ(i, state.streaming.src);
+	EXPECT_EQ(il, state.streaming.src_size);
 	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.streaming.property);
 	EXPECT_EQ(0, state.current);
 	EXPECT_EQ(1, state.next);
 }
 
-TEST(ComposeExecute, SingleNoChange)
+TEST(ComposeExecute, Unchanged)
 {
 	const char* i = "\xE1\xB8\x8A";
 	size_t il = strlen(i);
@@ -49,7 +49,7 @@ TEST(ComposeExecute, SingleNoChange)
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
-TEST(ComposeExecute, SingleCompose)
+TEST(ComposeExecute, Compose)
 {
 	const char* i = "E\xCC\x84";
 	size_t il = strlen(i);
@@ -61,7 +61,7 @@ TEST(ComposeExecute, SingleCompose)
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
-TEST(ComposeExecute, SingleComposeMultipleCodepoints)
+TEST(ComposeExecute, ComposeMultipleCodepoints)
 {
 	const char* i = "\xCE\xA9\xCC\x94\xCD\x82\xCD\x85";
 	size_t il = strlen(i);
@@ -73,7 +73,33 @@ TEST(ComposeExecute, SingleComposeMultipleCodepoints)
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
-TEST(ComposeExecute, MultipleNoChange)
+TEST(ComposeExecute, ComposeAndUnchanged)
+{
+	const char* i = "\xCF\x89\xCC\x81\xE1\xB6\xA8";
+	size_t il = strlen(i);
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_CPEQ(0x03CE, compose_execute(&state));
+	EXPECT_CPEQ(0x1DA8, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, UnchangedAndCompose)
+{
+	const char* i = "\xC5\xBF\xE1\x84\x80\xE1\x85\xA9\xE1\x86\xB3";
+	size_t il = strlen(i);
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_CPEQ(0x017F, compose_execute(&state));
+	EXPECT_CPEQ(0xACEC, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, MultipleUnchanged)
 {
 	const char* i = "\xC4\x92\xE1\xB8\x94\xCC\x84\xC3\x80";
 	size_t il = strlen(i);
@@ -85,5 +111,19 @@ TEST(ComposeExecute, MultipleNoChange)
 	EXPECT_CPEQ(0x1E14, compose_execute(&state));
 	EXPECT_CPEQ(0x0304, compose_execute(&state));
 	EXPECT_CPEQ(0x00C0, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, MultipleComposed)
+{
+	const char* i = "\xCE\xB1\xCD\x85\xCE\xB7\xCD\x82\xE2\x8A\x91\xCC\xB8";
+	size_t il = strlen(i);
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_CPEQ(0x1FB3, compose_execute(&state));
+	EXPECT_CPEQ(0x1FC6, compose_execute(&state));
+	EXPECT_CPEQ(0x22E2, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
