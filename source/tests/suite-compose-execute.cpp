@@ -7,22 +7,7 @@ extern "C" {
 
 #include "helpers-strings.hpp"
 
-TEST(ComposeExecute, InitializeBasicLatin)
-{
-	const char* i = "other";
-	size_t il = strlen(i);
-
-	ComposeState state;
-	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
-
-	EXPECT_EQ(i, state.streaming.src);
-	EXPECT_EQ(il, state.streaming.src_size);
-	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.streaming.property);
-	EXPECT_EQ(0, state.current);
-	EXPECT_EQ(1, state.next);
-}
-
-TEST(ComposeExecute, InitializeMultiByte)
+TEST(ComposeExecute, Initialize)
 {
 	const char* i = "\xCE\xB9\xCC\x88";
 	size_t il = strlen(i);
@@ -70,6 +55,18 @@ TEST(ComposeExecute, ComposeMultipleCodepoints)
 	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_CPEQ(0x1FAF, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, ComposeInvalidCodepoint)
+{
+	const char* i = "\xCF";
+	size_t il = strlen(i);
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_CPEQ(0xFFFD, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
@@ -125,5 +122,42 @@ TEST(ComposeExecute, MultipleComposed)
 	EXPECT_CPEQ(0x1FB3, compose_execute(&state));
 	EXPECT_CPEQ(0x1FC6, compose_execute(&state));
 	EXPECT_CPEQ(0x22E2, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, ContinueAfterEnd)
+{
+	const char* i = "\xE3\x8E\x9E.";
+	size_t il = strlen(i);
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_CPEQ(0x339E, compose_execute(&state));
+	EXPECT_CPEQ(0x002E, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, NotEnoughData)
+{
+	const char* i = "";
+	size_t il = strlen(i);
+
+	ComposeState state;
+	EXPECT_EQ(0, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, InvalidData)
+{
+	const char* i = nullptr;
+	size_t il = 5;
+
+	ComposeState state;
+	EXPECT_EQ(0, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
