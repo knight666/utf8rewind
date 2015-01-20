@@ -4,11 +4,6 @@ namespace helpers {
 
 	void identifiable(std::stringstream& target, unicode_t codepoint)
 	{
-		if (codepoint == 0)
-		{
-			return;
-		}
-		
 		target << "U+" << std::hex << std::setfill('0') << std::setw(4) << std::uppercase << codepoint;
 	}
 
@@ -251,8 +246,7 @@ namespace helpers {
 
 	::testing::AssertionResult CompareUtf8Strings(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
-		const char* textExpected, const char* textActual
-	)
+		const char* textExpected, const char* textActual)
 	{
 		if (!strcmp(textActual, textExpected))
 		{
@@ -275,6 +269,27 @@ namespace helpers {
 			result << "[Codepoints]" << std::endl;
 			result << "    Actual: " << "\"" << identifiable(textActual) << "\"" << std::endl;
 			result << "  Expected: " << "\"" << identifiable(textExpected) << "\"" << std::endl;
+
+			return result;
+		}
+	}
+
+	::testing::AssertionResult CompareCodepoints(
+		const char* expressionExpected, const char* expressionActual,
+		unicode_t codepointExpected, unicode_t codepointActual)
+	{
+		if (codepointActual == codepointExpected)
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << "Codepoint mismatch" << std::endl;
+
+			result << "    Actual: " << identifiable(codepointActual) << std::endl;
+			result << "  Expected: " << identifiable(codepointExpected) << std::endl;
 
 			return result;
 		}

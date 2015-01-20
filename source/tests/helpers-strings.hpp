@@ -5,6 +5,7 @@
 #include "utf8rewind.h"
 
 #define EXPECT_UTF8EQ(_expected, _actual) EXPECT_PRED_FORMAT2(::helpers::CompareUtf8Strings, _expected, _actual);
+#define EXPECT_CPEQ(_expected, _actual) EXPECT_PRED_FORMAT2(::helpers::CompareCodepoints, _expected, _actual);
 
 namespace helpers {
 
@@ -22,7 +23,10 @@ namespace helpers {
 
 	::testing::AssertionResult CompareUtf8Strings(
 		const char* expressionExpected, const char* expressionActual,
-		const char* textExpected, const char* textActual
-	);
+		const char* textExpected, const char* textActual);
+
+	::testing::AssertionResult CompareCodepoints(
+		const char* expressionExpected, const char* expressionActual,
+		unicode_t codepointExpected, unicode_t codepointActual);
 
 };
