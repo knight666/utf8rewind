@@ -136,3 +136,62 @@ TEST(Streaming, MultipleInvalidCodepoint)
 	EXPECT_EQ(0, state.current);
 	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
 }
+
+TEST(Streaming, ContinueAfterEnd)
+{
+	const char* i = "(c)";
+	size_t il = strlen(i);
+
+	StreamState state;
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(1, stream_execute(&state));
+	EXPECT_EQ(1, state.current);
+	EXPECT_UTF8EQ("(", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(1, stream_execute(&state));
+	EXPECT_EQ(1, state.current);
+	EXPECT_UTF8EQ("c", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(1, stream_execute(&state));
+	EXPECT_EQ(1, state.current);
+	EXPECT_UTF8EQ(")", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(0, stream_execute(&state));
+	EXPECT_EQ(0, state.current);
+	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(0, stream_execute(&state));
+	EXPECT_EQ(0, state.current);
+	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(0, stream_execute(&state));
+	EXPECT_EQ(0, state.current);
+	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+}
+
+TEST(Streaming, NotEnoughData)
+{
+	const char* i = "";
+	size_t il = strlen(i);
+
+	StreamState state;
+	EXPECT_EQ(0, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(0, stream_execute(&state));
+	EXPECT_EQ(0, state.current);
+	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+}
+
+TEST(Streaming, InvalidData)
+{
+	const char* i = nullptr;
+	size_t il = 15;
+
+	StreamState state;
+	EXPECT_EQ(0, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(0, stream_execute(&state));
+	EXPECT_EQ(0, state.current);
+	EXPECT_UTF8EQ("", helpers::utf8(state.codepoint, state.current * sizeof(unicode_t)).c_str());
+}

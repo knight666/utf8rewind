@@ -32,6 +32,12 @@ uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSiz
 {
 	memset(state, 0, sizeof(StreamState));
 
+	if (input == 0 ||
+		inputSize == 0)
+	{
+		return 0;
+	}
+
 	state->src = input;
 	state->src_size = inputSize;
 	state->property = property;
@@ -48,7 +54,7 @@ uint8_t stream_execute(StreamState* state)
 		return 0;
 	}
 
-	/* Reset after the first frame */
+	/* Reset after the first pass */
 
 	if (state->current >= 1)
 	{
@@ -57,6 +63,8 @@ uint8_t stream_execute(StreamState* state)
 		if (state->src_size <= state->last_length &&
 			state->codepoint[state->current] == 0)
 		{
+			/* End of data */
+
 			state->src_size = 0;
 			state->current = 0;
 
