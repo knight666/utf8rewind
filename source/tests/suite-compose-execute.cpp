@@ -5,7 +5,9 @@ extern "C" {
 	#include "../internal/composition.h"
 }
 
-TEST(ComposeExecute, Initialized)
+#include "helpers-strings.hpp"
+
+TEST(ComposeExecute, InitializeBasicLatin)
 {
 	const char* i = "other";
 	size_t il = strlen(i);
@@ -13,8 +15,23 @@ TEST(ComposeExecute, Initialized)
 	ComposeState state;
 	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
-	EXPECT_EQ(i, state.streaming.src);
-	EXPECT_EQ(il, state.streaming.src_size);
+	EXPECT_EQ(i + 1, state.streaming.src);
+	EXPECT_EQ(il - 1, state.streaming.src_size);
+	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.streaming.property);
+	EXPECT_EQ(0, state.current);
+	EXPECT_EQ(1, state.next);
+}
+
+TEST(ComposeExecute, InitializeMultiByte)
+{
+	const char* i = "\xCE\xB9\xCC\x88";
+	size_t il = strlen(i);
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(i + 2, state.streaming.src);
+	EXPECT_EQ(il - 2, state.streaming.src_size);
 	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.streaming.property);
 	EXPECT_EQ(0, state.current);
 	EXPECT_EQ(1, state.next);
@@ -28,8 +45,20 @@ TEST(ComposeExecute, SingleNoChange)
 	ComposeState state;
 	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
-	EXPECT_EQ(0x1E0A, compose_execute(&state));
-	EXPECT_EQ(0, compose_execute(&state));
+	EXPECT_CPEQ(0x1E0A, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, SingleCompose)
+{
+	const char* i = "E\xCC\x84";
+	size_t il = strlen(i);
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_CPEQ(0x0112, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
 TEST(ComposeExecute, MultipleNoChange)
@@ -40,9 +69,9 @@ TEST(ComposeExecute, MultipleNoChange)
 	ComposeState state;
 	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
-	EXPECT_EQ(0x0112, compose_execute(&state));
-	EXPECT_EQ(0x1E14, compose_execute(&state));
-	EXPECT_EQ(0x0304, compose_execute(&state));
-	EXPECT_EQ(0x00C0, compose_execute(&state));
-	EXPECT_EQ(0, compose_execute(&state));
+	EXPECT_CPEQ(0x0112, compose_execute(&state));
+	EXPECT_CPEQ(0x1E14, compose_execute(&state));
+	EXPECT_CPEQ(0x0304, compose_execute(&state));
+	EXPECT_CPEQ(0x00C0, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
 }

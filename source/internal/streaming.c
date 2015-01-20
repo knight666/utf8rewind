@@ -43,6 +43,11 @@ uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSiz
 
 uint8_t stream_execute(StreamState* state)
 {
+	if (state->src_size == 0)
+	{
+		return 0;
+	}
+
 	/* Reset after the first frame */
 
 	if (state->current >= 1)
