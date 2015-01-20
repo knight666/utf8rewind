@@ -61,6 +61,18 @@ TEST(ComposeExecute, SingleCompose)
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
+TEST(ComposeExecute, SingleComposeMultipleCodepoints)
+{
+	const char* i = "\xCE\xA9\xCC\x94\xCD\x82\xCD\x85";
+	size_t il = strlen(i);
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_CPEQ(0x1FAF, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
 TEST(ComposeExecute, MultipleNoChange)
 {
 	const char* i = "\xC4\x92\xE1\xB8\x94\xCC\x84\xC3\x80";

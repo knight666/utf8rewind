@@ -94,8 +94,9 @@ unicode_t compose_execute(ComposeState* state)
 
 	composed = 0;
 
-	if ((state->check[state->current] != QuickCheckResult_Yes) ||
-		(state->check[state->next] != QuickCheckResult_Yes))
+	while (
+		state->check[state->current] != QuickCheckResult_Yes ||
+		state->check[state->next] != QuickCheckResult_Yes)
 	{
 		/*
 			Hangul composition
@@ -138,22 +139,43 @@ unicode_t compose_execute(ComposeState* state)
 
 			composed = database_querycomposition(state->codepoint[state->current], state->codepoint[state->next]);
 		}
+
+		if (composed != 0)
+		{
+			state->codepoint[state->current] = composed;
+			state->check[state->current] = database_queryproperty(composed, state->streaming.property);
+
+			if (state->stream_total > 0)
+			{
+				state->codepoint[state->next] = state->streaming.codepoint[state->stream_current];
+				state->check[state->next] = state->streaming.quick_check[state->stream_current];
+
+				state->stream_current++;
+				state->stream_total--;
+			}
+			else
+			{
+				state->codepoint[state->next] = 0;
+				state->check[state->next] = QuickCheckResult_Yes;
+
+				break;
+			}
+		}
+		else
+		{
+			break;
+		}
 	}
 	
-	if (composed != 0)
-	{
-		state->codepoint[state->current] = composed;
-		state->check[state->current] = database_queryproperty(composed, state->streaming.property);
-	}
-	else
+	if (composed == 0)
 	{
 		composed = state->codepoint[state->current];
-
-		/* Swap buffers */
-
-		state->current = (state->current + 1) % 2;
-		state->next = (state->next + 1) % 2;
 	}
+
+	/* Swap buffers */
+
+	state->current = (state->current + 1) % 2;
+	state->next = (state->next + 1) % 2;
 
 	return composed;
 }
