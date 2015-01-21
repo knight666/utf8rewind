@@ -28,11 +28,18 @@
 #include "codepoint.h"
 #include "database.h"
 
-uint8_t decompose_initialize(DecomposeState* state, StreamState* stream)
+uint8_t decompose_initialize(DecomposeState* state, StreamState* stream, uint8_t compatibility)
 {
 	memset(state, 0, sizeof(DecomposeState));
 
 	state->stream = stream;
+	state->stream->property = (compatibility == 1)
+		? UnicodeProperty_Normalization_Compatibility_Compose
+		: UnicodeProperty_Normalization_Compose;
+
+	state->property = (compatibility == 1)
+		? UnicodeProperty_Normalization_Compatibility_Decompose
+		: UnicodeProperty_Normalization_Decompose;
 
 	return 1;
 }
@@ -55,12 +62,13 @@ uint8_t decompose_execute(DecomposeState* state)
 
 	while (stream_total > 0)
 	{
-		if (state->stream->quick_check[stream_current] != QuickCheckResult_Yes)
+		unicode_t codepoint = state->stream->codepoint[stream_current];
+
+		if (database_queryproperty(codepoint, state->property) != QuickCheckResult_Yes)
 		{
-			unicode_t codepoint = state->stream->codepoint[stream_current];
 			const char* decomposition;
 
-			decomposition = database_querydecomposition(codepoint, state->stream->property);
+			decomposition = database_querydecomposition(codepoint, state->property);
 			if (decomposition != 0)
 			{
 				const char* src = decomposition;
@@ -84,7 +92,7 @@ uint8_t decompose_execute(DecomposeState* state)
 		}
 		else
 		{
-			*dst++ = state->stream->codepoint[stream_current];
+			*dst++ = codepoint;
 			state->filled++;
 		}
 
