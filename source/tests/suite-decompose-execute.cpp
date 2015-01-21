@@ -59,6 +59,23 @@ TEST(DecomposeExecute, Decompose)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
+TEST(DecomposeExecute, NonStarter)
+{
+	const char* i = "\xCC\x84";
+	size_t il = strlen(i);
+
+	StreamState stream;
+	EXPECT_EQ(1, stream_initialize(&stream, i, il, 0));
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &stream, 0));
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	EXPECT_UTF8EQ("\xCC\x84", helpers::utf8(state.codepoint, state.filled * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
 TEST(DecomposeExecute, DecomposeWithNonStarter)
 {
 	const char* i = "\xC4\x80\xCC\x88";
@@ -121,6 +138,23 @@ TEST(DecomposeExecute, MultipleDecompose)
 
 	EXPECT_EQ(3, decompose_execute(&state));
 	EXPECT_UTF8EQ("\xCE\x9F\xCC\x93\xCC\x80", helpers::utf8(state.codepoint, state.filled * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, MultipleNonStarter)
+{
+	const char* i = "\xCC\x9B\xCC\x80\xCE\xB7";
+	size_t il = strlen(i);
+
+	StreamState stream;
+	EXPECT_EQ(1, stream_initialize(&stream, i, il, 0));
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &stream, 0));
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	EXPECT_UTF8EQ("\xCC\x9B\xCC\x80\xCE\xB7", helpers::utf8(state.codepoint, state.filled * sizeof(unicode_t)).c_str());
 
 	EXPECT_EQ(0, decompose_execute(&state));
 }
