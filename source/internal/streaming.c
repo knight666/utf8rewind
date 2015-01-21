@@ -141,46 +141,52 @@ uint8_t stream_execute(StreamState* state)
 		state->current++;
 	}
 
-	/* Reorder codepoints if potentially unstable */
+	return 1;
+}
 
-	if (state->stable == 0)
+uint8_t stream_reorder(StreamState* state)
+{
+	uint8_t dirty = 1;
+
+	if (state->current < 1)
 	{
-		uint8_t dirty = 1;
+		return 1;
+	}
 
-		while (dirty == 1)
+	do
+	{
+		uint8_t i;
+		uint8_t last_combining_class = state->canonical_combining_class[0];
+
+		dirty = 0;
+
+		for (i = 1; i < state->current; i++)
 		{
-			uint8_t i;
-			uint8_t last_combining_class = 0;
-
-			dirty = 0;
-
-			for (i = 1; i < state->current; i++)
+			if (state->canonical_combining_class[i] < last_combining_class)
 			{
-				if (state->canonical_combining_class[i] < last_combining_class)
-				{
-					unicode_t swap_cp;
-					uint8_t swap_qc;
-					uint8_t swap_ccc;
+				unicode_t swap_cp;
+				uint8_t swap_qc;
+				uint8_t swap_ccc;
 
-					swap_cp = state->codepoint[i];
-					state->codepoint[i] = state->codepoint[i - 1];
-					state->codepoint[i - 1] = swap_cp;
+				swap_cp = state->codepoint[i];
+				state->codepoint[i] = state->codepoint[i - 1];
+				state->codepoint[i - 1] = swap_cp;
 
-					swap_qc = state->quick_check[i];
-					state->quick_check[i] = state->quick_check[i - 1];
-					state->quick_check[i - 1] = swap_qc;
+				swap_qc = state->quick_check[i];
+				state->quick_check[i] = state->quick_check[i - 1];
+				state->quick_check[i - 1] = swap_qc;
 
-					swap_ccc = state->canonical_combining_class[i];
-					state->canonical_combining_class[i] = state->canonical_combining_class[i - 1];
-					state->canonical_combining_class[i - 1] = swap_ccc;
+				swap_ccc = state->canonical_combining_class[i];
+				state->canonical_combining_class[i] = state->canonical_combining_class[i - 1];
+				state->canonical_combining_class[i - 1] = swap_ccc;
 
-					dirty = 1;
-				}
-
-				last_combining_class = state->canonical_combining_class[i];
+				dirty = 1;
 			}
+
+			last_combining_class = state->canonical_combining_class[i];
 		}
 	}
+	while (dirty == 1);
 
 	return 1;
 }
