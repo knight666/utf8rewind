@@ -32,6 +32,12 @@ uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamSt
 {
 	memset(state, 0, sizeof(DecomposeState));
 
+	if (input->src == 0 ||
+		input->src_size == 0)
+	{
+		return 0;
+	}
+
 	state->input = input;
 	state->input->property = (compatibility == 1)
 		? UnicodeProperty_Normalization_Compatibility_Compose
@@ -55,7 +61,8 @@ uint8_t decompose_execute(DecomposeState* state)
 	uint8_t* dst_quick_check;
 	uint8_t* dst_canonical_combining_class;
 
-	if (stream_execute(state->input) == 0)
+	if (state->input == 0 ||
+		stream_execute(state->input) == 0)
 	{
 		return 0;
 	}
