@@ -17,6 +17,8 @@ namespace helpers {
 	std::string utf8(unicode_t* codepoints, size_t codepointsSize);
 	std::string utf8(const std::vector<unicode_t>& codepoints);
 
+	std::vector<unicode_t> utf32(const std::string& text);
+
 	std::string printable(unicode_t codepoint);
 	std::string printable(unicode_t* codepoints, size_t codepointsSize);
 	std::string printable(const std::string& text);
