@@ -45,7 +45,7 @@ namespace helpers {
 		}
 
 		std::vector<unicode_t> converted;
-		converted.resize(size_in_bytes / sizeof(unicode_t) + 1);
+		converted.resize(size_in_bytes / sizeof(unicode_t));
 
 		utf8toutf32(text.c_str(), text.size(), &converted[0], size_in_bytes, &errors);
 
@@ -53,8 +53,7 @@ namespace helpers {
 
 		for (std::vector<unicode_t>::iterator it = converted.begin(); it != converted.end(); ++it)
 		{
-			if (it != converted.begin() &&
-				it != converted.end() - 1)
+			if (it != converted.begin())
 			{
 				ss << " ";
 			}
