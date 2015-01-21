@@ -30,13 +30,11 @@
 #include "streaming.h"
 
 typedef struct {
-	StreamState* stream;
-	uint8_t property;
-	unicode_t codepoint[STREAM_BUFFER_MAX];
-	uint8_t filled;
+	StreamState* input;
+	StreamState* output;
 } DecomposeState;
 
-uint8_t decompose_initialize(DecomposeState* state, StreamState* stream, uint8_t compatibility);
+uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);
 
 uint8_t decompose_execute(DecomposeState* state);
 
