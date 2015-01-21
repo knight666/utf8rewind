@@ -166,3 +166,65 @@ TEST(DecomposeExecute, MultipleNonStarter)
 
 	EXPECT_EQ(0, decompose_execute(&state));
 }
+
+TEST(DecomposeExecute, ContinueAfterEnd)
+{
+	const char* i = "buh";
+	size_t il = strlen(i);
+
+	StreamState input;
+	StreamState output;
+	DecomposeState state;
+
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	EXPECT_UTF8EQ("b", helpers::utf8(state.output->codepoint, state.output->current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	EXPECT_UTF8EQ("u", helpers::utf8(state.output->codepoint, state.output->current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	EXPECT_UTF8EQ("h", helpers::utf8(state.output->codepoint, state.output->current * sizeof(unicode_t)).c_str());
+
+	EXPECT_EQ(0, decompose_execute(&state));
+	EXPECT_EQ(0, decompose_execute(&state));
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, NotEnoughData)
+{
+	const char* i = "";
+	size_t il = strlen(i);
+
+	StreamState input;
+	StreamState output;
+	DecomposeState state;
+
+	EXPECT_EQ(0, stream_initialize(&input, i, il, 0));
+	EXPECT_EQ(0, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(nullptr, state.input);
+	EXPECT_EQ(nullptr, state.output);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, InvalidData)
+{
+	const char* i = nullptr;
+	size_t il = 81;
+
+	StreamState input;
+	StreamState output;
+	DecomposeState state;
+
+	EXPECT_EQ(0, stream_initialize(&input, i, il, 0));
+	EXPECT_EQ(0, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(nullptr, state.input);
+	EXPECT_EQ(nullptr, state.output);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
