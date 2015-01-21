@@ -55,4 +55,6 @@ uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSiz
 
 uint8_t stream_execute(StreamState* state);
 
+uint8_t stream_reorder(StreamState* state);
+
 #endif // _UTFREWIND_INTERNAL_STREAMING_H_

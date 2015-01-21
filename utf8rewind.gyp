@@ -90,6 +90,7 @@
 				'source/tests/suite-seek-forward.cpp',
 				'source/tests/suite-seek-set.cpp',
 				'source/tests/suite-seek-set.cpp',
+				'source/tests/suite-stream-reorder.cpp',
 				'source/tests/suite-streaming.cpp',
 				'source/tests/suite-tolower.cpp',
 				'source/tests/suite-totitle.cpp',
