@@ -31,23 +31,11 @@ namespace helpers {
 
 	std::string identifiable(const std::string& text)
 	{
-		if (text == "")
+		std::vector<unicode_t> converted = utf32(text);
+		if (converted.size() == 0)
 		{
 			return "";
 		}
-
-		int32_t errors = 0;
-		size_t size_in_bytes = utf8toutf32(text.c_str(), text.size(), nullptr, 0, &errors);
-		if (size_in_bytes == 0 ||
-			errors != 0)
-		{
-			return "";
-		}
-
-		std::vector<unicode_t> converted;
-		converted.resize(size_in_bytes / sizeof(unicode_t));
-
-		utf8toutf32(text.c_str(), text.size(), &converted[0], size_in_bytes, &errors);
 
 		std::stringstream ss;
 
@@ -123,6 +111,30 @@ namespace helpers {
 		converted = buffer;
 
 		delete [] buffer;
+
+		return converted;
+	}
+
+	std::vector<unicode_t> utf32(const std::string& text)
+	{
+		std::vector<unicode_t> converted;
+
+		if (text.length() == 0)
+		{
+			return converted;
+		}
+
+		int32_t errors = 0;
+
+		size_t size_in_bytes = utf8toutf32(text.c_str(), text.size(), nullptr, 0, &errors);
+		if (size_in_bytes == 0 ||
+			errors != 0)
+		{
+			return converted;
+		}
+
+		converted.resize(size_in_bytes / sizeof(unicode_t));
+		utf8toutf32(text.c_str(), text.size(), &converted[0], size_in_bytes, &errors);
 
 		return converted;
 	}
