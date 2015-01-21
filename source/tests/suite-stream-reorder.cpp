@@ -30,3 +30,11 @@ TEST(StreamReorder, Unchanged)
 	EXPECT_EQ(1, stream_reorder(&stream));
 	EXPECT_UTF8EQ("Bike", helpers::utf8(stream.codepoint, stream.current * sizeof(unicode_t)).c_str());
 }
+
+TEST(StreamReorder, Reorder)
+{
+	StreamState stream = CreateStream("\xCE\xA9\xCD\x85\xCC\x93\xCC\x80");
+
+	EXPECT_EQ(1, stream_reorder(&stream));
+	EXPECT_UTF8EQ("\xCE\xA9\xCC\x93\xCC\x80\xCD\x85", helpers::utf8(stream.codepoint, stream.current * sizeof(unicode_t)).c_str());
+}
