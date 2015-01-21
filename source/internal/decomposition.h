@@ -31,11 +31,12 @@
 
 typedef struct {
 	StreamState* stream;
+	uint8_t property;
 	unicode_t codepoint[STREAM_BUFFER_MAX];
 	uint8_t filled;
 } DecomposeState;
 
-uint8_t decompose_initialize(DecomposeState* state, StreamState* stream);
+uint8_t decompose_initialize(DecomposeState* state, StreamState* stream, uint8_t compatibility);
 
 uint8_t decompose_execute(DecomposeState* state);
 
