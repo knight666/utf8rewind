@@ -38,10 +38,11 @@ uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamSt
 		: UnicodeProperty_Normalization_Compose;
 
 	state->output = output;
-	memset(state->output, 0, sizeof(StreamState));
 	state->output->property = (compatibility == 1)
 		? UnicodeProperty_Normalization_Compatibility_Decompose
 		: UnicodeProperty_Normalization_Decompose;
+	state->output->codepoint[0] = 0;
+	state->output->current = 0;
 
 	return 1;
 }
@@ -51,20 +52,21 @@ uint8_t decompose_execute(DecomposeState* state)
 	uint8_t input_current;
 	uint8_t input_total;
 	unicode_t* dst_codepoint;
-	uint8_t* dst_canonical_combining_class;
 	uint8_t* dst_quick_check;
+	uint8_t* dst_canonical_combining_class;
 
 	if (stream_execute(state->input) == 0)
 	{
 		return 0;
 	}
 
+	state->output->current = 0;
+
 	input_current = 0;
 	input_total = state->input->current;
-	state->output->current = 0;
 	dst_codepoint = state->output->codepoint;
-	dst_canonical_combining_class = state->output->canonical_combining_class;
 	dst_quick_check = state->output->quick_check;
+	dst_canonical_combining_class = state->output->canonical_combining_class;
 
 	while (input_total > 0)
 	{
@@ -89,8 +91,8 @@ uint8_t decompose_execute(DecomposeState* state)
 
 					state->output->current++;
 
-					*dst_quick_check++ = database_queryproperty(*dst_codepoint, state->output->property);
 					*dst_canonical_combining_class++ = database_queryproperty(*dst_codepoint, UnicodeProperty_CanonicalCombiningClass);
+					*dst_quick_check++ = QuickCheckResult_Yes;
 					dst_codepoint++;
 
 					src += offset;
@@ -102,8 +104,8 @@ uint8_t decompose_execute(DecomposeState* state)
 		{
 			state->output->current++;
 
-			dst_quick_check++;
 			*dst_canonical_combining_class++ = database_queryproperty(*dst_codepoint, UnicodeProperty_CanonicalCombiningClass);
+			dst_quick_check++;
 			dst_codepoint++;
 		}
 
