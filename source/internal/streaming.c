@@ -47,7 +47,7 @@ uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSiz
 	return 1;
 }
 
-uint8_t stream_execute(StreamState* state)
+uint8_t stream_read(StreamState* state)
 {
 	if (state->src_size == 0)
 	{

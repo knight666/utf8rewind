@@ -53,7 +53,7 @@ typedef struct {
 
 uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSize, uint8_t property);
 
-uint8_t stream_execute(StreamState* state);
+uint8_t stream_read(StreamState* state);
 
 uint8_t stream_reorder(StreamState* state);
 

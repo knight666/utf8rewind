@@ -62,7 +62,7 @@ uint8_t decompose_execute(DecomposeState* state)
 	uint8_t* dst_canonical_combining_class;
 
 	if (state->input == 0 ||
-		stream_execute(state->input) == 0)
+		stream_read(state->input) == 0)
 	{
 		return 0;
 	}

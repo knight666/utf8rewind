@@ -61,7 +61,7 @@ unicode_t compose_execute(ComposeState* state)
 
 		state->stream_current = 0;
 
-		if (stream_execute(&state->streaming) == 0)
+		if (stream_read(&state->streaming) == 0)
 		{
 			state->stage = ComposeStage_OutOfInput;
 		}
