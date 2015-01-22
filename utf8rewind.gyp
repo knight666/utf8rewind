@@ -64,6 +64,8 @@
 				'source/tests/helpers-casemapping.hpp',
 				'source/tests/helpers-normalization.cpp',
 				'source/tests/helpers-normalization.hpp',
+				'source/tests/helpers-streams.cpp',
+				'source/tests/helpers-streams.hpp',
 				'source/tests/helpers-strings.cpp',
 				'source/tests/helpers-strings.hpp',
 				'source/tests/integration-casemapping.cpp',
