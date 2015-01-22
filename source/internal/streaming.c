@@ -148,9 +148,9 @@ uint8_t stream_reorder(StreamState* state)
 {
 	uint8_t dirty = 1;
 
-	if (state->current < 1)
+	if (state->current == 0)
 	{
-		return 1;
+		return 0;
 	}
 
 	do
