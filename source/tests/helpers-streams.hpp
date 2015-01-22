@@ -15,6 +15,7 @@ extern "C" {
 	e.quick_check = QuickCheckResult_ ## _qc; \
 	e.canonical_combining_class = _ccc; \
 	::helpers::StreamEntry a; \
+	a.index = _index; \
 	a.codepoint = _stream.codepoint[_index]; \
 	a.quick_check = _stream.quick_check[_index]; \
 	a.canonical_combining_class = _stream.canonical_combining_class[_index]; \
@@ -41,6 +42,7 @@ namespace helpers {
 
 	struct StreamEntry
 	{
+		uint8_t index;
 		unicode_t codepoint;
 		uint8_t quick_check;
 		uint8_t canonical_combining_class;
