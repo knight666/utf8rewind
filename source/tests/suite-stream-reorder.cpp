@@ -5,36 +5,31 @@ extern "C" {
 	#include "../internal/composition.h"
 }
 
+#include "helpers-streams.hpp"
 #include "helpers-strings.hpp"
-
-StreamState CreateStream(const char* text)
-{
-	StreamState stream = { 0 };
-
-	std::vector<unicode_t> converted = helpers::utf32(text);
-
-	for (std::vector<unicode_t>::iterator it = converted.begin(); it != converted.end(); ++it)
-	{
-		stream.codepoint[stream.current] = *it;
-		stream.canonical_combining_class[stream.current] = database_queryproperty(*it, UnicodeProperty_CanonicalCombiningClass);
-		stream.current++;
-	}
-
-	return stream;
-}
 
 TEST(StreamReorder, Unchanged)
 {
-	StreamState stream = CreateStream("Bike");
+	StreamState stream = helpers::createStream("Bike");
 
 	EXPECT_EQ(1, stream_reorder(&stream));
-	EXPECT_UTF8EQ("Bike", helpers::utf8(stream.codepoint, stream.current * sizeof(unicode_t)).c_str());
+	
+	CHECK_STREAM(stream, 0, 'B', Yes, 0);
+	CHECK_STREAM(stream, 1, 'i', Yes, 0);
+	CHECK_STREAM(stream, 2, 'k', Yes, 0);
+	CHECK_STREAM(stream, 3, 'e', Yes, 0);
+	CHECK_STREAM_END(stream, 4);
 }
 
 TEST(StreamReorder, Reorder)
 {
-	StreamState stream = CreateStream("\xCE\xA9\xCD\x85\xCC\x93\xCC\x80");
+	StreamState stream = helpers::createStream("\xCE\xA9\xCD\x85\xCC\x93\xCC\x80");
 
 	EXPECT_EQ(1, stream_reorder(&stream));
-	EXPECT_UTF8EQ("\xCE\xA9\xCC\x93\xCC\x80\xCD\x85", helpers::utf8(stream.codepoint, stream.current * sizeof(unicode_t)).c_str());
+
+	CHECK_STREAM(stream, 0, 0x03A9, Yes, 0);
+	CHECK_STREAM(stream, 1, 0x0313, Yes, 230);
+	CHECK_STREAM(stream, 2, 0x0300, Yes, 230);
+	CHECK_STREAM(stream, 3, 0x0345, Yes, 240);
+	CHECK_STREAM_END(stream, 4);
 }
