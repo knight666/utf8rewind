@@ -101,12 +101,12 @@ TEST(DecomposeExecute, SingleSequenceOrdered)
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x0041, Yes, 0);
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x0304, Yes, 230);
 	CHECK_STREAM_ENTRY(*state.output, 2, 0x0308, Yes, 230);
-	EXPECT_TRUE(state.output->stable);
+	EXPECT_FALSE(state.output->stable);
 
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
-TEST(DecomposeExecute, SingleSequenceOutOfOrder)
+TEST(DecomposeExecute, SingleSequenceUnordered)
 {
 	const char* i = "A\xCC\x84\xCC\x9D";
 	size_t il = strlen(i);
@@ -185,6 +185,68 @@ TEST(DecomposeExecute, MultipleDecompose)
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x0313, Yes, 230);
 	CHECK_STREAM_ENTRY(*state.output, 2, 0x0300, Yes, 230);
 	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, MultipleSequenceOrdered)
+{
+	const char* i = "\xC3\xAA\xCC\xB3\xC5\x8D\xCC\xA3\xCD\x86";
+	size_t il = strlen(i);
+
+	StreamState input;
+	StreamState output;
+	DecomposeState state;
+
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0065, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0302, Yes, 230);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x0333, Yes, 220);
+	EXPECT_FALSE(state.output->stable);
+
+	EXPECT_EQ(4, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x006F, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0304, Yes, 230);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x0323, Yes, 220);
+	CHECK_STREAM_ENTRY(*state.output, 3, 0x0346, Yes, 230);
+	EXPECT_FALSE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, MultipleSequenceUnordered)
+{
+	const char* i = "\xC3\x8A\xCD\x87\xC3\x83\xCD\x9C\xCD\x88\xC3\xAD\xCC\x9B";
+	size_t il = strlen(i);
+
+	StreamState input;
+	StreamState output;
+	DecomposeState state;
+
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0045, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0302, Yes, 230);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x0347, Yes, 220);
+	EXPECT_FALSE(state.output->stable);
+
+	EXPECT_EQ(4, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0041, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0303, Yes, 230);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x035C, Yes, 233);
+	CHECK_STREAM_ENTRY(*state.output, 3, 0x0348, Yes, 220);
+	EXPECT_FALSE(state.output->stable);
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0069, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0301, Yes, 230);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x031B, Yes, 216);
+	EXPECT_FALSE(state.output->stable);
 
 	EXPECT_EQ(0, decompose_execute(&state));
 }
