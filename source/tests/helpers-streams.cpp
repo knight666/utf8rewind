@@ -59,7 +59,7 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << "Unexpected entry in stream" << std::endl;
+			result << "Unexpected entry in stream at index " << (int)entryActual.index << std::endl;
 
 			result << std::endl;
 
