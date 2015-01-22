@@ -79,6 +79,11 @@ uint8_t stream_read(StreamState* state)
 		state->canonical_combining_class[0] = state->canonical_combining_class[state->current];
 		state->quick_check[0] = state->quick_check[state->current];
 
+		/* Check if start of new sequence has a starter */
+
+		state->starter_count = state->last_is_starter;
+		state->last_is_starter = 0;
+
 		/* Clear rest of sequence */
 
 		for (i = 1; i <= state->current; ++i)
@@ -88,20 +93,9 @@ uint8_t stream_read(StreamState* state)
 			state->quick_check[i] = 0;
 		}
 
-		/* Check if new sequence has a starter */
+		/* New sequence always starts as stable */
 
-		if (state->quick_check[0] == QuickCheckResult_Yes &&
-			state->canonical_combining_class[0] == 0)
-		{
-			state->starter_count = 1;
-			state->stable = 1;
-		}
-		else
-		{
-			state->starter_count = 0;
-			state->stable = 0;
-		}
-
+		state->stable = 1;
 		state->current = 1;
 	}
 
@@ -138,8 +132,11 @@ uint8_t stream_read(StreamState* state)
 
 		/* Check if codepoint is a starter */
 
-		if (state->quick_check[state->current] == QuickCheckResult_Yes &&
-			state->canonical_combining_class[state->current] == 0)
+		state->last_is_starter =
+			(state->quick_check[state->current] == QuickCheckResult_Yes) &&
+			(state->canonical_combining_class[state->current] == 0);
+
+		if (state->last_is_starter == 1)
 		{
 			state->starter_count++;
 			if (state->starter_count > 1)
@@ -151,10 +148,10 @@ uint8_t stream_read(StreamState* state)
 			state->stable == 1 &&
 			state->current > 0)
 		{
+			uint8_t i;
+
 			/* Check if sequence is unstable by comparing canonical combining classes */
 
-			uint8_t i;
-			
 			for (i = 1; i < state->current + 1; ++i)
 			{
 				if (state->canonical_combining_class[i] < state->canonical_combining_class[i - 1])
