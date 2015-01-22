@@ -16,9 +16,9 @@ extern "C" {
 	e.canonical_combining_class = _ccc; \
 	::helpers::StreamEntry a; \
 	a.index = _index; \
-	a.codepoint = _stream.codepoint[_index]; \
-	a.quick_check = _stream.quick_check[_index]; \
-	a.canonical_combining_class = _stream.canonical_combining_class[_index]; \
+	a.codepoint = (_stream).codepoint[_index]; \
+	a.quick_check = (_stream).quick_check[_index]; \
+	a.canonical_combining_class = (_stream).canonical_combining_class[_index]; \
 	EXPECT_PRED_FORMAT2(::helpers::CompareStream, e, a); \
 }
 
