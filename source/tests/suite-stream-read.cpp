@@ -30,12 +30,10 @@ TEST(StreamRead, SingleCodepointStarter)
 	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(1, state.current);
 	CHECK_STREAM_ENTRY(state, 0, 0x02FC, Yes, 0);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(0, stream_read(&state));
-	EXPECT_EQ(0, state.current);
 }
 
 TEST(StreamRead, SingleCodepointNonStarter)
@@ -47,12 +45,10 @@ TEST(StreamRead, SingleCodepointNonStarter)
 	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(1, state.current);
 	CHECK_STREAM_ENTRY(state, 0, 0x031D, Yes, 220);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(0, stream_read(&state));
-	EXPECT_EQ(0, state.current);
 }
 
 TEST(StreamRead, SingleCodepointInvalid)
@@ -64,11 +60,9 @@ TEST(StreamRead, SingleCodepointInvalid)
 	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(1, state.current);
 	CHECK_STREAM_ENTRY(state, 0, 0xFFFD, Yes, 0);
 
 	EXPECT_EQ(0, stream_read(&state));
-	EXPECT_EQ(0, state.current);
 }
 
 TEST(StreamRead, MultipleCodepointsStarter)
@@ -80,22 +74,18 @@ TEST(StreamRead, MultipleCodepointsStarter)
 	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(1, state.current);
 	CHECK_STREAM_ENTRY(state, 0, 0x03F4, Yes, 0);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(1, state.current);
 	CHECK_STREAM_ENTRY(state, 0, 0x0406, Yes, 0);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(1, state.current);
 	CHECK_STREAM_ENTRY(state, 0, 0x0414, Yes, 0);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(0, stream_read(&state));
-	EXPECT_EQ(0, state.current);
 }
 
 TEST(StreamRead, MultipleCodepointsNonStarterOrdered)
@@ -106,14 +96,12 @@ TEST(StreamRead, MultipleCodepointsNonStarterOrdered)
 	StreamState state;
 	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
-	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(2, state.current);
+	EXPECT_EQ(2, stream_read(&state));
 	CHECK_STREAM_ENTRY(state, 0, 0x033B, Yes, 220);
 	CHECK_STREAM_ENTRY(state, 1, 0x034B, Yes, 230);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(0, stream_read(&state));
-	EXPECT_EQ(0, state.current);
 }
 
 TEST(StreamRead, MultipleCodepointsNonStarterOutOfOrder)
@@ -124,14 +112,12 @@ TEST(StreamRead, MultipleCodepointsNonStarterOutOfOrder)
 	StreamState state;
 	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
-	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(2, state.current);
+	EXPECT_EQ(2, stream_read(&state));
 	CHECK_STREAM_ENTRY(state, 0, 0x034B, Yes, 230);
 	CHECK_STREAM_ENTRY(state, 1, 0x033B, Yes, 220);
 	EXPECT_FALSE(state.stable);
 
 	EXPECT_EQ(0, stream_read(&state));
-	EXPECT_EQ(0, state.current);
 }
 
 TEST(StreamRead, MultipleCodepointsInvalid)
@@ -143,15 +129,12 @@ TEST(StreamRead, MultipleCodepointsInvalid)
 	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(1, state.current);
 	CHECK_STREAM_ENTRY(state, 0, 0xFFFD, Yes, 0);
 
 	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(1, state.current);
 	CHECK_STREAM_ENTRY(state, 0, 0xFFFD, Yes, 0);
 
 	EXPECT_EQ(0, stream_read(&state));
-	EXPECT_EQ(0, state.current);
 }
 
 TEST(StreamRead, SingleSequenceOrdered)
@@ -162,14 +145,12 @@ TEST(StreamRead, SingleSequenceOrdered)
 	StreamState state;
 	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
-	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(2, state.current);
+	EXPECT_EQ(2, stream_read(&state));
 	CHECK_STREAM_ENTRY(state, 0, 0x0041, Yes, 0);
 	CHECK_STREAM_ENTRY(state, 1, 0x0303, Maybe, 230);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(0, stream_read(&state));
-	EXPECT_EQ(0, state.current);
 }
 
 TEST(StreamRead, SingleSequenceOutOfOrder)
@@ -180,15 +161,13 @@ TEST(StreamRead, SingleSequenceOutOfOrder)
 	StreamState state;
 	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
-	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(3, state.current);
+	EXPECT_EQ(3, stream_read(&state));
 	CHECK_STREAM_ENTRY(state, 0, 0x004F, Yes, 0);
 	CHECK_STREAM_ENTRY(state, 1, 0x0304, Maybe, 230);
 	CHECK_STREAM_ENTRY(state, 2, 0x0328, Maybe, 202);
 	EXPECT_FALSE(state.stable);
 
 	EXPECT_EQ(0, stream_read(&state));
-	EXPECT_EQ(0, state.current);
 }
 
 TEST(StreamRead, MultipleSequencesOrdered)
@@ -199,21 +178,18 @@ TEST(StreamRead, MultipleSequencesOrdered)
 	StreamState state;
 	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
-	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(3, state.current);
+	EXPECT_EQ(3, stream_read(&state));
 	CHECK_STREAM_ENTRY(state, 0, 0x0061, Yes, 0);
 	CHECK_STREAM_ENTRY(state, 1, 0x0300, Maybe, 230);
 	CHECK_STREAM_ENTRY(state, 2, 0x0301, Maybe, 230);
 	EXPECT_TRUE(state.stable);
 
-	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(2, state.current);
+	EXPECT_EQ(2, stream_read(&state));
 	CHECK_STREAM_ENTRY(state, 0, 0x0045, Yes, 0);
 	CHECK_STREAM_ENTRY(state, 1, 0x030C, Maybe, 230);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(0, stream_read(&state));
-	EXPECT_EQ(0, state.current);
 }
 
 TEST(StreamRead, MultipleSequencesOutOfOrder)
@@ -224,8 +200,7 @@ TEST(StreamRead, MultipleSequencesOutOfOrder)
 	StreamState state;
 	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
-	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(5, state.current);
+	EXPECT_EQ(5, stream_read(&state));
 	CHECK_STREAM_ENTRY(state, 0, 0x0061, Yes, 0);
 	CHECK_STREAM_ENTRY(state, 1, 0x0315, Yes, 232);
 	CHECK_STREAM_ENTRY(state, 2, 0x0300, Maybe, 230);
@@ -234,12 +209,10 @@ TEST(StreamRead, MultipleSequencesOutOfOrder)
 	EXPECT_FALSE(state.stable);
 
 	EXPECT_EQ(1, stream_read(&state));
-	EXPECT_EQ(1, state.current);
 	CHECK_STREAM_ENTRY(state, 0, 0x0062, Yes, 0);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(0, stream_read(&state));
-	EXPECT_EQ(0, state.current);
 }
 
 TEST(StreamRead, ContinueAfterEnd)
@@ -268,7 +241,6 @@ TEST(StreamRead, NotEnoughData)
 	EXPECT_EQ(0, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(0, stream_read(&state));
-	EXPECT_EQ(0, state.current);
 }
 
 TEST(StreamRead, InvalidData)
@@ -280,5 +252,4 @@ TEST(StreamRead, InvalidData)
 	EXPECT_EQ(0, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
 
 	EXPECT_EQ(0, stream_read(&state));
-	EXPECT_EQ(0, state.current);
 }

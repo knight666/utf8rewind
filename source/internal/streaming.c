@@ -166,7 +166,7 @@ uint8_t stream_read(StreamState* state)
 		state->current++;
 	}
 
-	return 1;
+	return state->current;
 }
 
 uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_t* written)
