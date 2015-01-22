@@ -56,8 +56,7 @@
 
 #define UTF8_NORMALIZE_COMPOSE                   0x00000001
 #define UTF8_NORMALIZE_DECOMPOSE                 0x00000002
-#define UTF8_NORMALIZE_COMPATIBILITY_COMPOSE     0x00000004
-#define UTF8_NORMALIZE_COMPATIBILITY_DECOMPOSE   0x00000008
+#define UTF8_NORMALIZE_COMPATIBILITY             0x00000004
 
 //! @defgroup configuration Global configuration
 //! @{

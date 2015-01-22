@@ -102,6 +102,7 @@
 				'source/tests/suite-towide.cpp',
 				'source/tests/suite-transform-compose.cpp',
 				'source/tests/suite-transform-decompose.cpp',
+				'source/tests/suite-utf8-normalize-decomposition.cpp',
 				'source/tests/tests-base.hpp',
 				'source/tests/tests-main.cpp',
 			],

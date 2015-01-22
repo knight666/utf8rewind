@@ -28,9 +28,11 @@
 #include "internal/casemapping.h"
 #include "internal/codepoint.h"
 #include "internal/composition.h"
+#include "internal/decomposition.h"
 #include "internal/database.h"
 #include "internal/normalization.h"
 #include "internal/seeking.h"
+#include "internal/streaming.h"
 
 #if defined(__GNUC__) && !defined(COMPILER_ICC)
 	#define UTF8_UNUSED(_parameter) _parameter __attribute__ ((unused))
@@ -748,6 +750,68 @@ invaliddata:
 	if (errors != 0)
 	{
 		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+}
+
+size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
+{
+	size_t bytes_written = 0;
+	StreamState stream[2];
+	StreamState* src = &stream[0];
+	uint8_t compatibility = (flags & UTF8_NORMALIZE_COMPATIBILITY) != 0;
+
+	if (stream_initialize(&stream[0], input, inputSize, 0) == 0)
+	{
+		goto invaliddata;
+	}
+
+	if ((flags & UTF8_NORMALIZE_DECOMPOSE) != 0)
+	{
+		DecomposeState decompose;
+
+		if (decompose_initialize(&decompose, &stream[0], &stream[1], compatibility) == 0)
+		{
+			goto invaliddata;
+		}
+		
+		while (decompose_execute(&decompose) != 0)
+		{
+			uint8_t written = 0;
+
+			if (stream->stable == 0)
+			{
+				stream_reorder(&stream[1]);
+			}
+
+			if (stream_write(&stream[1], target, targetSize, &written) == 0)
+			{
+				goto outofspace;
+			}
+
+			if (target != 0)
+			{
+				target += written;
+				targetSize -= written;
+			}
+
+			bytes_written += written;
+		}
+	}
+
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
 	}
 	return bytes_written;
 }
