@@ -1,12 +1,6 @@
 #include "tests-base.hpp"
 
-extern "C" {
-	#include "../internal/database.h"
-	#include "../internal/composition.h"
-}
-
 #include "helpers-streams.hpp"
-#include "helpers-strings.hpp"
 
 TEST(StreamReorder, SingleCodepoint)
 {
