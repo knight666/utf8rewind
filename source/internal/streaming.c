@@ -49,31 +49,37 @@ uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSiz
 
 uint8_t stream_read(StreamState* state)
 {
+	/* Ensure input is available */
+
 	if (state->src_size == 0)
 	{
 		return 0;
 	}
 
-	/* Reset after the first pass */
+	/* Reset sequence after the first pass */
 
 	if (state->current >= 1)
 	{
 		uint8_t i;
 
+		/* Check for end of data */
+
 		if (state->src_size <= state->last_length &&
 			state->codepoint[state->current] == 0)
 		{
-			/* End of data */
-
 			state->src_size = 0;
 			state->current = 0;
 
 			return 0;
 		}
 
+		/* Copy last peeked codepoint to new sequence */
+
 		state->codepoint[0] = state->codepoint[state->current];
 		state->canonical_combining_class[0] = state->canonical_combining_class[state->current];
 		state->quick_check[0] = state->quick_check[state->current];
+
+		/* Clear rest of sequence */
 
 		for (i = 1; i <= state->current; ++i)
 		{
@@ -81,6 +87,8 @@ uint8_t stream_read(StreamState* state)
 			state->canonical_combining_class[i] = 0;
 			state->quick_check[i] = 0;
 		}
+
+		/* Check if new sequence has a starter */
 
 		if (state->quick_check[0] == QuickCheckResult_Yes &&
 			state->canonical_combining_class[0] == 0)
@@ -101,10 +109,14 @@ uint8_t stream_read(StreamState* state)
 
 	while (1)
 	{
+		/* Check for buffer overflow */
+
 		if (state->current + 1 >= STREAM_BUFFER_MAX)
 		{
 			break;
 		}
+
+		/* Move the input cursor after peeking */
 
 		if (state->last_length > 0)
 		{
@@ -116,6 +128,8 @@ uint8_t stream_read(StreamState* state)
 			state->src += state->last_length;
 			state->src_size -= state->last_length;
 		}
+
+		/* Peek the next codepoint */
 
 		state->last_length = codepoint_read(&state->codepoint[state->current], state->src, state->src_size);
 
@@ -133,9 +147,23 @@ uint8_t stream_read(StreamState* state)
 				break;
 			}
 		}
-		else if (state->current > 0)
+		else if (
+			state->stable == 1 &&
+			state->current > 0)
 		{
-			state->stable = 0;
+			/* Check if sequence is unstable by comparing canonical combining classes */
+
+			uint8_t i;
+			
+			for (i = 1; i < state->current + 1; ++i)
+			{
+				if (state->canonical_combining_class[i] < state->canonical_combining_class[i - 1])
+				{
+					state->stable = 0;
+
+					break;
+				}
+			}
 		}
 
 		state->current++;
