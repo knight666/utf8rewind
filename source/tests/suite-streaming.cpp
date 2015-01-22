@@ -31,7 +31,7 @@ TEST(Streaming, SingleCodepointStarter)
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
-	CHECK_STREAM(state, 0, 0x02FC, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 0, 0x02FC, Yes, 0);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(0, stream_execute(&state));
@@ -48,7 +48,7 @@ TEST(Streaming, SingleCodepointNonStarter)
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
-	CHECK_STREAM(state, 0, 0x031D, Yes, 220);
+	CHECK_STREAM_ENTRY(state, 0, 0x031D, Yes, 220);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(0, stream_execute(&state));
@@ -65,7 +65,7 @@ TEST(Streaming, SingleCodepointInvalid)
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
-	CHECK_STREAM(state, 0, 0xFFFD, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 0, 0xFFFD, Yes, 0);
 
 	EXPECT_EQ(0, stream_execute(&state));
 	EXPECT_EQ(0, state.current);
@@ -81,17 +81,17 @@ TEST(Streaming, MultipleCodepointsStarter)
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
-	CHECK_STREAM(state, 0, 0x03F4, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 0, 0x03F4, Yes, 0);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
-	CHECK_STREAM(state, 0, 0x0406, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 0, 0x0406, Yes, 0);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
-	CHECK_STREAM(state, 0, 0x0414, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 0, 0x0414, Yes, 0);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(0, stream_execute(&state));
@@ -108,8 +108,8 @@ TEST(Streaming, MultipleCodepointsNonStarter)
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(2, state.current);
-	CHECK_STREAM(state, 0, 0x033B, Yes, 220);
-	CHECK_STREAM(state, 1, 0x034B, Yes, 230);
+	CHECK_STREAM_ENTRY(state, 0, 0x033B, Yes, 220);
+	CHECK_STREAM_ENTRY(state, 1, 0x034B, Yes, 230);
 	EXPECT_FALSE(state.stable);
 
 	EXPECT_EQ(0, stream_execute(&state));
@@ -126,11 +126,11 @@ TEST(Streaming, MultipleCodepointsInvalid)
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
-	CHECK_STREAM(state, 0, 0xFFFD, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 0, 0xFFFD, Yes, 0);
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
-	CHECK_STREAM(state, 0, 0xFFFD, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 0, 0xFFFD, Yes, 0);
 
 	EXPECT_EQ(0, stream_execute(&state));
 	EXPECT_EQ(0, state.current);
@@ -146,8 +146,8 @@ TEST(Streaming, SingleSequenceOrdered)
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(2, state.current);
-	CHECK_STREAM(state, 0, 0x0041, Yes, 0);
-	CHECK_STREAM(state, 1, 0x0303, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 0, 0x0041, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 1, 0x0303, Maybe, 230);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(0, stream_execute(&state));
@@ -164,9 +164,9 @@ TEST(Streaming, SingleSequenceOutOfOrder)
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(3, state.current);
-	CHECK_STREAM(state, 0, 0x004F, Yes, 0);
-	CHECK_STREAM(state, 1, 0x0304, Maybe, 230);
-	CHECK_STREAM(state, 2, 0x0328, Maybe, 202);
+	CHECK_STREAM_ENTRY(state, 0, 0x004F, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 1, 0x0304, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 2, 0x0328, Maybe, 202);
 	EXPECT_FALSE(state.stable);
 
 	EXPECT_EQ(0, stream_execute(&state));
@@ -183,15 +183,15 @@ TEST(Streaming, MultipleSequencesOrdered)
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(3, state.current);
-	CHECK_STREAM(state, 0, 0x0061, Yes, 0);
-	CHECK_STREAM(state, 1, 0x0300, Maybe, 230);
-	CHECK_STREAM(state, 2, 0x0301, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 0, 0x0061, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 1, 0x0300, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 2, 0x0301, Maybe, 230);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(2, state.current);
-	CHECK_STREAM(state, 0, 0x0045, Yes, 0);
-	CHECK_STREAM(state, 1, 0x030C, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 0, 0x0045, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 1, 0x030C, Maybe, 230);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(0, stream_execute(&state));
@@ -208,16 +208,16 @@ TEST(Streaming, MultipleSequencesOutOfOrder)
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(5, state.current);
-	CHECK_STREAM(state, 0, 0x0061, Yes, 0);
-	CHECK_STREAM(state, 1, 0x0315, Yes, 232);
-	CHECK_STREAM(state, 2, 0x0300, Maybe, 230);
-	CHECK_STREAM(state, 3, 0x05AE, Yes, 228);
-	CHECK_STREAM(state, 4, 0x0300, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 0, 0x0061, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 1, 0x0315, Yes, 232);
+	CHECK_STREAM_ENTRY(state, 2, 0x0300, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 3, 0x05AE, Yes, 228);
+	CHECK_STREAM_ENTRY(state, 4, 0x0300, Maybe, 230);
 	EXPECT_FALSE(state.stable);
 
 	EXPECT_EQ(1, stream_execute(&state));
 	EXPECT_EQ(1, state.current);
-	CHECK_STREAM(state, 0, 0x0062, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 0, 0x0062, Yes, 0);
 	EXPECT_FALSE(state.stable);
 
 	EXPECT_EQ(0, stream_execute(&state));
