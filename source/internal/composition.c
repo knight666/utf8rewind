@@ -28,10 +28,8 @@
 #include "codepoint.h"
 #include "database.h"
 
-uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState* output, uint8_t compatibility)
+uint8_t compose_initialize(ComposeState* state, StreamState* input, uint8_t compatibility)
 {
-	uint8_t property;
-
 	memset(state, 0, sizeof(ComposeState));
 
 	/* Ensure input is valid */
@@ -42,28 +40,12 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 		return 0;
 	}
 
-	property = (compatibility == 1)
-		? UnicodeProperty_Normalization_Compatibility_Compose
-		: UnicodeProperty_Normalization_Compose;
-
 	/* Set up input stream */
 
 	state->input = input;
-	state->input->property = property;
-
-	/* Set up output stream */
-
-	state->output = output;
-	state->output->property = property;
-	state->buffer_codepoint[0] = 0;
-	state->output->current = 0;
-
-	state->stage = ComposeStage_Processing;
-
-	state->input_index = 0;
-	state->input_left = 0;
-	
-	state->buffer_current = 0;
+	state->input->property = (compatibility == 1)
+		? UnicodeProperty_Normalization_Compatibility_Compose
+		: UnicodeProperty_Normalization_Compose;
 
 	return 1;
 }
@@ -80,7 +62,7 @@ unicode_t compose_execute(ComposeState* state)
 
 	if (state->input_left == 0)
 	{
-		if (state->stage == ComposeStage_OutOfInput)
+		if (state->finished == 1)
 		{
 			return 0;
 		}
@@ -89,7 +71,7 @@ unicode_t compose_execute(ComposeState* state)
 
 		if (stream_read(state->input) == 0)
 		{
-			state->stage = ComposeStage_OutOfInput;
+			state->finished = 1;
 		}
 		else
 		{
