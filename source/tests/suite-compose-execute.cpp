@@ -23,8 +23,7 @@ TEST(ComposeExecute, Initialize)
 	EXPECT_EQ(il, state.input->src_size);
 	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.input->property);
 	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.output->property);
-	EXPECT_EQ(0, state.current);
-	EXPECT_EQ(1, state.next);
+	EXPECT_EQ(0, state.buffer_current);
 }
 
 TEST(ComposeExecute, Unchanged)
