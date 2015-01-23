@@ -38,7 +38,7 @@ namespace helpers {
 		default:
 			std::stringstream ss;
 			ss << "<invalid> (0x";
-			ss << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << quickCheck;
+			ss << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << (int)quickCheck;
 			ss << ")";
 			return ss.str();
 

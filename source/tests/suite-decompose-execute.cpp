@@ -127,6 +127,46 @@ TEST(DecomposeExecute, SingleSequenceUnordered)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
+TEST(DecomposeExecute, SingleHangulUnaffected)
+{
+	const char* i = "\xE1\x84\x8C";
+	size_t il = strlen(i);
+
+	StreamState input;
+	StreamState output;
+	DecomposeState state;
+
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x110C, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, SingleHangulDecompose)
+{
+	const char* i = "\xE0\xA6\xAC";
+	size_t il = strlen(i);
+
+	StreamState input;
+	StreamState output;
+	DecomposeState state;
+
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x110C, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x1174, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x11AF, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
 TEST(DecomposeExecute, MultipleUnaffected)
 {
 	const char* i = "\xE8\x90\xBD\xE9\xB9\xBF\xE2\x85\xB6\xE2\x85\xAC";
@@ -268,6 +308,39 @@ TEST(DecomposeExecute, MultipleNonStarter)
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x0300, Yes, 230);
 	CHECK_STREAM_ENTRY(*state.output, 2, 0x03B7, Yes, 0);
 	EXPECT_FALSE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, MultipleHangul)
+{
+	const char* i = "\xEC\xA4\x80\xE1\x84\x8C\xE1\x85\xAE\xE1\x86\xB3";
+	size_t il = strlen(i);
+
+	StreamState input;
+	StreamState output;
+	DecomposeState state;
+
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x110C, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x116E, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x11AB, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x110C, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x116E, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x11B3, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
 
 	EXPECT_EQ(0, decompose_execute(&state));
 }
