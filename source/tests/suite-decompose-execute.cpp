@@ -148,7 +148,7 @@ TEST(DecomposeExecute, SingleHangulUnaffected)
 
 TEST(DecomposeExecute, SingleHangulDecompose)
 {
-	const char* i = "\xE0\xA6\xAC";
+	const char* i = "\xEC\xA6\xAC";
 	size_t il = strlen(i);
 
 	StreamState input;
@@ -330,17 +330,11 @@ TEST(DecomposeExecute, MultipleHangul)
 	CHECK_STREAM_ENTRY(*state.output, 2, 0x11AB, Yes, 0);
 	EXPECT_TRUE(state.output->stable);
 
-	EXPECT_EQ(1, decompose_execute(&state));
+	EXPECT_EQ(3, decompose_execute(&state));
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x110C, Yes, 0);
-	EXPECT_TRUE(state.output->stable);
-
-	EXPECT_EQ(1, decompose_execute(&state));
-	CHECK_STREAM_ENTRY(*state.output, 0, 0x116E, Yes, 0);
-	EXPECT_TRUE(state.output->stable);
-
-	EXPECT_EQ(1, decompose_execute(&state));
-	CHECK_STREAM_ENTRY(*state.output, 0, 0x11B3, Yes, 0);
-	EXPECT_TRUE(state.output->stable);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x116E, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x11B3, Yes, 0);
+	EXPECT_FALSE(state.output->stable);
 
 	EXPECT_EQ(0, decompose_execute(&state));
 }
