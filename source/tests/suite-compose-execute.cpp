@@ -13,16 +13,14 @@ TEST(ComposeExecute, Initialize)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	ComposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-	EXPECT_EQ(1, compose_initialize(&state, &input, &output, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_EQ(i, state.input->src);
 	EXPECT_EQ(il, state.input->src_size);
 	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.input->property);
-	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.output->property);
 	EXPECT_EQ(0, state.buffer_current);
 }
 
@@ -32,11 +30,10 @@ TEST(ComposeExecute, Unchanged)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	ComposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-	EXPECT_EQ(1, compose_initialize(&state, &input, &output, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0x1E0A, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
@@ -48,11 +45,10 @@ TEST(ComposeExecute, Compose)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	ComposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-	EXPECT_EQ(1, compose_initialize(&state, &input, &output, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0x0112, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
@@ -64,11 +60,10 @@ TEST(ComposeExecute, ComposeMultipleCodepoints)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	ComposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-	EXPECT_EQ(1, compose_initialize(&state, &input, &output, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0x1FAF, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
@@ -80,11 +75,10 @@ TEST(ComposeExecute, ComposeInvalidCodepoint)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	ComposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-	EXPECT_EQ(1, compose_initialize(&state, &input, &output, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0xFFFD, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
@@ -96,11 +90,10 @@ TEST(ComposeExecute, ComposeAndUnchanged)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	ComposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-	EXPECT_EQ(1, compose_initialize(&state, &input, &output, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0x03CE, compose_execute(&state));
 	EXPECT_CPEQ(0x1DA8, compose_execute(&state));
@@ -113,11 +106,10 @@ TEST(ComposeExecute, UnchangedAndCompose)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	ComposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-	EXPECT_EQ(1, compose_initialize(&state, &input, &output, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0x017F, compose_execute(&state));
 	EXPECT_CPEQ(0xACEC, compose_execute(&state));
@@ -130,11 +122,10 @@ TEST(ComposeExecute, MultipleUnchanged)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	ComposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-	EXPECT_EQ(1, compose_initialize(&state, &input, &output, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0x0112, compose_execute(&state));
 	EXPECT_CPEQ(0x1E14, compose_execute(&state));
@@ -149,11 +140,10 @@ TEST(ComposeExecute, MultipleComposed)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	ComposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-	EXPECT_EQ(1, compose_initialize(&state, &input, &output, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0x1FB3, compose_execute(&state));
 	EXPECT_CPEQ(0x1FC6, compose_execute(&state));
@@ -167,11 +157,10 @@ TEST(ComposeExecute, ContinueAfterEnd)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	ComposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-	EXPECT_EQ(1, compose_initialize(&state, &input, &output, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0x339E, compose_execute(&state));
 	EXPECT_CPEQ(0x002E, compose_execute(&state));
@@ -187,11 +176,10 @@ TEST(ComposeExecute, NotEnoughData)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	ComposeState state;
-
 	EXPECT_EQ(0, stream_initialize(&input, i, il, 0));
-	EXPECT_EQ(0, compose_initialize(&state, &input, &output, 0));
+
+	ComposeState state;
+	EXPECT_EQ(0, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
@@ -202,14 +190,12 @@ TEST(ComposeExecute, InvalidData)
 	size_t il = 5;
 
 	StreamState input;
-	StreamState output;
-	ComposeState state;
-
 	EXPECT_EQ(0, stream_initialize(&input, i, il, 0));
-	EXPECT_EQ(0, compose_initialize(&state, &input, &output, 0));
+
+	ComposeState state;
+	EXPECT_EQ(0, compose_initialize(&state, &input, 0));
 
 	EXPECT_EQ(nullptr, state.input);
-	EXPECT_EQ(nullptr, state.output);
 
 	EXPECT_CPEQ(0, compose_execute(&state));
 }

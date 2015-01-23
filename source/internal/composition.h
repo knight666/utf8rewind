@@ -29,27 +29,18 @@
 #include "utf8rewind.h"
 #include "streaming.h"
 
-enum ComposeStage
-{
-	ComposeStage_Processing,
-	ComposeStage_Flush,
-	ComposeStage_OutOfInput,
-	ComposeStage_WriteLast,
-};
-
 typedef struct {
 	StreamState* input;
-	StreamState* output;
 	uint8_t input_index;
 	uint8_t input_left;
-	uint8_t stage;
+	uint8_t finished;
 	unicode_t buffer_codepoint[2];
 	uint8_t buffer_quick_check[2];
 	uint8_t buffer_current;
 } ComposeState;
 
-uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);
+uint8_t compose_initialize(ComposeState* state, StreamState* input, uint8_t compatibility);
 
 unicode_t compose_execute(ComposeState* state);
 
-#endif
+#endif /* _UTFREWIND_INTERNAL_COMPOSITION_H_ */
