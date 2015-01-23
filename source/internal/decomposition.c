@@ -32,16 +32,22 @@ uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamSt
 {
 	memset(state, 0, sizeof(DecomposeState));
 
+	/* Ensure input is valid */
+
 	if (input->src == 0 ||
 		input->src_size == 0)
 	{
 		return 0;
 	}
 
+	/* Set up input stream */
+
 	state->input = input;
 	state->input->property = (compatibility == 1)
 		? UnicodeProperty_Normalization_Compatibility_Compose
 		: UnicodeProperty_Normalization_Compose;
+
+	/* Set up output stream */
 
 	state->output = output;
 	state->output->property = (compatibility == 1)
@@ -55,11 +61,13 @@ uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamSt
 
 uint8_t decompose_execute(DecomposeState* state)
 {
-	uint8_t input_current;
-	uint8_t input_total;
+	unicode_t* src_codepoint;
+	uint8_t src_left;
 	unicode_t* dst_codepoint;
 	uint8_t* dst_quick_check;
 	uint8_t* dst_canonical_combining_class;
+
+	/* Read next sequence */
 
 	if (state->input == 0 ||
 		stream_read(state->input) == 0)
@@ -67,24 +75,36 @@ uint8_t decompose_execute(DecomposeState* state)
 		return 0;
 	}
 
-	state->output->current = 0;
+	/* Reset output */
 
-	input_current = 0;
-	input_total = state->input->current;
+	state->output->current = 0;
+	state->output->stable = 1;
+
+	/* Set up source and destination */
+
+	src_codepoint = state->input->codepoint;
+	src_left = state->input->current;
+
 	dst_codepoint = state->output->codepoint;
 	dst_quick_check = state->output->quick_check;
 	dst_canonical_combining_class = state->output->canonical_combining_class;
 
-	while (input_total > 0)
+	while (src_left > 0)
 	{
-		*dst_codepoint = state->input->codepoint[input_current];
+		/* Use quick check to skip stable codepoints */
+
+		*dst_codepoint = *src_codepoint;
 		*dst_quick_check = database_queryproperty(*dst_codepoint, state->output->property);
 
 		if (*dst_quick_check != QuickCheckResult_Yes)
 		{
+			/* Check database for decomposition */
+
 			const char* decomposition = database_querydecomposition(*dst_codepoint, state->output->property);
 			if (decomposition != 0)
 			{
+				/* Write sequence to output */
+
 				const char* src = decomposition;
 				size_t src_size = strlen(decomposition);
 
@@ -96,11 +116,11 @@ uint8_t decompose_execute(DecomposeState* state)
 						break;
 					}
 
-					state->output->current++;
-
 					*dst_canonical_combining_class++ = database_queryproperty(*dst_codepoint, UnicodeProperty_CanonicalCombiningClass);
 					*dst_quick_check++ = QuickCheckResult_Yes;
 					dst_codepoint++;
+
+					state->output->current++;
 
 					src += offset;
 					src_size -= offset;
@@ -109,15 +129,24 @@ uint8_t decompose_execute(DecomposeState* state)
 		}
 		else
 		{
-			state->output->current++;
+			/* Write codepoint to output */			
 
 			*dst_canonical_combining_class++ = database_queryproperty(*dst_codepoint, UnicodeProperty_CanonicalCombiningClass);
 			dst_quick_check++;
 			dst_codepoint++;
+
+			state->output->current++;
 		}
 
-		input_current++;
-		input_total--;
+		/* Output is stable as long as only one codepoint or sequence is written */
+
+		if (src_codepoint != state->input->codepoint)
+		{
+			state->output->stable = 0;
+		}
+
+		src_codepoint++;
+		src_left--;
 	}
 
 	return state->output->current;
