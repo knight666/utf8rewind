@@ -91,51 +91,87 @@ uint8_t decompose_execute(DecomposeState* state)
 
 	while (src_left > 0)
 	{
-		/* Use quick check to skip stable codepoints */
-
-		*dst_codepoint = *src_codepoint;
-		*dst_quick_check = database_queryproperty(*dst_codepoint, state->output->property);
-
-		if (*dst_quick_check != QuickCheckResult_Yes)
+		if (*src_codepoint >= HANGUL_S_FIRST &&
+			*src_codepoint <= HANGUL_S_LAST)
 		{
-			/* Check database for decomposition */
+			/*
+				Hangul decomposition
 
-			const char* decomposition = database_querydecomposition(*dst_codepoint, state->output->property);
-			if (decomposition != 0)
+				Algorithm adapted from Unicode Technical Report #15:
+				http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
+			*/
+
+			unicode_t s_index = *src_codepoint - HANGUL_S_FIRST;
+
+			*dst_codepoint++ = HANGUL_L_FIRST + (s_index / HANGUL_N_COUNT);
+			*dst_canonical_combining_class++ = 0;
+			*dst_quick_check++ = QuickCheckResult_Yes;
+
+			state->output->current++;
+
+			*dst_codepoint++ = HANGUL_V_FIRST + (s_index % HANGUL_N_COUNT) / HANGUL_T_COUNT;
+			*dst_canonical_combining_class++ = 0;
+			*dst_quick_check++ = QuickCheckResult_Yes;
+
+			state->output->current++;
+
+			if ((s_index % HANGUL_T_COUNT) != HANGUL_T_FIRST)
 			{
-				/* Write sequence to output */
+				*dst_codepoint++ = HANGUL_T_FIRST + (s_index % HANGUL_T_COUNT);
+				*dst_canonical_combining_class++ = 0;
+				*dst_quick_check++ = QuickCheckResult_Yes;
 
-				const char* src = decomposition;
-				size_t src_size = strlen(decomposition);
-
-				while (src_size > 0)
-				{
-					size_t offset = codepoint_read(dst_codepoint, src, src_size);
-					if (offset == 0)
-					{
-						break;
-					}
-
-					*dst_canonical_combining_class++ = database_queryproperty(*dst_codepoint, UnicodeProperty_CanonicalCombiningClass);
-					*dst_quick_check++ = QuickCheckResult_Yes;
-					dst_codepoint++;
-
-					state->output->current++;
-
-					src += offset;
-					src_size -= offset;
-				}
+				state->output->current++;
 			}
 		}
 		else
 		{
-			/* Write codepoint to output */			
+			/* Use quick check to skip stable codepoints */
 
-			*dst_canonical_combining_class++ = database_queryproperty(*dst_codepoint, UnicodeProperty_CanonicalCombiningClass);
-			dst_quick_check++;
-			dst_codepoint++;
+			*dst_codepoint = *src_codepoint;
+			*dst_quick_check = database_queryproperty(*dst_codepoint, state->output->property);
 
-			state->output->current++;
+			if (*dst_quick_check != QuickCheckResult_Yes)
+			{
+				/* Check database for decomposition */
+
+				const char* decomposition = database_querydecomposition(*dst_codepoint, state->output->property);
+				if (decomposition != 0)
+				{
+					/* Write sequence to output */
+
+					const char* src = decomposition;
+					size_t src_size = strlen(decomposition);
+
+					while (src_size > 0)
+					{
+						size_t offset = codepoint_read(dst_codepoint, src, src_size);
+						if (offset == 0)
+						{
+							break;
+						}
+
+						*dst_canonical_combining_class++ = database_queryproperty(*dst_codepoint, UnicodeProperty_CanonicalCombiningClass);
+						*dst_quick_check++ = QuickCheckResult_Yes;
+						dst_codepoint++;
+
+						state->output->current++;
+
+						src += offset;
+						src_size -= offset;
+					}
+				}
+			}
+			else
+			{
+				/* Write codepoint to output */
+
+				*dst_canonical_combining_class++ = database_queryproperty(*dst_codepoint, UnicodeProperty_CanonicalCombiningClass);
+				dst_quick_check++;
+				dst_codepoint++;
+
+				state->output->current++;
+			}
 		}
 
 		/* Output is stable as long as only one codepoint or sequence is written */
