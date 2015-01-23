@@ -40,14 +40,12 @@ enum ComposeStage
 typedef struct {
 	StreamState* input;
 	StreamState* output;
-	uint8_t stream_current;
-	uint8_t stream_total;
+	uint8_t input_index;
+	uint8_t input_left;
 	uint8_t stage;
-	uint8_t stable;
-	uint8_t last_canonical_combining_class;
-	uint8_t stable_index;
-	uint8_t current;
-	uint8_t next;
+	unicode_t buffer_codepoint[2];
+	uint8_t buffer_quick_check[2];
+	uint8_t buffer_current;
 } ComposeState;
 
 uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);
