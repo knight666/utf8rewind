@@ -24,7 +24,7 @@ TEST(ComposeExecute, Initialize)
 	EXPECT_EQ(0, state.buffer_current);
 }
 
-TEST(ComposeExecute, Unchanged)
+TEST(ComposeExecute, SingleUnaffected)
 {
 	const char* i = "\xE1\xB8\x8A";
 	size_t il = strlen(i);
@@ -39,37 +39,7 @@ TEST(ComposeExecute, Unchanged)
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
-TEST(ComposeExecute, Compose)
-{
-	const char* i = "E\xCC\x84";
-	size_t il = strlen(i);
-
-	StreamState input;
-	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-
-	ComposeState state;
-	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
-
-	EXPECT_CPEQ(0x0112, compose_execute(&state));
-	EXPECT_CPEQ(0, compose_execute(&state));
-}
-
-TEST(ComposeExecute, ComposeMultipleCodepoints)
-{
-	const char* i = "\xCE\xA9\xCC\x94\xCD\x82\xCD\x85";
-	size_t il = strlen(i);
-
-	StreamState input;
-	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-
-	ComposeState state;
-	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
-
-	EXPECT_CPEQ(0x1FAF, compose_execute(&state));
-	EXPECT_CPEQ(0, compose_execute(&state));
-}
-
-TEST(ComposeExecute, ComposeInvalidCodepoint)
+TEST(ComposeExecute, SingleInvalidCodepoint)
 {
 	const char* i = "\xCF";
 	size_t il = strlen(i);
@@ -84,9 +54,9 @@ TEST(ComposeExecute, ComposeInvalidCodepoint)
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
-TEST(ComposeExecute, ComposeAndUnchanged)
+TEST(ComposeExecute, SingleSequenceUnaffectedTwoCodepoints)
 {
-	const char* i = "\xCF\x89\xCC\x81\xE1\xB6\xA8";
+	const char* i = "\xC6\xB9\xCC\x9A";
 	size_t il = strlen(i);
 
 	StreamState input;
@@ -95,14 +65,14 @@ TEST(ComposeExecute, ComposeAndUnchanged)
 	ComposeState state;
 	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
-	EXPECT_CPEQ(0x03CE, compose_execute(&state));
-	EXPECT_CPEQ(0x1DA8, compose_execute(&state));
+	EXPECT_CPEQ(0x01B9, compose_execute(&state));
+	EXPECT_CPEQ(0x031A, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
-TEST(ComposeExecute, UnchangedAndCompose)
+TEST(ComposeExecute, SingleSequenceUnaffectedMultipleCodepoints)
 {
-	const char* i = "\xC5\xBF\xE1\x84\x80\xE1\x85\xA9\xE1\x86\xB3";
+	const char* i = "\xCE\x90\xCC\x9D\xCD\x9A";
 	size_t il = strlen(i);
 
 	StreamState input;
@@ -111,12 +81,43 @@ TEST(ComposeExecute, UnchangedAndCompose)
 	ComposeState state;
 	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
-	EXPECT_CPEQ(0x017F, compose_execute(&state));
-	EXPECT_CPEQ(0xACEC, compose_execute(&state));
+	EXPECT_CPEQ(0x0390, compose_execute(&state));
+	EXPECT_CPEQ(0x031D, compose_execute(&state));
+	EXPECT_CPEQ(0x035A, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
-TEST(ComposeExecute, MultipleUnchanged)
+TEST(ComposeExecute, SingleSequenceComposeTwoCodepoints)
+{
+	const char* i = "E\xCC\x84";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x0112, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, SingleSequenceComposeMultipleCodepoints)
+{
+	const char* i = "\xCE\xA9\xCC\x94\xCD\x82\xCD\x85";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x1FAF, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, MultipleUnaffected)
 {
 	const char* i = "\xC4\x92\xE1\xB8\x94\xCC\x84\xC3\x80";
 	size_t il = strlen(i);
@@ -134,7 +135,7 @@ TEST(ComposeExecute, MultipleUnchanged)
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
-TEST(ComposeExecute, MultipleComposed)
+TEST(ComposeExecute, MultipleSequenceCompose)
 {
 	const char* i = "\xCE\xB1\xCD\x85\xCE\xB7\xCD\x82\xE2\x8A\x91\xCC\xB8";
 	size_t il = strlen(i);
@@ -148,6 +149,38 @@ TEST(ComposeExecute, MultipleComposed)
 	EXPECT_CPEQ(0x1FB3, compose_execute(&state));
 	EXPECT_CPEQ(0x1FC6, compose_execute(&state));
 	EXPECT_CPEQ(0x22E2, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, MultipleSequenceComposeAndUnaffected)
+{
+	const char* i = "\xCF\x89\xCC\x81\xE1\xB6\xA8";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x03CE, compose_execute(&state));
+	EXPECT_CPEQ(0x1DA8, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, MultipleSequenceUnaffectedAndCompose)
+{
+	const char* i = "\xC5\xBF\xE1\x84\x80\xE1\x85\xA9\xE1\x86\xB3";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x017F, compose_execute(&state));
+	EXPECT_CPEQ(0xACEC, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
