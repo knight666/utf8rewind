@@ -37,46 +37,20 @@ enum ComposeStage
 	ComposeStage_WriteLast,
 };
 
-/*
-	UAX15-D3. Stream-Safe Text Format
-
-	A Unicode string is said to be in Stream-Safe Text Format if it would not
-	contain any sequences of non-starters longer than 30 characters in length
-	when normalized to NFKD
-*/
-
-#define COMPOSITION_MAX 32
-
 typedef struct {
-	unicode_t codepoint;
-	uint8_t length;
-	uint8_t check;
-	uint8_t canonical_combining_class;
-} CodepointState;
-
-typedef struct {
-	StreamState streaming;
+	StreamState* input;
+	StreamState* output;
 	uint8_t stream_current;
 	uint8_t stream_total;
 	uint8_t stage;
 	uint8_t stable;
 	uint8_t last_canonical_combining_class;
-	unicode_t composed;
-	unicode_t stream_codepoint[COMPOSITION_MAX];
-	uint8_t stream_qc[COMPOSITION_MAX];
-	uint8_t stream_ccc[COMPOSITION_MAX];
-	unicode_t stream_flush[COMPOSITION_MAX];
-	uint8_t stream_flush_count;
-	unicode_t codepoint[2];
-	size_t length[2];
-	uint8_t check[2];
-	uint8_t canonical_combining_class[2];
 	uint8_t stable_index;
 	uint8_t current;
 	uint8_t next;
 } ComposeState;
 
-uint8_t compose_initialize(ComposeState* state, const char* input, size_t inputSize, uint8_t propertyType);
+uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);
 
 unicode_t compose_execute(ComposeState* state);
 

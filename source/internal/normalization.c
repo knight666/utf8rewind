@@ -173,6 +173,8 @@ size_t normalize_composition(const char* input, size_t inputSize, char* target, 
 	size_t src_size = inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
+	StreamState input_stream;
+	StreamState output_stream;
 	ComposeState state;
 
 	if (src == 0 ||
@@ -181,7 +183,10 @@ size_t normalize_composition(const char* input, size_t inputSize, char* target, 
 		goto invaliddata;
 	}
 
-	compose_initialize(&state, input, inputSize, propertyType);
+	stream_initialize(&input_stream, input, inputSize, 0);
+	memset(&output_stream, 0, sizeof(StreamState));
+
+	compose_initialize(&state, &input_stream, &output_stream, 0);
 
 	while (state.stage < ComposeStage_OutOfInput)
 	{
