@@ -117,6 +117,66 @@ TEST(ComposeExecute, SingleSequenceComposeMultipleCodepoints)
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
+TEST(ComposeExecute, SingleSequenceHangulLV)
+{
+	const char* i = "\xE1\x84\x80\xE1\x85\xA2";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0xAC1C, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, SingleSequenceHangulLVMissing)
+{
+	const char* i = "\xE1\x84\x81";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x1101, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, SingleSequenceHangulST)
+{
+	const char* i = "\xEA\xBD\x88\xE1\x86\xB6";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0xAF57, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, SingleSequenceHangulSTDecomposed)
+{
+	const char* i = "\xE1\x84\x8B\xE1\x85\xA4\xE1\x86\xA8";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0xC599, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
 TEST(ComposeExecute, MultipleUnaffected)
 {
 	const char* i = "\xC4\x92\xE1\xB8\x94\xCC\x84\xC3\x80";
@@ -181,6 +241,23 @@ TEST(ComposeExecute, MultipleSequenceUnaffectedAndCompose)
 
 	EXPECT_CPEQ(0x017F, compose_execute(&state));
 	EXPECT_CPEQ(0xACEC, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, MultipleSequenceHangul)
+{
+	const char* i = "\xE1\x84\x8B\xE1\x85\xA5\xE1\x86\xB6\xE1\x84\x8B\xE1\x85\xAF\xE1\x84\x8C\xE1\x85\xB5\xE1\x86\xA8";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0xC5C3, compose_execute(&state));
+	EXPECT_CPEQ(0xC6CC, compose_execute(&state));
+	EXPECT_CPEQ(0xC9C1, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
