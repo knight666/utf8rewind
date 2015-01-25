@@ -173,7 +173,28 @@ TEST(DecomposeExecute, SingleHangulUnaffected)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
-TEST(DecomposeExecute, SingleHangulDecompose)
+TEST(DecomposeExecute, SingleHangulDecomposeTwoCodepoints)
+{
+	const char* i = "\xEA\xB1\xB0";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(2, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x1100, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x1165, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, SingleHangulDecomposeThreeCodepoints)
 {
 	const char* i = "\xEC\xA6\xAC";
 	size_t il = strlen(i);
