@@ -23,6 +23,10 @@ namespace helpers {
 	std::string printable(unicode_t* codepoints, size_t codepointsSize);
 	std::string printable(const std::string& text);
 
+	std::string canonicalCombiningClass(unicode_t codepoint);
+	std::string canonicalCombiningClass(unicode_t* codepoint, size_t codepointsSize);
+	std::string canonicalCombiningClass(const std::string& text);
+
 	::testing::AssertionResult CompareUtf8Strings(
 		const char* expressionExpected, const char* expressionActual,
 		const char* textExpected, const char* textActual);
