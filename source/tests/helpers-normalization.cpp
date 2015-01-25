@@ -44,7 +44,7 @@ namespace helpers {
 	{
 		int32_t errors = 0;
 
-		size_t length = utf8transform(text.c_str(), text.size(), nullptr, 0, UTF8_TRANSFORM_DECOMPOSED, &errors);
+		size_t length = utf8normalize(text.c_str(), text.size(), nullptr, 0, UTF8_NORMALIZE_DECOMPOSE, &errors);
 		if (length == 0 ||
 			errors != 0)
 		{
@@ -52,7 +52,7 @@ namespace helpers {
 		}
 
 		char* buffer = new char[length + 1];
-		utf8transform(text.c_str(), text.size(), buffer, length, UTF8_TRANSFORM_DECOMPOSED, &errors);
+		utf8normalize(text.c_str(), text.size(), buffer, length, UTF8_NORMALIZE_DECOMPOSE, &errors);
 		buffer[length] = 0;
 
 		std::string converted = buffer;
@@ -75,7 +75,7 @@ namespace helpers {
 	{
 		int32_t errors = 0;
 
-		size_t length = utf8transform(text.c_str(), text.size(), nullptr, 0, UTF8_TRANSFORM_COMPATIBILITY_COMPOSED, &errors);
+		size_t length = utf8normalize(text.c_str(), text.size(), nullptr, 0, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors);
 		if (length == 0 ||
 			errors != 0)
 		{
@@ -83,7 +83,7 @@ namespace helpers {
 		}
 
 		char* buffer = new char[length + 1];
-		utf8transform(text.c_str(), text.size(), buffer, length, UTF8_TRANSFORM_COMPATIBILITY_COMPOSED, &errors);
+		utf8normalize(text.c_str(), text.size(), buffer, length, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors);
 		buffer[length] = 0;
 
 		std::string converted = buffer;
@@ -102,7 +102,7 @@ namespace helpers {
 	{
 		int32_t errors = 0;
 
-		size_t length = utf8transform(text.c_str(), text.size(), nullptr, 0, UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED, &errors);
+		size_t length = utf8normalize(text.c_str(), text.size(), nullptr, 0, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors);
 		if (length == 0 ||
 			errors != 0)
 		{
@@ -110,7 +110,7 @@ namespace helpers {
 		}
 
 		char* buffer = new char[length + 1];
-		utf8transform(text.c_str(), text.size(), buffer, length, UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED, &errors);
+		utf8normalize(text.c_str(), text.size(), buffer, length, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors);
 		buffer[length] = 0;
 
 		std::string converted = buffer;
@@ -135,7 +135,14 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << entryExpected.name << " (" << identifiable(entryExpected.codepoint) << ")" << std::endl;
+			if (entryExpected.codepoint != 0)
+			{
+				result << entryExpected.name << " (" << identifiable(entryExpected.codepoint) << ")" << std::endl;
+			}
+			else
+			{
+				result << printable(entryExpected.sequence) << " (" << identifiable(entryExpected.sequence) << ")" << std::endl;
+			}
 
 			result << std::endl;
 
