@@ -126,7 +126,7 @@ uint8_t decompose_execute(DecomposeState* state)
 
 			state->output->current++;
 
-			if ((s_index % HANGUL_T_COUNT) != HANGUL_T_FIRST)
+			if ((s_index % HANGUL_T_COUNT) != 0)
 			{
 				*dst_codepoint++ = HANGUL_T_FIRST + (s_index % HANGUL_T_COUNT);
 				*dst_canonical_combining_class++ = 0;
