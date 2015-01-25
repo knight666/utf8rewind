@@ -4,7 +4,7 @@
 
 #include "utf8rewind.h"
 
-#define CHECK_NORMALIZE(_codepoint, _decomposed, _composed, _decomposedCompatibility, _composedCompatibility, _name) { \
+#define CHECK_NORMALIZE_CODEPOINT(_codepoint, _decomposed, _composed, _decomposedCompatibility, _composedCompatibility, _name) { \
 	::helpers::NormalizationEntry e; \
 	e.codepoint = _codepoint; \
 	e.name = _name; \
@@ -17,6 +17,21 @@
 	a.composed = helpers::nfc(helpers::nfd(_codepoint)); \
 	a.decomposedCompatibility = helpers::nfkd(_codepoint); \
 	a.composedCompatibility = helpers::nfkc(helpers::nfkd(_codepoint)); \
+	EXPECT_PRED_FORMAT2(::helpers::CompareNormalization, e, a); \
+}
+
+#define CHECK_NORMALIZE_SEQUENCE(_sequence, _decomposed, _composed, _decomposedCompatibility, _composedCompatibility) { \
+	::helpers::NormalizationEntry e; \
+	e.sequence = _sequence; \
+	e.decomposed = _decomposed; \
+	e.composed = _composed; \
+	e.decomposedCompatibility = _decomposedCompatibility; \
+	e.composedCompatibility = _composedCompatibility; \
+	::helpers::NormalizationEntry a; \
+	a.decomposed = helpers::nfd(_sequence); \
+	a.composed = helpers::nfc(helpers::nfd(_sequence)); \
+	a.decomposedCompatibility = helpers::nfkd(_sequence); \
+	a.composedCompatibility = helpers::nfkc(helpers::nfkd(_sequence)); \
 	EXPECT_PRED_FORMAT2(::helpers::CompareNormalization, e, a); \
 }
 
@@ -42,6 +57,7 @@ namespace helpers {
 		}
 
 		unicode_t codepoint;
+		std::string sequence;
 		std::string name;
 		std::string decomposed;
 		std::string composed;
