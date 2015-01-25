@@ -79,10 +79,10 @@ size_t normalize_decomposition(const char* input, size_t inputSize, char* target
 					codepoint <= HANGUL_S_LAST)
 				{
 					/*
-					Hangul decomposition
+						Hangul decomposition
 
-					Algorithm adapted from Unicode Technical Report #15:
-					http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
+						Algorithm adapted from Unicode Technical Report #15:
+						http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
 					*/
 
 					unicode_t s_index = codepoint - HANGUL_S_FIRST;
@@ -173,6 +173,8 @@ size_t normalize_composition(const char* input, size_t inputSize, char* target, 
 	size_t src_size = inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
+	StreamState input_stream;
+	StreamState output_stream;
 	ComposeState state;
 
 	if (src == 0 ||
@@ -181,30 +183,13 @@ size_t normalize_composition(const char* input, size_t inputSize, char* target, 
 		goto invaliddata;
 	}
 
-	compose_initialize(&state, &src, &src_size, propertyType);
+	stream_initialize(&input_stream, input, inputSize, 0);
 
-	while (state.stage <= ComposeStage_OutOfInput)
+	compose_initialize(&state, &input_stream, 0);
+
+	while (state.finished == 0)
 	{
-		uint8_t index;
-		size_t written;
-
-		index = compose_execute(&state);
-
-		if (index != (uint8_t)-1)
-		{
-			if (dst != 0 &&
-				dst_size < state.length[index])
-			{
-				goto outofspace;
-			}
-
-			written = codepoint_write(state.codepoint[index], &dst, &dst_size, errors);
-			if (written == 0)
-			{
-				break;
-			}
-			bytes_written += written;
-		}
+		unicode_t result = compose_execute(&state);
 	}
 
 	return bytes_written;

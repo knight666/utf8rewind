@@ -28,150 +28,181 @@
 #include "codepoint.h"
 #include "database.h"
 
-uint8_t compose_initialize(ComposeState* state, const char** input, size_t* inputSize, uint8_t propertyType)
+uint8_t compose_initialize(ComposeState* state, StreamState* input, uint8_t compatibility)
 {
 	memset(state, 0, sizeof(ComposeState));
 
-	state->src = input;
-	state->src_size = inputSize;
-	state->property = propertyType;
+	/* Ensure input is valid */
 
-	state->check[0] = QuickCheckResult_No;
-	state->check[1] = QuickCheckResult_No;
-
-	state->current = 0;
-	state->next = 1;
-
-	/* Read the first codepoint */
-
-	state->length[0] = codepoint_read(&state->codepoint[0], *state->src, *state->src_size);
-	state->check[0] = database_queryproperty(state->codepoint[0], state->property);
-
-	if (*state->src_size > state->length[0])
+	if (input->src == 0 ||
+		input->src_size == 0)
 	{
-		*state->src += state->length[0];
-		*state->src_size -= state->length[0];
+		return 0;
 	}
-	else
-	{
-		state->stage = ComposeStage_OutOfInput;
-	}
+
+	/* Set up input stream */
+
+	state->input = input;
+	state->input->property = (compatibility == 1)
+		? UnicodeProperty_Normalization_Compatibility_Compose
+		: UnicodeProperty_Normalization_Compose;
 
 	return 1;
 }
 
-uint8_t compose_execute(ComposeState* state)
+unicode_t compose_execute(ComposeState* state)
 {
-	if (state->stage >= ComposeStage_OutOfInput)
-	{
-		state->stage = ComposeStage_WriteLast;
+	unicode_t composed;
+	uint8_t buffer_next;
 
-		return (state->check[state->current] != QuickCheckResult_No) ? state->current : (uint8_t)-1;
+	if (state->input == 0)
+	{
+		return 0;
 	}
 
-	while (state->stage == ComposeStage_Processing)
+	if (state->input_left == 0)
 	{
-		unicode_t composed = 0;
-
-		if (*state->src_size > 0)
+		if (state->finished == 1)
 		{
-			state->length[state->next] = codepoint_read(&state->codepoint[state->next], *state->src, *state->src_size);
-			state->check[state->next] = database_queryproperty(state->codepoint[state->next], state->property);
-
-			if (*state->src_size >= state->length[state->next])
-			{
-				*state->src += state->length[state->next];
-				*state->src_size -= state->length[state->next];
-
-				if (*state->src_size == 0)
-				{
-					state->stage = ComposeStage_OutOfInput;
-				}
-			}
-			else
-			{
-				state->stage = ComposeStage_OutOfInput;
-			}
+			return 0;
 		}
 
-		if (state->check[state->current] == QuickCheckResult_Yes &&
-			state->check[state->next] == QuickCheckResult_Yes)
+		state->input_index = 0;
+
+		if (stream_read(state->input) == 0)
 		{
-			break;
-		}
-
-		/*
-		Hangul composition
-
-		Algorithm adapted from Unicode Technical Report #15:
-		http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
-		*/
-
-		if (state->codepoint[state->current] >= HANGUL_L_FIRST &&
-			state->codepoint[state->current] <= HANGUL_L_LAST)
-		{
-			/* Check for Hangul LV pair */ 
-
-			if (state->codepoint[state->next] >= HANGUL_V_FIRST &&
-				state->codepoint[state->next] <= HANGUL_V_LAST)
-			{
-				unicode_t l_index = state->codepoint[state->current] - HANGUL_L_FIRST;
-				unicode_t v_index = state->codepoint[state->next] - HANGUL_V_FIRST;
-
-				composed = HANGUL_S_FIRST + (((l_index * HANGUL_V_COUNT) + v_index) * HANGUL_T_COUNT);
-			}
-			else
-			{
-				break;
-			}
-		}
-		else if (
-			state->codepoint[state->current] >= HANGUL_S_FIRST &&
-			state->codepoint[state->current] <= HANGUL_S_LAST)
-		{
-			/* Check for Hangul LV and T pair */ 
-
-			if (state->codepoint[state->next] >= HANGUL_T_FIRST &&
-				state->codepoint[state->next] <= HANGUL_T_LAST)
-			{
-				unicode_t t_index = state->codepoint[state->next] - HANGUL_T_FIRST;
-
-				composed = state->codepoint[state->current] + t_index;
-			}
-			else
-			{
-				break;
-			}
+			state->finished = 1;
 		}
 		else
 		{
-			/* Check database for composition */
+			state->buffer_codepoint[state->buffer_current] = state->input->codepoint[0];
+			state->buffer_quick_check[state->buffer_current] = state->input->quick_check[0];
 
-			composed = database_querycomposition(state->codepoint[state->current], state->codepoint[state->next]);
+			state->input_index = 1;
+			state->input_left = state->input->current;
 		}
-
-		if (composed == 0)
-		{
-			break;
-		}
-
-		if (state->check[state->next] == QuickCheckResult_Maybe)
-		{
-			/* If the composition succeeded but there's no data left, don't output the second codepoint */
-
-			state->check[state->next] = (state->stage >= ComposeStage_OutOfInput) ? QuickCheckResult_No : QuickCheckResult_Yes;
-		}
-
-		state->codepoint[state->current] = composed;
-		state->length[state->current] = codepoint_encoded_length(composed);
-		state->check[state->current] = database_queryproperty(composed, state->property);
 	}
 
-	/* Swap buffers */
+	composed = 0;
+	buffer_next = !state->buffer_current;
 
-	state->current = (state->current + 1) % 2;
-	state->next = (state->next + 1) % 2;
+	if (state->input_left > 1)
+	{
+		state->buffer_codepoint[buffer_next] = state->input->codepoint[state->input_index];
+		state->buffer_quick_check[buffer_next] = state->input->quick_check[state->input_index];
 
-	return state->next;
+		state->input_index++;
+		state->input_left--;
+
+		if (state->buffer_codepoint[state->buffer_current] < 0x80 &&
+			state->buffer_codepoint[buffer_next] < 0x80)
+		{
+			/* Basic Latin codepoints cannot be composed */
+
+			composed = state->buffer_codepoint[state->buffer_current];
+		}
+		else
+		{
+			while (
+				state->buffer_quick_check[state->buffer_current] != QuickCheckResult_Yes ||
+				state->buffer_quick_check[buffer_next] != QuickCheckResult_Yes)
+			{
+				/*
+					Hangul composition
+
+					Algorithm adapted from Unicode Technical Report #15:
+					http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
+				*/
+
+				if (state->buffer_codepoint[state->buffer_current] >= HANGUL_L_FIRST &&
+					state->buffer_codepoint[state->buffer_current] <= HANGUL_L_LAST)
+				{
+					/* Check for Hangul LV pair */ 
+
+					if (state->buffer_codepoint[buffer_next] >= HANGUL_V_FIRST &&
+						state->buffer_codepoint[buffer_next] <= HANGUL_V_LAST)
+					{
+						unicode_t l_index = state->buffer_codepoint[state->buffer_current] - HANGUL_L_FIRST;
+						unicode_t v_index = state->buffer_codepoint[buffer_next] - HANGUL_V_FIRST;
+
+						composed = HANGUL_S_FIRST + (((l_index * HANGUL_V_COUNT) + v_index) * HANGUL_T_COUNT);
+					}
+				}
+				else if (
+					state->buffer_codepoint[state->buffer_current] >= HANGUL_S_FIRST &&
+					state->buffer_codepoint[state->buffer_current] <= HANGUL_S_LAST)
+				{
+					/* Check for Hangul LV and T pair */ 
+
+					if (state->buffer_codepoint[buffer_next] >= HANGUL_T_FIRST &&
+						state->buffer_codepoint[buffer_next] <= HANGUL_T_LAST)
+					{
+						unicode_t t_index = state->buffer_codepoint[buffer_next] - HANGUL_T_FIRST;
+
+						composed = state->buffer_codepoint[state->buffer_current] + t_index;
+					}
+				}
+				else
+				{
+					/* Check database for composition */
+
+					composed = database_querycomposition(state->buffer_codepoint[state->buffer_current], state->buffer_codepoint[buffer_next]);
+				}
+
+				if (composed != 0)
+				{
+					/* Store result */
+
+					state->buffer_codepoint[state->buffer_current] = composed;
+					state->buffer_quick_check[state->buffer_current] = database_queryproperty(composed, state->input->property);
+
+					if (state->input_left > 0)
+					{
+						/* Try to compose with next codepoint */
+
+						state->buffer_codepoint[buffer_next] = state->input->codepoint[state->input_index];
+						state->buffer_quick_check[buffer_next] = state->input->quick_check[state->input_index];
+
+						state->input_index++;
+						state->input_left--;
+					}
+					else
+					{
+						/* End of data */
+
+						state->buffer_codepoint[buffer_next] = 0;
+						state->buffer_quick_check[buffer_next] = QuickCheckResult_Yes;
+
+						break;
+					}
+				}
+				else
+				{
+					/* Failed to compose */
+
+					break;
+				}
+			}
+		}
+	}
+	else if (state->input_left > 0)
+	{
+		/* Only one codepoint left, nothing to compose */
+
+		state->buffer_codepoint[buffer_next] = 0;
+		state->buffer_quick_check[buffer_next] = QuickCheckResult_Yes;
+
+		state->input_left--;
+	}
+
+	if (composed == 0)
+	{
+		composed = state->buffer_codepoint[state->buffer_current];
+	}
+
+	/* Swap buffer */
+
+	state->buffer_current = !state->buffer_current;
+
+	return composed;
 }
-

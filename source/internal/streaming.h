@@ -23,24 +23,41 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef _UTFREWIND_INTERNAL_COMPOSITION_H_
-#define _UTFREWIND_INTERNAL_COMPOSITION_H_
+#ifndef _UTFREWIND_INTERNAL_STREAMING_H_
+#define _UTFREWIND_INTERNAL_STREAMING_H_
 
 #include "utf8rewind.h"
-#include "streaming.h"
+
+/*
+	UAX15-D3. Stream-Safe Text Format
+
+	A Unicode string is said to be in Stream-Safe Text Format if it would not
+	contain any sequences of non-starters longer than 30 characters in length
+	when normalized to NFKD
+*/
+
+#define STREAM_BUFFER_MAX 32
 
 typedef struct {
-	StreamState* input;
-	uint8_t input_index;
-	uint8_t input_left;
-	uint8_t finished;
-	unicode_t buffer_codepoint[2];
-	uint8_t buffer_quick_check[2];
-	uint8_t buffer_current;
-} ComposeState;
+	const char* src;
+	size_t src_size;
+	uint8_t property;
+	uint8_t current;
+	uint8_t stable;
+	uint8_t starter_count;
+	size_t last_length;
+	uint8_t last_is_starter;
+	unicode_t codepoint[STREAM_BUFFER_MAX];
+	uint8_t quick_check[STREAM_BUFFER_MAX];
+	uint8_t canonical_combining_class[STREAM_BUFFER_MAX];
+} StreamState;
 
-uint8_t compose_initialize(ComposeState* state, StreamState* input, uint8_t compatibility);
+uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSize, uint8_t property);
 
-unicode_t compose_execute(ComposeState* state);
+uint8_t stream_read(StreamState* state);
 
-#endif /* _UTFREWIND_INTERNAL_COMPOSITION_H_ */
+uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_t* written);
+
+uint8_t stream_reorder(StreamState* state);
+
+#endif // _UTFREWIND_INTERNAL_STREAMING_H_

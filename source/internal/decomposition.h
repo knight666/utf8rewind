@@ -23,24 +23,19 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef _UTFREWIND_INTERNAL_COMPOSITION_H_
-#define _UTFREWIND_INTERNAL_COMPOSITION_H_
+#ifndef _UTFREWIND_INTERNAL_DECOMPOSITION_H_
+#define _UTFREWIND_INTERNAL_DECOMPOSITION_H_
 
 #include "utf8rewind.h"
 #include "streaming.h"
 
 typedef struct {
 	StreamState* input;
-	uint8_t input_index;
-	uint8_t input_left;
-	uint8_t finished;
-	unicode_t buffer_codepoint[2];
-	uint8_t buffer_quick_check[2];
-	uint8_t buffer_current;
-} ComposeState;
+	StreamState* output;
+} DecomposeState;
 
-uint8_t compose_initialize(ComposeState* state, StreamState* input, uint8_t compatibility);
+uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);
 
-unicode_t compose_execute(ComposeState* state);
+uint8_t decompose_execute(DecomposeState* state);
 
-#endif /* _UTFREWIND_INTERNAL_COMPOSITION_H_ */
+#endif

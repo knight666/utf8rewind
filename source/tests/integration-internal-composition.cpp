@@ -2,9 +2,11 @@
 
 extern "C" {
 	#include "../internal/database.h"
+	#include "../internal/normalization.h"
 }
 
 #include "helpers-strings.hpp"
+#include "helpers-normalization.hpp"
 
 TEST(Composition, SingletonAngstrom)
 {
