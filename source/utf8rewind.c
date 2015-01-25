@@ -786,6 +786,8 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 			if (stream_write(&stream[1], target, targetSize, &written) == 0)
 			{
+				bytes_written += written;
+
 				goto outofspace;
 			}
 
