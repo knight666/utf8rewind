@@ -56,6 +56,19 @@ TEST(NormalizeDecomposition, SingleHangulUnaffected)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(NormalizeDecomposition, SingleInvalidCodepoint)
+{
+	const char* i = "\xF4";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(NormalizeDecomposition, SingleHangulDecomposeTwoCodepoints)
 {
 	const char* i = "\xEA\xB1\xB0";
@@ -157,6 +170,19 @@ TEST(NormalizeDecomposition, MultipleNonStarter)
 
 	EXPECT_EQ(6, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
 	EXPECT_UTF8EQ("\xCC\x9B\xCC\x97\xCC\x80", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, MultipleInvalidCodepoints)
+{
+	const char* i = "\xEA\xF4\xC8";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBD", o);
 	EXPECT_EQ(0, errors);
 }
 

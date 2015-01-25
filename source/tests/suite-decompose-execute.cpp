@@ -109,6 +109,26 @@ TEST(DecomposeExecute, SingleNonStarter)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
+TEST(DecomposeExecute, SingleInvalidCodepoint)
+{
+	const char* i = "\xC1";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0xFFFD, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
 TEST(DecomposeExecute, SingleSequenceOrdered)
 {
 	const char* i = "\xC4\x80\xCC\x88";
@@ -312,6 +332,56 @@ TEST(DecomposeExecute, MultipleDecompose)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
+TEST(DecomposeExecute, MultipleNonStarter)
+{
+	const char* i = "\xCC\x9B\xCC\x80\xCE\xB7";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x031B, Yes, 216);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0300, Yes, 230);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x03B7, Yes, 0);
+	EXPECT_FALSE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, MultipleInvalidCodepoints)
+{
+	const char* i = "\xBF\xF9\xCC";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0xFFFD, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0xFFFD, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0xFFFD, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
 TEST(DecomposeExecute, MultipleSequenceOrdered)
 {
 	const char* i = "\xC3\xAA\xCC\xB3\xC5\x8D\xCC\xA3\xCD\x86";
@@ -371,28 +441,6 @@ TEST(DecomposeExecute, MultipleSequenceUnordered)
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x0069, Yes, 0);
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x0301, Yes, 230);
 	CHECK_STREAM_ENTRY(*state.output, 2, 0x031B, Yes, 216);
-	EXPECT_FALSE(state.output->stable);
-
-	EXPECT_EQ(0, decompose_execute(&state));
-}
-
-TEST(DecomposeExecute, MultipleNonStarter)
-{
-	const char* i = "\xCC\x9B\xCC\x80\xCE\xB7";
-	size_t il = strlen(i);
-
-	StreamState input;
-	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-
-	StreamState output = { 0 };
-
-	DecomposeState state;
-	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
-
-	EXPECT_EQ(3, decompose_execute(&state));
-	CHECK_STREAM_ENTRY(*state.output, 0, 0x031B, Yes, 216);
-	CHECK_STREAM_ENTRY(*state.output, 1, 0x0300, Yes, 230);
-	CHECK_STREAM_ENTRY(*state.output, 2, 0x03B7, Yes, 0);
 	EXPECT_FALSE(state.output->stable);
 
 	EXPECT_EQ(0, decompose_execute(&state));
