@@ -779,7 +779,7 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 		{
 			uint8_t written = 0;
 
-			if (stream->stable == 0)
+			if (stream[1].stable == 0)
 			{
 				stream_reorder(&stream[1]);
 			}
