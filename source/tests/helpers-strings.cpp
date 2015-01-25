@@ -299,8 +299,8 @@ namespace helpers {
 
 			result << "Codepoint mismatch" << std::endl;
 
-			result << "    Actual: " << identifiable(codepointActual) << std::endl;
-			result << "  Expected: " << identifiable(codepointExpected) << std::endl;
+			result << "    Actual: " << identifiable(codepointActual) << " \"" << printable(codepointActual) << "\"" << std::endl;
+			result << "  Expected: " << identifiable(codepointExpected) << " \"" << printable(codepointExpected) << "\"" << std::endl;
 
 			return result;
 		}
