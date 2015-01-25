@@ -224,3 +224,39 @@ TEST(NormalizeDecomposition, MultipleSequenceHangul)
 	EXPECT_UTF8EQ("\xE1\x84\x80\xE1\x85\xA9\xE1\x84\x80\xE1\x85\xA9\xE1\x86\xB0\xE1\x84\x80\xE1\x85\xAA", o);
 	EXPECT_EQ(0, errors);
 }
+
+TEST(NormalizeDecomposition, AmountOfBytes)
+{
+	const char* i = "a\xD6\xAE\xDC\xB3\xCC\x80\xCC\x95" "b";
+	size_t is = strlen(i);
+	int32_t errors = 0;
+
+	EXPECT_EQ(10, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, InvalidData)
+{
+	const char* i = nullptr;
+	size_t is = 7;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(NormalizeDecomposition, NotEnoughSpace)
+{
+	const char* i = "a\xD6\xAE\xDC\xB3\xCC\x80\xCC\x95" "b";
+	size_t is = strlen(i);
+	char o[5] = { 0 };
+	size_t os = 4;
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("a\xD6\xAE", o);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
