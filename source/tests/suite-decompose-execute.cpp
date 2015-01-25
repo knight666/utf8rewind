@@ -14,10 +14,11 @@ TEST(DecomposeExecute, Initialize)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(i, state.input->src);
@@ -33,10 +34,11 @@ TEST(DecomposeExecute, SingleUnaffected)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(1, decompose_execute(&state));
@@ -52,10 +54,11 @@ TEST(DecomposeExecute, SingleDecompose)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(2, decompose_execute(&state));
@@ -72,10 +75,11 @@ TEST(DecomposeExecute, SingleNonStarter)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(1, decompose_execute(&state));
@@ -91,10 +95,11 @@ TEST(DecomposeExecute, SingleSequenceOrdered)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(3, decompose_execute(&state));
@@ -112,10 +117,11 @@ TEST(DecomposeExecute, SingleSequenceUnordered)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(3, decompose_execute(&state));
@@ -133,10 +139,11 @@ TEST(DecomposeExecute, SingleHangulUnaffected)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(1, decompose_execute(&state));
@@ -152,10 +159,11 @@ TEST(DecomposeExecute, SingleHangulDecompose)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(3, decompose_execute(&state));
@@ -173,10 +181,11 @@ TEST(DecomposeExecute, MultipleUnaffected)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(1, decompose_execute(&state));
@@ -204,10 +213,11 @@ TEST(DecomposeExecute, MultipleDecompose)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(2, decompose_execute(&state));
@@ -235,10 +245,11 @@ TEST(DecomposeExecute, MultipleSequenceOrdered)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(3, decompose_execute(&state));
@@ -263,10 +274,11 @@ TEST(DecomposeExecute, MultipleSequenceUnordered)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(3, decompose_execute(&state));
@@ -297,10 +309,11 @@ TEST(DecomposeExecute, MultipleNonStarter)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(3, decompose_execute(&state));
@@ -318,10 +331,11 @@ TEST(DecomposeExecute, MultipleHangul)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(3, decompose_execute(&state));
@@ -345,10 +359,11 @@ TEST(DecomposeExecute, ContinueAfterEnd)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(1, decompose_execute(&state));
@@ -366,10 +381,11 @@ TEST(DecomposeExecute, NotEnoughData)
 	size_t il = strlen(i);
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(0, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(0, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(nullptr, state.input);
@@ -384,10 +400,11 @@ TEST(DecomposeExecute, InvalidData)
 	size_t il = 81;
 
 	StreamState input;
-	StreamState output;
-	DecomposeState state;
-
 	EXPECT_EQ(0, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
 	EXPECT_EQ(0, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(nullptr, state.input);
