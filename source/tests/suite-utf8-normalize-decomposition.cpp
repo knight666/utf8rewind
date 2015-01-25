@@ -107,3 +107,94 @@ TEST(NormalizeDecomposition, SingleSequenceUnordered)
 	EXPECT_UTF8EQ("A\xCC\x9D\xCC\x84", o);
 	EXPECT_EQ(0, errors);
 }
+
+TEST(NormalizeDecomposition, MultipleBasicLatin)
+{
+	const char* i = "Home";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("Home", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, MultipleUnaffected)
+{
+	const char* i = "\xE1\xAA\xA8\xE1\xAA\x80\xE1\xAA\x87";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("\xE1\xAA\xA8\xE1\xAA\x80\xE1\xAA\x87", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, MultipleDecompose)
+{
+	const char* i = "\xC5\x84\xC8\x8B\xC7\xBA";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(11, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("n\xCC\x81" "i\xCC\x91" "A\xCC\x8A\xCC\x81", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, MultipleNonStarter)
+{
+	const char* i = "\xCC\x97\xCC\x9B\xCC\x80";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("\xCC\x9B\xCC\x97\xCC\x80", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, MultipleSequenceOrdered)
+{
+	const char* i = "\xC8\x82\xCC\x95\xCE\x8E\xCC\x81";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(11, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("A\xCC\x91\xCC\x95\xCE\xA5\xCC\x81\xCC\x81", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, MultipleSequenceUnordered)
+{
+	const char* i = "\xC3\x8A\xCD\x87\xC3\x83\xCD\x9C\xCD\x88\xC3\xAD\xCC\x9B";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(17, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("E\xCD\x87\xCC\x82" "A\xCD\x88\xCC\x83\xCD\x9C" "i\xCC\x9B\xCC\x81", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, MultipleSequenceHangul)
+{
+	const char* i = "\xEA\xB3\xA0\xE1\x84\x80\xE1\x85\xA9\xE1\x86\xB0\xEA\xB3\xBC";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(21, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("\xE1\x84\x80\xE1\x85\xA9\xE1\x84\x80\xE1\x85\xA9\xE1\x86\xB0\xE1\x84\x80\xE1\x85\xAA", o);
+	EXPECT_EQ(0, errors);
+}
