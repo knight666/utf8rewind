@@ -91,7 +91,18 @@ uint8_t decompose_execute(DecomposeState* state)
 
 	while (src_left > 0)
 	{
-		if (*src_codepoint >= HANGUL_S_FIRST &&
+		if (*src_codepoint < 0x80)
+		{
+			/* Basic Latin codepoints are already decomposed */
+
+			*dst_codepoint++ = *src_codepoint;
+			*dst_canonical_combining_class++ = 0;
+			*dst_quick_check++ = QuickCheckResult_Yes;
+
+			state->output->current++;
+		}
+		else if (
+			*src_codepoint >= HANGUL_S_FIRST &&
 			*src_codepoint <= HANGUL_S_LAST)
 		{
 			/*
