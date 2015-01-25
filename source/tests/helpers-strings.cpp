@@ -1,5 +1,9 @@
 #include "helpers-strings.hpp"
 
+extern "C" {
+	#include "../internal/database.h"
+};
+
 namespace helpers {
 
 	void identifiable(std::stringstream& target, unicode_t codepoint)
@@ -250,6 +254,55 @@ namespace helpers {
 		for (std::string::const_iterator it = text.begin(); it != text.end(); ++it)
 		{
 			printable(ss, wrote_hex, (uint8_t)*it);
+		}
+
+		return ss.str();
+	}
+
+	void canonicalCombiningClass(std::stringstream& target, unicode_t codepoint)
+	{
+		target << (int)database_queryproperty(codepoint, UnicodeProperty_CanonicalCombiningClass);
+	}
+
+	std::string canonicalCombiningClass(unicode_t codepoint)
+	{
+		std::stringstream ss;
+		canonicalCombiningClass(ss, codepoint);
+		return ss.str();
+	}
+
+	std::string canonicalCombiningClass(unicode_t* codepoint, size_t codepointsSize)
+	{
+		std::stringstream ss;
+
+		canonicalCombiningClass(ss, codepoint[0]);
+
+		for (size_t i = 1; i < codepointsSize / sizeof(unicode_t); ++i)
+		{
+			ss << " ";
+			canonicalCombiningClass(ss, codepoint[i]);
+		}
+
+		return ss.str();
+	}
+
+	std::string canonicalCombiningClass(const std::string& text)
+	{
+		std::vector<unicode_t> converted = utf32(text);
+		if (converted.size() == 0)
+		{
+			return "";
+		}
+
+		std::stringstream ss;
+
+		for (std::vector<unicode_t>::iterator it = converted.begin(); it != converted.end(); ++it)
+		{
+			if (it != converted.begin())
+			{
+				ss << " ";
+			}
+			canonicalCombiningClass(ss, *it);
 		}
 
 		return ss.str();

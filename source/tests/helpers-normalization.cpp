@@ -120,6 +120,39 @@ namespace helpers {
 		return converted;
 	}
 
+	std::string PrintNormalizationString(const std::string& text)
+	{
+		std::stringstream ss;
+		if (text.length() > 0)
+		ss << "\t\"" << printable(text) << "\"" << std::endl;
+
+		std::stringstream ss_id;
+		ss_id << std::setfill(' ');
+		std::stringstream ss_ccc;
+		ss_ccc << std::setfill(' ');
+
+		std::vector<unicode_t> codepoints = utf32(text);
+		for (std::vector<unicode_t>::iterator it = codepoints.begin(); it != codepoints.end(); ++it)
+		{
+			if (it != codepoints.begin())
+			{
+				ss_id << " ";
+				ss_ccc << " ";
+			}
+			std::string id = identifiable(*it);
+			std::string ccc = canonicalCombiningClass(*it);
+			size_t padding = std::max(id.length(), ccc.length());
+
+			ss_id << std::setw(padding) << id;
+			ss_ccc << std::setw(padding) << ccc;
+		}
+
+		ss << "\t\t" << ss_id.str() << std::endl;
+		ss << "\t\t" << ss_ccc.str();
+
+		return ss.str();
+	}
+
 	::testing::AssertionResult CompareNormalization(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const NormalizationEntry& entryExpected, const NormalizationEntry& entryActual)
@@ -144,60 +177,52 @@ namespace helpers {
 				result << printable(entryExpected.sequence) << " (" << identifiable(entryExpected.sequence) << ")" << std::endl;
 			}
 
-			result << std::endl;
-
 			if (entryExpected.decomposed != entryActual.decomposed)
 			{
 				result << "[NFD] " << std::endl;
-				result << "    Actual:  \"" << printable(entryActual.decomposed) << "\" (" << identifiable(entryActual.decomposed) << ")" << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.decomposed) << "\" (" << identifiable(entryExpected.decomposed) << ")" << std::endl;
+				result << "    Actual:  " << PrintNormalizationString(entryActual.decomposed) << std::endl;
+				result << "  Expected:  " << PrintNormalizationString(entryExpected.decomposed) << std::endl;
 			}
 			else
 			{
 				result << "[NFD]        ";
-				result << "\"" << printable(entryActual.decomposed) << "\" (" << identifiable(entryActual.decomposed) << ")" << std::endl;
+				result << PrintNormalizationString(entryActual.decomposed) << std::endl;
 			}
-
-			result << std::endl;
 
 			if (entryExpected.composed != entryActual.composed)
 			{
 				result << "[NFC] " << std::endl;
-				result << "    Actual:  \"" << printable(entryActual.composed) << "\" (" << identifiable(entryActual.composed) << ")" << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.composed) << "\" (" << identifiable(entryExpected.composed) << ")" << std::endl;
+				result << "    Actual:  " << PrintNormalizationString(entryActual.composed) << std::endl;
+				result << "  Expected:  " << PrintNormalizationString(entryExpected.composed) << std::endl;
 			}
 			else
 			{
 				result << "[NFC]        ";
-				result << "\"" << printable(entryActual.composed) << "\" (" << identifiable(entryActual.composed) << ")" << std::endl;
+				result << PrintNormalizationString(entryActual.composed) << std::endl;
 			}
-
-			result << std::endl;
 
 			if (entryExpected.decomposedCompatibility != entryActual.decomposedCompatibility)
 			{
 				result << "[NFKD]" << std::endl;
-				result << "    Actual:  \"" << printable(entryActual.decomposedCompatibility) << "\" (" << identifiable(entryActual.decomposedCompatibility) << ")" << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.decomposedCompatibility) << "\" (" << identifiable(entryExpected.decomposedCompatibility) << ")" << std::endl;
+				result << "    Actual:  " << PrintNormalizationString(entryActual.decomposedCompatibility) << std::endl;
+				result << "  Expected:  " << PrintNormalizationString(entryExpected.decomposedCompatibility) << std::endl;
 			}
 			else
 			{
 				result << "[NFKD]       ";
-				result << "\"" << printable(entryActual.decomposedCompatibility) << "\" (" << identifiable(entryActual.decomposedCompatibility) << ")" << std::endl;
+				result << PrintNormalizationString(entryActual.decomposedCompatibility) << std::endl;
 			}
-
-			result << std::endl;
 
 			if (entryExpected.composedCompatibility != entryActual.composedCompatibility)
 			{
 				result << "[NFKC]" << std::endl;
-				result << "    Actual:  \"" << printable(entryActual.composedCompatibility) << "\" (" << identifiable(entryActual.composedCompatibility) << ")" << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.composedCompatibility) << "\" (" << identifiable(entryExpected.composedCompatibility) << ")" << std::endl;
+				result << "    Actual:  " << PrintNormalizationString(entryActual.composedCompatibility) << std::endl;
+				result << "  Expected:  " << PrintNormalizationString(entryExpected.composedCompatibility);
 			}
 			else
 			{
 				result << "[NFKC]       ";
-				result << "\"" << printable(entryActual.composedCompatibility) << "\" (" << identifiable(entryActual.composedCompatibility) << ")" << std::endl;
+				result << PrintNormalizationString(entryActual.composedCompatibility);
 			}
 
 			return result;
