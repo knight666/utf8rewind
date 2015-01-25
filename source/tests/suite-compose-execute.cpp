@@ -24,6 +24,21 @@ TEST(ComposeExecute, Initialize)
 	EXPECT_EQ(0, state.buffer_current);
 }
 
+TEST(ComposeExecute, SingleBasicLatin)
+{
+	const char* i = "L";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x004C, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
 TEST(ComposeExecute, SingleUnaffected)
 {
 	const char* i = "\xE1\xB8\x8A";
@@ -87,7 +102,7 @@ TEST(ComposeExecute, SingleSequenceUnaffectedMultipleCodepoints)
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
-TEST(ComposeExecute, SingleSequenceComposeTwoCodepoints)
+TEST(ComposeExecute, SingleSequenceComposeBasicLatin)
 {
 	const char* i = "E\xCC\x84";
 	size_t il = strlen(i);
@@ -99,6 +114,21 @@ TEST(ComposeExecute, SingleSequenceComposeTwoCodepoints)
 	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0x0112, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, SingleSequenceComposeTwoCodepoints)
+{
+	const char* i = "\xD0\x93\xCC\x81";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x0403, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
@@ -174,6 +204,25 @@ TEST(ComposeExecute, SingleSequenceHangulSTDecomposed)
 	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0xC599, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, MultipleBasicLatin)
+{
+	const char* i = "space";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x0073, compose_execute(&state));
+	EXPECT_CPEQ(0x0070, compose_execute(&state));
+	EXPECT_CPEQ(0x0061, compose_execute(&state));
+	EXPECT_CPEQ(0x0063, compose_execute(&state));
+	EXPECT_CPEQ(0x0065, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
