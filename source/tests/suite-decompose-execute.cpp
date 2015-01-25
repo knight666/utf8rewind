@@ -28,6 +28,26 @@ TEST(DecomposeExecute, Initialize)
 	EXPECT_EQ(0, state.output->current);
 }
 
+TEST(DecomposeExecute, SingleBasicLatin)
+{
+	const char* i = "B";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0042, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
 TEST(DecomposeExecute, SingleUnaffected)
 {
 	const char* i = "\xC2\xA0";
@@ -170,6 +190,38 @@ TEST(DecomposeExecute, SingleHangulDecompose)
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x110C, Yes, 0);
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x1174, Yes, 0);
 	CHECK_STREAM_ENTRY(*state.output, 2, 0x11AF, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, MultipleBasicLatin)
+{
+	const char* i = "Hand";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0048, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0061, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x006E, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0064, Yes, 0);
 	EXPECT_TRUE(state.output->stable);
 
 	EXPECT_EQ(0, decompose_execute(&state));
