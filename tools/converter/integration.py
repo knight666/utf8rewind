@@ -165,7 +165,8 @@ class NormalizationGroup:
 		self.entries = []
 
 class NormalizationSection:
-	def __init__(self, title):
+	def __init__(self, identifier, title):
+		self.identifier = identifier
 		self.title = title
 		self.entries = []
 
@@ -185,9 +186,51 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		document_normalization.parse(script_path + '/data/NormalizationTest.txt')
 		document_normalization.accept(self)
 		
+		print "Writing normalization tests..."
+		
+		self.open('/../../source/tests/integration-normalization.cpp')
+		
+		self.header.writeLine("#include \"helpers-normalization.hpp\"")
+		self.header.write("#include \"helpers-strings.hpp\"")
+		
+		section_mapping = {
+			'Part0': self.writeSpecificCasesSection,
+			'Part1': self.writeBlockGroupsSection,
+			'Part2': self.writeDefaultSection,
+			'Part3': self.writeDefaultSection,
+		}
+		for s in self.sections:
+			print s.title + " (" + s.identifier + "):"
+			section_mapping[s.identifier](s)
+		
+		self.close()
+	
+	def writeDefaultSection(self, section):
+		if len(section.entries) == 0:
+			return
+		
+		self.writeNormalizationTest(section.entries, section.title)
+	
+	def writeSpecificCasesSection(self, section):
+		if len(section.entries) == 0:
+			return
+		
+		normalization = []
+		ordering = []
+		
+		for e in section.entries:
+			if e.codepoint == 0:
+				ordering.append(e)
+			else:
+				normalization.append(e)
+		
+		self.writeNormalizationTest(normalization, section.title + " Codepoints")
+		self.writeNormalizationTest(ordering, section.title + " Ordering")
+	
+	def writeBlockGroupsSection(self, section):
 		groups = dict()
 		
-		for u in self.sections[1].entries:
+		for u in section.entries:
 			e = self.db.records[u.codepoint]
 			if e.block.name in groups:
 				group = groups[e.block.name]
@@ -196,43 +239,16 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 				groups[e.block.name] = group
 			group.entries.append(u)
 		
-		self.blockGroups = sorted(groups.iteritems(), key=lambda item: item[1].block.start)
+		block_groups = sorted(groups.iteritems(), key = lambda item: item[1].block.start)
 		
-		print "Writing normalization tests..."
-		
-		self.open('/../../source/tests/integration-normalization.cpp')
-		
-		self.header.writeLine("#include \"helpers-normalization.hpp\"")
-		self.header.write("#include \"helpers-strings.hpp\"")
-		
-		# block group tests
-		
-		print self.sections[1].title + ":"
-		
-		for g in self.blockGroups:
+		for g in block_groups:
 			if g[1].block.start == 0xAC00 and g[1].block.end == 0xD7AF:
 				# ignore hangul syllables
 				continue
 			
-			self.writeTest(g[1].entries, "Characters " + g[0])
-		
-		# others
-		
-		for s in self.sections:
-			if s <> self.sections[1]:
-				self.writeSection(s)
-		
-		self.close()
+			self.writeNormalizationTest(g[1].entries, "Characters " + g[0])
 	
-	def writeSection(self, section):
-		if len(section.entries) == 0:
-			return
-		
-		print section.title + ":"
-		
-		self.writeTest(section.entries, section.title)
-	
-	def writeTest(self, entries, title):
+	def writeNormalizationTest(self, entries, title):
 		compiler_limit = 2000
 		if len(entries) > compiler_limit:
 			for i in xrange(0, len(entries), compiler_limit):
@@ -253,8 +269,14 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		
 		for e in entries:
 			self.header.writeIndentation()
-			self.header.write("CHECK_NORMALIZE")
-			self.header.write("(0x" + format(e.codepoint, '08X') + ", \"" + e.nfd + "\", \"" + e.nfc + "\", \"" + e.nfkd + "\", \"" + e.nfkc + "\", \"" + self.db.records[e.codepoint].name + "\");")
+			
+			if e.codepoint == 0:
+				self.header.write("CHECK_NORMALIZE_SEQUENCE")
+				self.header.write("(\"" + e.source + "\", \"" + e.nfd + "\", \"" + e.nfc + "\", \"" + e.nfkd + "\", \"" + e.nfkc + "\");")
+			else:
+				self.header.write("CHECK_NORMALIZE_CODEPOINT")
+				self.header.write("(0x" + format(e.codepoint, '08X') + ", \"" + e.nfd + "\", \"" + e.nfc + "\", \"" + e.nfkd + "\", \"" + e.nfkc + "\", \"" + self.db.records[e.codepoint].name + "\");")
+			
 			self.header.newLine()
 		
 		self.header.outdent()
@@ -265,10 +287,7 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		return True
 	
 	def visitSection(self, section):
-		title = re.sub('[^\w ]', '', section.title).title()
-		title = title.replace(' ', '')
-		
-		self.current = NormalizationSection(section.title)
+		self.current = NormalizationSection(section.identifier, section.title)
 		self.sections.append(self.current)
 		
 		return True
@@ -276,8 +295,7 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 	def visitEntry(self, entry):
 		normalization = NormalizationEntry()
 		normalization.parse(entry)
-		if normalization.codepoint <> 0:
-			self.current.entries.append(normalization)
+		self.current.entries.append(normalization)
 		
 		return True
 
