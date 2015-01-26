@@ -21,7 +21,7 @@ namespace helpers {
 	{
 		int32_t errors = 0;
 
-		size_t length = utf8transform(text.c_str(), text.size(), nullptr, 0, UTF8_TRANSFORM_COMPOSED, &errors);
+		size_t length = utf8normalize(text.c_str(), text.size(), nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors);
 		if (length == 0 ||
 			errors != 0)
 		{
@@ -29,7 +29,7 @@ namespace helpers {
 		}
 
 		char* buffer = new char[length + 1];
-		utf8transform(text.c_str(), text.size(), buffer, length, UTF8_TRANSFORM_COMPOSED, &errors);
+		utf8normalize(text.c_str(), text.size(), buffer, length, UTF8_NORMALIZE_COMPOSE, &errors);
 		buffer[length] = 0;
 
 		std::string converted = buffer;

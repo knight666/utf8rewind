@@ -758,7 +758,7 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 {
 	size_t bytes_written = 0;
 	StreamState stream[2];
-	StreamState* src = &stream[0];
+	StreamState* src_compose = &stream[0];
 	uint8_t compatibility = (flags & UTF8_NORMALIZE_COMPATIBILITY) != 0;
 
 	if (stream_initialize(&stream[0], input, inputSize, 0) == 0)
@@ -795,6 +795,38 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 			{
 				target += written;
 				targetSize -= written;
+			}
+
+			bytes_written += written;
+		}
+
+		src_compose = &stream[1];
+	}
+
+	if ((flags & UTF8_NORMALIZE_COMPOSE) != 0)
+	{
+		ComposeState compose;
+		unicode_t result;
+
+		if (compose_initialize(&compose, src_compose, compatibility) == 0)
+		{
+			goto invaliddata;
+		}
+
+		while (1)
+		{
+			size_t written;
+
+			result = compose_execute(&compose);
+			if (result == 0)
+			{
+				break;
+			}
+
+			written = codepoint_write(result, &target, &targetSize, errors);
+			if (written == 0)
+			{
+				goto outofspace;
 			}
 
 			bytes_written += written;
