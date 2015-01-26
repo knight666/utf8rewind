@@ -446,6 +446,31 @@ TEST(DecomposeExecute, MultipleSequenceUnordered)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
+TEST(DecomposeExecute, MultipleSequenceDoNotReorder)
+{
+	const char* i = "\xE0\xA7\x87\xCC\xB4\xE0\xA6\xBE";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(2, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x09C7, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0334, Yes, 1);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x09BE, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
 TEST(DecomposeExecute, MultipleHangul)
 {
 	const char* i = "\xEC\xA4\x80\xE1\x84\x8C\xE1\x85\xAE\xE1\x86\xB3";
