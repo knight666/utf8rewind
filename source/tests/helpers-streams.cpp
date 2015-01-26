@@ -61,43 +61,37 @@ namespace helpers {
 
 			result << "Unexpected entry in stream at index " << (int)entryActual.index << std::endl;
 
-			result << std::endl;
-
 			if (entryActual.codepoint != entryExpected.codepoint)
 			{
 				result << "[Codepoint]" << std::endl;
-				result << "  Actual: " << identifiable(entryActual.codepoint) << " \"" << printable(entryActual.codepoint) << "\"" << std::endl;
-				result << "Expected: " << identifiable(entryExpected.codepoint) << " \"" << printable(entryExpected.codepoint) << "\"" << std::endl;
+				result << "  Actual:  " << identifiable(entryActual.codepoint) << " \"" << printable(entryActual.codepoint) << "\"" << std::endl;
+				result << "Expected:  " << identifiable(entryExpected.codepoint) << " \"" << printable(entryExpected.codepoint) << "\"" << std::endl;
 			}
 			else
 			{
-				result << "[Codepoint] " << identifiable(entryActual.codepoint) << " \"" << printable(entryActual.codepoint) << "\"" << std::endl;
+				result << "[Codepoint]  " << identifiable(entryActual.codepoint) << " \"" << printable(entryActual.codepoint) << "\"" << std::endl;
 			}
-
-			result << std::endl;
 
 			if (entryActual.quick_check != entryExpected.quick_check)
 			{
 				result << "[QuickCheck]" << std::endl;
-				result << "  Actual: " << quickCheckToString(entryActual.quick_check) << std::endl;
-				result << "Expected: " << quickCheckToString(entryExpected.quick_check) << std::endl;
+				result << "  Actual:  " << quickCheckToString(entryActual.quick_check) << std::endl;
+				result << "Expected:  " << quickCheckToString(entryExpected.quick_check) << std::endl;
 			}
 			else
 			{
-				result << "[QuickCheck] " << quickCheckToString(entryActual.quick_check) << std::endl;
+				result << "[QuickCheck]  " << quickCheckToString(entryActual.quick_check) << std::endl;
 			}
-
-			result << std::endl;
 
 			if (entryActual.canonical_combining_class != entryExpected.canonical_combining_class)
 			{
 				result << "[CanonicalCombiningClass]" << std::endl;
-				result << "  Actual: " << (int)entryActual.canonical_combining_class << std::endl;
-				result << "Expected: " << (int)entryExpected.canonical_combining_class << std::endl;
+				result << "  Actual:  " << (int)entryActual.canonical_combining_class << std::endl;
+				result << "Expected:  " << (int)entryExpected.canonical_combining_class;
 			}
 			else
 			{
-				result << "[CanonicalCombiningClass] " << (int)entryActual.canonical_combining_class << std::endl;
+				result << "[CanonicalCombiningClass]  " << (int)entryActual.canonical_combining_class;
 			}
 
 			return result;
