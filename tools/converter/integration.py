@@ -209,7 +209,7 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		if len(section.entries) == 0:
 			return
 		
-		self.writeNormalizationTest(section.entries, section.title)
+		self.writeNormalizationTest(section.entries, section.title, 100)
 	
 	def writeSpecificCasesSection(self, section):
 		if len(section.entries) == 0:
@@ -248,12 +248,11 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 			
 			self.writeNormalizationTest(g[1].entries, "Characters " + g[0])
 	
-	def writeNormalizationTest(self, entries, title):
-		compiler_limit = 2000
-		if len(entries) > compiler_limit:
-			for i in xrange(0, len(entries), compiler_limit):
-				chunk = entries[i:i + compiler_limit]
-				self.writeTest(chunk, title + " Part" + str((i / compiler_limit) + 1))
+	def writeNormalizationTest(self, entries, title, limit = 2000):
+		if len(entries) > limit:
+			for i in xrange(0, len(entries), limit):
+				chunk = entries[i:i + limit]
+				self.writeNormalizationTest(chunk, title + " Part" + str((i / limit) + 1), limit)
 			return
 		
 		title = re.sub('[^\w ]', '', title.title()).replace(' ', '')
