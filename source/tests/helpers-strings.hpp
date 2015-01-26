@@ -27,6 +27,10 @@ namespace helpers {
 	std::string canonicalCombiningClass(unicode_t* codepoint, size_t codepointsSize);
 	std::string canonicalCombiningClass(const std::string& text);
 
+	std::string quickCheck(unicode_t codepoint, uint8_t type);
+	std::string quickCheck(unicode_t* codepoint, size_t codepointsSize, uint8_t type);
+	std::string quickCheck(const std::string& text, uint8_t type);
+
 	::testing::AssertionResult CompareUtf8Strings(
 		const char* expressionExpected, const char* expressionActual,
 		const char* textExpected, const char* textActual);

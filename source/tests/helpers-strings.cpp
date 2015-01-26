@@ -308,6 +308,78 @@ namespace helpers {
 		return ss.str();
 	}
 
+	void quickCheck(std::stringstream& target, unicode_t codepoint, uint8_t type)
+	{
+		uint8_t qc = database_queryproperty(codepoint, type);
+
+		switch (qc)
+		{
+
+		case QuickCheckResult_Yes:
+			target << "Y";
+			break;
+
+		case QuickCheckResult_Maybe:
+			target << "M";
+			break;
+
+		case QuickCheckResult_No:
+			target << "N";
+			break;
+
+		default:
+			target << "<invalid> (0x";
+			target << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << (int)qc;
+			target << ")";
+			break;
+
+		}
+	}
+
+	std::string quickCheck(unicode_t codepoint, uint8_t type)
+	{
+		std::stringstream ss;
+		quickCheck(ss, codepoint, type);
+		return ss.str();
+	}
+
+	std::string quickCheck(unicode_t* codepoint, size_t codepointsSize, uint8_t type)
+	{
+		std::stringstream ss;
+
+		quickCheck(ss, codepoint[0], type);
+
+		for (size_t i = 1; i < codepointsSize / sizeof(unicode_t); ++i)
+		{
+			ss << " ";
+			quickCheck(ss, codepoint[i], type);
+		}
+
+		return ss.str();
+	}
+
+	std::string quickCheck(const std::string& text, uint8_t type)
+	{
+		std::vector<unicode_t> converted = utf32(text);
+		if (converted.size() == 0)
+		{
+			return "";
+		}
+
+		std::stringstream ss;
+
+		for (std::vector<unicode_t>::iterator it = converted.begin(); it != converted.end(); ++it)
+		{
+			if (it != converted.begin())
+			{
+				ss << " ";
+			}
+			quickCheck(ss, *it, type);
+		}
+
+		return ss.str();
+	}
+
 	::testing::AssertionResult CompareUtf8Strings(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const char* textExpected, const char* textActual)

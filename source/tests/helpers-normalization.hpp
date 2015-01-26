@@ -17,7 +17,7 @@
 	a.composed = helpers::nfc(helpers::nfd(_codepoint)); \
 	a.decomposedCompatibility = helpers::nfkd(_codepoint); \
 	a.composedCompatibility = helpers::nfkc(helpers::nfkd(_codepoint)); \
-	EXPECT_PRED_FORMAT2(::helpers::CompareNormalization, e, a); \
+	EXPECT_PRED_FORMAT2(::helpers::CompareNormalizationCodepoint, e, a); \
 }
 
 #define CHECK_NORMALIZE_SEQUENCE(_sequence, _decomposed, _composed, _decomposedCompatibility, _composedCompatibility) { \
@@ -32,7 +32,7 @@
 	a.composed = helpers::nfc(helpers::nfd(_sequence)); \
 	a.decomposedCompatibility = helpers::nfkd(_sequence); \
 	a.composedCompatibility = helpers::nfkc(helpers::nfkd(_sequence)); \
-	EXPECT_PRED_FORMAT2(::helpers::CompareNormalization, e, a); \
+	EXPECT_PRED_FORMAT2(::helpers::CompareNormalizationSequence, e, a); \
 }
 
 namespace helpers {
@@ -65,7 +65,11 @@ namespace helpers {
 		std::string composedCompatibility;
 	};
 
-	::testing::AssertionResult CompareNormalization(
+	::testing::AssertionResult CompareNormalizationCodepoint(
+		const char* expressionExpected, const char* expressionActual,
+		const NormalizationEntry& entryExpected, const NormalizationEntry& entryActual);
+
+	::testing::AssertionResult CompareNormalizationSequence(
 		const char* expressionExpected, const char* expressionActual,
 		const NormalizationEntry& entryExpected, const NormalizationEntry& entryActual);
 
