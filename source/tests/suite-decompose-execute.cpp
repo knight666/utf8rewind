@@ -462,7 +462,7 @@ TEST(DecomposeExecute, MultipleSequenceDoNotReorder)
 	EXPECT_EQ(2, decompose_execute(&state));
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x09C7, Yes, 0);
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x0334, Yes, 1);
-	EXPECT_TRUE(state.output->stable);
+	EXPECT_FALSE(state.output->stable);
 
 	EXPECT_EQ(1, decompose_execute(&state));
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x09BE, Yes, 0);
@@ -475,6 +475,8 @@ TEST(DecomposeExecute, MultipleHangul)
 {
 	const char* i = "\xEC\xA4\x80\xE1\x84\x8C\xE1\x85\xAE\xE1\x86\xB3";
 	size_t il = strlen(i);
+
+	std::string id = helpers::identifiable(i);
 
 	StreamState input;
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
