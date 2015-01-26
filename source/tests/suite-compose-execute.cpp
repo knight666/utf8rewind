@@ -132,6 +132,22 @@ TEST(ComposeExecute, SingleSequenceComposeTwoCodepoints)
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
+TEST(ComposeExecute, SingleSequenceComposeBlocked)
+{
+	const char* i = "a\xCC\x80\xCC\x81";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x00E0, compose_execute(&state));
+	EXPECT_CPEQ(0x0301, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
 TEST(ComposeExecute, SingleSequenceComposeMultipleCodepoints)
 {
 	const char* i = "\xCE\xA9\xCC\x94\xCD\x82\xCD\x85";
@@ -144,6 +160,56 @@ TEST(ComposeExecute, SingleSequenceComposeMultipleCodepoints)
 	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0x1FAF, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, SingleSequenceComposeSkipOne)
+{
+	const char* i = "D\xCC\x9B\xCC\x87";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x1E0A, compose_execute(&state));
+	EXPECT_CPEQ(0x031B, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, SingleSequenceComposeSkipOneInCenter)
+{
+	const char* i = "D\xCC\x9B\xCC\xA3\xCC\x87";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x1E0C, compose_execute(&state));
+	EXPECT_CPEQ(0x031B, compose_execute(&state));
+	EXPECT_CPEQ(0x0307, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, SingleSequenceComposeSkipBlocked)
+{
+	const char* i = "a\xD6\xAE\xCC\x80\xCC\x81";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x00E0, compose_execute(&state));
+	EXPECT_CPEQ(0x05AE, compose_execute(&state));
+	EXPECT_CPEQ(0x0301, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
