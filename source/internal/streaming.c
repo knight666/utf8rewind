@@ -132,9 +132,11 @@ uint8_t stream_read(StreamState* state)
 
 		/* Check if codepoint is a starter */
 
-		state->last_is_starter =
-			(state->quick_check[state->current] == QuickCheckResult_Yes) &&
-			(state->canonical_combining_class[state->current] == 0);
+		state->last_is_starter = 
+			(state->canonical_combining_class[state->current] == 0) &&
+				(state->quick_check[state->current] == QuickCheckResult_Yes ||
+					(state->quick_check[state->current] == QuickCheckResult_Maybe &&
+					state->last_length >= state->src_size));
 
 		if (state->last_is_starter == 1)
 		{
