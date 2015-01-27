@@ -69,17 +69,21 @@ unicode_t compose_execute(ComposeState* state)
 
 		state->input_index = 0;
 
-		if (stream_read(state->input) == 0)
+		if (stream_read(state->input) != 0)
 		{
-			state->finished = 1;
-		}
-		else
-		{
+			/* Read first codepoint */
+
 			state->buffer_codepoint[state->buffer_current] = state->input->codepoint[0];
 			state->buffer_quick_check[state->buffer_current] = state->input->quick_check[0];
 
 			state->input_index = 1;
 			state->input_left = state->input->current;
+		}
+		else
+		{
+			/* End of data */
+
+			state->finished = 1;
 		}
 	}
 
@@ -88,6 +92,8 @@ unicode_t compose_execute(ComposeState* state)
 
 	if (state->input_left > 1)
 	{
+		/* Read second codepoint */
+
 		state->buffer_codepoint[buffer_next] = state->input->codepoint[state->input_index];
 		state->buffer_quick_check[buffer_next] = state->input->quick_check[state->input_index];
 
@@ -103,6 +109,8 @@ unicode_t compose_execute(ComposeState* state)
 		}
 		else
 		{
+			/* Try to compose both codepoints as long as either one is unstable */
+
 			while (
 				state->buffer_quick_check[state->buffer_current] != QuickCheckResult_Yes ||
 				state->buffer_quick_check[buffer_next] != QuickCheckResult_Yes)
@@ -144,9 +152,11 @@ unicode_t compose_execute(ComposeState* state)
 				}
 				else
 				{
-					/* Check database for composition */
+					/* Attempt to compose both codepoints */
 
-					composed = database_querycomposition(state->buffer_codepoint[state->buffer_current], state->buffer_codepoint[buffer_next]);
+					composed = database_querycomposition(
+						state->buffer_codepoint[state->buffer_current],
+						state->buffer_codepoint[buffer_next]);
 				}
 
 				if (composed != 0)
@@ -168,12 +178,27 @@ unicode_t compose_execute(ComposeState* state)
 					}
 					else
 					{
-						/* End of data */
+						if (stream_read(state->input) != 0)
+						{
+							/* Read next sequence */
 
-						state->buffer_codepoint[buffer_next] = 0;
-						state->buffer_quick_check[buffer_next] = QuickCheckResult_Yes;
+							state->buffer_codepoint[buffer_next] = state->input->codepoint[0];
+							state->buffer_quick_check[buffer_next] = state->input->quick_check[0];
 
-						break;
+							state->input_index = 1;
+							state->input_left = state->input->current;
+						}
+						else
+						{
+							/* End of data */
+
+							state->buffer_codepoint[buffer_next] = 0;
+							state->buffer_quick_check[buffer_next] = QuickCheckResult_Yes;
+
+							state->finished = 1;
+
+							break;
+						}
 					}
 				}
 				else
