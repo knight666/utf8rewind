@@ -248,8 +248,6 @@ TEST(ComposeExecute, SingleSequenceHangulST)
 	const char* i = "\xEA\xBD\x88\xE1\x86\xB6";
 	size_t il = strlen(i);
 
-	std::string id = helpers::identifiable(i);
-
 	StreamState input;
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
 
@@ -271,7 +269,7 @@ TEST(ComposeExecute, SingleSequenceHangulSTDecomposed)
 	ComposeState state;
 	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
-	EXPECT_CPEQ(0xC599, compose_execute(&state));
+	EXPECT_CPEQ(0xC59A, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
@@ -374,7 +372,7 @@ TEST(ComposeExecute, MultipleSequenceHangul)
 
 	EXPECT_CPEQ(0xC5C3, compose_execute(&state));
 	EXPECT_CPEQ(0xC6CC, compose_execute(&state));
-	EXPECT_CPEQ(0xC9C1, compose_execute(&state));
+	EXPECT_CPEQ(0xC9C2, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
