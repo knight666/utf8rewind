@@ -54,14 +54,11 @@ unicode_t compose_execute(ComposeState* state)
 {
 	unicode_t composed;
 	uint8_t buffer_next;
-	uint8_t cache_loop;
 
 	if (state->input == 0)
 	{
 		return 0;
 	}
-
-	composed = 0;
 
 	/* Read next sequence */
 
@@ -113,7 +110,7 @@ unicode_t compose_execute(ComposeState* state)
 				state->input_index = 0;
 				state->finished = 1;
 
-				goto end;
+				return 0;
 			}
 		}
 	}
@@ -173,11 +170,13 @@ unicode_t compose_execute(ComposeState* state)
 
 			state->finished = 1;
 
-			goto end;
+			return state->buffer_codepoint[state->buffer_current];
 		}
 	}
 
 	/* Try to compose both codepoints as long as either one is unstable */
+
+	composed = 0;
 
 	while (1)
 	{
@@ -327,7 +326,6 @@ unicode_t compose_execute(ComposeState* state)
 		}
 	}
 
-end:
 	if (composed == 0)
 	{
 		composed = state->buffer_codepoint[state->buffer_current];
