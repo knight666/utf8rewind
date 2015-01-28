@@ -34,9 +34,14 @@ typedef struct {
 	uint8_t input_index;
 	uint8_t input_left;
 	uint8_t finished;
+	unicode_t cache_codepoint[STREAM_BUFFER_MAX];
+	uint8_t cache_quick_check[STREAM_BUFFER_MAX];
+	uint8_t cache_index;
+	uint8_t cache_filled;
 	unicode_t buffer_codepoint[2];
 	uint8_t buffer_quick_check[2];
 	uint8_t buffer_current;
+	uint8_t buffer_left;
 } ComposeState;
 
 uint8_t compose_initialize(ComposeState* state, StreamState* input, uint8_t compatibility);
