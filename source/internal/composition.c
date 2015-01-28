@@ -96,8 +96,21 @@ unicode_t compose_execute(ComposeState* state)
 	/* Get second codepoint */
 
 	buffer_next = !state->buffer_current;
+	state->cache_index = 0;
 
-	if (state->input_left > 1)
+	if (state->cache_index < state->cache_filled)
+	{
+		state->buffer_codepoint[buffer_next] = state->cache_codepoint[state->cache_index];
+		state->buffer_quick_check[buffer_next] = state->cache_quick_check[state->cache_index];
+
+		state->cache_index++;
+		if (state->cache_index == state->cache_filled)
+		{
+			state->cache_index = 0;
+			state->cache_filled = 0;
+		}
+	}
+	else if (state->input_left > 1)
 	{
 		/* Use next codepoint from current sequence */
 
@@ -204,6 +217,29 @@ unicode_t compose_execute(ComposeState* state)
 			state->buffer_codepoint[state->buffer_current] = composed;
 			state->buffer_quick_check[state->buffer_current] = database_queryproperty(composed, state->input->property);
 
+			state->cache_index = 0;
+		}
+		
+		if (state->cache_index < state->cache_filled)
+		{
+			state->buffer_codepoint[buffer_next] = state->cache_codepoint[state->cache_index];
+			state->buffer_quick_check[buffer_next] = state->cache_quick_check[state->cache_index];
+
+			state->cache_index++;
+			if (state->cache_index == state->cache_filled)
+			{
+				state->cache_index = 0;
+				state->cache_filled = 0;
+			}
+		}
+		else
+		{
+			state->cache_codepoint[state->cache_filled] = state->buffer_codepoint[buffer_next];
+			state->buffer_quick_check[state->cache_filled] = state->buffer_quick_check[buffer_next];
+
+			state->cache_filled++;
+			state->cache_index = state->cache_filled;
+
 			if (state->input_left > 0)
 			{
 				/* Try to compose with next codepoint in sequence */
@@ -238,12 +274,6 @@ unicode_t compose_execute(ComposeState* state)
 					break;
 				}
 			}
-		}
-		else
-		{
-			/* Failed to compose */
-
-			break;
 		}
 	}
 
