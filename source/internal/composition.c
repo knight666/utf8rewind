@@ -182,22 +182,10 @@ unicode_t compose_execute(ComposeState* state)
 	{
 		unicode_t current_composed = 0;
 
-		if ((state->buffer_quick_check[state->buffer_current] == QuickCheckResult_Yes &&
-			state->buffer_canonical_combining_class[state->buffer_current] == 0) &&
-			(state->buffer_quick_check[buffer_next] == QuickCheckResult_Yes &&
-			state->buffer_canonical_combining_class[buffer_next] == 0))
-		{
-			state->cache_codepoint[state->cache_filled]                   = state->buffer_codepoint[buffer_next];
-			state->buffer_quick_check[state->cache_filled]                = state->buffer_quick_check[buffer_next];
-			state->buffer_canonical_combining_class[state->cache_filled]  = state->buffer_canonical_combining_class[buffer_next];
-
-			state->cache_filled++;
-
-			break;
-		}
-
 		if (state->buffer_quick_check[state->buffer_current] != QuickCheckResult_Yes ||
-			state->buffer_quick_check[buffer_next] != QuickCheckResult_Yes)
+			state->buffer_canonical_combining_class[state->buffer_current] != 0 ||
+			state->buffer_quick_check[buffer_next] != QuickCheckResult_Yes ||
+			state->buffer_canonical_combining_class[buffer_next] != 0)
 		{
 			/*
 				Hangul composition
@@ -243,6 +231,16 @@ unicode_t compose_execute(ComposeState* state)
 					state->buffer_codepoint[buffer_next]);
 			}
 		}
+		else
+		{
+			state->cache_codepoint[state->cache_filled]                   = state->buffer_codepoint[buffer_next];
+			state->cache_quick_check[state->cache_filled]                 = state->buffer_quick_check[buffer_next];
+			state->cache_canonical_combining_class[state->cache_filled]   = state->buffer_canonical_combining_class[buffer_next];
+
+			state->cache_filled++;
+
+			break;
+		}
 
 		if (current_composed != 0)
 		{
@@ -262,9 +260,9 @@ unicode_t compose_execute(ComposeState* state)
 		{
 			/* Save failed result in cache */
 
-			state->cache_codepoint[state->cache_filled]                   = state->buffer_codepoint[buffer_next];
-			state->buffer_quick_check[state->cache_filled]                = state->buffer_quick_check[buffer_next];
-			state->buffer_canonical_combining_class[state->cache_filled]  = state->buffer_canonical_combining_class[buffer_next];
+			state->cache_codepoint[state->cache_filled]                  = state->buffer_codepoint[buffer_next];
+			state->cache_quick_check[state->cache_filled]                = state->buffer_quick_check[buffer_next];
+			state->cache_canonical_combining_class[state->cache_filled]  = state->buffer_canonical_combining_class[buffer_next];
 
 			state->cache_index++;
 			state->cache_filled++;
