@@ -72,31 +72,52 @@ unicode_t compose_execute(ComposeState* state)
 
 			return 0;
 		}
-		else if (stream_read(state->input) == 0)
+
+		/* Get left codepoint */
+		
+		if (state->cache_index < state->cache_filled)
 		{
-			/* End of data */
+			/* Popped from queue */
 
-			state->input_index = 0;
-			state->finished = 1;
+			state->buffer_codepoint[state->buffer_current] = state->cache_codepoint[state->cache_index];
+			state->buffer_quick_check[state->buffer_current] = state->cache_quick_check[state->cache_index];
 
-			goto end;
+			state->cache_index++;
+			if (state->cache_index == state->cache_filled)
+			{
+				state->cache_index = 0;
+				state->cache_filled = 0;
+			}
 		}
 		else
 		{
-			/* Get first codepoint */
+			/* Read next sequence */
 
-			state->buffer_codepoint[state->buffer_current] = state->input->codepoint[0];
-			state->buffer_quick_check[state->buffer_current] = state->input->quick_check[0];
+			if (stream_read(state->input) != 0)
+			{
+				/* First codepoint in next sequence */
 
-			state->input_index = 1;
-			state->input_left = state->input->current;
+				state->buffer_codepoint[state->buffer_current] = state->input->codepoint[0];
+				state->buffer_quick_check[state->buffer_current] = state->input->quick_check[0];
+
+				state->input_index = 1;
+				state->input_left = state->input->current;
+			}
+			else
+			{
+				/* End of data */
+
+				state->input_index = 0;
+				state->finished = 1;
+
+				goto end;
+			}
 		}
 	}
 
-	/* Get second codepoint */
-
 	buffer_next = !state->buffer_current;
-	state->cache_index = 0;
+
+	/* Get right codepoint */
 
 	if (state->cache_index < state->cache_filled)
 	{
@@ -203,7 +224,7 @@ unicode_t compose_execute(ComposeState* state)
 		}
 		else
 		{
-			/* Attempt to compose both codepoints */
+			/* Attempt to compose codepoints */
 
 			composed = database_querycomposition(
 				state->buffer_codepoint[state->buffer_current],
@@ -217,11 +238,24 @@ unicode_t compose_execute(ComposeState* state)
 			state->buffer_codepoint[state->buffer_current] = composed;
 			state->buffer_quick_check[state->buffer_current] = database_queryproperty(composed, state->input->property);
 
+			/* Reset cache queue */
+
 			state->cache_index = 0;
 		}
-		
+		else
+		{
+			/* Save failed result in cache */
+
+			state->cache_codepoint[state->cache_filled] = state->buffer_codepoint[buffer_next];
+			state->buffer_quick_check[state->cache_filled] = state->buffer_quick_check[buffer_next];
+		}
+
+		/* Get next codepoint for composition */
+
 		if (state->cache_index < state->cache_filled)
 		{
+			/* Popped from queue */
+
 			state->buffer_codepoint[buffer_next] = state->cache_codepoint[state->cache_index];
 			state->buffer_quick_check[buffer_next] = state->cache_quick_check[state->cache_index];
 
@@ -232,48 +266,46 @@ unicode_t compose_execute(ComposeState* state)
 				state->cache_filled = 0;
 			}
 		}
+		else if (state->input_left > 0)
+		{
+			/* Next in current sequence */
+
+			state->buffer_codepoint[buffer_next] = state->input->codepoint[state->input_index];
+			state->buffer_quick_check[buffer_next] = state->input->quick_check[state->input_index];
+
+			state->input_index++;
+			state->input_left--;
+		}
 		else
 		{
-			state->cache_codepoint[state->cache_filled] = state->buffer_codepoint[buffer_next];
-			state->buffer_quick_check[state->cache_filled] = state->buffer_quick_check[buffer_next];
+			/* Read next sequence */
 
-			state->cache_filled++;
-			state->cache_index = state->cache_filled;
-
-			if (state->input_left > 0)
+			if (stream_read(state->input) != 0)
 			{
-				/* Try to compose with next codepoint in sequence */
+				/* First codepoint in next sequence */
 
-				state->buffer_codepoint[buffer_next] = state->input->codepoint[state->input_index];
-				state->buffer_quick_check[buffer_next] = state->input->quick_check[state->input_index];
+				state->buffer_codepoint[buffer_next] = state->input->codepoint[0];
+				state->buffer_quick_check[buffer_next] = state->input->quick_check[0];
 
-				state->input_index++;
-				state->input_left--;
+				state->input_index = 1;
+				state->input_left = state->input->current;
 			}
 			else
 			{
-				if (stream_read(state->input) != 0)
-				{
-					/* Read next sequence */
+				/* End of data */
 
-					state->buffer_codepoint[buffer_next] = state->input->codepoint[0];
-					state->buffer_quick_check[buffer_next] = state->input->quick_check[0];
+				state->buffer_codepoint[buffer_next] = 0;
+				state->buffer_quick_check[buffer_next] = QuickCheckResult_Yes;
 
-					state->input_index = 1;
-					state->input_left = state->input->current;
-				}
-				else
-				{
-					/* End of data */
+				state->finished = 1;
 
-					state->buffer_codepoint[buffer_next] = 0;
-					state->buffer_quick_check[buffer_next] = QuickCheckResult_Yes;
-
-					state->finished = 1;
-
-					break;
-				}
+				break;
 			}
+		}
+
+		if (composed == 0)
+		{
+			state->cache_filled++;
 		}
 	}
 
