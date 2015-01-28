@@ -162,7 +162,7 @@ unicode_t compose_execute(ComposeState* state)
 			state->buffer_canonical_combining_class[buffer_next]  = state->input->canonical_combining_class[0];
 
 			state->input_index = 1;
-			state->input_left = state->input->current;
+			state->input_left = state->input->current - 1;
 		}
 		else
 		{
