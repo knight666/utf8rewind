@@ -355,7 +355,7 @@ TEST(ComposeExecute, MultipleSequenceUnaffectedAndCompose)
 	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
 	EXPECT_CPEQ(0x017F, compose_execute(&state));
-	EXPECT_CPEQ(0xACF8, compose_execute(&state));
+	EXPECT_CPEQ(0xACEC, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
@@ -372,7 +372,7 @@ TEST(ComposeExecute, MultipleSequenceHangul)
 
 	EXPECT_CPEQ(0xC5C3, compose_execute(&state));
 	EXPECT_CPEQ(0xC6CC, compose_execute(&state));
-	EXPECT_CPEQ(0xC9C2, compose_execute(&state));
+	EXPECT_CPEQ(0xC9C1, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
