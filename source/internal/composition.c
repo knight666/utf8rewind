@@ -290,7 +290,9 @@ unicode_t compose_execute(ComposeState* state)
 			state->input_index++;
 			state->input_left--;
 		}
-		else if (state->cache_index == state->cache_filled)
+		else if (
+			state->cache_filled > 0 &&
+			state->cache_index == state->cache_filled)
 		{
 			state->cache_index = 0;
 

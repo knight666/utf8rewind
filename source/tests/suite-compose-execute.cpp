@@ -269,7 +269,7 @@ TEST(ComposeExecute, SingleSequenceHangulSTDecomposed)
 	ComposeState state;
 	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
-	EXPECT_CPEQ(0xC59A, compose_execute(&state));
+	EXPECT_CPEQ(0xC599, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
