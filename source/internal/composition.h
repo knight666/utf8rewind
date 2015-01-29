@@ -39,6 +39,8 @@ typedef struct {
 	uint8_t cache_canonical_combining_class[STREAM_BUFFER_MAX];
 	uint8_t cache_index;
 	uint8_t cache_filled;
+	uint8_t cache_current;
+	uint8_t cache_next;
 	unicode_t buffer_codepoint[2];
 	uint8_t buffer_quick_check[2];
 	uint8_t buffer_canonical_combining_class[2];
@@ -47,6 +49,8 @@ typedef struct {
 } ComposeState;
 
 uint8_t compose_initialize(ComposeState* state, StreamState* input, uint8_t compatibility);
+
+uint8_t compose_readcodepoint(ComposeState* state, uint8_t index);
 
 unicode_t compose_execute(ComposeState* state);
 
