@@ -270,28 +270,24 @@ unicode_t compose_execute(ComposeState* state)
 
 		/* Get next codepoint for composition */
 
-		if (current_composed != 0)
+		if (current_composed != 0 &&
+			state->cache_index < state->cache_filled)
 		{
-			if (state->cache_index < state->cache_filled)
+			/* Popped from queue */
+
+			state->buffer_codepoint[buffer_next]                  = state->cache_codepoint[state->cache_index];
+			state->buffer_quick_check[buffer_next]                = state->cache_quick_check[state->cache_index];
+			state->buffer_canonical_combining_class[buffer_next]  = state->cache_canonical_combining_class[state->cache_index];
+
+			state->cache_index++;
+			if (state->cache_index == state->cache_filled)
 			{
-				/* Popped from queue */
-
-				state->buffer_codepoint[buffer_next]                  = state->cache_codepoint[state->cache_index];
-				state->buffer_quick_check[buffer_next]                = state->cache_quick_check[state->cache_index];
-				state->buffer_canonical_combining_class[buffer_next]  = state->cache_canonical_combining_class[state->cache_index];
-
-				state->cache_index++;
-				if (state->cache_index == state->cache_filled)
-				{
-					state->cache_index = 0;
-					state->cache_filled = 0;
-				}
-
-				continue;
+				state->cache_index = 0;
+				state->cache_filled = 0;
 			}
 		}
-		
-		if (state->input_left > 0)
+		else if (
+			state->input_left > 0)
 		{
 			/* Next in current sequence */
 
