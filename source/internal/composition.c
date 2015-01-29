@@ -54,6 +54,7 @@ unicode_t compose_execute(ComposeState* state)
 {
 	unicode_t composed;
 	uint8_t buffer_next;
+	uint8_t last_combining_class = 0;
 
 	if (state->input == 0 ||
 		(state->input_left == 0 && state->finished == 1))
@@ -252,6 +253,8 @@ unicode_t compose_execute(ComposeState* state)
 			state->buffer_quick_check[state->buffer_current]                = database_queryproperty(composed, state->input->property);
 			state->buffer_canonical_combining_class[state->buffer_current]  = database_queryproperty(composed, UnicodeProperty_CanonicalCombiningClass);
 
+			last_combining_class = state->buffer_canonical_combining_class[state->buffer_current];
+
 			/* Reset cache queue */
 
 			state->cache_index = 0;
@@ -334,6 +337,24 @@ unicode_t compose_execute(ComposeState* state)
 				break;
 			}
 		}
+
+		if ((last_combining_class != 0 &&
+			state->buffer_canonical_combining_class[buffer_next] == last_combining_class)/* ||
+			(state->buffer_quick_check[buffer_next] == QuickCheckResult_Yes &&
+			state->buffer_canonical_combining_class[buffer_next] == 0)*/)
+		{
+			state->cache_codepoint[state->cache_filled]                  = state->buffer_codepoint[buffer_next];
+			state->cache_quick_check[state->cache_filled]                = state->buffer_quick_check[buffer_next];
+			state->cache_canonical_combining_class[state->cache_filled]  = state->buffer_canonical_combining_class[buffer_next];
+
+			state->cache_filled++;
+
+			state->cache_index = 0;
+
+			break;
+		}
+
+		last_combining_class = state->buffer_canonical_combining_class[buffer_next];
 	}
 
 	if (composed == 0)
