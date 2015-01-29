@@ -192,23 +192,27 @@ unicode_t compose_execute(ComposeState* state)
 
 			composed = current_composed;
 
+			state->cache_codepoint[state->cache_next]                  = 0;
+			state->cache_quick_check[state->cache_next]                = 0;
+			state->cache_canonical_combining_class[state->cache_next]  = 0;
+
 			if (state->cache_next == 1)
 			{
 				state->cache_filled--;
-
-				break;
 			}
 			else
 			{
-				state->cache_codepoint[state->cache_next]                  = 0;
-				state->cache_quick_check[state->cache_next]                = 0;
-				state->cache_canonical_combining_class[state->cache_next]  = 0;
-
 				state->cache_next = 1;
 			}
 		}
 
-		state->cache_next = (state->cache_next + 1) % STREAM_BUFFER_MAX;
+		while (
+			state->cache_next < state->cache_filled &&
+			state->cache_codepoint[state->cache_next] == 0)
+		{
+			state->cache_next++;
+		}
+		
 		if (state->cache_next == state->cache_filled)
 		{
 			if (!compose_readcodepoint(state, state->cache_next))
@@ -217,17 +221,16 @@ unicode_t compose_execute(ComposeState* state)
 			}
 
 			state->cache_filled++;
-
-			if (state->cache_quick_check[state->cache_next] == QuickCheckResult_Yes &&
-				state->cache_canonical_combining_class[state->cache_next] == 0)
-			{
-				break;
-			}
+		}
+		else
+		{
+			break;
 		}
 
-		while (state->cache_codepoint[state->cache_next] == 0)
+		if (state->cache_quick_check[state->cache_next] == QuickCheckResult_Yes &&
+			state->cache_canonical_combining_class[state->cache_next] == 0)
 		{
-			state->cache_next++;
+			break;
 		}
 	}
 
@@ -238,9 +241,16 @@ unicode_t compose_execute(ComposeState* state)
 
 		while (write_index < state->cache_filled - 1)
 		{
-			while (state->cache_codepoint[read_index] == 0)
+			while (
+				read_index < state->cache_filled &&
+				state->cache_codepoint[read_index] == 0)
 			{
 				read_index++;
+			}
+
+			if (read_index == state->cache_filled)
+			{
+				break;
 			}
 
 			state->cache_codepoint[write_index]                  = state->cache_codepoint[read_index];
