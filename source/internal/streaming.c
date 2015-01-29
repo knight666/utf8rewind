@@ -141,31 +141,31 @@ uint8_t stream_read(StreamState* state)
 		if (state->last_is_starter == 1)
 		{
 			state->starter_count++;
-			if (state->starter_count > 1)
+			if (state->starter_count > 1 ||
+				state->current > 1)
 			{
 				break;
 			}
 		}
-		else if (
-			state->stable == 1 &&
-			state->current > 0)
-		{
-			uint8_t i;
-
-			/* Check if sequence is unstable by comparing canonical combining classes */
-
-			for (i = 1; i < state->current + 1; ++i)
-			{
-				if (state->canonical_combining_class[i] < state->canonical_combining_class[i - 1])
-				{
-					state->stable = 0;
-
-					break;
-				}
-			}
-		}
 
 		state->current++;
+	}
+
+	if (state->current > 1)
+	{
+		uint8_t i;
+
+		/* Check if sequence is unstable by comparing canonical combining classes */
+
+		for (i = 1; i <= state->current - 1; ++i)
+		{
+			if (state->canonical_combining_class[i] < state->canonical_combining_class[i - 1])
+			{
+				state->stable = 0;
+
+				break;
+			}
+		}
 	}
 
 	return state->current;

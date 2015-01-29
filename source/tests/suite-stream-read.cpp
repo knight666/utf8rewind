@@ -252,6 +252,31 @@ TEST(StreamRead, MultipleSequencesOutOfOrder)
 	EXPECT_EQ(0, stream_read(&state));
 }
 
+TEST(StreamRead, MultipleSequencesNonStarter)
+{
+	const char* i = "\xD6\xB8\xD6\xB9\xD6\xB1\xD6\x91\xD7\x83\xD6\xB0\xD6\xAC\xD6\x9F";
+	size_t il = strlen(i);
+
+	StreamState state;
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(4, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x05B8, Yes, 18);
+	CHECK_STREAM_ENTRY(state, 1, 0x05B9, Yes, 19);
+	CHECK_STREAM_ENTRY(state, 2, 0x05B1, Yes, 11);
+	CHECK_STREAM_ENTRY(state, 3, 0x0591, Yes, 220);
+	EXPECT_FALSE(state.stable);
+
+	EXPECT_EQ(4, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x05C3, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 1, 0x05B0, Yes, 10);
+	CHECK_STREAM_ENTRY(state, 2, 0x05AC, Yes, 230);
+	CHECK_STREAM_ENTRY(state, 3, 0x059F, Yes, 230);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(0, stream_read(&state));
+}
+
 TEST(StreamRead, ContinueAfterEnd)
 {
 	const char* i = "(c)";
