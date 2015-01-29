@@ -192,11 +192,20 @@ unicode_t compose_execute(ComposeState* state)
 
 			composed = current_composed;
 
-			state->cache_codepoint[state->cache_next]                  = 0;
-			state->cache_quick_check[state->cache_next]                = 0;
-			state->cache_canonical_combining_class[state->cache_next]  = 0;
+			if (state->cache_next == 1)
+			{
+				state->cache_filled--;
 
-			state->cache_next = 1;
+				break;
+			}
+			else
+			{
+				state->cache_codepoint[state->cache_next]                  = 0;
+				state->cache_quick_check[state->cache_next]                = 0;
+				state->cache_canonical_combining_class[state->cache_next]  = 0;
+
+				state->cache_next = 1;
+			}
 		}
 
 		state->cache_next = (state->cache_next + 1) % STREAM_BUFFER_MAX;
@@ -222,7 +231,7 @@ unicode_t compose_execute(ComposeState* state)
 		}
 	}
 
-	if (state->cache_filled > 0)
+	if (state->cache_filled > 1)
 	{
 		uint8_t write_index = 0;
 		uint8_t read_index = 1;
@@ -243,6 +252,11 @@ unicode_t compose_execute(ComposeState* state)
 		}
 
 		state->cache_filled--;
+	}
+	else
+	{
+		state->cache_filled = 0;
+		state->finished = 1;
 	}
 
 	return composed;
