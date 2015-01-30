@@ -226,10 +226,6 @@ unicode_t compose_execute(ComposeState* state)
 
 			state->cache_filled++;
 		}
-		else
-		{
-			break;
-		}
 
 		if (state->cache_quick_check[state->cache_next] == QuickCheckResult_Yes &&
 			state->cache_canonical_combining_class[state->cache_next] == 0)
@@ -265,7 +261,7 @@ unicode_t compose_execute(ComposeState* state)
 			read_index++;
 		}
 
-		state->cache_filled--;
+		state->cache_filled = write_index;
 	}
 	else
 	{
