@@ -181,6 +181,10 @@ unicode_t compose_execute(ComposeState* state)
 					state->cache_codepoint[state->cache_next]);
 			}
 		}
+		else
+		{
+			break;
+		}
 
 		if (current_composed != 0)
 		{
