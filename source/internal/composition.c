@@ -192,18 +192,22 @@ unicode_t compose_execute(ComposeState* state)
 
 			composed = current_composed;
 
-			state->cache_codepoint[state->cache_next]                  = 0;
-			state->cache_quick_check[state->cache_next]                = 0;
-			state->cache_canonical_combining_class[state->cache_next]  = 0;
-
-			if (state->cache_next == 1)
+			if (state->cache_next == state->cache_filled - 1)
 			{
 				state->cache_filled--;
 			}
 			else
 			{
+				state->cache_codepoint[state->cache_next]                  = 0;
+				state->cache_quick_check[state->cache_next]                = 0;
+				state->cache_canonical_combining_class[state->cache_next]  = 0;
+
 				state->cache_next = 1;
 			}
+		}
+		else
+		{
+			state->cache_next++;
 		}
 
 		while (
