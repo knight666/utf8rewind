@@ -259,6 +259,81 @@ namespace helpers {
 		return ss.str();
 	}
 
+	void sequence(std::stringstream& targetID, std::stringstream& targetCCC, std::stringstream& targetQC, unicode_t codepoint, uint8_t type)
+	{
+		std::string id = identifiable(codepoint);
+		std::string ccc = canonicalCombiningClass(codepoint);
+
+		size_t padding = std::max(id.length(), ccc.length());
+		if (type != 0)
+		{
+			std::string qc = quickCheck(codepoint, type);
+			padding = std::max(qc.length(), padding);
+			targetQC << std::setw(padding) << qc;
+		}
+
+		targetID << std::setw(padding) << identifiable(codepoint);
+		targetCCC << std::setw(padding) << canonicalCombiningClass(codepoint);
+	}
+
+	std::string sequence(unicode_t codepoint, uint8_t type)
+	{
+		std::stringstream ss_id;
+		ss_id << std::setfill(' ');
+		std::stringstream ss_ccc;
+		ss_ccc << std::setfill(' ');
+		std::stringstream ss_qc;
+		ss_qc << std::setfill(' ');
+
+		sequence(ss_id, ss_ccc, ss_qc, codepoint, type);
+
+		std::stringstream ss;
+		ss << ss_id.str() << std::endl;
+		ss << ss_qc.str() << std::endl;
+		ss << ss_ccc.str() << std::endl;
+
+		return ss.str();
+	}
+
+	std::string sequence(unicode_t* codepoint, size_t codepointsSize, uint8_t type)
+	{
+		std::stringstream ss_id;
+		ss_id << std::setfill(' ');
+		std::stringstream ss_ccc;
+		ss_ccc << std::setfill(' ');
+		std::stringstream ss_qc;
+		ss_qc << std::setfill(' ');
+
+		sequence(ss_id, ss_ccc, ss_qc, codepoint[0], type);
+
+		for (size_t i = 1; i < codepointsSize / sizeof(unicode_t); ++i)
+		{
+			ss_id << " ";
+			ss_ccc << " ";
+			ss_qc << " ";
+
+			sequence(ss_id, ss_ccc, ss_qc, codepoint[i], type);
+		}
+
+		std::stringstream ss;
+		ss << ss_id.str() << std::endl;
+		ss << ss_qc.str() << std::endl;
+		ss << ss_ccc.str() << std::endl;
+
+		return ss.str();
+	}
+
+	std::string sequence(const std::string& text, uint8_t type)
+	{
+		std::vector<unicode_t> converted = utf32(text);
+		if (converted.size() == 0)
+		{
+			return "";
+		}
+
+		return sequence(&converted[0], converted.size() * sizeof(unicode_t), type);
+	}
+
 	void canonicalCombiningClass(std::stringstream& target, unicode_t codepoint)
 	{
 		target << (int)database_queryproperty(codepoint, UnicodeProperty_CanonicalCombiningClass);
