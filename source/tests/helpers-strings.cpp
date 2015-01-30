@@ -290,7 +290,7 @@ namespace helpers {
 		std::stringstream ss;
 		ss << ss_id.str() << std::endl;
 		ss << ss_qc.str() << std::endl;
-		ss << ss_ccc.str() << std::endl;
+		ss << ss_ccc.str();
 
 		return ss.str();
 	}
@@ -318,7 +318,7 @@ namespace helpers {
 		std::stringstream ss;
 		ss << ss_id.str() << std::endl;
 		ss << ss_qc.str() << std::endl;
-		ss << ss_ccc.str() << std::endl;
+		ss << ss_ccc.str();
 
 		return ss.str();
 	}
