@@ -424,6 +424,30 @@ TEST(ComposeExecute, MultipleSequenceComposeSkipNonStarter)
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
+TEST(ComposeExecute, MultipleSequenceComposeEquivalentCCC)
+{
+	/*
+		U+0061 U+1D16D U+302B U+05AE U+0300 U+0062
+		     Y       Y      Y      Y      M      Y
+		     0     226    228    228    230      0
+	*/
+
+	const char* i = "a\xF0\x9D\x85\xAD\xE3\x80\xAB\xD6\xAE\xCC\x80" "b";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x00E0, compose_execute(&state));
+	EXPECT_CPEQ(0x1D16D, compose_execute(&state));
+	EXPECT_CPEQ(0x302B, compose_execute(&state));
+	EXPECT_CPEQ(0x05AE, compose_execute(&state));
+	EXPECT_CPEQ(0x0062, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
 
 TEST(ComposeExecute, MultipleSequenceHangul)
 {
