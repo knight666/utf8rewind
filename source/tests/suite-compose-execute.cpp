@@ -9,6 +9,12 @@ extern "C" {
 
 TEST(ComposeExecute, Initialize)
 {
+	/*
+		U+03B9 U+0308
+		     Y      M
+		     0    230
+	*/
+
 	const char* i = "\xCE\xB9\xCC\x88";
 	size_t il = strlen(i);
 
@@ -26,6 +32,12 @@ TEST(ComposeExecute, Initialize)
 
 TEST(ComposeExecute, SingleBasicLatin)
 {
+	/*
+		U+004C
+		     Y
+		     0
+	*/
+
 	const char* i = "L";
 	size_t il = strlen(i);
 
@@ -41,6 +53,12 @@ TEST(ComposeExecute, SingleBasicLatin)
 
 TEST(ComposeExecute, SingleUnaffected)
 {
+	/*
+		U+1E0A
+		     Y
+		     0
+	*/
+
 	const char* i = "\xE1\xB8\x8A";
 	size_t il = strlen(i);
 
@@ -56,6 +74,12 @@ TEST(ComposeExecute, SingleUnaffected)
 
 TEST(ComposeExecute, SingleInvalidCodepoint)
 {
+	/*
+		U+FFFD
+		     Y
+		     0
+	*/
+
 	const char* i = "\xCF";
 	size_t il = strlen(i);
 
@@ -71,6 +95,12 @@ TEST(ComposeExecute, SingleInvalidCodepoint)
 
 TEST(ComposeExecute, SingleSequenceUnaffectedTwoCodepoints)
 {
+	/*
+		U+01B9 U+031A
+		     Y      Y
+		     0    232
+	*/
+
 	const char* i = "\xC6\xB9\xCC\x9A";
 	size_t il = strlen(i);
 
@@ -87,6 +117,12 @@ TEST(ComposeExecute, SingleSequenceUnaffectedTwoCodepoints)
 
 TEST(ComposeExecute, SingleSequenceUnaffectedMultipleCodepoints)
 {
+	/*
+		U+0390 U+031D U+035A
+		     Y      Y      Y
+		     0    220    220
+	*/
+
 	const char* i = "\xCE\x90\xCC\x9D\xCD\x9A";
 	size_t il = strlen(i);
 
@@ -104,6 +140,12 @@ TEST(ComposeExecute, SingleSequenceUnaffectedMultipleCodepoints)
 
 TEST(ComposeExecute, SingleSequenceComposeBasicLatin)
 {
+	/*
+		U+0045 U+0304
+		     Y      M
+		     0    230
+	*/
+
 	const char* i = "E\xCC\x84";
 	size_t il = strlen(i);
 
@@ -119,6 +161,12 @@ TEST(ComposeExecute, SingleSequenceComposeBasicLatin)
 
 TEST(ComposeExecute, SingleSequenceComposeTwoCodepoints)
 {
+	/*
+		U+0413 U+0301
+		     Y      M
+		     0    230
+	*/
+
 	const char* i = "\xD0\x93\xCC\x81";
 	size_t il = strlen(i);
 
@@ -134,6 +182,12 @@ TEST(ComposeExecute, SingleSequenceComposeTwoCodepoints)
 
 TEST(ComposeExecute, SingleSequenceComposeBlocked)
 {
+	/*
+		U+0061 U+0300 U+0301
+		     Y      M      M
+		     0    230    230
+	*/
+
 	const char* i = "a\xCC\x80\xCC\x81";
 	size_t il = strlen(i);
 
@@ -150,6 +204,12 @@ TEST(ComposeExecute, SingleSequenceComposeBlocked)
 
 TEST(ComposeExecute, SingleSequenceComposeMultipleCodepoints)
 {
+	/*
+		U+03A9 U+0314 U+0342 U+0345
+		     Y      M      M      M
+		     0    230    230    240
+	*/
+
 	const char* i = "\xCE\xA9\xCC\x94\xCD\x82\xCD\x85";
 	size_t il = strlen(i);
 
@@ -165,6 +225,12 @@ TEST(ComposeExecute, SingleSequenceComposeMultipleCodepoints)
 
 TEST(ComposeExecute, SingleSequenceComposeSkipOne)
 {
+	/*
+		U+0044 U+031B U+0307
+		     Y      M      M
+		     0    216    230
+	*/
+
 	const char* i = "D\xCC\x9B\xCC\x87";
 	size_t il = strlen(i);
 
@@ -181,6 +247,12 @@ TEST(ComposeExecute, SingleSequenceComposeSkipOne)
 
 TEST(ComposeExecute, SingleSequenceComposeSkipOneInCenter)
 {
+	/*
+		U+0044 U+031B U+0323 U+0307
+		     Y      M      M      M
+		     0    216    220    230
+	*/
+
 	const char* i = "D\xCC\x9B\xCC\xA3\xCC\x87";
 	size_t il = strlen(i);
 
@@ -198,6 +270,12 @@ TEST(ComposeExecute, SingleSequenceComposeSkipOneInCenter)
 
 TEST(ComposeExecute, SingleSequenceComposeSkipBlocked)
 {
+	/*
+		U+0061 U+05AE U+2DEE U+0300 U+0315 U+0062
+		     Y      Y      Y      M      Y      Y
+		     0    228    230    230    232      0
+	*/
+
 	const char* i = "a\xD6\xAE\xE2\xB7\xAE\xCC\x80\xCC\x95" "b";
 	size_t il = strlen(i);
 
@@ -218,6 +296,12 @@ TEST(ComposeExecute, SingleSequenceComposeSkipBlocked)
 
 TEST(ComposeExecute, SingleSequenceComposeSkipStableCodepoint)
 {
+	/*
+		U+0044 U+005A U+030C
+		     Y      Y      M
+		     0      0    230
+	*/
+
 	const char* i = "DZ\xCC\x8C";
 	size_t il = strlen(i);
 
@@ -257,6 +341,12 @@ TEST(ComposeExecute, SingleSequenceComposeSkipNonStarter)
 
 TEST(ComposeExecute, SingleSequenceHangulLV)
 {
+	/*
+		U+1100 U+1162
+		     Y      M
+		     0      0
+	*/
+
 	const char* i = "\xE1\x84\x80\xE1\x85\xA2";
 	size_t il = strlen(i);
 
@@ -272,6 +362,12 @@ TEST(ComposeExecute, SingleSequenceHangulLV)
 
 TEST(ComposeExecute, SingleSequenceHangulLVMissing)
 {
+	/*
+		U+1101
+		     Y
+		     0
+	*/
+
 	const char* i = "\xE1\x84\x81";
 	size_t il = strlen(i);
 
@@ -287,6 +383,12 @@ TEST(ComposeExecute, SingleSequenceHangulLVMissing)
 
 TEST(ComposeExecute, SingleSequenceHangulST)
 {
+	/*
+		U+AF48 U+11B6
+		     Y      M
+		     0      0
+	*/
+
 	const char* i = "\xEA\xBD\x88\xE1\x86\xB6";
 	size_t il = strlen(i);
 
@@ -302,6 +404,12 @@ TEST(ComposeExecute, SingleSequenceHangulST)
 
 TEST(ComposeExecute, SingleSequenceHangulSTDecomposed)
 {
+	/*
+		U+110B U+1164 U+11A8
+		     Y      M      M
+		     0      0      0
+	*/
+
 	const char* i = "\xE1\x84\x8B\xE1\x85\xA4\xE1\x86\xA8";
 	size_t il = strlen(i);
 
@@ -317,6 +425,12 @@ TEST(ComposeExecute, SingleSequenceHangulSTDecomposed)
 
 TEST(ComposeExecute, MultipleBasicLatin)
 {
+	/*
+		U+0073 U+0070 U+0061 U+0063 U+0065
+		     Y      Y      Y      Y      Y
+		     0      0      0      0      0
+	*/
+
 	const char* i = "space";
 	size_t il = strlen(i);
 
@@ -336,6 +450,12 @@ TEST(ComposeExecute, MultipleBasicLatin)
 
 TEST(ComposeExecute, MultipleUnaffected)
 {
+	/*
+		U+0112 U+1E14 U+0304 U+00C0
+		     Y      Y      M      Y
+		     0      0    230      0
+	*/
+
 	const char* i = "\xC4\x92\xE1\xB8\x94\xCC\x84\xC3\x80";
 	size_t il = strlen(i);
 
@@ -354,6 +474,12 @@ TEST(ComposeExecute, MultipleUnaffected)
 
 TEST(ComposeExecute, MultipleSequenceCompose)
 {
+	/*
+		U+03B1 U+0345 U+03B7 U+0342 U+2291 U+0338
+		     Y      M      Y      M      Y      M
+		     0    240      0    230      0      1
+	*/
+
 	const char* i = "\xCE\xB1\xCD\x85\xCE\xB7\xCD\x82\xE2\x8A\x91\xCC\xB8";
 	size_t il = strlen(i);
 
@@ -371,6 +497,12 @@ TEST(ComposeExecute, MultipleSequenceCompose)
 
 TEST(ComposeExecute, MultipleSequenceComposeAndUnaffected)
 {
+	/*
+		U+03C9 U+0301 U+1DA8
+		     Y      M      Y
+		     0    230      0
+	*/
+
 	const char* i = "\xCF\x89\xCC\x81\xE1\xB6\xA8";
 	size_t il = strlen(i);
 
@@ -387,6 +519,12 @@ TEST(ComposeExecute, MultipleSequenceComposeAndUnaffected)
 
 TEST(ComposeExecute, MultipleSequenceUnaffectedAndCompose)
 {
+	/*
+		U+017F U+1100 U+1169 U+11B3
+		     Y      Y      M      M
+		     0      0      0      0
+	*/
+
 	const char* i = "\xC5\xBF\xE1\x84\x80\xE1\x85\xA9\xE1\x86\xB3";
 	size_t il = strlen(i);
 
@@ -451,6 +589,12 @@ TEST(ComposeExecute, MultipleSequenceComposeEquivalentCCC)
 
 TEST(ComposeExecute, MultipleSequenceHangul)
 {
+	/*
+		U+110B U+1165 U+11B6 U+110B U+116F U+110C U+1175 U+11A8
+		     Y      M      M      Y      M      Y      M      M
+		     0      0      0      0      0      0      0      0
+	*/
+
 	const char* i = "\xE1\x84\x8B\xE1\x85\xA5\xE1\x86\xB6\xE1\x84\x8B\xE1\x85\xAF\xE1\x84\x8C\xE1\x85\xB5\xE1\x86\xA8";
 	size_t il = strlen(i);
 
@@ -468,6 +612,12 @@ TEST(ComposeExecute, MultipleSequenceHangul)
 
 TEST(ComposeExecute, ContinueAfterEnd)
 {
+	/*
+		U+339E U+002E
+		     Y      Y
+		     0      0
+	*/
+
 	const char* i = "\xE3\x8E\x9E.";
 	size_t il = strlen(i);
 
