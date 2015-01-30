@@ -200,6 +200,8 @@ unicode_t compose_execute(ComposeState* state)
 			}
 			else
 			{
+				last_combining_class = state->cache_canonical_combining_class[state->cache_next];
+
 				state->cache_codepoint[state->cache_next]                  = 0;
 				state->cache_quick_check[state->cache_next]                = 0;
 				state->cache_canonical_combining_class[state->cache_next]  = 0;
@@ -209,6 +211,8 @@ unicode_t compose_execute(ComposeState* state)
 		}
 		else
 		{
+			last_combining_class = state->cache_canonical_combining_class[state->cache_next];
+
 			state->cache_next++;
 		}
 
@@ -232,12 +236,10 @@ unicode_t compose_execute(ComposeState* state)
 		if ((state->cache_quick_check[state->cache_next] == QuickCheckResult_Yes &&
 			state->cache_canonical_combining_class[state->cache_next] == 0) ||
 			(last_combining_class != 0 &&
-			state->cache_canonical_combining_class[state->cache_next] == last_combining_class))
+			state->cache_canonical_combining_class[state->cache_next] <= last_combining_class))
 		{
 			break;
 		}
-
-		last_combining_class = state->cache_canonical_combining_class[state->cache_next];
 	}
 
 	if (state->cache_filled > 1)
