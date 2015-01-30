@@ -93,9 +93,7 @@ uint8_t compose_readcodepoint(ComposeState* state, uint8_t index)
 unicode_t compose_execute(ComposeState* state)
 {
 	unicode_t composed;
-	uint8_t buffer_next;
 	uint8_t last_combining_class = 0;
-	uint8_t reset_index;
 
 	if (state->input == 0 ||
 		(state->cache_filled == 0 && state->finished == 1))
@@ -227,11 +225,15 @@ unicode_t compose_execute(ComposeState* state)
 			state->cache_filled++;
 		}
 
-		if (state->cache_quick_check[state->cache_next] == QuickCheckResult_Yes &&
-			state->cache_canonical_combining_class[state->cache_next] == 0)
+		if ((state->cache_quick_check[state->cache_next] == QuickCheckResult_Yes &&
+			state->cache_canonical_combining_class[state->cache_next] == 0) ||
+			(last_combining_class != 0 &&
+			state->cache_canonical_combining_class[state->cache_next] == last_combining_class))
 		{
 			break;
 		}
+
+		last_combining_class = state->cache_canonical_combining_class[state->cache_next];
 	}
 
 	if (state->cache_filled > 1)
