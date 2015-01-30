@@ -23,6 +23,10 @@ namespace helpers {
 	std::string printable(unicode_t* codepoints, size_t codepointsSize);
 	std::string printable(const std::string& text);
 
+	std::string sequence(unicode_t codepoint, uint8_t type);
+	std::string sequence(unicode_t* codepoint, size_t codepointsSize, uint8_t type);
+	std::string sequence(const std::string& text, uint8_t type);
+
 	std::string canonicalCombiningClass(unicode_t codepoint);
 	std::string canonicalCombiningClass(unicode_t* codepoint, size_t codepointsSize);
 	std::string canonicalCombiningClass(const std::string& text);
