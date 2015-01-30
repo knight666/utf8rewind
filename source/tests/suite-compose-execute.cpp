@@ -207,22 +207,28 @@ TEST(ComposeExecute, SingleSequenceComposeSkipBlocked)
 	ComposeState state;
 	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
 
-	/*
-		U+0061 U+05AE U+2DEE U+0300 U+0315 U+0062
-		     0    228    230    230    232      0
-		     Y      Y      Y      Y      Y      Y
-
-		U+0061 U+05AE U+2DEE U+0300 U+0315 U+0062
-			 0    228    230    230    232      0
-			 Y      Y      Y      M      Y      Y
-	*/
-
 	EXPECT_CPEQ(0x0061, compose_execute(&state));
 	EXPECT_CPEQ(0x05AE, compose_execute(&state));
 	EXPECT_CPEQ(0x2DEE, compose_execute(&state));
 	EXPECT_CPEQ(0x0300, compose_execute(&state));
 	EXPECT_CPEQ(0x0315, compose_execute(&state));
 	EXPECT_CPEQ(0x0062, compose_execute(&state));
+	EXPECT_CPEQ(0, compose_execute(&state));
+}
+
+TEST(ComposeExecute, SingleSequenceComposeSkipStableCodepoint)
+{
+	const char* i = "DZ\xCC\x8C";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	ComposeState state;
+	EXPECT_EQ(1, compose_initialize(&state, &input, 0));
+
+	EXPECT_CPEQ(0x0044, compose_execute(&state));
+	EXPECT_CPEQ(0x017D, compose_execute(&state));
 	EXPECT_CPEQ(0, compose_execute(&state));
 }
 
