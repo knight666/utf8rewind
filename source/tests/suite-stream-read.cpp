@@ -8,6 +8,12 @@ extern "C" {
 
 TEST(StreamRead, Initialize)
 {
+	/*
+		U+006C U+006F U+006E U+0065 U+006C U+0069 U+006E U+0065 U+0073 U+0073
+		     Y      Y      Y      Y      Y      Y      Y      Y      Y      Y
+		     0      0      0      0      0      0      0      0      0      0
+	*/
+
 	const char* i = "loneliness";
 	size_t il = strlen(i);
 
@@ -23,6 +29,12 @@ TEST(StreamRead, Initialize)
 
 TEST(StreamRead, SingleCodepointStarter)
 {
+	/*
+		U+02FC
+		     Y
+		     0
+	*/
+
 	const char* i = "\xCB\xBC";
 	size_t il = strlen(i);
 
@@ -38,6 +50,12 @@ TEST(StreamRead, SingleCodepointStarter)
 
 TEST(StreamRead, SingleCodepointNonStarter)
 {
+	/*
+		U+031D
+		     Y
+		   220
+	*/
+
 	const char* i = "\xCC\x9D";
 	size_t il = strlen(i);
 
@@ -53,6 +71,12 @@ TEST(StreamRead, SingleCodepointNonStarter)
 
 TEST(StreamRead, SingleCodepointInvalid)
 {
+	/*
+		U+FFFD
+		     Y
+		     0
+	*/
+
 	const char* i = "\xF4";
 	size_t il = strlen(i);
 
@@ -67,6 +91,12 @@ TEST(StreamRead, SingleCodepointInvalid)
 
 TEST(StreamRead, MultipleCodepointsStarter)
 {
+	/*
+		U+03F4 U+0406 U+0414
+		     Y      Y      Y
+		     0      0      0
+	*/
+
 	const char* i = "\xCF\xB4\xD0\x86\xD0\x94";
 	size_t il = strlen(i);
 
@@ -90,6 +120,12 @@ TEST(StreamRead, MultipleCodepointsStarter)
 
 TEST(StreamRead, MultipleCodepointsNonStarterOrdered)
 {
+	/*
+		U+033B U+034B
+		     Y      Y
+		   220    230
+	*/
+
 	const char* i = "\xCC\xBB\xCD\x8B";
 	size_t il = strlen(i);
 
@@ -106,6 +142,12 @@ TEST(StreamRead, MultipleCodepointsNonStarterOrdered)
 
 TEST(StreamRead, MultipleCodepointsNonStarterOutOfOrder)
 {
+	/*
+		U+034B U+033B
+		     Y      Y
+		   230    220
+	*/
+
 	const char* i = "\xCD\x8B\xCC\xBB";
 	size_t il = strlen(i);
 
@@ -122,6 +164,12 @@ TEST(StreamRead, MultipleCodepointsNonStarterOutOfOrder)
 
 TEST(StreamRead, MultipleCodepointsInvalid)
 {
+	/*
+		U+FFFD U+FFFD
+		     Y      Y
+		     0      0
+	*/
+
 	const char* i = "\xF4\x9A\xC0";
 	size_t il = strlen(i);
 
@@ -139,6 +187,12 @@ TEST(StreamRead, MultipleCodepointsInvalid)
 
 TEST(StreamRead, SingleSequenceOrdered)
 {
+	/*
+		U+0041 U+0303
+		     Y      M
+		     0    230
+	*/
+
 	const char* i = "A\xCC\x83";
 	size_t il = strlen(i);
 
@@ -155,6 +209,12 @@ TEST(StreamRead, SingleSequenceOrdered)
 
 TEST(StreamRead, SingleSequenceOutOfOrder)
 {
+	/*
+		U+004F U+0304 U+0328
+		     Y      M      M
+		     0    230    202
+	*/
+
 	const char* i = "O\xCC\x84\xCC\xA8";
 	size_t il = strlen(i);
 
@@ -172,6 +232,12 @@ TEST(StreamRead, SingleSequenceOutOfOrder)
 
 TEST(StreamRead, SingleSequenceEndStarterMaybe)
 {
+	/*
+		U+09C7 U+0334 U+09BE
+		     Y      Y      M
+		     0      1      0
+	*/
+
 	const char* i = "\xE0\xA7\x87\xCC\xB4\xE0\xA6\xBE";
 	size_t il = strlen(i);
 
@@ -192,6 +258,12 @@ TEST(StreamRead, SingleSequenceEndStarterMaybe)
 
 TEST(StreamRead, SingleSequenceEndNonStarterMaybe)
 {
+	/*
+		U+0112 U+0334 U+0300
+		     Y      Y      M
+		     0      1    230
+	*/
+
 	const char* i = "\xC4\x92\xCC\xB4\xCC\x80";
 	size_t il = strlen(i);
 
@@ -209,6 +281,12 @@ TEST(StreamRead, SingleSequenceEndNonStarterMaybe)
 
 TEST(StreamRead, MultipleSequencesOrdered)
 {
+	/*
+		U+0061 U+0300 U+0301 U+0045 U+030C
+		     Y      M      M      Y      M
+		     0    230    230      0    230
+	*/
+
 	const char* i = "a\xCC\x80\xCC\x81" "E\xCC\x8C";
 	size_t il = strlen(i);
 
@@ -231,6 +309,12 @@ TEST(StreamRead, MultipleSequencesOrdered)
 
 TEST(StreamRead, MultipleSequencesOutOfOrder)
 {
+	/*
+		U+0061 U+0315 U+0300 U+05AE U+0300 U+0062
+		     Y      Y      M      Y      M      Y
+		     0    232    230    228    230      0
+	*/
+
 	const char* i = "a\xCC\x95\xCC\x80\xD6\xAE\xCC\x80" "b";
 	size_t il = strlen(i);
 
@@ -254,6 +338,12 @@ TEST(StreamRead, MultipleSequencesOutOfOrder)
 
 TEST(StreamRead, MultipleSequencesNonStarter)
 {
+	/*
+		U+05B8 U+05B9 U+05B1 U+0591 U+05C3 U+05B0 U+05AC U+059F
+		     Y      Y      Y      Y      Y      Y      Y      Y
+		    18     19     11    220      0     10    230    230
+	*/
+
 	const char* i = "\xD6\xB8\xD6\xB9\xD6\xB1\xD6\x91\xD7\x83\xD6\xB0\xD6\xAC\xD6\x9F";
 	size_t il = strlen(i);
 
@@ -279,6 +369,12 @@ TEST(StreamRead, MultipleSequencesNonStarter)
 
 TEST(StreamRead, ContinueAfterEnd)
 {
+	/*
+		U+0028 U+0063 U+0029
+		     Y      Y      Y
+		     0      0      0
+	*/
+
 	const char* i = "(c)";
 	size_t il = strlen(i);
 
