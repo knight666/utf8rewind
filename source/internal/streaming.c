@@ -79,11 +79,6 @@ uint8_t stream_read(StreamState* state)
 		state->canonical_combining_class[0] = state->canonical_combining_class[state->current];
 		state->quick_check[0] = state->quick_check[state->current];
 
-		/* Check if start of new sequence has a starter */
-
-		state->starter_count = state->last_is_starter;
-		state->last_is_starter = 0;
-
 		/* Clear rest of sequence */
 
 		for (i = 1; i <= state->current; ++i)
@@ -130,22 +125,12 @@ uint8_t stream_read(StreamState* state)
 		state->quick_check[state->current] = database_queryproperty(state->codepoint[state->current], state->property);
 		state->canonical_combining_class[state->current] = database_queryproperty(state->codepoint[state->current], UnicodeProperty_CanonicalCombiningClass);
 
-		/* Check if codepoint is a starter */
+		/* Sequences end on the next starter and can consist of only non-starters */
 
-		state->last_is_starter = 
-			(state->canonical_combining_class[state->current] == 0) &&
-				(state->quick_check[state->current] == QuickCheckResult_Yes ||
-					(state->quick_check[state->current] == QuickCheckResult_Maybe &&
-					state->last_length >= state->src_size));
-
-		if (state->last_is_starter == 1)
+		if (state->current > 0 &&
+			state->canonical_combining_class[state->current] == 0)
 		{
-			state->starter_count++;
-			if (state->starter_count > 1 ||
-				state->current > 1)
-			{
-				break;
-			}
+			break;
 		}
 
 		state->current++;
