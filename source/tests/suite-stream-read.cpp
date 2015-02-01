@@ -5,6 +5,7 @@ extern "C" {
 }
 
 #include "helpers-streams.hpp"
+#include "helpers-strings.hpp"
 
 TEST(StreamRead, Initialize)
 {
@@ -27,7 +28,7 @@ TEST(StreamRead, Initialize)
 	EXPECT_TRUE(state.stable);
 }
 
-TEST(StreamRead, SingleCodepointStarter)
+TEST(StreamRead, StartSingleStarter)
 {
 	/*
 		U+02FC
@@ -48,7 +49,7 @@ TEST(StreamRead, SingleCodepointStarter)
 	EXPECT_EQ(0, stream_read(&state));
 }
 
-TEST(StreamRead, SingleCodepointNonStarter)
+TEST(StreamRead, StartSingleNonStarter)
 {
 	/*
 		U+031D
@@ -69,7 +70,7 @@ TEST(StreamRead, SingleCodepointNonStarter)
 	EXPECT_EQ(0, stream_read(&state));
 }
 
-TEST(StreamRead, SingleCodepointInvalid)
+TEST(StreamRead, StartSingleInvalid)
 {
 	/*
 		U+FFFD
@@ -89,7 +90,7 @@ TEST(StreamRead, SingleCodepointInvalid)
 	EXPECT_EQ(0, stream_read(&state));
 }
 
-TEST(StreamRead, MultipleCodepointsStarter)
+TEST(StreamRead, StartMultipleStarter)
 {
 	/*
 		U+03F4 U+0406 U+0414
@@ -118,7 +119,7 @@ TEST(StreamRead, MultipleCodepointsStarter)
 	EXPECT_EQ(0, stream_read(&state));
 }
 
-TEST(StreamRead, MultipleCodepointsNonStarterOrdered)
+TEST(StreamRead, StartMultipleNonStarterOrdered)
 {
 	/*
 		U+033B U+034B
@@ -140,7 +141,7 @@ TEST(StreamRead, MultipleCodepointsNonStarterOrdered)
 	EXPECT_EQ(0, stream_read(&state));
 }
 
-TEST(StreamRead, MultipleCodepointsNonStarterOutOfOrder)
+TEST(StreamRead, StartMultipleNonStarterUnordered)
 {
 	/*
 		U+034B U+033B
@@ -162,7 +163,58 @@ TEST(StreamRead, MultipleCodepointsNonStarterOutOfOrder)
 	EXPECT_EQ(0, stream_read(&state));
 }
 
-TEST(StreamRead, MultipleCodepointsInvalid)
+TEST(StreamRead, StartSingleNonStarterSequence)
+{
+	/*
+		U+0F71 U+00A6
+		     Y      Y
+		   129      0
+	*/
+
+	const char* i = "\xE0\xBD\xB1\xC2\xA6";
+	size_t il = strlen(i);
+
+	StreamState state;
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(1, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x0F71, Yes, 129);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(1, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x00A6, Yes, 0);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(0, stream_read(&state));
+}
+
+TEST(StreamRead, StartMultipleNonStarterSequence)
+{
+	/*
+		U+A953 U+07F2 U+00B1
+		     Y      Y      Y
+		     9    220      0
+	*/
+
+	const char* i = "\xEA\xA5\x93\xDF\xB2\xC2\xB1";
+	size_t il = strlen(i);
+
+	StreamState state;
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(2, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0xA953, Yes, 9);
+	CHECK_STREAM_ENTRY(state, 1, 0x07F2, Yes, 220);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(1, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x00B1, Yes, 0);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(0, stream_read(&state));
+}
+
+TEST(StreamRead, MultipleSequenceInvalid)
 {
 	/*
 		U+FFFD U+FFFD
@@ -185,7 +237,7 @@ TEST(StreamRead, MultipleCodepointsInvalid)
 	EXPECT_EQ(0, stream_read(&state));
 }
 
-TEST(StreamRead, SingleSequenceOrdered)
+TEST(StreamRead, Sequence)
 {
 	/*
 		U+0041 U+0303
@@ -207,7 +259,30 @@ TEST(StreamRead, SingleSequenceOrdered)
 	EXPECT_EQ(0, stream_read(&state));
 }
 
-TEST(StreamRead, SingleSequenceOutOfOrder)
+TEST(StreamRead, SequenceOrdered)
+{
+	/*
+		U+0041 U+0318 U+0310
+		     Y      Y      Y
+		     0    220    230
+	*/
+
+	const char* i = "A\xCC\x98\xCC\x90";
+	size_t il = strlen(i);
+
+	StreamState state;
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(3, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x0041, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 1, 0x0318, Yes, 220);
+	CHECK_STREAM_ENTRY(state, 2, 0x0310, Yes, 230);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(0, stream_read(&state));
+}
+
+TEST(StreamRead, SequenceUnordered)
 {
 	/*
 		U+004F U+0304 U+0328
@@ -230,7 +305,7 @@ TEST(StreamRead, SingleSequenceOutOfOrder)
 	EXPECT_EQ(0, stream_read(&state));
 }
 
-TEST(StreamRead, SingleSequenceEndStarterMaybe)
+TEST(StreamRead, SequenceEndStarterMaybe)
 {
 	/*
 		U+09C7 U+0334 U+09BE
@@ -256,7 +331,7 @@ TEST(StreamRead, SingleSequenceEndStarterMaybe)
 	EXPECT_EQ(0, stream_read(&state));
 }
 
-TEST(StreamRead, SingleSequenceEndNonStarterMaybe)
+TEST(StreamRead, SequenceEndNonStarterMaybe)
 {
 	/*
 		U+0112 U+0334 U+0300
