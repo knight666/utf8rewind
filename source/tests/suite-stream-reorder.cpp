@@ -2,7 +2,18 @@
 
 #include "helpers-streams.hpp"
 
-TEST(StreamReorder, SingleCodepoint)
+TEST(StreamReorder, SingleStarter)
+{
+	StreamState stream = helpers::createStream("\xC2\xAF");
+
+	CHECK_STREAM_ENTRY(stream, 0, 0x00AF, Yes, 0);
+
+	EXPECT_EQ(1, stream_reorder(&stream));
+
+	CHECK_STREAM_ENTRY(stream, 0, 0x00AF, Yes, 0);
+}
+
+TEST(StreamReorder, SingleNonStarter)
 {
 	StreamState stream = helpers::createStream("\xCC\x91");
 
@@ -13,20 +24,7 @@ TEST(StreamReorder, SingleCodepoint)
 	CHECK_STREAM_ENTRY(stream, 0, 0x0311, Yes, 230);
 }
 
-TEST(StreamReorder, UnaffectedTwoCodepoints)
-{
-	StreamState stream = helpers::createStream("\xCA\xA2\xCA\xA3");
-
-	CHECK_STREAM_ENTRY(stream, 0, 0x02A2, Yes, 0);
-	CHECK_STREAM_ENTRY(stream, 1, 0x02A3, Yes, 0);
-
-	EXPECT_EQ(1, stream_reorder(&stream));
-
-	CHECK_STREAM_ENTRY(stream, 0, 0x02A2, Yes, 0);
-	CHECK_STREAM_ENTRY(stream, 1, 0x02A3, Yes, 0);
-}
-
-TEST(StreamReorder, UnaffectedMultipleCodepoints)
+TEST(StreamReorder, MultipleStarters)
 {
 	StreamState stream = helpers::createStream("Bike");
 
@@ -43,7 +41,22 @@ TEST(StreamReorder, UnaffectedMultipleCodepoints)
 	CHECK_STREAM_ENTRY(stream, 3, 'e', Yes, 0);
 }
 
-TEST(StreamReorder, ReorderedTwoCodepoints)
+TEST(StreamReorder, MultipleNonStartersOrdered)
+{
+	StreamState stream = helpers::createStream("\xE0\xBF\x86\xD6\xAE\xE0\xA3\xA7");
+
+	CHECK_STREAM_ENTRY(stream, 0, 0x0FC6, Yes, 220);
+	CHECK_STREAM_ENTRY(stream, 1, 0x05AE, Yes, 228);
+	CHECK_STREAM_ENTRY(stream, 2, 0x08E7, Yes, 230);
+
+	EXPECT_EQ(1, stream_reorder(&stream));
+
+	CHECK_STREAM_ENTRY(stream, 0, 0x0FC6, Yes, 220);
+	CHECK_STREAM_ENTRY(stream, 1, 0x05AE, Yes, 228);
+	CHECK_STREAM_ENTRY(stream, 2, 0x08E7, Yes, 230);
+}
+
+TEST(StreamReorder, MultipleNonStartersUnordered)
 {
 	StreamState stream = helpers::createStream("\xCC\x82\xCC\xB8");
 
@@ -56,7 +69,35 @@ TEST(StreamReorder, ReorderedTwoCodepoints)
 	CHECK_STREAM_ENTRY(stream, 1, 0x0302, Yes, 230);
 }
 
-TEST(StreamReorder, ReorderedMultipleCodepoints)
+TEST(StreamReorder, Sequence)
+{
+	StreamState stream = helpers::createStream("a\xCC\x95");
+
+	CHECK_STREAM_ENTRY(stream, 0, 0x0061, Yes, 0);
+	CHECK_STREAM_ENTRY(stream, 1, 0x0315, Yes, 232);
+
+	EXPECT_EQ(1, stream_reorder(&stream));
+
+	CHECK_STREAM_ENTRY(stream, 0, 0x0061, Yes, 0);
+	CHECK_STREAM_ENTRY(stream, 1, 0x0315, Yes, 232);
+}
+
+TEST(StreamReorder, SequenceOrdered)
+{
+	StreamState stream = helpers::createStream("E\xCC\x84\xCC\x80");
+
+	CHECK_STREAM_ENTRY(stream, 0, 0x0045, Yes, 0);
+	CHECK_STREAM_ENTRY(stream, 1, 0x0304, Yes, 230);
+	CHECK_STREAM_ENTRY(stream, 2, 0x0300, Yes, 230);
+
+	EXPECT_EQ(1, stream_reorder(&stream));
+
+	CHECK_STREAM_ENTRY(stream, 0, 0x0045, Yes, 0);
+	CHECK_STREAM_ENTRY(stream, 1, 0x0304, Yes, 230);
+	CHECK_STREAM_ENTRY(stream, 2, 0x0300, Yes, 230);
+}
+
+TEST(StreamReorder, SequenceUnordered)
 {
 	StreamState stream = helpers::createStream("a\xCC\x95\xCC\x80\xD6\xAE\xCC\x81");
 
@@ -75,7 +116,7 @@ TEST(StreamReorder, ReorderedMultipleCodepoints)
 	CHECK_STREAM_ENTRY(stream, 4, 0x0315, Yes, 232);
 }
 
-TEST(StreamReorder, ReorderedWorstCase)
+TEST(StreamReorder, SequenceUnorderedWorstCase)
 {
 	StreamState stream = helpers::createStream("\xCD\xA0\xCC\x91\xE0\xBC\xB5\xCB\xB4");
 
