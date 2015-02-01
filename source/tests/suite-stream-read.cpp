@@ -442,6 +442,144 @@ TEST(StreamRead, MultipleSequencesNonStarter)
 	EXPECT_EQ(0, stream_read(&state));
 }
 
+TEST(StreamRead, StableStarterAndNonStarter)
+{
+	/*
+		U+0041 U+0301
+		     Y      M
+		     0    230
+	*/
+
+	const char* i = "A\xCC\x81";
+	size_t il = strlen(i);
+
+	StreamState state;
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(2, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x0041, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 1, 0x0301, Maybe, 230);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(0, stream_read(&state));
+}
+
+TEST(StreamRead, StableNonStarterAndStarter)
+{
+	/*
+		U+0301 U+0041
+		     M      Y
+		   230      0
+	*/
+
+	const char* i = "\xCC\x81" "A";
+	size_t il = strlen(i);
+
+	StreamState state;
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(1, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x0301, Maybe, 230);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(1, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x0041, Yes, 0);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(0, stream_read(&state));
+}
+
+TEST(StreamRead, StableTwoStarter)
+{
+	/*
+		U+0376 U+037F
+		     Y      Y
+		     0      0
+	*/
+
+	const char* i = "\xCD\xB6\xCD\xBF";
+	size_t il = strlen(i);
+
+	StreamState state;
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(1, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x0376, Yes, 0);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(1, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x037F, Yes, 0);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(0, stream_read(&state));
+}
+
+TEST(StreamRead, StableTwoNonStarterEqual)
+{
+	/*
+		U+0308 U+0301
+		     M      M
+		   230    230
+	*/
+
+	const char* i = "\xCC\x88\xCC\x81";
+	size_t il = strlen(i);
+
+	StreamState state;
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(2, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 1, 0x0301, Maybe, 230);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(0, stream_read(&state));
+}
+
+TEST(StreamRead, StableTwoNonStarterLesserThan)
+{
+	/*
+		U+0327 U+0301
+		     M      M
+		   202    230
+	*/
+
+	const char* i = "\xCC\xA7\xCC\x81";
+	size_t il = strlen(i);
+
+	StreamState state;
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(2, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x0327, Maybe, 202);
+	CHECK_STREAM_ENTRY(state, 1, 0x0301, Maybe, 230);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(0, stream_read(&state));
+}
+
+TEST(StreamRead, StableTwoNonStarterGreaterThan)
+{
+	/*
+		U+0301 U+0327
+		     M      M
+		   230    202
+	*/
+
+	const char* i = "\xCC\x81\xCC\xA7";
+	size_t il = strlen(i);
+
+	StreamState state;
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(2, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x0301, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 1, 0x0327, Maybe, 202);
+	EXPECT_FALSE(state.stable);
+
+	EXPECT_EQ(0, stream_read(&state));
+}
+
 TEST(StreamRead, ContinueAfterEnd)
 {
 	/*
