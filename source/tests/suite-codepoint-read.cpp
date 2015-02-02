@@ -6,7 +6,7 @@ extern "C" {
 
 #include "helpers-strings.hpp"
 
-TEST(CodepointRead, BasicLatin)
+TEST(CodepointRead, OneByte)
 {
 	const char* i = "I";
 	size_t il = strlen(i);
@@ -17,7 +17,7 @@ TEST(CodepointRead, BasicLatin)
 	EXPECT_CPEQ(0x0049, o);
 }
 
-TEST(CodepointRead, BasicLatinFirst)
+TEST(CodepointRead, OneByteFirst)
 {
 	const char* i = "\0";
 	size_t il = 1;
@@ -28,7 +28,7 @@ TEST(CodepointRead, BasicLatinFirst)
 	EXPECT_CPEQ(0x0000, o);
 }
 
-TEST(CodepointRead, BasicLatinLast)
+TEST(CodepointRead, OneByteLast)
 {
 	const char* i = "\x7F";
 	size_t il = strlen(i);
@@ -37,6 +37,50 @@ TEST(CodepointRead, BasicLatinLast)
 
 	EXPECT_EQ(1, (ol = (uint8_t)codepoint_read(&o, i, il)));
 	EXPECT_CPEQ(0x007F, o);
+}
+
+TEST(CodepointRead, OneByteInvalidContinuationLower)
+{
+	const char* i = "\x80";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(1, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, OneByteInvalidContinuationUpper)
+{
+	const char* i = "\xBF";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(1, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, OneByteIllegalFirst)
+{
+	const char* i = "\xFE";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(1, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, OneByteIllegalLast)
+{
+	const char* i = "\xFE";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(1, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
 }
 
 TEST(CodepointRead, TwoBytes)
@@ -83,7 +127,7 @@ TEST(CodepointRead, TwoBytesInvalidContinuationLower)
 	EXPECT_CPEQ(0xFFFD, o);
 }
 
-TEST(CodepointRead, TwoBytesInvalidContinuationHigher)
+TEST(CodepointRead, TwoBytesInvalidContinuationUpper)
 {
 	const char* i = "\xD0\xC8";
 	size_t is = strlen(i);
