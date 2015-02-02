@@ -280,3 +280,113 @@ TEST(CodepointRead, ThreeBytesOverlongLast)
 	EXPECT_EQ(3, (ol = (uint8_t)codepoint_read(&o, i, is)));
 	EXPECT_CPEQ(0xFFFD, o);
 }
+
+TEST(CodepointRead, FourBytes)
+{
+	const char* i = "\xF0\x90\xB0\xAC";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(4, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0x10C2C, o);
+}
+
+TEST(CodepointRead, FourBytesFirst)
+{
+	const char* i = "\xF0\x90\x80\x80";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(4, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0x10000, o);
+}
+
+TEST(CodepointRead, FourBytesLast)
+{
+	const char* i = "\xF4\x8F\xBF\xBF";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(4, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0x10FFFF, o);
+}
+
+TEST(CodepointRead, FourBytesInvalidContinuationLower)
+{
+	const char* i = "\xF1\x9A\xA0\x42";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(3, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, FourBytesInvalidContinuationUpper)
+{
+	const char* i = "\xF0\x90\xA8\xD5";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(3, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, FourBytesNotEnoughDataThreeBytes)
+{
+	const char* i = "\xF0\x90\xA8";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(3, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, FourBytesNotEnoughDataTwoBytes)
+{
+	const char* i = "\xF1\xAF";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(2, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, FourBytesNotEnoughDataOneByte)
+{
+	const char* i = "\xF3";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(1, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, FourBytesOverlongFirst)
+{
+	const char* i = "\xF4\x90\x80\x80";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(4, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, FourBytesOverlongLast)
+{
+	const char* i = "\xF7\xBF\x80\x80";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(4, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
