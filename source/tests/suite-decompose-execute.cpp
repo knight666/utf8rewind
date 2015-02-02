@@ -34,32 +34,6 @@ TEST(DecomposeExecute, Initialize)
 	EXPECT_EQ(0, state.output->current);
 }
 
-TEST(DecomposeExecute, SingleBasicLatin)
-{
-	/*
-		U+0042
-		     Y
-		     0
-	*/
-
-	const char* i = "B";
-	size_t il = strlen(i);
-
-	StreamState input;
-	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-
-	StreamState output = { 0 };
-
-	DecomposeState state;
-	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
-
-	EXPECT_EQ(1, decompose_execute(&state));
-	CHECK_STREAM_ENTRY(*state.output, 0, 0x0042, Yes, 0);
-	EXPECT_TRUE(state.output->stable);
-
-	EXPECT_EQ(0, decompose_execute(&state));
-}
-
 TEST(DecomposeExecute, SingleUnaffected)
 {
 	/*
@@ -113,32 +87,6 @@ TEST(DecomposeExecute, SingleDecompose)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
-TEST(DecomposeExecute, SingleNonStarter)
-{
-	/*
-		U+0304
-		     Y
-		   230
-	*/
-
-	const char* i = "\xCC\x84";
-	size_t il = strlen(i);
-
-	StreamState input;
-	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-
-	StreamState output = { 0 };
-
-	DecomposeState state;
-	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
-
-	EXPECT_EQ(1, decompose_execute(&state));
-	CHECK_STREAM_ENTRY(*state.output, 0, 0x0304, Yes, 230);
-	EXPECT_TRUE(state.output->stable);
-
-	EXPECT_EQ(0, decompose_execute(&state));
-}
-
 TEST(DecomposeExecute, SingleInvalidCodepoint)
 {
 	/*
@@ -165,15 +113,15 @@ TEST(DecomposeExecute, SingleInvalidCodepoint)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
-TEST(DecomposeExecute, SingleSequenceOrdered)
+TEST(DecomposeExecute, SequenceUnaffectedOrdered)
 {
 	/*
-		U+0100 U+0308
-		     N      Y
-		     0    230
+		U+006F U+031D U+030B
+		     Y      Y      Y
+		     0    220    230
 	*/
 
-	const char* i = "\xC4\x80\xCC\x88";
+	const char* i = "o\xCC\x9D\xCC\x8B";
 	size_t il = strlen(i);
 
 	StreamState input;
@@ -185,15 +133,15 @@ TEST(DecomposeExecute, SingleSequenceOrdered)
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(3, decompose_execute(&state));
-	CHECK_STREAM_ENTRY(*state.output, 0, 0x0041, Yes, 0);
-	CHECK_STREAM_ENTRY(*state.output, 1, 0x0304, Yes, 230);
-	CHECK_STREAM_ENTRY(*state.output, 2, 0x0308, Yes, 230);
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x006F, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x031D, Yes, 220);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x030B, Yes, 230);
 	EXPECT_FALSE(state.output->stable);
 
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
-TEST(DecomposeExecute, SingleSequenceUnordered)
+TEST(DecomposeExecute, SequenceUnaffectedUnordered)
 {
 	/*
 		U+0041 U+0304 U+031D
@@ -221,7 +169,63 @@ TEST(DecomposeExecute, SingleSequenceUnordered)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
-TEST(DecomposeExecute, SingleHangulUnaffected)
+TEST(DecomposeExecute, SequenceDecomposedOrdered)
+{
+	/*
+		U+0100 U+0308
+		     N      Y
+		     0    230
+	*/
+
+	const char* i = "\xC4\x80\xCC\x88";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0041, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0304, Yes, 230);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x0308, Yes, 230);
+	EXPECT_FALSE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, SequenceDecomposedUnordered)
+{
+	/*
+		U+011D U+0316
+		     N      Y
+		     0    220
+	*/
+
+	const char* i = "\xC4\x9D\xCC\x96";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0067, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0302, Yes, 230);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x0316, Yes, 220);
+	EXPECT_FALSE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, HangulUnaffected)
 {
 	/*
 		U+110C
@@ -247,7 +251,7 @@ TEST(DecomposeExecute, SingleHangulUnaffected)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
-TEST(DecomposeExecute, SingleHangulDecomposeTwoCodepoints)
+TEST(DecomposeExecute, HangulDecomposedTwoCodepoints)
 {
 	/*
 		U+AC70
@@ -274,7 +278,7 @@ TEST(DecomposeExecute, SingleHangulDecomposeTwoCodepoints)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
-TEST(DecomposeExecute, SingleHangulDecomposeThreeCodepoints)
+TEST(DecomposeExecute, HangulDecomposedThreeCodepoints)
 {
 	/*
 		U+C9AC
