@@ -51,7 +51,7 @@
 #define HANGUL_S_LAST                 0xD7A3
 #define HANGUL_S_COUNT                11172 /* LCount * NCount */
 
-extern const int8_t codepoint_decoded_length[256];
+extern const uint8_t codepoint_decoded_length[256];
 
 uint8_t codepoint_encoded_length(unicode_t codepoint);
 

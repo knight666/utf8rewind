@@ -76,6 +76,7 @@
 				'source/tests/integration-quickbrown.cpp',
 				'source/tests/performance-casemapping.cpp',
 				'source/tests/suite-casemapping-execute.cpp',
+				'source/tests/suite-codepoint-decoded-length.cpp',
 				'source/tests/suite-codepoint-encoded-length.cpp',
 				'source/tests/suite-compose-execute.cpp',
 				'source/tests/suite-database-querycomposition.cpp',

@@ -25,7 +25,7 @@
 
 #include "codepoint.h"
 
-const int8_t codepoint_decoded_length[256] = {
+const uint8_t codepoint_decoded_length[256] = {
 	/* Basic Latin */
 	1, 1, 1, 1, 1, 1, 1, 1, /* 0x00 - 0x07 */
 	1, 1, 1, 1, 1, 1, 1, 1, /* 0x08 - 0x0F */
