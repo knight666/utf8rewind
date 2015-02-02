@@ -10,6 +10,12 @@ extern "C" {
 
 TEST(DecomposeExecute, Initialize)
 {
+	/*
+		U+304B U+3099
+		     Y      Y
+		     0      8
+	*/
+
 	const char* i = "\xE3\x81\x8B\xE3\x82\x99";
 	size_t il = strlen(i);
 
@@ -30,6 +36,12 @@ TEST(DecomposeExecute, Initialize)
 
 TEST(DecomposeExecute, SingleBasicLatin)
 {
+	/*
+		U+0042
+		     Y
+		     0
+	*/
+
 	const char* i = "B";
 	size_t il = strlen(i);
 
@@ -50,6 +62,12 @@ TEST(DecomposeExecute, SingleBasicLatin)
 
 TEST(DecomposeExecute, SingleUnaffected)
 {
+	/*
+		U+00A0
+		     Y
+		     0
+	*/
+
 	const char* i = "\xC2\xA0";
 	size_t il = strlen(i);
 
@@ -70,6 +88,12 @@ TEST(DecomposeExecute, SingleUnaffected)
 
 TEST(DecomposeExecute, SingleDecompose)
 {
+	/*
+		U+00DA
+		     N
+		     0
+	*/
+
 	const char* i = "\xC3\x9A";
 	size_t il = strlen(i);
 
@@ -91,6 +115,12 @@ TEST(DecomposeExecute, SingleDecompose)
 
 TEST(DecomposeExecute, SingleNonStarter)
 {
+	/*
+		U+0304
+		     Y
+		   230
+	*/
+
 	const char* i = "\xCC\x84";
 	size_t il = strlen(i);
 
@@ -111,6 +141,12 @@ TEST(DecomposeExecute, SingleNonStarter)
 
 TEST(DecomposeExecute, SingleInvalidCodepoint)
 {
+	/*
+		U+FFFD
+		     Y
+		     0
+	*/
+
 	const char* i = "\xC1";
 	size_t il = strlen(i);
 
@@ -131,6 +167,12 @@ TEST(DecomposeExecute, SingleInvalidCodepoint)
 
 TEST(DecomposeExecute, SingleSequenceOrdered)
 {
+	/*
+		U+0100 U+0308
+		     N      Y
+		     0    230
+	*/
+
 	const char* i = "\xC4\x80\xCC\x88";
 	size_t il = strlen(i);
 
@@ -153,6 +195,12 @@ TEST(DecomposeExecute, SingleSequenceOrdered)
 
 TEST(DecomposeExecute, SingleSequenceUnordered)
 {
+	/*
+		U+0041 U+0304 U+031D
+		     Y      Y      Y
+		     0    230    220
+	*/
+
 	const char* i = "A\xCC\x84\xCC\x9D";
 	size_t il = strlen(i);
 
@@ -175,6 +223,12 @@ TEST(DecomposeExecute, SingleSequenceUnordered)
 
 TEST(DecomposeExecute, SingleHangulUnaffected)
 {
+	/*
+		U+110C
+		     Y
+		     0
+	*/
+
 	const char* i = "\xE1\x84\x8C";
 	size_t il = strlen(i);
 
@@ -195,6 +249,12 @@ TEST(DecomposeExecute, SingleHangulUnaffected)
 
 TEST(DecomposeExecute, SingleHangulDecomposeTwoCodepoints)
 {
+	/*
+		U+AC70
+		     N
+		     0
+	*/
+
 	const char* i = "\xEA\xB1\xB0";
 	size_t il = strlen(i);
 
@@ -216,6 +276,12 @@ TEST(DecomposeExecute, SingleHangulDecomposeTwoCodepoints)
 
 TEST(DecomposeExecute, SingleHangulDecomposeThreeCodepoints)
 {
+	/*
+		U+C9AC
+		     N
+		     0
+	*/
+
 	const char* i = "\xEC\xA6\xAC";
 	size_t il = strlen(i);
 
@@ -238,6 +304,12 @@ TEST(DecomposeExecute, SingleHangulDecomposeThreeCodepoints)
 
 TEST(DecomposeExecute, MultipleBasicLatin)
 {
+	/*
+		U+0048 U+0061 U+006E U+0064
+		     Y      Y      Y      Y
+		     0      0      0      0
+	*/
+
 	const char* i = "Hand";
 	size_t il = strlen(i);
 
@@ -270,6 +342,12 @@ TEST(DecomposeExecute, MultipleBasicLatin)
 
 TEST(DecomposeExecute, MultipleUnaffected)
 {
+	/*
+		U+843D U+9E7F U+2176 U+216C
+		     Y      Y      Y      Y
+		     0      0      0      0
+	*/
+
 	const char* i = "\xE8\x90\xBD\xE9\xB9\xBF\xE2\x85\xB6\xE2\x85\xAC";
 	size_t il = strlen(i);
 
@@ -302,6 +380,12 @@ TEST(DecomposeExecute, MultipleUnaffected)
 
 TEST(DecomposeExecute, MultipleDecompose)
 {
+	/*
+		U+30AC U+30C5 U+1F4A
+		     N      N      N
+		     0      0      0
+	*/
+
 	const char* i = "\xE3\x82\xAC\xE3\x83\x85\xE1\xBD\x8A";
 	size_t il = strlen(i);
 
@@ -334,6 +418,12 @@ TEST(DecomposeExecute, MultipleDecompose)
 
 TEST(DecomposeExecute, MultipleNonStarter)
 {
+	/*
+		U+031B U+0300 U+03B7
+		     Y      Y      Y
+		   216    230      0
+	*/
+
 	const char* i = "\xCC\x9B\xCC\x80\xCE\xB7";
 	size_t il = strlen(i);
 
@@ -356,6 +446,12 @@ TEST(DecomposeExecute, MultipleNonStarter)
 
 TEST(DecomposeExecute, MultipleInvalidCodepoints)
 {
+	/*
+		U+FFFD U+FFFD
+		     Y      Y
+		     0      0
+	*/
+
 	const char* i = "\xBF\xF9\xCC";
 	size_t il = strlen(i);
 
@@ -384,6 +480,12 @@ TEST(DecomposeExecute, MultipleInvalidCodepoints)
 
 TEST(DecomposeExecute, MultipleSequenceOrdered)
 {
+	/*
+		U+00EA U+0333 U+014D U+0323 U+0346
+		     N      Y      N      Y      Y
+		     0    220      0    220    230
+	*/
+
 	const char* i = "\xC3\xAA\xCC\xB3\xC5\x8D\xCC\xA3\xCD\x86";
 	size_t il = strlen(i);
 
@@ -413,6 +515,12 @@ TEST(DecomposeExecute, MultipleSequenceOrdered)
 
 TEST(DecomposeExecute, MultipleSequenceUnordered)
 {
+	/*
+		U+00CA U+0347 U+00C3 U+035C U+0348 U+00ED U+031B
+		     N      Y      N      Y      Y      N      Y
+		     0    220      0    233    220      0    216
+	*/
+
 	const char* i = "\xC3\x8A\xCD\x87\xC3\x83\xCD\x9C\xCD\x88\xC3\xAD\xCC\x9B";
 	size_t il = strlen(i);
 
@@ -448,6 +556,12 @@ TEST(DecomposeExecute, MultipleSequenceUnordered)
 
 TEST(DecomposeExecute, MultipleSequenceDoNotReorder)
 {
+	/*
+		U+09C7 U+0334 U+09BE
+		     Y      Y      Y
+		     0      1      0
+	*/
+
 	const char* i = "\xE0\xA7\x87\xCC\xB4\xE0\xA6\xBE";
 	size_t il = strlen(i);
 
@@ -473,6 +587,12 @@ TEST(DecomposeExecute, MultipleSequenceDoNotReorder)
 
 TEST(DecomposeExecute, MultipleHangul)
 {
+	/*
+		U+C900 U+110C U+116E U+11B3
+		     N      Y      Y      Y
+		     0      0      0      0
+	*/
+
 	const char* i = "\xEC\xA4\x80\xE1\x84\x8C\xE1\x85\xAE\xE1\x86\xB3";
 	size_t il = strlen(i);
 
@@ -504,6 +624,12 @@ TEST(DecomposeExecute, MultipleHangul)
 
 TEST(DecomposeExecute, ContinueAfterEnd)
 {
+	/*
+		U+0062 U+0075 U+0068
+		     Y      Y      Y
+		     0      0      0
+	*/
+
 	const char* i = "buh";
 	size_t il = strlen(i);
 
