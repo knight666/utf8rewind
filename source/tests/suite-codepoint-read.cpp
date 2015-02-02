@@ -415,7 +415,7 @@ TEST(CodepointRead, FiveBytesFirst)
 
 TEST(CodepointRead, FiveBytesLast)
 {
-	const char* i = "\xFB\x8F\xBF\xBF\x8F";
+	const char* i = "\xFB\xBF\xBF\xBF\xBF";
 	size_t il = strlen(i);
 	unicode_t o;
 	uint8_t ol;
@@ -482,6 +482,116 @@ TEST(CodepointRead, FiveBytesNotEnoughDataTwoBytes)
 TEST(CodepointRead, FiveBytesNotEnoughDataOneByte)
 {
 	const char* i = "\xFB";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(1, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, SixBytes)
+{
+	const char* i = "\xFC\xB2\xA1\x88\xB9\xB9";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(6, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, SixBytesFirst)
+{
+	const char* i = "\xFC\x80\x80\x80\x80\x80";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(6, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, SixBytesLast)
+{
+	const char* i = "\xFC\xBF\xBF\xBF\xBF\xBF";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(6, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, SixBytesInvalidContinuationLower)
+{
+	const char* i = "\xFC\xAE\xAE\xBB\xAB\x70";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(5, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, SixBytesInvalidContinuationUpper)
+{
+	const char* i = "\xFC\xAE\xAB\xA1\xBA\xC6";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(5, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, SixBytesNotEnoughDataFiveBytes)
+{
+	const char* i = "\xFD\xAE\x90\xBA\x81";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(5, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, SixBytesNotEnoughDataFourBytes)
+{
+	const char* i = "\xFC\xEE\xB1\x8B";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(4, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, SixBytesNotEnoughDataThreeBytes)
+{
+	const char* i = "\xFC\xB1\x8B";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(3, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, SixBytesNotEnoughDataTwoBytes)
+{
+	const char* i = "\xFC\xAF";
+	size_t il = strlen(i);
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(2, (ol = (uint8_t)codepoint_read(&o, i, il)));
+	EXPECT_CPEQ(0xFFFD, o);
+}
+
+TEST(CodepointRead, SixBytesNotEnoughDataOneByte)
+{
+	const char* i = "\xFD";
 	size_t il = strlen(i);
 	unicode_t o;
 	uint8_t ol;
