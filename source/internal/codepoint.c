@@ -95,27 +95,37 @@ static const size_t Utf8ByteMaximum[6] = {
 	0x0010FFFF
 };
 
-size_t codepoint_encoded_length(unicode_t codepoint)
+uint8_t codepoint_encoded_length(unicode_t codepoint)
 {
 	if (codepoint < 0x80)
 	{
+		/* Single byte */
+
 		return 1;
 	}
 	else if (codepoint < 0x800)
 	{
+		/* Two bytes */
+
 		return 2;
 	}
 	else if (codepoint < 0x10000)
 	{
+		/* Three bytes */
+
 		return 3;
 	}
 	else if (codepoint <= MAX_LEGAL_UNICODE)
 	{
+		/* Four bytes */
+
 		return 4;
 	}
 	else
 	{
-		return 3;
+		/* Illegal value */
+
+		return 0;
 	}
 }
 
