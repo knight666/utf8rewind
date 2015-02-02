@@ -168,7 +168,7 @@ TEST(DecomposeExecute, StartMultipleNonStarterUnordered)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
-TEST(DecomposeExecute, StartMultipleNonStarterSequence)
+TEST(DecomposeExecute, StartMultipleNonStarterSequenceOrdered)
 {
 	/*
 		U+031B U+0300 U+03B7
@@ -199,7 +199,39 @@ TEST(DecomposeExecute, StartMultipleNonStarterSequence)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
-TEST(DecomposeExecute, SequenceUnaffectedOrdered)
+TEST(DecomposeExecute, StartMultipleNonStarterSequenceUnordered)
+{
+	/*
+		U+0731 U+0EC8 U+061A U+037B
+		     Y      Y      Y      Y
+		   220    122     32      0
+	*/
+
+	const char* i = "\xDC\xB1\xE0\xBB\x88\xD8\x9A\xCD\xBB";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0731, Yes, 220);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0EC8, Yes, 122);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x061A, Yes, 32);
+	EXPECT_FALSE(state.output->stable);
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x037B, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, SequenceOrdered)
 {
 	/*
 		U+006F U+031D U+030B
@@ -227,7 +259,7 @@ TEST(DecomposeExecute, SequenceUnaffectedOrdered)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
-TEST(DecomposeExecute, SequenceUnaffectedUnordered)
+TEST(DecomposeExecute, SequenceUnordered)
 {
 	/*
 		U+0041 U+0304 U+031D
@@ -255,35 +287,7 @@ TEST(DecomposeExecute, SequenceUnaffectedUnordered)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
-TEST(DecomposeExecute, SequenceDecomposedOrdered)
-{
-	/*
-		U+0100 U+0308
-		     N      Y
-		     0    230
-	*/
-
-	const char* i = "\xC4\x80\xCC\x88";
-	size_t il = strlen(i);
-
-	StreamState input;
-	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
-
-	StreamState output = { 0 };
-
-	DecomposeState state;
-	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
-
-	EXPECT_EQ(3, decompose_execute(&state));
-	CHECK_STREAM_ENTRY(*state.output, 0, 0x0041, Yes, 0);
-	CHECK_STREAM_ENTRY(*state.output, 1, 0x0304, Yes, 230);
-	CHECK_STREAM_ENTRY(*state.output, 2, 0x0308, Yes, 230);
-	EXPECT_FALSE(state.output->stable);
-
-	EXPECT_EQ(0, decompose_execute(&state));
-}
-
-TEST(DecomposeExecute, SequenceDecomposedUnordered)
+TEST(DecomposeExecute, DecomposedUnordered)
 {
 	/*
 		U+011D U+0316
@@ -307,6 +311,127 @@ TEST(DecomposeExecute, SequenceDecomposedUnordered)
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x0302, Yes, 230);
 	CHECK_STREAM_ENTRY(*state.output, 2, 0x0316, Yes, 220);
 	EXPECT_FALSE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, DecomposedAndStarter)
+{
+	/*
+		U+1F81 U+1A55
+		     N      Y
+		     0      0
+	*/
+
+	const char* i = "\xE1\xBE\x81\xE1\xA9\x95";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x03B1, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0314, Yes, 230);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x0345, Yes, 240);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x1A55, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, DecomposedAndNonStarterOrdered)
+{
+	/*
+		U+0172 U+0301
+		     N      Y
+		     0    230
+	*/
+
+	const char* i = "\xC5\xB2\xCC\x81";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0055, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0328, Yes, 202);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x0301, Yes, 230);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, DecomposedAndNonStarterUnordered)
+{
+	/*
+		U+0170 U+0F37
+		     N      Y
+		     0    220
+	*/
+
+	const char* i = "\xC5\xB0\xE0\xBC\xB7";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0055, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x030B, Yes, 230);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x0F37, Yes, 220);
+	EXPECT_FALSE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
+TEST(DecomposeExecute, DecomposedAndDecomposed)
+{
+	/*
+		U+0176 U+022A
+		     Y      Y
+		     0      0
+	*/
+
+	const char* i = "\xC5\xB6\xC8\xAA";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(2, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x0059, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0302, Yes, 230);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(3, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x004F, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0308, Yes, 230);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x0304, Yes, 230);
+	EXPECT_TRUE(state.output->stable);
 
 	EXPECT_EQ(0, decompose_execute(&state));
 }
@@ -512,8 +637,6 @@ TEST(DecomposeExecute, MultipleSequenceOrdered)
 
 	const char* i = "\xE2\x88\x88\xCC\xB8\xCC\xB3\xC5\x8D\xCD\x85";
 	size_t il = strlen(i);
-
-	std::string seq = helpers::sequence(i, UnicodeProperty_Normalization_Decompose);
 
 	StreamState input;
 	EXPECT_EQ(1, stream_initialize(&input, i, il, 0));
