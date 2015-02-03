@@ -964,7 +964,7 @@ TEST(DecodeUtf16, SixBytesNotEnoughSpace)
 
 TEST(DecodeUtf16, SurrogatePair)
 {
-	const char* i = "\xED\xAD\xF0\xED\xBE\x80";
+	const char* i = "\xED\xAD\x80\xED\xBE\x80";
 	const size_t s = 256;
 	utf16_t o[s] = { 0 };
 	int32_t errors = 0;
