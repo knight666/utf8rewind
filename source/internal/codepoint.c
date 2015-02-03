@@ -111,69 +111,54 @@ uint8_t codepoint_encoded_length(unicode_t codepoint)
 	}
 }
 
-size_t codepoint_write(unicode_t codepoint, char** dst, size_t* dstSize, int32_t* errors)
+size_t codepoint_write(unicode_t codepoint, char** target, size_t* targetSize, int32_t* errors)
 {
-	char* target;
-	size_t encoded_length;
+	char* dst;
 
-	if (codepoint < 0x80)
-	{
-		encoded_length = 1;
-	}
-	else if (codepoint < 0x800)
-	{
-		encoded_length = 2;
-	}
-	else if (codepoint < 0x10000)
-	{
-		encoded_length = 3;
-	}
-	else if (codepoint <= MAX_LEGAL_UNICODE)
-	{
-		encoded_length = 4;
-	}
-	else
+	uint8_t encoded_length = codepoint_encoded_length(codepoint);
+	if (encoded_length == 0)
 	{
 		codepoint = REPLACEMENT_CHARACTER;
 		encoded_length = 3;
 	}
 
-	if (*dst != 0)
+	if (*target != 0)
 	{
-		if (*dstSize < encoded_length)
+		if (*targetSize < encoded_length)
 		{
 			if (errors != 0)
 			{
 				*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
 			}
+
 			return 0;
 		}
 
-		target = *dst;
+		dst = *target;
 
 		switch (encoded_length)
 		{
 
 		case 1:
-			*target++ = (char)codepoint;
+			*dst++ = (char)codepoint;
 			break;
 
 		case 2:
-			*target++ = (char)(codepoint >>   6)         | 0xC0;
-			*target++ = (char)(codepoint         & 0x3F) | 0x80;
+			*dst++ = (char)(codepoint >>   6)         | 0xC0;
+			*dst++ = (char)(codepoint         & 0x3F) | 0x80;
 			break;
 
 		case 3:
-			*target++ = (char)(codepoint  >> 12)         | 0xE0;
-			*target++ = (char)((codepoint >>  6) & 0x3F) | 0x80;
-			*target++ = (char)(codepoint         & 0x3F) | 0x80;
+			*dst++ = (char)(codepoint  >> 12)         | 0xE0;
+			*dst++ = (char)((codepoint >>  6) & 0x3F) | 0x80;
+			*dst++ = (char)(codepoint         & 0x3F) | 0x80;
 			break;
 
 		case 4:
-			*target++ = (char)(codepoint  >> 18)         | 0xF0;
-			*target++ = (char)((codepoint >> 12) & 0x3F) | 0x80;
-			*target++ = (char)((codepoint >>  6) & 0x3F) | 0x80;
-			*target++ = (char)(codepoint         & 0x3F) | 0x80;
+			*dst++ = (char)(codepoint  >> 18)         | 0xF0;
+			*dst++ = (char)((codepoint >> 12) & 0x3F) | 0x80;
+			*dst++ = (char)((codepoint >>  6) & 0x3F) | 0x80;
+			*dst++ = (char)(codepoint         & 0x3F) | 0x80;
 			break;
 
 		default:
@@ -181,8 +166,8 @@ size_t codepoint_write(unicode_t codepoint, char** dst, size_t* dstSize, int32_t
 
 		}
 
-		*dst += encoded_length;
-		*dstSize -= encoded_length;
+		*target += encoded_length;
+		*targetSize -= encoded_length;
 	}
 
 	return encoded_length;
