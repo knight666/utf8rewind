@@ -819,3 +819,13 @@ TEST(CodepointRead, SixBytesInvalidContinuationFifthUpper)
 	EXPECT_EQ(5, (ol = (uint8_t)codepoint_read(&o, i, il)));
 	EXPECT_CPEQ(0xFFFD, o);
 }
+
+TEST(CodepointRead, InvalidData)
+{
+	const char* i = nullptr;
+	size_t il = 5;
+	unicode_t o;
+	uint8_t ol;
+
+	EXPECT_EQ(0, (ol = (uint8_t)codepoint_read(&o, i, il)));
+}

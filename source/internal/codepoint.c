@@ -212,6 +212,11 @@ size_t codepoint_read(unicode_t* codepoint, const char* input, size_t inputSize)
 	size_t decoded_length;
 	static const uint8_t ReadMask[7] = { 0x7F, 0xFF, 0x1F, 0x0F, 0x07, 0x03, 0x01 };
 
+	if (input == 0)
+	{
+		return 0;
+	}
+
 	if (*src == 0)
 	{
 		*codepoint = 0;
