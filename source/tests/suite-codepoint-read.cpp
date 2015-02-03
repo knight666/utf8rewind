@@ -690,7 +690,7 @@ TEST(CodepointRead, SixBytesNotEnoughDataThreeBytes)
 
 TEST(CodepointRead, SixBytesNotEnoughDataFourBytes)
 {
-	const char* i = "\xFC\xEE\xB1\x8B";
+	const char* i = "\xFC\xB0\xB1\x8B";
 	size_t il = strlen(i);
 	unicode_t o;
 	uint8_t ol;
