@@ -240,6 +240,7 @@ unicode_t compose_execute(ComposeState* state)
 					goto end;
 				}
 				else if (
+					state->cache_next > 1 &&
 					state->cache_canonical_combining_class[state->cache_next] <= state->cache_canonical_combining_class[state->cache_next - 1])
 				{
 					state->cache_next++;
