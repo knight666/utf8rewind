@@ -254,7 +254,7 @@ TEST(DecomposeExecute, SequenceOrdered)
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x006F, Yes, 0);
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x031D, Yes, 220);
 	CHECK_STREAM_ENTRY(*state.output, 2, 0x030B, Yes, 230);
-	EXPECT_FALSE(state.output->stable);
+	EXPECT_TRUE(state.output->stable);
 
 	EXPECT_EQ(0, decompose_execute(&state));
 }
@@ -656,7 +656,7 @@ TEST(DecomposeExecute, MultipleSequenceOrdered)
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x006F, Yes, 0);
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x0304, Yes, 230);
 	CHECK_STREAM_ENTRY(*state.output, 2, 0x0345, Yes, 240);
-	EXPECT_FALSE(state.output->stable);
+	EXPECT_TRUE(state.output->stable);
 
 	EXPECT_EQ(0, decompose_execute(&state));
 }
