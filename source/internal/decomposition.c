@@ -156,8 +156,8 @@ uint8_t decompose_execute(DecomposeState* state)
 
 					while (src_size > 0)
 					{
-						size_t offset = codepoint_read(dst_codepoint, src, src_size);
-						if (offset == 0)
+						uint8_t decoded_size = codepoint_read(src, src_size, dst_codepoint);
+						if (decoded_size == 0)
 						{
 							break;
 						}
@@ -168,8 +168,8 @@ uint8_t decompose_execute(DecomposeState* state)
 
 						state->output->current++;
 
-						src += offset;
-						src_size -= offset;
+						src += decoded_size;
+						src_size -= decoded_size;
 					}
 				}
 			}

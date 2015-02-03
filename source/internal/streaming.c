@@ -120,7 +120,7 @@ uint8_t stream_read(StreamState* state)
 
 		/* Peek the next codepoint */
 
-		state->last_length = codepoint_read(&state->codepoint[state->current], state->src, state->src_size);
+		state->last_length = codepoint_read(state->src, state->src_size, &state->codepoint[state->current]);
 
 		state->quick_check[state->current] = database_queryproperty(state->codepoint[state->current], state->property);
 		state->canonical_combining_class[state->current] = database_queryproperty(state->codepoint[state->current], UnicodeProperty_CanonicalCombiningClass);
