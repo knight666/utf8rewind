@@ -77,24 +77,6 @@ const uint8_t codepoint_decoded_length[256] = {
 	0, 0                    /* 0xFE - 0xFF */
 };
 
-static const size_t Utf8ByteMinimum[6] = {
-	0x00000000,
-	0x00000080,
-	0x00000800,
-	0x00010000,
-	0x0010FFFF,
-	0x0010FFFF
-};
-
-static const size_t Utf8ByteMaximum[6] = {
-	0x0000007F,
-	0x000007FF,
-	0x0000FFFF,
-	0x0010FFFF,
-	0x0010FFFF,
-	0x0010FFFF
-};
-
 uint8_t codepoint_encoded_length(unicode_t codepoint)
 {
 	if (codepoint < 0x80)
@@ -231,7 +213,8 @@ size_t codepoint_read(unicode_t* codepoint, const char* input, size_t inputSize)
 	{
 		/* Multi-byte sequence */
 
-		static const uint8_t ReadMask[5] = { 0x1F, 0x0F, 0x07, 0x03, 0x01 };
+		static const uint8_t ReadMask[7] = { 0x00, 0x00, 0x1F, 0x0F, 0x07, 0x03, 0x01 };
+		static const unicode_t SequenceMinimum[5] = { 0x0000, 0x0000, 0x0080, 0x0800, 0x10000 };
 
 		/* Length of sequence is determined by first byte */
 
@@ -241,45 +224,73 @@ size_t codepoint_read(unicode_t* codepoint, const char* input, size_t inputSize)
 			/* Not a multi-byte sequence starter */
 
 			*codepoint = REPLACEMENT_CHARACTER;
+
 			return 1;
 		}
-
-		/* Use read mask to strip value from first byte */
-
-		*codepoint = (unicode_t)(*src & ReadMask[decoded_length - 2]);
-
-		/* All bytes in the sequence must be processed */
-
-		for (src_index = 1; src_index < decoded_length; ++src_index)
+		else if (decoded_length >= 5)
 		{
-			src++;
+			/* Always an overlong sequence */
 
-			/* Check if next byte is valid */
+			*codepoint = REPLACEMENT_CHARACTER;
 
-			if (src_size == 0 ||               /* Not enough data */
-				(*src < 0x80 || *src > 0xBF))  /* Not a continuation byte */
+			/* All bytes in the sequence must be processed */
+
+			for (src_index = 1; src_index < decoded_length; ++src_index)
 			{
-				*codepoint = REPLACEMENT_CHARACTER;
-				return src_index;
+				src++;
+
+				/* Check if next byte is valid */
+
+				if (src_size == 0 ||               /* Not enough data */
+					(*src < 0x80 || *src > 0xBF))  /* Not a continuation byte */
+				{
+					return src_index;
+				}
+
+				src_size--;
 			}
 
-			src_size--;
-
-			/* Add value of continuation byte to codepoint */
-
-			*codepoint = (*codepoint << 6) | (*src & 0x3F);
+			return decoded_length;
 		}
-
-		/* Check for overlong sequences and surrogate pairs */
-
-		if (*codepoint < Utf8ByteMinimum[decoded_length - 1] ||
-			*codepoint > Utf8ByteMaximum[decoded_length - 1] ||
-			(*codepoint >= SURROGATE_HIGH_START && *codepoint <= SURROGATE_HIGH_END) ||
-			(*codepoint >= SURROGATE_LOW_START && *codepoint <= SURROGATE_LOW_END))
+		else
 		{
-			*codepoint = REPLACEMENT_CHARACTER;
-		}
+			/* Use read mask to strip value from first byte */
 
-		return decoded_length;
+			*codepoint = (unicode_t)(*src & ReadMask[decoded_length]);
+
+			/* All bytes in the sequence must be processed */
+
+			for (src_index = 1; src_index < decoded_length; ++src_index)
+			{
+				src++;
+
+				/* Check if next byte is valid */
+
+				if (src_size == 0 ||               /* Not enough data */
+					(*src < 0x80 || *src > 0xBF))  /* Not a continuation byte */
+				{
+					*codepoint = REPLACEMENT_CHARACTER;
+					return src_index;
+				}
+
+				src_size--;
+
+				/* Add value of continuation byte to codepoint */
+
+				*codepoint = (*codepoint << 6) | (*src & 0x3F);
+			}
+
+			/* Check for overlong sequences and surrogate pairs */
+
+			if (*codepoint < SequenceMinimum[decoded_length] ||
+				*codepoint > MAX_LEGAL_UNICODE ||
+				(*codepoint >= SURROGATE_HIGH_START && *codepoint <= SURROGATE_HIGH_END) ||
+				(*codepoint >= SURROGATE_LOW_START && *codepoint <= SURROGATE_LOW_END))
+			{
+				*codepoint = REPLACEMENT_CHARACTER;
+			}
+
+			return decoded_length;
+		}
 	}
 }
