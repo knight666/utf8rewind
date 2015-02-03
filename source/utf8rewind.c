@@ -104,51 +104,41 @@ size_t utf8len(const char* text)
 
 size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
-	size_t encoded_length = 0;
-	utf16_t surrogate_low;
-	utf16_t current;
-	unicode_t codepoint;
-	const utf16_t* src = (const utf16_t*)input;
+	const utf16_t* src = input;
 	size_t src_size = inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
 	size_t bytes_written = 0;
 
-	if (input == 0 || inputSize < sizeof(utf16_t))
+	if (input == 0 ||
+		inputSize < sizeof(utf16_t))
 	{
-		if (errors != 0)
-		{
-			*errors = UTF8_ERR_INVALID_DATA;
-		}
-		return bytes_written;
+		goto invaliddata;
 	}
 
 	while (src_size > 0)
 	{
-		current = *src;
+		unicode_t codepoint = (unicode_t)*src;
+		uint8_t encoded_size;
 
-		if (current == 0)
+		if (codepoint == 0)
 		{
 			break;
 		}
-		else if (current >= SURROGATE_HIGH_START && current <= SURROGATE_LOW_END)
+
+		if (codepoint >= SURROGATE_HIGH_START &&
+			codepoint <= SURROGATE_LOW_END)
 		{
-			if (current > SURROGATE_HIGH_END)
+			utf16_t surrogate_low;
+
+			if (codepoint > SURROGATE_HIGH_END)
 			{
-				if (errors != 0)
-				{
-					*errors = UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
-				}
-				return bytes_written;
+				goto unmatchedhigh;
 			}
 
 			if (src_size < sizeof(utf16_t))
 			{
-				if (errors != 0)
-				{
-					*errors = UTF8_ERR_INVALID_DATA;
-				}
-				return bytes_written;
+				goto invaliddata;
 			}
 
 			src++;
@@ -156,100 +146,10 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 
 			surrogate_low = *src;
 
-			if (surrogate_low < SURROGATE_LOW_START || surrogate_low > SURROGATE_LOW_END)
+			if (surrogate_low < SURROGATE_LOW_START ||
+				surrogate_low > SURROGATE_LOW_END)
 			{
-				if (errors != 0)
-				{
-					*errors = UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
-				}
-				return bytes_written;
-			}
-
-			codepoint =
-				0x10000 +
-				(surrogate_low - SURROGATE_LOW_START) +
-				((current - SURROGATE_HIGH_START) << 10);
-		}
-		else
-		{
-			codepoint = (unicode_t)current;
-		}
-
-		encoded_length = codepoint_write(codepoint, &dst, &dst_size, errors);
-		if (encoded_length == 0)
-		{
-			return bytes_written;
-		}
-
-		src++;
-		src_size -= sizeof(utf16_t);
-
-		bytes_written += encoded_length;
-	}
-
-	return bytes_written;
-}
-
-size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
-{
-	unicode_t codepoint;
-	size_t encoded_length;
-	utf16_t surrogate_low;
-	const unicode_t* src = (const unicode_t*)input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
-	size_t bytes_written = 0;
-
-	if (input == 0 || inputSize < sizeof(unicode_t))
-	{
-		if (errors != 0)
-		{
-			*errors = UTF8_ERR_INVALID_DATA;
-		}
-		return bytes_written;
-	}
-
-	while (src_size > 0)
-	{
-		codepoint = *src;
-
-		if (codepoint == 0)
-		{
-			break;
-		}
-		else if (codepoint >= SURROGATE_HIGH_START && codepoint <= SURROGATE_LOW_END)
-		{
-			if (codepoint > SURROGATE_HIGH_END)
-			{
-				if (errors != 0)
-				{
-					*errors = UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
-				}
-				return bytes_written;
-			}
-
-			if (src_size < sizeof(unicode_t))
-			{
-				if (errors != 0)
-				{
-					*errors = UTF8_ERR_INVALID_DATA;
-				}
-				return bytes_written;
-			}
-
-			src++;
-			src_size -= sizeof(unicode_t);
-
-			surrogate_low = *src;
-
-			if (surrogate_low < SURROGATE_LOW_START || surrogate_low > SURROGATE_LOW_END)
-			{
-				if (errors != 0)
-				{
-					*errors = UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
-				}
-				return bytes_written;
+				goto unmatchedlow;
 			}
 
 			codepoint =
@@ -258,18 +158,145 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 				((codepoint - SURROGATE_HIGH_START) << 10);
 		}
 
-		encoded_length = codepoint_write(codepoint, &dst, &dst_size, errors);
-		if (encoded_length == 0)
+		encoded_size = codepoint_write(codepoint, &dst, &dst_size);
+		if (encoded_size == 0)
 		{
-			return bytes_written;
+			goto outofspace;
 		}
+
+		bytes_written += encoded_size;
+
+		src++;
+		src_size -= sizeof(utf16_t);
+	}
+
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return bytes_written;
+
+unmatchedhigh:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
+	}
+	return bytes_written;
+
+unmatchedlow:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
+	}
+	return bytes_written;
+}
+
+size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+{
+	const unicode_t* src = input;
+	size_t src_size = inputSize;
+	char* dst = target;
+	size_t dst_size = targetSize;
+	size_t bytes_written = 0;
+
+	if (input == 0 ||
+		inputSize < sizeof(unicode_t))
+	{
+		goto invaliddata;
+	}
+
+	while (src_size > 0)
+	{
+		unicode_t codepoint = *src;
+		uint8_t encoded_size;
+
+		if (codepoint == 0)
+		{
+			break;
+		}
+
+		if (codepoint >= SURROGATE_HIGH_START &&
+			codepoint <= SURROGATE_LOW_END)
+		{
+			unicode_t surrogate_low;
+
+			if (codepoint > SURROGATE_HIGH_END)
+			{
+				goto unmatchedhigh;
+			}
+
+			if (src_size < sizeof(unicode_t))
+			{
+				goto invaliddata;
+			}
+
+			src++;
+			src_size -= sizeof(unicode_t);
+
+			surrogate_low = *src;
+
+			if (surrogate_low < SURROGATE_LOW_START ||
+				surrogate_low > SURROGATE_LOW_END)
+			{
+				goto unmatchedlow;
+			}
+
+			codepoint =
+				0x10000 +
+				(surrogate_low - SURROGATE_LOW_START) +
+				((codepoint - SURROGATE_HIGH_START) << 10);
+		}
+
+		encoded_size = codepoint_write(codepoint, &dst, &dst_size);
+		if (encoded_size == 0)
+		{
+			goto outofspace;
+		}
+
+		bytes_written += encoded_size;
 
 		src++;
 		src_size -= sizeof(unicode_t);
-
-		bytes_written += encoded_length;
 	}
 
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return bytes_written;
+
+unmatchedhigh:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR;
+	}
+	return bytes_written;
+
+unmatchedlow:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR;
+	}
 	return bytes_written;
 }
 
@@ -815,7 +842,7 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 		while (1)
 		{
-			size_t written;
+			uint8_t encoded_size;
 
 			result = compose_execute(&compose);
 			if (result == 0)
@@ -823,13 +850,13 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 				break;
 			}
 
-			written = codepoint_write(result, &target, &targetSize, errors);
-			if (written == 0)
+			encoded_size = codepoint_write(result, &target, &targetSize);
+			if (encoded_size == 0)
 			{
 				goto outofspace;
 			}
 
-			bytes_written += written;
+			bytes_written += encoded_size;
 		}
 	}
 

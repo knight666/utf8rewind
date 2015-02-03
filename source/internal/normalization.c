@@ -99,11 +99,11 @@ size_t normalize_decomposition(const char* input, size_t inputSize, char* target
 						goto outofspace;
 					}
 
-					codepoint_write(l, &dst, &dst_size, errors);
-					codepoint_write(v, &dst, &dst_size, errors);
+					codepoint_write(l, &dst, &dst_size);
+					codepoint_write(v, &dst, &dst_size);
 					if (t != HANGUL_T_FIRST)
 					{
-						codepoint_write(t, &dst, &dst_size, errors);
+						codepoint_write(t, &dst, &dst_size);
 					}
 				}
 				else
@@ -129,18 +129,18 @@ size_t normalize_decomposition(const char* input, size_t inputSize, char* target
 					}
 					else
 					{
-						resolved_size = codepoint_write(codepoint, &dst, &dst_size, errors);
+						resolved_size = codepoint_write(codepoint, &dst, &dst_size);
 					}
 				}
 			}
 			else
 			{
-				resolved_size = codepoint_write(codepoint, &dst, &dst_size, errors);
+				resolved_size = codepoint_write(codepoint, &dst, &dst_size);
 			}
 
 			if (resolved_size == 0)
 			{
-				break;
+				goto outofspace;
 			}
 			bytes_written += resolved_size;
 

@@ -111,26 +111,21 @@ uint8_t codepoint_encoded_length(unicode_t codepoint)
 	}
 }
 
-size_t codepoint_write(unicode_t codepoint, char** target, size_t* targetSize, int32_t* errors)
+uint8_t codepoint_write(unicode_t encoded, char** target, size_t* targetSize)
 {
-	char* dst;
-
-	uint8_t encoded_length = codepoint_encoded_length(codepoint);
+	uint8_t encoded_length = codepoint_encoded_length(encoded);
 	if (encoded_length == 0)
 	{
-		codepoint = REPLACEMENT_CHARACTER;
+		encoded = REPLACEMENT_CHARACTER;
 		encoded_length = 3;
 	}
 
 	if (*target != 0)
 	{
+		char* dst;
+
 		if (*targetSize < encoded_length)
 		{
-			if (errors != 0)
-			{
-				*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
-			}
-
 			return 0;
 		}
 
@@ -140,25 +135,25 @@ size_t codepoint_write(unicode_t codepoint, char** target, size_t* targetSize, i
 		{
 
 		case 1:
-			*dst++ = (char)codepoint;
+			*dst++ = (char)encoded;
 			break;
 
 		case 2:
-			*dst++ = (char)(codepoint >>   6)         | 0xC0;
-			*dst++ = (char)(codepoint         & 0x3F) | 0x80;
+			*dst++ = (char)(encoded >>   6)         | 0xC0;
+			*dst++ = (char)(encoded         & 0x3F) | 0x80;
 			break;
 
 		case 3:
-			*dst++ = (char)(codepoint  >> 12)         | 0xE0;
-			*dst++ = (char)((codepoint >>  6) & 0x3F) | 0x80;
-			*dst++ = (char)(codepoint         & 0x3F) | 0x80;
+			*dst++ = (char)(encoded  >> 12)         | 0xE0;
+			*dst++ = (char)((encoded >>  6) & 0x3F) | 0x80;
+			*dst++ = (char)(encoded         & 0x3F) | 0x80;
 			break;
 
 		case 4:
-			*dst++ = (char)(codepoint  >> 18)         | 0xF0;
-			*dst++ = (char)((codepoint >> 12) & 0x3F) | 0x80;
-			*dst++ = (char)((codepoint >>  6) & 0x3F) | 0x80;
-			*dst++ = (char)(codepoint         & 0x3F) | 0x80;
+			*dst++ = (char)(encoded  >> 18)         | 0xF0;
+			*dst++ = (char)((encoded >> 12) & 0x3F) | 0x80;
+			*dst++ = (char)((encoded >>  6) & 0x3F) | 0x80;
+			*dst++ = (char)(encoded         & 0x3F) | 0x80;
 			break;
 
 		default:
