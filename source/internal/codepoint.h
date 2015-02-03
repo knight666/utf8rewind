@@ -55,7 +55,7 @@ extern const uint8_t codepoint_decoded_length[256];
 
 uint8_t codepoint_encoded_length(unicode_t codepoint);
 
-size_t codepoint_write(unicode_t codepoint, char** target, size_t* targetSize, int32_t* errors);
+uint8_t codepoint_write(unicode_t encoded, char** target, size_t* targetSize);
 
 size_t codepoint_read(unicode_t* codepoint, const char* input, size_t inputSize);
 

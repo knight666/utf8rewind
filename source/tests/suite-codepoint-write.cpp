@@ -12,13 +12,11 @@ TEST(CodepointWrite, OneByte)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(1, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(1, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("A", o);
 	EXPECT_EQ(o + 1, d);
 	EXPECT_EQ(255 - 1, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, OneByteFirst)
@@ -27,13 +25,11 @@ TEST(CodepointWrite, OneByteFirst)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(1, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(1, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\0", o);
 	EXPECT_EQ(o + 1, d);
 	EXPECT_EQ(255 - 1, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, OneByteLast)
@@ -42,13 +38,11 @@ TEST(CodepointWrite, OneByteLast)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(1, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(1, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\x7F", o);
 	EXPECT_EQ(o + 1, d);
 	EXPECT_EQ(255 - 1, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, OneByteEncodedLength)
@@ -56,10 +50,8 @@ TEST(CodepointWrite, OneByteEncodedLength)
 	unicode_t c = 0x0071;
 	char* d = nullptr;
 	size_t ds = 0;
-	int32_t errors = 0;
 
-	EXPECT_EQ(1, codepoint_write(c, &d, &ds, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_EQ(1, codepoint_write(c, &d, &ds));
 }
 
 TEST(CodepointWrite, OneByteNotEnoughSpaceZeroBytes)
@@ -68,13 +60,11 @@ TEST(CodepointWrite, OneByteNotEnoughSpaceZeroBytes)
 	char o[256] = { 0 };
 	size_t os = 0;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(0, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, TwoBytes)
@@ -83,13 +73,11 @@ TEST(CodepointWrite, TwoBytes)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(2, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(2, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xC4\x84", o);
 	EXPECT_EQ(o + 2, d);
 	EXPECT_EQ(255 - 2, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, TwoBytesFirst)
@@ -98,13 +86,11 @@ TEST(CodepointWrite, TwoBytesFirst)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(2, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(2, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xC2\x80", o);
 	EXPECT_EQ(o + 2, d);
 	EXPECT_EQ(255 - 2, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, TwoBytesLast)
@@ -113,13 +99,11 @@ TEST(CodepointWrite, TwoBytesLast)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(2, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(2, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xDF\xBF", o);
 	EXPECT_EQ(o + 2, d);
 	EXPECT_EQ(255 - 2, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, TwoBytesEncodedLength)
@@ -127,10 +111,8 @@ TEST(CodepointWrite, TwoBytesEncodedLength)
 	unicode_t c = 0x00A8;
 	char* d = nullptr;
 	size_t ds = 0;
-	int32_t errors = 0;
 
-	EXPECT_EQ(2, codepoint_write(c, &d, &ds, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_EQ(2, codepoint_write(c, &d, &ds));
 }
 
 TEST(CodepointWrite, TwoBytesNotEnoughSpaceOneByte)
@@ -139,13 +121,11 @@ TEST(CodepointWrite, TwoBytesNotEnoughSpaceOneByte)
 	char o[256] = { 0 };
 	size_t os = 1;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(1, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, TwoBytesNotEnoughSpaceZeroBytes)
@@ -154,13 +134,11 @@ TEST(CodepointWrite, TwoBytesNotEnoughSpaceZeroBytes)
 	char o[256] = { 0 };
 	size_t os = 0;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(0, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, ThreeBytes)
@@ -169,13 +147,11 @@ TEST(CodepointWrite, ThreeBytes)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(3, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(3, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xE3\xB6\xB1", o);
 	EXPECT_EQ(o + 3, d);
 	EXPECT_EQ(255 - 3, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, ThreeBytesFirst)
@@ -184,13 +160,11 @@ TEST(CodepointWrite, ThreeBytesFirst)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(3, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(3, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xE0\xA0\x80", o);
 	EXPECT_EQ(o + 3, d);
 	EXPECT_EQ(255 - 3, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, ThreeBytesLast)
@@ -199,13 +173,11 @@ TEST(CodepointWrite, ThreeBytesLast)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(3, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(3, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xEF\xBF\xBF", o);
 	EXPECT_EQ(o + 3, d);
 	EXPECT_EQ(255 - 3, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, ThreeBytesEncodedLength)
@@ -213,10 +185,8 @@ TEST(CodepointWrite, ThreeBytesEncodedLength)
 	unicode_t c = 0x2A44;
 	char* d = nullptr;
 	size_t ds = 0;
-	int32_t errors = 0;
 
-	EXPECT_EQ(3, codepoint_write(c, &d, &ds, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_EQ(3, codepoint_write(c, &d, &ds));
 }
 
 TEST(CodepointWrite, ThreeBytesNotEnoughSpaceTwoBytes)
@@ -225,13 +195,11 @@ TEST(CodepointWrite, ThreeBytesNotEnoughSpaceTwoBytes)
 	char o[256] = { 0 };
 	size_t os = 2;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(2, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, ThreeBytesNotEnoughSpaceOneByte)
@@ -240,13 +208,11 @@ TEST(CodepointWrite, ThreeBytesNotEnoughSpaceOneByte)
 	char o[256] = { 0 };
 	size_t os = 1;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(1, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, ThreeBytesNotEnoughSpaceZeroBytes)
@@ -255,13 +221,11 @@ TEST(CodepointWrite, ThreeBytesNotEnoughSpaceZeroBytes)
 	char o[256] = { 0 };
 	size_t os = 0;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(0, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, FourBytes)
@@ -270,13 +234,11 @@ TEST(CodepointWrite, FourBytes)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(4, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(4, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xF0\x9D\x90\xA4", o);
 	EXPECT_EQ(o + 4, d);
 	EXPECT_EQ(255 - 4, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, FourBytesFirst)
@@ -285,13 +247,11 @@ TEST(CodepointWrite, FourBytesFirst)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(4, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(4, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xF0\x90\x80\x80", o);
 	EXPECT_EQ(o + 4, d);
 	EXPECT_EQ(255 - 4, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, FourBytesLast)
@@ -300,13 +260,11 @@ TEST(CodepointWrite, FourBytesLast)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(4, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(4, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xF4\x8F\xBF\xBF", o);
 	EXPECT_EQ(o + 4, d);
 	EXPECT_EQ(255 - 4, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, FourBytesEncodedLength)
@@ -314,10 +272,8 @@ TEST(CodepointWrite, FourBytesEncodedLength)
 	unicode_t c = 0xAD224;
 	char* d = nullptr;
 	size_t ds = 0;
-	int32_t errors = 0;
 
-	EXPECT_EQ(4, codepoint_write(c, &d, &ds, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_EQ(4, codepoint_write(c, &d, &ds));
 }
 
 TEST(CodepointWrite, FourBytesNotEnoughSpaceThreeBytes)
@@ -326,13 +282,11 @@ TEST(CodepointWrite, FourBytesNotEnoughSpaceThreeBytes)
 	char o[256] = { 0 };
 	size_t os = 3;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(3, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, FourBytesNotEnoughSpaceTwoBytes)
@@ -341,13 +295,11 @@ TEST(CodepointWrite, FourBytesNotEnoughSpaceTwoBytes)
 	char o[256] = { 0 };
 	size_t os = 2;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(2, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, FourBytesNotEnoughSpaceOneByte)
@@ -356,13 +308,11 @@ TEST(CodepointWrite, FourBytesNotEnoughSpaceOneByte)
 	char o[256] = { 0 };
 	size_t os = 1;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(1, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, FourBytesNotEnoughSpaceZeroBytes)
@@ -371,13 +321,11 @@ TEST(CodepointWrite, FourBytesNotEnoughSpaceZeroBytes)
 	char o[256] = { 0 };
 	size_t os = 0;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(0, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, IllegalUnicode)
@@ -386,13 +334,11 @@ TEST(CodepointWrite, IllegalUnicode)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(3, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(3, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
 	EXPECT_EQ(o + 3, d);
 	EXPECT_EQ(255 - 3, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, IllegalUnicodeEncodedLength)
@@ -400,10 +346,8 @@ TEST(CodepointWrite, IllegalUnicodeEncodedLength)
 	unicode_t c = 0xA898AA;
 	char* d = nullptr;
 	size_t ds = 0;
-	int32_t errors = 0;
 
-	EXPECT_EQ(3, codepoint_write(c, &d, &ds, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_EQ(3, codepoint_write(c, &d, &ds));
 }
 
 TEST(CodepointWrite, IllegalUnicodeNotEnoughSpaceTwoBytes)
@@ -412,13 +356,11 @@ TEST(CodepointWrite, IllegalUnicodeNotEnoughSpaceTwoBytes)
 	char o[256] = { 0 };
 	size_t os = 2;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(2, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, IllegalUnicodeNotEnoughSpaceOneByte)
@@ -427,13 +369,11 @@ TEST(CodepointWrite, IllegalUnicodeNotEnoughSpaceOneByte)
 	char o[256] = { 0 };
 	size_t os = 1;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(1, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, IllegalUnicodeNotEnoughSpaceZeroBytes)
@@ -442,13 +382,11 @@ TEST(CodepointWrite, IllegalUnicodeNotEnoughSpaceZeroBytes)
 	char o[256] = { 0 };
 	size_t os = 0;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(0, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, SurrogatePairHigh)
@@ -457,13 +395,11 @@ TEST(CodepointWrite, SurrogatePairHigh)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(3, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(3, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xED\xA8\xA2", o);
 	EXPECT_EQ(o + 3, d);
 	EXPECT_EQ(255 - 3, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, SurrogatePairHighFirst)
@@ -472,13 +408,11 @@ TEST(CodepointWrite, SurrogatePairHighFirst)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(3, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(3, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xED\xA0\x80", o);
 	EXPECT_EQ(o + 3, d);
 	EXPECT_EQ(255 - 3, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, SurrogatePairHighLast)
@@ -487,13 +421,11 @@ TEST(CodepointWrite, SurrogatePairHighLast)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(3, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(3, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xED\xAF\xBF", o);
 	EXPECT_EQ(o + 3, d);
 	EXPECT_EQ(255 - 3, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, SurrogatePairLow)
@@ -502,13 +434,11 @@ TEST(CodepointWrite, SurrogatePairLow)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(3, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(3, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xED\xB7\x8A", o);
 	EXPECT_EQ(o + 3, d);
 	EXPECT_EQ(255 - 3, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, SurrogatePairLowFirst)
@@ -517,13 +447,11 @@ TEST(CodepointWrite, SurrogatePairLowFirst)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(3, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(3, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xED\xB0\x80", o);
 	EXPECT_EQ(o + 3, d);
 	EXPECT_EQ(255 - 3, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, SurrogatePairLowLast)
@@ -532,13 +460,11 @@ TEST(CodepointWrite, SurrogatePairLowLast)
 	char o[256] = { 0 };
 	size_t os = 255;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(3, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(3, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("\xED\xBF\xBF", o);
 	EXPECT_EQ(o + 3, d);
 	EXPECT_EQ(255 - 3, os);
-	EXPECT_EQ(0, errors);
 }
 
 TEST(CodepointWrite, SurrogatePairEncodedLength)
@@ -546,10 +472,8 @@ TEST(CodepointWrite, SurrogatePairEncodedLength)
 	unicode_t c = 0xDADA;
 	char* d = nullptr;
 	size_t ds = 0;
-	int32_t errors = 0;
 
-	EXPECT_EQ(3, codepoint_write(c, &d, &ds, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_EQ(3, codepoint_write(c, &d, &ds));
 }
 
 TEST(CodepointWrite, SurrogatePairNotEnoughSpaceTwoBytes)
@@ -558,13 +482,11 @@ TEST(CodepointWrite, SurrogatePairNotEnoughSpaceTwoBytes)
 	char o[256] = { 0 };
 	size_t os = 2;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(2, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, SurrogatePairNotEnoughSpaceOneByte)
@@ -573,13 +495,11 @@ TEST(CodepointWrite, SurrogatePairNotEnoughSpaceOneByte)
 	char o[256] = { 0 };
 	size_t os = 1;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(1, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(CodepointWrite, SurrogatePairNotEnoughSpaceZeroBytes)
@@ -588,11 +508,9 @@ TEST(CodepointWrite, SurrogatePairNotEnoughSpaceZeroBytes)
 	char o[256] = { 0 };
 	size_t os = 0;
 	char* d = o;
-	int32_t errors = 0;
 
-	EXPECT_EQ(0, codepoint_write(c, &d, &os, &errors));
+	EXPECT_EQ(0, codepoint_write(c, &d, &os));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(o, d);
 	EXPECT_EQ(0, os);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }

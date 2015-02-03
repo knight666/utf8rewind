@@ -163,13 +163,13 @@ uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_
 		uint8_t i;
 		for (i = 0; i < state->current; ++i)
 		{
-			size_t decoded = codepoint_write(state->codepoint[i], &output, &outputSize, 0);
-			if (decoded == 0)
+			uint8_t encoded_size = codepoint_write(state->codepoint[i], &output, &outputSize);
+			if (encoded_size == 0)
 			{
 				return 0;
 			}
 
-			*written += (uint8_t)decoded;
+			*written += encoded_size;
 		}
 	}
 
