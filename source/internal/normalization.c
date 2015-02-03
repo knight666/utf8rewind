@@ -70,13 +70,13 @@ size_t normalize_decomposition(const char* input, size_t inputSize, char* target
 		else
 		{
 			size_t resolved_size = 0;
-			unicode_t codepoint;
-			size_t codepoint_length = codepoint_read(&codepoint, src, src_size);
+			unicode_t decoded;
+			uint8_t decoded_size = codepoint_read(src, src_size, &decoded);
 
-			if (database_queryproperty(codepoint, propertyType) == QuickCheckResult_No)
+			if (database_queryproperty(decoded, propertyType) == QuickCheckResult_No)
 			{
-				if (codepoint >= HANGUL_S_FIRST &&
-					codepoint <= HANGUL_S_LAST)
+				if (decoded >= HANGUL_S_FIRST &&
+					decoded <= HANGUL_S_LAST)
 				{
 					/*
 						Hangul decomposition
@@ -85,7 +85,7 @@ size_t normalize_decomposition(const char* input, size_t inputSize, char* target
 						http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
 					*/
 
-					unicode_t s_index = codepoint - HANGUL_S_FIRST;
+					unicode_t s_index = decoded - HANGUL_S_FIRST;
 					unicode_t l = HANGUL_L_FIRST + (s_index / HANGUL_N_COUNT);
 					unicode_t v = HANGUL_V_FIRST + (s_index % HANGUL_N_COUNT) / HANGUL_T_COUNT;
 					unicode_t t = HANGUL_T_FIRST + (s_index % HANGUL_T_COUNT);
@@ -108,7 +108,7 @@ size_t normalize_decomposition(const char* input, size_t inputSize, char* target
 				}
 				else
 				{
-					const char* resolved = database_querydecomposition(codepoint, propertyType);
+					const char* resolved = database_querydecomposition(decoded, propertyType);
 					if (resolved != 0)
 					{
 						resolved_size = strlen(resolved);
@@ -129,13 +129,13 @@ size_t normalize_decomposition(const char* input, size_t inputSize, char* target
 					}
 					else
 					{
-						resolved_size = codepoint_write(codepoint, &dst, &dst_size);
+						resolved_size = codepoint_write(decoded, &dst, &dst_size);
 					}
 				}
 			}
 			else
 			{
-				resolved_size = codepoint_write(codepoint, &dst, &dst_size);
+				resolved_size = codepoint_write(decoded, &dst, &dst_size);
 			}
 
 			if (resolved_size == 0)
@@ -144,8 +144,8 @@ size_t normalize_decomposition(const char* input, size_t inputSize, char* target
 			}
 			bytes_written += resolved_size;
 
-			src += codepoint_length;
-			src_size -= codepoint_length;
+			src += decoded_size;
+			src_size -= decoded_size;
 		}
 	}
 
