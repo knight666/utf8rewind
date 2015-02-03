@@ -185,15 +185,24 @@ uint8_t decompose_execute(DecomposeState* state)
 			}
 		}
 
-		/* Output is stable as long as only one codepoint or sequence is written */
-
-		if (src_codepoint != state->input->codepoint)
-		{
-			state->output->stable = 0;
-		}
-
 		src_codepoint++;
 		src_left--;
+	}
+
+	if (state->output->current > 1)
+	{
+		/* Check if output is stable by comparing canonical combining classes */
+
+		uint8_t i;
+		for (i = 1; i < state->output->current; ++i)
+		{
+			if (state->output->canonical_combining_class[i] < state->output->canonical_combining_class[i - 1])
+			{
+				state->output->stable = 0;
+
+				break;
+			}
+		}
 	}
 
 	return state->output->current;
