@@ -213,8 +213,8 @@ size_t codepoint_read(unicode_t* codepoint, const char* input, size_t inputSize)
 	{
 		/* Multi-byte sequence */
 
-		static const uint8_t ReadMask[7] = { 0x00, 0x00, 0x1F, 0x0F, 0x07, 0x03, 0x01 };
-		static const unicode_t SequenceMinimum[5] = { 0x0000, 0x0000, 0x0080, 0x0800, 0x10000 };
+		static const uint8_t SequenceMask[7] = { 0x00, 0x7F, 0x1F, 0x0F, 0x07, 0x03, 0x01 };
+		static const unicode_t SequenceMinimum[7] = { 0x0000, 0x0000, 0x0080, 0x0800, 0x10000, 0x0000, 0x0000 };
 
 		/* Length of sequence is determined by first byte */
 
@@ -254,9 +254,9 @@ size_t codepoint_read(unicode_t* codepoint, const char* input, size_t inputSize)
 		}
 		else
 		{
-			/* Use read mask to strip value from first byte */
+			/* Use mask to strip value from first byte */
 
-			*codepoint = (unicode_t)(*src & ReadMask[decoded_length]);
+			*codepoint = (unicode_t)(*src & SequenceMask[decoded_length]);
 
 			/* All bytes in the sequence must be processed */
 
@@ -282,8 +282,7 @@ size_t codepoint_read(unicode_t* codepoint, const char* input, size_t inputSize)
 
 			/* Check for overlong sequences and surrogate pairs */
 
-			if (*codepoint < SequenceMinimum[decoded_length] ||
-				*codepoint > MAX_LEGAL_UNICODE ||
+			if ((*codepoint < SequenceMinimum[decoded_length] || *codepoint > MAX_LEGAL_UNICODE) ||
 				(*codepoint >= SURROGATE_HIGH_START && *codepoint <= SURROGATE_HIGH_END) ||
 				(*codepoint >= SURROGATE_LOW_START && *codepoint <= SURROGATE_LOW_END))
 			{
