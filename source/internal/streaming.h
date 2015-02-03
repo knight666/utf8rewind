@@ -44,7 +44,7 @@ typedef struct {
 	uint8_t property;
 	uint8_t current;
 	uint8_t stable;
-	size_t last_length;
+	uint8_t last_length;
 	unicode_t codepoint[STREAM_BUFFER_MAX];
 	uint8_t quick_check[STREAM_BUFFER_MAX];
 	uint8_t canonical_combining_class[STREAM_BUFFER_MAX];
