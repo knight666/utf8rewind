@@ -32,6 +32,10 @@
 typedef struct {
 	StreamState* input;
 	StreamState* output;
+	unicode_t cache_codepoint[STREAM_BUFFER_MAX];
+	uint8_t cache_canonical_combining_class[STREAM_BUFFER_MAX];
+	uint8_t cache_current;
+	uint8_t cache_filled;
 } DecomposeState;
 
 uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);
