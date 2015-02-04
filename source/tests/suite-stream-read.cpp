@@ -583,26 +583,6 @@ TEST(StreamRead, StableTwoNonStarterGreaterThan)
 TEST(StreamRead, BufferOverflow)
 {
 	/*
-		UAX15-D4. Stream-Safe Text Process
-		
-		This is the process of producing a Unicode string in Stream-Safe Text Format by processing that string
-		from start to finish, inserting U+034F COMBINING GRAPHEME JOINER (CGJ) within long sequences of
-		non-starters. The exact position of the inserted CGJs are determined according to the following algorithm,
-		which describes the generation of an output string from an input string:
-
-		* If the input string is empty, return an empty output string.
-		* Set nonStarterCount to zero.
-		* For each code point C in the input string:
-			* Produce the NFKD decomposition S.
-			* If nonStarterCount plus the number of initial non-starters in S is greater than 30, append a CGJ to
-			  the output string and set the nonStarterCount to zero.
-			* Append C to the output string.
-			* If there are no starters in S, increment nonStarterCount by the number of code points in S; otherwise,
-			  set nonStarterCount to the number of trailing non-starters in S (which may be zero).
-		* Return the output string.
-	*/
-
-	/*
 		U+0032 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308
 		     Y      M      M      M      M      M      M      M      M      M      M      M      M      M      M      M
 		     0    230    230    230    230    230    230    230    230    230    230    230    230    230    230    230
@@ -660,8 +640,8 @@ TEST(StreamRead, BufferOverflow)
 	CHECK_STREAM_ENTRY(state, 29, 0x0308, Maybe, 230);
 	EXPECT_TRUE(state.stable);
 
-	EXPECT_EQ(17, stream_read(&state));
-	CHECK_STREAM_ENTRY(state, 30, 0x034F, Yes, 0);
+	EXPECT_EQ(18, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x034F, Yes, 0);
 	CHECK_STREAM_ENTRY(state, 1, 0x0308, Maybe, 230);
 	CHECK_STREAM_ENTRY(state, 2, 0x0308, Maybe, 230);
 	CHECK_STREAM_ENTRY(state, 3, 0x0308, Maybe, 230);
@@ -678,6 +658,7 @@ TEST(StreamRead, BufferOverflow)
 	CHECK_STREAM_ENTRY(state, 14, 0x0308, Maybe, 230);
 	CHECK_STREAM_ENTRY(state, 15, 0x0308, Maybe, 230);
 	CHECK_STREAM_ENTRY(state, 16, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 17, 0x0308, Maybe, 230);
 	EXPECT_TRUE(state.stable);
 
 	EXPECT_EQ(1, stream_read(&state));
