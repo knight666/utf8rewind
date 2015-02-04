@@ -123,12 +123,22 @@ uint8_t stream_read(StreamState* state)
 		state->quick_check[state->current] = database_queryproperty(state->codepoint[state->current], state->property);
 		state->canonical_combining_class[state->current] = database_queryproperty(state->codepoint[state->current], UnicodeProperty_CanonicalCombiningClass);
 
-		/* Sequences end on the next starter and can consist of only non-starters */
-
-		if (state->current > 0 &&
-			state->canonical_combining_class[state->current] == 0)
+		if (state->current > 0)
 		{
-			break;
+			/* Sequences end on the next starter and can consist of only non-starters */
+
+			if (state->canonical_combining_class[state->current] == 0)
+			{
+				break;
+			}
+
+			/* Check if sequence is unstable by comparing canonical combining classes */
+
+			if (state->stable &&
+				state->canonical_combining_class[state->current] < state->canonical_combining_class[state->current - 1])
+			{
+				state->stable = 0;
+			}
 		}
 
 		state->current++;
@@ -141,22 +151,6 @@ uint8_t stream_read(StreamState* state)
 		state->codepoint[state->current] = 0x034F;
 		state->quick_check[state->current] = database_queryproperty(state->codepoint[state->current], state->property);
 		state->canonical_combining_class[state->current] = 0;
-	}
-
-	if (state->current > 1)
-	{
-		/* Check if sequence is unstable by comparing canonical combining classes */
-
-		uint8_t i;
-		for (i = 1; i <= state->current - 1; ++i)
-		{
-			if (state->canonical_combining_class[i] < state->canonical_combining_class[i - 1])
-			{
-				state->stable = 0;
-
-				break;
-			}
-		}
 	}
 
 	return state->current;
