@@ -580,6 +580,113 @@ TEST(StreamRead, StableTwoNonStarterGreaterThan)
 	EXPECT_EQ(0, stream_read(&state));
 }
 
+TEST(StreamRead, BufferOverflow)
+{
+	/*
+		UAX15-D4. Stream-Safe Text Process
+		
+		This is the process of producing a Unicode string in Stream-Safe Text Format by processing that string
+		from start to finish, inserting U+034F COMBINING GRAPHEME JOINER (CGJ) within long sequences of
+		non-starters. The exact position of the inserted CGJs are determined according to the following algorithm,
+		which describes the generation of an output string from an input string:
+
+		* If the input string is empty, return an empty output string.
+		* Set nonStarterCount to zero.
+		* For each code point C in the input string:
+			* Produce the NFKD decomposition S.
+			* If nonStarterCount plus the number of initial non-starters in S is greater than 30, append a CGJ to
+			  the output string and set the nonStarterCount to zero.
+			* Append C to the output string.
+			* If there are no starters in S, increment nonStarterCount by the number of code points in S; otherwise,
+			  set nonStarterCount to the number of trailing non-starters in S (which may be zero).
+		* Return the output string.
+	*/
+
+	/*
+		U+0032 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308
+		     Y      M      M      M      M      M      M      M      M      M      M      M      M      M      M      M
+		     0    230    230    230    230    230    230    230    230    230    230    230    230    230    230    230
+
+		U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308
+		     M      M      M      M      M      M      M      M      M      M      M      M      M      M      M      M
+		   230    230    230    230    230    230    230    230    230    230    230    230    230    230    230    230
+
+		U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0308 U+0033
+		     M      M      M      M      M      M      M      M      M      M      M      M      M      M      M      Y
+		   230    230    230    230    230    230    230    230    230    230    230    230    230    230    230      0
+	*/
+
+	const char* i = "2\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\
+\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\
+\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\
+\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88" "3";
+	size_t il = strlen(i);
+
+	std::string seq = helpers::sequence(i, UnicodeProperty_Normalization_Compose);
+
+	StreamState state;
+	EXPECT_EQ(1, stream_initialize(&state, i, il, UnicodeProperty_Normalization_Compose));
+
+	EXPECT_EQ(30, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x0032, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 1, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 2, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 3, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 4, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 5, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 6, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 7, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 8, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 9, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 10, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 11, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 12, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 13, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 14, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 15, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 16, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 17, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 18, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 19, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 20, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 21, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 22, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 23, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 24, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 25, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 26, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 27, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 28, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 29, 0x0308, Maybe, 230);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(17, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 30, 0x034F, Yes, 0);
+	CHECK_STREAM_ENTRY(state, 1, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 2, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 3, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 4, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 5, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 6, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 7, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 8, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 9, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 10, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 11, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 12, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 13, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 14, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 15, 0x0308, Maybe, 230);
+	CHECK_STREAM_ENTRY(state, 16, 0x0308, Maybe, 230);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(1, stream_read(&state));
+	CHECK_STREAM_ENTRY(state, 0, 0x0033, Yes, 0);
+	EXPECT_TRUE(state.stable);
+
+	EXPECT_EQ(0, stream_read(&state));
+}
+
 TEST(StreamRead, ContinueAfterEnd)
 {
 	/*
