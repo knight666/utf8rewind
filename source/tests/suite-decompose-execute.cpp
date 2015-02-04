@@ -469,7 +469,7 @@ TEST(DecomposeExecute, DecomposedMultipleSequences)
 
 	EXPECT_EQ(2, decompose_execute(&state));
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x30B1, Yes, 0);
-	CHECK_STREAM_ENTRY(*state.output, 1, 0x3099, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x3099, Yes, 8);
 	EXPECT_TRUE(state.output->stable);
 
 	EXPECT_EQ(1, decompose_execute(&state));
@@ -626,20 +626,14 @@ TEST(DecomposeExecute, MultipleDecomposed)
 	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
-	EXPECT_EQ(1, decompose_execute(&state));
+	EXPECT_EQ(2, decompose_execute(&state));
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x30AB, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x3099, Yes, 8);
 	EXPECT_TRUE(state.output->stable);
 
-	EXPECT_EQ(1, decompose_execute(&state));
-	CHECK_STREAM_ENTRY(*state.output, 0, 0x3099, Yes, 8);
-	EXPECT_TRUE(state.output->stable);
-
-	EXPECT_EQ(1, decompose_execute(&state));
+	EXPECT_EQ(2, decompose_execute(&state));
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x30C4, Yes, 0);
-	EXPECT_TRUE(state.output->stable);
-
-	EXPECT_EQ(1, decompose_execute(&state));
-	CHECK_STREAM_ENTRY(*state.output, 0, 0x3099, Yes, 8);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x3099, Yes, 8);
 	EXPECT_TRUE(state.output->stable);
 
 	EXPECT_EQ(3, decompose_execute(&state));

@@ -171,12 +171,14 @@ uint8_t decompose_execute(DecomposeState* state)
 
 			state->cache_codepoint[state->cache_filled] = HANGUL_V_FIRST + (s_index % HANGUL_N_COUNT) / HANGUL_T_COUNT;
 			state->cache_canonical_combining_class[state->cache_filled] = 0;
+
 			state->cache_filled++;
 
 			if ((s_index % HANGUL_T_COUNT) != 0)
 			{
 				state->cache_codepoint[state->cache_filled] = HANGUL_T_FIRST + (s_index % HANGUL_T_COUNT);
 				state->cache_canonical_combining_class[state->cache_filled] = 0;
+
 				state->cache_filled++;
 			}
 		}
@@ -198,20 +200,51 @@ uint8_t decompose_execute(DecomposeState* state)
 
 					const char* src = decomposition;
 					size_t src_size = strlen(decomposition);
+					uint8_t uncached = 1;
 
 					while (src_size > 0)
 					{
-						uint8_t decoded_size = codepoint_read(src, src_size, dst_codepoint);
+						unicode_t decoded_codepoint;
+						uint8_t decoded_canonical_combining_class;
+
+						/* Decode current codepoint */
+
+						uint8_t decoded_size = codepoint_read(src, src_size, &decoded_codepoint);
 						if (decoded_size == 0)
 						{
 							break;
 						}
 
-						*dst_canonical_combining_class++ = database_queryproperty(*dst_codepoint, UnicodeProperty_CanonicalCombiningClass);
-						*dst_quick_check++ = QuickCheckResult_Yes;
-						dst_codepoint++;
+						decoded_canonical_combining_class = database_queryproperty(decoded_codepoint, UnicodeProperty_CanonicalCombiningClass);
 
-						state->output->current++;
+						/* Check for end of sequence */
+
+						if (uncached &&
+							state->output->current > 0 &&
+							decoded_canonical_combining_class == 0)
+						{
+							uncached = 0;
+						}
+
+						if (uncached)
+						{
+							/* Write codepoint to output */
+
+							*dst_codepoint++ = decoded_codepoint;
+							*dst_canonical_combining_class++ = decoded_canonical_combining_class;
+							*dst_quick_check++ = QuickCheckResult_Yes;
+
+							state->output->current++;
+						}
+						else
+						{
+							/* Store in cache */
+
+							state->cache_codepoint[state->cache_filled] = decoded_codepoint;
+							state->cache_canonical_combining_class[state->cache_filled] = decoded_canonical_combining_class;
+
+							state->cache_filled++;
+						}
 
 						src += decoded_size;
 						src_size -= decoded_size;
