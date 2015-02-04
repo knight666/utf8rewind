@@ -42,6 +42,7 @@ typedef struct {
 	const char* src;
 	size_t src_size;
 	uint8_t property;
+	uint8_t index;
 	uint8_t current;
 	uint8_t stable;
 	uint8_t last_length;

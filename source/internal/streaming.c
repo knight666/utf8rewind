@@ -68,6 +68,7 @@ uint8_t stream_read(StreamState* state)
 			state->codepoint[state->current] == 0)
 		{
 			state->src_size = 0;
+			state->index = 0;
 			state->current = 0;
 
 			return 0;
@@ -91,6 +92,10 @@ uint8_t stream_read(StreamState* state)
 		/* New sequence always starts as stable */
 
 		state->stable = 1;
+
+		/* Reset buffer members */
+
+		state->index = 0;
 		state->current = 1;
 	}
 
