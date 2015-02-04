@@ -149,7 +149,7 @@ uint8_t stream_read(StreamState* state)
 		/* Insert COMBINING GRAPHEME JOINER into output */
 
 		state->codepoint[state->current] = 0x034F;
-		state->quick_check[state->current] = database_queryproperty(state->codepoint[state->current], state->property);
+		state->quick_check[state->current] = 0;
 		state->canonical_combining_class[state->current] = 0;
 	}
 
@@ -187,23 +187,27 @@ uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_
 
 uint8_t stream_reorder(StreamState* state)
 {
+	uint8_t i;
 	uint8_t dirty = 1;
 
 	if (state->current == 0)
 	{
+		/* Nothing to do */
+
 		return 0;
 	}
 
+	/* Reorder codepoints until the entire sequence is table */
+
 	do
 	{
-		uint8_t i;
-		uint8_t last_combining_class = state->canonical_combining_class[0];
-
 		dirty = 0;
 
 		for (i = 1; i < state->current; i++)
 		{
-			if (state->canonical_combining_class[i] < last_combining_class)
+			/* Sort codepoints by canonical combining class, smallest to largest */
+
+			if (state->canonical_combining_class[i] < state->canonical_combining_class[i - 1])
 			{
 				unicode_t swap_cp;
 				uint8_t swap_qc;
@@ -223,8 +227,6 @@ uint8_t stream_reorder(StreamState* state)
 
 				dirty = 1;
 			}
-
-			last_combining_class = state->canonical_combining_class[i];
 		}
 	}
 	while (dirty == 1);
