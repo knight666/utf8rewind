@@ -124,82 +124,6 @@ namespace helpers {
 		return converted;
 	}
 
-	std::string PrintCodepoint(const std::string& text)
-	{
-		std::stringstream ss;
-		ss << "\t\"" << printable(text) << "\" (" << identifiable(text) << ")" << std::endl;
-		return ss.str();
-	}
-
-	::testing::AssertionResult CompareNormalizationCodepoint(
-		const char* expressionExpected, const char* expressionActual,
-		const NormalizationEntry& entryExpected, const NormalizationEntry& entryActual)
-	{
-		if (entryExpected.decomposed == entryActual.decomposed &&
-			entryExpected.composed == entryActual.composed &&
-			entryExpected.decomposedCompatibility == entryActual.decomposedCompatibility &&
-			entryExpected.composedCompatibility == entryActual.composedCompatibility)
-		{
-			return ::testing::AssertionSuccess();
-		}
-		else
-		{
-			::testing::AssertionResult result = ::testing::AssertionFailure();
-
-			result << entryExpected.name << " (" << identifiable(entryExpected.codepoint) << ")" << std::endl;
-
-			if (entryExpected.decomposed != entryActual.decomposed)
-			{
-				result << "[NFD] " << std::endl;
-				result << "    Actual:  " << PrintCodepoint(entryActual.decomposed) << std::endl;
-				result << "  Expected:  " << PrintCodepoint(entryExpected.decomposed) << std::endl;
-			}
-			else
-			{
-				result << "[NFD]        ";
-				result << PrintCodepoint(entryActual.decomposed) << std::endl;
-			}
-
-			if (entryExpected.composed != entryActual.composed)
-			{
-				result << "[NFC] " << std::endl;
-				result << "    Actual:  " << PrintCodepoint(entryActual.composed) << std::endl;
-				result << "  Expected:  " << PrintCodepoint(entryExpected.composed) << std::endl;
-			}
-			else
-			{
-				result << "[NFC]        ";
-				result << PrintCodepoint(entryActual.composed) << std::endl;
-			}
-
-			if (entryExpected.decomposedCompatibility != entryActual.decomposedCompatibility)
-			{
-				result << "[NFKD]" << std::endl;
-				result << "    Actual:  " << PrintCodepoint(entryActual.decomposedCompatibility) << std::endl;
-				result << "  Expected:  " << PrintCodepoint(entryExpected.decomposedCompatibility) << std::endl;
-			}
-			else
-			{
-				result << "[NFKD]       ";
-				result << PrintCodepoint(entryActual.decomposedCompatibility) << std::endl;
-			}
-
-			if (entryExpected.composedCompatibility != entryActual.composedCompatibility)
-			{
-				result << "[NFKC]" << std::endl;
-				result << "    Actual:  " << PrintCodepoint(entryActual.composedCompatibility) << std::endl;
-				result << "  Expected:  " << PrintCodepoint(entryExpected.composedCompatibility);
-			}
-			else
-			{
-				result << "[NFKC]       ";
-				result << PrintCodepoint(entryActual.composedCompatibility);
-			}
-
-			return result;
-		}
-	}
-
 	std::string PrintSequence(const std::string& text, uint8_t type)
 	{
 		std::stringstream ss;
@@ -250,6 +174,75 @@ namespace helpers {
 		}
 
 		return ss.str();
+	}
+
+	::testing::AssertionResult CompareNormalizationCodepoint(
+		const char* expressionExpected, const char* expressionActual,
+		const NormalizationEntry& entryExpected, const NormalizationEntry& entryActual)
+	{
+		if (entryExpected.decomposed == entryActual.decomposed &&
+			entryExpected.composed == entryActual.composed &&
+			entryExpected.decomposedCompatibility == entryActual.decomposedCompatibility &&
+			entryExpected.composedCompatibility == entryActual.composedCompatibility)
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << entryExpected.name << " (" << identifiable(entryExpected.codepoint) << ")" << std::endl;
+
+			if (entryExpected.decomposed != entryActual.decomposed)
+			{
+				result << "[NFD] " << std::endl;
+				result << "    Actual:  " << PrintSequence(entryActual.decomposed, UnicodeProperty_Normalization_Decompose) << std::endl;
+				result << "  Expected:  " << PrintSequence(entryExpected.decomposed, UnicodeProperty_Normalization_Decompose) << std::endl;
+			}
+			else
+			{
+				result << "[NFD]        ";
+				result << PrintSequence(entryActual.decomposed, UnicodeProperty_Normalization_Decompose) << std::endl;
+			}
+
+			if (entryExpected.composed != entryActual.composed)
+			{
+				result << "[NFC] " << std::endl;
+				result << "    Actual:  " << PrintSequence(entryActual.composed, UnicodeProperty_Normalization_Compose) << std::endl;
+				result << "  Expected:  " << PrintSequence(entryExpected.composed, UnicodeProperty_Normalization_Compose) << std::endl;
+			}
+			else
+			{
+				result << "[NFC]        ";
+				result << PrintSequence(entryActual.composed, UnicodeProperty_Normalization_Compose) << std::endl;
+			}
+
+			if (entryExpected.decomposedCompatibility != entryActual.decomposedCompatibility)
+			{
+				result << "[NFKD]" << std::endl;
+				result << "    Actual:  " << PrintSequence(entryActual.decomposedCompatibility, UnicodeProperty_Normalization_Compatibility_Decompose) << std::endl;
+				result << "  Expected:  " << PrintSequence(entryExpected.decomposedCompatibility, UnicodeProperty_Normalization_Compatibility_Decompose) << std::endl;
+			}
+			else
+			{
+				result << "[NFKD]       ";
+				result << PrintSequence(entryActual.decomposedCompatibility, UnicodeProperty_Normalization_Compatibility_Decompose) << std::endl;
+			}
+
+			if (entryExpected.composedCompatibility != entryActual.composedCompatibility)
+			{
+				result << "[NFKC]" << std::endl;
+				result << "    Actual:  " << PrintSequence(entryActual.composedCompatibility, UnicodeProperty_Normalization_Compatibility_Compose) << std::endl;
+				result << "  Expected:  " << PrintSequence(entryExpected.composedCompatibility, UnicodeProperty_Normalization_Compatibility_Compose);
+			}
+			else
+			{
+				result << "[NFKC]       ";
+				result << PrintSequence(entryActual.composedCompatibility, UnicodeProperty_Normalization_Compatibility_Compose);
+			}
+
+			return result;
+		}
 	}
 
 	::testing::AssertionResult CompareNormalizationSequence(
