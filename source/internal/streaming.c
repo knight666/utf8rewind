@@ -101,15 +101,8 @@ uint8_t stream_read(StreamState* state)
 
 	/* Read codepoints */
 
-	while (1)
+	while (state->current < STREAM_SAFE_MAX)
 	{
-		/* Check for buffer overflow */
-
-		if (state->current + 1 >= STREAM_BUFFER_MAX)
-		{
-			break;
-		}
-
 		/* Move the input cursor after peeking */
 
 		if (state->last_length > 0)
@@ -141,12 +134,20 @@ uint8_t stream_read(StreamState* state)
 		state->current++;
 	}
 
+	if (state->current == STREAM_SAFE_MAX)
+	{
+		/* Insert COMBINING GRAPHEME JOINER into output */
+
+		state->codepoint[state->current] = 0x034F;
+		state->quick_check[state->current] = database_queryproperty(state->codepoint[state->current], state->property);
+		state->canonical_combining_class[state->current] = 0;
+	}
+
 	if (state->current > 1)
 	{
-		uint8_t i;
-
 		/* Check if sequence is unstable by comparing canonical combining classes */
 
+		uint8_t i;
 		for (i = 1; i <= state->current - 1; ++i)
 		{
 			if (state->canonical_combining_class[i] < state->canonical_combining_class[i - 1])

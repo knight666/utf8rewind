@@ -29,13 +29,26 @@
 #include "utf8rewind.h"
 
 /*
-	UAX15-D3. Stream-Safe Text Format
+	UAX15-D4. Stream-Safe Text Process
+		
+	This is the process of producing a Unicode string in Stream-Safe Text Format by processing that string
+	from start to finish, inserting U+034F COMBINING GRAPHEME JOINER (CGJ) within long sequences of
+	non-starters. The exact position of the inserted CGJs are determined according to the following algorithm,
+	which describes the generation of an output string from an input string:
 
-	A Unicode string is said to be in Stream-Safe Text Format if it would not
-	contain any sequences of non-starters longer than 30 characters in length
-	when normalized to NFKD
+	* If the input string is empty, return an empty output string.
+	* Set nonStarterCount to zero.
+	* For each code point C in the input string:
+		* Produce the NFKD decomposition S.
+		* If nonStarterCount plus the number of initial non-starters in S is greater than 30, append a CGJ to
+			the output string and set the nonStarterCount to zero.
+		* Append C to the output string.
+		* If there are no starters in S, increment nonStarterCount by the number of code points in S; otherwise,
+			set nonStarterCount to the number of trailing non-starters in S (which may be zero).
+	* Return the output string.
 */
 
+#define STREAM_SAFE_MAX 30
 #define STREAM_BUFFER_MAX 32
 
 typedef struct {
