@@ -31,6 +31,7 @@
 size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t generalCategory, uint8_t propertyType, int32_t* errors)
 {
 	const char* resolved;
+	uint8_t encoded_size;
 	size_t resolved_size;
 
 	if (codepoint <= 0x7A)
@@ -58,7 +59,7 @@ size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSiz
 			}
 		}
 
-		return codepoint_write(codepoint, target, targetSize, errors);
+		goto unresolved;
 	}
 	
 	if ((generalCategory & GeneralCategory_CaseMapped) == 0)
@@ -91,7 +92,13 @@ size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSiz
 	return resolved_size;
 
 unresolved:
-	return codepoint_write(codepoint, target, targetSize, errors);
+	encoded_size = codepoint_write(codepoint, target, targetSize);
+	if (encoded_size == 0)
+	{
+		goto outofspace;
+	}
+
+	return encoded_size;
 
 outofspace:
 	if (errors != 0)

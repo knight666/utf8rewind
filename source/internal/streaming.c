@@ -68,6 +68,7 @@ uint8_t stream_read(StreamState* state)
 			state->codepoint[state->current] == 0)
 		{
 			state->src_size = 0;
+			state->index = 0;
 			state->current = 0;
 
 			return 0;
@@ -91,6 +92,10 @@ uint8_t stream_read(StreamState* state)
 		/* New sequence always starts as stable */
 
 		state->stable = 1;
+
+		/* Reset buffer members */
+
+		state->index = 0;
 		state->current = 1;
 	}
 
@@ -120,7 +125,7 @@ uint8_t stream_read(StreamState* state)
 
 		/* Peek the next codepoint */
 
-		state->last_length = codepoint_read(&state->codepoint[state->current], state->src, state->src_size);
+		state->last_length = codepoint_read(state->src, state->src_size, &state->codepoint[state->current]);
 
 		state->quick_check[state->current] = database_queryproperty(state->codepoint[state->current], state->property);
 		state->canonical_combining_class[state->current] = database_queryproperty(state->codepoint[state->current], UnicodeProperty_CanonicalCombiningClass);
@@ -163,13 +168,13 @@ uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_
 		uint8_t i;
 		for (i = 0; i < state->current; ++i)
 		{
-			size_t decoded = codepoint_write(state->codepoint[i], &output, &outputSize, 0);
-			if (decoded == 0)
+			uint8_t encoded_size = codepoint_write(state->codepoint[i], &output, &outputSize);
+			if (encoded_size == 0)
 			{
 				return 0;
 			}
 
-			*written += (uint8_t)decoded;
+			*written += encoded_size;
 		}
 	}
 

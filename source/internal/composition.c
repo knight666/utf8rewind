@@ -225,23 +225,32 @@ unicode_t compose_execute(ComposeState* state)
 		
 		if (state->cache_next == state->cache_filled)
 		{
-			if (!compose_readcodepoint(state, state->cache_next))
+			do 
 			{
-				break;
+				if (!compose_readcodepoint(state, state->cache_next))
+				{
+					goto end;
+				}
+
+				state->cache_filled++;
+
+				if (state->cache_quick_check[state->cache_next] == QuickCheckResult_Yes &&
+					state->cache_canonical_combining_class[state->cache_next] == 0)
+				{
+					goto end;
+				}
+				else if (
+					state->cache_next > 1 &&
+					state->cache_canonical_combining_class[state->cache_next] <= state->cache_canonical_combining_class[state->cache_next - 1])
+				{
+					state->cache_next++;
+				}
 			}
-
-			state->cache_filled++;
-		}
-
-		if ((state->cache_quick_check[state->cache_next] == QuickCheckResult_Yes &&
-			state->cache_canonical_combining_class[state->cache_next] == 0) ||
-			(last_combining_class != 0 &&
-			state->cache_canonical_combining_class[state->cache_next] <= last_combining_class))
-		{
-			break;
+			while (state->cache_next == state->cache_filled);
 		}
 	}
 
+end:
 	if (state->cache_filled > 1)
 	{
 		uint8_t write_index = 0;

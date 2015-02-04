@@ -62,44 +62,106 @@ uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamSt
 uint8_t decompose_execute(DecomposeState* state)
 {
 	unicode_t* src_codepoint;
-	uint8_t src_left;
 	unicode_t* dst_codepoint;
-	uint8_t* dst_quick_check;
 	uint8_t* dst_canonical_combining_class;
+	uint8_t* dst_quick_check;
+	uint8_t uncached = 1;
 
-	/* Read next sequence */
+	/* Check if input is valid */
 
-	if (state->input == 0 ||
-		stream_read(state->input) == 0)
+	if (state->input == 0)
 	{
 		return 0;
 	}
 
-	/* Reset output */
+	/* Set up output */
 
 	state->output->current = 0;
 	state->output->stable = 1;
 
-	/* Set up source and destination */
-
-	src_codepoint = state->input->codepoint;
-	src_left = state->input->current;
-
 	dst_codepoint = state->output->codepoint;
-	dst_quick_check = state->output->quick_check;
 	dst_canonical_combining_class = state->output->canonical_combining_class;
+	dst_quick_check = state->output->quick_check;
 
-	while (src_left > 0)
+	/* Check cache for stored sequences */
+
+	if (state->cache_current < state->cache_filled)
+	{
+		/* Read from cache */
+
+		while (state->cache_current < state->cache_filled)
+		{
+			if (state->output->current > 0 &&
+				state->cache_canonical_combining_class[state->cache_current] == 0)
+			{
+				/* Sequence ends on next non-starter or end of data */
+
+				break;
+			}
+
+			*dst_codepoint++ = state->cache_codepoint[state->cache_current];
+			*dst_canonical_combining_class++ = state->cache_canonical_combining_class[state->cache_current];
+			*dst_quick_check++ = QuickCheckResult_Yes;
+
+			state->output->current++;
+			state->cache_current++;
+		}
+
+		/* Check if cache has been emptied */
+
+		if (state->cache_current == state->cache_filled)
+		{
+			state->cache_current = 0;
+			state->cache_filled = 0;
+		}
+
+		/* Check for additional input */
+
+		if (state->input->index == state->input->current)
+		{
+			/* Don't compare canonical combining classes, output will always be stable */
+
+			return state->output->current;
+		}
+	}
+
+	/* Read next sequence from input */
+
+	if (state->input->index == state->input->current &&
+		!stream_read(state->input))
+	{
+		/* End of data */
+
+		state->input = 0;
+
+		return 0;
+	}
+
+	/* Read from source */
+
+	src_codepoint = state->input->codepoint + state->input->index;
+
+	while (state->input->index < state->input->current)
 	{
 		if (*src_codepoint < 0x80)
 		{
 			/* Basic Latin codepoints are already decomposed */
 
-			*dst_codepoint++ = *src_codepoint;
-			*dst_canonical_combining_class++ = 0;
-			*dst_quick_check++ = QuickCheckResult_Yes;
+			if (uncached)
+			{
+				*dst_codepoint++ = *src_codepoint;
+				*dst_canonical_combining_class++ = 0;
+				*dst_quick_check++ = QuickCheckResult_Yes;
 
-			state->output->current++;
+				state->output->current++;
+			}
+			else
+			{
+				state->cache_codepoint[state->cache_filled] = *src_codepoint;
+				state->cache_canonical_combining_class[state->cache_filled] = 0;
+
+				state->cache_filled++;
+			}
 		}
 		else if (
 			*src_codepoint >= HANGUL_S_FIRST &&
@@ -114,39 +176,53 @@ uint8_t decompose_execute(DecomposeState* state)
 
 			unicode_t s_index = *src_codepoint - HANGUL_S_FIRST;
 
-			*dst_codepoint++ = HANGUL_L_FIRST + (s_index / HANGUL_N_COUNT);
-			*dst_canonical_combining_class++ = 0;
-			*dst_quick_check++ = QuickCheckResult_Yes;
-
-			state->output->current++;
-
-			*dst_codepoint++ = HANGUL_V_FIRST + (s_index % HANGUL_N_COUNT) / HANGUL_T_COUNT;
-			*dst_canonical_combining_class++ = 0;
-			*dst_quick_check++ = QuickCheckResult_Yes;
-
-			state->output->current++;
-
-			if ((s_index % HANGUL_T_COUNT) != 0)
+			if (uncached)
 			{
-				*dst_codepoint++ = HANGUL_T_FIRST + (s_index % HANGUL_T_COUNT);
+				*dst_codepoint++ = HANGUL_L_FIRST + (s_index / HANGUL_N_COUNT);
 				*dst_canonical_combining_class++ = 0;
 				*dst_quick_check++ = QuickCheckResult_Yes;
 
 				state->output->current++;
+			}
+			else
+			{
+				state->cache_codepoint[state->cache_filled] = HANGUL_L_FIRST + (s_index / HANGUL_N_COUNT);
+				state->cache_canonical_combining_class[state->cache_filled] = 0;
+
+				state->cache_filled++;
+			}
+
+			/* Store subsequent non-starters in cache */
+
+			uncached = 0;
+
+			state->cache_codepoint[state->cache_filled] = HANGUL_V_FIRST + (s_index % HANGUL_N_COUNT) / HANGUL_T_COUNT;
+			state->cache_canonical_combining_class[state->cache_filled] = 0;
+
+			state->cache_filled++;
+
+			if ((s_index % HANGUL_T_COUNT) != 0)
+			{
+				state->cache_codepoint[state->cache_filled] = HANGUL_T_FIRST + (s_index % HANGUL_T_COUNT);
+				state->cache_canonical_combining_class[state->cache_filled] = 0;
+
+				state->cache_filled++;
 			}
 		}
 		else
 		{
 			/* Use quick check to skip stable codepoints */
 
-			*dst_codepoint = *src_codepoint;
-			*dst_quick_check = database_queryproperty(*dst_codepoint, state->output->property);
+			unicode_t decoded_codepoint = *src_codepoint;
+			uint8_t decoded_quick_check = database_queryproperty(decoded_codepoint, state->output->property);
+			uint8_t decoded_canonical_combining_class;
+			uint8_t decoded_size;
 
-			if (*dst_quick_check != QuickCheckResult_Yes)
+			if (decoded_quick_check != QuickCheckResult_Yes)
 			{
 				/* Check database for decomposition */
 
-				const char* decomposition = database_querydecomposition(*dst_codepoint, state->output->property);
+				const char* decomposition = database_querydecomposition(decoded_codepoint, state->output->property);
 				if (decomposition != 0)
 				{
 					/* Write sequence to output */
@@ -156,44 +232,96 @@ uint8_t decompose_execute(DecomposeState* state)
 
 					while (src_size > 0)
 					{
-						size_t offset = codepoint_read(dst_codepoint, src, src_size);
-						if (offset == 0)
+						decoded_canonical_combining_class = database_queryproperty(decoded_codepoint, state->output->property);
+
+						/* Decode current codepoint */
+
+						decoded_size = codepoint_read(src, src_size, &decoded_codepoint);
+						if (decoded_size == 0)
 						{
 							break;
 						}
 
-						*dst_canonical_combining_class++ = database_queryproperty(*dst_codepoint, UnicodeProperty_CanonicalCombiningClass);
-						*dst_quick_check++ = QuickCheckResult_Yes;
-						dst_codepoint++;
+						decoded_canonical_combining_class = database_queryproperty(decoded_codepoint, UnicodeProperty_CanonicalCombiningClass);
 
-						state->output->current++;
+						/* Check for end of sequence */
 
-						src += offset;
-						src_size -= offset;
+						if (uncached &&
+							state->output->current > 0 &&
+							decoded_canonical_combining_class == 0)
+						{
+							uncached = 0;
+						}
+
+						if (uncached)
+						{
+							/* Write codepoint to output */
+
+							*dst_codepoint++ = decoded_codepoint;
+							*dst_canonical_combining_class++ = decoded_canonical_combining_class;
+							*dst_quick_check++ = QuickCheckResult_Yes;
+
+							state->output->current++;
+						}
+						else
+						{
+							/* Store in cache */
+
+							state->cache_codepoint[state->cache_filled] = decoded_codepoint;
+							state->cache_canonical_combining_class[state->cache_filled] = decoded_canonical_combining_class;
+
+							state->cache_filled++;
+						}
+
+						src += decoded_size;
+						src_size -= decoded_size;
 					}
 				}
 			}
 			else
 			{
-				/* Write codepoint to output */
+				decoded_canonical_combining_class = database_queryproperty(decoded_codepoint, UnicodeProperty_CanonicalCombiningClass);
 
-				*dst_canonical_combining_class++ = database_queryproperty(*dst_codepoint, UnicodeProperty_CanonicalCombiningClass);
-				dst_quick_check++;
-				dst_codepoint++;
+				if (uncached)
+				{
+					/* Write codepoint to output */
 
-				state->output->current++;
+					*dst_codepoint++ = decoded_codepoint;
+					*dst_canonical_combining_class++ = decoded_canonical_combining_class;
+					*dst_quick_check++ = decoded_quick_check;
+
+					state->output->current++;
+				}
+				else
+				{
+					/* Store in cache */
+
+					state->cache_codepoint[state->cache_filled] = decoded_codepoint;
+					state->cache_canonical_combining_class[state->cache_filled] = decoded_canonical_combining_class;
+
+					state->cache_filled++;
+				}
 			}
 		}
 
-		/* Output is stable as long as only one codepoint or sequence is written */
-
-		if (src_codepoint != state->input->codepoint)
-		{
-			state->output->stable = 0;
-		}
-
 		src_codepoint++;
-		src_left--;
+		state->input->index++;
+	}
+
+	if (state->output->current > 1)
+	{
+		/* Check if output is stable by comparing canonical combining classes */
+
+		uint8_t i;
+		for (i = 1; i < state->output->current; ++i)
+		{
+			if (state->output->canonical_combining_class[i] < state->output->canonical_combining_class[i - 1])
+			{
+				state->output->stable = 0;
+
+				break;
+			}
+		}
 	}
 
 	return state->output->current;
