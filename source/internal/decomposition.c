@@ -64,30 +64,77 @@ uint8_t decompose_execute(DecomposeState* state)
 	unicode_t* src_codepoint;
 	uint8_t src_left;
 	unicode_t* dst_codepoint;
-	uint8_t* dst_quick_check;
 	uint8_t* dst_canonical_combining_class;
+	uint8_t* dst_quick_check;
 
-	/* Read next sequence */
+	/* Check if input is valid */
 
-	if (state->input == 0 ||
-		stream_read(state->input) == 0)
+	if (state->input == 0)
 	{
 		return 0;
 	}
 
-	/* Reset output */
+	/* Set up output */
 
 	state->output->current = 0;
 	state->output->stable = 1;
 
-	/* Set up source and destination */
+	dst_codepoint = state->output->codepoint;
+	dst_canonical_combining_class = state->output->canonical_combining_class;
+	dst_quick_check = state->output->quick_check;
+
+	/* Check cache for stored sequences */
+
+	if (state->cache_current < state->cache_filled)
+	{
+		/* Read from cache */
+
+		while (state->cache_current < state->cache_filled)
+		{
+			if (state->output->current > 0 &&
+				state->cache_canonical_combining_class[state->cache_current] == 0)
+			{
+				/* Sequence ends on next non-starter or end of data */
+
+				break;
+			}
+
+			*dst_codepoint++ = state->cache_codepoint[state->cache_current];
+			*dst_canonical_combining_class++ = state->cache_canonical_combining_class[state->cache_current];
+			*dst_quick_check++ = QuickCheckResult_Yes;
+
+			state->output->current++;
+			state->cache_current++;
+		}
+
+		/* Check if cache has been emptied */
+
+		if (state->cache_current == state->cache_filled)
+		{
+			state->cache_current = 0;
+			state->cache_filled = 0;
+		}
+
+		/* Don't compare canonical combining classes, output will always be stable */
+
+		return state->output->current;
+	}
+
+	/* Read next sequence from input */
+
+	if (!stream_read(state->input))
+	{
+		/* End of data */
+
+		state->input = 0;
+
+		return 0;
+	}
+
+	/* Read from source */
 
 	src_codepoint = state->input->codepoint;
 	src_left = state->input->current;
-
-	dst_codepoint = state->output->codepoint;
-	dst_quick_check = state->output->quick_check;
-	dst_canonical_combining_class = state->output->canonical_combining_class;
 
 	while (src_left > 0)
 	{
@@ -120,19 +167,17 @@ uint8_t decompose_execute(DecomposeState* state)
 
 			state->output->current++;
 
-			*dst_codepoint++ = HANGUL_V_FIRST + (s_index % HANGUL_N_COUNT) / HANGUL_T_COUNT;
-			*dst_canonical_combining_class++ = 0;
-			*dst_quick_check++ = QuickCheckResult_Yes;
+			/* Store subsequent non-starters in cache */
 
-			state->output->current++;
+			state->cache_codepoint[state->cache_filled] = HANGUL_V_FIRST + (s_index % HANGUL_N_COUNT) / HANGUL_T_COUNT;
+			state->cache_canonical_combining_class[state->cache_filled] = 0;
+			state->cache_filled++;
 
 			if ((s_index % HANGUL_T_COUNT) != 0)
 			{
-				*dst_codepoint++ = HANGUL_T_FIRST + (s_index % HANGUL_T_COUNT);
-				*dst_canonical_combining_class++ = 0;
-				*dst_quick_check++ = QuickCheckResult_Yes;
-
-				state->output->current++;
+				state->cache_codepoint[state->cache_filled] = HANGUL_T_FIRST + (s_index % HANGUL_T_COUNT);
+				state->cache_canonical_combining_class[state->cache_filled] = 0;
+				state->cache_filled++;
 			}
 		}
 		else
