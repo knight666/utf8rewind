@@ -156,7 +156,7 @@ uint8_t stream_read(StreamState* state)
 	return state->current;
 }
 
-uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_t* written)
+uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_t* bytesWritten)
 {
 	uint8_t i;
 
@@ -179,10 +179,10 @@ uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_
 			return 0;
 		}
 
-		*written += encoded_size;
+		*bytesWritten += encoded_size;
 	}
 
-	return state->current;
+	return 1;
 }
 
 uint8_t stream_reorder(StreamState* state)
