@@ -479,6 +479,41 @@ TEST(DecomposeExecute, DecomposedMultipleSequences)
 	EXPECT_EQ(0, decompose_execute(&state));
 }
 
+TEST(DecomposeExecute, DecomposedNewSequence)
+{
+	/*
+		U+D6FC U+0334 U+11AE
+		     N      Y      Y
+		     0      1      0
+	*/
+
+	const char* i = "\xED\x9B\xBC\xCC\xB4\xE1\x86\xAE";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_EQ(1, stream_initialize(&input, i, il, 1));
+
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x1112, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(2, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x1170, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0x0334, Yes, 1);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(1, decompose_execute(&state));
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x11AE, Yes, 0);
+	EXPECT_TRUE(state.output->stable);
+
+	EXPECT_EQ(0, decompose_execute(&state));
+}
+
 TEST(DecomposeExecute, HangulUnaffected)
 {
 	/*
