@@ -28,8 +28,8 @@ TEST(ComposeExecute, Initialize)
 	EXPECT_TRUE(compose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(&input, state.input);
-	EXPECT_EQ(i, state.input->src);
-	EXPECT_EQ(il, state.input->src_size);
+	EXPECT_EQ(i + 2, state.input->src);
+	EXPECT_EQ(il - 2, state.input->src_size);
 	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.input->property);
 	EXPECT_EQ(&output, state.output);
 }
