@@ -27,10 +27,11 @@ TEST(ComposeExecute, Initialize)
 	ComposeState state;
 	EXPECT_TRUE(compose_initialize(&state, &input, &output, 0));
 
+	EXPECT_EQ(&input, state.input);
 	EXPECT_EQ(i, state.input->src);
 	EXPECT_EQ(il, state.input->src_size);
 	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.input->property);
-	EXPECT_EQ(0, state.buffer_current);
+	EXPECT_EQ(&output, state.output);
 }
 
 TEST(ComposeExecute, StartSingleBasicLatin)
@@ -438,7 +439,7 @@ TEST(ComposeExecute, SequenceBlockEquivalenceMultipleCodepoints)
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x01CE, Yes, 0);
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x0322, Yes, 202);
 	CHECK_STREAM_ENTRY(*state.output, 2, 0x0300, Maybe, 230);
-	CHECK_STREAM_ENTRY(*state.output, 3, 0x0301, Maybe, 301);
+	CHECK_STREAM_ENTRY(*state.output, 3, 0x0301, Maybe, 230);
 
 	EXPECT_FALSE(compose_execute(&state));
 }
@@ -521,7 +522,7 @@ TEST(ComposeExecute, SequenceBlocked)
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x0061, Yes, 0);
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x05AE, Yes, 228);
 	CHECK_STREAM_ENTRY(*state.output, 2, 0x2DEE, Yes, 230);
-	CHECK_STREAM_ENTRY(*state.output, 3, 0x0300, Maybe, 300);
+	CHECK_STREAM_ENTRY(*state.output, 3, 0x0300, Maybe, 230);
 	CHECK_STREAM_ENTRY(*state.output, 4, 0x0315, Yes, 232);
 	CHECK_STREAM_ENTRY(*state.output, 5, 0x0062, Yes, 0);
 

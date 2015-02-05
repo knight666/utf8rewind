@@ -787,7 +787,7 @@ invaliddata:
 size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
 	size_t bytes_written = 0;
-	StreamState stream[2];
+	StreamState stream[3];
 	StreamState* src_compose = &stream[0];
 	uint8_t compatibility = (flags & UTF8_NORMALIZE_COMPATIBILITY) != 0;
 
@@ -838,7 +838,7 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 		ComposeState compose;
 		unicode_t result;
 
-		if (compose_initialize(&compose, src_compose, compatibility) == 0)
+		if (!compose_initialize(&compose, src_compose, &stream[2], compatibility))
 		{
 			goto invaliddata;
 		}
