@@ -176,6 +176,7 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		self.current = None
 		self.sections = []
 		self.blockGroups = dict()
+		self.exclusions = CompositionExclusionIntegrationSuite(db)
 	
 	def execute(self):
 		print "Executing normalization tests..."
@@ -185,6 +186,8 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		document_normalization = libs.unicode.UnicodeDocument()
 		document_normalization.parse(script_path + '/data/NormalizationTest.txt')
 		document_normalization.accept(self)
+		
+		self.exclusions.execute()
 		
 		print "Writing normalization tests..."
 		
@@ -202,6 +205,8 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		for s in self.sections:
 			print s.title + " (" + s.identifier + "):"
 			section_mapping[s.identifier](s)
+		
+		self.writeNormalizationTest(self.exclusions.entries, "Composition exclusions", 100)
 		
 		self.close()
 	
@@ -296,6 +301,42 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		normalization.parse(entry)
 		self.current.entries.append(normalization)
 		
+		return True
+
+class CompositionExclusionIntegrationSuite(IntegrationSuite):
+	def __init__(self, db):
+		self.db = db
+		self.entries = []
+	
+	def execute(self):
+		print "Executing composition exclusion tests..."
+		
+		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+		
+		document_exclusions = libs.unicode.UnicodeDocument()
+		document_exclusions.parse(script_path + '/data/CompositionExclusions.txt')
+		document_exclusions.accept(self)
+	
+	def visitDocument(self, document):
+		return True
+	
+	def visitSection(self, section):
+		return True
+	
+	def visitEntry(self, entry):
+		codepoint = int(entry.matches[0][0], 16)
+		if codepoint in self.db.records:
+			record = db.records[codepoint]
+			
+			entry = NormalizationEntry()
+			entry.codepoint = record.codepoint
+			entry.source = libs.utf8.codepointToUtf8Hex(record.codepoint)
+			entry.nfd = libs.utf8.unicodeToUtf8(record.decomposedNFD)
+			entry.nfc = entry.nfd
+			entry.nfkd = libs.utf8.unicodeToUtf8(record.decomposedNFD)
+			entry.nfkc = entry.nfkd
+			
+			self.entries.append(entry)
 		return True
 
 if __name__ == '__main__':
