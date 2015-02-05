@@ -882,32 +882,153 @@ outofspace:
 
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
-	if (
-		(flags & UTF8_TRANSFORM_DECOMPOSED) != 0)
+	static const size_t MaskCaseMapping =
+		UTF8_TRANSFORM_UPPERCASE | UTF8_TRANSFORM_LOWERCASE |
+		UTF8_TRANSFORM_TITLECASE | UTF8_TRANSFORM_CASEFOLD;
+	static const size_t MaskCaseMappingDecompose =
+		(UTF8_TRANSFORM_UPPERCASE | UTF8_TRANSFORM_LOWERCASE |
+		UTF8_TRANSFORM_TITLECASE | UTF8_TRANSFORM_CASEFOLD) &
+		~UTF8_TRANSFORM_FAST;
+	static const size_t MaskDecomposition =
+		((UTF8_TRANSFORM_UPPERCASE | UTF8_TRANSFORM_LOWERCASE |
+		UTF8_TRANSFORM_TITLECASE | UTF8_TRANSFORM_CASEFOLD) &
+		~UTF8_TRANSFORM_FAST) |
+		UTF8_TRANSFORM_DECOMPOSED | UTF8_TRANSFORM_COMPOSED;
+	static const size_t MaskComposition = 
+		((UTF8_TRANSFORM_UPPERCASE | UTF8_TRANSFORM_LOWERCASE |
+		UTF8_TRANSFORM_TITLECASE | UTF8_TRANSFORM_CASEFOLD) &
+		~UTF8_TRANSFORM_FAST) |
+		UTF8_TRANSFORM_COMPOSED;
+
+	char* dst = target;
+	size_t dst_size = targetSize;
+	StreamState stream[3];
+	DecomposeState decompose_state;
+	ComposeState compose_state;
+	//CaseMappingState casemapping_state;
+	uint8_t compatibility = (flags & UTF8_TRANSFORM_COMPATIBILITY) != 0;
+	StreamState* stream_input = &stream[0];
+	StreamState* stream_output = &stream[0];
+	size_t bytes_written = 0;
+
+	if (!stream_initialize(stream_output, input, inputSize, 0))
 	{
-		return normalize_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Decompose, errors);
+		goto invaliddata;
 	}
-	else if (
-		(flags & UTF8_TRANSFORM_COMPATIBILITY_DECOMPOSED) != 0)
+
+	if ((flags & MaskDecomposition) != 0)
 	{
-		return normalize_decomposition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compatibility_Decompose, errors);
-	}
-	else if (
-		(flags & UTF8_TRANSFORM_COMPOSED) != 0)
-	{
-		return normalize_composition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compose, errors);
-	}
-	else if (
-		(flags & UTF8_TRANSFORM_COMPATIBILITY_COMPOSED) != 0)
-	{
-		return normalize_composition(input, inputSize, target, targetSize, UnicodeProperty_Normalization_Compatibility_Compose, errors);
-	}
-	else
-	{
-		if (errors != 0)
+		stream_output = &stream[1];
+
+		if (!decompose_initialize(&decompose_state, stream_input, stream_output, compatibility))
 		{
-			*errors = UTF8_ERR_INVALID_TRANSFORM;
+			goto invaliddata;
 		}
-		return 0;
 	}
+
+	if ((flags & MaskComposition) != 0)
+	{
+		stream_input = stream_output;
+		stream_output = &stream[2];
+
+		if (!compose_initialize(&compose_state, stream_input, stream_output, compatibility))
+		{
+			goto invaliddata;
+		}
+	}
+
+	if ((flags & MaskCaseMapping) != 0)
+	{
+		uint8_t property = 0;
+
+		stream_input = stream_output;
+		stream_output = &stream[0];
+
+		if ((flags & UTF8_TRANSFORM_TITLECASE) != 0)
+		{
+			property = UnicodeProperty_Titlecase;
+		}
+		else if ((flags & UTF8_TRANSFORM_LOWERCASE) != 0)
+		{
+			property = UnicodeProperty_Lowercase;
+		}
+		else if ((flags & UTF8_TRANSFORM_UPPERCASE) != 0)
+		{
+			property = UnicodeProperty_Uppercase;
+		}
+
+		/*if (!casemapping_initialize(&casemapping_state, stream_input, property))
+		{
+			goto invaliddata;
+		}*/
+	}
+
+	while (1)
+	{
+		if ((flags & MaskDecomposition) != 0)
+		{
+			if (!decompose_execute(&decompose_state))
+			{
+				break;
+			}
+
+			if (!stream[1].stable)
+			{
+				stream_reorder(&stream[1]);
+			}
+		}
+
+		if ((flags & MaskComposition) != 0)
+		{
+			if (!compose_execute(&compose_state))
+			{
+				break;
+			}
+		}
+
+		/*if ((flags & MaskCaseMapping) != 0)
+		{
+			uint8_t i;
+			for (i = 0; i < src_stream->current; ++i)
+			{
+				uint8_t encoded_size = casemapping_execute(src_stream->codepoint[i], &dst, &dst_size);
+				if (encoded_size == 0)
+				{
+					goto outofspace;
+				}
+
+				bytes_written += encoded_size;
+			}
+		}
+		else*/
+		{
+			uint8_t i;
+			for (i = 0; i < stream_output->current; ++i)
+			{
+				uint8_t encoded_size = codepoint_write(stream_output->codepoint[i], &dst, &dst_size);
+				if (encoded_size == 0)
+				{
+					goto outofspace;
+				}
+
+				bytes_written += encoded_size;
+			}
+		}
+	}
+
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
+	}
+	return bytes_written;
 }
