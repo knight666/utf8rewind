@@ -31,6 +31,7 @@
 
 typedef struct {
 	StreamState* input;
+	StreamState* output;
 	uint8_t input_index;
 	uint8_t input_left;
 	uint8_t finished;
@@ -48,7 +49,7 @@ typedef struct {
 	uint8_t buffer_left;
 } ComposeState;
 
-uint8_t compose_initialize(ComposeState* state, StreamState* input, uint8_t compatibility);
+uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);
 
 uint8_t compose_readcodepoint(ComposeState* state, uint8_t index);
 

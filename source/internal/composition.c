@@ -28,7 +28,7 @@
 #include "codepoint.h"
 #include "database.h"
 
-uint8_t compose_initialize(ComposeState* state, StreamState* input, uint8_t compatibility)
+uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState* output, uint8_t compatibility)
 {
 	memset(state, 0, sizeof(ComposeState));
 
@@ -46,6 +46,8 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, uint8_t comp
 	state->input->property = (compatibility == 1)
 		? UnicodeProperty_Normalization_Compatibility_Compose
 		: UnicodeProperty_Normalization_Compose;
+
+	state->output = output;
 
 	return 1;
 }
