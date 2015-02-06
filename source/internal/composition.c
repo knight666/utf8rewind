@@ -230,6 +230,7 @@ unicode_t compose_execute(ComposeState* state)
 				{
 					if (!compose_readcodepoint(state, state->cache_next))
 					{
+						finished = 1;
 						break;
 					}
 
@@ -238,6 +239,7 @@ unicode_t compose_execute(ComposeState* state)
 					if (state->output->quick_check[state->cache_next] == QuickCheckResult_Yes &&
 						state->output->canonical_combining_class[state->cache_next] == 0)
 					{
+						finished = 1;
 						break;
 					}
 					else if (
@@ -252,30 +254,34 @@ unicode_t compose_execute(ComposeState* state)
 		}
 		while (!finished);
 
-		cache_start++;
-
-		/*if (state->output->current > 1)
+		if (state->output->current > 1)
 		{
-			uint8_t write_index = 0;
-			uint8_t read_index = 1;
+			uint8_t write_index = cache_start;
+			uint8_t read_index = cache_start + 1;
 
-			while (write_index < state->output->current - 1)
+			while (write_index < state->output->current)
 			{
-				while (
-					read_index < state->output->current &&
-					state->output->codepoint[read_index] == 0)
+				if (read_index < state->output->current)
 				{
-					read_index++;
-				}
+					if (state->output->codepoint[read_index] == 0)
+					{
+						while (
+							read_index < state->output->current &&
+							state->output->codepoint[read_index] == 0)
+						{
+							read_index++;
+						}
 
-				if (read_index == state->output->current)
-				{
-					break;
-				}
+						if (read_index == state->output->current)
+						{
+							break;
+						}
 
-				state->output->codepoint[write_index]                  = state->output->codepoint[read_index];
-				state->output->quick_check[write_index]                = state->output->quick_check[read_index];
-				state->output->canonical_combining_class[write_index]  = state->output->canonical_combining_class[read_index];
+						state->output->codepoint[write_index]                  = state->output->codepoint[read_index];
+						state->output->quick_check[write_index]                = state->output->quick_check[read_index];
+						state->output->canonical_combining_class[write_index]  = state->output->canonical_combining_class[read_index];
+					}
+				}
 
 				write_index++;
 				read_index++;
@@ -287,7 +293,11 @@ unicode_t compose_execute(ComposeState* state)
 		{
 			state->output->current = 0;
 			state->finished = 1;
-		}*/
+
+			break;
+		}
+
+		cache_start++;
 	}
 
 	return composed;
