@@ -115,11 +115,11 @@ unicode_t compose_execute(ComposeState* state)
 		return 0;
 	}
 
+	state->cache_current = cache_start;
+	state->cache_next = cache_start + 1;
+
 	while (1)
 	{
-		state->cache_current = cache_start;
-		state->cache_next = cache_start + 1;
-
 		if (!compose_readcodepoint(state, state->cache_next))
 		{
 			return 1;
@@ -256,38 +256,37 @@ unicode_t compose_execute(ComposeState* state)
 
 		if (state->output->current > 1)
 		{
-			uint8_t write_index = cache_start;
-			uint8_t read_index = cache_start + 1;
+			uint8_t write_index = 0;
+			uint8_t read_index = 1;
 
 			while (write_index < state->output->current)
 			{
-				if (read_index < state->output->current)
+				if (read_index < state->output->current &&
+					state->output->codepoint[read_index] == 0)
 				{
-					if (state->output->codepoint[read_index] == 0)
+					while (
+						read_index < state->output->current &&
+						state->output->codepoint[read_index] == 0)
 					{
-						while (
-							read_index < state->output->current &&
-							state->output->codepoint[read_index] == 0)
-						{
-							read_index++;
-						}
-
-						if (read_index == state->output->current)
-						{
-							break;
-						}
-
-						state->output->codepoint[write_index]                  = state->output->codepoint[read_index];
-						state->output->quick_check[write_index]                = state->output->quick_check[read_index];
-						state->output->canonical_combining_class[write_index]  = state->output->canonical_combining_class[read_index];
+						read_index++;
 					}
+
+					if (read_index == state->output->current)
+					{
+						break;
+					}
+
+					state->output->codepoint[write_index]                  = state->output->codepoint[read_index];
+					state->output->quick_check[write_index]                = state->output->quick_check[read_index];
+					state->output->canonical_combining_class[write_index]  = state->output->canonical_combining_class[read_index];
 				}
 
 				write_index++;
 				read_index++;
 			}
 
-			state->output->current = write_index;
+			state->output->current = write_index + 1;
+			state->cache_next = state->output->current;
 		}
 		else
 		{
