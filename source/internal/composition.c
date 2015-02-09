@@ -128,6 +128,8 @@ unicode_t compose_execute(ComposeState* state)
 
 		composed = state->output->codepoint[state->cache_current];
 
+		finished = 0;
+
 		do
 		{
 			unicode_t current_composed = 0;
@@ -232,11 +234,13 @@ unicode_t compose_execute(ComposeState* state)
 						break;
 					}
 
-					if (state->output->quick_check[state->cache_next] == QuickCheckResult_Yes &&
-						state->output->canonical_combining_class[state->cache_next] == 0)
+					if (state->output->canonical_combining_class[state->cache_next] == 0)
 					{
-						finished = 1;
-						break;
+						if (state->output->quick_check[state->cache_next] == QuickCheckResult_Yes)
+						{
+							finished = 1;
+							break;
+						}
 					}
 					else if (
 						state->cache_next > 1 &&
