@@ -256,8 +256,19 @@ unicode_t compose_execute(ComposeState* state)
 
 		if (state->output->current > 1)
 		{
-			uint8_t write_index = 0;
-			uint8_t read_index = 1;
+			uint8_t write_index;
+			uint8_t read_index;
+
+			for (read_index = state->output->current - 1; read_index > 0; --read_index)
+			{
+				if (state->output->codepoint[read_index] == 0)
+				{
+					state->output->current--;
+				}
+			}
+
+			write_index = 0;
+			read_index = 1;
 
 			while (write_index < state->output->current)
 			{
@@ -285,7 +296,7 @@ unicode_t compose_execute(ComposeState* state)
 				read_index++;
 			}
 
-			state->output->current = write_index + 1;
+			state->output->current = write_index;
 			state->cache_next = state->output->current;
 		}
 		else
