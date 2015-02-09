@@ -57,6 +57,7 @@ typedef struct {
 	uint8_t property;
 	uint8_t index;
 	uint8_t current;
+	uint8_t filled;
 	uint8_t stable;
 	uint8_t last_length;
 	unicode_t codepoint[STREAM_BUFFER_MAX];
