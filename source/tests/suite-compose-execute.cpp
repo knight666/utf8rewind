@@ -711,7 +711,7 @@ TEST(ComposeExecute, MultipleSequenceCompose)
 	EXPECT_EQ(3, (int)state.output->current);
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x1FB3, Yes, 0);
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x1FC6, Yes, 0);
-	CHECK_STREAM_ENTRY(*state.output, 20, 0x22E2, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x22E2, Yes, 0);
 
 	EXPECT_FALSE(compose_execute(&state));
 }
@@ -793,7 +793,7 @@ TEST(ComposeExecute, MultipleSequenceComposeSkipNonStarter)
 	EXPECT_EQ(3, (int)state.output->current);
 	CHECK_STREAM_ENTRY(*state.output, 0, 0xD6FC, Yes, 0);
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x0334, Yes, 1);
-	CHECK_STREAM_ENTRY(*state.output, 2, 0x11AE, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0x11AE, Maybe, 0);
 
 	EXPECT_FALSE(compose_execute(&state));
 }
@@ -822,7 +822,7 @@ TEST(ComposeExecute, MultipleSequenceComposeEquivalentCCC)
 	CHECK_STREAM_ENTRY(*state.output, 0, 0x00E0, Yes, 0);
 	CHECK_STREAM_ENTRY(*state.output, 1, 0x1D16D, Yes, 226);
 	CHECK_STREAM_ENTRY(*state.output, 2, 0x302B, Yes, 228);
-	CHECK_STREAM_ENTRY(*state.output, 3, 0x05AE, Maybe, 230);
+	CHECK_STREAM_ENTRY(*state.output, 3, 0x05AE, Yes, 228);
 	CHECK_STREAM_ENTRY(*state.output, 4, 0x0062, Yes, 0);
 
 	EXPECT_FALSE(compose_execute(&state));
