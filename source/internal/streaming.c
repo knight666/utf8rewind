@@ -58,36 +58,27 @@ uint8_t stream_read(StreamState* state)
 
 	/* Reset sequence after the first pass */
 
-	if (state->current >= 1)
+	if (state->filled > 0)
 	{
-		uint8_t i;
-
 		/* Check for end of data */
 
-		if (state->src_size <= state->last_length &&
-			state->codepoint[state->current] == 0)
+		if (state->filled == state->current &&
+			state->src_size <= state->last_length)
 		{
 			state->src_size = 0;
+
 			state->index = 0;
 			state->current = 0;
+			state->filled = 0;
 
 			return 0;
 		}
 
 		/* Copy last peeked codepoint to new sequence */
 
-		state->codepoint[0] = state->codepoint[state->current];
-		state->canonical_combining_class[0] = state->canonical_combining_class[state->current];
-		state->quick_check[0] = state->quick_check[state->current];
-
-		/* Clear rest of sequence */
-
-		for (i = 1; i <= state->current; ++i)
-		{
-			state->codepoint[i] = 0;
-			state->canonical_combining_class[i] = 0;
-			state->quick_check[i] = 0;
-		}
+		state->codepoint[0]                  = state->codepoint[state->filled - 1];
+		state->canonical_combining_class[0]  = state->canonical_combining_class[state->filled - 1];
+		state->quick_check[0]                = state->quick_check[state->filled - 1];
 
 		/* New sequence always starts as stable */
 
@@ -97,11 +88,12 @@ uint8_t stream_read(StreamState* state)
 
 		state->index = 0;
 		state->current = 1;
+		state->filled = 1;
 	}
 
 	/* Read codepoints */
 
-	while (state->current < STREAM_SAFE_MAX)
+	while (state->filled < STREAM_SAFE_MAX)
 	{
 		/* Move the input cursor after peeking */
 
@@ -118,10 +110,12 @@ uint8_t stream_read(StreamState* state)
 
 		/* Peek the next codepoint */
 
-		state->last_length = codepoint_read(state->src, state->src_size, &state->codepoint[state->current]);
+		state->last_length = codepoint_read(state->src, state->src_size, &state->codepoint[state->filled]);
 
-		state->quick_check[state->current] = database_queryproperty(state->codepoint[state->current], state->property);
-		state->canonical_combining_class[state->current] = database_queryproperty(state->codepoint[state->current], UnicodeProperty_CanonicalCombiningClass);
+		state->quick_check[state->filled]                = database_queryproperty(state->codepoint[state->filled], state->property);
+		state->canonical_combining_class[state->filled]  = database_queryproperty(state->codepoint[state->filled], UnicodeProperty_CanonicalCombiningClass);
+
+		state->filled++;
 
 		if (state->current > 0)
 		{
@@ -144,16 +138,18 @@ uint8_t stream_read(StreamState* state)
 		state->current++;
 	}
 
-	if (state->current == STREAM_SAFE_MAX)
+	if (state->filled == STREAM_SAFE_MAX)
 	{
 		/* Insert COMBINING GRAPHEME JOINER into output */
 
-		state->codepoint[state->current] = 0x034F;
-		state->quick_check[state->current] = 0;
-		state->canonical_combining_class[state->current] = 0;
+		state->codepoint[state->filled]                  = 0x034F;
+		state->quick_check[state->filled]                = 0;
+		state->canonical_combining_class[state->filled]  = 0;
+
+		state->filled++;
 	}
 
-	return state->current;
+	return 1;
 }
 
 uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_t* bytesWritten)
