@@ -32,13 +32,14 @@ uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamSt
 {
 	memset(state, 0, sizeof(DecomposeState));
 
-	/* Ensure input is valid */
+	/* Ensure streams are valid */
 
-	if (input->src == 0 ||
-		input->src_size == 0)
+	if (input == 0 ||
+		output == 0)
 	{
 		return 0;
 	}
+
 
 	/* Set up input stream */
 
@@ -50,11 +51,10 @@ uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamSt
 	/* Set up output stream */
 
 	state->output = output;
+	memset(state->output, 0, sizeof(StreamState));
 	state->output->property = (compatibility == 1)
 		? UnicodeProperty_Normalization_Compatibility_Decompose
 		: UnicodeProperty_Normalization_Decompose;
-	state->output->codepoint[0] = 0;
-	state->output->current = 0;
 
 	return 1;
 }
