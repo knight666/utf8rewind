@@ -791,7 +791,7 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 	StreamState* src_compose = &stream[0];
 	uint8_t compatibility = (flags & UTF8_NORMALIZE_COMPATIBILITY) != 0;
 
-	if (stream_initialize(&stream[0], input, inputSize, 0) == 0)
+	if (stream_initialize(&stream[0], input, inputSize) == 0)
 	{
 		goto invaliddata;
 	}

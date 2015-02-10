@@ -183,7 +183,7 @@ size_t normalize_composition(const char* input, size_t inputSize, char* target, 
 		goto invaliddata;
 	}
 
-	stream_initialize(&input_stream, input, inputSize, 0);
+	stream_initialize(&input_stream, input, inputSize);
 
 	compose_initialize(&state, &input_stream, &output_stream, 0);
 

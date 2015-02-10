@@ -32,8 +32,7 @@
 typedef struct {
 	StreamState* input;
 	StreamState* output;
-	uint8_t input_index;
-	uint8_t input_left;
+	uint8_t property;
 	uint8_t finished;
 	uint8_t cache_index;
 	uint8_t cache_filled;
