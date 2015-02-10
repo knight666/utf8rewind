@@ -32,10 +32,10 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 {
 	memset(state, 0, sizeof(ComposeState));
 
-	/* Ensure input is valid */
+	/* Ensure streams are valid */
 
-	if (input->src == 0 ||
-		input->src_size == 0)
+	if (input == 0 ||
+		output == 0)
 	{
 		return 0;
 	}
@@ -47,15 +47,10 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 		? UnicodeProperty_Normalization_Compatibility_Compose
 		: UnicodeProperty_Normalization_Compose;
 
+	/* Set up output stream */
+
 	state->output = output;
-	state->output->current = 0;
-
-	if (!compose_readcodepoint(state, 0))
-	{
-		state->finished = 1;
-
-		return 0;
-	}
+	memset(state->output, 0, sizeof(StreamState));
 
 	return 1;
 }
@@ -118,6 +113,11 @@ unicode_t compose_execute(ComposeState* state)
 
 	state->cache_current = cache_start;
 	state->cache_next = cache_start + 1;
+
+	if (!compose_readcodepoint(state, state->cache_current))
+	{
+		return 0;
+	}
 
 	while (1)
 	{
