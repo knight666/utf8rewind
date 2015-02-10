@@ -28,10 +28,30 @@ TEST(ComposeExecute, Initialize)
 	EXPECT_TRUE(compose_initialize(&state, &input, &output, 0));
 
 	EXPECT_EQ(&input, state.input);
-	EXPECT_EQ(i + 2, state.input->src);
-	EXPECT_EQ(il - 2, state.input->src_size);
+	EXPECT_EQ(i, state.input->src);
+	EXPECT_EQ(il, state.input->src_size);
 	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.input->property);
 	EXPECT_EQ(&output, state.output);
+	EXPECT_EQ(0, (int)state.output->current);
+	EXPECT_EQ(0, (int)state.output->filled);
+}
+
+TEST(ComposeExecute, InitializeInvalidInput)
+{
+	StreamState* input = nullptr;
+	StreamState output = { 0 };
+
+	ComposeState state;
+	EXPECT_FALSE(compose_initialize(&state, input, &output, 0));
+}
+
+TEST(ComposeExecute, InitializeInvalidOutput)
+{
+	StreamState input = { 0 };
+	StreamState* output = nullptr;
+
+	ComposeState state;
+	EXPECT_FALSE(compose_initialize(&state, &input, output, 0));
 }
 
 TEST(ComposeExecute, StartSingleBasicLatin)
@@ -896,7 +916,7 @@ TEST(ComposeExecute, NotEnoughData)
 	StreamState output = { 0 };
 
 	ComposeState state;
-	EXPECT_FALSE(compose_initialize(&state, &input, &output, 0));
+	EXPECT_TRUE(compose_initialize(&state, &input, &output, 0));
 
 	EXPECT_FALSE(compose_execute(&state));
 }
@@ -912,10 +932,7 @@ TEST(ComposeExecute, InvalidData)
 	StreamState output = { 0 };
 
 	ComposeState state;
-	EXPECT_FALSE(compose_initialize(&state, &input, &output, 0));
-
-	EXPECT_EQ(nullptr, state.input);
-	EXPECT_EQ(nullptr, state.output);
+	EXPECT_TRUE(compose_initialize(&state, &input, &output, 0));
 
 	EXPECT_FALSE(compose_execute(&state));
 }
