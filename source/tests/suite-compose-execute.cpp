@@ -20,7 +20,7 @@ TEST(ComposeExecute, Initialize)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -30,10 +30,10 @@ TEST(ComposeExecute, Initialize)
 	EXPECT_EQ(&input, state.input);
 	EXPECT_EQ(i, state.input->src);
 	EXPECT_EQ(il, state.input->src_size);
-	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.input->property);
 	EXPECT_EQ(&output, state.output);
 	EXPECT_EQ(0, (int)state.output->current);
 	EXPECT_EQ(0, (int)state.output->filled);
+	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.property);
 }
 
 TEST(ComposeExecute, InitializeInvalidInput)
@@ -66,7 +66,7 @@ TEST(ComposeExecute, StartSingleBasicLatin)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -92,7 +92,7 @@ TEST(ComposeExecute, StartSingleStarter)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -118,7 +118,7 @@ TEST(ComposeExecute, StartSingleNonStarter)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -144,7 +144,7 @@ TEST(ComposeExecute, StartSingleInvalidCodepoint)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -170,7 +170,7 @@ TEST(ComposeExecute, StartMultipleBasicLatin)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -200,7 +200,7 @@ TEST(ComposeExecute, StartMultipleStarter)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -229,7 +229,7 @@ TEST(ComposeExecute, StartMultipleNonStarter)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -257,7 +257,7 @@ TEST(ComposeExecute, StartMultipleInvalidCodepoint)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -285,7 +285,7 @@ TEST(ComposeExecute, SequenceUnaffected)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -313,7 +313,7 @@ TEST(ComposeExecute, SequenceCompose)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -339,7 +339,7 @@ TEST(ComposeExecute, SequenceComposeMultipleCodepoints)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -365,7 +365,7 @@ TEST(ComposeExecute, SequenceForwardPrecedence)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -392,7 +392,7 @@ TEST(ComposeExecute, SequenceForwardPrecedenceMultipleCodepoints)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -420,7 +420,7 @@ TEST(ComposeExecute, SequenceBlockEquivalence)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -447,7 +447,7 @@ TEST(ComposeExecute, SequenceBlockEquivalenceMultipleCodepoints)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -476,7 +476,7 @@ TEST(ComposeExecute, SequenceBlockUnordered)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -503,7 +503,7 @@ TEST(ComposeExecute, SequenceSkipUnstable)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -530,7 +530,7 @@ TEST(ComposeExecute, SequenceBlocked)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -561,7 +561,7 @@ TEST(ComposeExecute, SequenceSkipStable)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -588,7 +588,7 @@ TEST(ComposeExecute, SequenceSkipNonStarter)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -616,7 +616,7 @@ TEST(ComposeExecute, SequenceHangulLV)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -642,7 +642,7 @@ TEST(ComposeExecute, SequenceHangulLVMissing)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -668,7 +668,7 @@ TEST(ComposeExecute, SequenceHangulST)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -694,7 +694,7 @@ TEST(ComposeExecute, SequenceHangulSTDecomposed)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -720,7 +720,7 @@ TEST(ComposeExecute, MultipleSequenceCompose)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -748,7 +748,7 @@ TEST(ComposeExecute, MultipleSequenceComposeAndUnaffected)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -775,7 +775,7 @@ TEST(ComposeExecute, MultipleSequenceUnaffectedAndCompose)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -802,7 +802,7 @@ TEST(ComposeExecute, MultipleSequenceComposeSkipNonStarter)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -830,7 +830,7 @@ TEST(ComposeExecute, MultipleSequenceComposeEquivalentCCC)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -860,7 +860,7 @@ TEST(ComposeExecute, MultipleSequenceHangul)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -888,7 +888,7 @@ TEST(ComposeExecute, ContinueAfterEnd)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_TRUE(stream_initialize(&input, i, il, 0));
+	EXPECT_TRUE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -911,7 +911,7 @@ TEST(ComposeExecute, NotEnoughData)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_FALSE(stream_initialize(&input, i, il, 0));
+	EXPECT_FALSE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 
@@ -927,7 +927,7 @@ TEST(ComposeExecute, InvalidData)
 	size_t il = 5;
 
 	StreamState input;
-	EXPECT_FALSE(stream_initialize(&input, i, il, 0));
+	EXPECT_FALSE(stream_initialize(&input, i, il));
 
 	StreamState output = { 0 };
 

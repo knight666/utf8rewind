@@ -40,31 +40,32 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 		return 0;
 	}
 
-	/* Set up input stream */
+	/* Set up streams */
 
 	state->input = input;
-	state->input->property = (compatibility == 1)
-		? UnicodeProperty_Normalization_Compatibility_Compose
-		: UnicodeProperty_Normalization_Compose;
-
-	/* Set up output stream */
 
 	state->output = output;
 	memset(state->output, 0, sizeof(StreamState));
+
+	/* Set up codepoint quickcheck property */
+
+	state->property = (compatibility == 1)
+		? UnicodeProperty_Normalization_Compatibility_Compose
+		: UnicodeProperty_Normalization_Compose;
 
 	return 1;
 }
 
 uint8_t compose_readcodepoint(ComposeState* state, uint8_t index)
 {
-	if (state->input_left == 0)
+	if (state->input->index == state->input->current)
 	{
-		if (!stream_read(state->input))
+		if (!stream_read(state->input, state->property))
 		{
 			/* End of data */
 
-			state->input_index = 0;
-			state->input_left = 0;
+			state->input->index = 0;
+			state->input->current = 0;
 			state->finished = 1;
 
 			return 0;
@@ -77,20 +78,18 @@ uint8_t compose_readcodepoint(ComposeState* state, uint8_t index)
 			state->output->quick_check[index]                = state->input->quick_check[0];
 			state->output->canonical_combining_class[index]  = state->input->canonical_combining_class[0];
 
-			state->input_index = 1;
-			state->input_left = state->input->current - 1;
+			state->input->index = 1;
 		}
 	}
 	else
 	{
 		/* Use next codepoint from current sequence */
 
-		state->output->codepoint[index]                  = state->input->codepoint[state->input_index];
-		state->output->quick_check[index]                = state->input->quick_check[state->input_index];
-		state->output->canonical_combining_class[index]  = state->input->canonical_combining_class[state->input_index];
+		state->output->codepoint[index]                  = state->input->codepoint[state->input->index];
+		state->output->quick_check[index]                = state->input->quick_check[state->input->index];
+		state->output->canonical_combining_class[index]  = state->input->canonical_combining_class[state->input->index];
 
-		state->input_index++;
-		state->input_left--;
+		state->input->index++;
 	}
 
 	state->output->current++;
@@ -191,7 +190,7 @@ unicode_t compose_execute(ComposeState* state)
 			if (current_composed != 0)
 			{
 				state->output->codepoint[state->cache_current]                  = current_composed;
-				state->output->quick_check[state->cache_current]                = database_queryproperty(current_composed, state->input->property);
+				state->output->quick_check[state->cache_current]                = database_queryproperty(current_composed, state->property);
 				state->output->canonical_combining_class[state->cache_current]  = database_queryproperty(current_composed, UnicodeProperty_CanonicalCombiningClass);
 
 				composed = current_composed;
