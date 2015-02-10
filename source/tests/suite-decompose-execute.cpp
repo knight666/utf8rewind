@@ -27,11 +27,32 @@ TEST(DecomposeExecute, Initialize)
 	DecomposeState state;
 	EXPECT_EQ(1, decompose_initialize(&state, &input, &output, 0));
 
+	EXPECT_EQ(&input, state.input);
 	EXPECT_EQ(i, state.input->src);
 	EXPECT_EQ(il, state.input->src_size);
 	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.input->property);
+	EXPECT_EQ(&output, state.output);
+	EXPECT_EQ(0, (int)state.output->current);
+	EXPECT_EQ(0, (int)state.output->filled);
 	EXPECT_EQ(UnicodeProperty_Normalization_Decompose, state.output->property);
-	EXPECT_EQ(0, state.output->current);
+}
+
+TEST(DecomposeExecute, InitializeInvalidInput)
+{
+	StreamState* input = nullptr;
+	StreamState output = { 0 };
+
+	DecomposeState state;
+	EXPECT_FALSE(decompose_initialize(&state, input, &output, 0));
+}
+
+TEST(DecomposeExecute, InitializeInvalidOutput)
+{
+	StreamState input = { 0 };
+	StreamState* output = nullptr;
+
+	DecomposeState state;
+	EXPECT_FALSE(decompose_initialize(&state, &input, output, 0));
 }
 
 TEST(DecomposeExecute, StartSingleUnaffected)
@@ -900,17 +921,14 @@ TEST(DecomposeExecute, NotEnoughData)
 	size_t il = strlen(i);
 
 	StreamState input;
-	EXPECT_EQ(0, stream_initialize(&input, i, il, 0));
+	EXPECT_FALSE(stream_initialize(&input, i, il, 0));
 
 	StreamState output = { 0 };
 
 	DecomposeState state;
-	EXPECT_EQ(0, decompose_initialize(&state, &input, &output, 0));
+	EXPECT_TRUE(decompose_initialize(&state, &input, &output, 0));
 
-	EXPECT_EQ(nullptr, state.input);
-	EXPECT_EQ(nullptr, state.output);
-
-	EXPECT_EQ(0, decompose_execute(&state));
+	EXPECT_FALSE(decompose_execute(&state));
 }
 
 TEST(DecomposeExecute, InvalidData)
@@ -919,15 +937,12 @@ TEST(DecomposeExecute, InvalidData)
 	size_t il = 81;
 
 	StreamState input;
-	EXPECT_EQ(0, stream_initialize(&input, i, il, 0));
+	EXPECT_FALSE(stream_initialize(&input, i, il, 0));
 
 	StreamState output = { 0 };
 
 	DecomposeState state;
-	EXPECT_EQ(0, decompose_initialize(&state, &input, &output, 0));
+	EXPECT_TRUE(decompose_initialize(&state, &input, &output, 0));
 
-	EXPECT_EQ(nullptr, state.input);
-	EXPECT_EQ(nullptr, state.output);
-
-	EXPECT_EQ(0, decompose_execute(&state));
+	EXPECT_FALSE(decompose_execute(&state));
 }
