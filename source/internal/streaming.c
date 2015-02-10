@@ -28,7 +28,7 @@
 #include "codepoint.h"
 #include "database.h"
 
-uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSize, uint8_t property)
+uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSize)
 {
 	memset(state, 0, sizeof(StreamState));
 
@@ -40,14 +40,13 @@ uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSiz
 
 	state->src = input;
 	state->src_size = inputSize;
-	state->property = property;
 
 	state->stable = 1;
 
 	return 1;
 }
 
-uint8_t stream_read(StreamState* state)
+uint8_t stream_read(StreamState* state, uint8_t property)
 {
 	/* Ensure input is available */
 
@@ -112,7 +111,7 @@ uint8_t stream_read(StreamState* state)
 
 		state->last_length = codepoint_read(state->src, state->src_size, &state->codepoint[state->filled]);
 
-		state->quick_check[state->filled]                = database_queryproperty(state->codepoint[state->filled], state->property);
+		state->quick_check[state->filled]                = (property != 0) ? database_queryproperty(state->codepoint[state->filled], property) : QuickCheckResult_Yes;
 		state->canonical_combining_class[state->filled]  = database_queryproperty(state->codepoint[state->filled], UnicodeProperty_CanonicalCombiningClass);
 
 		state->filled++;
