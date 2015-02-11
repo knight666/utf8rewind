@@ -187,6 +187,8 @@ unicode_t compose_execute(ComposeState* state)
 				break;
 			}
 
+			last_combining_class = state->output->canonical_combining_class[state->cache_next];
+
 			if (current_composed != 0)
 			{
 				state->output->codepoint[state->cache_current]                  = current_composed;
@@ -194,8 +196,6 @@ unicode_t compose_execute(ComposeState* state)
 				state->output->canonical_combining_class[state->cache_current]  = database_queryproperty(current_composed, UnicodeProperty_CanonicalCombiningClass);
 
 				composed = current_composed;
-
-				last_combining_class = state->output->canonical_combining_class[state->cache_next];
 
 				state->output->codepoint[state->cache_next]                  = 0;
 				state->output->quick_check[state->cache_next]                = 0;
@@ -211,18 +211,9 @@ unicode_t compose_execute(ComposeState* state)
 			}
 			else
 			{
-				last_combining_class = state->output->canonical_combining_class[state->cache_next];
-
 				state->cache_next++;
 			}
 
-			while (
-				state->cache_next < state->cache_current &&
-				state->output->codepoint[state->cache_next] == 0)
-			{
-				state->cache_next++;
-			}
-		
 			while (state->cache_next == state->output->current)
 			{
 				if (!compose_readcodepoint(state, state->cache_next))
@@ -231,12 +222,11 @@ unicode_t compose_execute(ComposeState* state)
 					break;
 				}
 
-				if (state->output->canonical_combining_class[state->cache_next] == 0)
+				if ((last_combining_class == 0 ||
+					last_combining_class >= state->output->canonical_combining_class[state->cache_next]) &&
+					state->output->quick_check[state->cache_next] == QuickCheckResult_Yes)
 				{
-					if (state->output->quick_check[state->cache_next] == QuickCheckResult_Yes)
-					{
-						finished = 1;
-					}
+					finished = 1;
 
 					break;
 				}
@@ -282,7 +272,9 @@ unicode_t compose_execute(ComposeState* state)
 			}
 
 			state->output->current = write_index;
-			state->cache_next = state->output->current;
+
+			state->cache_current++;
+			state->cache_next = write_index;
 		}
 		else
 		{
@@ -292,7 +284,6 @@ unicode_t compose_execute(ComposeState* state)
 		}
 
 		cache_start++;
-		state->cache_current++;
 	}
 
 	return 1;
