@@ -120,7 +120,8 @@ unicode_t compose_execute(ComposeState* state)
 
 	while (1)
 	{
-		if (!compose_readcodepoint(state, state->cache_next))
+		if (state->cache_next == state->output->current &&
+			!compose_readcodepoint(state, state->cache_next))
 		{
 			return 1;
 		}
@@ -274,7 +275,12 @@ unicode_t compose_execute(ComposeState* state)
 			state->output->current = write_index;
 
 			state->cache_current++;
-			state->cache_next = write_index;
+
+			state->cache_next = state->cache_current + 1;
+			if (state->cache_next > state->output->current)
+			{
+				state->cache_next = state->output->current;
+			}
 		}
 		else
 		{
