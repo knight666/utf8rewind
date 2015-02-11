@@ -215,27 +215,22 @@ unicode_t compose_execute(ComposeState* state)
 				state->cache_next++;
 			}
 
-			while (state->cache_next == state->output->current)
+			if (state->cache_next == state->output->current)
 			{
 				if (!compose_readcodepoint(state, state->cache_next))
 				{
 					finished = 1;
+
 					break;
 				}
 
-				if ((last_combining_class == 0 ||
-					last_combining_class >= state->output->canonical_combining_class[state->cache_next]) &&
-					state->output->quick_check[state->cache_next] == QuickCheckResult_Yes)
+				if (current_composed == 0 &&
+					(last_combining_class == 0 ||
+					last_combining_class >= state->output->canonical_combining_class[state->cache_next]))
 				{
 					finished = 1;
 
 					break;
-				}
-
-				if (state->cache_next > 1 &&
-					state->output->canonical_combining_class[state->cache_next] <= state->output->canonical_combining_class[state->cache_next - 1])
-				{
-					state->cache_next++;
 				}
 			}
 		}
