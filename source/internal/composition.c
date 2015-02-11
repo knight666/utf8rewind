@@ -99,9 +99,6 @@ uint8_t compose_readcodepoint(ComposeState* state, uint8_t index)
 
 unicode_t compose_execute(ComposeState* state)
 {
-	unicode_t composed;
-	uint8_t last_combining_class = 0;
-	uint8_t finished = 0;
 	uint8_t cache_start = 0;
 
 	if (state->input == 0 ||
@@ -133,25 +130,17 @@ unicode_t compose_execute(ComposeState* state)
 			state->cache_next = state->cache_current + 1;
 		}
 
-		composed = state->output->codepoint[state->cache_current];
-
-		finished = 0;
-
-		do
+		while (
+			state->cache_next < state->output->current ||
+			compose_readcodepoint(state, state->cache_next))
 		{
-			unicode_t current_composed = 0;
-
-			if (state->cache_next == state->output->current &&
-				!compose_readcodepoint(state, state->cache_next))
-			{
-				break;
-			}
-
 			if (state->output->quick_check[state->cache_next] != QuickCheckResult_Yes &&
 				(state->output->canonical_combining_class[state->cache_next] == 0 &&
 				state->output->canonical_combining_class[state->cache_next - 1] == 0) ||
 				state->output->canonical_combining_class[state->cache_next] > state->output->canonical_combining_class[state->cache_next - 1])
 			{
+				unicode_t composed = 0;
+
 				/*
 					Hangul composition
 
@@ -170,7 +159,7 @@ unicode_t compose_execute(ComposeState* state)
 						unicode_t l_index = state->output->codepoint[state->cache_current] - HANGUL_L_FIRST;
 						unicode_t v_index = state->output->codepoint[state->cache_next] - HANGUL_V_FIRST;
 
-						current_composed = HANGUL_S_FIRST + (((l_index * HANGUL_V_COUNT) + v_index) * HANGUL_T_COUNT);
+						composed = HANGUL_S_FIRST + (((l_index * HANGUL_V_COUNT) + v_index) * HANGUL_T_COUNT);
 					}
 				}
 				else if (
@@ -184,16 +173,35 @@ unicode_t compose_execute(ComposeState* state)
 					{
 						unicode_t t_index = state->output->codepoint[state->cache_next] - HANGUL_T_FIRST;
 
-						current_composed = state->output->codepoint[state->cache_current] + t_index;
+						composed = state->output->codepoint[state->cache_current] + t_index;
 					}
 				}
 				else
 				{
 					/* Attempt to compose codepoints */
 
-					current_composed = database_querycomposition(
+					composed = database_querycomposition(
 						state->output->codepoint[state->cache_current],
 						state->output->codepoint[state->cache_next]);
+				}
+
+				if (composed != 0)
+				{
+					state->output->codepoint[state->cache_current]                  = composed;
+					state->output->quick_check[state->cache_current]                = database_queryproperty(composed, state->property);
+					state->output->canonical_combining_class[state->cache_current]  = database_queryproperty(composed, UnicodeProperty_CanonicalCombiningClass);
+
+					state->output->codepoint[state->cache_next]                  = 0;
+					state->output->quick_check[state->cache_next]                = 0;
+					state->output->canonical_combining_class[state->cache_next]  = 0;
+
+					if (state->cache_next == state->output->current - 1)
+					{
+						state->output->current--;
+					}
+
+					state->cache_current = cache_start;
+					state->cache_next = cache_start;
 				}
 			}
 			else if (
@@ -202,34 +210,8 @@ unicode_t compose_execute(ComposeState* state)
 				break;
 			}
 
-			last_combining_class = state->output->canonical_combining_class[state->cache_next];
-
-			if (current_composed != 0)
-			{
-				state->output->codepoint[state->cache_current]                  = current_composed;
-				state->output->quick_check[state->cache_current]                = database_queryproperty(current_composed, state->property);
-				state->output->canonical_combining_class[state->cache_current]  = database_queryproperty(current_composed, UnicodeProperty_CanonicalCombiningClass);
-
-				composed = current_composed;
-
-				state->output->codepoint[state->cache_next]                  = 0;
-				state->output->quick_check[state->cache_next]                = 0;
-				state->output->canonical_combining_class[state->cache_next]  = 0;
-
-				if (state->cache_next == state->output->current - 1)
-				{
-					state->output->current--;
-				}
-
-				state->cache_current = cache_start;
-				state->cache_next = cache_start + 1;
-			}
-			else
-			{
-				state->cache_next++;
-			}
+			state->cache_next++;
 		}
-		while (!finished);
 
 		if (state->cache_current + 1 >= state->output->current)
 		{
