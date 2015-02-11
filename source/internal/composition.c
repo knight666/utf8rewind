@@ -66,7 +66,6 @@ uint8_t compose_readcodepoint(ComposeState* state, uint8_t index)
 
 			state->input->index = 0;
 			state->input->current = 0;
-			state->finished = 1;
 
 			return 0;
 		}
