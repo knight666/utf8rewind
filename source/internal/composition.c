@@ -148,8 +148,9 @@ unicode_t compose_execute(ComposeState* state)
 			}
 
 			if (state->output->quick_check[state->cache_next] != QuickCheckResult_Yes &&
-				(state->output->canonical_combining_class[state->cache_next] == 0 ||
-				state->output->canonical_combining_class[state->cache_next] > state->output->canonical_combining_class[state->cache_next - 1]))
+				(state->output->canonical_combining_class[state->cache_next] == 0 &&
+				state->output->canonical_combining_class[state->cache_next - 1] == 0) ||
+				state->output->canonical_combining_class[state->cache_next] > state->output->canonical_combining_class[state->cache_next - 1])
 			{
 				/*
 					Hangul composition
@@ -195,6 +196,11 @@ unicode_t compose_execute(ComposeState* state)
 						state->output->codepoint[state->cache_next]);
 				}
 			}
+			else if (
+				state->output->canonical_combining_class[state->cache_next] == 0)
+			{
+				break;
+			}
 
 			last_combining_class = state->output->canonical_combining_class[state->cache_next];
 
@@ -225,8 +231,7 @@ unicode_t compose_execute(ComposeState* state)
 		}
 		while (!finished);
 
-		if (state->output->current >= 1 &&
-			state->cache_current == state->output->current - 1)
+		if (state->cache_current + 1 >= state->output->current)
 		{
 			break;
 		}
