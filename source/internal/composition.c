@@ -120,10 +120,17 @@ unicode_t compose_execute(ComposeState* state)
 
 	while (1)
 	{
-		if (state->cache_next == state->output->current &&
-			!compose_readcodepoint(state, state->cache_next))
+		while (state->output->canonical_combining_class[state->cache_current] != 0)
 		{
-			return 1;
+			state->cache_current++;
+
+			if (state->cache_current == state->output->current &&
+				!compose_readcodepoint(state, state->cache_current))
+			{
+				return 1;
+			}
+
+			state->cache_next = state->cache_current + 1;
 		}
 
 		composed = state->output->codepoint[state->cache_current];
@@ -134,10 +141,15 @@ unicode_t compose_execute(ComposeState* state)
 		{
 			unicode_t current_composed = 0;
 
-			if (state->output->quick_check[state->cache_current] != QuickCheckResult_Yes ||
-				state->output->canonical_combining_class[state->cache_current] != 0 ||
-				state->output->quick_check[state->cache_next] != QuickCheckResult_Yes ||
-				state->output->canonical_combining_class[state->cache_next] != 0)
+			if (state->cache_next == state->output->current &&
+				!compose_readcodepoint(state, state->cache_next))
+			{
+				break;
+			}
+
+			if (state->output->quick_check[state->cache_next] != QuickCheckResult_Yes &&
+				(state->output->canonical_combining_class[state->cache_next] == 0 ||
+				state->output->canonical_combining_class[state->cache_next] > state->output->canonical_combining_class[state->cache_next - 1]))
 			{
 				/*
 					Hangul composition
@@ -183,10 +195,6 @@ unicode_t compose_execute(ComposeState* state)
 						state->output->codepoint[state->cache_next]);
 				}
 			}
-			else
-			{
-				break;
-			}
 
 			last_combining_class = state->output->canonical_combining_class[state->cache_next];
 
@@ -214,27 +222,14 @@ unicode_t compose_execute(ComposeState* state)
 			{
 				state->cache_next++;
 			}
-
-			if (state->cache_next == state->output->current)
-			{
-				if (!compose_readcodepoint(state, state->cache_next))
-				{
-					finished = 1;
-
-					break;
-				}
-
-				if (current_composed == 0 &&
-					(last_combining_class == 0 ||
-					last_combining_class >= state->output->canonical_combining_class[state->cache_next]))
-				{
-					finished = 1;
-
-					break;
-				}
-			}
 		}
 		while (!finished);
+
+		if (state->output->current >= 1 &&
+			state->cache_current == state->output->current - 1)
+		{
+			break;
+		}
 
 		if (state->output->current > 1)
 		{
@@ -270,12 +265,7 @@ unicode_t compose_execute(ComposeState* state)
 			state->output->current = write_index;
 
 			state->cache_current++;
-
-			state->cache_next = state->cache_current + 1;
-			if (state->cache_next > state->output->current)
-			{
-				state->cache_next = state->output->current;
-			}
+			state->cache_next = write_index;
 		}
 		else
 		{
