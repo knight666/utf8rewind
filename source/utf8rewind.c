@@ -911,7 +911,7 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	StreamState* stream_output = &stream[0];
 	size_t bytes_written = 0;
 
-	if (!stream_initialize(stream_output, input, inputSize, 0))
+	if (!stream_initialize(stream_output, input, inputSize))
 	{
 		goto invaliddata;
 	}
