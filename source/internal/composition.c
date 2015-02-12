@@ -106,6 +106,8 @@ unicode_t compose_execute(ComposeState* state)
 		return 0;
 	}
 
+	state->output->current = 0;
+
 	state->cache_current = cache_start;
 	state->cache_next = cache_start + 1;
 

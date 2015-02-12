@@ -876,6 +876,114 @@ TEST(ComposeExecute, MultipleSequenceHangul)
 	EXPECT_FALSE(compose_execute(&state));
 }
 
+TEST(ComposeExecute, ReuseInputStream)
+{
+	/*
+		U+039F U+0313 U+0300
+		     Y      M      M
+		     0    230    230
+	*/
+
+	StreamState input = { 0 };
+
+	for (uint8_t i = 0; i < STREAM_BUFFER_MAX; ++i)
+	{
+		input.codepoint[i] = 0xDEAD;
+		input.quick_check[i] = QuickCheckResult_No;
+		input.canonical_combining_class[i] = 0xCC;
+	}
+
+	input.codepoint[0] = 0x039F;
+	input.quick_check[0] = QuickCheckResult_Yes;
+	input.canonical_combining_class[0] = 0;
+
+	input.codepoint[1] = 0x0313;
+	input.quick_check[1] = QuickCheckResult_Maybe;
+	input.canonical_combining_class[1] = 230;
+
+	input.codepoint[2] = 0x0300;
+	input.quick_check[2] = QuickCheckResult_Maybe;
+	input.canonical_combining_class[2] = 230;
+
+	input.current = 3;
+
+	StreamState output = { 0 };
+
+	ComposeState state;
+	EXPECT_TRUE(compose_initialize(&state, &input, &output, 0));
+
+	EXPECT_TRUE(compose_execute(&state));
+	EXPECT_EQ(1, (int)state.output->current);
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x1F4A, Yes, 0);
+
+	EXPECT_FALSE(compose_execute(&state));
+}
+
+TEST(ComposeExecute, ReuseOutputStream)
+{
+	/*
+		U+03C9 U+0313 U+0300 U+0345
+		     Y      M      M      M
+		     0    230    230    240
+	*/
+
+	const char* i = "\xCF\x89\xCC\x93\xCC\x80\xCD\x85";
+	size_t il = strlen(i);
+
+	StreamState input;
+	EXPECT_TRUE(stream_initialize(&input, i, il));
+
+	StreamState output = { 0 };
+
+	ComposeState state;
+	EXPECT_TRUE(compose_initialize(&state, &input, &output, 0));
+
+	for (uint8_t i = 0; i < STREAM_BUFFER_MAX; ++i)
+	{
+		output.codepoint[i] = 0xDEAD;
+		output.quick_check[i] = QuickCheckResult_No;
+		output.canonical_combining_class[i] = 0xCC;
+	}
+	output.current = 16;
+
+	EXPECT_TRUE(compose_execute(&state));
+	EXPECT_EQ(1, (int)state.output->current);
+	CHECK_STREAM_ENTRY(*state.output, 0, 0x1FA2, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 1, 0, Yes, 0);
+	CHECK_STREAM_ENTRY(*state.output, 2, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 3, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 4, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 5, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 6, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 7, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 8, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 9, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 10, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 11, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 12, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 13, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 14, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 15, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 16, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 17, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 18, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 19, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 20, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 21, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 22, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 23, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 24, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 25, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 26, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 27, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 28, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 29, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 30, 0xDEAD, No, 0xCC);
+	CHECK_STREAM_ENTRY(*state.output, 31, 0xDEAD, No, 0xCC);
+
+	EXPECT_FALSE(compose_execute(&state));
+}
+
 TEST(ComposeExecute, ContinueAfterEnd)
 {
 	/*
