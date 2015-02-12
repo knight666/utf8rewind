@@ -902,7 +902,7 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 
 	char* dst = target;
 	size_t dst_size = targetSize;
-	StreamState stream[3];
+	StreamState stream[4];
 	DecomposeState decompose_state;
 	ComposeState compose_state;
 	//CaseMappingState casemapping_state;
@@ -911,30 +911,39 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 	StreamState* stream_output = &stream[0];
 	size_t bytes_written = 0;
 
-	if (!stream_initialize(stream_output, input, inputSize))
+	// 0
+
+	memset(stream, 0, 4 * sizeof(StreamState));
+
+	if (!stream_initialize(&stream[0], input, inputSize))
 	{
 		goto invaliddata;
 	}
 
 	if ((flags & MaskDecomposition) != 0)
 	{
-		stream_output = &stream[1];
+		// 0 -> 1
 
-		if (!decompose_initialize(&decompose_state, stream_input, stream_output, compatibility))
+		if (!decompose_initialize(&decompose_state, &stream[0], &stream[1], compatibility))
 		{
 			goto invaliddata;
 		}
+
+		stream_input = &stream[1];
+		stream_output = &stream[2];
 	}
 
 	if ((flags & MaskComposition) != 0)
 	{
-		stream_input = stream_output;
-		stream_output = &stream[2];
+		// 1 -> 2
 
-		if (!compose_initialize(&compose_state, stream_input, stream_output, compatibility))
+		if (!compose_initialize(&compose_state, &stream[2], &stream[3], compatibility))
 		{
 			goto invaliddata;
 		}
+
+		stream_input = &stream[2];
+		stream_output = &stream[3];
 	}
 
 	if ((flags & MaskCaseMapping) != 0)
@@ -965,44 +974,43 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 
 	while (1)
 	{
+		uint8_t finished = 0;
+		uint8_t write = 0;
+		uint8_t i;
+		unicode_t* src_codepoint;
+		unicode_t* dst_codepoint;
+		uint8_t* src_qc;
+		uint8_t* dst_qc;
+		uint8_t* src_ccc;
+		uint8_t* dst_ccc;
+
 		if ((flags & MaskDecomposition) != 0)
 		{
-			if (!decompose_execute(&decompose_state))
+			finished = !decompose_execute(&decompose_state);
+			if (!finished)
 			{
-				break;
-			}
-
-			if (!stream[1].stable)
-			{
-				stream_reorder(&stream[1]);
-			}
-		}
-
-		if ((flags & MaskComposition) != 0)
-		{
-			if (!compose_execute(&compose_state))
-			{
-				break;
-			}
-		}
-
-		/*if ((flags & MaskCaseMapping) != 0)
-		{
-			uint8_t i;
-			for (i = 0; i < src_stream->current; ++i)
-			{
-				uint8_t encoded_size = casemapping_execute(src_stream->codepoint[i], &dst, &dst_size);
-				if (encoded_size == 0)
+				if (!stream[1].stable)
 				{
-					goto outofspace;
+					stream_reorder(&stream[1]);
 				}
 
-				bytes_written += encoded_size;
+				write = (stream[1].current + stream[2].current) >= STREAM_SAFE_MAX;
 			}
 		}
-		else*/
+
+		if (write ||
+			finished)
 		{
 			uint8_t i;
+
+			if ((flags & MaskComposition) != 0)
+			{
+				if (!compose_execute(&compose_state))
+				{
+					break;
+				}
+			}
+
 			for (i = 0; i < stream_output->current; ++i)
 			{
 				uint8_t encoded_size = codepoint_write(stream_output->codepoint[i], &dst, &dst_size);
@@ -1013,7 +1021,42 @@ size_t utf8transform(const char* input, size_t inputSize, char* target, size_t t
 
 				bytes_written += encoded_size;
 			}
+
+			if (finished)
+			{
+				break;
+			}
+
+			stream[2].current = 0;
 		}
+
+		src_codepoint = stream[1].codepoint;
+		dst_codepoint = stream[2].codepoint + stream[2].current;
+		src_qc = stream[1].quick_check;
+		dst_qc = stream[2].quick_check + stream[2].current;
+		src_ccc = stream[1].canonical_combining_class;
+		dst_ccc = stream[2].canonical_combining_class + stream[2].current;
+
+		if ((flags & MaskComposition) != 0)
+		{
+			for (i = 0; i < stream[1].current; ++i)
+			{
+				*dst_qc++ = database_queryproperty(*src_codepoint, compose_state.property);
+				*dst_ccc++ = *src_ccc++;
+				*dst_codepoint++ = *src_codepoint++;
+			}
+		}
+		else
+		{
+			for (i = 0; i < stream[1].current; ++i)
+			{
+				*dst_codepoint++ = *src_codepoint++;
+				*dst_qc++ = *src_qc++;
+				*dst_ccc++ = *src_ccc++;
+			}
+		}
+
+		stream[2].current += stream[1].current;
 	}
 
 	return bytes_written;

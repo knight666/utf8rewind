@@ -161,3 +161,18 @@ TEST(TransformCompose, SequenceMultipleDecomposed)
 	EXPECT_UTF8EQ("\xE2\x89\x84\xE1\xBE\xB7\xE1\xBE\xA8", b);
 	EXPECT_EQ(0, errors);
 }
+
+TEST(TransformCompose, SequenceMultipleCompose)
+{
+	// 09C7 09D7
+	// 09CC
+
+	const char* c = "\xE0\xA7\x87\xE0\xA7\x97";
+	const size_t s = 512;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8transform(c, strlen(c), b, s - 1, UTF8_TRANSFORM_COMPOSED, &errors));
+	EXPECT_UTF8EQ("\xE0\xA7\x8C", b);
+	EXPECT_EQ(0, errors);
+}
