@@ -53,10 +53,6 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 		? UnicodeProperty_Normalization_Compatibility_Compose
 		: UnicodeProperty_Normalization_Compose;
 
-	state->cache_start = 0;
-	state->cache_current = state->cache_start;
-	state->cache_next = state->cache_start + 1;
-
 	return 1;
 }
 
@@ -102,6 +98,8 @@ uint8_t compose_readcodepoint(ComposeState* state, uint8_t index)
 
 unicode_t compose_execute(ComposeState* state)
 {
+	uint8_t cache_start = 0;
+
 	if (state->input == 0 ||
 		state->finished)
 	{
@@ -110,8 +108,8 @@ unicode_t compose_execute(ComposeState* state)
 
 	state->output->current = 0;
 
-	//state->cache_current = cache_start;
-	//state->cache_next = cache_start + 1;
+	state->cache_current = cache_start;
+	state->cache_next = cache_start + 1;
 
 	if (!compose_readcodepoint(state, state->cache_current))
 	{
@@ -203,8 +201,8 @@ unicode_t compose_execute(ComposeState* state)
 						state->output->current--;
 					}
 
-					state->cache_current = state->cache_start;
-					state->cache_next = state->cache_start;
+					state->cache_current = cache_start;
+					state->cache_next = cache_start;
 				}
 			}
 			else if (
@@ -264,7 +262,7 @@ unicode_t compose_execute(ComposeState* state)
 			break;
 		}
 
-		state->cache_start++;
+		cache_start++;
 	}
 
 	return 1;

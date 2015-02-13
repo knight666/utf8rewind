@@ -8,35 +8,6 @@ extern "C" {
 #include "helpers-strings.hpp"
 #include "helpers-streams.hpp"
 
-TEST(ComposeExecute, Bad)
-{
-	/*
-	*/
-
-	StreamState input = { 0 };
-	StreamState output = { 0 };
-
-	ComposeState state;
-	EXPECT_TRUE(compose_initialize(&state, &input, &output, 0));
-
-	const char* i1 = "\xE0\xA7\x97";
-	size_t il1 = strlen(i1);
-	EXPECT_TRUE(stream_initialize(&input, i1, il1));
-
-	EXPECT_TRUE(compose_execute(&state));
-
-	const char* i2 = "\xE0\xA7\x97";
-	size_t il2 = strlen(i2);
-	EXPECT_TRUE(stream_initialize(&input, i2, il2));
-
-	EXPECT_TRUE(compose_execute(&state));
-
-	EXPECT_EQ(1, (int)state.output->current);
-	CHECK_STREAM_ENTRY(*state.output, 0, 0x09CC, Yes, 0);
-
-	EXPECT_FALSE(compose_execute(&state));
-}
-
 TEST(ComposeExecute, Initialize)
 {
 	/*
