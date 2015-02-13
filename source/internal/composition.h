@@ -34,10 +34,8 @@ typedef struct {
 	StreamState* output;
 	uint8_t property;
 	uint8_t finished;
-	uint8_t stable;
 	uint8_t cache_index;
 	uint8_t cache_filled;
-	uint8_t cache_start;
 	uint8_t cache_current;
 	uint8_t cache_next;
 	unicode_t buffer_codepoint[2];
