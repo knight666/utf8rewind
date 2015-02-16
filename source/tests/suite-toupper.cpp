@@ -4,19 +4,7 @@
 
 #include "helpers-strings.hpp"
 
-TEST(ToUpper, BasicLatin)
-{
-	const char* c = "Holiday Special!";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(16, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("HOLIDAY SPECIAL!", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpper, BasicLatinUppercase)
+TEST(ToUpper, BasicLatinSingleUppercase)
 {
 	const char* c = "B";
 	const size_t s = 256;
@@ -28,7 +16,7 @@ TEST(ToUpper, BasicLatinUppercase)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUpper, BasicLatinLowercase)
+TEST(ToUpper, BasicLatinSingleLowercase)
 {
 	const char* c = "w";
 	const size_t s = 256;
@@ -40,7 +28,7 @@ TEST(ToUpper, BasicLatinLowercase)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUpper, BasicLatinUnaffected)
+TEST(ToUpper, BasicLatinSingleUnaffected)
 {
 	const char* c = ")";
 	const size_t s = 256;
@@ -49,6 +37,96 @@ TEST(ToUpper, BasicLatinUnaffected)
 
 	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
 	EXPECT_UTF8EQ(")", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, BasicLatinMultipleUppercase)
+{
+	const char* c = "CARS";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("CARS", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, BasicLatinMultipleLowercase)
+{
+	const char* c = "id";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("ID", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, BasicLatinMultipleUnaffected)
+{
+	const char* c = "#@!&%";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("#@!&%", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, BasicLatinSequence)
+{
+	const char* c = "Holiday Special!";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(16, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("HOLIDAY SPECIAL!", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, GeneralCategoryCaseMappedSingleUppercase)
+{
+	// CYRILLIC CAPITAL LETTER EL
+
+	const char* c = "\xD0\x9B";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xD0\x9B", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, GeneralCategoryCaseMappedSingleLowercase)
+{
+	// GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND TONOS
+
+	const char* c = "\xCE\xB0";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xCE\xA5\xCC\x88\xCC\x81", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, GeneralCategoryCaseMappedSingleUnaffected)
+{
+	// COMBINING BREVE
+
+	const char* c = "\xCC\x86";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xCC\x86", b);
 	EXPECT_EQ(0, errors);
 }
 
