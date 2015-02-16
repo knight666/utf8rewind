@@ -567,7 +567,7 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 			/* Decode current codepoint */
 
-			size_t decoded_size = codepoint_read(src, src_size, &decoded);
+			uint8_t decoded_size = codepoint_read(src, src_size, &decoded);
 			if (decoded_size == 0)
 			{
 				break;
@@ -617,7 +617,9 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 					goto outofspace;
 				}
 
-				bytes_written += decoded_size;
+				/* Reuse the decoded size unless the codepoint was replaced */
+
+				bytes_written += (decoded != REPLACEMENT_CHARACTER) ? decoded_size : 3;
 			}
 
 			/* Invalid codepoints can be longer than the source length indicates */

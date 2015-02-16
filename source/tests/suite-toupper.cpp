@@ -239,6 +239,51 @@ TEST(ToUpper, GeneralCategoryCaseMappedNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(ToUpper, InvalidCodepointSingle)
+{
+	const char* c = "\xCD";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, InvalidCodepointMultiple)
+{
+	const char* c = "\xED\x89\xC0\x9A\xCA";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBD", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, InvalidCodepointAmountOfBytes)
+{
+	const char* c = "\xDE\xDE\xDA\xCA";
+	int32_t errors = 0;
+
+	EXPECT_EQ(12, utf8toupper(c, strlen(c), nullptr, 0, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, InvalidCodepointNotEnoughSpace)
+{
+	const char* c = "\xDF\xDF\xDF";
+	const size_t s = 8;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD", b);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST(ToUpper, InvalidData)
 {
 	int32_t errors = 0;
