@@ -535,7 +535,7 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 	{
 		if ((*src & 0x80) == 0)
 		{
-			/* Basic Latin */
+			/* Basic Latin does not have to be converted to UTF-32 */
 
 			if (dst != 0)
 			{
@@ -543,6 +543,10 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 				{
 					goto outofspace;
 				}
+
+				/* Lowercase letters are U+0061 ('a') to U+007A ('z') */
+				/* Uppercase letters are U+0041 ('A') to U+005A ('Z') */
+				/* All other codepoints in Basic Latin are unaffected by the conversion to uppercase */
 
 				*dst = (*src >= 0x61 && *src <= 0x7A) ? *src - 0x20 : *src;
 
@@ -561,19 +565,27 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 			uint8_t general_category;
 			size_t resolved_size = 0;
 
+			/* Decode current codepoint */
+
 			size_t decoded_size = codepoint_read(src, src_size, &decoded);
 			if (decoded_size == 0)
 			{
 				break;
 			}
 
+			/* Check if the codepoint's general category property indicates case mapping */
+
 			general_category = database_queryproperty(decoded, UnicodeProperty_GeneralCategory);
 			if ((general_category & GeneralCategory_CaseMapped) != 0)
 			{
+				/* Resolve the codepoint's uppercase decomposition */
+
 				const char* resolved = database_querydecomposition(decoded, UnicodeProperty_Uppercase);
 				if (resolved != 0)
 				{
 					resolved_size = strlen(resolved);
+
+					/* Copy the decomposition to the output buffer */
 
 					if (dst != 0 &&
 						resolved_size > 0)
@@ -593,8 +605,13 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 				}
 			}
 
+			/* Check if codepoint was unaffected */
+
 			if (resolved_size == 0)
 			{
+				/* Write the codepoint to the output buffer */
+				/* This ensures that invalid codepoints in the input are always converted to U+FFFD in the output */
+
 				if (!codepoint_write(decoded, &dst, &dst_size))
 				{
 					goto outofspace;
@@ -602,6 +619,8 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 				bytes_written += decoded_size;
 			}
+
+			/* Invalid codepoints can be longer than the source length indicates */
 
 			if (src_size <= decoded_size)
 			{
