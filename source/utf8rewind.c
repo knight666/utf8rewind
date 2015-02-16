@@ -524,7 +524,6 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 	size_t src_size = inputSize;
 	char* dst = target;
 	size_t dst_size = targetSize;
-	ComposeState state;
 
 	if (src == 0 ||
 		src_size == 0)
@@ -532,77 +531,85 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 		goto invaliddata;
 	}
 
-	if ((flags & UTF8_TRANSFORM_NORMALIZED) != 0)
+	while (src_size > 0)
 	{
-#if 0
-		/* Normalize to NFC before attempting to uppercase */
-
-		compose_initialize(&state, src, src_size, UnicodeProperty_Normalization_Compose);
-
-		while (state.stage <= ComposeStage_OutOfInput)
+		if ((*src & 0x80) == 0)
 		{
-			uint8_t index = compose_execute(&state);
+			/* Basic Latin */
 
-			if (index != (uint8_t)-1)
+			if (dst != 0)
 			{
-				uint8_t generalCategory = database_queryproperty(state.codepoint[index], UnicodeProperty_GeneralCategory);
-
-				size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, generalCategory, UnicodeProperty_Uppercase, errors);
-				if (written == 0)
+				if (dst_size < 1)
 				{
-					break;
+					goto outofspace;
 				}
 
-				bytes_written += written;
+				*dst = (*src >= 0x61 && *src <= 0x7A) ? *src - 0x20 : *src;
+
+				dst++;
+				dst_size--;
 			}
+
+			bytes_written++;
+
+			src++;
+			src_size--;
 		}
-#endif
-	}
-	else
-	{
-		/* Assume input is already NKC */
-
-		while (src_size > 0)
+		else
 		{
-			if ((*src & 0x80) == 0)
-			{
-				/* Basic Latin */
+			unicode_t decoded;
+			uint8_t general_category;
+			size_t resolved_size = 0;
 
-				if (dst != 0)
+			size_t decoded_size = codepoint_read(src, src_size, &decoded);
+			if (decoded_size == 0)
+			{
+				break;
+			}
+
+			general_category = database_queryproperty(decoded, UnicodeProperty_GeneralCategory);
+			if ((general_category & GeneralCategory_CaseMapped) != 0)
+			{
+				const char* resolved = database_querydecomposition(decoded, UnicodeProperty_Uppercase);
+				if (resolved != 0)
 				{
-					if (dst_size < 1)
+					resolved_size = strlen(resolved);
+
+					if (dst != 0 &&
+						resolved_size > 0)
 					{
-						goto outofspace;
+						if (dst_size < resolved_size)
+						{
+							goto outofspace;
+						}
+
+						memcpy(dst, resolved, resolved_size);
+
+						dst += resolved_size;
+						dst_size -= resolved_size;
 					}
 
-					*dst = (*src >= 0x61 && *src <= 0x7A) ? *src - 0x20 : *src;
-
-					dst++;
-					dst_size--;
+					bytes_written += resolved_size;
 				}
-
-				bytes_written++;
-
-				src++;
-				src_size--;
 			}
-			else
+
+			if (resolved_size == 0)
 			{
-				unicode_t decoded;
-				uint8_t decoded_size = codepoint_read(src, src_size, &decoded);
-				uint8_t generalCategory = database_queryproperty(decoded, UnicodeProperty_GeneralCategory);
-
-				size_t written = casemapping_execute(decoded, &dst, &dst_size, generalCategory, UnicodeProperty_Uppercase, errors);
-				if (written == 0)
+				if (!codepoint_write(decoded, &dst, &dst_size))
 				{
-					break;
+					goto outofspace;
 				}
 
-				bytes_written += written;
-
-				src += decoded_size;
-				src_size -= decoded_size;
+				bytes_written += decoded_size;
 			}
+
+			if (src_size <= decoded_size)
+			{
+				break;
+			}
+
+			src += decoded_size;
+			src_size -= decoded_size;
 		}
 	}
 
