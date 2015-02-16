@@ -88,6 +88,27 @@ TEST(ToUpper, BasicLatinSequence)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(ToUpper, BasicLatinAmountOfBytes)
+{
+	const char* c = "Magic";
+	int32_t errors = 0;
+
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), nullptr, 0, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, BasicLatinNotEnoughSpace)
+{
+	const char* c = "Merde";
+	const size_t s = 4;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("MER", b);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST(ToUpper, GeneralCategoryCaseMappedSingleUppercase)
 {
 	// CYRILLIC CAPITAL LETTER EL
@@ -191,72 +212,30 @@ TEST(ToUpper, GeneralCategoryCaseMappedSequence)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUpper, Decomposed)
+TEST(ToUpper, GeneralCategoryCaseMappedAmountOfBytes)
 {
-	const char* c = "O\xCC\x9Bu\xCC\x88\xCC\x84" "A\xCC\x87\xCC\x84";
-	const size_t s = 256;
-	char b[s] = { 0 };
+	// 2CC3 1FE2 2C5A
+	// 2CC2 03A5 0308 0300 2C5A
+
+	const char* c = "\xE2\xB3\x83\xE1\xBF\xA2\xE2\xB1\x9A";
 	int32_t errors = 0;
 
-	EXPECT_EQ(13, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("O\xCC\x9BU\xCC\x88\xCC\x84" "A\xCC\x87\xCC\x84", b);
+	EXPECT_EQ(12, utf8toupper(c, strlen(c), nullptr, 0, 0, &errors));
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUpper, DecomposedUppercase)
+TEST(ToUpper, GeneralCategoryCaseMappedNotEnoughSpace)
 {
-	const char* c = "A\xCC\x80";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	// 2163 1FD2
+	// 2163 0399 0308 0300
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("A\xCC\x80", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpper, DecomposedLowercase)
-{
-	const char* c = "i\xCC\x8C";
-	const size_t s = 256;
+	const char* c = "\xE2\x85\xA3\xE1\xBF\x92";
+	const size_t s = 6;
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
 	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("I\xCC\x8C", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpper, DecomposedCouldNotCompose)
-{
-	const char* c = "\xE1\xBF\xBD";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("\xE1\xBF\xBD", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpper, AmountOfBytes)
-{
-	const char* c = "Magic";
-	int32_t errors = 0;
-
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), nullptr, 0, 0, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpper, NotEnoughSpace)
-{
-	const char* c = "Merde";
-	const size_t s = 4;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("MER", b);
+	EXPECT_UTF8EQ("\xE2\x85\xA3", b);
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
@@ -265,250 +244,5 @@ TEST(ToUpper, InvalidData)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, utf8toupper(nullptr, 1, nullptr, 0, 0, &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
-}
-
-TEST(ToUpperNormalize, BasicLatin)
-{
-	const char* c = "christmas SWEATer";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(17, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("CHRISTMAS SWEATER", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, BasicLatinUppercase)
-{
-	const char* c = "B";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("B", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, BasicLatinLowercase)
-{
-	const char* c = "f";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("F", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, BasicLatinUnaffected)
-{
-	const char* c = "\"";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\"", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, TwoBytesUppercase)
-{
-	const char* c = "\xD2\xA8";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xD2\xA8", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, TwoBytesLowercase)
-{
-	const char* c = "\xD3\x8F";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xD3\x80", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, TwoBytesUnaffected)
-{
-	const char* c = "\xD6\x8F";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xD6\x8F", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, ThreeBytesUppercase)
-{
-	const char* c = "\xE1\x82\xAC";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xE1\x82\xAC", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, ThreeBytesLowercase)
-{
-	const char* c = "\xE1\xBA\xA1";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xE1\xBA\xA0", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, ThreeBytesUnaffected)
-{
-	const char* c = "\xE1\x83\xBB";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xE1\x83\xBB", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, FourBytesUppercase)
-{
-	const char* c = "\xF0\x90\x90\x88";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xF0\x90\x90\x88", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, FourBytesLowercase)
-{
-	const char* c = "\xF0\x90\x90\xBC";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xF0\x90\x90\x94", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, FourBytesUnaffected)
-{
-	const char* c = "\xF0\x91\xA3\xB2";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xF0\x91\xA3\xB2", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, Decomposed)
-{
-	const char* c = "a\xCC\x91\xD0\xB5\xCC\x88\xC4\xB3";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(6, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xC8\x82\xD0\x81\xC4\xB2", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, DecomposedUppercase)
-{
-	const char* c = "N\xCC\xA7";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xC5\x85", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, DecomposedLowercase)
-{
-	const char* c = "t\xCC\xA7";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xC5\xA2", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, DecomposedCouldNotCompose)
-{
-	const char* c = "\xE1\xBF\xBD";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, AmountOfBytes)
-{
-	const char* c = "U\xCC\x88\xCC\x84";
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), nullptr, 0, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, NotEnoughSpace)
-{
-	const char* c = "a\xCC\x8A\xCC\x81i\xCC\x8F";
-	const size_t s = 3;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xC7\xBA", b);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-}
-
-TEST(ToUpperNormalize, InvalidCodepoint)
-{
-	const char* c = "\xF0\x94\x99";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s - 1, UTF8_TRANSFORM_NORMALIZED, &errors));
-	EXPECT_UTF8EQ("\xEF\xBF\xBD", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToUpperNormalize, InvalidData)
-{
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf8toupper(nullptr, 1, nullptr, 0, UTF8_TRANSFORM_NORMALIZED, &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
