@@ -76,7 +76,19 @@ TEST(ToUpper, BasicLatinMultipleUnaffected)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUpper, BasicLatinSequence)
+TEST(ToUpper, BasicLatinWord)
+{
+	const char* c = "Abbey";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("ABBEY", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, BasicLatinSentence)
 {
 	const char* c = "Holiday Special!";
 	const size_t s = 256;
@@ -137,6 +149,20 @@ TEST(ToUpper, GeneralCategoryCaseMappedSingleLowercase)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(ToUpper, GeneralCategoryCaseMappedSingleTitlecase)
+{
+	// LATIN SMALL LETTER DZ
+
+	const char* c = "\xC7\xB2";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(2, utf8totitle(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xC7\xB2", b);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(ToUpper, GeneralCategoryCaseMappedSingleUnaffected)
 {
 	// COMBINING BREVE
@@ -184,6 +210,22 @@ TEST(ToUpper, GeneralCategoryCaseMappedMultipleLowercase)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(ToUpper, GeneralCategoryCaseMappedMultipleTitlecase)
+{
+	// LATIN SMALL LETTER SHARP S
+	// LATIN SMALL LETTER DZ
+	// LATIN SMALL LIGATURE IJ
+
+	const char* c = "\xC3\x9F\xC7\xB2\xC4\xB3";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("SS\xC7\xB1\xC4\xB2", b);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(ToUpper, GeneralCategoryCaseMappedMultipleUnaffected)
 {
 	// SUPERSET ABOVE SUPERSET
@@ -200,7 +242,19 @@ TEST(ToUpper, GeneralCategoryCaseMappedMultipleUnaffected)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUpper, GeneralCategoryCaseMappedSequence)
+TEST(ToUpper, GeneralCategoryCaseMappedWord)
+{
+	const char* c = "\xCE\x93\xCE\xB1\xCE\xB6\xCE\xAD\xCE\xB5\xCF\x82";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(12, utf8toupper(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xCE\x93\xCE\x91\xCE\x96\xCE\x88\xCE\x95\xCE\xA3", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToUpper, GeneralCategoryCaseMappedSentence)
 {
 	const char* c = "\xD1\x8D\xD1\x82\xD0\xB8\xD1\x85 \xD0\xBC\xD1\x8F\xD0\xB3\xD0\xBA\xD0\xB8\xD1\x85";
 	const size_t s = 256;
