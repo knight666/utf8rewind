@@ -16,7 +16,7 @@ namespace helpers {
 		}
 
 		char result_upper[256] = { 0 };
-		utf8toupper(input_utf8, strlen(input_utf8), result_upper, 256, 0, &errors);
+		utf8toupper(input_utf8, strlen(input_utf8), result_upper, 256, &errors);
 		if (errors != 0)
 		{
 			return "";
@@ -31,7 +31,7 @@ namespace helpers {
 
 		std::string converted;
 
-		size_t l = utf8toupper(text.c_str(), text.size() - 1, nullptr, 0, 0, &errors);
+		size_t l = utf8toupper(text.c_str(), text.size() - 1, nullptr, 0, &errors);
 		if (l == 0 ||
 			errors != 0)
 		{
@@ -39,7 +39,7 @@ namespace helpers {
 		}
 
 		converted.resize(l + 1);
-		utf8toupper(text.c_str(), text.size() - 1, &converted[0], l, 0, &errors);
+		utf8toupper(text.c_str(), text.size() - 1, &converted[0], l, &errors);
 
 		return converted;
 	}
@@ -56,7 +56,7 @@ namespace helpers {
 		}
 
 		char result_lower[256] = { 0 };
-		utf8tolower(input_utf8, strlen(input_utf8), result_lower, 256, 0, &errors);
+		utf8tolower(input_utf8, strlen(input_utf8), result_lower, 256, &errors);
 		if (errors != 0)
 		{
 			return "";
@@ -71,7 +71,7 @@ namespace helpers {
 
 		std::string converted;
 
-		size_t l = utf8tolower(text.c_str(), text.size() - 1, nullptr, 0, 0, &errors);
+		size_t l = utf8tolower(text.c_str(), text.size() - 1, nullptr, 0, &errors);
 		if (l == 0 ||
 			errors != 0)
 		{
@@ -79,7 +79,7 @@ namespace helpers {
 		}
 
 		converted.resize(l + 1);
-		utf8tolower(text.c_str(), text.size() - 1, &converted[0], l, 0, &errors);
+		utf8tolower(text.c_str(), text.size() - 1, &converted[0], l, &errors);
 
 		return converted;
 	}
@@ -96,7 +96,7 @@ namespace helpers {
 		}
 
 		char result_title[256] = { 0 };
-		utf8totitle(input_utf8, strlen(input_utf8), result_title, 256, 0, &errors);
+		utf8totitle(input_utf8, strlen(input_utf8), result_title, 256, &errors);
 		if (errors != 0)
 		{
 			return "";
@@ -111,7 +111,7 @@ namespace helpers {
 
 		std::string converted;
 
-		size_t l = utf8totitle(text.c_str(), text.size() - 1, nullptr, 0, 0, &errors);
+		size_t l = utf8totitle(text.c_str(), text.size() - 1, nullptr, 0, &errors);
 		if (l == 0 ||
 			errors != 0)
 		{
@@ -119,7 +119,7 @@ namespace helpers {
 		}
 
 		converted.resize(l + 1);
-		utf8totitle(text.c_str(), text.size() - 1, &converted[0], l, 0, &errors);
+		utf8totitle(text.c_str(), text.size() - 1, &converted[0], l, &errors);
 
 		return converted;
 	}
