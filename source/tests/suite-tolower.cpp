@@ -4,19 +4,7 @@
 
 #include "helpers-strings.hpp"
 
-TEST(ToLower, BasicLatin)
-{
-	const char* c = "Hello World!";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(12, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("hello world!", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToLower, BasicLatinUppercase)
+TEST(ToLower, BasicLatinSingleUppercase)
 {
 	const char* c = "G";
 	const size_t s = 256;
@@ -28,7 +16,7 @@ TEST(ToLower, BasicLatinUppercase)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToLower, BasicLatinLowercase)
+TEST(ToLower, BasicLatinSingleLowercase)
 {
 	const char* c = "y";
 	const size_t s = 256;
@@ -40,7 +28,7 @@ TEST(ToLower, BasicLatinLowercase)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToLower, BasicLatinUnaffected)
+TEST(ToLower, BasicLatinSingleUnaffected)
 {
 	const char* c = "@";
 	const size_t s = 256;
@@ -52,20 +40,91 @@ TEST(ToLower, BasicLatinUnaffected)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToLower, TwoBytes)
+TEST(ToLower, BasicLatinMultipleUppercase)
 {
-	const char* c = "Rac\xC3\x88r";
+	const char* c = "MULTI";
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("rac\xC3\xA8r", b);
+	EXPECT_EQ(5, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("multi", b);
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToLower, TwoBytesUppercase)
+TEST(ToLower, BasicLatinMultipleLowercase)
 {
+	const char* c = "jazz";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("jazz", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, BasicLatinMultipleUnaffected)
+{
+	const char* c = "(-(#)-)";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(7, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("(-(#)-)", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, BasicLatinWord)
+{
+	const char* c = "MuMbLinG";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(8, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("mumbling", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, BasicLatinSentence)
+{
+	const char* c = "Hello World!";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(12, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("hello world!", b);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, BasicLatinAmountOfBytes)
+{
+	const char* c = "Houten";
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8tolower(c, strlen(c), nullptr, 0, 0, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToLower, BasicLatinNotEnoughSpace)
+{
+	const char* c = "Interested?";
+	const size_t s = 4;
+	char b[s] = { 0 };
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("int", b);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(ToLower, GeneralCategoryCaseMappedSingleUppercase)
+{
+	// LATIN CAPITAL LETTER A WITH CIRCUMFLEX
+
 	const char* c = "\xC3\x82";
 	const size_t s = 256;
 	char b[s] = { 0 };
@@ -76,104 +135,10 @@ TEST(ToLower, TwoBytesUppercase)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToLower, TwoBytesLowercase)
+TEST(ToLower, GeneralCategoryCaseMappedSingleLowercase)
 {
-	const char* c = "\xC3\xA7";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	// DESERET SMALL LETTER WU
 
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("\xC3\xA7", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToLower, TwoBytesUnaffected)
-{
-	const char* c = "\xC3\xB7";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("\xC3\xB7", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToLower, ThreeBytes)
-{
-	const char* c = "You're number \xE2\x85\xA0";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(17, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("you're number \xE2\x85\xB0", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToLower, ThreeBytesUppercase)
-{
-	const char* c = "\xE2\x85\xAF";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("\xE2\x85\xBF", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToLower, ThreeBytesLowercase)
-{
-	const char* c = "\xE2\x85\xB6";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("\xE2\x85\xB6", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToLower, ThreeBytesUnaffected)
-{
-	const char* c = "\xE2\x86\x89";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("\xE2\x86\x89", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToLower, FourBytes)
-{
-	const char* c = "Bring a t\xF0\x91\xA2\xA9wel";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(16, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("bring a t\xF0\x91\xA3\x89wel", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToLower, FourBytesUppercase)
-{
-	const char* c = "\xF0\x91\xA2\xB2";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("\xF0\x91\xA3\x92", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToLower, FourBytesLowercase)
-{
 	const char* c = "\xF0\x90\x90\xB6";
 	const size_t s = 256;
 	char b[s] = { 0 };
@@ -184,63 +149,48 @@ TEST(ToLower, FourBytesLowercase)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToLower, FourBytesUnaffected)
+TEST(ToLower, GeneralCategoryCaseMappedSingleTitlecase)
 {
-	const char* c = "\xF0\x91\xA3\xA4";
+	// LATIN CAPITAL LETTER D WITH SMALL LETTER Z WITH CARON
+
+	const char* c = "\xC7\x85";
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("\xF0\x91\xA3\xA4", b);
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xC7\x86", b);
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToLower, Decomposed)
+TEST(ToLower, GeneralCategoryCaseMappedSingleUnaffected)
 {
-	const char* c = "O\xCC\x9Bu\xCC\x88\xCC\x84" "A\xCC\x87\xCC\x84";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	// VULGAR FRACTION ZERO THIRDS
 
-	EXPECT_EQ(13, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("o\xCC\x9Bu\xCC\x88\xCC\x84" "a\xCC\x87\xCC\x84", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToLower, DecomposedUppercase)
-{
-	const char* c = "A\xCC\x80";
+	const char* c = "\xE2\x86\x89";
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
 	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("a\xCC\x80", b);
+	EXPECT_UTF8EQ("\xE2\x86\x89", b);
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToLower, DecomposedLowercase)
+TEST(ToLower, GeneralCategoryCaseMappedMultipleUppercase)
 {
-	const char* c = "i\xCC\x8C";
+	// LATIN CAPITAL LETTER R WITH INVERTED BREVE
+	// LATIN CAPITAL LETTER EZH WITH CARON
+	// LATIN CAPITAL LETTER TURNED V
+	// GREEK CAPITAL LETTER OMICRON WITH TONOS
+
+	const char* c = "\xC8\x92\xC7\xAE\xC9\x85\xCE\x8C";
 	const size_t s = 256;
 	char b[s] = { 0 };
 	int32_t errors = 0;
 
-	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("i\xCC\x8C", b);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(ToLower, DecomposedCouldNotCompose)
-{
-	const char* c = "\xE1\xBF\xBD";
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
-	EXPECT_UTF8EQ("\xE1\xBF\xBD", b);
+	EXPECT_EQ(8, utf8tolower(c, strlen(c), b, s - 1, 0, &errors));
+	EXPECT_UTF8EQ("\xC8\x93\xC7\xAF\xCA\x8C\xCF\x8C", b);
 	EXPECT_EQ(0, errors);
 }
 
