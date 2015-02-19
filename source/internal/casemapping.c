@@ -47,7 +47,7 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 	return 1;
 }
 
-size_t casemapping_execute2(CaseMappingState* state)
+size_t casemapping_execute(CaseMappingState* state)
 {
 	uint8_t decoded_size;
 	size_t written = 0;
@@ -185,85 +185,5 @@ size_t casemapping_execute2(CaseMappingState* state)
 outofspace:
 	state->src_size = 0;
 
-	return 0;
-}
-
-size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t generalCategory, uint8_t propertyType, int32_t* errors)
-{
-	const char* resolved;
-	uint8_t encoded_size;
-	size_t resolved_size;
-
-	if (codepoint <= 0x7A)
-	{
-		/* Basic Latin */
-
-		if (*target != 0 &&
-			*targetSize < 1)
-		{
-			goto outofspace;
-		}
-
-		if (propertyType == UnicodeProperty_Lowercase)
-		{
-			if (codepoint >= 0x41 && codepoint <= 0x5A)
-			{
-				codepoint += 0x20;
-			}
-		}
-		else
-		{
-			if (codepoint >= 0x61)
-			{
-				codepoint -= 0x20;
-			}
-		}
-
-		goto unresolved;
-	}
-	
-	if ((generalCategory & GeneralCategory_CaseMapped) == 0)
-	{
-		goto unresolved;
-	}
-
-	resolved = database_querydecomposition(codepoint, propertyType);
-	if (resolved == 0)
-	{
-		goto unresolved;
-	}
-
-	resolved_size = strlen(resolved);
-
-	if (*target != 0 &&
-		resolved_size > 0)
-	{
-		if (*targetSize < resolved_size)
-		{
-			goto outofspace;
-		}
-
-		memcpy(*target, resolved, resolved_size);
-
-		*target += resolved_size;
-		*targetSize -= resolved_size;
-	}
-
-	return resolved_size;
-
-unresolved:
-	encoded_size = codepoint_write(codepoint, target, targetSize);
-	if (encoded_size == 0)
-	{
-		goto outofspace;
-	}
-
-	return encoded_size;
-
-outofspace:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
-	}
 	return 0;
 }
