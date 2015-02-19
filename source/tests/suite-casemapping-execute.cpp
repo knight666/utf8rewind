@@ -51,13 +51,13 @@ TEST(CaseMappingExecute, BasicLatinSingleLowercase)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("r", o);
 }
@@ -72,13 +72,13 @@ TEST(CaseMappingExecute, BasicLatinSingleUppercase)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("I", o);
 }
@@ -93,13 +93,13 @@ TEST(CaseMappingExecute, BasicLatinSingleTitlecase)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Titlecase));
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("V", o);
 }
@@ -114,13 +114,13 @@ TEST(CaseMappingExecute, BasicLatinSingleUnaffected)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("`", o);
 }
@@ -133,13 +133,13 @@ TEST(CaseMappingExecute, BasicLatinSingleAmountOfBytes)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UnicodeProperty_Uppercase));
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 }
 
 TEST(CaseMappingExecute, BasicLatinSingleNotEnoughSpace)
@@ -152,7 +152,7 @@ TEST(CaseMappingExecute, BasicLatinSingleNotEnoughSpace)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 	EXPECT_EQ(i, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 	EXPECT_EQ(o, state.dst);
@@ -171,25 +171,25 @@ TEST(CaseMappingExecute, BasicLatinMultipleLowercase)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("buy", o);
 }
@@ -204,37 +204,37 @@ TEST(CaseMappingExecute, BasicLatinMultipleUppercase)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 5, state.src);
 	EXPECT_EQ(is - 5, state.src_size);
 	EXPECT_EQ(o + 5, state.dst);
 	EXPECT_EQ(os - 5, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("MOUSE", o);
 }
@@ -249,31 +249,31 @@ TEST(CaseMappingExecute, BasicLatinMultipleTitlecase)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Titlecase));
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("ZING", o);
 }
@@ -288,31 +288,31 @@ TEST(CaseMappingExecute, BasicLatinMultipleUnaffected)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Titlecase));
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("$5.-", o);
 }
@@ -325,25 +325,25 @@ TEST(CaseMappingExecute, BasicLatinMultipleAmountOfBytes)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UnicodeProperty_Lowercase));
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 }
 
 TEST(CaseMappingExecute, BasicLatinMultipleNotEnoughSpace)
@@ -356,25 +356,25 @@ TEST(CaseMappingExecute, BasicLatinMultipleNotEnoughSpace)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_execute(&state));
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("DIS", o);
 }
@@ -391,13 +391,13 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleLowercase)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("\xC3\xB8", o);
 }
@@ -414,13 +414,13 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUppercase)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("\xCA\xBCN", o);
 }
@@ -437,13 +437,13 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleTitlecase)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Titlecase));
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("\xC7\x85", o);
 }
@@ -460,13 +460,13 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUnaffected)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
 
-	EXPECT_EQ(4, casemapping_execute2(&state));
+	EXPECT_EQ(4, casemapping_execute(&state));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("\xF0\x9F\x96\xB3", o);
 }
@@ -481,13 +481,13 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleAmountOfBytes)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UnicodeProperty_Lowercase));
 
-	EXPECT_EQ(4, casemapping_execute2(&state));
+	EXPECT_EQ(4, casemapping_execute(&state));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 }
 
 TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleNotEnoughSpace)
@@ -502,7 +502,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleNotEnoughSpace)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 	EXPECT_EQ(i, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 	EXPECT_EQ(o, state.dst);
@@ -524,25 +524,25 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleLowercase)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_execute(&state));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_execute(&state));
 	EXPECT_EQ(i + 6, state.src);
 	EXPECT_EQ(is - 6, state.src_size);
 	EXPECT_EQ(o + 6, state.dst);
 	EXPECT_EQ(os - 6, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("\xC6\xA5\xC5\xBE\xC5\x9F", o);
 }
@@ -560,19 +560,19 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUppercase)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_execute(&state));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 	EXPECT_EQ(o + 5, state.dst);
 	EXPECT_EQ(os - 5, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("\xCA\xBCNSS", o);
 }
@@ -590,25 +590,25 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleTitlecase)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Titlecase));
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_execute(&state));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_execute(&state));
 	EXPECT_EQ(i + 6, state.src);
 	EXPECT_EQ(is - 6, state.src_size);
 	EXPECT_EQ(o + 6, state.dst);
 	EXPECT_EQ(os - 6, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("\xC7\x88\xC7\x9B\xC7\x8F", o);
 }
@@ -626,31 +626,31 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUnaffected)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
 
-	EXPECT_EQ(4, casemapping_execute2(&state));
+	EXPECT_EQ(4, casemapping_execute(&state));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_execute(&state));
 	EXPECT_EQ(i + 7, state.src);
 	EXPECT_EQ(is - 7, state.src_size);
 	EXPECT_EQ(o + 7, state.dst);
 	EXPECT_EQ(os - 7, state.dst_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_execute(&state));
 	EXPECT_EQ(i + 10, state.src);
 	EXPECT_EQ(is - 10, state.src_size);
 	EXPECT_EQ(o + 10, state.dst);
 	EXPECT_EQ(os - 10, state.dst_size);
 
-	EXPECT_EQ(4, casemapping_execute2(&state));
+	EXPECT_EQ(4, casemapping_execute(&state));
 	EXPECT_EQ(i + 14, state.src);
 	EXPECT_EQ(is - 14, state.src_size);
 	EXPECT_EQ(o + 14, state.dst);
 	EXPECT_EQ(os - 14, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 
 	EXPECT_UTF8EQ("\xF0\x9F\x97\x98\xE1\xAA\xA3\xE3\x80\x90\xF0\x9F\x99\x8B", o);
 }
@@ -666,25 +666,25 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleAmountOfBytes)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UnicodeProperty_Lowercase));
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_execute(&state));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_execute(&state));
 	EXPECT_EQ(i + 6, state.src);
 	EXPECT_EQ(is - 6, state.src_size);
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 }
 
 TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleNotEnoughSpace)
@@ -700,19 +700,19 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleNotEnoughSpace)
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_execute(&state));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
-	EXPECT_EQ(6, casemapping_execute2(&state));
+	EXPECT_EQ(6, casemapping_execute(&state));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 	EXPECT_EQ(o + 8, state.dst);
 	EXPECT_EQ(os - 8, state.dst_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_execute(&state));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 6, state.src_size);
 	EXPECT_EQ(o + 8, state.dst);
