@@ -379,6 +379,138 @@ TEST(CaseMappingExecute, BasicLatinMultipleNotEnoughSpace)
 	EXPECT_UTF8EQ("DIS", o);
 }
 
+TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleLowercase)
+{
+	// LATIN CAPITAL LETTER O WITH STROKE
+
+	CaseMappingState state;
+	const char* i = "\xC3\x98";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
+
+	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(i + 2, state.src);
+	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 2, state.dst);
+	EXPECT_EQ(os - 2, state.dst_size);
+
+	EXPECT_EQ(0, casemapping_execute2(&state));
+
+	EXPECT_UTF8EQ("\xC3\xB8", o);
+}
+
+TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUppercase)
+{
+	// LATIN SMALL LETTER N PRECEDED BY APOSTROPHE
+
+	CaseMappingState state;
+	const char* i = "\xC5\x89";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+
+	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(i + 2, state.src);
+	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 3, state.dst);
+	EXPECT_EQ(os - 3, state.dst_size);
+
+	EXPECT_EQ(0, casemapping_execute2(&state));
+
+	EXPECT_UTF8EQ("\xCA\xBCN", o);
+}
+
+TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleTitlecase)
+{
+	// LATIN CAPITAL LETTER DZ WITH CARON
+
+	CaseMappingState state;
+	const char* i = "\xC7\x84";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Titlecase));
+
+	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(i + 2, state.src);
+	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 2, state.dst);
+	EXPECT_EQ(os - 2, state.dst_size);
+
+	EXPECT_EQ(0, casemapping_execute2(&state));
+
+	EXPECT_UTF8EQ("\xC7\x85", o);
+}
+
+TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUnaffected)
+{
+	// OLD PERSONAL COMPUTER
+
+	CaseMappingState state;
+	const char* i = "\xF0\x9F\x96\xB3";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
+
+	EXPECT_EQ(4, casemapping_execute2(&state));
+	EXPECT_EQ(i + 4, state.src);
+	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(o + 4, state.dst);
+	EXPECT_EQ(os - 4, state.dst_size);
+
+	EXPECT_EQ(0, casemapping_execute2(&state));
+
+	EXPECT_UTF8EQ("\xF0\x9F\x96\xB3", o);
+}
+
+TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleAmountOfBytes)
+{
+	// HARD DISK
+
+	CaseMappingState state;
+	const char* i = "\xF0\x9F\x96\xB4";
+	size_t is = strlen(i);
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UnicodeProperty_Lowercase));
+
+	EXPECT_EQ(4, casemapping_execute2(&state));
+	EXPECT_EQ(i + 4, state.src);
+	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
+
+	EXPECT_EQ(0, casemapping_execute2(&state));
+}
+
+TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleNotEnoughSpace)
+{
+	// SWASH AMPERSAND ORNAMENT
+
+	CaseMappingState state;
+	const char* i = "\xF0\x9F\x99\xB5";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 3;
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+
+	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(i, state.src);
+	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(o, state.dst);
+	EXPECT_EQ(os, state.dst_size);
+
+	EXPECT_UTF8EQ("", o);
+}
+
 TEST(CaseMappingExecuteUppercase, BasicLatinLowercase)
 {
 	int32_t e = 0;
