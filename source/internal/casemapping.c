@@ -28,6 +28,157 @@
 #include "codepoint.h"
 #include "database.h"
 
+uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property)
+{
+	memset(state, 0, sizeof(CaseMappingState));
+
+	if (input == 0 ||
+		inputSize == 0)
+	{
+		return 0;
+	}
+
+	state->src = input;
+	state->src_size = inputSize;
+	state->dst = target;
+	state->dst_size = targetSize;
+	state->property = property;
+
+	return 1;
+}
+
+size_t casemapping_execute2(CaseMappingState* state)
+{
+	size_t written = 0;
+
+	if ((*state->src & 0x80) == 0)
+	{
+		/* Basic Latin does not have to be converted to UTF-32 */
+
+		if (state->dst != 0)
+		{
+			if (state->dst_size < 1)
+			{
+				return 0;
+			}
+
+			/* Lowercase letters are U+0061 ('a') to U+007A ('z') */
+			/* Uppercase letters are U+0041 ('A') to U+005A ('Z') */
+			/* All other codepoints in Basic Latin are unaffected by case mapping */
+
+			if (state->property == UnicodeProperty_Lowercase)
+			{
+				*state->dst =
+					(*state->src >= 0x41 && *state->src <= 0x5A)
+					? *state->src + 0x20
+					: *state->src;
+			}
+			else
+			{
+				*state->dst =
+					(*state->src >= 0x61 && *state->src <= 0x7A)
+					? *state->src - 0x20
+					: *state->src;
+			}
+
+			state->dst++;
+			state->dst_size--;
+		}
+
+		/* Store codepoint's general category */
+
+		if ((*state->src >= 0x41 && *state->src <= 0x5A) ||
+			(*state->src >= 0x61 && *state->src <= 0x7A))
+		{
+			state->last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
+		}
+		else
+		{
+			/* Don't care about non-letter codepoints */
+
+			state->last_general_category = GeneralCategory_Other;
+		}
+
+		written++;
+
+		state->src++;
+		state->src_size--;
+	}
+	else
+	{
+		unicode_t decoded;
+		size_t resolved_size = 0;
+		uint8_t decoded_size;
+
+		/* Decode current codepoint */
+
+		decoded_size = codepoint_read(state->src, state->src_size, &decoded);
+
+		/* Check if the codepoint's general category property indicates case mapping */
+
+		state->last_general_category = database_queryproperty(decoded, UnicodeProperty_GeneralCategory);
+		if ((state->last_general_category & GeneralCategory_CaseMapped) != 0)
+		{
+			/* Resolve the codepoint's decomposition */
+
+			const char* resolved = database_querydecomposition(decoded, state->property);
+			if (resolved != 0)
+			{
+				resolved_size = strlen(resolved);
+
+				/* Copy the decomposition to the output buffer */
+
+				if (state->dst != 0 &&
+					resolved_size > 0)
+				{
+					if (state->dst_size < resolved_size)
+					{
+						return 0;
+					}
+
+					memcpy(state->dst, resolved, resolved_size);
+
+					state->dst += resolved_size;
+					state->dst_size -= resolved_size;
+				}
+
+				written += resolved_size;
+			}
+		}
+
+		/* Check if codepoint was unaffected */
+
+		if (resolved_size == 0)
+		{
+			/* Write the codepoint to the output buffer */
+			/* This ensures that invalid codepoints in the input are always converted to U+FFFD in the output */
+
+			if (!codepoint_write(decoded, &state->dst, &state->dst_size))
+			{
+				return 0;
+			}
+
+			/* Reuse the decoded size unless the codepoint was replaced */
+
+			written += (decoded != REPLACEMENT_CHARACTER) ? decoded_size : 3;
+		}
+
+		/* Invalid codepoints can be longer than the source length indicates */
+
+		if (state->src_size <= decoded_size)
+		{
+			state->src_size = 0;
+
+			return written;
+		}
+
+		state->src += decoded_size;
+		state->src_size -= decoded_size;
+	}
+
+	return written;
+}
+
 size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t generalCategory, uint8_t propertyType, int32_t* errors)
 {
 	const char* resolved;

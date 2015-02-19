@@ -28,6 +28,19 @@
 
 #include "utf8rewind.h"
 
+typedef struct {
+	const char* src;
+	size_t src_size;
+	char* dst;
+	size_t dst_size;
+	uint8_t property;
+	uint8_t last_general_category;
+} CaseMappingState;
+
+uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property);
+
+size_t casemapping_execute2(CaseMappingState* state);
+
 size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t generalCategory, uint8_t propertyType, int32_t* errors);
 
 #endif
