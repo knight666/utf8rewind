@@ -519,119 +519,23 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 
 size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
+	CaseMappingState state;
 	size_t bytes_written = 0;
-	const char* src = input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
 
-	if (src == 0 ||
-		src_size == 0)
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Uppercase))
 	{
 		goto invaliddata;
 	}
 
-	while (src_size > 0)
+	while (state.src_size > 0)
 	{
-		if ((*src & 0x80) == 0)
+		size_t result = casemapping_execute(&state);
+		if (!result)
 		{
-			/* Basic Latin does not have to be converted to UTF-32 */
-
-			if (dst != 0)
-			{
-				if (dst_size < 1)
-				{
-					goto outofspace;
-				}
-
-				/* Lowercase letters are U+0061 ('a') to U+007A ('z') */
-				/* Uppercase letters are U+0041 ('A') to U+005A ('Z') */
-				/* All other codepoints in Basic Latin are unaffected by the conversion to uppercase */
-
-				*dst = (*src >= 0x61 && *src <= 0x7A) ? *src - 0x20 : *src;
-
-				dst++;
-				dst_size--;
-			}
-
-			bytes_written++;
-
-			src++;
-			src_size--;
+			goto outofspace;
 		}
-		else
-		{
-			unicode_t decoded;
-			uint8_t general_category;
-			size_t resolved_size = 0;
 
-			/* Decode current codepoint */
-
-			uint8_t decoded_size = codepoint_read(src, src_size, &decoded);
-			if (decoded_size == 0)
-			{
-				break;
-			}
-
-			/* Check if the codepoint's general category property indicates case mapping */
-
-			general_category = database_queryproperty(decoded, UnicodeProperty_GeneralCategory);
-			if ((general_category & GeneralCategory_CaseMapped) != 0)
-			{
-				/* Resolve the codepoint's uppercase decomposition */
-
-				const char* resolved = database_querydecomposition(decoded, UnicodeProperty_Uppercase);
-				if (resolved != 0)
-				{
-					resolved_size = strlen(resolved);
-
-					/* Copy the decomposition to the output buffer */
-
-					if (dst != 0 &&
-						resolved_size > 0)
-					{
-						if (dst_size < resolved_size)
-						{
-							goto outofspace;
-						}
-
-						memcpy(dst, resolved, resolved_size);
-
-						dst += resolved_size;
-						dst_size -= resolved_size;
-					}
-
-					bytes_written += resolved_size;
-				}
-			}
-
-			/* Check if codepoint was unaffected */
-
-			if (resolved_size == 0)
-			{
-				/* Write the codepoint to the output buffer */
-				/* This ensures that invalid codepoints in the input are always converted to U+FFFD in the output */
-
-				if (!codepoint_write(decoded, &dst, &dst_size))
-				{
-					goto outofspace;
-				}
-
-				/* Reuse the decoded size unless the codepoint was replaced */
-
-				bytes_written += (decoded != REPLACEMENT_CHARACTER) ? decoded_size : 3;
-			}
-
-			/* Invalid codepoints can be longer than the source length indicates */
-
-			if (src_size <= decoded_size)
-			{
-				break;
-			}
-
-			src += decoded_size;
-			src_size -= decoded_size;
-		}
+		bytes_written += result;
 	}
 
 	return bytes_written;
@@ -653,91 +557,23 @@ outofspace:
 
 size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
+	CaseMappingState state;
 	size_t bytes_written = 0;
-	const char* src = input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
-	ComposeState state;
 
-	if (src == 0 ||
-		src_size == 0)
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Lowercase))
 	{
 		goto invaliddata;
 	}
 
-	if ((flags & UTF8_TRANSFORM_NORMALIZED) != 0)
+	while (state.src_size > 0)
 	{
-#if 0
-		/* Normalize to NFC before attempting to lowercase */
-
-		compose_initialize(&state, src, src_size, UnicodeProperty_Normalization_Compose);
-
-		while (state.stage <= ComposeStage_OutOfInput)
+		size_t result = casemapping_execute(&state);
+		if (!result)
 		{
-			uint8_t index = compose_execute(&state);
-
-			if (index != (uint8_t)-1)
-			{
-				uint8_t generalCategory = database_queryproperty(state.codepoint[index], UnicodeProperty_GeneralCategory);
-
-				size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, generalCategory, UnicodeProperty_Lowercase, errors);
-				if (written == 0)
-				{
-					break;
-				}
-
-				bytes_written += written;
-			}
+			goto outofspace;
 		}
-#endif
-	}
-	else
-	{
-		/* Assume input is already NKC */
 
-		while (src_size > 0)
-		{
-			if ((*src & 0x80) == 0)
-			{
-				/* Basic Latin */
-
-				if (dst != 0)
-				{
-					if (dst_size < 1)
-					{
-						goto outofspace;
-					}
-
-					*dst = (*src >= 0x41 && *src <= 0x5A) ? *src + 0x20 : *src;
-
-					dst++;
-					dst_size--;
-				}
-
-				bytes_written++;
-
-				src++;
-				src_size--;
-			}
-			else
-			{
-				unicode_t decoded;
-				uint8_t decoded_size = codepoint_read(src, src_size, &decoded);
-				uint8_t generalCategory = database_queryproperty(decoded, UnicodeProperty_GeneralCategory);
-
-				size_t written = casemapping_execute(decoded, &dst, &dst_size, generalCategory, UnicodeProperty_Lowercase, errors);
-				if (written == 0)
-				{
-					break;
-				}
-
-				bytes_written += written;
-
-				src += decoded_size;
-				src_size -= decoded_size;
-			}
-		}
+		bytes_written += result;
 	}
 
 	return bytes_written;
@@ -759,47 +595,37 @@ outofspace:
 
 size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
+	CaseMappingState state;
 	size_t bytes_written = 0;
-	const char* src = input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
-	uint8_t property = UnicodeProperty_Titlecase;
 
-	if (src == 0 ||
-		src_size == 0)
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Titlecase))
 	{
 		goto invaliddata;
 	}
 
-	while (src_size > 0)
+	while (state.src_size > 0)
 	{
-		unicode_t decoded;
-		uint8_t decoded_size = codepoint_read(src, src_size, &decoded);
-		uint8_t generalCategory = database_queryproperty(decoded, UnicodeProperty_GeneralCategory);
-
-		size_t written = casemapping_execute(decoded, &dst, &dst_size, generalCategory, property, errors);
-		if (written == 0)
+		size_t result = casemapping_execute(&state);
+		if (!result)
 		{
-			break;
+			goto outofspace;
 		}
 
-		if (property == UnicodeProperty_Titlecase)
+		/* The first letter of every word should be titlecase, the rest lowercase */
+
+		if (state.property == UnicodeProperty_Titlecase)
 		{
-			if ((generalCategory & GeneralCategory_Letter) != 0)
+			if ((state.last_general_category & GeneralCategory_Letter) != 0)
 			{
-				property = UnicodeProperty_Lowercase;
+				state.property = UnicodeProperty_Lowercase;
 			}
 		}
-		else if ((generalCategory & GeneralCategory_Letter) == 0)
+		else if ((state.last_general_category & GeneralCategory_Letter) == 0)
 		{
-			property = UnicodeProperty_Titlecase;
+			state.property = UnicodeProperty_Titlecase;
 		}
 
-		bytes_written += written;
-
-		src += decoded_size;
-		src_size -= decoded_size;
+		bytes_written += result;
 	}
 
 	return bytes_written;
@@ -808,6 +634,13 @@ invaliddata:
 	if (errors != 0)
 	{
 		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
 	}
 	return bytes_written;
 }
