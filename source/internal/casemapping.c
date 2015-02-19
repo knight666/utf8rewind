@@ -49,17 +49,25 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 
 size_t casemapping_execute2(CaseMappingState* state)
 {
+	uint8_t decoded_size;
 	size_t written = 0;
+
+	if (state->src_size == 0)
+	{
+		return 0;
+	}
 
 	if ((*state->src & 0x80) == 0)
 	{
 		/* Basic Latin does not have to be converted to UTF-32 */
 
+		decoded_size = 1;
+
 		if (state->dst != 0)
 		{
 			if (state->dst_size < 1)
 			{
-				return 0;
+				goto outofspace;
 			}
 
 			/* Lowercase letters are U+0061 ('a') to U+007A ('z') */
@@ -100,15 +108,11 @@ size_t casemapping_execute2(CaseMappingState* state)
 		}
 
 		written++;
-
-		state->src++;
-		state->src_size--;
 	}
 	else
 	{
 		unicode_t decoded;
 		size_t resolved_size = 0;
-		uint8_t decoded_size;
 
 		/* Decode current codepoint */
 
@@ -133,7 +137,7 @@ size_t casemapping_execute2(CaseMappingState* state)
 				{
 					if (state->dst_size < resolved_size)
 					{
-						return 0;
+						goto outofspace;
 					}
 
 					memcpy(state->dst, resolved, resolved_size);
@@ -155,28 +159,33 @@ size_t casemapping_execute2(CaseMappingState* state)
 
 			if (!codepoint_write(decoded, &state->dst, &state->dst_size))
 			{
-				return 0;
+				goto outofspace;
 			}
 
 			/* Reuse the decoded size unless the codepoint was replaced */
 
 			written += (decoded != REPLACEMENT_CHARACTER) ? decoded_size : 3;
 		}
+	}
 
-		/* Invalid codepoints can be longer than the source length indicates */
+	/* Invalid codepoints can be longer than the source length indicates */
 
-		if (state->src_size <= decoded_size)
-		{
-			state->src_size = 0;
-
-			return written;
-		}
-
+	if (state->src_size >= decoded_size)
+	{
 		state->src += decoded_size;
 		state->src_size -= decoded_size;
 	}
+	else
+	{
+		state->src_size = 0;
+	}
 
 	return written;
+
+outofspace:
+	state->src_size = 0;
+
+	return 0;
 }
 
 size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t generalCategory, uint8_t propertyType, int32_t* errors)
