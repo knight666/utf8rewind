@@ -472,13 +472,13 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 */
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
 
-size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
+size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
-size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
+size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
-size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
+size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
-size_t utf8tocasefolded(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
+size_t utf8tocasefold(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
 
