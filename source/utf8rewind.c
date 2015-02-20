@@ -25,6 +25,7 @@
 
 #include "utf8rewind.h"
 
+#include "internal/base.h"
 #include "internal/casemapping.h"
 #include "internal/codepoint.h"
 #include "internal/composition.h"
@@ -33,12 +34,6 @@
 #include "internal/normalization.h"
 #include "internal/seeking.h"
 #include "internal/streaming.h"
-
-#if defined(__GNUC__) && !defined(COMPILER_ICC)
-	#define UTF8_UNUSED(_parameter) _parameter __attribute__ ((unused))
-#else
-	#define UTF8_UNUSED(_parameter) _parameter
-#endif
 
 size_t utf8len(const char* text)
 {
@@ -522,10 +517,18 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 	CaseMappingState state;
 	size_t bytes_written = 0;
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Uppercase, errors))
+	/* Validate input */
+
+	UTF8_VALIDATE_INPUT;
+
+	/* Initialize case mapping */
+
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Uppercase))
 	{
 		return bytes_written;
 	}
+
+	/* Execute case mapping as long as input remains */
 
 	while (state.src_size > 0)
 	{
@@ -538,6 +541,20 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 		bytes_written += result;
 	}
 
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+overlap:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_OVERLAPPING_PARAMETERS;
+	}
 	return bytes_written;
 
 outofspace:
@@ -553,10 +570,18 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 	CaseMappingState state;
 	size_t bytes_written = 0;
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Lowercase, errors))
+	/* Validate input */
+
+	UTF8_VALIDATE_INPUT;
+
+	/* Initialize case mapping */
+
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Lowercase))
 	{
 		return bytes_written;
 	}
+
+	/* Execute case mapping as long as input remains */
 
 	while (state.src_size > 0)
 	{
@@ -569,6 +594,20 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 		bytes_written += result;
 	}
 
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+overlap:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_OVERLAPPING_PARAMETERS;
+	}
 	return bytes_written;
 
 outofspace:
@@ -584,10 +623,18 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 	CaseMappingState state;
 	size_t bytes_written = 0;
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Titlecase, errors))
+	/* Validate input */
+
+	UTF8_VALIDATE_INPUT;
+
+	/* Initialize case mapping */
+
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Titlecase))
 	{
 		return bytes_written;
 	}
+
+	/* Execute case mapping as long as input remains */
 
 	while (state.src_size > 0)
 	{
@@ -614,6 +661,20 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 		bytes_written += result;
 	}
 
+	return bytes_written;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+overlap:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_OVERLAPPING_PARAMETERS;
+	}
 	return bytes_written;
 
 outofspace:

@@ -25,40 +25,12 @@
 
 #include "casemapping.h"
 
+#include "base.h"
 #include "codepoint.h"
 #include "database.h"
 
-uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property, int32_t* errors)
+uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property)
 {
-	const char* input_center;
-	char* target_center;
-
-	/* Check for invalid parameters */
-
-	if (input == 0 ||
-		inputSize == 0)
-	{
-		goto invaliddata;
-	}
-
-	/* Check for parameter overlap by using the separating axis theorem */
-
-	if (input == target)
-	{
-		goto overlap;
-	}
-
-	input_center = input + (inputSize / 2);
-	target_center = target + (targetSize / 2);
-
-	if (((input_center > target_center) ? (input_center - target_center) : (target_center - input_center)) * 2 <
-		(inputSize + targetSize))
-	{
-		goto overlap;
-	}
-
-	/* Set up case mapping state */
-
 	memset(state, 0, sizeof(CaseMappingState));
 
 	state->src = input;
@@ -68,20 +40,6 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 	state->property = property;
 
 	return 1;
-
-overlap:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_OVERLAPPING_PARAMETERS;
-	}
-	return 0;
-
-invaliddata:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_INVALID_DATA;
-	}
-	return 0;
 }
 
 size_t casemapping_execute(CaseMappingState* state)

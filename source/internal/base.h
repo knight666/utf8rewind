@@ -23,22 +23,30 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef _UTFREWIND_INTERNAL_CASEMAPPING_H_
-#define _UTFREWIND_INTERNAL_CASEMAPPING_H_
+#ifndef _UTFREWIND_INTERNAL_BASE_H_
+#define _UTFREWIND_INTERNAL_BASE_H_
 
 #include "utf8rewind.h"
 
-typedef struct {
-	const char* src;
-	size_t src_size;
-	char* dst;
-	size_t dst_size;
-	uint8_t property;
-	uint8_t last_general_category;
-} CaseMappingState;
+#if defined(__GNUC__) && !defined(COMPILER_ICC)
+	#define UTF8_UNUSED(_parameter) _parameter __attribute__ ((unused))
+#else
+	#define UTF8_UNUSED(_parameter) _parameter
+#endif
 
-uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property);
+/* Validates input before transforming */
+/* Check for parameter overlap using the separating axis theorem */
 
-size_t casemapping_execute(CaseMappingState* state);
+#define UTF8_VALIDATE_INPUT do { \
+	char* input_center; \
+	char* target_center; \
+	size_t delta; \
+	if (input == 0 || inputSize == 0) { goto invaliddata; } \
+	if (input == target) { goto overlap; } \
+	input_center = (char*)input + (inputSize / 2); \
+	target_center = (char*)target + (targetSize / 2); \
+	delta = (size_t)((input_center > target_center) ? (input_center - target_center) : (target_center - input_center)) * 2; \
+	if (delta < (inputSize + targetSize)) { goto overlap; } \
+} while (0);
 
 #endif
