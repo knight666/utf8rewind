@@ -30,8 +30,10 @@
 
 uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property, int32_t* errors)
 {
-	size_t offset;
-	size_t half_lengths;
+	const char* input_center;
+	char* target_center;
+
+	/* Check for invalid parameters */
 
 	if (input == 0 ||
 		inputSize == 0)
@@ -39,14 +41,23 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 		goto invaliddata;
 	}
 
-	offset = (input > target) ? (input - target) : (target - input);
-	half_lengths = (inputSize + targetSize) / 2;
+	/* Check for parameter overlap by using the separating axis theorem */
 
-	if (input == target ||
-		offset < half_lengths)
+	if (input == target)
 	{
 		goto overlap;
 	}
+
+	input_center = input + (inputSize / 2);
+	target_center = target + (targetSize / 2);
+
+	if (((input_center > target_center) ? (input_center - target_center) : (target_center - input_center)) * 2 <
+		(inputSize + targetSize))
+	{
+		goto overlap;
+	}
+
+	/* Set up case mapping state */
 
 	memset(state, 0, sizeof(CaseMappingState));
 
