@@ -522,9 +522,9 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 	CaseMappingState state;
 	size_t bytes_written = 0;
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Uppercase))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Uppercase, errors))
 	{
-		goto invaliddata;
+		return bytes_written;
 	}
 
 	while (state.src_size > 0)
@@ -538,13 +538,6 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 		bytes_written += result;
 	}
 
-	return bytes_written;
-
-invaliddata:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_INVALID_DATA;
-	}
 	return bytes_written;
 
 outofspace:
@@ -560,9 +553,9 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 	CaseMappingState state;
 	size_t bytes_written = 0;
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Lowercase))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Lowercase, errors))
 	{
-		goto invaliddata;
+		return bytes_written;
 	}
 
 	while (state.src_size > 0)
@@ -578,13 +571,6 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 	return bytes_written;
 
-invaliddata:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_INVALID_DATA;
-	}
-	return bytes_written;
-
 outofspace:
 	if (errors != 0)
 	{
@@ -598,9 +584,9 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 	CaseMappingState state;
 	size_t bytes_written = 0;
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Titlecase))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Titlecase, errors))
 	{
-		goto invaliddata;
+		return bytes_written;
 	}
 
 	while (state.src_size > 0)
@@ -628,13 +614,6 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 		bytes_written += result;
 	}
 
-	return bytes_written;
-
-invaliddata:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_INVALID_DATA;
-	}
 	return bytes_written;
 
 outofspace:

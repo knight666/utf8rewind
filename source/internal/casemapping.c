@@ -28,15 +28,27 @@
 #include "codepoint.h"
 #include "database.h"
 
-uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property)
+uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property, int32_t* errors)
 {
-	memset(state, 0, sizeof(CaseMappingState));
+	size_t offset;
+	size_t half_lengths;
 
 	if (input == 0 ||
 		inputSize == 0)
 	{
-		return 0;
+		goto invaliddata;
 	}
+
+	offset = (input > target) ? (input - target) : (target - input);
+	half_lengths = (inputSize + targetSize) / 2;
+
+	if (input == target ||
+		offset < half_lengths)
+	{
+		goto overlap;
+	}
+
+	memset(state, 0, sizeof(CaseMappingState));
 
 	state->src = input;
 	state->src_size = inputSize;
@@ -45,6 +57,20 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 	state->property = property;
 
 	return 1;
+
+overlap:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_OVERLAPPING_PARAMETERS;
+	}
+	return 0;
+
+invaliddata:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return 0;
 }
 
 size_t casemapping_execute(CaseMappingState* state)

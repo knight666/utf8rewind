@@ -37,7 +37,7 @@ typedef struct {
 	uint8_t last_general_category;
 } CaseMappingState;
 
-uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property);
+uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property, int32_t* errors);
 
 size_t casemapping_execute(CaseMappingState* state);
 
