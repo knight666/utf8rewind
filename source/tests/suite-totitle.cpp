@@ -381,3 +381,140 @@ TEST(ToTitle, InvalidData)
 	EXPECT_EQ(0, utf8totitle(nullptr, 1, nullptr, 0, &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
+
+TEST(ToTitle, OverlapFits)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+	strcpy(data, "GaMeS");
+
+	const char* i = data;
+	size_t is = 5;
+	char* o = data + 5;
+	size_t os = 5;
+
+	EXPECT_EQ(5, utf8totitle(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("GaMeSGames", data);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(ToTitle, OverlapStartsEqual)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data;
+	size_t is = 16;
+	char* o = data;
+	size_t os = 58;
+
+	EXPECT_EQ(0, utf8totitle(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(ToTitle, OverlapEndsEqual)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 21;
+	size_t is = 43;
+	char* o = data + 8;
+	size_t os = 58;
+
+	EXPECT_EQ(0, utf8totitle(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(ToTitle, OverlapInputStartsInTarget)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 44;
+	size_t is = 56;
+	char* o = data + 26;
+	size_t os = 20;
+
+	EXPECT_EQ(0, utf8totitle(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(ToTitle, OverlapInputEndsInTarget)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data;
+	size_t is = 57;
+	char* o = data + 19;
+	size_t os = 46;
+
+	EXPECT_EQ(0, utf8totitle(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(ToTitle, OverlapInputInsideTarget)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 86;
+	size_t is = 22;
+	char* o = data + 68;
+	size_t os = 109;
+
+	EXPECT_EQ(0, utf8totitle(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(ToTitle, OverlapTargetStartsInInput)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 73;
+	size_t is = 25;
+	char* o = data + 88;
+	size_t os = 36;
+
+	EXPECT_EQ(0, utf8totitle(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(ToTitle, OverlapTargetEndsInInput)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 27;
+	size_t is = 68;
+	char* o = data + 10;
+	size_t os = 39;
+
+	EXPECT_EQ(0, utf8totitle(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(ToTitle, OverlapTargetInsideInput)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 14;
+	size_t is = 59;
+	char* o = data + 26;
+	size_t os = 11;
+
+	EXPECT_EQ(0, utf8totitle(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
