@@ -11,6 +11,7 @@
 			],
 			'sources': [
 				'include/utf8rewind/utf8rewind.h',
+				'source/internal/base.h',
 				'source/internal/casemapping.c',
 				'source/internal/casemapping.h',
 				'source/internal/codepoint.c',
