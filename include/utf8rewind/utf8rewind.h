@@ -478,8 +478,6 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
-size_t utf8tocasefold(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
-
 size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
 
 size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
