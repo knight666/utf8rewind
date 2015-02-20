@@ -702,3 +702,161 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleNotEnoughSpace)
 
 	EXPECT_UTF8EQ("\xCF\xA4\xCE\xA5\xCC\x88\xCC\x81", o);
 }
+
+TEST(CaseMappingExecute, InvalidCodepointSingle)
+{
+	CaseMappingState state;
+	const char* i = "\xDA";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
+
+	EXPECT_EQ(3, casemapping_execute(&state));
+	EXPECT_EQ(i + 1, state.src);
+	EXPECT_EQ(0, state.src_size);
+	EXPECT_EQ(o + 3, state.dst);
+	EXPECT_EQ(os - 3, state.dst_size);
+
+	EXPECT_EQ(0, casemapping_execute(&state));
+
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+}
+
+TEST(CaseMappingExecute, InvalidCodepointSingleAmountOfBytes)
+{
+	CaseMappingState state;
+	const char* i = "\xF4\x89";
+	size_t is = strlen(i);
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UnicodeProperty_Titlecase));
+
+	EXPECT_EQ(3, casemapping_execute(&state));
+	EXPECT_EQ(i + 2, state.src);
+	EXPECT_EQ(0, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
+
+	EXPECT_EQ(0, casemapping_execute(&state));
+}
+
+TEST(CaseMappingExecute, InvalidCodepointSingleNotEnoughSpace)
+{
+	CaseMappingState state;
+	const char* i = "\xC4";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 2;
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+
+	EXPECT_EQ(0, casemapping_execute(&state));
+	EXPECT_EQ(i, state.src);
+	EXPECT_EQ(0, state.src_size);
+	EXPECT_EQ(o, state.dst);
+	EXPECT_EQ(os, state.dst_size);
+
+	EXPECT_EQ(0, casemapping_execute(&state));
+
+	EXPECT_UTF8EQ("", o);
+}
+
+TEST(CaseMappingExecute, InvalidCodepointMultiple)
+{
+	CaseMappingState state;
+	const char* i = "\xCC\xCD\xD9";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
+
+	EXPECT_EQ(3, casemapping_execute(&state));
+	EXPECT_EQ(i + 1, state.src);
+	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(o + 3, state.dst);
+	EXPECT_EQ(os - 3, state.dst_size);
+
+	EXPECT_EQ(3, casemapping_execute(&state));
+	EXPECT_EQ(i + 2, state.src);
+	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 6, state.dst);
+	EXPECT_EQ(os - 6, state.dst_size);
+
+	EXPECT_EQ(3, casemapping_execute(&state));
+	EXPECT_EQ(i + 3, state.src);
+	EXPECT_EQ(0, state.src_size);
+	EXPECT_EQ(o + 9, state.dst);
+	EXPECT_EQ(os - 9, state.dst_size);
+
+	EXPECT_EQ(0, casemapping_execute(&state));
+
+	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBD", o);
+}
+
+TEST(CaseMappingExecute, InvalidCodepointMultipleAmountOfBytes)
+{
+	CaseMappingState state;
+	const char* i = "\xDA\xE0\x88\xDE\xCB";
+	size_t is = strlen(i);
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UnicodeProperty_Lowercase));
+
+	EXPECT_EQ(3, casemapping_execute(&state));
+	EXPECT_EQ(i + 1, state.src);
+	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
+
+	EXPECT_EQ(3, casemapping_execute(&state));
+	EXPECT_EQ(i + 3, state.src);
+	EXPECT_EQ(is - 3, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
+
+	EXPECT_EQ(3, casemapping_execute(&state));
+	EXPECT_EQ(i + 4, state.src);
+	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
+
+	EXPECT_EQ(3, casemapping_execute(&state));
+	EXPECT_EQ(i + 5, state.src);
+	EXPECT_EQ(0, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
+
+	EXPECT_EQ(0, casemapping_execute(&state));
+}
+
+TEST(CaseMappingExecute, InvalidCodepointMultipleNotEnoughSpace)
+{
+	CaseMappingState state;
+	const char* i = "\xDE\xCD\xCA\xDB";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 7;
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
+
+	EXPECT_EQ(3, casemapping_execute(&state));
+	EXPECT_EQ(i + 1, state.src);
+	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(o + 3, state.dst);
+	EXPECT_EQ(os - 3, state.dst_size);
+
+	EXPECT_EQ(3, casemapping_execute(&state));
+	EXPECT_EQ(i + 2, state.src);
+	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 6, state.dst);
+	EXPECT_EQ(os - 6, state.dst_size);
+
+	EXPECT_EQ(0, casemapping_execute(&state));
+	EXPECT_EQ(i + 2, state.src);
+	EXPECT_EQ(0, state.src_size);
+	EXPECT_EQ(o + 6, state.dst);
+	EXPECT_EQ(os - 6, state.dst_size);
+
+	EXPECT_EQ(0, casemapping_execute(&state));
+}
