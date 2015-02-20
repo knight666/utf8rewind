@@ -22,7 +22,7 @@
 				'abstract': 1,
 				'conditions': [
 					['OS=="win"', {
-						'defines': [ '_WINDOWS' ],
+						'defines': [ '_WINDOWS', '_CRT_SECURE_NO_WARNINGS' ],
 						'msvs_configuration_attributes': {
 							'OutputDirectory': '$(SolutionDir)output\\<(platform_name)\\<(architecture_name)\\$(ConfigurationName)',
 							'IntermediateDirectory': '$(SolutionDir)intermediate\\$(ProjectName)\\<(architecture_name)\\$(ConfigurationName)',

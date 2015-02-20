@@ -25,85 +25,160 @@
 
 #include "casemapping.h"
 
+#include "base.h"
 #include "codepoint.h"
 #include "database.h"
 
-size_t casemapping_execute(unicode_t codepoint, char** target, size_t* targetSize, uint8_t generalCategory, uint8_t propertyType, int32_t* errors)
+uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property)
 {
-	const char* resolved;
-	uint8_t encoded_size;
-	size_t resolved_size;
+	memset(state, 0, sizeof(CaseMappingState));
 
-	if (codepoint <= 0x7A)
+	state->src = input;
+	state->src_size = inputSize;
+	state->dst = target;
+	state->dst_size = targetSize;
+	state->property = property;
+
+	return 1;
+}
+
+size_t casemapping_execute(CaseMappingState* state)
+{
+	uint8_t decoded_size;
+	size_t written = 0;
+
+	if (state->src_size == 0)
 	{
-		/* Basic Latin */
+		return 0;
+	}
 
-		if (*target != 0 &&
-			*targetSize < 1)
+	if ((*state->src & 0x80) == 0)
+	{
+		/* Basic Latin does not have to be converted to UTF-32 */
+
+		decoded_size = 1;
+
+		if (state->dst != 0)
 		{
-			goto outofspace;
+			if (state->dst_size < 1)
+			{
+				goto outofspace;
+			}
+
+			/* Lowercase letters are U+0061 ('a') to U+007A ('z') */
+			/* Uppercase letters are U+0041 ('A') to U+005A ('Z') */
+			/* All other codepoints in Basic Latin are unaffected by case mapping */
+
+			if (state->property == UnicodeProperty_Lowercase)
+			{
+				*state->dst =
+					(*state->src >= 0x41 && *state->src <= 0x5A)
+					? *state->src + 0x20
+					: *state->src;
+			}
+			else
+			{
+				*state->dst =
+					(*state->src >= 0x61 && *state->src <= 0x7A)
+					? *state->src - 0x20
+					: *state->src;
+			}
+
+			state->dst++;
+			state->dst_size--;
 		}
 
-		if (propertyType == UnicodeProperty_Lowercase)
+		/* Store codepoint's general category */
+
+		if ((*state->src >= 0x41 && *state->src <= 0x5A) ||
+			(*state->src >= 0x61 && *state->src <= 0x7A))
 		{
-			if (codepoint >= 0x41 && codepoint <= 0x5A)
-			{
-				codepoint += 0x20;
-			}
+			state->last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
 		}
 		else
 		{
-			if (codepoint >= 0x61)
+			/* Don't care about non-letter codepoints */
+
+			state->last_general_category = GeneralCategory_Other;
+		}
+
+		written++;
+	}
+	else
+	{
+		unicode_t decoded;
+		size_t resolved_size = 0;
+
+		/* Decode current codepoint */
+
+		decoded_size = codepoint_read(state->src, state->src_size, &decoded);
+
+		/* Check if the codepoint's general category property indicates case mapping */
+
+		state->last_general_category = database_queryproperty(decoded, UnicodeProperty_GeneralCategory);
+		if ((state->last_general_category & GeneralCategory_CaseMapped) != 0)
+		{
+			/* Resolve the codepoint's decomposition */
+
+			const char* resolved = database_querydecomposition(decoded, state->property);
+			if (resolved != 0)
 			{
-				codepoint -= 0x20;
+				resolved_size = strlen(resolved);
+
+				/* Copy the decomposition to the output buffer */
+
+				if (state->dst != 0 &&
+					resolved_size > 0)
+				{
+					if (state->dst_size < resolved_size)
+					{
+						goto outofspace;
+					}
+
+					memcpy(state->dst, resolved, resolved_size);
+
+					state->dst += resolved_size;
+					state->dst_size -= resolved_size;
+				}
+
+				written += resolved_size;
 			}
 		}
 
-		goto unresolved;
-	}
-	
-	if ((generalCategory & GeneralCategory_CaseMapped) == 0)
-	{
-		goto unresolved;
-	}
+		/* Check if codepoint was unaffected */
 
-	resolved = database_querydecomposition(codepoint, propertyType);
-	if (resolved == 0)
-	{
-		goto unresolved;
-	}
-
-	resolved_size = strlen(resolved);
-
-	if (*target != 0 &&
-		resolved_size > 0)
-	{
-		if (*targetSize < resolved_size)
+		if (resolved_size == 0)
 		{
-			goto outofspace;
+			/* Write the codepoint to the output buffer */
+			/* This ensures that invalid codepoints in the input are always converted to U+FFFD in the output */
+
+			if (!codepoint_write(decoded, &state->dst, &state->dst_size))
+			{
+				goto outofspace;
+			}
+
+			/* Reuse the decoded size unless the codepoint was replaced */
+
+			written += (decoded != REPLACEMENT_CHARACTER) ? decoded_size : 3;
 		}
-
-		memcpy(*target, resolved, resolved_size);
-
-		*target += resolved_size;
-		*targetSize -= resolved_size;
 	}
 
-	return resolved_size;
+	/* Invalid codepoints can be longer than the source length indicates */
 
-unresolved:
-	encoded_size = codepoint_write(codepoint, target, targetSize);
-	if (encoded_size == 0)
+	if (state->src_size >= decoded_size)
 	{
-		goto outofspace;
+		state->src += decoded_size;
+		state->src_size -= decoded_size;
+	}
+	else
+	{
+		state->src_size = 0;
 	}
 
-	return encoded_size;
+	return written;
 
 outofspace:
-	if (errors != 0)
-	{
-		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
-	}
+	state->src_size = 0;
+
 	return 0;
 }

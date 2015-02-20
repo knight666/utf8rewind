@@ -25,6 +25,7 @@
 
 #include "utf8rewind.h"
 
+#include "internal/base.h"
 #include "internal/casemapping.h"
 #include "internal/codepoint.h"
 #include "internal/composition.h"
@@ -33,12 +34,6 @@
 #include "internal/normalization.h"
 #include "internal/seeking.h"
 #include "internal/streaming.h"
-
-#if defined(__GNUC__) && !defined(COMPILER_ICC)
-	#define UTF8_UNUSED(_parameter) _parameter __attribute__ ((unused))
-#else
-	#define UTF8_UNUSED(_parameter) _parameter
-#endif
 
 size_t utf8len(const char* text)
 {
@@ -517,93 +512,33 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	}
 }
 
-size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
+size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
+	CaseMappingState state;
 	size_t bytes_written = 0;
-	const char* src = input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
-	ComposeState state;
 
-	if (src == 0 ||
-		src_size == 0)
+	/* Validate input */
+
+	UTF8_VALIDATE_INPUT;
+
+	/* Initialize case mapping */
+
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Uppercase))
 	{
-		goto invaliddata;
+		return bytes_written;
 	}
 
-	if ((flags & UTF8_TRANSFORM_NORMALIZED) != 0)
+	/* Execute case mapping as long as input remains */
+
+	while (state.src_size > 0)
 	{
-#if 0
-		/* Normalize to NFC before attempting to uppercase */
-
-		compose_initialize(&state, src, src_size, UnicodeProperty_Normalization_Compose);
-
-		while (state.stage <= ComposeStage_OutOfInput)
+		size_t result = casemapping_execute(&state);
+		if (!result)
 		{
-			uint8_t index = compose_execute(&state);
-
-			if (index != (uint8_t)-1)
-			{
-				uint8_t generalCategory = database_queryproperty(state.codepoint[index], UnicodeProperty_GeneralCategory);
-
-				size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, generalCategory, UnicodeProperty_Uppercase, errors);
-				if (written == 0)
-				{
-					break;
-				}
-
-				bytes_written += written;
-			}
+			goto outofspace;
 		}
-#endif
-	}
-	else
-	{
-		/* Assume input is already NKC */
 
-		while (src_size > 0)
-		{
-			if ((*src & 0x80) == 0)
-			{
-				/* Basic Latin */
-
-				if (dst != 0)
-				{
-					if (dst_size < 1)
-					{
-						goto outofspace;
-					}
-
-					*dst = (*src >= 0x61 && *src <= 0x7A) ? *src - 0x20 : *src;
-
-					dst++;
-					dst_size--;
-				}
-
-				bytes_written++;
-
-				src++;
-				src_size--;
-			}
-			else
-			{
-				unicode_t decoded;
-				uint8_t decoded_size = codepoint_read(src, src_size, &decoded);
-				uint8_t generalCategory = database_queryproperty(decoded, UnicodeProperty_GeneralCategory);
-
-				size_t written = casemapping_execute(decoded, &dst, &dst_size, generalCategory, UnicodeProperty_Uppercase, errors);
-				if (written == 0)
-				{
-					break;
-				}
-
-				bytes_written += written;
-
-				src += decoded_size;
-				src_size -= decoded_size;
-			}
-		}
+		bytes_written += result;
 	}
 
 	return bytes_written;
@@ -612,6 +547,13 @@ invaliddata:
 	if (errors != 0)
 	{
 		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+overlap:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_OVERLAPPING_PARAMETERS;
 	}
 	return bytes_written;
 
@@ -623,93 +565,33 @@ outofspace:
 	return bytes_written;
 }
 
-size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
+size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
+	CaseMappingState state;
 	size_t bytes_written = 0;
-	const char* src = input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
-	ComposeState state;
 
-	if (src == 0 ||
-		src_size == 0)
+	/* Validate input */
+
+	UTF8_VALIDATE_INPUT;
+
+	/* Initialize case mapping */
+
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Lowercase))
 	{
-		goto invaliddata;
+		return bytes_written;
 	}
 
-	if ((flags & UTF8_TRANSFORM_NORMALIZED) != 0)
+	/* Execute case mapping as long as input remains */
+
+	while (state.src_size > 0)
 	{
-#if 0
-		/* Normalize to NFC before attempting to lowercase */
-
-		compose_initialize(&state, src, src_size, UnicodeProperty_Normalization_Compose);
-
-		while (state.stage <= ComposeStage_OutOfInput)
+		size_t result = casemapping_execute(&state);
+		if (!result)
 		{
-			uint8_t index = compose_execute(&state);
-
-			if (index != (uint8_t)-1)
-			{
-				uint8_t generalCategory = database_queryproperty(state.codepoint[index], UnicodeProperty_GeneralCategory);
-
-				size_t written = casemapping_execute(state.codepoint[index], &dst, &dst_size, generalCategory, UnicodeProperty_Lowercase, errors);
-				if (written == 0)
-				{
-					break;
-				}
-
-				bytes_written += written;
-			}
+			goto outofspace;
 		}
-#endif
-	}
-	else
-	{
-		/* Assume input is already NKC */
 
-		while (src_size > 0)
-		{
-			if ((*src & 0x80) == 0)
-			{
-				/* Basic Latin */
-
-				if (dst != 0)
-				{
-					if (dst_size < 1)
-					{
-						goto outofspace;
-					}
-
-					*dst = (*src >= 0x41 && *src <= 0x5A) ? *src + 0x20 : *src;
-
-					dst++;
-					dst_size--;
-				}
-
-				bytes_written++;
-
-				src++;
-				src_size--;
-			}
-			else
-			{
-				unicode_t decoded;
-				uint8_t decoded_size = codepoint_read(src, src_size, &decoded);
-				uint8_t generalCategory = database_queryproperty(decoded, UnicodeProperty_GeneralCategory);
-
-				size_t written = casemapping_execute(decoded, &dst, &dst_size, generalCategory, UnicodeProperty_Lowercase, errors);
-				if (written == 0)
-				{
-					break;
-				}
-
-				bytes_written += written;
-
-				src += decoded_size;
-				src_size -= decoded_size;
-			}
-		}
+		bytes_written += result;
 	}
 
 	return bytes_written;
@@ -718,6 +600,13 @@ invaliddata:
 	if (errors != 0)
 	{
 		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+overlap:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_OVERLAPPING_PARAMETERS;
 	}
 	return bytes_written;
 
@@ -729,49 +618,47 @@ outofspace:
 	return bytes_written;
 }
 
-size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
+size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
+	CaseMappingState state;
 	size_t bytes_written = 0;
-	const char* src = input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
-	uint8_t property = UnicodeProperty_Titlecase;
 
-	if (src == 0 ||
-		src_size == 0)
+	/* Validate input */
+
+	UTF8_VALIDATE_INPUT;
+
+	/* Initialize case mapping */
+
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Titlecase))
 	{
-		goto invaliddata;
+		return bytes_written;
 	}
 
-	while (src_size > 0)
-	{
-		unicode_t decoded;
-		uint8_t decoded_size = codepoint_read(src, src_size, &decoded);
-		uint8_t generalCategory = database_queryproperty(decoded, UnicodeProperty_GeneralCategory);
+	/* Execute case mapping as long as input remains */
 
-		size_t written = casemapping_execute(decoded, &dst, &dst_size, generalCategory, property, errors);
-		if (written == 0)
+	while (state.src_size > 0)
+	{
+		size_t result = casemapping_execute(&state);
+		if (!result)
 		{
-			break;
+			goto outofspace;
 		}
 
-		if (property == UnicodeProperty_Titlecase)
+		/* The first letter of every word should be titlecase, the rest lowercase */
+
+		if (state.property == UnicodeProperty_Titlecase)
 		{
-			if ((generalCategory & GeneralCategory_Letter) != 0)
+			if ((state.last_general_category & GeneralCategory_Letter) != 0)
 			{
-				property = UnicodeProperty_Lowercase;
+				state.property = UnicodeProperty_Lowercase;
 			}
 		}
-		else if ((generalCategory & GeneralCategory_Letter) == 0)
+		else if ((state.last_general_category & GeneralCategory_Letter) == 0)
 		{
-			property = UnicodeProperty_Titlecase;
+			state.property = UnicodeProperty_Titlecase;
 		}
 
-		bytes_written += written;
-
-		src += decoded_size;
-		src_size -= decoded_size;
+		bytes_written += result;
 	}
 
 	return bytes_written;
@@ -780,6 +667,20 @@ invaliddata:
 	if (errors != 0)
 	{
 		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+overlap:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_OVERLAPPING_PARAMETERS;
+	}
+	return bytes_written;
+
+outofspace:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NOT_ENOUGH_SPACE;
 	}
 	return bytes_written;
 }
