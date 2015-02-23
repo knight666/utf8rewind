@@ -557,66 +557,13 @@ TEST(NormalizeDecomposition, InvalidCodepointNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(NormalizeDecomposition, MultipleDecompose)
-{
-	const char* i = "\xC5\x84\xC8\x8B\xC7\xBA";
-	size_t is = strlen(i);
-	char o[256] = { 0 };
-	size_t os = 255;
-	int32_t errors = 0;
-
-	EXPECT_EQ(11, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
-	EXPECT_UTF8EQ("n\xCC\x81" "i\xCC\x91" "A\xCC\x8A\xCC\x81", o);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(NormalizeDecomposition, MultipleNonStarter)
-{
-	const char* i = "\xCC\x97\xCC\x9B\xCC\x80";
-	size_t is = strlen(i);
-	char o[256] = { 0 };
-	size_t os = 255;
-	int32_t errors = 0;
-
-	EXPECT_EQ(6, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
-	EXPECT_UTF8EQ("\xCC\x9B\xCC\x97\xCC\x80", o);
-	EXPECT_EQ(0, errors);
-}
-
-TEST(NormalizeDecomposition, AmountOfBytes)
-{
-	const char* i = "a\xD6\xAE\xDC\xB3\xCC\x80\xCC\x95" "b";
-	size_t is = strlen(i);
-	int32_t errors = 0;
-
-	EXPECT_EQ(10, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_DECOMPOSE, &errors));
-	EXPECT_EQ(0, errors);
-}
-
 TEST(NormalizeDecomposition, InvalidData)
 {
-	const char* i = nullptr;
-	size_t is = 7;
 	char o[256] = { 0 };
 	size_t os = 255;
 	int32_t errors = 0;
 
-	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(0, utf8normalize(nullptr, 7, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
-}
-
-TEST(NormalizeDecomposition, NotEnoughSpace)
-{
-	const char* i = "a\xD6\xAE\xDC\xB3\xCC\x80\xCC\x95" "b";
-	size_t is = strlen(i);
-	char o[5] = { 0 };
-	size_t os = 4;
-	int32_t errors = 0;
-
-	std::string seq = helpers::sequence(i, UnicodeProperty_Normalization_Decompose);
-
-	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
-	EXPECT_UTF8EQ("a\xD6\xAE", o);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
