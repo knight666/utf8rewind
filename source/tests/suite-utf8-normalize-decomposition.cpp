@@ -522,6 +522,40 @@ TEST(NormalizeDecomposition, InvalidCodepointMultiple)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(NormalizeDecomposition, InvalidCodepointAmountOfBytes)
+{
+	/*
+		U+FFFD U+FFFD U+FFFD
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xCA\xE8\x80\xDF";
+	size_t is = strlen(i);
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, InvalidCodepointNotEnoughSpace)
+{
+	/*
+		U+FFFD U+FFFD U+FFFD U+FFFD
+		     Y      Y      Y      Y
+		     0      0      0      0
+	*/
+
+	const char* i = "\xEB\xEC\xEF\x88\xF4";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 7;
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD", o);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
 
 TEST(NormalizeDecomposition, MultipleDecompose)
 {
