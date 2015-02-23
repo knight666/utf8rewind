@@ -46,6 +46,25 @@ TEST(NormalizeDecomposition, BasicLatinMultiple)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(NormalizeDecomposition, BasicLatinCompatibility)
+{
+	/*
+		U+0073 U+0074 U+0065 U+0070
+		     Y      Y      Y      Y
+		     0      0      0      0
+	*/
+
+	const char* i = "step";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(4, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
+	EXPECT_UTF8EQ("step", o);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(NormalizeDecomposition, BasicLatinAmountOfBytes)
 {
 	/*
@@ -119,6 +138,25 @@ TEST(NormalizeDecomposition, MultiByteUnaffectedMultiple)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(NormalizeDecomposition, MultiByteUnaffectedCompatibility)
+{
+	/*
+		U+2E3A U+2AE0 U+2B49
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xE2\xB8\xBA\xE2\xAB\xA0\xE2\xAD\x89";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
+	EXPECT_UTF8EQ("\xE2\xB8\xBA\xE2\xAB\xA0\xE2\xAD\x89", o);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(NormalizeDecomposition, MultiByteUnaffectedAmountOfBytes)
 {
 	/*
@@ -170,6 +208,25 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSingle)
 
 	EXPECT_EQ(6, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE0\xA4\x95\xE0\xA4\xBC", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, MultiByteDecomposeSingleCompatibility)
+{
+	/*
+		U+3316 U+327C U+323E U+01C4
+		     N      N      N      N
+		     0      0      0      0
+	*/
+
+	const char* i = "\xE3\x8C\x96\xE3\x89\xBC\xE3\x88\xBE\xC7\x84";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(42, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
+	EXPECT_UTF8EQ("\xE3\x82\xAD\xE3\x83\xAD\xE3\x83\xA1\xE3\x83\xBC\xE3\x83\x88\xE3\x83\xAB\xE1\x84\x8E\xE1\x85\xA1\xE1\x86\xB7\xE1\x84\x80\xE1\x85\xA9(\xE8\xB3\x87)DZ\xCC\x8C", o);
 	EXPECT_EQ(0, errors);
 }
 
@@ -284,6 +341,27 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSequenceMultipleUnordered)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(NormalizeDecomposition, MultiByteDecomposeSequenceCompatibility)
+{
+	/*
+		U+0174 U+0306
+		     N      Y
+		     0    230
+	*/
+
+	const char* i = "\xC5\xB4\xCC\x86";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	std::string seq = helpers::sequence(i, UnicodeProperty_Normalization_Compatibility_Decompose);
+
+	EXPECT_EQ(5, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
+	EXPECT_UTF8EQ("W\xCC\x82\xCC\x86", o);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(NormalizeDecomposition, MultiByteDecomposeSequenceAmountOfBytes)
 {
 	/*
@@ -354,6 +432,25 @@ TEST(NormalizeDecomposition, HangulUnaffectedMultiple)
 
 	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE1\x84\x80\xE1\x85\xAA\xE1\x86\xB2", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, HangulUnaffectedCompatibility)
+{
+	/*
+		U+1103 U+116A U+11AD
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xE1\x84\x83\xE1\x85\xAA\xE1\x86\xAD";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
+	EXPECT_UTF8EQ("\xE1\x84\x83\xE1\x85\xAA\xE1\x86\xAD", o);
 	EXPECT_EQ(0, errors);
 }
 
@@ -449,6 +546,25 @@ TEST(NormalizeDecomposition, HangulDecomposeSequenceMultiple)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(NormalizeDecomposition, HangulDecomposeCompatibility)
+{
+	/*
+		U+B3C7 U+B3A8 U+11AA U+B397
+		     N      N      Y      N
+		     0      0      0      0
+	*/
+
+	const char* i = "\xEB\x8F\x87\xEB\x8E\xA8\xE1\x86\xAA\xEB\x8E\x97";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(27, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
+	EXPECT_UTF8EQ("\xE1\x84\x83\xE1\x85\xA9\xE1\x86\xAA\xE1\x84\x83\xE1\x85\xA8\xE1\x86\xAA\xE1\x84\x83\xE1\x85\xA7\xE1\x86\xB2", o);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(NormalizeDecomposition, HangulDecomposeAmountOfBytes)
 {
 	/*
@@ -518,6 +634,25 @@ TEST(NormalizeDecomposition, InvalidCodepointMultiple)
 	int32_t errors = 0;
 
 	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBD", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, InvalidCodepointCompatibility)
+{
+	/*
+		U+FFFD U+FFFD U+FFFD
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xDA\xCF\xFE";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBD", o);
 	EXPECT_EQ(0, errors);
 }
