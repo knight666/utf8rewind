@@ -173,6 +173,41 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSingle)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(NormalizeDecomposition, MultiByteDecomposeSingleAmountOfBytes)
+{
+	/*
+		U+01FA
+		     N
+		     0
+	*/
+
+	const char* i = "\xC7\xBA";
+	size_t is = strlen(i);
+	int32_t errors = 0;
+
+	EXPECT_EQ(5, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, MultiByteDecomposeSingleNotEnoughSpace)
+{
+	/*
+		U+1E08
+		     N
+		     0
+	*/
+
+	const char* i = "\xE1\xB8\x88";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 4;
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("C\xCC\xA7", o);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST(NormalizeDecomposition, MultiByteDecomposeSequenceSingleOrdered)
 {
 	/*
@@ -249,6 +284,40 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSequenceMultipleUnordered)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(NormalizeDecomposition, MultiByteDecomposeSequenceAmountOfBytes)
+{
+	/*
+		U+00C7 U+0301 U+0347
+		     N      Y      Y
+		     0    230    220
+	*/
+
+	const char* i = "\xC3\x87\xCC\x81\xCD\x87";
+	size_t is = strlen(i);
+	int32_t errors = 0;
+
+	EXPECT_EQ(7, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, MultiByteDecomposeSequenceNotEnoughSpace)
+{
+	/*
+		U+00C3 U+035C U+0348
+		     N      Y      Y
+		     0    233    220
+	*/
+
+	const char* i = "\xC3\x83\xCD\x9C\xCD\x88";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 6;
+	int32_t errors = 0;
+
+	EXPECT_EQ(5, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("A\xCD\x88\xCC\x83", o);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
 
 TEST(NormalizeDecomposition, HangulUnaffectedSingle)
 {
