@@ -338,6 +338,60 @@ TEST(NormalizeDecomposition, HangulUnaffectedSingle)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(NormalizeDecomposition, HangulUnaffectedMultiple)
+{
+	/*
+		U+1100 U+116A U+11B2
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xE1\x84\x80\xE1\x85\xAA\xE1\x86\xB2";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("\xE1\x84\x80\xE1\x85\xAA\xE1\x86\xB2", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, HangulUnaffectedAmountOfBytes)
+{
+	/*
+		U+116A U+11AA
+		     Y      Y
+		     0      0
+	*/
+
+	const char* i = "\xE1\x85\xAA\xE1\x86\xAA";
+	size_t is = strlen(i);
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, HangulUnaffectedNotEnoughSpace)
+{
+	/*
+		U+1100 U+116A U+11BD U+1100 U+1169 U+11BF
+		     Y      Y      Y      Y      Y      Y
+		     0      0      0      0      0      0
+	*/
+
+	const char* i = "\xE1\x84\x80\xE1\x85\xAA\xE1\x86\xBD\xE1\x84\x80\xE1\x85\xA9\xE1\x86\xBF";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 9;
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("\xE1\x84\x80\xE1\x85\xAA\xE1\x86\xBD", o);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST(NormalizeDecomposition, HangulDecomposeSingleTwoCodepoints)
 {
 	/*
@@ -395,6 +449,40 @@ TEST(NormalizeDecomposition, HangulDecomposeSequenceMultiple)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(NormalizeDecomposition, HangulDecomposeAmountOfBytes)
+{
+	/*
+		U+AD8C U+B434 U+B04B
+		     N      N      N
+		     0      0      0
+	*/
+
+	const char* i = "\xEA\xB6\x8C\xEB\x90\xB4\xEB\x81\x8B";
+	size_t is = strlen(i);
+	int32_t errors = 0;
+
+	EXPECT_EQ(24, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, HangulDecomposeNotEnoughSpace)
+{
+	/*
+		U+AD12 U+1100 U+116B U+11B1
+		     N      Y      Y      Y
+		     0      0      0      0
+	*/
+
+	const char* i = "\xEA\xB4\x92\xE1\x84\x80\xE1\x85\xAB\xE1\x86\xB1";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 6;
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("\xE1\x84\x80\xE1\x85\xAA", o);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
 
 TEST(NormalizeDecomposition, InvalidCodepointSingle)
 {
