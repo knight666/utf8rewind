@@ -355,8 +355,6 @@ TEST(NormalizeDecompose, MultiByteDecomposeSequenceCompatibility)
 	size_t os = 255;
 	int32_t errors = 0;
 
-	std::string seq = helpers::sequence(i, UnicodeProperty_Normalization_Compatibility_Decompose);
-
 	EXPECT_EQ(5, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("W\xCC\x82\xCC\x86", o);
 	EXPECT_EQ(0, errors);
@@ -690,21 +688,4 @@ TEST(NormalizeDecompose, InvalidCodepointNotEnoughSpace)
 	EXPECT_EQ(6, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD", o);
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-}
-
-TEST(NormalizeDecompose, OverlapFits)
-{
-	int32_t errors = 0;
-
-	char data[128] = { 0 };
-	strcpy(data, "crash");
-
-	const char* i = data;
-	size_t is = 5;
-	char* o = data + 5;
-	size_t os = 5;
-
-	EXPECT_EQ(5, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
-	EXPECT_UTF8EQ("crashcrash", data);
-	EXPECT_EQ(0, errors);
 }
