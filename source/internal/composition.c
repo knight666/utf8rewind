@@ -58,39 +58,21 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 
 uint8_t compose_readcodepoint(ComposeState* state, uint8_t index)
 {
-	if (state->input->index == state->input->current)
+	if (state->input->index == state->input->current &&
+		!stream_read(state->input, state->property))
 	{
-		if (!stream_read(state->input, state->property))
-		{
-			/* End of data */
+		/* End of data */
 
-			state->input->index = 0;
-			state->input->current = 0;
-
-			return 0;
-		}
-		else
-		{
-			/* First codepoint in next sequence */
-
-			state->output->codepoint[index]                  = state->input->codepoint[0];
-			state->output->quick_check[index]                = state->input->quick_check[0];
-			state->output->canonical_combining_class[index]  = state->input->canonical_combining_class[0];
-
-			state->input->index = 1;
-		}
-	}
-	else
-	{
-		/* Use next codepoint from current sequence */
-
-		state->output->codepoint[index]                  = state->input->codepoint[state->input->index];
-		state->output->quick_check[index]                = state->input->quick_check[state->input->index];
-		state->output->canonical_combining_class[index]  = state->input->canonical_combining_class[state->input->index];
-
-		state->input->index++;
+		return 0;
 	}
 
+	/* Get next codepoint from sequence */
+
+	state->output->codepoint[index]                  = state->input->codepoint[state->input->index];
+	state->output->quick_check[index]                = state->input->quick_check[state->input->index];
+	state->output->canonical_combining_class[index]  = state->input->canonical_combining_class[state->input->index];
+
+	state->input->index++;
 	state->output->current++;
 
 	return 1;
@@ -100,16 +82,24 @@ unicode_t compose_execute(ComposeState* state)
 {
 	uint8_t cache_start = 0;
 
+	/* Check if input is available */
+
 	if (state->input == 0 ||
 		state->finished)
 	{
 		return 0;
 	}
 
+	/* Reset output */
+
 	state->output->current = 0;
+
+	/* Reset cache */
 
 	state->cache_current = cache_start;
 	state->cache_next = cache_start + 1;
+
+	/* Read current codepoint */
 
 	if (!compose_readcodepoint(state, state->cache_current))
 	{
@@ -118,6 +108,8 @@ unicode_t compose_execute(ComposeState* state)
 
 	while (1)
 	{
+		/* Ensure current codepoint is a starter */
+
 		while (state->output->canonical_combining_class[state->cache_current] != 0)
 		{
 			state->cache_current++;
@@ -125,19 +117,29 @@ unicode_t compose_execute(ComposeState* state)
 			if (state->cache_current == state->output->current &&
 				!compose_readcodepoint(state, state->cache_current))
 			{
+				/* Only non-starters left */
+
 				return 1;
 			}
 
 			state->cache_next = state->cache_current + 1;
 		}
 
+		/* Get next codepoint */
+
 		while (
 			state->cache_next < state->output->current ||
 			compose_readcodepoint(state, state->cache_next))
 		{
+			/*
+				Two codepoints can be composed if the current codepoint is a starter,
+				the next codepoint has a quick check value of NO or MAYBE and the
+				composition isn't blocked by a previous non-starter or a higher
+				canonical combining class.
+			*/
+
 			if (state->output->quick_check[state->cache_next] != QuickCheckResult_Yes &&
-				(state->output->canonical_combining_class[state->cache_next] == 0 &&
-				state->output->canonical_combining_class[state->cache_next - 1] == 0) ||
+				(state->output->canonical_combining_class[state->cache_next] == 0 && state->output->canonical_combining_class[state->cache_next - 1] == 0) ||
 				state->output->canonical_combining_class[state->cache_next] > state->output->canonical_combining_class[state->cache_next - 1])
 			{
 				unicode_t composed = 0;
@@ -179,18 +181,43 @@ unicode_t compose_execute(ComposeState* state)
 				}
 				else
 				{
-					/* Attempt to compose codepoints */
+					/* Attempt to compose codepoints using the database */
 
 					composed = database_querycomposition(
 						state->output->codepoint[state->cache_current],
 						state->output->codepoint[state->cache_next]);
 				}
 
+				/* Check if composition succeeded */
+
 				if (composed != 0)
 				{
+					/*
+						When we successfully compose two codepoints, the second must be removed
+						from the sequence. The way this is accomplished is by marking the cell
+						empty with a NUL codepoint.
+
+						Decomposed:
+
+						codepoint   U+0044 U+0307 U+0031
+						    index        0      1      2
+
+						Composed:
+
+						codepoint   U+1E0A U+0000 U+0031
+						    index        0      1      2
+
+						If the second codepoint was at the end of the sequence, the output 
+						sequence is shortened by one.
+					*/
+
+					/* Add composition to output */
+
 					state->output->codepoint[state->cache_current]                  = composed;
 					state->output->quick_check[state->cache_current]                = database_queryproperty(composed, state->property);
 					state->output->canonical_combining_class[state->cache_current]  = database_queryproperty(composed, UnicodeProperty_CanonicalCombiningClass);
+
+					/* Remove next codepoint from output */
 
 					state->output->codepoint[state->cache_next]                  = 0;
 					state->output->quick_check[state->cache_next]                = 0;
@@ -198,8 +225,12 @@ unicode_t compose_execute(ComposeState* state)
 
 					if (state->cache_next == state->output->current - 1)
 					{
+						/* Next codepoint was at end of output */
+
 						state->output->current--;
 					}
+
+					/* Move cursor for current codepoint */
 
 					state->cache_current = cache_start;
 					state->cache_next = cache_start;
@@ -208,27 +239,60 @@ unicode_t compose_execute(ComposeState* state)
 			else if (
 				state->output->canonical_combining_class[state->cache_next] == 0)
 			{
+				/* Attempt to compose starters, but do not read from the next sequence */
+
 				break;
 			}
 
 			state->cache_next++;
 		}
 
+		/* Check if we're out of sequences */
+
 		if (state->cache_current + 1 >= state->output->current)
 		{
 			break;
 		}
+
+		/* Fill up "holes" left by composing codepoints not at the end of the sequence */
 
 		if (state->output->current > 1)
 		{
 			uint8_t write_index = 0;
 			uint8_t read_index = 1;
 
+			/*
+				We want to move valid codepoints to the left as much as possible in order to fill up
+				holes left by the composition process. 
+
+				Note that the process does not clear unused codepoints at the end, this is a small
+				optimization in order to avoid unnecessary clears. The length member is adjusted to
+				the new size.
+				
+				Before reordering:
+
+				codepoint   A  B  0  0  0  D
+				    index   0  1  2  3  4  5
+				   length                  6
+
+				After reordering:
+
+				codepoint   A  B  D  0  0  D
+				    index   0  1  2  3  4  5
+				   length         3
+			*/
+
+			/* Evaluate all codepoints in output sequence */
+
 			while (write_index < state->output->current)
 			{
+				/* Check if read cursor is on an empty cell */
+
 				if (read_index < state->output->current &&
 					state->output->codepoint[read_index] == 0)
 				{
+					/* Skip all empty cells */
+
 					while (
 						read_index < state->output->current &&
 						state->output->codepoint[read_index] == 0)
@@ -238,29 +302,43 @@ unicode_t compose_execute(ComposeState* state)
 
 					if (read_index == state->output->current)
 					{
+						/* Reached end of data */
+
 						break;
 					}
+
+					/* Copy cell at read cursor to write cursor */
 
 					state->output->codepoint[write_index]                  = state->output->codepoint[read_index];
 					state->output->quick_check[write_index]                = state->output->quick_check[read_index];
 					state->output->canonical_combining_class[write_index]  = state->output->canonical_combining_class[read_index];
 				}
 
+				/* Move cursors */
+
 				write_index++;
 				read_index++;
 			}
 
+			/* Adjust length of output sequence */
+
 			state->output->current = write_index;
+
+			/* Evaluate next sequence */
 
 			state->cache_current++;
 			state->cache_next = write_index;
 		}
 		else
 		{
+			/* Evaluated all sequences in output */
+
 			state->finished = 1;
 
 			break;
 		}
+
+		/* Evaluate next sequence */
 
 		cache_start++;
 	}
