@@ -14,9 +14,9 @@
 	e.composedCompatibility = _composedCompatibility; \
 	::helpers::NormalizationEntry a; \
 	a.decomposed = helpers::nfd(_codepoint); \
-	a.composed = helpers::nfc(helpers::nfd(_codepoint)); \
+	a.composed = helpers::nfc(_codepoint); \
 	a.decomposedCompatibility = helpers::nfkd(_codepoint); \
-	a.composedCompatibility = helpers::nfkc(helpers::nfkd(_codepoint)); \
+	a.composedCompatibility = helpers::nfkc(_codepoint); \
 	EXPECT_PRED_FORMAT2(::helpers::CompareNormalizationCodepoint, e, a); \
 }
 
@@ -29,21 +29,21 @@
 	e.composedCompatibility = _composedCompatibility; \
 	::helpers::NormalizationEntry a; \
 	a.decomposed = helpers::nfd(_sequence); \
-	a.composed = helpers::nfc(helpers::nfd(_sequence)); \
+	a.composed = helpers::nfc(_sequence); \
 	a.decomposedCompatibility = helpers::nfkd(_sequence); \
-	a.composedCompatibility = helpers::nfkc(helpers::nfkd(_sequence)); \
+	a.composedCompatibility = helpers::nfkc(_sequence); \
 	EXPECT_PRED_FORMAT2(::helpers::CompareNormalizationSequence, e, a); \
 }
 
 namespace helpers {
 
-	std::string nfc(unicode_t codepointLeft, unicode_t codepointRight);
+	std::string nfc(unicode_t codepoint);
 	std::string nfc(const std::string& text);
 
 	std::string nfd(unicode_t codepoint);
 	std::string nfd(const std::string& text);
 
-	std::string nfkc(unicode_t codepointLeft, unicode_t codepointRight);
+	std::string nfkc(unicode_t codepoint);
 	std::string nfkc(const std::string& text);
 
 	std::string nfkd(unicode_t codepoint);
