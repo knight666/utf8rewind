@@ -697,16 +697,18 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 	uint8_t finished = 0;
 	size_t bytes_written = 0;
 
+	/* Check for valid flags */
+
 	if ((flags & (UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPOSE)) == 0)
 	{
-		goto invaliddata;
+		goto invalidflag;
 	}
 
 	/* Validate input */
 
 	UTF8_VALIDATE_INPUT;
 
-	/* Initialize input stream */
+	/* Initialize decomposition */
 
 	memset(stream, 0, 4 * sizeof(StreamState));
 
@@ -720,6 +722,8 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 	if ((flags & UTF8_NORMALIZE_COMPOSE) != 0)
 	{
+		/* Initialize composition */
+
 		if (!compose_initialize(&compose_state, &stream[2], &stream[3], compatibility))
 		{
 			goto invaliddata;
@@ -730,7 +734,6 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 	do
 	{
-		uint8_t write = 0;
 		uint8_t i;
 		unicode_t* src_codepoint;
 		unicode_t* dst_codepoint;
@@ -738,6 +741,7 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 		uint8_t* dst_qc;
 		uint8_t* src_ccc;
 		uint8_t* dst_ccc;
+		uint8_t write = 0;
 
 		if (stream[1].current > 0)
 		{
@@ -816,6 +820,13 @@ invaliddata:
 	if (errors != 0)
 	{
 		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+invalidflag:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_INVALID_FLAG;
 	}
 	return bytes_written;
 
