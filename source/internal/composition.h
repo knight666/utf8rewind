@@ -34,15 +34,6 @@ typedef struct {
 	StreamState* output;
 	uint8_t property;
 	uint8_t finished;
-	uint8_t cache_index;
-	uint8_t cache_filled;
-	uint8_t cache_current;
-	uint8_t cache_next;
-	unicode_t buffer_codepoint[2];
-	uint8_t buffer_quick_check[2];
-	uint8_t buffer_canonical_combining_class[2];
-	uint8_t buffer_current;
-	uint8_t buffer_left;
 } ComposeState;
 
 uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);
