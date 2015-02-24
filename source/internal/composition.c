@@ -138,9 +138,9 @@ unicode_t compose_execute(ComposeState* state)
 				canonical combining class.
 			*/
 
-			if (state->output->quick_check[state->cache_next] != QuickCheckResult_Yes &&
-				(state->output->canonical_combining_class[state->cache_next] == 0 && state->output->canonical_combining_class[state->cache_next - 1] == 0) ||
-				state->output->canonical_combining_class[state->cache_next] > state->output->canonical_combining_class[state->cache_next - 1])
+			if (state->output->canonical_combining_class[state->cache_next] > state->output->canonical_combining_class[state->cache_next - 1] || /* Can be composed based on CCC */
+				/* Quick check value can override composition block by previous codepoint */
+				(state->output->quick_check[state->cache_next] != QuickCheckResult_Yes && state->output->canonical_combining_class[state->cache_next - 1] == 0))
 			{
 				unicode_t composed = 0;
 
