@@ -104,7 +104,7 @@
 				'source/tests/suite-towide.cpp',
 				'source/tests/suite-transform-compose.cpp',
 				'source/tests/suite-transform-decompose.cpp',
-				'source/tests/suite-utf8-normalize-decomposition.cpp',
+				'source/tests/suite-utf8-normalize-decompose.cpp',
 				'source/tests/suite-utf8-tolower.cpp',
 				'source/tests/suite-utf8-totitle.cpp',
 				'source/tests/suite-utf8-toupper.cpp',
