@@ -702,3 +702,140 @@ TEST(NormalizeDecomposition, InvalidData)
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
+
+TEST(NormalizeDecomposition, OverlapFits)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+	strcpy(data, "crash");
+
+	const char* i = data;
+	size_t is = 5;
+	char* o = data + 5;
+	size_t os = 5;
+
+	EXPECT_EQ(5, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("crashcrash", data);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeDecomposition, OverlapStartsEqual)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data;
+	size_t is = 67;
+	char* o = data;
+	size_t os = 27;
+
+	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(NormalizeDecomposition, OverlapEndsEqual)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data;
+	size_t is = 84;
+	char* o = data + 56;
+	size_t os = 28;
+
+	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(NormalizeDecomposition, OverlapInputStartsInTarget)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 13;
+	size_t is = 39;
+	char* o = data + 5;
+	size_t os = 56;
+
+	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(NormalizeDecomposition, OverlapInputEndsInTarget)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data;
+	size_t is = 43;
+	char* o = data + 39;
+	size_t os = 16;
+
+	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(NormalizeDecomposition, OverlapInputInsideTarget)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 33;
+	size_t is = 33;
+	char* o = data + 26;
+	size_t os = 92;
+
+	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(NormalizeDecomposition, OverlapTargetStartsInInput)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 44;
+	size_t is = 16;
+	char* o = data + 48;
+	size_t os = 27;
+
+	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(NormalizeDecomposition, OverlapTargetEndsInInput)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 17;
+	size_t is = 102;
+	char* o = data + 2;
+	size_t os = 25;
+
+	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(NormalizeDecomposition, OverlapTargetInsideInput)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 25;
+	size_t is = 96;
+	char* o = data + 38;
+	size_t os = 19;
+
+	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
