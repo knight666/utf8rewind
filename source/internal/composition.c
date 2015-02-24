@@ -80,7 +80,9 @@ uint8_t compose_readcodepoint(ComposeState* state, uint8_t index)
 
 unicode_t compose_execute(ComposeState* state)
 {
-	uint8_t cache_start = 0;
+	uint8_t output_index;
+	uint8_t cursor_current;
+	uint8_t cursor_next;
 
 	/* Check if input is available */
 
@@ -94,53 +96,48 @@ unicode_t compose_execute(ComposeState* state)
 
 	state->output->current = 0;
 
-	/* Reset cache */
+	/* Read first codepoint */
 
-	state->cache_current = cache_start;
-	state->cache_next = cache_start + 1;
-
-	/* Read current codepoint */
-
-	if (!compose_readcodepoint(state, state->cache_current))
+	if (!compose_readcodepoint(state, 0))
 	{
 		return 0;
 	}
 
-	while (1)
+	for (output_index = 0; output_index < state->output->current; ++output_index)
 	{
 		/* Ensure current codepoint is a starter */
 
-		while (state->output->canonical_combining_class[state->cache_current] != 0)
-		{
-			state->cache_current++;
+		cursor_current = output_index;
 
-			if (state->cache_current == state->output->current &&
-				!compose_readcodepoint(state, state->cache_current))
+		while (state->output->canonical_combining_class[cursor_current] != 0)
+		{
+			cursor_current++;
+
+			if (cursor_current == state->output->current &&
+				!compose_readcodepoint(state, cursor_current))
 			{
 				/* Only non-starters left */
 
 				return 1;
 			}
-
-			state->cache_next = state->cache_current + 1;
 		}
 
 		/* Get next codepoint */
 
+		cursor_next = cursor_current + 1;
+
 		while (
-			state->cache_next < state->output->current ||
-			compose_readcodepoint(state, state->cache_next))
+			cursor_next < state->output->current ||
+			compose_readcodepoint(state, cursor_next))
 		{
 			/*
-				Two codepoints can be composed if the current codepoint is a starter,
-				the next codepoint has a quick check value of NO or MAYBE and the
-				composition isn't blocked by a previous non-starter or a higher
-				canonical combining class.
+				Two codepoints can be composed if the current codepoint is a starter
+				and the next codepoint isn't blocked by a previous codepoint.
 			*/
 
-			if (state->output->canonical_combining_class[state->cache_next] > state->output->canonical_combining_class[state->cache_next - 1] || /* Can be composed based on CCC */
+			if (state->output->canonical_combining_class[cursor_next] > state->output->canonical_combining_class[cursor_next - 1] || /* Can be composed based on CCC */
 				/* Quick check value can override composition block by previous codepoint */
-				(state->output->quick_check[state->cache_next] != QuickCheckResult_Yes && state->output->canonical_combining_class[state->cache_next - 1] == 0))
+				(state->output->quick_check[cursor_next] != QuickCheckResult_Yes && state->output->canonical_combining_class[cursor_next - 1] == 0))
 			{
 				unicode_t composed = 0;
 
@@ -151,32 +148,32 @@ unicode_t compose_execute(ComposeState* state)
 					http://www.unicode.org/reports/tr15/tr15-18.html#Hangul
 				*/
 
-				if (state->output->codepoint[state->cache_current] >= HANGUL_L_FIRST &&
-					state->output->codepoint[state->cache_current] <= HANGUL_L_LAST)
+				if (state->output->codepoint[cursor_current] >= HANGUL_L_FIRST &&
+					state->output->codepoint[cursor_current] <= HANGUL_L_LAST)
 				{
 					/* Check for Hangul LV pair */ 
 
-					if (state->output->codepoint[state->cache_next] >= HANGUL_V_FIRST &&
-						state->output->codepoint[state->cache_next] <= HANGUL_V_LAST)
+					if (state->output->codepoint[cursor_next] >= HANGUL_V_FIRST &&
+						state->output->codepoint[cursor_next] <= HANGUL_V_LAST)
 					{
-						unicode_t l_index = state->output->codepoint[state->cache_current] - HANGUL_L_FIRST;
-						unicode_t v_index = state->output->codepoint[state->cache_next] - HANGUL_V_FIRST;
+						unicode_t l_index = state->output->codepoint[cursor_current] - HANGUL_L_FIRST;
+						unicode_t v_index = state->output->codepoint[cursor_next] - HANGUL_V_FIRST;
 
 						composed = HANGUL_S_FIRST + (((l_index * HANGUL_V_COUNT) + v_index) * HANGUL_T_COUNT);
 					}
 				}
 				else if (
-					state->output->codepoint[state->cache_current] >= HANGUL_S_FIRST &&
-					state->output->codepoint[state->cache_current] <= HANGUL_S_LAST)
+					state->output->codepoint[cursor_current] >= HANGUL_S_FIRST &&
+					state->output->codepoint[cursor_current] <= HANGUL_S_LAST)
 				{
 					/* Check for Hangul LV and T pair */ 
 
-					if (state->output->codepoint[state->cache_next] >= HANGUL_T_FIRST &&
-						state->output->codepoint[state->cache_next] <= HANGUL_T_LAST)
+					if (state->output->codepoint[cursor_next] >= HANGUL_T_FIRST &&
+						state->output->codepoint[cursor_next] <= HANGUL_T_LAST)
 					{
-						unicode_t t_index = state->output->codepoint[state->cache_next] - HANGUL_T_FIRST;
+						unicode_t t_index = state->output->codepoint[cursor_next] - HANGUL_T_FIRST;
 
-						composed = state->output->codepoint[state->cache_current] + t_index;
+						composed = state->output->codepoint[cursor_current] + t_index;
 					}
 				}
 				else
@@ -184,8 +181,8 @@ unicode_t compose_execute(ComposeState* state)
 					/* Attempt to compose codepoints using the database */
 
 					composed = database_querycomposition(
-						state->output->codepoint[state->cache_current],
-						state->output->codepoint[state->cache_next]);
+						state->output->codepoint[cursor_current],
+						state->output->codepoint[cursor_next]);
 				}
 
 				/* Check if composition succeeded */
@@ -213,45 +210,40 @@ unicode_t compose_execute(ComposeState* state)
 
 					/* Add composition to output */
 
-					state->output->codepoint[state->cache_current]                  = composed;
-					state->output->quick_check[state->cache_current]                = database_queryproperty(composed, state->property);
-					state->output->canonical_combining_class[state->cache_current]  = database_queryproperty(composed, UnicodeProperty_CanonicalCombiningClass);
+					state->output->codepoint[cursor_current]                  = composed;
+					state->output->quick_check[cursor_current]                = database_queryproperty(composed, state->property);
+					state->output->canonical_combining_class[cursor_current]  = database_queryproperty(composed, UnicodeProperty_CanonicalCombiningClass);
 
-					/* Remove next codepoint from output */
+					/* Clear next codepoint from output */
 
-					state->output->codepoint[state->cache_next]                  = 0;
-					state->output->quick_check[state->cache_next]                = 0;
-					state->output->canonical_combining_class[state->cache_next]  = 0;
+					state->output->codepoint[cursor_next]                  = 0;
+					state->output->quick_check[cursor_next]                = 0;
+					state->output->canonical_combining_class[cursor_next]  = 0;
 
-					if (state->cache_next == state->output->current - 1)
+					if (cursor_next == state->output->current - 1)
 					{
 						/* Next codepoint was at end of output */
 
 						state->output->current--;
 					}
 
-					/* Move cursor for current codepoint */
+					/* Reset cursor to current output index */
 
-					state->cache_current = cache_start;
-					state->cache_next = cache_start;
+					cursor_current = output_index;
+					cursor_next = output_index;
 				}
 			}
 			else if (
-				state->output->canonical_combining_class[state->cache_next] == 0)
+				state->output->canonical_combining_class[cursor_next] == 0)
 			{
 				/* Attempt to compose starters, but do not read from the next sequence */
 
 				break;
 			}
 
-			state->cache_next++;
-		}
+			/* Evaluate next codepoint */
 
-		/* Check if we're out of sequences */
-
-		if (state->cache_current + 1 >= state->output->current)
-		{
-			break;
+			cursor_next++;
 		}
 
 		/* Fill up "holes" left by composing codepoints not at the end of the sequence */
@@ -323,11 +315,6 @@ unicode_t compose_execute(ComposeState* state)
 			/* Adjust length of output sequence */
 
 			state->output->current = write_index;
-
-			/* Evaluate next sequence */
-
-			state->cache_current++;
-			state->cache_next = write_index;
 		}
 		else
 		{
@@ -337,10 +324,6 @@ unicode_t compose_execute(ComposeState* state)
 
 			break;
 		}
-
-		/* Evaluate next sequence */
-
-		cache_start++;
 	}
 
 	return 1;
