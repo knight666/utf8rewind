@@ -8,33 +8,31 @@ extern "C" {
 
 namespace helpers {
 
-	std::string nfc(unicode_t codepointLeft, unicode_t codepointRight)
+	std::string nfc(unicode_t codepoint)
 	{
-		std::string converted;
-		converted += utf8(codepointLeft);
-		converted += utf8(codepointRight);
-
-		return nfc(converted);
+		return nfc(utf8(codepoint));
 	}
 
 	std::string nfc(const std::string& text)
 	{
-		int32_t errors = 0;
+		std::string converted;
 
-		size_t length = utf8transform(text.c_str(), text.size(), nullptr, 0, UTF8_TRANSFORM_COMPOSED, &errors);
-		if (length == 0 ||
-			errors != 0)
+		if (text.length() == 0)
 		{
-			return "";
+			return converted;
 		}
 
-		char* buffer = new char[length + 1];
-		utf8transform(text.c_str(), text.size(), buffer, length, UTF8_TRANSFORM_COMPOSED, &errors);
-		buffer[length] = 0;
+		int32_t errors = 0;
 
-		std::string converted = buffer;
+		size_t size_in_bytes = utf8normalize(text.c_str(), text.size(), nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors);
+		if (size_in_bytes == 0 ||
+			errors != 0)
+		{
+			return converted;
+		}
 
-		delete [] buffer;
+		converted.resize(size_in_bytes);
+		utf8normalize(text.c_str(), text.size(), &converted[0], size_in_bytes, UTF8_NORMALIZE_COMPOSE, &errors);
 
 		return converted;
 	}
@@ -46,53 +44,53 @@ namespace helpers {
 
 	std::string nfd(const std::string& text)
 	{
-		int32_t errors = 0;
+		std::string converted;
 
-		size_t length = utf8transform(text.c_str(), text.size(), nullptr, 0, UTF8_TRANSFORM_DECOMPOSED, &errors);
-		if (length == 0 ||
-			errors != 0)
+		if (text.length() == 0)
 		{
-			return "";
+			return converted;
 		}
 
-		char* buffer = new char[length + 1];
-		utf8transform(text.c_str(), text.size(), buffer, length, UTF8_TRANSFORM_DECOMPOSED, &errors);
-		buffer[length] = 0;
+		int32_t errors = 0;
 
-		std::string converted = buffer;
+		size_t size_in_bytes = utf8normalize(text.c_str(), text.size(), nullptr, 0, UTF8_NORMALIZE_DECOMPOSE, &errors);
+		if (size_in_bytes == 0 ||
+			errors != 0)
+		{
+			return converted;
+		}
 
-		delete [] buffer;
+		converted.resize(size_in_bytes);
+		utf8normalize(text.c_str(), text.size(), &converted[0], size_in_bytes, UTF8_NORMALIZE_DECOMPOSE, &errors);
 
 		return converted;
 	}
 
-	std::string nfkc(unicode_t codepointLeft, unicode_t codepointRight)
+	std::string nfkc(unicode_t codepoint)
 	{
-		std::string converted;
-		converted += utf8(codepointLeft);
-		converted += utf8(codepointRight);
-
-		return nfkc(converted);
+		return nfkc(utf8(codepoint));
 	}
 
 	std::string nfkc(const std::string& text)
 	{
-		int32_t errors = 0;
+		std::string converted;
 
-		size_t length = utf8transform(text.c_str(), text.size(), nullptr, 0, UTF8_TRANSFORM_COMPOSED | UTF8_TRANSFORM_COMPATIBILITY, &errors);
-		if (length == 0 ||
-			errors != 0)
+		if (text.length() == 0)
 		{
-			return "";
+			return converted;
 		}
 
-		char* buffer = new char[length + 1];
-		utf8transform(text.c_str(), text.size(), buffer, length, UTF8_TRANSFORM_COMPOSED | UTF8_TRANSFORM_COMPATIBILITY, &errors);
-		buffer[length] = 0;
+		int32_t errors = 0;
 
-		std::string converted = buffer;
+		size_t size_in_bytes = utf8normalize(text.c_str(), text.size(), nullptr, 0, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors);
+		if (size_in_bytes == 0 ||
+			errors != 0)
+		{
+			return converted;
+		}
 
-		delete [] buffer;
+		converted.resize(size_in_bytes);
+		utf8normalize(text.c_str(), text.size(), &converted[0], size_in_bytes, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors);
 
 		return converted;
 	}
@@ -104,22 +102,24 @@ namespace helpers {
 
 	std::string nfkd(const std::string& text)
 	{
-		int32_t errors = 0;
+		std::string converted;
 
-		size_t length = utf8transform(text.c_str(), text.size(), nullptr, 0, UTF8_TRANSFORM_DECOMPOSED | UTF8_TRANSFORM_COMPATIBILITY, &errors);
-		if (length == 0 ||
-			errors != 0)
+		if (text.length() == 0)
 		{
-			return "";
+			return converted;
 		}
 
-		char* buffer = new char[length + 1];
-		utf8transform(text.c_str(), text.size(), buffer, length, UTF8_TRANSFORM_DECOMPOSED | UTF8_TRANSFORM_COMPATIBILITY, &errors);
-		buffer[length] = 0;
+		int32_t errors = 0;
 
-		std::string converted = buffer;
+		size_t size_in_bytes = utf8normalize(text.c_str(), text.size(), nullptr, 0, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors);
+		if (size_in_bytes == 0 ||
+			errors != 0)
+		{
+			return converted;
+		}
 
-		delete [] buffer;
+		converted.resize(size_in_bytes);
+		utf8normalize(text.c_str(), text.size(), &converted[0], size_in_bytes, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors);
 
 		return converted;
 	}
