@@ -40,10 +40,11 @@
 /// @endcond
 
 #define UTF8_ERR_INVALID_DATA                   (-1)
-#define UTF8_ERR_NOT_ENOUGH_SPACE               (-2)
-#define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  (-3)
-#define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   (-4)
-#define UTF8_ERR_OVERLAPPING_PARAMETERS         (-5)
+#define UTF8_ERR_INVALID_FLAG                   (-2)
+#define UTF8_ERR_NOT_ENOUGH_SPACE               (-3)
+#define UTF8_ERR_OVERLAPPING_PARAMETERS         (-4)
+#define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  (-5)
+#define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   (-6)
 
 #define UTF8_TRANSFORM_DECOMPOSED                0x00000001
 #define UTF8_TRANSFORM_COMPOSED                  0x00000002
