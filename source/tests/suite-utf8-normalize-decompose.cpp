@@ -8,7 +8,7 @@ extern "C" {
 
 #include "helpers-strings.hpp"
 
-TEST(NormalizeDecomposition, BasicLatinSingle)
+TEST(NormalizeDecompose, BasicLatinSingle)
 {
 	/*
 		U+007A
@@ -27,7 +27,7 @@ TEST(NormalizeDecomposition, BasicLatinSingle)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, BasicLatinMultiple)
+TEST(NormalizeDecompose, BasicLatinMultiple)
 {
 	/*
 		U+0048 U+006F U+006D U+0065
@@ -46,7 +46,7 @@ TEST(NormalizeDecomposition, BasicLatinMultiple)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, BasicLatinCompatibility)
+TEST(NormalizeDecompose, BasicLatinCompatibility)
 {
 	/*
 		U+0073 U+0074 U+0065 U+0070
@@ -65,7 +65,7 @@ TEST(NormalizeDecomposition, BasicLatinCompatibility)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, BasicLatinAmountOfBytes)
+TEST(NormalizeDecompose, BasicLatinAmountOfBytes)
 {
 	/*
 		U+0024 U+0020 U+0034 U+002E U+0032 U+0035 U+0020 U+0070 U+0065 U+0072 U+0020 U+0070 U+006F U+0075 U+006E U+0064
@@ -81,7 +81,7 @@ TEST(NormalizeDecomposition, BasicLatinAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, BasicLatinNotEnoughSpace)
+TEST(NormalizeDecompose, BasicLatinNotEnoughSpace)
 {
 	/*
 		U+0052 U+0061 U+0069 U+006E U+0079 U+0020 U+0064 U+0061 U+0079
@@ -100,7 +100,7 @@ TEST(NormalizeDecomposition, BasicLatinNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteUnaffectedSingle)
+TEST(NormalizeDecompose, MultiByteUnaffectedSingle)
 {
 	/*
 		U+00B5
@@ -119,7 +119,7 @@ TEST(NormalizeDecomposition, MultiByteUnaffectedSingle)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteUnaffectedMultiple)
+TEST(NormalizeDecompose, MultiByteUnaffectedMultiple)
 {
 	/*
 		U+1AA8 U+1A80 U+1A87
@@ -138,7 +138,7 @@ TEST(NormalizeDecomposition, MultiByteUnaffectedMultiple)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteUnaffectedCompatibility)
+TEST(NormalizeDecompose, MultiByteUnaffectedCompatibility)
 {
 	/*
 		U+2E3A U+2AE0 U+2B49
@@ -157,7 +157,7 @@ TEST(NormalizeDecomposition, MultiByteUnaffectedCompatibility)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteUnaffectedAmountOfBytes)
+TEST(NormalizeDecompose, MultiByteUnaffectedAmountOfBytes)
 {
 	/*
 		U+2181 U+2145 U+2086
@@ -173,7 +173,7 @@ TEST(NormalizeDecomposition, MultiByteUnaffectedAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteUnaffectedNotEnoughSpace)
+TEST(NormalizeDecompose, MultiByteUnaffectedNotEnoughSpace)
 {
 	/*
 		U+2035 U+2106 U+2090 U+2104
@@ -192,7 +192,7 @@ TEST(NormalizeDecomposition, MultiByteUnaffectedNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteDecomposeSingle)
+TEST(NormalizeDecompose, MultiByteDecomposeSingle)
 {
 	/*
 		U+0958
@@ -211,7 +211,7 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSingle)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteDecomposeSingleCompatibility)
+TEST(NormalizeDecompose, MultiByteDecomposeSingleCompatibility)
 {
 	/*
 		U+3316 U+327C U+323E U+01C4
@@ -230,7 +230,7 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSingleCompatibility)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteDecomposeSingleAmountOfBytes)
+TEST(NormalizeDecompose, MultiByteDecomposeSingleAmountOfBytes)
 {
 	/*
 		U+01FA
@@ -246,7 +246,7 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSingleAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteDecomposeSingleNotEnoughSpace)
+TEST(NormalizeDecompose, MultiByteDecomposeSingleNotEnoughSpace)
 {
 	/*
 		U+1E08
@@ -265,7 +265,7 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSingleNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteDecomposeSequenceSingleOrdered)
+TEST(NormalizeDecompose, MultiByteDecomposeSequenceSingleOrdered)
 {
 	/*
 		U+0108 U+0301
@@ -284,7 +284,7 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSequenceSingleOrdered)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteDecomposeSequenceSingleUnordered)
+TEST(NormalizeDecompose, MultiByteDecomposeSequenceSingleUnordered)
 {
 	/*
 		U+0041 U+0304 U+031D
@@ -303,7 +303,7 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSequenceSingleUnordered)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteDecomposeSequenceMultipleOrdered)
+TEST(NormalizeDecompose, MultiByteDecomposeSequenceMultipleOrdered)
 {
 	/*
 		U+0202 U+0315 U+038E U+0301
@@ -322,7 +322,7 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSequenceMultipleOrdered)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteDecomposeSequenceMultipleUnordered)
+TEST(NormalizeDecompose, MultiByteDecomposeSequenceMultipleUnordered)
 {
 	/*
 		U+00CA U+0347 U+00C3 U+035C U+0348 U+00ED U+031B
@@ -341,7 +341,7 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSequenceMultipleUnordered)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteDecomposeSequenceCompatibility)
+TEST(NormalizeDecompose, MultiByteDecomposeSequenceCompatibility)
 {
 	/*
 		U+0174 U+0306
@@ -362,7 +362,7 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSequenceCompatibility)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteDecomposeSequenceAmountOfBytes)
+TEST(NormalizeDecompose, MultiByteDecomposeSequenceAmountOfBytes)
 {
 	/*
 		U+00C7 U+0301 U+0347
@@ -378,7 +378,7 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSequenceAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, MultiByteDecomposeSequenceNotEnoughSpace)
+TEST(NormalizeDecompose, MultiByteDecomposeSequenceNotEnoughSpace)
 {
 	/*
 		U+00C3 U+035C U+0348
@@ -397,7 +397,7 @@ TEST(NormalizeDecomposition, MultiByteDecomposeSequenceNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(NormalizeDecomposition, HangulUnaffectedSingle)
+TEST(NormalizeDecompose, HangulUnaffectedSingle)
 {
 	/*
 		U+11BD
@@ -416,7 +416,7 @@ TEST(NormalizeDecomposition, HangulUnaffectedSingle)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, HangulUnaffectedMultiple)
+TEST(NormalizeDecompose, HangulUnaffectedMultiple)
 {
 	/*
 		U+1100 U+116A U+11B2
@@ -435,7 +435,7 @@ TEST(NormalizeDecomposition, HangulUnaffectedMultiple)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, HangulUnaffectedCompatibility)
+TEST(NormalizeDecompose, HangulUnaffectedCompatibility)
 {
 	/*
 		U+1103 U+116A U+11AD
@@ -454,7 +454,7 @@ TEST(NormalizeDecomposition, HangulUnaffectedCompatibility)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, HangulUnaffectedAmountOfBytes)
+TEST(NormalizeDecompose, HangulUnaffectedAmountOfBytes)
 {
 	/*
 		U+116A U+11AA
@@ -470,7 +470,7 @@ TEST(NormalizeDecomposition, HangulUnaffectedAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, HangulUnaffectedNotEnoughSpace)
+TEST(NormalizeDecompose, HangulUnaffectedNotEnoughSpace)
 {
 	/*
 		U+1100 U+116A U+11BD U+1100 U+1169 U+11BF
@@ -489,7 +489,7 @@ TEST(NormalizeDecomposition, HangulUnaffectedNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(NormalizeDecomposition, HangulDecomposeSingleTwoCodepoints)
+TEST(NormalizeDecompose, HangulDecomposeSingleTwoCodepoints)
 {
 	/*
 		U+AC70
@@ -508,7 +508,7 @@ TEST(NormalizeDecomposition, HangulDecomposeSingleTwoCodepoints)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, HangulDecomposeSingleThreeCodepoints)
+TEST(NormalizeDecompose, HangulDecomposeSingleThreeCodepoints)
 {
 	/*
 		U+AD83
@@ -527,7 +527,7 @@ TEST(NormalizeDecomposition, HangulDecomposeSingleThreeCodepoints)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, HangulDecomposeSequenceMultiple)
+TEST(NormalizeDecompose, HangulDecomposeSequenceMultiple)
 {
 	/*
 		U+ACE0 U+1100 U+1169 U+11B0 U+ACFC
@@ -546,7 +546,7 @@ TEST(NormalizeDecomposition, HangulDecomposeSequenceMultiple)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, HangulDecomposeCompatibility)
+TEST(NormalizeDecompose, HangulDecomposeCompatibility)
 {
 	/*
 		U+B3C7 U+B3A8 U+11AA U+B397
@@ -565,7 +565,7 @@ TEST(NormalizeDecomposition, HangulDecomposeCompatibility)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, HangulDecomposeAmountOfBytes)
+TEST(NormalizeDecompose, HangulDecomposeAmountOfBytes)
 {
 	/*
 		U+AD8C U+B434 U+B04B
@@ -581,7 +581,7 @@ TEST(NormalizeDecomposition, HangulDecomposeAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, HangulDecomposeNotEnoughSpace)
+TEST(NormalizeDecompose, HangulDecomposeNotEnoughSpace)
 {
 	/*
 		U+AD12 U+1100 U+116B U+11B1
@@ -600,7 +600,7 @@ TEST(NormalizeDecomposition, HangulDecomposeNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(NormalizeDecomposition, InvalidCodepointSingle)
+TEST(NormalizeDecompose, InvalidCodepointSingle)
 {
 	/*
 		U+FFFD
@@ -619,7 +619,7 @@ TEST(NormalizeDecomposition, InvalidCodepointSingle)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, InvalidCodepointMultiple)
+TEST(NormalizeDecompose, InvalidCodepointMultiple)
 {
 	/*
 		U+FFFD U+FFFD U+FFFD
@@ -638,7 +638,7 @@ TEST(NormalizeDecomposition, InvalidCodepointMultiple)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, InvalidCodepointCompatibility)
+TEST(NormalizeDecompose, InvalidCodepointCompatibility)
 {
 	/*
 		U+FFFD U+FFFD U+FFFD
@@ -657,7 +657,7 @@ TEST(NormalizeDecomposition, InvalidCodepointCompatibility)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, InvalidCodepointAmountOfBytes)
+TEST(NormalizeDecompose, InvalidCodepointAmountOfBytes)
 {
 	/*
 		U+FFFD U+FFFD U+FFFD
@@ -673,7 +673,7 @@ TEST(NormalizeDecomposition, InvalidCodepointAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, InvalidCodepointNotEnoughSpace)
+TEST(NormalizeDecompose, InvalidCodepointNotEnoughSpace)
 {
 	/*
 		U+FFFD U+FFFD U+FFFD U+FFFD
@@ -692,7 +692,7 @@ TEST(NormalizeDecomposition, InvalidCodepointNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(NormalizeDecomposition, InvalidData)
+TEST(NormalizeDecompose, InvalidData)
 {
 	char o[256] = { 0 };
 	size_t os = 255;
@@ -703,7 +703,7 @@ TEST(NormalizeDecomposition, InvalidData)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(NormalizeDecomposition, OverlapFits)
+TEST(NormalizeDecompose, OverlapFits)
 {
 	int32_t errors = 0;
 
@@ -720,7 +720,7 @@ TEST(NormalizeDecomposition, OverlapFits)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeDecomposition, OverlapStartsEqual)
+TEST(NormalizeDecompose, OverlapStartsEqual)
 {
 	int32_t errors = 0;
 
@@ -735,7 +735,7 @@ TEST(NormalizeDecomposition, OverlapStartsEqual)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(NormalizeDecomposition, OverlapEndsEqual)
+TEST(NormalizeDecompose, OverlapEndsEqual)
 {
 	int32_t errors = 0;
 
@@ -750,7 +750,7 @@ TEST(NormalizeDecomposition, OverlapEndsEqual)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(NormalizeDecomposition, OverlapInputStartsInTarget)
+TEST(NormalizeDecompose, OverlapInputStartsInTarget)
 {
 	int32_t errors = 0;
 
@@ -765,7 +765,7 @@ TEST(NormalizeDecomposition, OverlapInputStartsInTarget)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(NormalizeDecomposition, OverlapInputEndsInTarget)
+TEST(NormalizeDecompose, OverlapInputEndsInTarget)
 {
 	int32_t errors = 0;
 
@@ -780,7 +780,7 @@ TEST(NormalizeDecomposition, OverlapInputEndsInTarget)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(NormalizeDecomposition, OverlapInputInsideTarget)
+TEST(NormalizeDecompose, OverlapInputInsideTarget)
 {
 	int32_t errors = 0;
 
@@ -795,7 +795,7 @@ TEST(NormalizeDecomposition, OverlapInputInsideTarget)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(NormalizeDecomposition, OverlapTargetStartsInInput)
+TEST(NormalizeDecompose, OverlapTargetStartsInInput)
 {
 	int32_t errors = 0;
 
@@ -810,7 +810,7 @@ TEST(NormalizeDecomposition, OverlapTargetStartsInInput)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(NormalizeDecomposition, OverlapTargetEndsInInput)
+TEST(NormalizeDecompose, OverlapTargetEndsInInput)
 {
 	int32_t errors = 0;
 
@@ -825,7 +825,7 @@ TEST(NormalizeDecomposition, OverlapTargetEndsInInput)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(NormalizeDecomposition, OverlapTargetInsideInput)
+TEST(NormalizeDecompose, OverlapTargetInsideInput)
 {
 	int32_t errors = 0;
 
