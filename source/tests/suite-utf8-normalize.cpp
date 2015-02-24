@@ -38,6 +38,23 @@ TEST(Normalize, InvalidFlag)
 	EXPECT_EQ(UTF8_ERR_INVALID_FLAG, errors);
 }
 
+TEST(NormalizeDecompose, OverlappingParametersFits)
+{
+	int32_t errors = 0;
+
+	char data[128] = { 0 };
+	strcpy(data, "crash");
+
+	const char* i = data;
+	size_t is = 5;
+	char* o = data + 5;
+	size_t os = 5;
+
+	EXPECT_EQ(5, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("crashcrash", data);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(Normalize, OverlappingParametersStartsEqual)
 {
 	int32_t errors = 0;
