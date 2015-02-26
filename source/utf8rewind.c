@@ -31,7 +31,6 @@
 #include "internal/composition.h"
 #include "internal/decomposition.h"
 #include "internal/database.h"
-#include "internal/normalization.h"
 #include "internal/seeking.h"
 #include "internal/streaming.h"
 
