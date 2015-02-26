@@ -341,6 +341,98 @@ TEST(NormalizeCompose, SequenceSingleComposeNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(NormalizeCompose, HangulUnaffectedSingle)
+{
+	/*
+		U+ADA4
+		     Y
+		     0
+	*/
+
+	const char* i = "\xEA\xB6\xA4";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("\xEA\xB6\xA4", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, HangulUnaffectedMultiple)
+{
+	/*
+		U+ADAA U+B2E9 U+AE6E
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xEA\xB6\xAA\xEB\x8B\xA9\xEA\xB9\xAE";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("\xEA\xB6\xAA\xEB\x8B\xA9\xEA\xB9\xAE", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, HangulUnaffectedCompatibility)
+{
+	/*
+		U+B21E U+AE52 U+B46A U+B5F0
+		     Y      Y      Y      Y
+		     0      0      0      0
+	*/
+
+	const char* i = "\xEB\x88\x9E\xEA\xB9\x92\xEB\x91\xAA\xEB\x97\xB0";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(12, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
+	EXPECT_UTF8EQ("\xEB\x88\x9E\xEA\xB9\x92\xEB\x91\xAA\xEB\x97\xB0", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, HangulUnaffectedAmountOfBytes)
+{
+	/*
+		U+B9E1 U+B91C U+B991
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xEB\xA7\xA1\xEB\xA4\x9C\xEB\xA6\x91";
+	size_t is = strlen(i);
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, HangulUnaffectedNotEnoughSpace)
+{
+	/*
+		U+B6B8 U+BAAB
+		     Y      Y
+		     0      0
+	*/
+
+	const char* i = "\xEB\x9A\xB8\xEB\xAA\xAB";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 5;
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("\xEB\x9A\xB8", o);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST(NormalizeCompose, SequenceMultipleComposeOrdered)
 {
 	/*
