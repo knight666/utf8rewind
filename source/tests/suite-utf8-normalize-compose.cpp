@@ -433,6 +433,119 @@ TEST(NormalizeCompose, HangulUnaffectedNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(NormalizeCompose, HangulComposeSingleTwoCodepoints)
+{
+	/*
+		U+1105 U+116B
+		     Y      M
+		     0      0
+	*/
+
+	const char* i = "\xE1\x84\x85\xE1\x85\xAB";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("\xEB\xA2\x94", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, HangulComposeSingleThreeCodepoints)
+{
+	/*
+		U+1106 U+1169 U+11A8
+		     Y      M      M
+		     0      0      0
+	*/
+
+	const char* i = "\xE1\x84\x86\xE1\x85\xA9\xE1\x86\xA8";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("\xEB\xAA\xA9", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, HangulComposeMultiple)
+{
+	/*
+		U+1106 U+1167 U+11B6 U+1105 U+116F U+1106 U+1169 U+11AF
+		     Y      M      M      Y      M      Y      M      M
+		     0      0      0      0      0      0      0      0
+	*/
+
+	const char* i = "\xE1\x84\x86\xE1\x85\xA7\xE1\x86\xB6\xE1\x84\x85\xE1\x85\xAF\xE1\x84\x86\xE1\x85\xA9\xE1\x86\xAF";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("\xEB\xA9\xBF\xEB\xA4\x84\xEB\xAA\xB0", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, HangulComposeCompatibility)
+{
+	/*
+		U+1106 U+116A U+11B1 U+1106 U+1171
+		     Y      M      M      Y      M
+		     0      0      0      0      0
+	*/
+
+	const char* i = "\xE1\x84\x86\xE1\x85\xAA\xE1\x86\xB1\xE1\x84\x86\xE1\x85\xB1";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(6, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
+	EXPECT_UTF8EQ("\xEB\xAB\x8E\xEB\xAE\x88", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, HangulComposeAmountOfBytes)
+{
+	/*
+		U+1106 U+1167 U+11BF U+BB4B U+1108 U+1173 U+11A8
+		     Y      M      M      Y      Y      M      M
+		     0      0      0      0      0      0      0
+	*/
+
+	const char* i = "\xE1\x84\x86\xE1\x85\xA7\xE1\x86\xBF\xEB\xAD\x8B\xE1\x84\x88\xE1\x85\xB3\xE1\x86\xA8";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, HangulComposeNotEnoughSpace)
+{
+	/*
+		U+1108 U+116D U+11AD U+1108 U+116D
+		     Y      M      M      Y      M
+		     0      0      0      0      0
+	*/
+
+	const char* i = "\xE1\x84\x88\xE1\x85\xAD\xE1\x86\xAD\xE1\x84\x88\xE1\x85\xAD";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 2;
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST(NormalizeCompose, SequenceMultipleComposeOrdered)
 {
 	/*
