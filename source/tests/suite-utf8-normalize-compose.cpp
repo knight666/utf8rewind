@@ -249,6 +249,44 @@ TEST(NormalizeCompose, SequenceSingleComposeUnordered)
 	EXPECT_EQ(0, errors);
 }
 
+TEST(NormalizeCompose, SequenceSingleDecomposeAndComposeOrdered)
+{
+	/*
+		U+1F6A U+0345
+		     Y      M
+		     0    240
+	*/
+
+	const char* i = "\xE1\xBD\xAA\xCD\x85";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("\xE1\xBE\xAA", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, SequenceSingleDecomposeAndComposeUnordered)
+{
+	/*
+		U+1E60 U+0323
+		     Y      M
+		     0    220
+	*/
+
+	const char* i = "\xE1\xB9\xA0\xCC\xA3";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("\xE1\xB9\xA8", o);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(NormalizeCompose, SequenceSingleComposeCompatibility)
 {
 	/*
