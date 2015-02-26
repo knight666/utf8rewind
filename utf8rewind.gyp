@@ -22,8 +22,6 @@
 				'source/internal/database.h',
 				'source/internal/decomposition.c',
 				'source/internal/decomposition.h',
-				'source/internal/normalization.c',
-				'source/internal/normalization.h',
 				'source/internal/seeking.c',
 				'source/internal/seeking.h',
 				'source/internal/streaming.c',
