@@ -340,3 +340,95 @@ TEST(NormalizeCompose, SequenceSingleComposeNotEnoughSpace)
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
+
+TEST(NormalizeCompose, SequenceMultipleComposeOrdered)
+{
+	/*
+		U+03A9 U+0345 U+0397 U+0313 U+0300 U+0345 U+03B7 U+0313 U+0301
+		     Y      M      Y      M      M      M      Y      M      M
+		     0    240      0    230    230    240      0    230    230
+	*/
+
+	const char* i = "\xCE\xA9\xCD\x85\xCE\x97\xCC\x93\xCC\x80\xCD\x85\xCE\xB7\xCC\x93\xCC\x81";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("\xE1\xBF\xBC\xE1\xBE\x9A\xE1\xBC\xA4", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, SequenceMultipleComposeUnordered)
+{
+	/*
+		U+00CA U+0323 U+1F80 U+0300 U+1FFC U+0314 U+0301
+		     Y      M      Y      M      Y      M      M
+		     0    220      0    230      0    230    230
+	*/
+
+	const char* i = "\xC3\x8A\xCC\xA3\xE1\xBE\x80\xCC\x80\xE1\xBF\xBC\xCC\x94\xCC\x81";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("\xE1\xBB\x86\xE1\xBE\x82\xE1\xBE\xAD", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, SequenceMultipleComposeCompatibility)
+{
+	/*
+		U+110E U+1161 U+11B7 U+1100 U+1169 U+30C6 U+3099 U+0644 U+0627 U+0653
+		     Y      M      M      Y      M      Y      M      Y      Y      M
+		     0      0      0      0      0      0      8      0      0    230
+	*/
+
+	const char* i = "\xE1\x84\x8E\xE1\x85\xA1\xE1\x86\xB7\xE1\x84\x80\xE1\x85\xA9\xE3\x83\x86\xE3\x82\x99\xD9\x84\xD8\xA7\xD9\x93";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(13, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
+	EXPECT_UTF8EQ("\xEC\xB0\xB8\xEA\xB3\xA0\xE3\x83\x87\xD9\x84\xD8\xA2", o);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, SequenceMultipleComposeAmountOfBytes)
+{
+	/*
+		U+03B9 U+0304 U+03B1 U+0314 U+0345 U+0041 U+0302 U+0303
+		     Y      M      Y      M      M      Y      M      M
+		     0    230      0    230    240      0    230    230
+	*/
+
+	const char* i = "\xCE\xB9\xCC\x84\xCE\xB1\xCC\x94\xCD\x85" "A\xCC\x82\xCC\x83";
+	size_t is = strlen(i);
+	int32_t errors = 0;
+
+	EXPECT_EQ(9, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_EQ(0, errors);
+}
+
+TEST(NormalizeCompose, SequenceMultipleComposeNotEnoughSpace)
+{
+	/*
+		U+006F U+0308 U+0304 U+0063 U+030C U+0055 U+031B U+0300
+		     Y      M      M      Y      M      Y      M      M
+		     0    230    230      0    230      0    216    230
+	*/
+
+	const char* i = "o\xCC\x88\xCC\x84" "c\xCC\x8CU\xCC\x9B\xCC\x80";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 3;
+	int32_t errors = 0;
+
+	EXPECT_EQ(2, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("\xC8\xAB", o);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
