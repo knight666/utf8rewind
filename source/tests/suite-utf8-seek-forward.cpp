@@ -2,7 +2,7 @@
 
 #include "utf8rewind.h"
 
-TEST(SeekForward, Valid)
+TEST(Utf8SeekForward, Valid)
 {
 	const char* t = "\xCF\x84\xE1\xBD\xB4\xCE\xBD \xCE\xBA\xE1\xBD\xB9\xCF\x88\xCE\xB7";
 
@@ -16,7 +16,7 @@ TEST(SeekForward, Valid)
 	EXPECT_EQ(0x3BA, o);
 }
 
-TEST(SeekForward, PastEnd)
+TEST(Utf8SeekForward, PastEnd)
 {
 	const char* t = "\xCE\xBC\xCE\xB5\xCF\x84\xCF\x81\xE1\xBD\xB1\xCE\xB5\xCE\xB9";
 
@@ -31,7 +31,7 @@ TEST(SeekForward, PastEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, AtEnd)
+TEST(Utf8SeekForward, AtEnd)
 {
 	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
 
@@ -46,7 +46,7 @@ TEST(SeekForward, AtEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, FromMiddle)
+TEST(Utf8SeekForward, FromMiddle)
 {
 	const char* t = "Armageddon";
 
@@ -60,7 +60,7 @@ TEST(SeekForward, FromMiddle)
 	EXPECT_EQ('d', o);
 }
 
-TEST(SeekForward, EndsInMiddle)
+TEST(Utf8SeekForward, EndsInMiddle)
 {
 	const char* t = "\xD0\xBE\xD0\xBA\0\xD0\xB0\xD0\xBB";
 
@@ -75,7 +75,7 @@ TEST(SeekForward, EndsInMiddle)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, LonelyStartDouble)
+TEST(Utf8SeekForward, LonelyStartDouble)
 {
 	const char* t = "Rock\xEF\xFBsoup";
 
@@ -89,7 +89,7 @@ TEST(SeekForward, LonelyStartDouble)
 	EXPECT_EQ('o', o);
 }
 
-TEST(SeekForward, SwappedParameters)
+TEST(Utf8SeekForward, SwappedParameters)
 {
 	const char* t = "10-12 \xD0\xBC\xD0\xB0\xD1\x80\xD1\x82\xD0\xB0 1997";
 
@@ -103,7 +103,7 @@ TEST(SeekForward, SwappedParameters)
 	EXPECT_EQ('1', o);
 }
 
-TEST(SeekForward, Ascii)
+TEST(Utf8SeekForward, Ascii)
 {
 	const char* t = "Bringing down the ship.";
 
@@ -117,7 +117,7 @@ TEST(SeekForward, Ascii)
 	EXPECT_EQ('t', o);
 }
 
-TEST(SeekForward, AsciiIllegalByteFE)
+TEST(Utf8SeekForward, AsciiIllegalByteFE)
 {
 	const char* t = "Stuff\xFE happens";
 
@@ -131,7 +131,7 @@ TEST(SeekForward, AsciiIllegalByteFE)
 	EXPECT_EQ('h', o);
 }
 
-TEST(SeekForward, AsciiIllegalByteFF)
+TEST(Utf8SeekForward, AsciiIllegalByteFF)
 {
 	const char* t = "Mag\xFF KKD";
 
@@ -145,7 +145,7 @@ TEST(SeekForward, AsciiIllegalByteFF)
 	EXPECT_EQ('K', o);
 }
 
-TEST(SeekForward, AsciiMalformedContinuationByte)
+TEST(Utf8SeekForward, AsciiMalformedContinuationByte)
 {
 	const char* t = "Player: \x87" "bob";
 
@@ -159,7 +159,7 @@ TEST(SeekForward, AsciiMalformedContinuationByte)
 	EXPECT_EQ('o', o);
 }
 
-TEST(SeekForward, TwoBytes)
+TEST(Utf8SeekForward, TwoBytes)
 {
 	const char* t = "\xD0\xBB\xD0\xBE\xD0\xBA\xD0\xB0\xD0\xBB\xD0\xB8\xD0\xB7\xD0\xB0\xD1\x86\xD0\xB8\xD0\xB8";
 
@@ -173,7 +173,7 @@ TEST(SeekForward, TwoBytes)
 	EXPECT_EQ(0x430, o);
 }
 
-TEST(SeekForward, TwoBytesOverlong)
+TEST(Utf8SeekForward, TwoBytesOverlong)
 {
 	const char* t = "\xC0\xAF\xC1\xBF\xC0\xAF";
 
@@ -187,7 +187,7 @@ TEST(SeekForward, TwoBytesOverlong)
 	EXPECT_EQ(0xFFFD, o);
 }
 
-TEST(SeekForward, TwoBytesOverlongFromMiddle)
+TEST(Utf8SeekForward, TwoBytesOverlongFromMiddle)
 {
 	const char* t = "\xC0\xAF\xC1\xBF\xC0\xAF\xC0\xAF";
 
@@ -201,7 +201,7 @@ TEST(SeekForward, TwoBytesOverlongFromMiddle)
 	EXPECT_EQ(0xFFFD, o);
 }
 
-TEST(SeekForward, TwoBytesOverlongPastEnd)
+TEST(Utf8SeekForward, TwoBytesOverlongPastEnd)
 {
 	const char* t = "\xC0\xAF\xC1\xBF\xC0\xAF";
 
@@ -216,7 +216,7 @@ TEST(SeekForward, TwoBytesOverlongPastEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, TwoBytesLonelyStart)
+TEST(Utf8SeekForward, TwoBytesLonelyStart)
 {
 	const char* t = "Gone\xC4" "Fishin'";
 
@@ -230,7 +230,7 @@ TEST(SeekForward, TwoBytesLonelyStart)
 	EXPECT_EQ('F', o);
 }
 
-TEST(SeekForward, TwoBytesLonelyStartAtEnd)
+TEST(Utf8SeekForward, TwoBytesLonelyStartAtEnd)
 {
 	const char* t = "Megalodon\xDC";
 
@@ -245,7 +245,7 @@ TEST(SeekForward, TwoBytesLonelyStartAtEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, ThreeBytes)
+TEST(Utf8SeekForward, ThreeBytes)
 {
 	const char* t = "\xE0\xA4\x81\xE0\xA4\x8B\xE0\xA4\xB4\xE0\xA4\xBD";
 
@@ -259,7 +259,7 @@ TEST(SeekForward, ThreeBytes)
 	EXPECT_EQ(0x934, o);
 }
 
-TEST(SeekForward, ThreeBytesOverlong)
+TEST(Utf8SeekForward, ThreeBytesOverlong)
 {
 	const char* t = "\xE0\x80\xAF\xE0\x9F\xBF\xE0\x80\xAF";
 
@@ -273,7 +273,7 @@ TEST(SeekForward, ThreeBytesOverlong)
 	EXPECT_EQ(0xFFFD, o);
 }
 
-TEST(SeekForward, ThreeBytesOverlongFromMiddle)
+TEST(Utf8SeekForward, ThreeBytesOverlongFromMiddle)
 {
 	const char* t = "\xE0\x80\xAF\xE0\x9F\xBF\xE0\x80\xAF\xE0\x80\xAF";
 
@@ -287,7 +287,7 @@ TEST(SeekForward, ThreeBytesOverlongFromMiddle)
 	EXPECT_EQ(0xFFFD, o);
 }
 
-TEST(SeekForward, ThreeBytesOverlongPastEnd)
+TEST(Utf8SeekForward, ThreeBytesOverlongPastEnd)
 {
 	const char* t = "\xE0\x80\xAF\xE0\x80\xAF\xE0\x80\xAF";
 
@@ -302,7 +302,7 @@ TEST(SeekForward, ThreeBytesOverlongPastEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, ThreeBytesLonelyStart)
+TEST(Utf8SeekForward, ThreeBytesLonelyStart)
 {
 	const char* t = "Rocker\xE4" "coaster";
 
@@ -316,7 +316,7 @@ TEST(SeekForward, ThreeBytesLonelyStart)
 	EXPECT_EQ('o', o);
 }
 
-TEST(SeekForward, ThreeBytesLonelyStartAtEnd)
+TEST(Utf8SeekForward, ThreeBytesLonelyStartAtEnd)
 {
 	const char* t = "Submarine\xED";
 
@@ -331,7 +331,7 @@ TEST(SeekForward, ThreeBytesLonelyStartAtEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, ThreeBytesNotEnoughData)
+TEST(Utf8SeekForward, ThreeBytesNotEnoughData)
 {
 	const char* t = "Compan\xEF\xBFions";
 
@@ -345,7 +345,7 @@ TEST(SeekForward, ThreeBytesNotEnoughData)
 	EXPECT_EQ('o', o);
 }
 
-TEST(SeekForward, ThreeBytesNotEnoughDataAtEnd)
+TEST(Utf8SeekForward, ThreeBytesNotEnoughDataAtEnd)
 {
 	const char* t = "BBBark\xEF\xBF";
 
@@ -360,7 +360,7 @@ TEST(SeekForward, ThreeBytesNotEnoughDataAtEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, FourBytes)
+TEST(Utf8SeekForward, FourBytes)
 {
 	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
 
@@ -374,7 +374,7 @@ TEST(SeekForward, FourBytes)
 	EXPECT_EQ(0x10480, o);
 }
 
-TEST(SeekForward, FourBytesOverlong)
+TEST(Utf8SeekForward, FourBytesOverlong)
 {
 	const char* t = "\xF0\x80\x80\xAF\xF0\x80\x80\xAF\xF4\x90\x80\x80";
 
@@ -388,7 +388,7 @@ TEST(SeekForward, FourBytesOverlong)
 	EXPECT_EQ(0xFFFD, o);
 }
 
-TEST(SeekForward, FourBytesOverlongFromMiddle)
+TEST(Utf8SeekForward, FourBytesOverlongFromMiddle)
 {
 	const char* t = "\xF0\x80\x80\xAF\xF0\x80\x80\xAF\xF7\xBF\xBF\xBF\xF4\x90\x80\x80";
 
@@ -402,7 +402,7 @@ TEST(SeekForward, FourBytesOverlongFromMiddle)
 	EXPECT_EQ(0xFFFD, o);
 }
 
-TEST(SeekForward, FourBytesOverlongPastEnd)
+TEST(Utf8SeekForward, FourBytesOverlongPastEnd)
 {
 	const char* t = "\xF0\x80\x80\xAF\xF0\x80\x80\xAF\xF7\xBF\xBF\xBF\xF4\x90\x80\x80";
 
@@ -417,7 +417,7 @@ TEST(SeekForward, FourBytesOverlongPastEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, FourBytesLonelyStart)
+TEST(Utf8SeekForward, FourBytesLonelyStart)
 {
 	const char* t = "Clam\xF4shellpower";
 
@@ -431,7 +431,7 @@ TEST(SeekForward, FourBytesLonelyStart)
 	EXPECT_EQ('l', o);
 }
 
-TEST(SeekForward, FourBytesLonelyStartAtEnd)
+TEST(Utf8SeekForward, FourBytesLonelyStartAtEnd)
 {
 	const char* t = "Magic\xF6";
 
@@ -446,7 +446,7 @@ TEST(SeekForward, FourBytesLonelyStartAtEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, FourBytesNotEnoughData)
+TEST(Utf8SeekForward, FourBytesNotEnoughData)
 {
 	const char* t = "Brilli\xF0\x90\x80" "ant";
 
@@ -460,7 +460,7 @@ TEST(SeekForward, FourBytesNotEnoughData)
 	EXPECT_EQ('n', o);
 }
 
-TEST(SeekForward, FourBytesNotEnoughDataAtEnd)
+TEST(Utf8SeekForward, FourBytesNotEnoughDataAtEnd)
 {
 	const char* t = "Night\xF0\x90\x80";
 
@@ -475,7 +475,7 @@ TEST(SeekForward, FourBytesNotEnoughDataAtEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, FiveBytesOverlong)
+TEST(Utf8SeekForward, FiveBytesOverlong)
 {
 	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
 
@@ -489,7 +489,7 @@ TEST(SeekForward, FiveBytesOverlong)
 	EXPECT_EQ(0xFFFD, o);
 }
 
-TEST(SeekForward, FiveBytesOverlongFromMiddle)
+TEST(Utf8SeekForward, FiveBytesOverlongFromMiddle)
 {
 	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
 
@@ -503,7 +503,7 @@ TEST(SeekForward, FiveBytesOverlongFromMiddle)
 	EXPECT_EQ(0xFFFD, o);
 }
 
-TEST(SeekForward, FiveBytesOverlongPastEnd)
+TEST(Utf8SeekForward, FiveBytesOverlongPastEnd)
 {
 	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\xFB\xBF\xBF\xBF\xBF";
 
@@ -518,7 +518,7 @@ TEST(SeekForward, FiveBytesOverlongPastEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, FiveBytesLonelyStart)
+TEST(Utf8SeekForward, FiveBytesLonelyStart)
 {
 	const char* t = "Beyond\xFAMegalodon";
 
@@ -532,7 +532,7 @@ TEST(SeekForward, FiveBytesLonelyStart)
 	EXPECT_EQ('M', o);
 }
 
-TEST(SeekForward, FiveBytesLonelyStartAtEnd)
+TEST(Utf8SeekForward, FiveBytesLonelyStartAtEnd)
 {
 	const char* t = "Dinos\xFA";
 
@@ -547,7 +547,7 @@ TEST(SeekForward, FiveBytesLonelyStartAtEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, FiveBytesNotEnoughData)
+TEST(Utf8SeekForward, FiveBytesNotEnoughData)
 {
 	const char* t = "Central\xF8\x80\x80\x80Plaza baker";
 
@@ -561,7 +561,7 @@ TEST(SeekForward, FiveBytesNotEnoughData)
 	EXPECT_EQ('P', o);
 }
 
-TEST(SeekForward, FiveBytesNotEnoughDataAtEnd)
+TEST(Utf8SeekForward, FiveBytesNotEnoughDataAtEnd)
 {
 	const char* t = "Apple\xF8\x80\x80\x80";
 
@@ -576,7 +576,7 @@ TEST(SeekForward, FiveBytesNotEnoughDataAtEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, SixBytesOverlong)
+TEST(Utf8SeekForward, SixBytesOverlong)
 {
 	const char* t = "\xFC\x84\x80\x80\x80\x80\xFC\x80\x80\x80\x80\x80\xFC\x84\x80\x80\x80\x80\xFD\xBF\xBF\xBF\xBF\xBF";
 
@@ -590,7 +590,7 @@ TEST(SeekForward, SixBytesOverlong)
 	EXPECT_EQ(0xFFFD, o);
 }
 
-TEST(SeekForward, SixBytesOverlongFromMiddle)
+TEST(Utf8SeekForward, SixBytesOverlongFromMiddle)
 {
 	const char* t = "\xFC\x84\x80\x80\x80\x80\xFC\x80\x80\x80\x80\x80\xFC\x84\x80\x80\x80\x80\xFD\xBF\xBF\xBF\xBF\xBF";
 
@@ -604,7 +604,7 @@ TEST(SeekForward, SixBytesOverlongFromMiddle)
 	EXPECT_EQ(0xFFFD, o);
 }
 
-TEST(SeekForward, SixBytesOverlongPastEnd)
+TEST(Utf8SeekForward, SixBytesOverlongPastEnd)
 {
 	const char* t = "\xFC\x84\x80\x80\x80\x80\xFC\x80\x80\x80\x80\x80\xFC\x84\x80\x80\x80\x80\xFD\xBF\xBF\xBF\xBF\xBF";
 
@@ -619,7 +619,7 @@ TEST(SeekForward, SixBytesOverlongPastEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, SixBytesLonelyStart)
+TEST(Utf8SeekForward, SixBytesLonelyStart)
 {
 	const char* t = "FC\xFCKnudde festival";
 
@@ -633,7 +633,7 @@ TEST(SeekForward, SixBytesLonelyStart)
 	EXPECT_EQ('e', o);
 }
 
-TEST(SeekForward, SixBytesLonelyStartAtEnd)
+TEST(Utf8SeekForward, SixBytesLonelyStartAtEnd)
 {
 	const char* t = "Stuff\xFD";
 
@@ -648,7 +648,7 @@ TEST(SeekForward, SixBytesLonelyStartAtEnd)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(SeekForward, SixBytesNotEnoughData)
+TEST(Utf8SeekForward, SixBytesNotEnoughData)
 {
 	const char* t = "Hint\xFC\x80\x80\x80\x80machine";
 
@@ -662,7 +662,7 @@ TEST(SeekForward, SixBytesNotEnoughData)
 	EXPECT_EQ('a', o);
 }
 
-TEST(SeekForward, SixBytesNotEnoughDataAtEnd)
+TEST(Utf8SeekForward, SixBytesNotEnoughDataAtEnd)
 {
 	const char* t = "Dull\xFC\x80\x80\x80\x80";
 
