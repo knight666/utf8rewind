@@ -86,8 +86,7 @@ unicode_t compose_execute(ComposeState* state)
 
 	/* Check if input is available */
 
-	if (state->input == 0 ||
-		state->finished)
+	if (state->input == 0)
 	{
 		return 0;
 	}
@@ -320,7 +319,7 @@ unicode_t compose_execute(ComposeState* state)
 		{
 			/* Evaluated all sequences in output */
 
-			state->finished = 1;
+			state->input = 0;
 
 			break;
 		}
