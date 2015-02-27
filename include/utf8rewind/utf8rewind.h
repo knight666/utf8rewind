@@ -46,19 +46,9 @@
 #define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  (-5)
 #define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   (-6)
 
-#define UTF8_TRANSFORM_DECOMPOSED                0x00000001
-#define UTF8_TRANSFORM_COMPOSED                  0x00000002
-#define UTF8_TRANSFORM_COMPATIBILITY             0x00000004
-#define UTF8_TRANSFORM_UPPERCASE                 0x00000010
-#define UTF8_TRANSFORM_LOWERCASE                 0x00000020
-#define UTF8_TRANSFORM_TITLECASE                 0x00000040
-#define UTF8_TRANSFORM_CASEFOLD                  0x00000080
-#define UTF8_TRANSFORM_FAST                      0x10000000
-#define UTF8_TRANSFORM_NORMALIZED                0x10000000
-
-#define UTF8_NORMALIZE_COMPOSE                   0x00000001
-#define UTF8_NORMALIZE_DECOMPOSE                 0x00000002
-#define UTF8_NORMALIZE_COMPATIBILITY             0x00000004
+#define UTF8_NORMALIZE_COMPOSE                  0x00000001
+#define UTF8_NORMALIZE_DECOMPOSE                0x00000002
+#define UTF8_NORMALIZE_COMPATIBILITY            0x00000004
 
 //! @defgroup configuration Global configuration
 //! @{
@@ -480,8 +470,6 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
-
-size_t utf8transform(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
 
 #if defined(__cplusplus)
 }
