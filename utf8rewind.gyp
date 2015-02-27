@@ -99,8 +99,6 @@
 				'source/tests/suite-stream-write.cpp',
 				'source/tests/suite-toutf8.cpp',
 				'source/tests/suite-towide.cpp',
-				'source/tests/suite-transform-compose.cpp',
-				'source/tests/suite-transform-decompose.cpp',
 				'source/tests/suite-utf8-normalize-compose.cpp',
 				'source/tests/suite-utf8-normalize-decompose.cpp',
 				'source/tests/suite-utf8-normalize.cpp',
