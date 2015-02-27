@@ -696,6 +696,29 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 	uint8_t finished = 0;
 	size_t bytes_written = 0;
 
+	/*
+		Decomposition uses the following process:
+
+		input         -->  stream[0]  -->
+		(decompose)   -->  stream[1]  -->
+		(accumulate)  -->  stream[2]  -->
+		output
+
+		The accumulation step is necessary in order to prevent buffer overflow
+		attacks.
+
+		Composition adds another stream buffer:
+
+		input         --> stream[0]  -->
+		(decompose)   --> stream[1]  -->
+		(accumulate)  --> stream[2]  -->
+		(compose)     --> stream[3]  -->
+		output
+
+		Although four streaming buffers may seem excessive, they are necessary
+		for preventing allocations on the heap.
+	*/
+
 	/* Check for valid flags */
 
 	if ((flags & (UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPOSE)) == 0)
@@ -733,26 +756,25 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 	do
 	{
-		uint8_t i;
-		unicode_t* src_codepoint;
-		unicode_t* dst_codepoint;
-		uint8_t* src_qc;
-		uint8_t* dst_qc;
-		uint8_t* src_ccc;
-		uint8_t* dst_ccc;
 		uint8_t write = 0;
+
+		/* Accumulate decomposed input in next stream */
 
 		if (stream[1].current > 0)
 		{
-			src_codepoint = stream[1].codepoint;
-			dst_codepoint = stream[2].codepoint + stream[2].filled;
-			src_qc = stream[1].quick_check;
-			dst_qc = stream[2].quick_check + stream[2].filled;
-			src_ccc = stream[1].canonical_combining_class;
-			dst_ccc = stream[2].canonical_combining_class + stream[2].filled;
+			unicode_t* src_codepoint = stream[1].codepoint;
+			unicode_t* dst_codepoint = stream[2].codepoint + stream[2].filled;
+			uint8_t* src_qc = stream[1].quick_check;
+			uint8_t* dst_qc = stream[2].quick_check + stream[2].filled;
+			uint8_t* src_ccc = stream[1].canonical_combining_class;
+			uint8_t* dst_ccc = stream[2].canonical_combining_class + stream[2].filled;
 
 			if ((flags & UTF8_NORMALIZE_COMPOSE) != 0)
 			{
+				uint8_t i;
+
+				/* Update stream properties to use composition values */
+
 				for (i = 0; i < stream[1].current; ++i)
 				{
 					*dst_qc++ = database_queryproperty(*src_codepoint, compose_state.property);
@@ -762,39 +784,50 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 			}
 			else
 			{
-				for (i = 0; i < stream[1].current; ++i)
-				{
-					*dst_codepoint++ = *src_codepoint++;
-					*dst_qc++ = *src_qc++;
-					*dst_ccc++ = *src_ccc++;
-				}
+				/* Copy directly */
+
+				memcpy(dst_codepoint, src_codepoint, stream[1].current * sizeof(unicode_t));
+				memcpy(dst_qc, src_qc, stream[1].current * sizeof(uint8_t));
+				memcpy(dst_ccc, src_ccc, stream[1].current * sizeof(uint8_t));
 			}
 
 			stream[2].current += stream[1].current;
 			stream[2].filled += stream[1].current;
 		}
 
+		/* Decompose input sequence into next stream */
+
 		finished = !decompose_execute(&decompose_state);
 		if (!finished)
 		{
+			/* Output current stream it it could overflow accumulation buffer */
+
 			write = (stream[1].current + stream[2].filled) >= STREAM_SAFE_MAX;
 		}
+
+		/* Reorder potentially unordered decomposed stream */
 
 		if (!stream[1].stable)
 		{
 			stream_reorder(&stream[1]);
 		}
 
+		/* Write stream to output when overflowing or when accumulation buffer is empty*/
+
 		if (write ||
 			finished)
 		{
 			uint8_t i;
+
+			/* Compose accumulation buffer */
 
 			if ((flags & UTF8_NORMALIZE_COMPOSE) != 0 &&
 				!compose_execute(&compose_state))
 			{
 				break;
 			}
+
+			/* Write to output buffer */
 
 			for (i = 0; i < stream_output->current; ++i)
 			{
@@ -806,6 +839,8 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 				bytes_written += encoded_size;
 			}
+
+			/* Reset accumulation buffer */
 
 			stream[2].current = 0;
 			stream[2].filled = 0;
