@@ -2,7 +2,7 @@
 
 #include "utf8rewind.h"
 
-TEST(ToUtf16, Character)
+TEST(Utf8ToUtf16, Character)
 {
 	const char* i = "\xE0\xA4\x9C";
 	const size_t s = 256;
@@ -14,7 +14,7 @@ TEST(ToUtf16, Character)
 	EXPECT_EQ(0x091C, o[0]);
 }
 
-TEST(ToUtf16, String)
+TEST(Utf8ToUtf16, String)
 {
 	const char* i = "\xE0\xA4\x9C\xE0\xA4\xA1\xE0\xA4\xA4";
 	const size_t s = 256;
@@ -28,7 +28,7 @@ TEST(ToUtf16, String)
 	EXPECT_EQ(0x0924, o[2]);
 }
 
-TEST(ToUtf16, StringEndsInMiddle)
+TEST(Utf8ToUtf16, StringEndsInMiddle)
 {
 	const char* i = "\xCE\xBA\xE1\xBD\xB9\x00\xCF\x83\xCE\xBC\xCE\xB5";
 	const size_t s = 256;
@@ -45,7 +45,7 @@ TEST(ToUtf16, StringEndsInMiddle)
 	EXPECT_EQ(0x03B5, o[5]);
 }
 
-TEST(ToUtf16, StringDataSizeUnder)
+TEST(Utf8ToUtf16, StringDataSizeUnder)
 {
 	const char* i = "p\xC3\xA5 xylofon";
 	const size_t s = 256;
@@ -59,7 +59,7 @@ TEST(ToUtf16, StringDataSizeUnder)
 	EXPECT_EQ(' ', o[2]);
 }
 
-TEST(ToUtf16, StringDataSizeOver)
+TEST(Utf8ToUtf16, StringDataSizeOver)
 {
 	const char* i = "\xCE\x93\xCE\xB1\xCE\xB6";
 	const size_t s = 256;
@@ -74,7 +74,7 @@ TEST(ToUtf16, StringDataSizeOver)
 	EXPECT_EQ(0, o[3]);
 }
 
-TEST(ToUtf16, StringBufferTooSmall)
+TEST(Utf8ToUtf16, StringBufferTooSmall)
 {
 	const char* i = "Ba\xC2\xA2\xC2\xA2y";
 	const size_t s = 4;
@@ -89,7 +89,7 @@ TEST(ToUtf16, StringBufferTooSmall)
 	EXPECT_EQ(0x00A2, o[3]);
 }
 
-TEST(ToUtf16, Ascii)
+TEST(Utf8ToUtf16, Ascii)
 {
 	const char* i = "k";
 	const size_t s = 256;
@@ -101,7 +101,7 @@ TEST(ToUtf16, Ascii)
 	EXPECT_EQ('k', o[0]);
 }
 
-TEST(ToUtf16, AsciiFirst)
+TEST(Utf8ToUtf16, AsciiFirst)
 {
 	const char* i = "\0";
 	const size_t s = 256;
@@ -113,7 +113,7 @@ TEST(ToUtf16, AsciiFirst)
 	EXPECT_EQ(0x0000, o[0]);
 }
 
-TEST(ToUtf16, AsciiLast)
+TEST(Utf8ToUtf16, AsciiLast)
 {
 	const char* i = "\x7F";
 	const size_t s = 256;
@@ -125,7 +125,7 @@ TEST(ToUtf16, AsciiLast)
 	EXPECT_EQ(0x007F, o[0]);
 }
 
-TEST(ToUtf16, AsciiString)
+TEST(Utf8ToUtf16, AsciiString)
 {
 	const char* i = "Ham";
 	const size_t s = 256;
@@ -139,7 +139,7 @@ TEST(ToUtf16, AsciiString)
 	EXPECT_EQ('m', o[2]);
 }
 
-TEST(ToUtf16, AsciiInvalid)
+TEST(Utf8ToUtf16, AsciiInvalid)
 {
 	const char* i = "\x97";
 	const size_t s = 256;
@@ -151,7 +151,7 @@ TEST(ToUtf16, AsciiInvalid)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, AsciiMalformedContinuationByteFirst)
+TEST(Utf8ToUtf16, AsciiMalformedContinuationByteFirst)
 {
 	const char* i = "\x80";
 	const size_t s = 256;
@@ -163,7 +163,7 @@ TEST(ToUtf16, AsciiMalformedContinuationByteFirst)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, AsciiMalformedContinuationByteLast)
+TEST(Utf8ToUtf16, AsciiMalformedContinuationByteLast)
 {
 	const char* i = "\xBF";
 	const size_t s = 256;
@@ -175,7 +175,7 @@ TEST(ToUtf16, AsciiMalformedContinuationByteLast)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, AsciiMalformedContinuationByteCombined)
+TEST(Utf8ToUtf16, AsciiMalformedContinuationByteCombined)
 {
 	const char* i =
 		"\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F" \
@@ -194,7 +194,7 @@ TEST(ToUtf16, AsciiMalformedContinuationByteCombined)
 	}
 }
 
-TEST(ToUtf16, AsciiIllegalByteFE)
+TEST(Utf8ToUtf16, AsciiIllegalByteFE)
 {
 	const char* i = "\xFE";
 	const size_t s = 256;
@@ -206,7 +206,7 @@ TEST(ToUtf16, AsciiIllegalByteFE)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, AsciiIllegalByteFEInString)
+TEST(Utf8ToUtf16, AsciiIllegalByteFEInString)
 {
 	const char* i = "gr\xC3\xB6\xC3\x9F" "er\xFE" "en";
 	const size_t s = 256;
@@ -226,7 +226,7 @@ TEST(ToUtf16, AsciiIllegalByteFEInString)
 	EXPECT_EQ('n', o[8]);
 }
 
-TEST(ToUtf16, AsciiIllegalByteFF)
+TEST(Utf8ToUtf16, AsciiIllegalByteFF)
 {
 	const char* i = "\xFF";
 	const size_t s = 256;
@@ -238,7 +238,7 @@ TEST(ToUtf16, AsciiIllegalByteFF)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, AsciiIllegalByteFFInString)
+TEST(Utf8ToUtf16, AsciiIllegalByteFFInString)
 {
 	const char* i = "Zw\xC3\xB6l\xFF" "f";
 	const size_t s = 256;
@@ -255,7 +255,7 @@ TEST(ToUtf16, AsciiIllegalByteFFInString)
 	EXPECT_EQ('f', o[5]);
 }
 
-TEST(ToUtf16, TwoBytes)
+TEST(Utf8ToUtf16, TwoBytes)
 {
 	const char* i = "\xC5\xA9";
 	const size_t s = 256;
@@ -267,7 +267,7 @@ TEST(ToUtf16, TwoBytes)
 	EXPECT_EQ(0x0169, o[0]);
 }
 
-TEST(ToUtf16, TwoBytesFirst)
+TEST(Utf8ToUtf16, TwoBytesFirst)
 {
 	const char* i = "\xC2\x80";
 	const size_t s = 256;
@@ -279,7 +279,7 @@ TEST(ToUtf16, TwoBytesFirst)
 	EXPECT_EQ(0x0080, o[0]);
 }
 
-TEST(ToUtf16, TwoBytesLast)
+TEST(Utf8ToUtf16, TwoBytesLast)
 {
 	const char* i = "\xDF\xBF";
 	const size_t s = 256;
@@ -291,7 +291,7 @@ TEST(ToUtf16, TwoBytesLast)
 	EXPECT_EQ(0x07FF, o[0]);
 }
 
-TEST(ToUtf16, TwoBytesString)
+TEST(Utf8ToUtf16, TwoBytesString)
 {
 	const char* i = "\xDD\xAE\xDE\x8A\xDF\x80";
 	const size_t s = 256;
@@ -305,7 +305,7 @@ TEST(ToUtf16, TwoBytesString)
 	EXPECT_EQ(0x07C0, o[2]);
 }
 
-TEST(ToUtf16, TwoBytesOverlong)
+TEST(Utf8ToUtf16, TwoBytesOverlong)
 {
 	const char* i = "\xC0\xAF";
 	const size_t s = 256;
@@ -317,7 +317,7 @@ TEST(ToUtf16, TwoBytesOverlong)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, TwoBytesOverlongNull)
+TEST(Utf8ToUtf16, TwoBytesOverlongNull)
 {
 	const char* i = "\xC0\x80";
 	const size_t s = 256;
@@ -329,7 +329,7 @@ TEST(ToUtf16, TwoBytesOverlongNull)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, TwoBytesOverlongMaximum)
+TEST(Utf8ToUtf16, TwoBytesOverlongMaximum)
 {
 	const char* i = "\xC1\xBF";
 	const size_t s = 256;
@@ -341,7 +341,7 @@ TEST(ToUtf16, TwoBytesOverlongMaximum)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, TwoBytesLonelyStartFirst)
+TEST(Utf8ToUtf16, TwoBytesLonelyStartFirst)
 {
 	const char* i = "\xC0 ";
 	const size_t s = 256;
@@ -354,7 +354,7 @@ TEST(ToUtf16, TwoBytesLonelyStartFirst)
 	EXPECT_EQ(' ', o[1]);
 }
 
-TEST(ToUtf16, TwoBytesLonelyStartLast)
+TEST(Utf8ToUtf16, TwoBytesLonelyStartLast)
 {
 	const char* i = "\xDF ";
 	const size_t s = 256;
@@ -367,7 +367,7 @@ TEST(ToUtf16, TwoBytesLonelyStartLast)
 	EXPECT_EQ(' ', o[1]);
 }
 
-TEST(ToUtf16, TwoBytesLonelyStartCombined)
+TEST(Utf8ToUtf16, TwoBytesLonelyStartCombined)
 {
 	const char* i =
 		"\xC0 \xC1 \xC2 \xC3 \xC4 \xC5 \xC6 \xC7 \xC8 \xC9 \xCA \xCB \xCC \xCD \xCE \xCF "\
@@ -386,7 +386,7 @@ TEST(ToUtf16, TwoBytesLonelyStartCombined)
 	}
 }
 
-TEST(ToUtf16, TwoBytesNotEnoughData)
+TEST(Utf8ToUtf16, TwoBytesNotEnoughData)
 {
 	const char* i = "\xDA";
 	const size_t s = 256;
@@ -398,7 +398,7 @@ TEST(ToUtf16, TwoBytesNotEnoughData)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, ThreeBytes)
+TEST(Utf8ToUtf16, ThreeBytes)
 {
 	const char* i = "\xE1\x8C\x8A";
 	const size_t s = 256;
@@ -410,7 +410,7 @@ TEST(ToUtf16, ThreeBytes)
 	EXPECT_EQ(0x130A, o[0]);
 }
 
-TEST(ToUtf16, ThreeBytesFirst)
+TEST(Utf8ToUtf16, ThreeBytesFirst)
 {
 	const char* i = "\xE0\xA0\x80";
 	const size_t s = 256;
@@ -422,7 +422,7 @@ TEST(ToUtf16, ThreeBytesFirst)
 	EXPECT_EQ(0x0800, o[0]);
 }
 
-TEST(ToUtf16, ThreeBytesLast)
+TEST(Utf8ToUtf16, ThreeBytesLast)
 {
 	const char* i = "\xEF\xBF\xBF";
 	const size_t s = 256;
@@ -434,7 +434,7 @@ TEST(ToUtf16, ThreeBytesLast)
 	EXPECT_EQ(0xFFFF, o[0]);
 }
 
-TEST(ToUtf16, ThreeBytesString)
+TEST(Utf8ToUtf16, ThreeBytesString)
 {
 	const char* i = "\xE3\x81\x8A\xE3\x81\x8D\xE3\x81\x99\xE3\x81\x88";
 	const size_t s = 256;
@@ -449,7 +449,7 @@ TEST(ToUtf16, ThreeBytesString)
 	EXPECT_EQ(0x3048, o[3]);
 }
 
-TEST(ToUtf16, ThreeBytesOverlong)
+TEST(Utf8ToUtf16, ThreeBytesOverlong)
 {
 	const char* i = "\xE0\x80\xAF";
 	const size_t s = 256;
@@ -461,7 +461,7 @@ TEST(ToUtf16, ThreeBytesOverlong)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, ThreeBytesOverlongNull)
+TEST(Utf8ToUtf16, ThreeBytesOverlongNull)
 {
 	const char* i = "\xE0\x80\x80";
 	const size_t s = 256;
@@ -473,7 +473,7 @@ TEST(ToUtf16, ThreeBytesOverlongNull)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, ThreeBytesOverlongMaximum)
+TEST(Utf8ToUtf16, ThreeBytesOverlongMaximum)
 {
 	const char* i = "\xE0\x9F\xBF";
 	const size_t s = 256;
@@ -485,7 +485,7 @@ TEST(ToUtf16, ThreeBytesOverlongMaximum)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, ThreeBytesLonelyStartFirst)
+TEST(Utf8ToUtf16, ThreeBytesLonelyStartFirst)
 {
 	const char* i = "\xE0 ";
 	const size_t s = 256;
@@ -498,7 +498,7 @@ TEST(ToUtf16, ThreeBytesLonelyStartFirst)
 	EXPECT_EQ(' ', o[1]);
 }
 
-TEST(ToUtf16, ThreeBytesLonelyStartLast)
+TEST(Utf8ToUtf16, ThreeBytesLonelyStartLast)
 {
 	const char* i = "\xEF ";
 	const size_t s = 256;
@@ -511,7 +511,7 @@ TEST(ToUtf16, ThreeBytesLonelyStartLast)
 	EXPECT_EQ(' ', o[1]);
 }
 
-TEST(ToUtf16, ThreeBytesLonelyStartCombined)
+TEST(Utf8ToUtf16, ThreeBytesLonelyStartCombined)
 {
 	const char* i =
 		"\xE0 \xE1 \xE2 \xE3 \xE4 \xE5 \xE6 \xE7 \xE8 \xE9 \xEA \xEB \xEC \xED \xEE \xEF ";
@@ -529,7 +529,7 @@ TEST(ToUtf16, ThreeBytesLonelyStartCombined)
 	}
 }
 
-TEST(ToUtf16, ThreeBytesNotEnoughData)
+TEST(Utf8ToUtf16, ThreeBytesNotEnoughData)
 {
 	const char* i = "\xEF\xA9";
 	const size_t s = 256;
@@ -541,7 +541,7 @@ TEST(ToUtf16, ThreeBytesNotEnoughData)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, FourBytes)
+TEST(Utf8ToUtf16, FourBytes)
 {
 	const char* i = "\xF0\x9F\x98\x8E";
 	const size_t s = 256;
@@ -554,7 +554,7 @@ TEST(ToUtf16, FourBytes)
 	EXPECT_EQ(0xDE0E, o[1]);
 }
 
-TEST(ToUtf16, FourBytesFirst)
+TEST(Utf8ToUtf16, FourBytesFirst)
 {
 	const char* i = "\xF0\x90\x80\x80";
 	const size_t s = 256;
@@ -567,7 +567,7 @@ TEST(ToUtf16, FourBytesFirst)
 	EXPECT_EQ(0xDC00, o[1]);
 }
 
-TEST(ToUtf16, FourBytesLast)
+TEST(Utf8ToUtf16, FourBytesLast)
 {
 	const char* i = "\xF4\x80\x83\xBF";
 	const size_t s = 256;
@@ -580,7 +580,7 @@ TEST(ToUtf16, FourBytesLast)
 	EXPECT_EQ(0xDCFF, o[1]);
 }
 
-TEST(ToUtf16, FourBytesString)
+TEST(Utf8ToUtf16, FourBytesString)
 {
 	const char* i = "\xF0\x90\xA1\x8A\xF0\x90\xB0\xAC\xF0\x90\xB0\xB8\xF0\x90\xB0\xA6";
 	const size_t s = 256;
@@ -599,7 +599,7 @@ TEST(ToUtf16, FourBytesString)
 	EXPECT_EQ(0xDC26, o[7]);
 }
 
-TEST(ToUtf16, FourBytesOverlong)
+TEST(Utf8ToUtf16, FourBytesOverlong)
 {
 	const char* i = "\xF0\x80\x80\xAF";
 	const size_t s = 256;
@@ -611,7 +611,7 @@ TEST(ToUtf16, FourBytesOverlong)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, FourBytesOverlongNull)
+TEST(Utf8ToUtf16, FourBytesOverlongNull)
 {
 	const char* i = "\xF0\x80\x80\x80";
 	const size_t s = 256;
@@ -623,7 +623,7 @@ TEST(ToUtf16, FourBytesOverlongNull)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, FourBytesOverlongFirst)
+TEST(Utf8ToUtf16, FourBytesOverlongFirst)
 {
 	const char* i = "\xF4\x90\x80\x80";
 	const size_t s = 256;
@@ -635,7 +635,7 @@ TEST(ToUtf16, FourBytesOverlongFirst)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, FourBytesOverlongLast)
+TEST(Utf8ToUtf16, FourBytesOverlongLast)
 {
 	const char* i = "\xF7\xBF\xBF\xBF";
 	const size_t s = 256;
@@ -647,7 +647,7 @@ TEST(ToUtf16, FourBytesOverlongLast)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, FourBytesOverlongMaximum)
+TEST(Utf8ToUtf16, FourBytesOverlongMaximum)
 {
 	const char* i = "\xF0\x8F\xBF\xBF";
 	const size_t s = 256;
@@ -659,7 +659,7 @@ TEST(ToUtf16, FourBytesOverlongMaximum)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, FourBytesLonelyStartFirst)
+TEST(Utf8ToUtf16, FourBytesLonelyStartFirst)
 {
 	const char* i = "\xF0 ";
 	const size_t s = 256;
@@ -672,7 +672,7 @@ TEST(ToUtf16, FourBytesLonelyStartFirst)
 	EXPECT_EQ(' ', o[1]);
 }
 
-TEST(ToUtf16, FourBytesLonelyStartLast)
+TEST(Utf8ToUtf16, FourBytesLonelyStartLast)
 {
 	const char* i = "\xF7 ";
 	const size_t s = 256;
@@ -685,7 +685,7 @@ TEST(ToUtf16, FourBytesLonelyStartLast)
 	EXPECT_EQ(' ', o[1]);
 }
 
-TEST(ToUtf16, FourBytesLonelyStartCombined)
+TEST(Utf8ToUtf16, FourBytesLonelyStartCombined)
 {
 	const char* i =
 		"\xF0 \xF1 \xF2 \xF3 \xF4 \xF5 \xF6 \xF7 ";
@@ -703,7 +703,7 @@ TEST(ToUtf16, FourBytesLonelyStartCombined)
 	}
 }
 
-TEST(ToUtf16, FourBytesNotEnoughData)
+TEST(Utf8ToUtf16, FourBytesNotEnoughData)
 {
 	const char* i = "\xF0\x90\x80";
 	const size_t s = 256;
@@ -715,7 +715,7 @@ TEST(ToUtf16, FourBytesNotEnoughData)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, FiveBytesOverlong)
+TEST(Utf8ToUtf16, FiveBytesOverlong)
 {
 	const char* i = "\xF8\x80\x80\x80\xAF";
 	const size_t s = 256;
@@ -727,7 +727,7 @@ TEST(ToUtf16, FiveBytesOverlong)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, FiveBytesOverlongFirst)
+TEST(Utf8ToUtf16, FiveBytesOverlongFirst)
 {
 	const char* i = "\xF8\x88\x80\x80\x80";
 	const size_t s = 256;
@@ -739,7 +739,7 @@ TEST(ToUtf16, FiveBytesOverlongFirst)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, FiveBytesOverlongLast)
+TEST(Utf8ToUtf16, FiveBytesOverlongLast)
 {
 	const char* i = "\xFB\xBF\xBF\xBF\xBF";
 	const size_t s = 256;
@@ -751,7 +751,7 @@ TEST(ToUtf16, FiveBytesOverlongLast)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, FiveBytesOverlongNull)
+TEST(Utf8ToUtf16, FiveBytesOverlongNull)
 {
 	const char* i = "\xF8\x80\x80\x80\x80";
 	const size_t s = 256;
@@ -763,7 +763,7 @@ TEST(ToUtf16, FiveBytesOverlongNull)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, FiveBytesOverlongMaximum)
+TEST(Utf8ToUtf16, FiveBytesOverlongMaximum)
 {
 	const char* i = "\xF8\x87\xBF\xBF\xBF";
 	const size_t s = 256;
@@ -775,7 +775,7 @@ TEST(ToUtf16, FiveBytesOverlongMaximum)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, FiveBytesLonelyStartFirst)
+TEST(Utf8ToUtf16, FiveBytesLonelyStartFirst)
 {
 	const char* i = "\xF8 ";
 	const size_t s = 256;
@@ -788,7 +788,7 @@ TEST(ToUtf16, FiveBytesLonelyStartFirst)
 	EXPECT_EQ(' ', o[1]);
 }
 
-TEST(ToUtf16, FiveBytesLonelyStartLast)
+TEST(Utf8ToUtf16, FiveBytesLonelyStartLast)
 {
 	const char* i = "\xFB ";
 	const size_t s = 256;
@@ -801,7 +801,7 @@ TEST(ToUtf16, FiveBytesLonelyStartLast)
 	EXPECT_EQ(' ', o[1]);
 }
 
-TEST(ToUtf16, FiveBytesLonelyStartCombined)
+TEST(Utf8ToUtf16, FiveBytesLonelyStartCombined)
 {
 	const char* i =
 		"\xF8 \xF9 \xFA \xFB ";
@@ -819,7 +819,7 @@ TEST(ToUtf16, FiveBytesLonelyStartCombined)
 	}
 }
 
-TEST(ToUtf16, FiveBytesNotEnoughData)
+TEST(Utf8ToUtf16, FiveBytesNotEnoughData)
 {
 	const char* i = "\xF8\x80\x80\x80";
 	const size_t s = 256;
@@ -831,7 +831,7 @@ TEST(ToUtf16, FiveBytesNotEnoughData)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SixBytesOverlong)
+TEST(Utf8ToUtf16, SixBytesOverlong)
 {
 	const char* i = "\xFC\x80\x80\x80\x80\xAF";
 	const size_t s = 256;
@@ -843,7 +843,7 @@ TEST(ToUtf16, SixBytesOverlong)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SixBytesOverlongFirst)
+TEST(Utf8ToUtf16, SixBytesOverlongFirst)
 {
 	const char* i = "\xFC\x84\x80\x80\x80\x80";
 	const size_t s = 256;
@@ -855,7 +855,7 @@ TEST(ToUtf16, SixBytesOverlongFirst)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SixBytesOverlongLast)
+TEST(Utf8ToUtf16, SixBytesOverlongLast)
 {
 	const char* i = "\xFD\xBF\xBF\xBF\xBF\xBF";
 	const size_t s = 256;
@@ -867,7 +867,7 @@ TEST(ToUtf16, SixBytesOverlongLast)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SixBytesOverlongNull)
+TEST(Utf8ToUtf16, SixBytesOverlongNull)
 {
 	const char* i = "\xFC\x80\x80\x80\x80\x80";
 	const size_t s = 256;
@@ -879,7 +879,7 @@ TEST(ToUtf16, SixBytesOverlongNull)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SixBytesOverlongMaximum)
+TEST(Utf8ToUtf16, SixBytesOverlongMaximum)
 {
 	const char* i = "\xFC\x83\xBF\xBF\xBF\xBF";
 	const size_t s = 256;
@@ -891,7 +891,7 @@ TEST(ToUtf16, SixBytesOverlongMaximum)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SixBytesLonelyStartFirst)
+TEST(Utf8ToUtf16, SixBytesLonelyStartFirst)
 {
 	const char* i = "\xFC ";
 	const size_t s = 256;
@@ -904,7 +904,7 @@ TEST(ToUtf16, SixBytesLonelyStartFirst)
 	EXPECT_EQ(' ', o[1]);
 }
 
-TEST(ToUtf16, SixBytesLonelyStartLast)
+TEST(Utf8ToUtf16, SixBytesLonelyStartLast)
 {
 	const char* i = "\xFD ";
 	const size_t s = 256;
@@ -917,7 +917,7 @@ TEST(ToUtf16, SixBytesLonelyStartLast)
 	EXPECT_EQ(' ', o[1]);
 }
 
-TEST(ToUtf16, SixBytesLonelyStartCombined)
+TEST(Utf8ToUtf16, SixBytesLonelyStartCombined)
 {
 	const char* i =
 		"\xFC \xFD ";
@@ -935,7 +935,7 @@ TEST(ToUtf16, SixBytesLonelyStartCombined)
 	}
 }
 
-TEST(ToUtf16, SixBytesNotEnoughData)
+TEST(Utf8ToUtf16, SixBytesNotEnoughData)
 {
 	const char* i = "\xFC\x80\x80\x80\x80";
 	const size_t s = 256;
@@ -947,7 +947,7 @@ TEST(ToUtf16, SixBytesNotEnoughData)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SixBytesNotEnoughSpace)
+TEST(Utf8ToUtf16, SixBytesNotEnoughSpace)
 {
 	const char* i = "Der\xFD\xBF\xBF\xBF\xBF\xBFp";
 	const size_t s = 4;
@@ -962,7 +962,7 @@ TEST(ToUtf16, SixBytesNotEnoughSpace)
 	EXPECT_EQ(0xFFFD, o[3]);
 }
 
-TEST(ToUtf16, SurrogatePair)
+TEST(Utf8ToUtf16, SurrogatePair)
 {
 	const char* i = "\xED\xAD\x80\xED\xBE\x80";
 	const size_t s = 256;
@@ -975,7 +975,7 @@ TEST(ToUtf16, SurrogatePair)
 	EXPECT_EQ(0xFFFD, o[1]);
 }
 
-TEST(ToUtf16, SurrogatePairCombined)
+TEST(Utf8ToUtf16, SurrogatePairCombined)
 {
 	const char* i = "\
 \xED\xA0\x80\xED\xB0\x80\
@@ -1010,7 +1010,7 @@ TEST(ToUtf16, SurrogatePairCombined)
 	EXPECT_EQ(0xFFFD, o[15]);
 }
 
-TEST(ToUtf16, SurrogatePairHigh)
+TEST(Utf8ToUtf16, SurrogatePairHigh)
 {
 	const char* i = "\xED\xAD\xBF";
 	const size_t s = 256;
@@ -1022,7 +1022,7 @@ TEST(ToUtf16, SurrogatePairHigh)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SurrogatePairHighStart)
+TEST(Utf8ToUtf16, SurrogatePairHighStart)
 {
 	const char* i = "\xED\xA0\x80";
 	const size_t s = 256;
@@ -1034,7 +1034,7 @@ TEST(ToUtf16, SurrogatePairHighStart)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SurrogatePairHighEnd)
+TEST(Utf8ToUtf16, SurrogatePairHighEnd)
 {
 	const char* i = "\xED\xAF\xBF";
 	const size_t s = 256;
@@ -1046,7 +1046,7 @@ TEST(ToUtf16, SurrogatePairHighEnd)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SurrogatePairLow)
+TEST(Utf8ToUtf16, SurrogatePairLow)
 {
 	const char* i = "\xED\xBE\x80";
 	const size_t s = 256;
@@ -1058,7 +1058,7 @@ TEST(ToUtf16, SurrogatePairLow)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SurrogatePairLowStart)
+TEST(Utf8ToUtf16, SurrogatePairLowStart)
 {
 	const char* i = "\xED\xB0\x80";
 	const size_t s = 256;
@@ -1070,7 +1070,7 @@ TEST(ToUtf16, SurrogatePairLowStart)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SurrogatePairLowEnd)
+TEST(Utf8ToUtf16, SurrogatePairLowEnd)
 {
 	const char* i = "\xED\xBF\xBF";
 	const size_t s = 256;
@@ -1082,7 +1082,7 @@ TEST(ToUtf16, SurrogatePairLowEnd)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SurrogatePairOverlongHighStart)
+TEST(Utf8ToUtf16, SurrogatePairOverlongHighStart)
 {
 	const char* i = "\xF0\x8D\xA0\x80";
 	const size_t s = 256;
@@ -1094,7 +1094,7 @@ TEST(ToUtf16, SurrogatePairOverlongHighStart)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SurrogatePairOverlongHighEnd)
+TEST(Utf8ToUtf16, SurrogatePairOverlongHighEnd)
 {
 	const char* i = "\xF0\x8D\xAF\xBF";
 	const size_t s = 256;
@@ -1106,7 +1106,7 @@ TEST(ToUtf16, SurrogatePairOverlongHighEnd)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SurrogatePairOverlongLowStart)
+TEST(Utf8ToUtf16, SurrogatePairOverlongLowStart)
 {
 	const char* i = "\xF0\x8D\xAD\xBF";
 	const size_t s = 256;
@@ -1118,7 +1118,7 @@ TEST(ToUtf16, SurrogatePairOverlongLowStart)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SurrogatePairOverlongLowEnd)
+TEST(Utf8ToUtf16, SurrogatePairOverlongLowEnd)
 {
 	const char* i = "\xF0\x8D\xBF\xBF";
 	const size_t s = 256;
@@ -1130,7 +1130,7 @@ TEST(ToUtf16, SurrogatePairOverlongLowEnd)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, SurrogatePairNotEnoughData)
+TEST(Utf8ToUtf16, SurrogatePairNotEnoughData)
 {
 	const char* i = "\xED\xBF";
 	const size_t s = 256;
@@ -1142,7 +1142,7 @@ TEST(ToUtf16, SurrogatePairNotEnoughData)
 	EXPECT_EQ(0xFFFD, o[0]);
 }
 
-TEST(ToUtf16, AmountOfBytes)
+TEST(Utf8ToUtf16, AmountOfBytes)
 {
 	const char* i = "\xE0\xB4\x8B";
 	int32_t errors = 0;
@@ -1151,7 +1151,7 @@ TEST(ToUtf16, AmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUtf16, AmountOfBytesString)
+TEST(Utf8ToUtf16, AmountOfBytesString)
 {
 	const char* i = "Pchn\xC4\x85\xC4\x87 w t\xC4\x99";
 	int32_t errors = 0;
@@ -1160,7 +1160,7 @@ TEST(ToUtf16, AmountOfBytesString)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUtf16, AmountOfBytesNotEnoughData)
+TEST(Utf8ToUtf16, AmountOfBytesNotEnoughData)
 {
 	const char* i = "\xF0\x90\xB1";
 	int32_t errors = 0;
@@ -1169,7 +1169,7 @@ TEST(ToUtf16, AmountOfBytesNotEnoughData)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUtf16, AmountOfBytesOverlong)
+TEST(Utf8ToUtf16, AmountOfBytesOverlong)
 {
 	const char* i = "\xFC\x84\x80\x80\x80\x80";
 	int32_t errors = 0;
@@ -1178,7 +1178,7 @@ TEST(ToUtf16, AmountOfBytesOverlong)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUtf16, AmountOfBytesNoData)
+TEST(Utf8ToUtf16, AmountOfBytesNoData)
 {
 	int32_t errors = 0;
 
