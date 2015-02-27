@@ -33,7 +33,6 @@ typedef struct {
 	StreamState* input;
 	StreamState* output;
 	uint8_t property;
-	uint8_t finished;
 } ComposeState;
 
 uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);
