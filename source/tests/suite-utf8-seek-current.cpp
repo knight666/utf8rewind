@@ -2,7 +2,7 @@
 
 #include "utf8rewind.h"
 
-TEST(SeekCurrent, SwappedParameters)
+TEST(Utf8SeekCurrent, SwappedParameters)
 {
 	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
 
@@ -16,7 +16,7 @@ TEST(SeekCurrent, SwappedParameters)
 	EXPECT_EQ(0x10480, o);
 }
 
-TEST(SeekCurrent, ZeroOffset)
+TEST(Utf8SeekCurrent, ZeroOffset)
 {
 	const char* t = "Banana";
 
