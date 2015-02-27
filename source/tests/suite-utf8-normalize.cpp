@@ -8,7 +8,7 @@ extern "C" {
 
 #include "helpers-strings.hpp"
 
-TEST(Normalize, InvalidData)
+TEST(Utf8Normalize, InvalidData)
 {
 	char o[256] = { 0 };
 	size_t os = 255;
@@ -19,7 +19,7 @@ TEST(Normalize, InvalidData)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(Normalize, InvalidFlag)
+TEST(Utf8Normalize, InvalidFlag)
 {
 	/*
 		U+0048 U+0061 U+006E U+0064 U+0073
@@ -38,7 +38,7 @@ TEST(Normalize, InvalidFlag)
 	EXPECT_EQ(UTF8_ERR_INVALID_FLAG, errors);
 }
 
-TEST(NormalizeDecompose, OverlappingParametersFits)
+TEST(Utf8Normalize, OverlappingParametersFits)
 {
 	int32_t errors = 0;
 
@@ -55,7 +55,7 @@ TEST(NormalizeDecompose, OverlappingParametersFits)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(Normalize, OverlappingParametersStartsEqual)
+TEST(Utf8Normalize, OverlappingParametersStartsEqual)
 {
 	int32_t errors = 0;
 
@@ -70,7 +70,7 @@ TEST(Normalize, OverlappingParametersStartsEqual)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Normalize, OverlappingParametersEndsEqual)
+TEST(Utf8Normalize, OverlappingParametersEndsEqual)
 {
 	int32_t errors = 0;
 
@@ -85,7 +85,7 @@ TEST(Normalize, OverlappingParametersEndsEqual)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Normalize, OverlappingParametersInputStartsInTarget)
+TEST(Utf8Normalize, OverlappingParametersInputStartsInTarget)
 {
 	int32_t errors = 0;
 
@@ -100,7 +100,7 @@ TEST(Normalize, OverlappingParametersInputStartsInTarget)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Normalize, OverlappingParametersInputEndsInTarget)
+TEST(Utf8Normalize, OverlappingParametersInputEndsInTarget)
 {
 	int32_t errors = 0;
 
@@ -115,7 +115,7 @@ TEST(Normalize, OverlappingParametersInputEndsInTarget)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Normalize, OverlappingParametersInputInsideTarget)
+TEST(Utf8Normalize, OverlappingParametersInputInsideTarget)
 {
 	int32_t errors = 0;
 
@@ -130,7 +130,7 @@ TEST(Normalize, OverlappingParametersInputInsideTarget)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Normalize, OverlappingParametersTargetStartsInInput)
+TEST(Utf8Normalize, OverlappingParametersTargetStartsInInput)
 {
 	int32_t errors = 0;
 
@@ -145,7 +145,7 @@ TEST(Normalize, OverlappingParametersTargetStartsInInput)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Normalize, OverlappingParametersTargetEndsInInput)
+TEST(Utf8Normalize, OverlappingParametersTargetEndsInInput)
 {
 	int32_t errors = 0;
 
@@ -160,7 +160,7 @@ TEST(Normalize, OverlappingParametersTargetEndsInInput)
 	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Normalize, OverlappingParametersTargetInsideInput)
+TEST(Utf8Normalize, OverlappingParametersTargetInsideInput)
 {
 	int32_t errors = 0;
 

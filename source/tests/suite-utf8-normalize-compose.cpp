@@ -8,7 +8,7 @@ extern "C" {
 
 #include "helpers-strings.hpp"
 
-TEST(NormalizeCompose, BasicLatinSingle)
+TEST(Utf8NormalizeCompose, BasicLatinSingle)
 {
 	/*
 		U+004A
@@ -27,7 +27,7 @@ TEST(NormalizeCompose, BasicLatinSingle)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, BasicLatinMultiple)
+TEST(Utf8NormalizeCompose, BasicLatinMultiple)
 {
 	/*
 		U+0053 U+0063 U+0072 U+0065 U+0065 U+006E U+0073 U+0068 U+006F U+0074
@@ -46,7 +46,7 @@ TEST(NormalizeCompose, BasicLatinMultiple)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, BasicLatinCompatibility)
+TEST(Utf8NormalizeCompose, BasicLatinCompatibility)
 {
 	/*
 		U+0061 U+0058 U+0058 U+006F
@@ -65,7 +65,7 @@ TEST(NormalizeCompose, BasicLatinCompatibility)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, BasicLatinAmountOfBytes)
+TEST(Utf8NormalizeCompose, BasicLatinAmountOfBytes)
 {
 	/*
 		U+0048 U+0061 U+006E U+0064 U+0073 U+006F U+006D U+0065
@@ -81,7 +81,7 @@ TEST(NormalizeCompose, BasicLatinAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, BasicLatinNotEnoughSpace)
+TEST(Utf8NormalizeCompose, BasicLatinNotEnoughSpace)
 {
 	/*
 		U+0041 U+0070 U+0070 U+006C U+0065
@@ -100,7 +100,7 @@ TEST(NormalizeCompose, BasicLatinNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(NormalizeCompose, MultiByteUnaffectedSingle)
+TEST(Utf8NormalizeCompose, MultiByteUnaffectedSingle)
 {
 	/*
 		U+20D7
@@ -119,7 +119,7 @@ TEST(NormalizeCompose, MultiByteUnaffectedSingle)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, MultiByteUnaffectedMultiple)
+TEST(Utf8NormalizeCompose, MultiByteUnaffectedMultiple)
 {
 	/*
 		U+206F U+1E9F U+202B
@@ -138,7 +138,7 @@ TEST(NormalizeCompose, MultiByteUnaffectedMultiple)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, MultiByteUnaffectedCompatibility)
+TEST(Utf8NormalizeCompose, MultiByteUnaffectedCompatibility)
 {
 	/*
 		U+20A0 U+20AC U+20B0 U+20AF
@@ -157,7 +157,7 @@ TEST(NormalizeCompose, MultiByteUnaffectedCompatibility)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, MultiByteUnaffectedAmountOfBytes)
+TEST(Utf8NormalizeCompose, MultiByteUnaffectedAmountOfBytes)
 {
 	/*
 		U+211C U+211F U+2122
@@ -173,7 +173,7 @@ TEST(NormalizeCompose, MultiByteUnaffectedAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, MultiByteUnaffectedNotEnoughSpace)
+TEST(Utf8NormalizeCompose, MultiByteUnaffectedNotEnoughSpace)
 {
 	/*
 		U+221A U+2215 U+2181 U+21D4
@@ -192,7 +192,7 @@ TEST(NormalizeCompose, MultiByteUnaffectedNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(NormalizeCompose, SequenceSingleComposeTwoCodepoints)
+TEST(Utf8NormalizeCompose, SequenceSingleComposeTwoCodepoints)
 {
 	/*
 		U+0059 U+0301
@@ -211,7 +211,7 @@ TEST(NormalizeCompose, SequenceSingleComposeTwoCodepoints)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, SequenceSingleComposeMultipleCodepoints)
+TEST(Utf8NormalizeCompose, SequenceSingleComposeMultipleCodepoints)
 {
 	/*
 		U+03C9 U+0313 U+0300 U+0345
@@ -230,7 +230,7 @@ TEST(NormalizeCompose, SequenceSingleComposeMultipleCodepoints)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, SequenceSingleComposeUnordered)
+TEST(Utf8NormalizeCompose, SequenceSingleComposeUnordered)
 {
 	/*
 		U+03A9 U+0313 U+0345 U+0651 U+0300
@@ -249,7 +249,7 @@ TEST(NormalizeCompose, SequenceSingleComposeUnordered)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, SequenceSingleDecomposeAndComposeOrdered)
+TEST(Utf8NormalizeCompose, SequenceSingleDecomposeAndComposeOrdered)
 {
 	/*
 		U+1F6A U+0345
@@ -268,7 +268,7 @@ TEST(NormalizeCompose, SequenceSingleDecomposeAndComposeOrdered)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, SequenceSingleDecomposeAndComposeUnordered)
+TEST(Utf8NormalizeCompose, SequenceSingleDecomposeAndComposeUnordered)
 {
 	/*
 		U+1E60 U+0323
@@ -287,7 +287,7 @@ TEST(NormalizeCompose, SequenceSingleDecomposeAndComposeUnordered)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, SequenceSingleComposeCompatibility)
+TEST(Utf8NormalizeCompose, SequenceSingleComposeCompatibility)
 {
 	/*
 		U+0044 U+005A U+030C
@@ -306,7 +306,7 @@ TEST(NormalizeCompose, SequenceSingleComposeCompatibility)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, SequenceSingleComposeAmountOfBytes)
+TEST(Utf8NormalizeCompose, SequenceSingleComposeAmountOfBytes)
 {
 	/*
 		U+004C U+0323 U+0304
@@ -322,7 +322,7 @@ TEST(NormalizeCompose, SequenceSingleComposeAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, SequenceSingleComposeNotEnoughSpace)
+TEST(Utf8NormalizeCompose, SequenceSingleComposeNotEnoughSpace)
 {
 	/*
 		U+0073 U+030C U+0307
@@ -341,7 +341,7 @@ TEST(NormalizeCompose, SequenceSingleComposeNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(NormalizeCompose, HangulUnaffectedSingle)
+TEST(Utf8NormalizeCompose, HangulUnaffectedSingle)
 {
 	/*
 		U+ADA4
@@ -360,7 +360,7 @@ TEST(NormalizeCompose, HangulUnaffectedSingle)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, HangulUnaffectedMultiple)
+TEST(Utf8NormalizeCompose, HangulUnaffectedMultiple)
 {
 	/*
 		U+ADAA U+B2E9 U+AE6E
@@ -379,7 +379,7 @@ TEST(NormalizeCompose, HangulUnaffectedMultiple)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, HangulUnaffectedCompatibility)
+TEST(Utf8NormalizeCompose, HangulUnaffectedCompatibility)
 {
 	/*
 		U+B21E U+AE52 U+B46A U+B5F0
@@ -398,7 +398,7 @@ TEST(NormalizeCompose, HangulUnaffectedCompatibility)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, HangulUnaffectedAmountOfBytes)
+TEST(Utf8NormalizeCompose, HangulUnaffectedAmountOfBytes)
 {
 	/*
 		U+B9E1 U+B91C U+B991
@@ -414,7 +414,7 @@ TEST(NormalizeCompose, HangulUnaffectedAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, HangulUnaffectedNotEnoughSpace)
+TEST(Utf8NormalizeCompose, HangulUnaffectedNotEnoughSpace)
 {
 	/*
 		U+B6B8 U+BAAB
@@ -433,7 +433,7 @@ TEST(NormalizeCompose, HangulUnaffectedNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(NormalizeCompose, HangulComposeSingleTwoCodepoints)
+TEST(Utf8NormalizeCompose, HangulComposeSingleTwoCodepoints)
 {
 	/*
 		U+1105 U+116B
@@ -452,7 +452,7 @@ TEST(NormalizeCompose, HangulComposeSingleTwoCodepoints)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, HangulComposeSingleThreeCodepoints)
+TEST(Utf8NormalizeCompose, HangulComposeSingleThreeCodepoints)
 {
 	/*
 		U+1106 U+1169 U+11A8
@@ -471,7 +471,7 @@ TEST(NormalizeCompose, HangulComposeSingleThreeCodepoints)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, HangulComposeMultiple)
+TEST(Utf8NormalizeCompose, HangulComposeMultiple)
 {
 	/*
 		U+1106 U+1167 U+11B6 U+1105 U+116F U+1106 U+1169 U+11AF
@@ -490,7 +490,7 @@ TEST(NormalizeCompose, HangulComposeMultiple)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, HangulComposeCompatibility)
+TEST(Utf8NormalizeCompose, HangulComposeCompatibility)
 {
 	/*
 		U+1106 U+116A U+11B1 U+1106 U+1171
@@ -509,7 +509,7 @@ TEST(NormalizeCompose, HangulComposeCompatibility)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, HangulComposeAmountOfBytes)
+TEST(Utf8NormalizeCompose, HangulComposeAmountOfBytes)
 {
 	/*
 		U+1106 U+1167 U+11BF U+BB4B U+1108 U+1173 U+11A8
@@ -527,7 +527,7 @@ TEST(NormalizeCompose, HangulComposeAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, HangulComposeNotEnoughSpace)
+TEST(Utf8NormalizeCompose, HangulComposeNotEnoughSpace)
 {
 	/*
 		U+1108 U+116D U+11AD U+1108 U+116D
@@ -546,7 +546,7 @@ TEST(NormalizeCompose, HangulComposeNotEnoughSpace)
 	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(NormalizeCompose, SequenceMultipleComposeOrdered)
+TEST(Utf8NormalizeCompose, SequenceMultipleComposeOrdered)
 {
 	/*
 		U+03A9 U+0345 U+0397 U+0313 U+0300 U+0345 U+03B7 U+0313 U+0301
@@ -565,7 +565,7 @@ TEST(NormalizeCompose, SequenceMultipleComposeOrdered)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, SequenceMultipleComposeUnordered)
+TEST(Utf8NormalizeCompose, SequenceMultipleComposeUnordered)
 {
 	/*
 		U+00CA U+0323 U+1F80 U+0300 U+1FFC U+0314 U+0301
@@ -584,7 +584,7 @@ TEST(NormalizeCompose, SequenceMultipleComposeUnordered)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, SequenceMultipleComposeCompatibility)
+TEST(Utf8NormalizeCompose, SequenceMultipleComposeCompatibility)
 {
 	/*
 		U+110E U+1161 U+11B7 U+1100 U+1169 U+30C6 U+3099 U+0644 U+0627 U+0653
@@ -603,7 +603,7 @@ TEST(NormalizeCompose, SequenceMultipleComposeCompatibility)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, SequenceMultipleComposeAmountOfBytes)
+TEST(Utf8NormalizeCompose, SequenceMultipleComposeAmountOfBytes)
 {
 	/*
 		U+03B9 U+0304 U+03B1 U+0314 U+0345 U+0041 U+0302 U+0303
@@ -619,7 +619,7 @@ TEST(NormalizeCompose, SequenceMultipleComposeAmountOfBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(NormalizeCompose, SequenceMultipleComposeNotEnoughSpace)
+TEST(Utf8NormalizeCompose, SequenceMultipleComposeNotEnoughSpace)
 {
 	/*
 		U+006F U+0308 U+0304 U+0063 U+030C U+0055 U+031B U+0300
