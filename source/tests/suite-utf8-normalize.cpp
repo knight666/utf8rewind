@@ -8,17 +8,6 @@ extern "C" {
 
 #include "helpers-strings.hpp"
 
-TEST(Utf8Normalize, InvalidData)
-{
-	char o[256] = { 0 };
-	size_t os = 255;
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf8normalize(nullptr, 7, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
-	EXPECT_UTF8EQ("", o);
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
-}
-
 TEST(Utf8Normalize, InvalidFlag)
 {
 	/*
@@ -34,6 +23,28 @@ TEST(Utf8Normalize, InvalidFlag)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, 0x00000008, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_EQ(UTF8_ERR_INVALID_FLAG, errors);
+}
+
+TEST(Utf8Normalize, InvalidData)
+{
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8normalize(nullptr, 7, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf8Normalize, InvalidFlagAndInvalidData)
+{
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8normalize(nullptr, 166, o, os, 0x00001B28, &errors));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(UTF8_ERR_INVALID_FLAG, errors);
 }
