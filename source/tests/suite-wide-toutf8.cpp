@@ -2,7 +2,7 @@
 
 #include "utf8rewind.h"
 
-TEST(ToUtf8, Convert)
+TEST(WideToUtf8Convert)
 {
 	const wchar_t c[] = {
 		L'ज',
@@ -18,7 +18,7 @@ TEST(ToUtf8, Convert)
 	EXPECT_STREQ("\xE0\xA4\x9C\xE0\xA4\xA1\xE0\xA4\xA4", b);
 }
 
-TEST(ToUtf8, OneByte)
+TEST(WideToUtf8OneByte)
 {
 	wchar_t c = L'*';
 	const size_t s = 256;
@@ -30,7 +30,7 @@ TEST(ToUtf8, OneByte)
 	EXPECT_STREQ("*", b);
 }
 
-TEST(ToUtf8, TwoBytes)
+TEST(WideToUtf8TwoBytes)
 {
 	wchar_t c = 0x2CC;
 	const size_t s = 256;
@@ -42,7 +42,7 @@ TEST(ToUtf8, TwoBytes)
 	EXPECT_STREQ("\xCB\x8C", b);
 }
 
-TEST(ToUtf8, ThreeBytes)
+TEST(WideToUtf8ThreeBytes)
 {
 	wchar_t c = 0x1280;
 	const size_t s = 256;
@@ -56,7 +56,7 @@ TEST(ToUtf8, ThreeBytes)
 
 #if UTF8_WCHAR_UTF32
 
-TEST(ToUtf8, FourBytes)
+TEST(WideToUtf8FourBytes)
 {
 	wchar_t c = 0x1F612;
 	const size_t s = 256;
@@ -70,7 +70,7 @@ TEST(ToUtf8, FourBytes)
 
 #endif
 
-TEST(ToUtf8, SurrogatePair)
+TEST(WideToUtf8SurrogatePair)
 {
 	const wchar_t c[] = {
 		0xD834,
@@ -85,7 +85,7 @@ TEST(ToUtf8, SurrogatePair)
 	EXPECT_STREQ("\xF0\x9D\x84\x9E", b);
 }
 
-TEST(ToUtf8, SurrogatePairMinimum)
+TEST(WideToUtf8SurrogatePairMinimum)
 {
 	const wchar_t c[] = {
 		0xD800, 0xDC00
@@ -99,7 +99,7 @@ TEST(ToUtf8, SurrogatePairMinimum)
 	EXPECT_STREQ("\xF0\x90\x80\x80", b);
 }
 
-TEST(ToUtf8, SurrogatePairMaximum)
+TEST(WideToUtf8SurrogatePairMaximum)
 {
 	const wchar_t c[] = {
 		0xDBFF, 0xDFFF
@@ -113,7 +113,7 @@ TEST(ToUtf8, SurrogatePairMaximum)
 	EXPECT_STREQ("\xF4\x8F\xBF\xBF", b);
 }
 
-TEST(ToUtf8, UnmatchedLowSurrogatePair)
+TEST(WideToUtf8UnmatchedLowSurrogatePair)
 {
 	const wchar_t c[] = {
 		0xD800, 0x1100
@@ -127,7 +127,7 @@ TEST(ToUtf8, UnmatchedLowSurrogatePair)
 	EXPECT_STREQ("", b);
 }
 
-TEST(ToUtf8, UnmatchedHighSurrogatePair)
+TEST(WideToUtf8UnmatchedHighSurrogatePair)
 {
 	const wchar_t c[] = {
 		0xDD1E, 0xD834
@@ -141,7 +141,7 @@ TEST(ToUtf8, UnmatchedHighSurrogatePair)
 	EXPECT_STREQ("", b);
 }
 
-TEST(ToUtf8, NoData)
+TEST(WideToUtf8NoData)
 {
 	const size_t s = 256;
 	char b[s] = { 0 };
@@ -152,7 +152,7 @@ TEST(ToUtf8, NoData)
 	EXPECT_STREQ("", b);
 }
 
-TEST(ToUtf8, NotEnoughSpace)
+TEST(WideToUtf8NotEnoughSpace)
 {
 	const wchar_t c[] = {
 		L"ं"
@@ -166,7 +166,7 @@ TEST(ToUtf8, NotEnoughSpace)
 	EXPECT_STREQ("", b);
 }
 
-TEST(ToUtf8, InvalidLength)
+TEST(WideToUtf8InvalidLength)
 {
 	const wchar_t c[] = {
 		0x0D88
@@ -180,7 +180,7 @@ TEST(ToUtf8, InvalidLength)
 	EXPECT_STREQ("", b);
 }
 
-TEST(ToUtf8, InvalidData)
+TEST(WideToUtf8InvalidData)
 {
 	const wchar_t c[] = {
 		0xD800
@@ -194,7 +194,7 @@ TEST(ToUtf8, InvalidData)
 	EXPECT_STREQ("", b);
 }
 
-TEST(ToUtf8, OutputLengthOneByte)
+TEST(WideToUtf8OutputLengthOneByte)
 {
 	const wchar_t c[] = {
 		0x0021
@@ -205,7 +205,7 @@ TEST(ToUtf8, OutputLengthOneByte)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUtf8, OutputLengthTwoBytes)
+TEST(WideToUtf8OutputLengthTwoBytes)
 {
 	const wchar_t c[] = {
 		0x00DD
@@ -216,7 +216,7 @@ TEST(ToUtf8, OutputLengthTwoBytes)
 	EXPECT_EQ(0, errors);
 }
 
-TEST(ToUtf8, OutputLengthThreeBytes)
+TEST(WideToUtf8OutputLengthThreeBytes)
 {
 	const wchar_t c[] = {
 		0x8812
@@ -229,7 +229,7 @@ TEST(ToUtf8, OutputLengthThreeBytes)
 
 #if UTF8_WCHAR_UTF32
 
-TEST(ToUtf8, OutputLengthFourBytes)
+TEST(WideToUtf8OutputLengthFourBytes)
 {
 	const wchar_t c[] = {
 		0x1D245
@@ -242,7 +242,7 @@ TEST(ToUtf8, OutputLengthFourBytes)
 
 #endif
 
-TEST(ToUtf8, OutputLengthSurrogatePair)
+TEST(WideToUtf8OutputLengthSurrogatePair)
 {
 	const wchar_t c[] = {
 		0xD818, 0xDCDE
