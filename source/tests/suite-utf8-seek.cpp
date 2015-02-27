@@ -2,7 +2,7 @@
 
 #include "utf8rewind.h"
 
-TEST(Seek, InvalidDirection)
+TEST(Utf8Seek, InvalidDirection)
 {
 	const char* t = "Interesting";
 
