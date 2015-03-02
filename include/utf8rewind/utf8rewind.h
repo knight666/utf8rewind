@@ -37,16 +37,77 @@
 #include <string.h>
 #include <wchar.h>
 
+/*!
+	\defgroup errors Error codes
+	\{
+*/
+
+/*!
+	\def UTF8_ERR_INVALID_DATA
+	\brief Input data is invalid.
+*/
 #define UTF8_ERR_INVALID_DATA                   (-1)
+
+/*!
+	\def UTF8_ERR_INVALID_FLAG
+	\brief Input flag is invalid.
+*/
 #define UTF8_ERR_INVALID_FLAG                   (-2)
+
+/*!
+	\def UTF8_ERR_NOT_ENOUGH_SPACE
+	\brief Buffer does not have enough space for result.
+*/
 #define UTF8_ERR_NOT_ENOUGH_SPACE               (-3)
+
+/*!
+	\def UTF8_ERR_OVERLAPPING_PARAMETERS
+	\brief Parameters overlap in memory.
+*/
 #define UTF8_ERR_OVERLAPPING_PARAMETERS         (-4)
+
+/*!
+	\def UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR
+	\brief Unmatched high codepoint in surrogate pair.
+*/
 #define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  (-5)
+
+/*!
+	\def UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR
+	\brief Unmatched low codepoint in surrogate pair.
+*/
 #define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   (-6)
 
+/*!
+	\}
+*/
+
+/*!
+	\defgroup flags Flags
+	\{
+*/
+
+/*!
+	\def UTF8_NORMALIZE_COMPOSE
+	\brief Normalize input to NFC.
+*/
 #define UTF8_NORMALIZE_COMPOSE                  0x00000001
+
+/*!
+	\def UTF8_NORMALIZE_DECOMPOSE
+	\brief Normalize input to NFD.
+*/
 #define UTF8_NORMALIZE_DECOMPOSE                0x00000002
+
+/*!
+	\def UTF8_NORMALIZE_COMPATIBILITY
+	\brief Changes composed normalization to NFKC or decomposed normalization to NFKD.
+*/
 #define UTF8_NORMALIZE_COMPATIBILITY            0x00000004
+
+/*!
+	\}
+*/
 
 /*!
 	\defgroup configuration Global configuration
