@@ -183,7 +183,7 @@ uint8_t codepoint_encoded_length(unicode_t codepoint);
 
 	\param[in]      encoded     Unicode codepoint
 	\param[in,out]  target      Target buffer
-	\param[in,out]  targetSize  Size of target buffer in bytes
+	\param[in,out]  targetSize  Size of output buffer in bytes
 
 	\return Bytes needed for encoding or 0 on error.
 */
