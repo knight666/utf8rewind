@@ -9,8 +9,8 @@ var indexSectionsWithContent =
   6: "u",
   7: "gqu",
   8: "gqu",
-  9: "cehmrsu",
-  10: "g",
+  9: "cesu",
+  10: "gi",
   11: "eu"
 };
 

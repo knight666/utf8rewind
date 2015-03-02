@@ -31,13 +31,11 @@
 #ifndef _UTF8REWIND_H_
 #define _UTF8REWIND_H_
 
-/*! \cond IGNORE */
 #include <stddef.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include <wchar.h>
-/*! \endcond */
 
 #define UTF8_ERR_INVALID_DATA                   (-1)
 #define UTF8_ERR_INVALID_FLAG                   (-2)
@@ -70,17 +68,17 @@
 	#endif
 #endif
 
-/*!
-	\def UTF8_WCHAR_UTF16
-	\brief The `wchar_t` is treated as UTF-16 (2 bytes).
-
-	\def UTF8_WCHAR_UTF32
-	\brief The `wchar_t` is treated as UTF-32 (4 bytes).
-*/
-
 #if (UTF8_WCHAR_SIZE == 4)
+	/*!
+		\def UTF8_WCHAR_UTF32
+		\brief The `wchar_t` type is treated as UTF-32 (4 bytes).
+	*/
 	#define UTF8_WCHAR_UTF32 (1)
 #elif (UTF8_WCHAR_SIZE == 2)
+	/*!
+		\def UTF8_WCHAR_UTF16
+		\brief The `wchar_t` type is treated as UTF-16 (2 bytes).
+	*/
 	#define UTF8_WCHAR_UTF16 (1)
 #else
 	#error Invalid size for wchar_t type.
