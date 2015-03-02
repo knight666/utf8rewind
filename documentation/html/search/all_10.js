@@ -1,4 +1,25 @@
 var searchData=
 [
-  ['xe4en',['xE4en',['../examples_8txt.html#acc156a86718138b3435c96c99567dd8b',1,'examples.txt']]]
+  ['seeking_2eh',['seeking.h',['../seeking_8h.html',1,'']]],
+  ['seeking_5fforward',['seeking_forward',['../seeking_8h.html#a32a65c51b992a7683bf348b5da6913b0',1,'seeking.h']]],
+  ['seeking_5frewind',['seeking_rewind',['../seeking_8h.html#a4251878fb457cddd00127e61f37a12f7',1,'seeking.h']]],
+  ['sequence',['sequence',['../structhelpers_1_1_normalization_entry.html#aa84a60f8d85c82cc4312f19e6eab417e',1,'helpers::NormalizationEntry::sequence()'],['../namespacehelpers.html#a3652899d3b7cf176c6e4e2b2ef295a7a',1,'helpers::sequence(unicode_t codepoint, uint8_t type)'],['../namespacehelpers.html#ae5f853b4fc6c333572aeac08a323946c',1,'helpers::sequence(unicode_t *codepoint, size_t codepointsSize, uint8_t type)'],['../namespacehelpers.html#af57e11563b7535f3f8112452aa65fac9',1,'helpers::sequence(const std::string &amp;text, uint8_t type)']]],
+  ['src',['src',['../struct_case_mapping_state.html#a7c3c20467630ca30c30e4ac172a0c5e4',1,'CaseMappingState::src()'],['../struct_stream_state.html#a905503dbb301ea1a8d4514293254f432',1,'StreamState::src()']]],
+  ['src_5fsize',['src_size',['../struct_case_mapping_state.html#afd9f98e720a195939163a871938b40c0',1,'CaseMappingState::src_size()'],['../struct_stream_state.html#ad126e43bcd4f692946c87454a224c8ee',1,'StreamState::src_size()']]],
+  ['stable',['stable',['../struct_stream_state.html#a917fde7b57f25f6540ddf1556e0cdb8b',1,'StreamState']]],
+  ['start',['start',['../struct_quick_check_record.html#af92ba69f3ea9451e91e0e938ab2714ad',1,'QuickCheckRecord']]],
+  ['stream_5fbuffer_5fmax',['STREAM_BUFFER_MAX',['../streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba',1,'streaming.h']]],
+  ['stream_5finitialize',['stream_initialize',['../streaming_8h.html#a16a75053622f0157c125a5dfd34bc3b2',1,'streaming.h']]],
+  ['stream_5fread',['stream_read',['../streaming_8h.html#a008dd0d7de257098d0e10cd3eacd778e',1,'streaming.h']]],
+  ['stream_5freorder',['stream_reorder',['../streaming_8h.html#a10fe79a4bb3bceb3c6093b33e0e65911',1,'streaming.h']]],
+  ['stream_5fsafe_5fmax',['STREAM_SAFE_MAX',['../streaming_8h.html#ad5413ecfe645b9558374e3bd110ea158',1,'streaming.h']]],
+  ['stream_5fwrite',['stream_write',['../streaming_8h.html#a824519466ad91529dc2b47509fbfd48d',1,'streaming.h']]],
+  ['streamentry',['StreamEntry',['../structhelpers_1_1_stream_entry.html',1,'helpers']]],
+  ['streaming_2eh',['streaming.h',['../streaming_8h.html',1,'']]],
+  ['streamstate',['StreamState',['../struct_stream_state.html',1,'']]],
+  ['string_2dhelpers_2ehpp',['string-helpers.hpp',['../string-helpers_8hpp.html',1,'']]],
+  ['surrogate_5fhigh_5fend',['SURROGATE_HIGH_END',['../codepoint_8h.html#a4f311d7277a571d18368d4a03859bf26',1,'codepoint.h']]],
+  ['surrogate_5fhigh_5fstart',['SURROGATE_HIGH_START',['../codepoint_8h.html#a29828bc1d74913647fba056e332fe658',1,'codepoint.h']]],
+  ['surrogate_5flow_5fend',['SURROGATE_LOW_END',['../codepoint_8h.html#a79c5f59f0538a2ca22612c6bc0089479',1,'codepoint.h']]],
+  ['surrogate_5flow_5fstart',['SURROGATE_LOW_START',['../codepoint_8h.html#aa44dbeadd13419376f603b472b9e7995',1,'codepoint.h']]]
 ];

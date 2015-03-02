@@ -1,0 +1,27 @@
+var codepoint_8h =
+[
+    [ "HANGUL_L_COUNT", "codepoint_8h.html#a92dad258f85784ad7cd97ac456368c0f", null ],
+    [ "HANGUL_L_FIRST", "codepoint_8h.html#ae6662271e28370f989c56de8c39c2ef0", null ],
+    [ "HANGUL_L_LAST", "codepoint_8h.html#ac764a36a728587f6b2dba92295d11c50", null ],
+    [ "HANGUL_N_COUNT", "codepoint_8h.html#a33ab88271eb7c8264b36bd30e05c378e", null ],
+    [ "HANGUL_S_COUNT", "codepoint_8h.html#a2a1a36768f7f157866bedb2a214884b3", null ],
+    [ "HANGUL_S_FIRST", "codepoint_8h.html#afa8aa71655ca9bbcfe266d2ccc3874d9", null ],
+    [ "HANGUL_S_LAST", "codepoint_8h.html#aac333abbdc8ed77b2962f8d11d742c86", null ],
+    [ "HANGUL_T_COUNT", "codepoint_8h.html#a26f03a1ca3c0a0d8bd368d67ce1f6ea1", null ],
+    [ "HANGUL_T_FIRST", "codepoint_8h.html#ae5fbc68bb447b1e3a3f2d7115a23818d", null ],
+    [ "HANGUL_T_LAST", "codepoint_8h.html#a7d3fca8f7201ec41e6f3fcbf31f8b26c", null ],
+    [ "HANGUL_V_COUNT", "codepoint_8h.html#a075614f57b6ab09efade4e86c4ccbf12", null ],
+    [ "HANGUL_V_FIRST", "codepoint_8h.html#a5fd7e3fbb4b413b0a01e13662befed9a", null ],
+    [ "HANGUL_V_LAST", "codepoint_8h.html#a29dc142e6d4b8522164e2cd252dd8eae", null ],
+    [ "MAX_BASIC_MULTILINGUAR_PLANE", "codepoint_8h.html#a504f5f3135c1c144c9d3c20cc3fafb58", null ],
+    [ "MAX_LEGAL_UNICODE", "codepoint_8h.html#aab6775ec08f557211c7a388363e864cf", null ],
+    [ "REPLACEMENT_CHARACTER", "codepoint_8h.html#aa20eca7b2a39a478867d243f642c60d8", null ],
+    [ "SURROGATE_HIGH_END", "codepoint_8h.html#a4f311d7277a571d18368d4a03859bf26", null ],
+    [ "SURROGATE_HIGH_START", "codepoint_8h.html#a29828bc1d74913647fba056e332fe658", null ],
+    [ "SURROGATE_LOW_END", "codepoint_8h.html#a79c5f59f0538a2ca22612c6bc0089479", null ],
+    [ "SURROGATE_LOW_START", "codepoint_8h.html#aa44dbeadd13419376f603b472b9e7995", null ],
+    [ "codepoint_encoded_length", "codepoint_8h.html#a8f0a5892945fe31d05275ac263a62e06", null ],
+    [ "codepoint_read", "codepoint_8h.html#aa78810d94d12af8b3f4da86e82456903", null ],
+    [ "codepoint_write", "codepoint_8h.html#a71e6812cd50fca7e72a714793dc6a8ef", null ],
+    [ "codepoint_decoded_length", "codepoint_8h.html#a233f120e3e536775da07774489008a33", null ]
+];

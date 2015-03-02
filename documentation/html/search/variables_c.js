@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['y',['y',['../examples_8txt.html#ad7ff286af557b2f9cf7e7e51dfca2d40',1,'examples.txt']]]
+  ['titlecase',['titlecase',['../structhelpers_1_1_case_mapping_entry.html#a2a1bbc055e5ea6defff0ce0c1fd2728b',1,'helpers::CaseMappingEntry']]]
 ];

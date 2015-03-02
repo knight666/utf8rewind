@@ -1,20 +1,8 @@
 var searchData=
 [
-  ['utf8rewind',['utf8rewind',['../index.html',1,'']]],
-  ['unicode_5ft',['unicode_t',['../utf8rewind_8h.html#a5fc61747372b4165739ae5a52384468f',1,'utf8rewind.h']]],
-  ['utf16_5ft',['utf16_t',['../utf8rewind_8h.html#a1e9e182e040e6f408cfb7188eaafb48a',1,'utf8rewind.h']]],
-  ['utf16toutf8',['utf16toutf8',['../utf8rewind_8h.html#a4d6a9017be860a575c8dc1ac8c5a9253',1,'utf8rewind.h']]],
-  ['utf32toutf8',['utf32toutf8',['../utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5finvalid_5fdata',['UTF8_ERR_INVALID_DATA',['../utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5fnot_5fenough_5fspace',['UTF8_ERR_NOT_ENOUGH_SPACE',['../utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5funmatched_5fhigh_5fsurrogate_5fpair',['UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR',['../utf8rewind_8h.html#a0661d820dd006e49adfbdf0c7a9dec14',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5funmatched_5flow_5fsurrogate_5fpair',['UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR',['../utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c',1,'utf8rewind.h']]],
-  ['utf8_5fwchar_5fsize',['UTF8_WCHAR_SIZE',['../group__configuration.html#gab1fce55198dd19e0eb149eb3ad34021b',1,'utf8rewind.h']]],
-  ['utf8_5fwchar_5futf16',['UTF8_WCHAR_UTF16',['../group__configuration.html#gaf41b9c54e9a94ae8ef41a8c17e7c2d51',1,'utf8rewind.h']]],
-  ['utf8len',['utf8len',['../utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e',1,'utf8rewind.h']]],
-  ['utf8rewind_2eh',['utf8rewind.h',['../utf8rewind_8h.html',1,'']]],
-  ['utf8seek',['utf8seek',['../utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb',1,'utf8rewind.h']]],
-  ['utf8toutf16',['utf8toutf16',['../utf8rewind_8h.html#a384129f817fbbcc7cad6c08b2db354f5',1,'utf8rewind.h']]],
-  ['utf8toutf32',['utf8toutf32',['../utf8rewind_8h.html#a8f262c70a9fea7b45647ffea8b571008',1,'utf8rewind.h']]],
-  ['utf8towide',['utf8towide',['../utf8rewind_8h.html#a70996b8a2475177e9156948fe9c1996d',1,'utf8rewind.h']]]
+  ['end',['end',['../struct_quick_check_record.html#add41a68ee110ead75eacd151b00898ef',1,'QuickCheckRecord']]],
+  ['examples',['Examples',['../examples.html',1,'']]],
+  ['examples_2etxt',['examples.txt',['../examples_8txt.html',1,'']]],
+  ['expect_5fcpeq',['EXPECT_CPEQ',['../helpers-strings_8hpp.html#a8bb6a5e64d5970238724dd62da2aa300',1,'helpers-strings.hpp']]],
+  ['expect_5futf8eq',['EXPECT_UTF8EQ',['../helpers-strings_8hpp.html#a15e0d5efea5f0242c0c35e3b6ce764fb',1,'helpers-strings.hpp']]]
 ];
