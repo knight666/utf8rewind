@@ -1,4 +1,5 @@
 var namespaces =
 [
-    [ "utf8rewind", "namespaceutf8rewind.html", null ]
+    [ "helpers", "namespacehelpers.html", null ],
+    [ "testing", "namespacetesting.html", null ]
 ];

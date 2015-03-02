@@ -23,21 +23,21 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/*! 
-	@file utf8rewind.h
-	@brief Functions for working with UTF-8 encoded text.
+/*!
+	\file utf8rewind.h
+	\brief Functions for working with UTF-8 encoded text.
 */
 
 #ifndef _UTF8REWIND_H_
 #define _UTF8REWIND_H_
 
-/// @cond IGNORE
+/*! \cond IGNORE */
 #include <stddef.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include <wchar.h>
-/// @endcond
+/*! \endcond */
 
 #define UTF8_ERR_INVALID_DATA                   (-1)
 #define UTF8_ERR_INVALID_FLAG                   (-2)
@@ -50,8 +50,17 @@
 #define UTF8_NORMALIZE_DECOMPOSE                0x00000002
 #define UTF8_NORMALIZE_COMPATIBILITY            0x00000004
 
-//! @defgroup configuration Global configuration
-//! @{
+/*!
+	\defgroup configuration Global configuration
+	\{
+*/
+
+/*!
+	\def UTF8_WCHAR_SIZE
+	\brief Specifies the size of the `wchar_t` type. On Windows this
+	is 2, on POSIX systems it is 4. If not specified on the command
+	line, the compiler tries to automatically determine the value.
+*/
 
 #ifndef UTF8_WCHAR_SIZE
 	#if (__SIZEOF_WCHAR_T__ == 4) || (WCHAR_MAX > UINT16_MAX) || (__WCHAR_MAX__ > UINT16_MAX)
@@ -61,6 +70,14 @@
 	#endif
 #endif
 
+/*!
+	\def UTF8_WCHAR_UTF16
+	\brief The `wchar_t` is treated as UTF-16 (2 bytes).
+
+	\def UTF8_WCHAR_UTF32
+	\brief The `wchar_t` is treated as UTF-32 (4 bytes).
+*/
+
 #if (UTF8_WCHAR_SIZE == 4)
 	#define UTF8_WCHAR_UTF32 (1)
 #elif (UTF8_WCHAR_SIZE == 2)
@@ -69,7 +86,9 @@
 	#error Invalid size for wchar_t type.
 #endif
 
-//! @}
+/*!
+	\}
+*/
 
 #if defined(__cplusplus)
 extern "C" {
