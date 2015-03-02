@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.9"/>
-<title>utf8rewind: source Directory Reference</title>
+<title>utf8rewind: Flags</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -83,7 +83,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html','');});
+$(document).ready(function(){initNavTree('group__flags.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -101,29 +101,74 @@ $(document).ready(function(){initNavTree('dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.h
 </div>
 
 <div class="header">
+  <div class="summary">
+<a href="#define-members">Macros</a>  </div>
   <div class="headertitle">
-<div class="title">source Directory Reference</div>  </div>
+<div class="title">Flags</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="subdirs"></a>
-Directories</h2></td></tr>
-<tr class="memitem:dir_a1987cf8ca160ad0403a567bf62072d3"><td class="memItemLeft" align="right" valign="top">directory &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dir_a1987cf8ca160ad0403a567bf62072d3.html">internal</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:dir_bcc475e2baa7fb4fddbbf77a013083ee"><td class="memItemLeft" align="right" valign="top">directory &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dir_bcc475e2baa7fb4fddbbf77a013083ee.html">tests</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="files"></a>
-Files</h2></td></tr>
-<tr class="memitem:unicodedatabase_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unicodedatabase_8h.html">unicodedatabase.h</a> <a href="unicodedatabase_8h_source.html">[code]</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga6b8ab40213f4505f96b4655fd468848d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__flags.html#ga6b8ab40213f4505f96b4655fd468848d">UTF8_NORMALIZE_COMPOSE</a>&#160;&#160;&#160;0x00000001</td></tr>
+<tr class="memdesc:ga6b8ab40213f4505f96b4655fd468848d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalize input to NFC.  <a href="#ga6b8ab40213f4505f96b4655fd468848d">More...</a><br /></td></tr>
+<tr class="separator:ga6b8ab40213f4505f96b4655fd468848d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa9cf4bf8f49035a84de94973c9c31181"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__flags.html#gaa9cf4bf8f49035a84de94973c9c31181">UTF8_NORMALIZE_DECOMPOSE</a>&#160;&#160;&#160;0x00000002</td></tr>
+<tr class="memdesc:gaa9cf4bf8f49035a84de94973c9c31181"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalize input to NFD.  <a href="#gaa9cf4bf8f49035a84de94973c9c31181">More...</a><br /></td></tr>
+<tr class="separator:gaa9cf4bf8f49035a84de94973c9c31181"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga53d4bc1347e2cb233eb212ff7160721f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__flags.html#ga53d4bc1347e2cb233eb212ff7160721f">UTF8_NORMALIZE_COMPATIBILITY</a>&#160;&#160;&#160;0x00000004</td></tr>
+<tr class="memdesc:ga53d4bc1347e2cb233eb212ff7160721f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes composed normalization to NFKC or decomposed normalization to NFKD.  <a href="#ga53d4bc1347e2cb233eb212ff7160721f">More...</a><br /></td></tr>
+<tr class="separator:ga53d4bc1347e2cb233eb212ff7160721f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="ga53d4bc1347e2cb233eb212ff7160721f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UTF8_NORMALIZE_COMPATIBILITY&#160;&#160;&#160;0x00000004</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes composed normalization to NFKC or decomposed normalization to NFKD. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga6b8ab40213f4505f96b4655fd468848d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UTF8_NORMALIZE_COMPOSE&#160;&#160;&#160;0x00000001</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Normalize input to NFC. </p>
+
+</div>
+</div>
+<a class="anchor" id="gaa9cf4bf8f49035a84de94973c9c31181"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UTF8_NORMALIZE_DECOMPOSE&#160;&#160;&#160;0x00000002</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Normalize input to NFD. </p>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li>
     <li class="footer">Generated on Mon Mar 2 2015 09:51:51 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9 </li>
