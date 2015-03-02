@@ -1,4 +1,4 @@
-var codepoint_8h =
+var group__internal =
 [
     [ "HANGUL_L_COUNT", "group__internal.html#ga92dad258f85784ad7cd97ac456368c0f", null ],
     [ "HANGUL_L_FIRST", "group__internal.html#gae6662271e28370f989c56de8c39c2ef0", null ],

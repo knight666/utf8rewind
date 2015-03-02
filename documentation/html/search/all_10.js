@@ -18,8 +18,8 @@ var searchData=
   ['streaming_2eh',['streaming.h',['../streaming_8h.html',1,'']]],
   ['streamstate',['StreamState',['../struct_stream_state.html',1,'']]],
   ['string_2dhelpers_2ehpp',['string-helpers.hpp',['../string-helpers_8hpp.html',1,'']]],
-  ['surrogate_5fhigh_5fend',['SURROGATE_HIGH_END',['../codepoint_8h.html#a4f311d7277a571d18368d4a03859bf26',1,'codepoint.h']]],
-  ['surrogate_5fhigh_5fstart',['SURROGATE_HIGH_START',['../codepoint_8h.html#a29828bc1d74913647fba056e332fe658',1,'codepoint.h']]],
-  ['surrogate_5flow_5fend',['SURROGATE_LOW_END',['../codepoint_8h.html#a79c5f59f0538a2ca22612c6bc0089479',1,'codepoint.h']]],
-  ['surrogate_5flow_5fstart',['SURROGATE_LOW_START',['../codepoint_8h.html#aa44dbeadd13419376f603b472b9e7995',1,'codepoint.h']]]
+  ['surrogate_5fhigh_5fend',['SURROGATE_HIGH_END',['../group__internal.html#ga4f311d7277a571d18368d4a03859bf26',1,'codepoint.h']]],
+  ['surrogate_5fhigh_5fstart',['SURROGATE_HIGH_START',['../group__internal.html#ga29828bc1d74913647fba056e332fe658',1,'codepoint.h']]],
+  ['surrogate_5flow_5fend',['SURROGATE_LOW_END',['../group__internal.html#ga79c5f59f0538a2ca22612c6bc0089479',1,'codepoint.h']]],
+  ['surrogate_5flow_5fstart',['SURROGATE_LOW_START',['../group__internal.html#gaa44dbeadd13419376f603b472b9e7995',1,'codepoint.h']]]
 ];
