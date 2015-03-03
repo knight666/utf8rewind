@@ -1,11 +1,8 @@
 var searchData=
 [
-  ['utf8charlen',['utf8charlen',['../utf8rewind_8h.html#a4c456e1c3d8637bdf3f999aa0377b2f2',1,'utf8rewind.h']]],
-  ['utf8charvalid',['utf8charvalid',['../utf8rewind_8h.html#a9d19522cd09e2dff6fca8db6a3a5cacf',1,'utf8rewind.h']]],
-  ['utf8convertucs2',['utf8convertucs2',['../utf8rewind_8h.html#a9c0b98a672e469ea9da31fac51fc321e',1,'utf8rewind.h']]],
-  ['utf8decode',['utf8decode',['../utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c',1,'utf8rewind.h']]],
-  ['utf8encode',['utf8encode',['../utf8rewind_8h.html#ab936e1848e79cdff95c834a294a7539c',1,'utf8rewind.h']]],
-  ['utf8len',['utf8len',['../utf8rewind_8h.html#ab34ee783c503a651da04128ec8086b4b',1,'utf8rewind.h']]],
-  ['utf8seek',['utf8seek',['../utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb',1,'utf8rewind.h']]],
-  ['utf8towc',['utf8towc',['../utf8rewind_8h.html#afe10f10be61afc896374cac318c8494d',1,'utf8rewind.h']]]
+  ['nfc',['nfc',['../namespacehelpers.html#a0fec547845e05bf8b26921e0b2a00a37',1,'helpers::nfc(unicode_t codepoint)'],['../namespacehelpers.html#ad82de448d6af3d9aaab58a51ce9d94a0',1,'helpers::nfc(const std::string &amp;text)']]],
+  ['nfd',['nfd',['../namespacehelpers.html#aa464604cf4c92accb033b66376b5c17c',1,'helpers::nfd(unicode_t codepoint)'],['../namespacehelpers.html#ade793c56d18e5775489cf97907893f9a',1,'helpers::nfd(const std::string &amp;text)']]],
+  ['nfkc',['nfkc',['../namespacehelpers.html#aac029d9adc9b343804371151e71b6901',1,'helpers::nfkc(unicode_t codepoint)'],['../namespacehelpers.html#a873e7c92bb15d0788b4f2fad3e2dd083',1,'helpers::nfkc(const std::string &amp;text)']]],
+  ['nfkd',['nfkd',['../namespacehelpers.html#a86bb583db56f2387f7e55dad6186dbbf',1,'helpers::nfkd(unicode_t codepoint)'],['../namespacehelpers.html#a48dd10d083fec4967bf476f53510c197',1,'helpers::nfkd(const std::string &amp;text)']]],
+  ['normalizationentry',['NormalizationEntry',['../structhelpers_1_1_normalization_entry.html#aa7807536f8bfef12b18379227d84cc3c',1,'helpers::NormalizationEntry']]]
 ];

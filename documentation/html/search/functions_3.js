@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['passwordfield_5fentercharacter',['PasswordField_EnterCharacter',['../examples_8txt.html#a09f242b2986e3fd4adbad14ce85349fd',1,'PasswordField_EnterCharacter(char input):&#160;examples.txt'],['../examples_8txt.html#a1c654bebdd049c17d4f4ea1616d14a37',1,'PasswordField_EnterCharacter(unicode_t input):&#160;examples.txt']]]
+  ['identifiable',['identifiable',['../namespacehelpers.html#acff46a05838fbbe63165857f57e75cc9',1,'helpers::identifiable(unicode_t codepoint)'],['../namespacehelpers.html#ae3792002bc7c12771a364b4ac3b3effd',1,'helpers::identifiable(unicode_t *codepoint, size_t codepointsSize)'],['../namespacehelpers.html#af8c6ba09eb658b865438231ed8171b47',1,'helpers::identifiable(const std::string &amp;text)']]]
 ];

@@ -1,24 +1,11 @@
 var searchData=
 [
-  ['utf8rewind',['utf8rewind',['../index.html',1,'']]],
-  ['ucs2_5ft',['ucs2_t',['../utf8rewind_8h.html#a367c7c085f27100ec4bbfc8f220aeaab',1,'utf8rewind.h']]],
-  ['unicode_5ft',['unicode_t',['../utf8rewind_8h.html#a1fe7d84695f910c23ceca80b12983323',1,'utf8rewind.h']]],
-  ['utf',['UTF',['../examples_8txt.html#a97eb9c2e30c726c8986bb41dbd11c104',1,'examples.txt']]],
-  ['utf16_5ft',['utf16_t',['../utf8rewind_8h.html#a4dce96cad338d9281612277b2d80950c',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5finvalid_5fcharacter',['UTF8_ERR_INVALID_CHARACTER',['../utf8rewind_8h.html#aa3a118249a9ae08e152079f4989ca588',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5finvalid_5fdata',['UTF8_ERR_INVALID_DATA',['../utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5fnot_5fenough_5fspace',['UTF8_ERR_NOT_ENOUGH_SPACE',['../utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5fout_5fof_5frange',['UTF8_ERR_OUT_OF_RANGE',['../utf8rewind_8h.html#a26c37b1e55b873bc49642319dc3d19e5',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5funhandled_5fsurrogate_5fpair',['UTF8_ERR_UNHANDLED_SURROGATE_PAIR',['../utf8rewind_8h.html#aa0c5762ac11727331a3538f8e0a56104',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5funmatched_5fhigh_5fsurrogate_5fpair',['UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR',['../utf8rewind_8h.html#a0661d820dd006e49adfbdf0c7a9dec14',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5funmatched_5flow_5fsurrogate_5fpair',['UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR',['../utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c',1,'utf8rewind.h']]],
-  ['utf8charlen',['utf8charlen',['../utf8rewind_8h.html#a4c456e1c3d8637bdf3f999aa0377b2f2',1,'utf8rewind.h']]],
-  ['utf8charvalid',['utf8charvalid',['../utf8rewind_8h.html#a9d19522cd09e2dff6fca8db6a3a5cacf',1,'utf8rewind.h']]],
-  ['utf8convertucs2',['utf8convertucs2',['../utf8rewind_8h.html#a9c0b98a672e469ea9da31fac51fc321e',1,'utf8rewind.h']]],
-  ['utf8decode',['utf8decode',['../utf8rewind_8h.html#a4d0c2482832b035a189e96a0d3d80e4c',1,'utf8rewind.h']]],
-  ['utf8encode',['utf8encode',['../utf8rewind_8h.html#ab936e1848e79cdff95c834a294a7539c',1,'utf8rewind.h']]],
-  ['utf8len',['utf8len',['../utf8rewind_8h.html#ab34ee783c503a651da04128ec8086b4b',1,'utf8rewind.h']]],
-  ['utf8rewind_2eh',['utf8rewind.h',['../utf8rewind_8h.html',1,'']]],
-  ['utf8seek',['utf8seek',['../utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb',1,'utf8rewind.h']]],
-  ['utf8towc',['utf8towc',['../utf8rewind_8h.html#afe10f10be61afc896374cac318c8494d',1,'utf8rewind.h']]]
+  ['quick_5fcheck',['quick_check',['../struct_stream_state.html#ac8bac3e1bbfb13b79c93522c09ec961e',1,'StreamState::quick_check()'],['../structhelpers_1_1_stream_entry.html#a3e5a19432fdc696d518022ea71649e04',1,'helpers::StreamEntry::quick_check()']]],
+  ['quickcheck',['quickCheck',['../namespacehelpers.html#a3c5afb4959ae69a06a507546d8945690',1,'helpers::quickCheck(unicode_t codepoint, uint8_t type)'],['../namespacehelpers.html#a5a4fa4eed774a538266108ef6b8ca713',1,'helpers::quickCheck(unicode_t *codepoint, size_t codepointsSize, uint8_t type)'],['../namespacehelpers.html#ade64beb163b83c1d4ff7edbd36ae4c92',1,'helpers::quickCheck(const std::string &amp;text, uint8_t type)']]],
+  ['quickcheckrecord',['QuickCheckRecord',['../struct_quick_check_record.html',1,'']]],
+  ['quickcheckresult',['QuickCheckResult',['../database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34',1,'database.h']]],
+  ['quickcheckresult_5fmaybe',['QuickCheckResult_Maybe',['../database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34a1ca94e639fe1031e3f23741e214b1321',1,'database.h']]],
+  ['quickcheckresult_5fno',['QuickCheckResult_No',['../database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34ab7ab1f4271a614f87d4ba4ddf83b178b',1,'database.h']]],
+  ['quickcheckresult_5fyes',['QuickCheckResult_Yes',['../database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34ac3c715b5a9b7a9480e04690c3d153ab5',1,'database.h']]],
+  ['quickchecktostring',['quickCheckToString',['../namespacehelpers.html#ab35e90ec54f545dc21d7021fec3c830d',1,'helpers']]]
 ];

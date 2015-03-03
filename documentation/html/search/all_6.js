@@ -1,8 +1,21 @@
 var searchData=
 [
-  ['i',['i',['../examples_8txt.html#ae46bd26d7133dfe98f8cec7c5ac5c7a1',1,'examples.txt']]],
-  ['if',['if',['../examples_8txt.html#abceda618dae7dc54e24fc69d77e5908d',1,'examples.txt']]],
-  ['input',['input',['../examples_8txt.html#a5cde0e0f690007c40e895f9b1d4d4486',1,'examples.txt']]],
-  ['instead',['instead',['../examples_8txt.html#ae05b3e7ac93ec627ca24cd4ddd91a7fc',1,'examples.txt']]],
-  ['itself',['itself',['../examples_8txt.html#a5bc5022e4a0f5e00322fef4b26a7ecbe',1,'examples.txt']]]
+  ['hangul_5fl_5fcount',['HANGUL_L_COUNT',['../group__internal.html#ga92dad258f85784ad7cd97ac456368c0f',1,'codepoint.h']]],
+  ['hangul_5fl_5ffirst',['HANGUL_L_FIRST',['../group__internal.html#gae6662271e28370f989c56de8c39c2ef0',1,'codepoint.h']]],
+  ['hangul_5fl_5flast',['HANGUL_L_LAST',['../group__internal.html#gac764a36a728587f6b2dba92295d11c50',1,'codepoint.h']]],
+  ['hangul_5fn_5fcount',['HANGUL_N_COUNT',['../group__internal.html#ga33ab88271eb7c8264b36bd30e05c378e',1,'codepoint.h']]],
+  ['hangul_5fs_5fcount',['HANGUL_S_COUNT',['../group__internal.html#ga2a1a36768f7f157866bedb2a214884b3',1,'codepoint.h']]],
+  ['hangul_5fs_5ffirst',['HANGUL_S_FIRST',['../group__internal.html#gafa8aa71655ca9bbcfe266d2ccc3874d9',1,'codepoint.h']]],
+  ['hangul_5fs_5flast',['HANGUL_S_LAST',['../group__internal.html#gaac333abbdc8ed77b2962f8d11d742c86',1,'codepoint.h']]],
+  ['hangul_5ft_5fcount',['HANGUL_T_COUNT',['../group__internal.html#ga26f03a1ca3c0a0d8bd368d67ce1f6ea1',1,'codepoint.h']]],
+  ['hangul_5ft_5ffirst',['HANGUL_T_FIRST',['../group__internal.html#gae5fbc68bb447b1e3a3f2d7115a23818d',1,'codepoint.h']]],
+  ['hangul_5ft_5flast',['HANGUL_T_LAST',['../group__internal.html#ga7d3fca8f7201ec41e6f3fcbf31f8b26c',1,'codepoint.h']]],
+  ['hangul_5fv_5fcount',['HANGUL_V_COUNT',['../group__internal.html#ga075614f57b6ab09efade4e86c4ccbf12',1,'codepoint.h']]],
+  ['hangul_5fv_5ffirst',['HANGUL_V_FIRST',['../group__internal.html#ga5fd7e3fbb4b413b0a01e13662befed9a',1,'codepoint.h']]],
+  ['hangul_5fv_5flast',['HANGUL_V_LAST',['../group__internal.html#ga29dc142e6d4b8522164e2cd252dd8eae',1,'codepoint.h']]],
+  ['helpers',['helpers',['../namespacehelpers.html',1,'']]],
+  ['helpers_2dcasemapping_2ehpp',['helpers-casemapping.hpp',['../helpers-casemapping_8hpp.html',1,'']]],
+  ['helpers_2dnormalization_2ehpp',['helpers-normalization.hpp',['../helpers-normalization_8hpp.html',1,'']]],
+  ['helpers_2dstreams_2ehpp',['helpers-streams.hpp',['../helpers-streams_8hpp.html',1,'']]],
+  ['helpers_2dstrings_2ehpp',['helpers-strings.hpp',['../helpers-strings_8hpp.html',1,'']]]
 ];
