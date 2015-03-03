@@ -87,6 +87,7 @@
 				'source/tests/suite-stream-write.cpp',
 				'source/tests/suite-utf16-toutf8.cpp',
 				'source/tests/suite-utf32-toutf8.cpp',
+				'source/tests/suite-utf8-isnormalized-compose.cpp',
 				'source/tests/suite-utf8-len.cpp',
 				'source/tests/suite-utf8-normalize-compose.cpp',
 				'source/tests/suite-utf8-normalize-decompose.cpp',
