@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['unicodecompositionrecordcount',['UnicodeCompositionRecordCount',['../unicodedatabase_8h.html#adedce48a6447b2be8c222ef80c5c4c57',1,'unicodedatabase.h']]],
+  ['unicodecompositionrecordptr',['UnicodeCompositionRecordPtr',['../unicodedatabase_8h.html#a395b5d1323edd86735e7a98cb5bbd9bf',1,'unicodedatabase.h']]],
+  ['unicodelowercaserecordcount',['UnicodeLowercaseRecordCount',['../unicodedatabase_8h.html#a3b732a2af995a1cc402177acd69641c2',1,'unicodedatabase.h']]],
+  ['unicodelowercaserecordptr',['UnicodeLowercaseRecordPtr',['../unicodedatabase_8h.html#a68f63ee618e7e97dccae78d89ec33844',1,'unicodedatabase.h']]],
+  ['unicodenfdrecordcount',['UnicodeNFDRecordCount',['../unicodedatabase_8h.html#ac3a289ad23f0e147e8ac518087700d73',1,'unicodedatabase.h']]],
+  ['unicodenfdrecordptr',['UnicodeNFDRecordPtr',['../unicodedatabase_8h.html#abde3760e5b39edc4d2b97fd0fea6f4a9',1,'unicodedatabase.h']]],
+  ['unicodenfkdrecordcount',['UnicodeNFKDRecordCount',['../unicodedatabase_8h.html#a60ae92fb96085e9c50d269e95dcddff4',1,'unicodedatabase.h']]],
+  ['unicodenfkdrecordptr',['UnicodeNFKDRecordPtr',['../unicodedatabase_8h.html#a5148848762b8da7878fa1852cab1bcd3',1,'unicodedatabase.h']]],
+  ['unicodequickcheckcanonicalcombiningclassrecordcount',['UnicodeQuickCheckCanonicalCombiningClassRecordCount',['../unicodedatabase_8h.html#ac50942db5d3d940b3a236db7cde5c237',1,'unicodedatabase.h']]],
+  ['unicodequickcheckcanonicalcombiningclassrecordptr',['UnicodeQuickCheckCanonicalCombiningClassRecordPtr',['../unicodedatabase_8h.html#aaff1bcda12dd161494bc395f449999ca',1,'unicodedatabase.h']]],
+  ['unicodequickcheckgeneralcategoryrecordcount',['UnicodeQuickCheckGeneralCategoryRecordCount',['../unicodedatabase_8h.html#aff385de6f50dc46ca0fbf92f9f597d46',1,'unicodedatabase.h']]],
+  ['unicodequickcheckgeneralcategoryrecordptr',['UnicodeQuickCheckGeneralCategoryRecordPtr',['../unicodedatabase_8h.html#a0018df27b010b467c2548eeed4b52e63',1,'unicodedatabase.h']]],
+  ['unicodequickchecknfcrecordcount',['UnicodeQuickCheckNFCRecordCount',['../unicodedatabase_8h.html#ae2c4ba53e5c519c615d19553bb99d5d4',1,'unicodedatabase.h']]],
+  ['unicodequickchecknfcrecordptr',['UnicodeQuickCheckNFCRecordPtr',['../unicodedatabase_8h.html#a3aa8c4c127f769f2bb079bb41dd5d130',1,'unicodedatabase.h']]],
+  ['unicodequickchecknfdrecordcount',['UnicodeQuickCheckNFDRecordCount',['../unicodedatabase_8h.html#a92b61f9fc6c6ac84453e7c93a09741ce',1,'unicodedatabase.h']]],
+  ['unicodequickchecknfdrecordptr',['UnicodeQuickCheckNFDRecordPtr',['../unicodedatabase_8h.html#a6b01364811447c03a3ad19e6d7a2cf51',1,'unicodedatabase.h']]],
+  ['unicodequickchecknfkcrecordcount',['UnicodeQuickCheckNFKCRecordCount',['../unicodedatabase_8h.html#ac39561c07bc2e2691beade6523b3f6db',1,'unicodedatabase.h']]],
+  ['unicodequickchecknfkcrecordptr',['UnicodeQuickCheckNFKCRecordPtr',['../unicodedatabase_8h.html#a51206c25b913691f27a340562f09f29a',1,'unicodedatabase.h']]],
+  ['unicodequickchecknfkdrecordcount',['UnicodeQuickCheckNFKDRecordCount',['../unicodedatabase_8h.html#ad854bdfc965ddee295e5272c3d69bd05',1,'unicodedatabase.h']]],
+  ['unicodequickchecknfkdrecordptr',['UnicodeQuickCheckNFKDRecordPtr',['../unicodedatabase_8h.html#a9d09c29a7f1f07dd811893bb1dfb3912',1,'unicodedatabase.h']]],
+  ['unicodetitlecaserecordcount',['UnicodeTitlecaseRecordCount',['../unicodedatabase_8h.html#aa89890567714ba2f0e6f92e90e19f150',1,'unicodedatabase.h']]],
+  ['unicodetitlecaserecordptr',['UnicodeTitlecaseRecordPtr',['../unicodedatabase_8h.html#a6d70fc5110fd3cebf18fa5dd29021ea6',1,'unicodedatabase.h']]],
+  ['unicodeuppercaserecordcount',['UnicodeUppercaseRecordCount',['../unicodedatabase_8h.html#a744976185f2ab9261f81377a74d06b73',1,'unicodedatabase.h']]],
+  ['unicodeuppercaserecordptr',['UnicodeUppercaseRecordPtr',['../unicodedatabase_8h.html#a854855e51d9b5d9da62f2a29dceb8196',1,'unicodedatabase.h']]],
+  ['uppercase',['uppercase',['../structhelpers_1_1_case_mapping_entry.html#ad17afc3ae31a751f42e10d337e047176',1,'helpers::CaseMappingEntry']]]
+];

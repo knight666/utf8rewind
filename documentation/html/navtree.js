@@ -1,47 +1,3 @@
-var NAVTREE =
-[
-  [ "utf8rewind", "index.html", [
-    [ "Examples", "examples.html", [
-      [ "Introduction", "index.html#introduction", null ],
-      [ "Why UTF-8?", "index.html#why-utf8", null ],
-      [ "Why not UTF-16?", "index.html#why-not-utf16", null ],
-      [ "Licensing", "index.html#license", null ],
-      [ "Building the project", "index.html#building", [
-        [ "Building on Windows with Visual Studio", "index.html#building-windows", null ],
-        [ "Building on Linux with GCC", "index.html#building-linux", null ],
-        [ "Building on Mac OS X using Xcode", "index.html#building-mac", null ],
-        [ "Using the source directly", "index.html#using-source", null ],
-        [ "Running the tests", "index.html#running-tests", null ]
-      ] ],
-      [ "Helping out", "index.html#helping-out", null ],
-      [ "Contact", "index.html#contact", null ],
-      [ "Changes to existing code", "examples.html#example-changes", null ],
-      [ "Dealing with user input", "examples.html#example-user-input", null ],
-      [ "Displaying Unicode text", "examples.html#example-display", null ],
-      [ "Interfacing with third-party libraries", "examples.html#example-interfacing", null ]
-    ] ],
-    [ "Modules", "modules.html", "modules" ],
-    [ "Files", null, [
-      [ "File List", "files.html", "files" ],
-      [ "File Members", "globals.html", [
-        [ "All", "globals.html", null ],
-        [ "Functions", "globals_func.html", null ],
-        [ "Typedefs", "globals_type.html", null ],
-        [ "Macros", "globals_defs.html", null ]
-      ] ]
-    ] ],
-    [ "Library interface", "utf8rewind_8h.html", null ],
-    [ "Examples", "examples.html", null ]
-  ] ]
-];
-
-var NAVTREEINDEX =
-[
-"dir_19f418181f8b699045c2f8e6c49f857e.html"
-];
-
-var SYNCONMSG = 'click to disable panel synchronisation';
-var SYNCOFFMSG = 'click to enable panel synchronisation';
 var navTreeSubIndices = new Array();
 
 function getData(varName)
@@ -149,7 +105,7 @@ function createIndent(o,domNode,node,level)
     node.expandToggle.onclick = function() {
       if (node.expanded) {
         $(node.getChildrenUL()).slideUp("fast");
-        node.plus_img.src = node.relpath+"ftv2pnode.png";
+        node.plus_img.src = node.relpath+"arrowright.png";
         node.expanded = false;
       } else {
         expandNode(o, node, false, false);
@@ -157,7 +113,7 @@ function createIndent(o,domNode,node,level)
     }
     node.expandToggle.appendChild(imgNode);
     domNode.appendChild(node.expandToggle);
-    imgNode.src = node.relpath+"ftv2pnode.png";
+    imgNode.src = node.relpath+"arrowright.png";
   } else {
     var span = document.createElement("span");
     span.style.display = 'inline-block';
@@ -313,9 +269,9 @@ function expandNode(o, node, imm, showRoot)
         $(node.getChildrenUL()).slideDown("fast");
       }
       if (node.isLast) {
-        node.plus_img.src = node.relpath+"ftv2mlastnode.png";
+        node.plus_img.src = node.relpath+"arrowdown.png";
       } else {
-        node.plus_img.src = node.relpath+"ftv2mnode.png";
+        node.plus_img.src = node.relpath+"arrowdown.png";
       }
       node.expanded = true;
     }
@@ -385,11 +341,7 @@ function showNode(o, node, index, hash)
         getNode(o, node);
       }
       $(node.getChildrenUL()).css({'display':'block'});
-      if (node.isLast) {
-        node.plus_img.src = node.relpath+"ftv2mlastnode.png";
-      } else {
-        node.plus_img.src = node.relpath+"ftv2mnode.png";
-      }
+      node.plus_img.src = node.relpath+"arrowdown.png";
       node.expanded = true;
       var n = node.children[o.breadcrumbs[index]];
       if (index+1<o.breadcrumbs.length) {
@@ -527,7 +479,7 @@ function initNavTree(toroot,relpath)
   o.node.expanded = false;
   o.node.isLast = true;
   o.node.plus_img = document.createElement("img");
-  o.node.plus_img.src = relpath+"ftv2pnode.png";
+  o.node.plus_img.src = relpath+"arrowright.png";
   o.node.plus_img.width = 16;
   o.node.plus_img.height = 22;
 

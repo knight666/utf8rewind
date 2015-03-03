@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['s',['s',['../examples_8txt.html#a3e26abc9b27a98b61cae922431b391ce',1,'examples.txt']]],
-  ['salt',['salt',['../examples_8txt.html#af3d07de5efb5e2c3eafc16b0cf7e07fa',1,'examples.txt']]],
-  ['src',['src',['../examples_8txt.html#ac566570747b87db71ea851d4d390e871',1,'examples.txt']]],
-  ['string',['string',['../examples_8txt.html#adc303d19deb1871f2dabfd7522cf5f9c',1,'examples.txt']]]
+  ['offset',['offset',['../struct_decomposition_record.html#a3ee193bbcab4357fc119b7dca7d349a2',1,'DecompositionRecord']]],
+  ['output',['output',['../struct_compose_state.html#a36dcdc95b9d065999265f4ede367002a',1,'ComposeState::output()'],['../struct_decompose_state.html#ae533212e7f53cd1fe1044e0606e56d25',1,'DecomposeState::output()']]]
 ];

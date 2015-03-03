@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['utf8_5ferr_5finvalid_5fdata',['UTF8_ERR_INVALID_DATA',['../utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5fnot_5fenough_5fspace',['UTF8_ERR_NOT_ENOUGH_SPACE',['../utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5funmatched_5fhigh_5fsurrogate_5fpair',['UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR',['../utf8rewind_8h.html#a0661d820dd006e49adfbdf0c7a9dec14',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5funmatched_5flow_5fsurrogate_5fpair',['UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR',['../utf8rewind_8h.html#a892fe61a47f8258d88e292553a459a1c',1,'utf8rewind.h']]]
+  ['check_5fnormalize_5fcodepoint',['CHECK_NORMALIZE_CODEPOINT',['../helpers-normalization_8hpp.html#a38296948baaf8aacc533de609cbccf5b',1,'helpers-normalization.hpp']]],
+  ['check_5fnormalize_5fsequence',['CHECK_NORMALIZE_SEQUENCE',['../helpers-normalization_8hpp.html#ab19173fe5c49c1df4eb81901e477d175',1,'helpers-normalization.hpp']]],
+  ['check_5fstream_5fentry',['CHECK_STREAM_ENTRY',['../helpers-streams_8hpp.html#a24167774b073f4678c9a0ff968a6bcc0',1,'helpers-streams.hpp']]],
+  ['check_5futf8_5fcasemapping',['CHECK_UTF8_CASEMAPPING',['../helpers-casemapping_8hpp.html#a69cd8b16ab17842c227134c2b4d6f1c4',1,'helpers-casemapping.hpp']]]
 ];

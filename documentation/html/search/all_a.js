@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['passwordfield_5fentercharacter',['PasswordField_EnterCharacter',['../examples_8txt.html#a09f242b2986e3fd4adbad14ce85349fd',1,'PasswordField_EnterCharacter(char input):&#160;examples.txt'],['../examples_8txt.html#a1c654bebdd049c17d4f4ea1616d14a37',1,'PasswordField_EnterCharacter(unicode_t input):&#160;examples.txt']]]
+  ['main_2etxt',['main.txt',['../main_8txt.html',1,'']]],
+  ['max_5fbasic_5fmultilinguar_5fplane',['MAX_BASIC_MULTILINGUAR_PLANE',['../group__internal.html#ga504f5f3135c1c144c9d3c20cc3fafb58',1,'codepoint.h']]],
+  ['max_5flegal_5funicode',['MAX_LEGAL_UNICODE',['../group__internal.html#gaab6775ec08f557211c7a388363e864cf',1,'codepoint.h']]]
 ];
