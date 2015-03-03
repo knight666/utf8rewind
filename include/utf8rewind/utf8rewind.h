@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2014 Quinten Lansu
+	Copyright (C) 2014-2015 Quinten Lansu
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -582,6 +582,78 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 */
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
 
+/*!
+	\brief Convert UTF-8 encoded text to uppercase.
+
+	This function allows users to convert UTF-8 encoded strings to
+	uppercase without first changing the encoding to UTF-32.
+	Conversion is fully compliant with the Unicode 7.0 standard.
+
+	Although most codepoints can be converted in-place, there
+	are notable exceptions. For example, U+00DF (LATIN SMALL LETTER
+	SHARP S) maps to "U+0053 U+0053" (LATIN CAPITAL LETTER S) when
+	uppercasing. Therefor, it is advised to first determine the size
+	in bytes of the output by calling the function with a NULL output
+	buffer.
+
+	Only a handful of scripts make a distinction between upper- and
+	lowercase. In addition to modern scripts, such as Latin, Greek,
+	Armenian and Cyrillic, a few historic or archaic scripts have
+	case. The vast majority of scripts do not have case distinctions.
+
+	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
+	!= toLower(toUpper(x))`.
+
+	Example:
+
+	\code{.c}
+		void Button_Draw(int32_t x, int32_t y, const char* text)
+		{
+			char* converted = NULL;
+			size_t converted_size;
+			int32_t text_box_width, text_box_height;
+			int32_t errors = 0;
+
+			converted_size = utf8toupper(text, strlen(text), NULL, 0, &errors);
+			if (converted_size == 0 ||
+				errors != 0)
+			{
+				goto cleanup;
+			}
+
+			converted = malloc(converted_size + 1);
+			utf8toupper(text, strlen(text), converted, converted_size, &errors);
+			converted[converted_size] = 0;
+
+			Font_GetTextDimensions(converted, &text_box_width, &text_box_height);
+
+			Draw_BoxFilled(x - 4, y - 4, text_box_width + 8, text_box_height + 8, 0x088A08);
+			Draw_BoxOutline(x - 4, y - 4, text_box_width + 8, text_box_height + 8, 0xA9F5A9);
+			Font_DrawText(x + 2, y + 1, converted, 0x000000);
+			Font_DrawText(x, y, converted, 0xFFFFFF);
+
+		cleanup:
+			if (converted != NULL)
+			{
+				free(converted);
+				converted = NULL;
+			}
+		}
+	\endcode
+
+	\param[in]   input       UTF-8 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[out]  target      Output buffer for the result.
+	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[out]  errors      Output for errors.
+
+	\return Bytes written or amount of bytes needed for output if
+	target buffer is specified as NULL.
+
+	\retval  #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
+	\retval  #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
+	\retval  #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
+*/
 size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
