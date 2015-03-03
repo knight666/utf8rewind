@@ -664,7 +664,7 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
-uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags);
+size_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, uint8_t* result);
 
 size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
 
