@@ -684,6 +684,82 @@ outofspace:
 	return bytes_written;
 }
 
+uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags)
+{
+	const char* src = input;
+	size_t src_size = inputSize;
+	uint8_t property;
+	uint8_t last_canonical_class;
+	uint8_t result;
+
+	/* Validate input and flags */
+
+	if (input == NULL ||
+		inputSize == 0 ||
+		(flags & (UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPOSE)) == 0)
+	{
+		return UTF8_NORMALIZATION_RESULT_YES;
+	}
+
+	/* Determine normalization property */
+
+	if ((flags & UTF8_NORMALIZE_COMPOSE) != 0)
+	{
+		property = ((flags & UTF8_NORMALIZE_COMPATIBILITY) != 0)
+			? UnicodeProperty_Normalization_Compatibility_Compose
+			: UnicodeProperty_Normalization_Compose;
+	}
+	else
+	{
+		property =
+			((flags & UTF8_NORMALIZE_COMPATIBILITY) != 0)
+			? UnicodeProperty_Normalization_Compatibility_Decompose
+			: UnicodeProperty_Normalization_Decompose;
+	}
+
+	/* Loop over input */
+
+	last_canonical_class = 0;
+	result = UTF8_NORMALIZATION_RESULT_YES;
+
+	while (src_size > 0)
+	{
+		unicode_t decoded;
+		uint8_t canonical_class;
+		uint8_t quick_check;
+
+		uint8_t read = codepoint_read(src, src_size, &decoded);
+		if (read == 0)
+		{
+			break;
+		}
+
+		canonical_class = database_queryproperty(decoded, UnicodeProperty_CanonicalCombiningClass);
+		if (last_canonical_class > canonical_class &&
+			canonical_class > 0)
+		{
+			return UTF8_NORMALIZATION_RESULT_NO;
+		}
+
+		quick_check = database_queryproperty(decoded, property);
+		if (quick_check == QuickCheckResult_No)
+		{
+			return UTF8_NORMALIZATION_RESULT_NO;
+		}
+		else if (quick_check == QuickCheckResult_Maybe)
+		{
+			result = UTF8_NORMALIZATION_RESULT_MAYBE;
+		}
+
+		last_canonical_class = canonical_class;
+
+		src += read;
+		src_size -= read;
+	}
+
+	return result;
+}
+
 size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
 {
 	char* dst = target;
