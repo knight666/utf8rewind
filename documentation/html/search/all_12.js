@@ -1,7 +1,7 @@
 var searchData=
 [
   ['utf8rewind',['utf8rewind',['../index.html',1,'']]],
-  ['unicode_5ft',['unicode_t',['../utf8rewind_8h.html#aea65d3ed643f803027827d47ccd3d981',1,'utf8rewind.h']]],
+  ['unicode_5ft',['unicode_t',['../utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988',1,'utf8rewind.h']]],
   ['unicodecompositionrecordcount',['UnicodeCompositionRecordCount',['../unicodedatabase_8h.html#adedce48a6447b2be8c222ef80c5c4c57',1,'unicodedatabase.h']]],
   ['unicodecompositionrecordptr',['UnicodeCompositionRecordPtr',['../unicodedatabase_8h.html#a395b5d1323edd86735e7a98cb5bbd9bf',1,'unicodedatabase.h']]],
   ['unicodedatabase_2eh',['unicodedatabase.h',['../unicodedatabase_8h.html',1,'']]],
@@ -38,7 +38,7 @@ var searchData=
   ['unicodeuppercaserecordcount',['UnicodeUppercaseRecordCount',['../unicodedatabase_8h.html#a744976185f2ab9261f81377a74d06b73',1,'unicodedatabase.h']]],
   ['unicodeuppercaserecordptr',['UnicodeUppercaseRecordPtr',['../unicodedatabase_8h.html#a854855e51d9b5d9da62f2a29dceb8196',1,'unicodedatabase.h']]],
   ['uppercase',['uppercase',['../structhelpers_1_1_case_mapping_entry.html#ad17afc3ae31a751f42e10d337e047176',1,'helpers::CaseMappingEntry::uppercase()'],['../namespacehelpers.html#abd5d5494900da68cf612041efedecf0c',1,'helpers::uppercase(unicode_t codepoint)'],['../namespacehelpers.html#add7558f6c094deda129e747919ef7bd3',1,'helpers::uppercase(const std::string &amp;text)']]],
-  ['utf16_5ft',['utf16_t',['../utf8rewind_8h.html#a56676fc77a7ba52afe7ee977902a88ea',1,'utf8rewind.h']]],
+  ['utf16_5ft',['utf16_t',['../utf8rewind_8h.html#a1c56c34e8f9e0fbcf4949782f110df8f',1,'utf8rewind.h']]],
   ['utf16toutf8',['utf16toutf8',['../utf8rewind_8h.html#a4d6a9017be860a575c8dc1ac8c5a9253',1,'utf8rewind.h']]],
   ['utf32',['utf32',['../namespacehelpers.html#ab407284146b236953737dea18b86ac69',1,'helpers']]],
   ['utf32toutf8',['utf32toutf8',['../utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80',1,'utf8rewind.h']]],

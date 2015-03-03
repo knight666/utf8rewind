@@ -153,97 +153,112 @@
 extern "C" {
 #endif
 
-typedef uint16_t utf16_t; /*!< UTF-16 encoded codepoint. */
-typedef uint32_t unicode_t; /*!< Unicode codepoint. */
-
-//! Get the length in codepoints of a UTF-8 encoded string.
 /*!
+	\var utf16_t
+	\brief UTF-16 encoded codepoint.
+*/
+typedef uint16_t utf16_t;
+
+/*!
+	\var unicode_t
+	\brief Unicode codepoint.
+*/
+typedef uint32_t unicode_t;
+
+/*!
+	\brief Get the length in codepoints of a UTF-8 encoded string.
+
 	Example:
 
-	@code{.c}
-		int8_t CheckPassword(const char* password)
+	\code{.c}
+		uint8_t CheckPassword(const char* password)
 		{
 			size_t length = utf8len(password);
 			return (length == utf8len("hunter2"));
 		}
-	@endcode
+	\endcode
 
-	@param[in]  text  UTF-8 encoded string.
+	\param[in]  text  UTF-8 encoded string.
 
-	@return Length in codepoints.
+	\return Length in codepoints.
 */
 size_t utf8len(const char* text);
 
-//! Convert a UTF-16 encoded string to a UTF-8 encoded string.
 /*!
-	@note This function should only be called directly if you are positive
+	\brief Convert a UTF-16 encoded string to a UTF-8 encoded string.
+
+	\note This function should only be called directly if you are positive
 	that you're working with UTF-16 encoded text. If you're working
 	with wide strings, take a look at widetoutf8() instead.
 
 	Example:
 
-	@code{.c}
-		int8_t Player_SetName(const utf16_t* name, size_t nameSize)
+	\code{.c}
+		uint8_t Player_SetNameUtf16(const utf16_t* name, size_t nameSize)
 		{
+			char buffer[256];
+			size_t buffer_size = 255;
+			size_t converted_size;
 			int32_t errors = 0;
-			char converted_name[256] = { 0 };
-			utf16toutf8(name, nameSize, converted_name, 256, &errors);
-			if (errors != 0)
+
+			converted_size = utf16toutf8(name, nameSize, buffer, buffer_size, &errors);
+			if (converted_size == 0 ||
+				errors != 0)
 			{
 				return 0;
 			}
+			buffer[converted_size] = 0;
 
 			return Player_SetName(converted_name);
 		}
-	@endcode
+	\endcode
 
-	@param[in]   input       UTF-16 encoded string.
-	@param[in]   inputSize   Size of the input in bytes.
-	@param[out]  target      Output buffer for the result.
-	@param[in]   targetSize  Size of the output buffer in bytes.
-	@param[out]  errors      Output for errors.
+	\param[in]   input       UTF-16 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[out]  target      Output buffer for the result.
+	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[out]  errors      Output for errors.
 
-	@return Bytes written or amount of bytes needed for output
+	\return Bytes written or amount of bytes needed for output
 	if target buffer is specified as NULL.
 
-	@retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
-	@retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
-	@retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
-	@retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
+	\retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
+	\retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
+	\retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
 
-	@sa utf32toutf8
-	@sa widetoutf8
+	\sa utf32toutf8
+	\sa widetoutf8
 */
 size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
-//! Convert a UTF-32 encoded string to a UTF-8 encoded string.
 /*!
-	@note This function should only be called directly if you are positive
+	\brief Convert a UTF-32 encoded string to a UTF-8 encoded string.
+
+	\note This function should only be called directly if you are positive
 	that you're working with UTF-32 encoded text. If you're working
 	with wide strings, take a look at widetoutf8() instead.
 
 	Example:
 
-	@code{.c}
-		int8_t Database_ExecuteQuery(const unicode_t* query, size_t querySize)
+	\code{.c}
+		uint8_t Database_ExecuteQuery_Unicode(const unicode_t* query, size_t querySize)
 		{
-			int32_t errors = 0;
 			char* converted = 0;
+			size_t converted_size;
 			int8_t result = 0;
-			size_t converted_size = utf32toutf8(query, querySize, 0, 0, &errors);
-			if (errors != 0)
+			int32_t errors = 0;
+			
+			converted_size = utf32toutf8(query, querySize, NULL, 0, &errors);
+			if (converted_size == 0 ||
+				errors != 0)
 			{
 				goto cleanup;
 			}
 
 			converted = (char*)malloc(converted_size + 1);
-			memset(converted, 0, converted_size + 1);
-
-			utf32toutf8(query, querySize, converted, converted_size, &errors);
-			if (errors != 0)
-			{
-				goto cleanup;
-			}
+			utf32toutf8(query, querySize, converted, converted_size, NULL);
+			converted[converted_size] = 0;
 
 			result = Database_ExecuteQuery(converted);
 
@@ -253,31 +268,33 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 				free(converted);
 				converted = 0;
 			}
+
 			return result;
 		}
-	@endcode
+	\endcode
 
-	@param[in]   input       UTF-32 encoded string.
-	@param[in]   inputSize   Size of the input in bytes.
-	@param[out]  target      Output buffer for the result.
-	@param[in]   targetSize  Size of the output buffer in bytes.
-	@param[out]  errors      Output for errors.
+	\param[in]   input       UTF-32 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[out]  target      Output buffer for the result.
+	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[out]  errors      Output for errors.
 
-	@return Bytes written or amount of bytes needed for output
+	\return Bytes written or amount of bytes needed for output
 	if target buffer is specified as NULL.
 
-	@retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
-	@retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
-	@retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
-	@retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
+	\retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
+	\retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
+	\retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
 
-	@sa utf16toutf8
-	@sa widetoutf8
+	\sa utf16toutf8
+	\sa widetoutf8
 */
 size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
-//! Convert a wide string to a UTF-8 encoded string.
 /*!
+	\brief Convert a wide string to a UTF-8 encoded string.
+
 	Depending on the platform, wide strings are either UTF-16
 	or UTF-32 encoded. This function takes a wide string as
 	input and automatically calls the correct conversion
@@ -289,55 +306,65 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 
 	Example:
 
-	@code{.c}
-		const wchar_t* input = L"textures/\xD803\xDC11.png";
-		size_t input_size = wcslen(input) * sizeof(wchar_t);
-		size_t output_size = 0;
-		char* output = 0;
-		size_t result = 0;
-		int32_t errors = 0;
-
-		result = widetoutf8(input, input_size, 0, 0, &errors);
-		if (errors == 0)
+	\code{.c}
+		texture_t Texture_Load_Wide(const wchar_t* input)
 		{
-			output_size = result + 1;
+			char* converted = NULL;
+			size_t converted_size = 0;
+			size_t input_size;
+			texture_t result = NULL;
+			int32_t errors = 0;
 
-			output = (char*)malloc(output_size);
-			memset(output, 0, output_size);
+			input_size = wcslen(input) * sizeof(wchar_t);
 
-			widetoutf8(input, wcslen(input) * sizeof(wchar_t), output, output_size, &errors);
-			if (errors == 0)
+			converted_size = widetoutf8(input, input_size, 0, 0, &errors);
+			if (converted_size == 0 ||
+				errors != 0)
 			{
-				Texture_Load(output);
+				goto cleanup;
 			}
 
-			free(output);
+			converted = (char*)malloc(converted_size + 1);
+			widetoutf8(input, input_size, converted, converted_size, NULL);
+			converted[converted_size] = 0;
+
+			result = Texture_Load(converted);
+
+		cleanup:
+			if (converted != NULL)
+			{
+				free(converted);
+				converted = NULL;
+			}
+
+			return result;
 		}
-	@endcode
+	\endcode
 
-	@param[in]   input       Wide-encoded string.
-	@param[in]   inputSize   Size of the input in bytes.
-	@param[out]  target      Output buffer for the result.
-	@param[in]   targetSize  Size of the output buffer in bytes.
-	@param[out]  errors      Output for errors.
+	\param[in]   input       Wide-encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[out]  target      Output buffer for the result.
+	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[out]  errors      Output for errors.
 
-	@return Bytes written or amount of bytes needed for output
+	\return Bytes written or amount of bytes needed for output
 	if target buffer is specified as NULL.
 
-	@retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
-	@retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
-	@retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
-	@retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
+	\retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
+	\retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
+	\retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
 
-	@sa utf8towide
-	@sa utf16toutf8
-	@sa utf32toutf8
+	\sa utf8towide
+	\sa utf16toutf8
+	\sa utf32toutf8
 */
 size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
-//! Convert a UTF-8 encoded string to a UTF-16 encoded string.
 /*!
-	@note This function should only be called directly if you are positive
+	\brief Convert a UTF-8 encoded string to a UTF-16 encoded string.
+
+	\note This function should only be called directly if you are positive
 	that you *must* convert to UTF-16, independent of platform.
 	If you're working with wide strings, take a look at utf8towide()
 	instead.
@@ -348,39 +375,43 @@ size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target, size_t t
 
 	Example:
 
-	@code{.c}
+	\code{.c}
 		void Font_DrawText(int x, int y, const char* text)
 		{
+			utf16_t buffer[256];
+			size_t buffer_size = 255 * sizeof(utf16_t);
 			int32_t errors = 0;
-			utf16_t converted[256] = { 0 };
-			size_t converted_size = utf8toutf16(title, strlen(title), converted, 256 * sizeof(utf16_t), &errors);
-			if (errors == 0)
+			
+			size_t converted_size = utf8toutf16(text, strlen(text), buffer, buffer_size, &errors);
+			if (converted_size > 0 &&
+				errors == 0)
 			{
-				Legacy_DrawText(g_FontCurrent, x, y, (unsigned short*)converted, converted_size);
+				Legacy_DrawText(g_FontCurrent, x, y, (unsigned short*)buffer, converted_size / sizeof(utf16_t));
 			}
 		}
-	@endcode
+	\endcode
 
-	@param[in]   input       UTF-8 encoded string.
-	@param[in]   inputSize   Size of the input in bytes.
-	@param[out]  target      Output buffer for the result.
-	@param[in]   targetSize  Size of the output buffer in bytes.
-	@param[out]  errors      Output for errors.
+	\param[in]   input       UTF-8 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[out]  target      Output buffer for the result.
+	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[out]  errors      Output for errors.
 
-	@return Bytes written or amount of bytes needed for output
+	\return Bytes written or amount of bytes needed for output
 	if target buffer is specified as NULL.
 
-	@retval #UTF8_ERR_INVALID_DATA      Input does not contain enough bytes for decoding.
-	@retval #UTF8_ERR_NOT_ENOUGH_SPACE  Target buffer could not contain result.
+	\retval #UTF8_ERR_INVALID_DATA      Input does not contain enough bytes for decoding.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE  Target buffer could not contain result.
 
-	@sa utf8towide
-	@sa utf8toutf32
+	\sa utf8towide
+	\sa utf8toutf32
 */
 size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t targetSize, int32_t* errors);
 
-//! Convert a UTF-8 encoded string to a UTF-32 encoded string.
 /*!
-	@note This function should only be called directly if you are positive
+	\brief Convert a UTF-8 encoded string to a UTF-32 encoded string.
+
+	\note This function should only be called directly if you are positive
 	that you *must* convert to UTF-32, independent of platform.
 	If you're working with wide strings, take a look at utf8towide()
 	instead.
@@ -391,38 +422,40 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 
 	Example:
 
-	@code{.c}
+	\code{.c}
 		void TextField_AddCharacter(const char* encoded)
 		{
-			int32_t errors = 0;
 			unicode_t codepoint = 0;
+			int32_t errors = 0;
+
 			utf8toutf32(encoded, strlen(encoded), &codepoint, sizeof(unicode_t), &errors);
 			if (errors == 0)
 			{
 				TextField_AddCodepoint(codepoint);
 			}
 		}
-	@endcode
+	\endcode
 
-	@param[in]   input       UTF-8 encoded string.
-	@param[in]   inputSize   Size of the input in bytes.
-	@param[out]  target      Output buffer for the result.
-	@param[in]   targetSize  Size of the output buffer in bytes.
-	@param[out]  errors      Output for errors.
+	\param[in]   input       UTF-8 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[out]  target      Output buffer for the result.
+	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[out]  errors      Output for errors.
 
-	@return Bytes written or amount of bytes needed for output
+	\return Bytes written or amount of bytes needed for output
 	if target buffer is specified as NULL.
 
-	@retval #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
-	@retval #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+	\retval #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 
-	@sa utf8towide
-	@sa utf8toutf16
+	\sa utf8towide
+	\sa utf8toutf16
 */
 size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_t targetSize, int32_t* errors);
 
-//! Convert a UTF-8 encoded string to a wide string.
 /*!
+	\brief Convert a UTF-8 encoded string to a wide string.
+
 	Depending on the platform, wide strings are either UTF-16
 	or UTF-32 encoded. This function takes a UTF-8 encoded
 	string as input and automatically calls the correct
@@ -436,62 +469,68 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	overlong encodings of codepoints are converted to the
 	replacement character U+FFFD.
 
-	@note Codepoints outside the Basic Multilingual Plane (BMP) are
+	\note Codepoints outside the Basic Multilingual Plane (BMP) are
 	converted to surrogate pairs when using UTF-16. This means
 	that strings containing characters outside the BMP
 	converted on a platform with UTF-32 wide strings are *not*
 	compatible with platforms with UTF-16 wide strings.
 
-	@par Hence, it is preferable to keep all data as UTF-8 and only
+	\par Hence, it is preferable to keep all data as UTF-8 and only
 	convert to wide strings when required by a third-party
 	interface.
 
 	Example:
 
-	@code{.c}
-		const char* input = "Bj\xC3\xB6rn Zonderland";
-		size_t input_size = strlen(input);
-		wchar_t* output = 0;
-		size_t output_size = 0;
-		size_t result = 0;
-		int32_t errors = 0;
-
-		output_size = utf8towide(input, input_size, 0, 0, &errors);
-		if (errors == 0)
+	\code{.c}
+		void Window_SetTitle(void* windowHandle, const char* text)
 		{
-			output = (wchar_t*)malloc(output_size);
-			memset(output, 0, output_size);
+			wchar_t* converted = NULL;
+			size_t converted_size;
+			int32_t errors = 0;
 
-			utf8towide(input, input_size, output, output_size, &errors);
-			if (errors == 0)
+			converted_size = utf8towide(text, strlen(text), NULL, 0, &errors);
+			if (converted_size == 0 ||
+				errors != 0)
 			{
-				Player_SetName(output);
+				goto cleanup;
 			}
 
-			free(output);
+			converted = malloc(converted_size + sizeof(wchar_t));
+			utf8towide(text, strlen(text), converted, converted_size, &errors);
+			converted[converted_size / sizeof(wchar_t)] = 0;
+
+			SetWindowTextW((HWND)windowHandle, converted);
+
+		cleanup:
+			if (converted != NULL)
+			{
+				free(converted);
+				converted = NULL;
+			}
 		}
-	@endcode
+	\endcode
 
-	@param[in]   input       UTF-8 encoded string.
-	@param[in]   inputSize   Size of the input in bytes.
-	@param[out]  target      Output buffer for the result.
-	@param[in]   targetSize  Size of the output buffer in bytes.
-	@param[out]  errors      Output for errors.
+	\param[in]   input       UTF-8 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[out]  target      Output buffer for the result.
+	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[out]  errors      Output for errors.
 
-	@return Bytes written or amount of bytes needed for output
+	\return Bytes written or amount of bytes needed for output
 	if target buffer is specified as NULL.
 
-	@retval #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
-	@retval #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+	\retval #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
 
-	@sa widetoutf8
-	@sa utf8toutf16
-	@sa utf8toutf32
+	\sa widetoutf8
+	\sa utf8toutf16
+	\sa utf8toutf32
 */
 size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors);
 
-//! Seek into a UTF-8 encoded string.
 /*!
+	\brief Seek into a UTF-8 encoded string.
+
 	Working with UTF-8 encoded strings can be tricky due to
 	the nature of the variable-length encoding. Because one
 	character no longer equals one byte, it can be difficult
@@ -502,16 +541,18 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 	in order to enable skipping to another part of the
 	string.
 
-	@note `textStart` must come before `text` in memory when
+	\note `textStart` must come before `text` in memory when
 	seeking from the current or end position.
 
 	Example:
 
-	@code{.c}
+	\code{.c}
 		const char* text = "Press \xE0\x80\x13 to continue.";
-		const char fixed[1024] = { 0 };
+		const char fixed[1024];
 		const char* commandStart;
 		const char* commandEnd;
+
+		memset(fixed, 0, 1024);
 
 		commandStart = strstr(text, "\xE0\x80\x13");
 		if (commandStart == 0)
@@ -527,17 +568,17 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 		{
 			strcat(fixed, commandEnd);
 		}
-	@endcode
+	\endcode
 
-	@param[in]  text       Input string.
-	@param[in]  textStart  Start of input string.
-	@param[in]  offset     Requested offset in codepoints.
-	@param[in]  direction  Direction to seek in.
-	@arg `SEEK_SET` Offset is from the start of the string.
-	@arg `SEEK_CUR` Offset is from the current position of the string.
-	@arg `SEEK_END` Offset is from the end of the string.
+	\param[in]  text       Input string.
+	\param[in]  textStart  Start of input string.
+	\param[in]  offset     Requested offset in codepoints.
+	\param[in]  direction  Direction to seek in.
+	\arg `SEEK_SET` Offset is from the start of the string.
+	\arg `SEEK_CUR` Offset is from the current position of the string.
+	\arg `SEEK_END` Offset is from the end of the string.
 
-	@return Changed string or no change on error.
+	\return Changed string or no change on error.
 */
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
 
