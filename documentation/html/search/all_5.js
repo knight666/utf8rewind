@@ -9,7 +9,5 @@ var searchData=
   ['generalcategory_5fother',['GeneralCategory_Other',['../database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa3d587f8b6590dc4116bc21a93810dbfc',1,'database.h']]],
   ['generalcategory_5fpunctuation',['GeneralCategory_Punctuation',['../database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa6742d3cfae4f6bb11c8c12b31ddcbb14',1,'database.h']]],
   ['generalcategory_5fseparator',['GeneralCategory_Separator',['../database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa41c5d90bbd599eeca5a133004d2504f3',1,'database.h']]],
-  ['generalcategory_5fsymbol',['GeneralCategory_Symbol',['../database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa0180de64ef198c89fff3542fa0fa4d2c',1,'database.h']]],
-  ['getfailediteratorresult',['GetFailedIteratorResult',['../namespacetesting.html#ab4a821bf7560ab9fe5874b9002a527cc',1,'testing']]],
-  ['getunicodestring',['GetUnicodeString',['../namespacetesting.html#a507bebc4e7ce30fe4ee84b79397f879d',1,'testing']]]
+  ['generalcategory_5fsymbol',['GeneralCategory_Symbol',['../database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa0180de64ef198c89fff3542fa0fa4d2c',1,'database.h']]]
 ];

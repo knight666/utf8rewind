@@ -23,13 +23,13 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#ifndef _UTF8REWIND_H_
+#define _UTF8REWIND_H_
+
 /*!
 	\file utf8rewind.h
 	\brief Functions for working with UTF-8 encoded text.
 */
-
-#ifndef _UTF8REWIND_H_
-#define _UTF8REWIND_H_
 
 #include <stddef.h>
 #include <stdio.h>

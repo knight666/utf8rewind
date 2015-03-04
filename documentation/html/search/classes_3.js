@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['quickcheckrecord',['QuickCheckRecord',['../struct_quick_check_record.html',1,'']]]
+  ['streamstate',['StreamState',['../struct_stream_state.html',1,'']]]
 ];

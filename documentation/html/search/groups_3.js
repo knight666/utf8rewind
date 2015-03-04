@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['internal_20functions_20and_20definitions',['Internal functions and definitions',['../group__internal.html',1,'']]]
+  ['normalization_20results',['Normalization results',['../group__quickcheck.html',1,'']]]
 ];
