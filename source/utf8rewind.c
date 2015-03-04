@@ -684,14 +684,14 @@ outofspace:
 	return bytes_written;
 }
 
-size_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, uint8_t* result)
+uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size_t* offset)
 {
 	const char* src = input;
 	size_t src_size = inputSize;
-	uint8_t property;
-	uint8_t last_canonical_class;
-	uint8_t found;
-	size_t offset = 0;
+	uint8_t property = 0;
+	uint8_t last_canonical_class = 0;
+	size_t found_offset = 0;
+	uint8_t result = UTF8_NORMALIZATION_RESULT_YES;
 
 	/* Validate input and flags */
 
@@ -699,7 +699,7 @@ size_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, uint8
 		inputSize == 0 ||
 		(flags & (UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPOSE)) == 0)
 	{
-		goto result_yes;
+		goto end;
 	}
 
 	/* Determine normalization property */
@@ -718,10 +718,7 @@ size_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, uint8
 			: UnicodeProperty_Normalization_Decompose;
 	}
 
-	/* Loop over input */
-
-	last_canonical_class = 0;
-	found = UTF8_NORMALIZATION_RESULT_YES;
+	/* Process input */
 
 	while (src_size > 0)
 	{
@@ -729,32 +726,47 @@ size_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, uint8
 		uint8_t canonical_class;
 		uint8_t quick_check;
 
+		/* Read codepoint at cursor */
+
 		uint8_t read = codepoint_read(src, src_size, &decoded);
 		if (read == 0)
 		{
 			break;
 		}
 
+		/* Get canonical combining class */
+
 		canonical_class = database_queryproperty(decoded, UnicodeProperty_CanonicalCombiningClass);
+
+		/* Compare CCC to previous CCC */
+
 		if (last_canonical_class > canonical_class &&
 			canonical_class > 0)
 		{
-			goto result_no;
+			result = UTF8_NORMALIZATION_RESULT_NO;
+
+			break;
 		}
+
+		/* Get quick check value for normalization property */
 
 		quick_check = database_queryproperty(decoded, property);
 		if (quick_check == QuickCheckResult_No)
 		{
-			goto result_no;
+			result = UTF8_NORMALIZATION_RESULT_NO;
+
+			break;
 		}
 		else if (quick_check == QuickCheckResult_Maybe)
 		{
-			found = UTF8_NORMALIZATION_RESULT_MAYBE;
+			result = UTF8_NORMALIZATION_RESULT_MAYBE;
 		}
 
-		if (found != UTF8_NORMALIZATION_RESULT_MAYBE)
+		/* Append to offset */
+
+		if (result != UTF8_NORMALIZATION_RESULT_MAYBE)
 		{
-			offset += read;
+			found_offset += read;
 		}
 
 		last_canonical_class = canonical_class;
@@ -763,25 +775,12 @@ size_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, uint8
 		src_size -= read;
 	}
 
-	if (result != 0)
+end:
+	if (offset != 0)
 	{
-		*result = found;
+		*offset = found_offset;
 	}
-	return offset;
-
-result_yes:
-	if (result != 0)
-	{
-		*result = UTF8_NORMALIZATION_RESULT_YES;
-	}
-	return offset;
-
-result_no:
-	if (result != 0)
-	{
-		*result = UTF8_NORMALIZATION_RESULT_NO;
-	}
-	return offset;
+	return result;
 }
 
 size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors)
