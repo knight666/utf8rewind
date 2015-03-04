@@ -248,7 +248,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 	\code{.c}
 		uint8_t Database_ExecuteQuery_Unicode(const unicode_t* query, size_t querySize)
 		{
-			char* converted = 0;
+			char* converted = NULL;
 			size_t converted_size;
 			int8_t result = 0;
 			int32_t errors = 0;
@@ -267,7 +267,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 			result = Database_ExecuteQuery(converted);
 
 		cleanup:
-			if (converted != 0)
+			if (converted != NULL)
 			{
 				free(converted);
 				converted = 0;
@@ -314,14 +314,12 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 		texture_t Texture_Load_Wide(const wchar_t* input)
 		{
 			char* converted = NULL;
-			size_t converted_size = 0;
-			size_t input_size;
+			size_t converted_size;
+			size_t input_size = wcslen(input) * sizeof(wchar_t);
 			texture_t result = NULL;
 			int32_t errors = 0;
 
-			input_size = wcslen(input) * sizeof(wchar_t);
-
-			converted_size = widetoutf8(input, input_size, 0, 0, &errors);
+			converted_size = widetoutf8(input, input_size, NULL, 0, &errors);
 			if (converted_size == 0 ||
 				errors != 0)
 			{
@@ -330,7 +328,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 
 			converted = (char*)malloc(converted_size + 1);
 			widetoutf8(input, input_size, converted, converted_size, NULL);
-			converted[converted_size] = 0;
+			converted[converted_size / sizeof(wchar_t)] = 0;
 
 			result = Texture_Load(converted);
 
@@ -488,19 +486,20 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	\code{.c}
 		void Window_SetTitle(void* windowHandle, const char* text)
 		{
+			size_t input_size = strlen(text);
 			wchar_t* converted = NULL;
 			size_t converted_size;
 			int32_t errors = 0;
 
-			converted_size = utf8towide(text, strlen(text), NULL, 0, &errors);
+			converted_size = utf8towide(text, input_size, NULL, 0, &errors);
 			if (converted_size == 0 ||
 				errors != 0)
 			{
 				goto cleanup;
 			}
 
-			converted = malloc(converted_size + sizeof(wchar_t));
-			utf8towide(text, strlen(text), converted, converted_size, &errors);
+			converted = (wchar_t*)malloc(converted_size + sizeof(wchar_t));
+			utf8towide(text, input_size, converted, converted_size, NULL);
 			converted[converted_size / sizeof(wchar_t)] = 0;
 
 			SetWindowTextW((HWND)windowHandle, converted);
@@ -613,20 +612,21 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	\code{.c}
 		void Button_Draw(int32_t x, int32_t y, const char* text)
 		{
+			size_t input_size = strlen(text);
 			char* converted = NULL;
 			size_t converted_size;
 			int32_t text_box_width, text_box_height;
 			int32_t errors = 0;
 
-			converted_size = utf8toupper(text, strlen(text), NULL, 0, &errors);
+			converted_size = utf8toupper(text, input_size, NULL, 0, &errors);
 			if (converted_size == 0 ||
 				errors != 0)
 			{
 				goto cleanup;
 			}
 
-			converted = malloc(converted_size + 1);
-			utf8toupper(text, strlen(text), converted, converted_size, &errors);
+			converted = (char*)malloc(converted_size + 1);
+			utf8toupper(text, input_size, converted, converted_size, NULL);
 			converted[converted_size] = 0;
 
 			Font_GetTextDimensions(converted, &text_box_width, &text_box_height);
