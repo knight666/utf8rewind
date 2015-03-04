@@ -49,7 +49,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
@@ -137,66 +136,62 @@ $(document).ready(function(){initNavTree('codepoint_8h_source.html','');});
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">    OTHER DEALINGS IN THE SOFTWARE.</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#ifndef _UTFREWIND_INTERNAL_CODEPOINT_H_</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#define _UTFREWIND_INTERNAL_CODEPOINT_H_</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="group__internal.html#ga504f5f3135c1c144c9d3c20cc3fafb58">   45</a></span>&#160;<span class="preprocessor">#define MAX_BASIC_MULTILINGUAR_PLANE  0xFFFF</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="group__internal.html#gaab6775ec08f557211c7a388363e864cf">   51</a></span>&#160;<span class="preprocessor">#define MAX_LEGAL_UNICODE             0x10FFFF</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="group__internal.html#gaa20eca7b2a39a478867d243f642c60d8">   57</a></span>&#160;<span class="preprocessor">#define REPLACEMENT_CHARACTER         0xFFFD</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="group__internal.html#ga29828bc1d74913647fba056e332fe658">   63</a></span>&#160;<span class="preprocessor">#define SURROGATE_HIGH_START          0xD800</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="group__internal.html#ga4f311d7277a571d18368d4a03859bf26">   69</a></span>&#160;<span class="preprocessor">#define SURROGATE_HIGH_END            0xDBFF</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="group__internal.html#gaa44dbeadd13419376f603b472b9e7995">   75</a></span>&#160;<span class="preprocessor">#define SURROGATE_LOW_START           0xDC00</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
-<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="group__internal.html#ga79c5f59f0538a2ca22612c6bc0089479">   81</a></span>&#160;<span class="preprocessor">#define SURROGATE_LOW_END             0xDFFF</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
-<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="group__internal.html#gae6662271e28370f989c56de8c39c2ef0">   87</a></span>&#160;<span class="preprocessor">#define HANGUL_L_FIRST                0x1100</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
-<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="group__internal.html#gac764a36a728587f6b2dba92295d11c50">   93</a></span>&#160;<span class="preprocessor">#define HANGUL_L_LAST                 0x1112</span></div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
-<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="group__internal.html#ga92dad258f85784ad7cd97ac456368c0f">   99</a></span>&#160;<span class="preprocessor">#define HANGUL_L_COUNT                19</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
-<div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="group__internal.html#ga5fd7e3fbb4b413b0a01e13662befed9a">  105</a></span>&#160;<span class="preprocessor">#define HANGUL_V_FIRST                0x1161</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
-<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="group__internal.html#ga29dc142e6d4b8522164e2cd252dd8eae">  111</a></span>&#160;<span class="preprocessor">#define HANGUL_V_LAST                 0x1175</span></div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;</div>
-<div class="line"><a name="l00117"></a><span class="lineno"><a class="line" href="group__internal.html#ga075614f57b6ab09efade4e86c4ccbf12">  117</a></span>&#160;<span class="preprocessor">#define HANGUL_V_COUNT                21</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;</div>
-<div class="line"><a name="l00123"></a><span class="lineno"><a class="line" href="group__internal.html#gae5fbc68bb447b1e3a3f2d7115a23818d">  123</a></span>&#160;<span class="preprocessor">#define HANGUL_T_FIRST                0x11A7</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;</div>
-<div class="line"><a name="l00129"></a><span class="lineno"><a class="line" href="group__internal.html#ga7d3fca8f7201ec41e6f3fcbf31f8b26c">  129</a></span>&#160;<span class="preprocessor">#define HANGUL_T_LAST                 0x11C2</span></div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;</div>
-<div class="line"><a name="l00135"></a><span class="lineno"><a class="line" href="group__internal.html#ga26f03a1ca3c0a0d8bd368d67ce1f6ea1">  135</a></span>&#160;<span class="preprocessor">#define HANGUL_T_COUNT                28</span></div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;</div>
-<div class="line"><a name="l00141"></a><span class="lineno"><a class="line" href="group__internal.html#ga33ab88271eb7c8264b36bd30e05c378e">  141</a></span>&#160;<span class="preprocessor">#define HANGUL_N_COUNT                588 </span><span class="comment">/* VCount * TCount */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;</div>
-<div class="line"><a name="l00147"></a><span class="lineno"><a class="line" href="group__internal.html#gafa8aa71655ca9bbcfe266d2ccc3874d9">  147</a></span>&#160;<span class="preprocessor">#define HANGUL_S_FIRST                0xAC00</span></div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;</div>
-<div class="line"><a name="l00153"></a><span class="lineno"><a class="line" href="group__internal.html#gaac333abbdc8ed77b2962f8d11d742c86">  153</a></span>&#160;<span class="preprocessor">#define HANGUL_S_LAST                 0xD7A3</span></div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;</div>
-<div class="line"><a name="l00159"></a><span class="lineno"><a class="line" href="group__internal.html#ga2a1a36768f7f157866bedb2a214884b3">  159</a></span>&#160;<span class="preprocessor">#define HANGUL_S_COUNT                11172 </span><span class="comment">/* LCount * NCount */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code" href="group__internal.html#ga233f120e3e536775da07774489008a33">codepoint_decoded_length</a>[256];</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;uint8_t <a class="code" href="group__internal.html#ga8f0a5892945fe31d05275ac263a62e06">codepoint_encoded_length</a>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;uint8_t <a class="code" href="group__internal.html#ga71e6812cd50fca7e72a714793dc6a8ef">codepoint_write</a>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> encoded, <span class="keywordtype">char</span>** target, <span class="keywordtype">size_t</span>* targetSize);</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;uint8_t <a class="code" href="group__internal.html#gaa78810d94d12af8b3f4da86e82456903">codepoint_read</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* input, <span class="keywordtype">size_t</span> inputSize, <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* decoded);</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="group__internal_html_ga233f120e3e536775da07774489008a33"><div class="ttname"><a href="group__internal.html#ga233f120e3e536775da07774489008a33">codepoint_decoded_length</a></div><div class="ttdeci">const uint8_t codepoint_decoded_length[256]</div><div class="ttdoc">Get the number of bytes used for encoding a codepoint. </div></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#ifndef _UTF8REWIND_INTERNAL_CODEPOINT_H_</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define _UTF8REWIND_INTERNAL_CODEPOINT_H_</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#define MAX_BASIC_MULTILINGUAR_PLANE  0xFFFF</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#define MAX_LEGAL_UNICODE             0x10FFFF</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#define REPLACEMENT_CHARACTER         0xFFFD</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#define SURROGATE_HIGH_START          0xD800</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#define SURROGATE_HIGH_END            0xDBFF</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">#define SURROGATE_LOW_START           0xDC00</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">#define SURROGATE_LOW_END             0xDFFF</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#define HANGUL_L_FIRST                0x1100</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor">#define HANGUL_L_LAST                 0x1112</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="preprocessor">#define HANGUL_L_COUNT                19</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">#define HANGUL_V_FIRST                0x1161</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="preprocessor">#define HANGUL_V_LAST                 0x1175</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">#define HANGUL_V_COUNT                21</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor">#define HANGUL_T_FIRST                0x11A7</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="preprocessor">#define HANGUL_T_LAST                 0x11C2</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="preprocessor">#define HANGUL_T_COUNT                28</span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="preprocessor">#define HANGUL_N_COUNT                588 </span><span class="comment">/* VCount * TCount */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="preprocessor">#define HANGUL_S_FIRST                0xAC00</span></div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="preprocessor">#define HANGUL_S_LAST                 0xD7A3</span></div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="preprocessor">#define HANGUL_S_COUNT                11172 </span><span class="comment">/* LCount * NCount */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> uint8_t codepoint_decoded_length[256];</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;uint8_t codepoint_encoded_length(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;uint8_t codepoint_write(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> encoded, <span class="keywordtype">char</span>** target, <span class="keywordtype">size_t</span>* targetSize);</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;uint8_t codepoint_read(<span class="keyword">const</span> <span class="keywordtype">char</span>* input, <span class="keywordtype">size_t</span> inputSize, <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* decoded);</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">Unicode codepoint. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:193</div></div>
-<div class="ttc" id="group__internal_html_ga8f0a5892945fe31d05275ac263a62e06"><div class="ttname"><a href="group__internal.html#ga8f0a5892945fe31d05275ac263a62e06">codepoint_encoded_length</a></div><div class="ttdeci">uint8_t codepoint_encoded_length(unicode_t codepoint)</div><div class="ttdoc">Get the number of bytes needed to encode a codepoint. </div></div>
-<div class="ttc" id="group__internal_html_gaa78810d94d12af8b3f4da86e82456903"><div class="ttname"><a href="group__internal.html#gaa78810d94d12af8b3f4da86e82456903">codepoint_read</a></div><div class="ttdeci">uint8_t codepoint_read(const char *input, size_t inputSize, unicode_t *decoded)</div><div class="ttdoc">Read Unicode codepoint from UTF-8 encoded string. </div></div>
 <div class="ttc" id="utf8rewind_8h_html"><div class="ttname"><a href="utf8rewind_8h.html">utf8rewind.h</a></div><div class="ttdoc">Functions for working with UTF-8 encoded text. </div></div>
-<div class="ttc" id="group__internal_html_ga71e6812cd50fca7e72a714793dc6a8ef"><div class="ttname"><a href="group__internal.html#ga71e6812cd50fca7e72a714793dc6a8ef">codepoint_write</a></div><div class="ttdeci">uint8_t codepoint_write(unicode_t encoded, char **target, size_t *targetSize)</div><div class="ttdoc">Write Unicode codepoint to UTF-8 encoded string. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

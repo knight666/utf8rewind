@@ -1,5 +1,12 @@
 #pragma once
 
+/*!
+	\cond INTERNAL
+
+	\file helpers-streams.hpp
+	\brief Functions for streaming tests.
+*/
+
 #include "tests-base.hpp"
 
 #include "utf8rewind.h"
@@ -41,3 +48,5 @@ namespace helpers {
 		const StreamEntry& entryExpected, const StreamEntry& entryActual);
 
 };
+
+/*! \endcond */

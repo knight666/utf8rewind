@@ -1,6 +1,5 @@
 var annotated =
 [
-    [ "helpers", "namespacehelpers.html", "namespacehelpers" ],
     [ "CaseMappingState", "struct_case_mapping_state.html", "struct_case_mapping_state" ],
     [ "ComposeState", "struct_compose_state.html", "struct_compose_state" ],
     [ "CompositionRecord", "struct_composition_record.html", "struct_composition_record" ],

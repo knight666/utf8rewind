@@ -1,5 +1,12 @@
 #pragma once
 
+/*!
+	\cond INTERNAL
+
+	\file helpers-strings.hpp
+	\brief Functions for working with strings in tests.
+*/
+
 #include "tests-base.hpp"
 
 #include "utf8rewind.h"
@@ -44,3 +51,5 @@ namespace helpers {
 		unicode_t codepointExpected, unicode_t codepointActual);
 
 };
+
+/*! \endcond */

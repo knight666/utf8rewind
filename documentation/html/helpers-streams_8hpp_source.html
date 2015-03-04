@@ -49,7 +49,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
@@ -114,61 +113,52 @@ $(document).ready(function(){initNavTree('helpers-streams_8hpp_source.html','');
 <div class="contents">
 <a href="helpers-streams_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;</div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="tests-base_8hpp.html">tests-base.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">    #include &quot;../internal/database.h&quot;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">    #include &quot;../internal/streaming.h&quot;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;}</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="tests-base_8hpp.html">tests-base.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
-<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="helpers-streams_8hpp.html#a24167774b073f4678c9a0ff968a6bcc0">   12</a></span>&#160;<span class="preprocessor">#define CHECK_STREAM_ENTRY(_stream, _index, _codepoint, _qc, _ccc) { \</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">    ::helpers::StreamEntry e; \</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">    e.codepoint = _codepoint; \</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">    e.quick_check = QuickCheckResult_ ## _qc; \</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">    e.canonical_combining_class = _ccc; \</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">    ::helpers::StreamEntry a; \</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">    a.index = _index; \</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">    a.codepoint = (_stream).codepoint[_index]; \</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">    a.quick_check = (_stream).quick_check[_index]; \</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">    a.canonical_combining_class = (_stream).canonical_combining_class[_index]; \</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">    EXPECT_PRED_FORMAT2(::helpers::CompareStream, e, a); \</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">}</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacehelpers.html">helpers</a> {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="struct_stream_state.html">StreamState</a> <a class="code" href="namespacehelpers.html#a0943a42f527fe0b3b9b8b921167f429e">createStream</a>(<span class="keyword">const</span> std::string&amp; text);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    std::string <a class="code" href="namespacehelpers.html#ab35e90ec54f545dc21d7021fec3c830d">quickCheckToString</a>(uint8_t <a class="code" href="namespacehelpers.html#a3c5afb4959ae69a06a507546d8945690">quickCheck</a>);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="structhelpers_1_1_stream_entry.html">   31</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structhelpers_1_1_stream_entry.html">StreamEntry</a></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    {</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="structhelpers_1_1_stream_entry.html#ae14a7bc5a4ae993f5c7b2ed54cf797c2">   33</a></span>&#160;        uint8_t <a class="code" href="structhelpers_1_1_stream_entry.html#ae14a7bc5a4ae993f5c7b2ed54cf797c2">index</a>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="structhelpers_1_1_stream_entry.html#a2733d6e2c294e4b981f5cd4cb4c48662">   34</a></span>&#160;        <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> <a class="code" href="structhelpers_1_1_stream_entry.html#a2733d6e2c294e4b981f5cd4cb4c48662">codepoint</a>;</div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="structhelpers_1_1_stream_entry.html#a3e5a19432fdc696d518022ea71649e04">   35</a></span>&#160;        uint8_t <a class="code" href="structhelpers_1_1_stream_entry.html#a3e5a19432fdc696d518022ea71649e04">quick_check</a>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="structhelpers_1_1_stream_entry.html#ad29fa518b8bceb35b93a884c53808816">   36</a></span>&#160;        uint8_t <a class="code" href="structhelpers_1_1_stream_entry.html#ad29fa518b8bceb35b93a884c53808816">canonical_combining_class</a>;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    };</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    ::testing::AssertionResult <a class="code" href="namespacehelpers.html#af6fa86191b83254e7c585f7373578d78">CompareStream</a>(</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual,</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keyword">const</span> <a class="code" href="structhelpers_1_1_stream_entry.html">StreamEntry</a>&amp; entryExpected, <span class="keyword">const</span> <a class="code" href="structhelpers_1_1_stream_entry.html">StreamEntry</a>&amp; entryActual);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;};</div>
-<div class="ttc" id="namespacehelpers_html_af6fa86191b83254e7c585f7373578d78"><div class="ttname"><a href="namespacehelpers.html#af6fa86191b83254e7c585f7373578d78">helpers::CompareStream</a></div><div class="ttdeci">::testing::AssertionResult CompareStream(const char *expressionExpected, const char *expressionActual, const StreamEntry &amp;entryExpected, const StreamEntry &amp;entryActual)</div></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">    #include &quot;../internal/database.h&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">    #include &quot;../internal/streaming.h&quot;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;}</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#define CHECK_STREAM_ENTRY(_stream, _index, _codepoint, _qc, _ccc) { \</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">    ::helpers::StreamEntry e; \</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">    e.codepoint = _codepoint; \</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">    e.quick_check = QuickCheckResult_ ## _qc; \</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">    e.canonical_combining_class = _ccc; \</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">    ::helpers::StreamEntry a; \</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">    a.index = _index; \</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">    a.codepoint = (_stream).codepoint[_index]; \</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">    a.quick_check = (_stream).quick_check[_index]; \</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">    a.canonical_combining_class = (_stream).canonical_combining_class[_index]; \</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">    EXPECT_PRED_FORMAT2(::helpers::CompareStream, e, a); \</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">}</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">namespace </span>helpers {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="struct_stream_state.html">StreamState</a> createStream(<span class="keyword">const</span> std::string&amp; text);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::string quickCheckToString(uint8_t quickCheck);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">struct </span>StreamEntry</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    {</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        uint8_t index;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        uint8_t quick_check;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        uint8_t canonical_combining_class;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    };</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    ::testing::AssertionResult CompareStream(</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual,</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">const</span> StreamEntry&amp; entryExpected, <span class="keyword">const</span> StreamEntry&amp; entryActual);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;};</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
 <div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">Unicode codepoint. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:193</div></div>
-<div class="ttc" id="namespacehelpers_html_a0943a42f527fe0b3b9b8b921167f429e"><div class="ttname"><a href="namespacehelpers.html#a0943a42f527fe0b3b9b8b921167f429e">helpers::createStream</a></div><div class="ttdeci">StreamState createStream(const std::string &amp;text)</div></div>
 <div class="ttc" id="struct_stream_state_html"><div class="ttname"><a href="struct_stream_state.html">StreamState</a></div><div class="ttdef"><b>Definition:</b> streaming.h:54</div></div>
-<div class="ttc" id="namespacehelpers_html_ab35e90ec54f545dc21d7021fec3c830d"><div class="ttname"><a href="namespacehelpers.html#ab35e90ec54f545dc21d7021fec3c830d">helpers::quickCheckToString</a></div><div class="ttdeci">std::string quickCheckToString(uint8_t quickCheck)</div></div>
-<div class="ttc" id="structhelpers_1_1_stream_entry_html_a2733d6e2c294e4b981f5cd4cb4c48662"><div class="ttname"><a href="structhelpers_1_1_stream_entry.html#a2733d6e2c294e4b981f5cd4cb4c48662">helpers::StreamEntry::codepoint</a></div><div class="ttdeci">unicode_t codepoint</div><div class="ttdef"><b>Definition:</b> helpers-streams.hpp:34</div></div>
 <div class="ttc" id="tests-base_8hpp_html"><div class="ttname"><a href="tests-base_8hpp.html">tests-base.hpp</a></div></div>
-<div class="ttc" id="structhelpers_1_1_stream_entry_html_ad29fa518b8bceb35b93a884c53808816"><div class="ttname"><a href="structhelpers_1_1_stream_entry.html#ad29fa518b8bceb35b93a884c53808816">helpers::StreamEntry::canonical_combining_class</a></div><div class="ttdeci">uint8_t canonical_combining_class</div><div class="ttdef"><b>Definition:</b> helpers-streams.hpp:36</div></div>
-<div class="ttc" id="namespacehelpers_html_a3c5afb4959ae69a06a507546d8945690"><div class="ttname"><a href="namespacehelpers.html#a3c5afb4959ae69a06a507546d8945690">helpers::quickCheck</a></div><div class="ttdeci">std::string quickCheck(unicode_t codepoint, uint8_t type)</div></div>
-<div class="ttc" id="namespacehelpers_html"><div class="ttname"><a href="namespacehelpers.html">helpers</a></div><div class="ttdef"><b>Definition:</b> helpers-casemapping.hpp:21</div></div>
 <div class="ttc" id="utf8rewind_8h_html"><div class="ttname"><a href="utf8rewind_8h.html">utf8rewind.h</a></div><div class="ttdoc">Functions for working with UTF-8 encoded text. </div></div>
-<div class="ttc" id="structhelpers_1_1_stream_entry_html_a3e5a19432fdc696d518022ea71649e04"><div class="ttname"><a href="structhelpers_1_1_stream_entry.html#a3e5a19432fdc696d518022ea71649e04">helpers::StreamEntry::quick_check</a></div><div class="ttdeci">uint8_t quick_check</div><div class="ttdef"><b>Definition:</b> helpers-streams.hpp:35</div></div>
-<div class="ttc" id="structhelpers_1_1_stream_entry_html"><div class="ttname"><a href="structhelpers_1_1_stream_entry.html">helpers::StreamEntry</a></div><div class="ttdef"><b>Definition:</b> helpers-streams.hpp:31</div></div>
-<div class="ttc" id="structhelpers_1_1_stream_entry_html_ae14a7bc5a4ae993f5c7b2ed54cf797c2"><div class="ttname"><a href="structhelpers_1_1_stream_entry.html#ae14a7bc5a4ae993f5c7b2ed54cf797c2">helpers::StreamEntry::index</a></div><div class="ttdeci">uint8_t index</div><div class="ttdef"><b>Definition:</b> helpers-streams.hpp:33</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

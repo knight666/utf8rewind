@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['normalizationentry',['NormalizationEntry',['../structhelpers_1_1_normalization_entry.html',1,'helpers']]]
+  ['quickcheckrecord',['QuickCheckRecord',['../struct_quick_check_record.html',1,'']]]
 ];

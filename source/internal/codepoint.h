@@ -23,13 +23,15 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#ifndef _UTF8REWIND_INTERNAL_CODEPOINT_H_
+#define _UTF8REWIND_INTERNAL_CODEPOINT_H_
+
 /*!
+	\cond INTERNAL
+
 	\file codepoint.h
 	\brief Internal functions and definitions used for managing codepoints.
 */
-
-#ifndef _UTFREWIND_INTERNAL_CODEPOINT_H_
-#define _UTFREWIND_INTERNAL_CODEPOINT_H_
 
 #include "utf8rewind.h"
 
@@ -203,5 +205,7 @@ uint8_t codepoint_read(const char* input, size_t inputSize, unicode_t* decoded);
 /*!
 	\}
 */
+
+/*! \endcond */
 
 #endif

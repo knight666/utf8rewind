@@ -6,8 +6,6 @@ var searchData=
   ['database_5fqueryproperty',['database_queryproperty',['../database_8h.html#a10c584e6472fe42981544832adef2a31',1,'database.h']]],
   ['decompose_5fexecute',['decompose_execute',['../decomposition_8h.html#a50987fb7aaa88cf3b989488fa2e3eb20',1,'decomposition.h']]],
   ['decompose_5finitialize',['decompose_initialize',['../decomposition_8h.html#a670fc725d570e1d85f3cf9d0a30c55d1',1,'decomposition.h']]],
-  ['decomposed',['decomposed',['../structhelpers_1_1_normalization_entry.html#a77d89bd8429bccbadaa3f05576542807',1,'helpers::NormalizationEntry']]],
-  ['decomposedcompatibility',['decomposedCompatibility',['../structhelpers_1_1_normalization_entry.html#a80ee51ae2df0ef1ec495c0741232ad93',1,'helpers::NormalizationEntry']]],
   ['decomposestate',['DecomposeState',['../struct_decompose_state.html',1,'']]],
   ['decomposition_2eh',['decomposition.h',['../decomposition_8h.html',1,'']]],
   ['decompositiondata',['DecompositionData',['../unicodedatabase_8h.html#a0d80b5a692a8736d21f5ffd8c373ed51',1,'unicodedatabase.h']]],

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['expect_5fcpeq',['EXPECT_CPEQ',['../helpers-strings_8hpp.html#a8bb6a5e64d5970238724dd62da2aa300',1,'helpers-strings.hpp']]],
-  ['expect_5futf8eq',['EXPECT_UTF8EQ',['../helpers-strings_8hpp.html#a15e0d5efea5f0242c0c35e3b6ce764fb',1,'helpers-strings.hpp']]]
+  ['utf8_5finvalid_5fproperty',['UTF8_INVALID_PROPERTY',['../database_8h.html#af6ae6dbb9378c07c32cecb1e2633ed64',1,'database.h']]],
+  ['utf8_5funused',['UTF8_UNUSED',['../base_8h.html#a31f70e579b7b6a9b7634690a441b5274',1,'base.h']]],
+  ['utf8_5fvalidate_5finput',['UTF8_VALIDATE_INPUT',['../base_8h.html#aa04bd308921896cac631672c64f11a4b',1,'base.h']]]
 ];
