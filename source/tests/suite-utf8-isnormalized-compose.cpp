@@ -18,10 +18,10 @@ TEST(Utf8IsNormalizedCompose, BasicLatinSingle)
 
 	const char* i = "&";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(1, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(1, o);
 }
 
 TEST(Utf8IsNormalizedCompose, BasicLatinMultiple)
@@ -34,10 +34,10 @@ TEST(Utf8IsNormalizedCompose, BasicLatinMultiple)
 
 	const char* i = "sword";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(5, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(5, o);
 }
 
 TEST(Utf8IsNormalizedCompose, BasicLatinCompatibility)
@@ -50,10 +50,10 @@ TEST(Utf8IsNormalizedCompose, BasicLatinCompatibility)
 
 	const char* i = "#yolo";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(5, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
+	EXPECT_EQ(5, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteYesSingle)
@@ -66,10 +66,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteYesSingle)
 
 	const char* i = "\xE2\xAD\xAC";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(3, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(3, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteYesMultiple)
@@ -82,10 +82,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteYesMultiple)
 
 	const char* i = "\xE2\xA9\xAE\xEA\xA6\x9F\xE2\xA4\xA3\xE2\x8E\xB9";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(12, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(12, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteYesUnordered)
@@ -98,10 +98,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteYesUnordered)
 
 	const char* i = "\xE1\xA8\x98\xE0\xBC\xB9\xE0\xBA\xB9";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(3, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(3, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteYesCompatibility)
@@ -114,10 +114,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteYesCompatibility)
 
 	const char* i = "\xE2\x83\xA0\xE2\x82\xB0\xE2\x84\x88";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(9, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
+	EXPECT_EQ(9, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteMaybeSingle)
@@ -130,10 +130,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteMaybeSingle)
 
 	const char* i = "\xCC\xA3";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(0, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_MAYBE, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_MAYBE, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(0, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteMaybeMultiple)
@@ -146,10 +146,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteMaybeMultiple)
 
 	const char* i = "\xE0\xAD\x96\xE0\xB3\x96\xCC\x9B\xCC\x81";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(0, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_MAYBE, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_MAYBE, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(0, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteMaybeSequenceStart)
@@ -162,10 +162,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteMaybeSequenceStart)
 
 	const char* i = "\xCD\x82$\xC7\x94";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(0, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_MAYBE, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_MAYBE, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(0, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteMaybeSequenceEnd)
@@ -178,10 +178,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteMaybeSequenceEnd)
 
 	const char* i = "\xC5\x97\xCC\x81";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(2, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_MAYBE, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_MAYBE, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(2, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteMaybeUnordered)
@@ -194,10 +194,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteMaybeUnordered)
 
 	const char* i = "\xCC\x81\xCC\x9B\xCC\xA8";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(0, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(0, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteMaybeCompatibility)
@@ -210,10 +210,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteMaybeCompatibility)
 
 	const char* i = "\xE0\xA4\xBC\xE0\xB1\x96\xCC\xA8";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(0, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_MAYBE, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_MAYBE, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
+	EXPECT_EQ(0, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteNoSingle)
@@ -226,10 +226,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteNoSingle)
 
 	const char* i = "\xE0\xBD\x8D";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(0, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(0, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteNoMultiple)
@@ -242,10 +242,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteNoMultiple)
 
 	const char* i = "\xCD\xB4\xEF\xA8\xA6\xEF\xAC\xB4\xE0\xBD\xB6";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(0, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(0, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteNoSequenceStart)
@@ -258,10 +258,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteNoSequenceStart)
 
 	const char* i = "\xE0\xBE\x93\xE0\xBE\x8F\xE0\xBC\x92";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(0, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(0, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteNoSequenceEnd)
@@ -274,10 +274,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteNoSequenceEnd)
 
 	const char* i = "\xC9\x9C\xCB\x99\xCD\x81";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(4, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(4, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteNoUnordered)
@@ -290,10 +290,10 @@ TEST(Utf8IsNormalizedCompose, MultiByteNoUnordered)
 
 	const char* i = "\xCC\x9A\xCC\x95\xCD\x81";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(4, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(4, o);
 }
 
 TEST(Utf8IsNormalizedCompose, MultiByteNoCompatibility)
@@ -306,8 +306,8 @@ TEST(Utf8IsNormalizedCompose, MultiByteNoCompatibility)
 
 	const char* i = "\xF0\x9D\x90\x80\xEF\xB8\xBF\xEF\xBC\xBE";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(0, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
+	EXPECT_EQ(0, o);
 }

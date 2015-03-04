@@ -82,9 +82,9 @@
 	\}
 */
 
-#define UTF8_NORMALIZATION_RESULT_NO            (0)
+#define UTF8_NORMALIZATION_RESULT_YES           (0)
 #define UTF8_NORMALIZATION_RESULT_MAYBE         (1)
-#define UTF8_NORMALIZATION_RESULT_YES           (2)
+#define UTF8_NORMALIZATION_RESULT_NO            (2)
 
 /*!
 	\defgroup flags Flags
@@ -664,7 +664,7 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
-size_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, uint8_t* result);
+uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size_t* offset);
 
 size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
 

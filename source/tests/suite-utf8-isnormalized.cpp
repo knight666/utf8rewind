@@ -10,18 +10,18 @@ extern "C" {
 
 TEST(Utf8IsNormalized, InvalidInput)
 {
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(0, utf8isnormalized(nullptr, 15, UTF8_NORMALIZE_DECOMPOSE, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(nullptr, 15, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(0, o);
 }
 
 TEST(Utf8IsNormalized, InvalidLength)
 {
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(0, utf8isnormalized("text", 0, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized("text", 0, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
+	EXPECT_EQ(0, o);
 }
 
 TEST(Utf8IsNormalized, InvalidFlag)
@@ -33,13 +33,13 @@ TEST(Utf8IsNormalized, InvalidFlag)
 
 	const char* i = "\xCC\x8E\xC9\xBA\xE1\xBF\x82";
 	size_t is = strlen(i);
-	uint8_t r = 0;
+	size_t o = 0;
 
-	EXPECT_EQ(0, utf8isnormalized(i, is, 0x88000110, &r));
-	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, r);
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, 0x88000110, &o));
+	EXPECT_EQ(0, o);
 }
 
-TEST(Utf8IsNormalized, MissingResultParameter)
+TEST(Utf8IsNormalized, MissingOffsetParameter)
 {
 	/*
 		U+1229 U+0D3E U+0F52
@@ -50,5 +50,5 @@ TEST(Utf8IsNormalized, MissingResultParameter)
 	const char* i = "\xE1\x88\xA9\xE0\xB4\xBE\xE0\xBD\x92";
 	size_t is = strlen(i);
 
-	EXPECT_EQ(3, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, nullptr));
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, nullptr));
 }
