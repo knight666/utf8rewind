@@ -50,7 +50,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
@@ -109,7 +109,7 @@ $(document).ready(function(){initNavTree('namespacehelpers.html','');});
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">helpers Namespace Reference</div>  </div>
@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('namespacehelpers.html','');});
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
+Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhelpers_1_1_case_mapping_entry.html">CaseMappingEntry</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a></td></tr>
@@ -211,12 +211,12 @@ Functions</h2></td></tr>
 <tr class="separator:aeebd510a92733f904134019ffa9bf4a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a45d834d9a1c0de7f3edaebf141fed66e"></a>
+<a class="anchor" id="abd5d5494900da68cf612041efedecf0c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string helpers::canonicalCombiningClass </td>
+          <td class="memname">std::string helpers::uppercase </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
           <td class="paramname"><em>codepoint</em></td><td>)</td>
@@ -227,38 +227,76 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a67b8fec34d0de43703adcc9d92ce6a01"></a>
+<a class="anchor" id="add7558f6c094deda129e747919ef7bd3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string helpers::canonicalCombiningClass </td>
+          <td class="memname">std::string helpers::uppercase </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> *&#160;</td>
-          <td class="paramname"><em>codepoint</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>codepointsSize</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a class="anchor" id="a11dc1ae71e85395b3c07e256cfc28a86"></a>
+<a class="anchor" id="a3db41de35390fb3a63b8ae1246bef70b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string helpers::canonicalCombiningClass </td>
+          <td class="memname">std::string helpers::lowercase </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
+          <td class="paramname"><em>codepoint</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3422cb52ba04653e85b658755398ffce"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::lowercase </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7bc622a31f055a7421e499b37ee1828d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::titlecase </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
+          <td class="paramname"><em>codepoint</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab538411493e0d7b26cb81d3bc5911543"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::titlecase </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>text</em></td><td>)</td>
@@ -301,302 +339,6 @@ Functions</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="aeebd510a92733f904134019ffa9bf4a2"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">::testing::AssertionResult helpers::CompareCodepoints </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>expressionExpected</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>expressionActual</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
-          <td class="paramname"><em>codepointExpected</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
-          <td class="paramname"><em>codepointActual</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a67248b2c219c14146e391f11f4e27805"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">::testing::AssertionResult helpers::CompareNormalizationCodepoint </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>expressionExpected</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>expressionActual</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a> &amp;&#160;</td>
-          <td class="paramname"><em>entryExpected</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a> &amp;&#160;</td>
-          <td class="paramname"><em>entryActual</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a799eb353ec14cb39d34dc9a20ff464a1"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">::testing::AssertionResult helpers::CompareNormalizationSequence </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>expressionExpected</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>expressionActual</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a> &amp;&#160;</td>
-          <td class="paramname"><em>entryExpected</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a> &amp;&#160;</td>
-          <td class="paramname"><em>entryActual</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="af6fa86191b83254e7c585f7373578d78"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">::testing::AssertionResult helpers::CompareStream </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>expressionExpected</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>expressionActual</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structhelpers_1_1_stream_entry.html">StreamEntry</a> &amp;&#160;</td>
-          <td class="paramname"><em>entryExpected</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structhelpers_1_1_stream_entry.html">StreamEntry</a> &amp;&#160;</td>
-          <td class="paramname"><em>entryActual</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="aff680a0781433578601bb1bb80d665a3"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">::testing::AssertionResult helpers::CompareUtf8Strings </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>expressionExpected</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>expressionActual</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>textExpected</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>textActual</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a0943a42f527fe0b3b9b8b921167f429e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="struct_stream_state.html">StreamState</a> helpers::createStream </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>text</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="acff46a05838fbbe63165857f57e75cc9"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::identifiable </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
-          <td class="paramname"><em>codepoint</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ae3792002bc7c12771a364b4ac3b3effd"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::identifiable </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> *&#160;</td>
-          <td class="paramname"><em>codepoint</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>codepointsSize</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="af8c6ba09eb658b865438231ed8171b47"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::identifiable </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>text</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a3db41de35390fb3a63b8ae1246bef70b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::lowercase </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
-          <td class="paramname"><em>codepoint</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a3422cb52ba04653e85b658755398ffce"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::lowercase </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>text</em></td><td>)</td>
-          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -731,6 +473,284 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a67248b2c219c14146e391f11f4e27805"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">::testing::AssertionResult helpers::CompareNormalizationCodepoint </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>expressionExpected</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>expressionActual</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a> &amp;&#160;</td>
+          <td class="paramname"><em>entryExpected</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a> &amp;&#160;</td>
+          <td class="paramname"><em>entryActual</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a799eb353ec14cb39d34dc9a20ff464a1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">::testing::AssertionResult helpers::CompareNormalizationSequence </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>expressionExpected</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>expressionActual</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a> &amp;&#160;</td>
+          <td class="paramname"><em>entryExpected</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a> &amp;&#160;</td>
+          <td class="paramname"><em>entryActual</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0943a42f527fe0b3b9b8b921167f429e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_stream_state.html">StreamState</a> helpers::createStream </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab35e90ec54f545dc21d7021fec3c830d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::quickCheckToString </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>quickCheck</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af6fa86191b83254e7c585f7373578d78"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">::testing::AssertionResult helpers::CompareStream </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>expressionExpected</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>expressionActual</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structhelpers_1_1_stream_entry.html">StreamEntry</a> &amp;&#160;</td>
+          <td class="paramname"><em>entryExpected</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structhelpers_1_1_stream_entry.html">StreamEntry</a> &amp;&#160;</td>
+          <td class="paramname"><em>entryActual</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="acff46a05838fbbe63165857f57e75cc9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::identifiable </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
+          <td class="paramname"><em>codepoint</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae3792002bc7c12771a364b4ac3b3effd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::identifiable </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> *&#160;</td>
+          <td class="paramname"><em>codepoint</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>codepointsSize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af8c6ba09eb658b865438231ed8171b47"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::identifiable </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af6c9049488f27f80aa5240ffb9728852"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::utf8 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
+          <td class="paramname"><em>codepoint</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af5bf83e21b33b5c327c44bd612d55d63"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::utf8 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> *&#160;</td>
+          <td class="paramname"><em>codepoints</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>codepointsSize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a247962c24fc6737aa51b23cb5385d65e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::utf8 </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>codepoints</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab407284146b236953737dea18b86ac69"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&gt; helpers::utf32 </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a3b60fccd67e8a83e4a87e9d9ba4c1e54"></a>
 <div class="memitem">
 <div class="memproto">
@@ -779,6 +799,148 @@ Functions</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::string helpers::printable </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3652899d3b7cf176c6e4e2b2ef295a7a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::sequence </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
+          <td class="paramname"><em>codepoint</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>type</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae5f853b4fc6c333572aeac08a323946c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::sequence </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> *&#160;</td>
+          <td class="paramname"><em>codepoint</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>codepointsSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>type</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af57e11563b7535f3f8112452aa65fac9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::sequence </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>type</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a45d834d9a1c0de7f3edaebf141fed66e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::canonicalCombiningClass </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
+          <td class="paramname"><em>codepoint</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a67b8fec34d0de43703adcc9d92ce6a01"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::canonicalCombiningClass </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> *&#160;</td>
+          <td class="paramname"><em>codepoint</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>codepointsSize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a11dc1ae71e85395b3c07e256cfc28a86"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string helpers::canonicalCombiningClass </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>text</em></td><td>)</td>
@@ -873,37 +1035,33 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ab35e90ec54f545dc21d7021fec3c830d"></a>
+<a class="anchor" id="aff680a0781433578601bb1bb80d665a3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string helpers::quickCheckToString </td>
+          <td class="memname">::testing::AssertionResult helpers::CompareUtf8Strings </td>
           <td>(</td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>quickCheck</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a3652899d3b7cf176c6e4e2b2ef295a7a"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::sequence </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
-          <td class="paramname"><em>codepoint</em>, </td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>expressionExpected</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>type</em>&#160;</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>expressionActual</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>textExpected</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>textActual</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -915,196 +1073,38 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ae5f853b4fc6c333572aeac08a323946c"></a>
+<a class="anchor" id="aeebd510a92733f904134019ffa9bf4a2"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string helpers::sequence </td>
+          <td class="memname">::testing::AssertionResult helpers::CompareCodepoints </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> *&#160;</td>
-          <td class="paramname"><em>codepoint</em>, </td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>expressionExpected</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>codepointsSize</em>, </td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>expressionActual</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>type</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
+          <td class="paramname"><em>codepointExpected</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
+          <td class="paramname"><em>codepointActual</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="af57e11563b7535f3f8112452aa65fac9"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::sequence </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>text</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>type</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a7bc622a31f055a7421e499b37ee1828d"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::titlecase </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
-          <td class="paramname"><em>codepoint</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ab538411493e0d7b26cb81d3bc5911543"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::titlecase </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>text</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="abd5d5494900da68cf612041efedecf0c"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::uppercase </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
-          <td class="paramname"><em>codepoint</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="add7558f6c094deda129e747919ef7bd3"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::uppercase </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>text</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ab407284146b236953737dea18b86ac69"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&gt; helpers::utf32 </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>text</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="af6c9049488f27f80aa5240ffb9728852"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::utf8 </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td>
-          <td class="paramname"><em>codepoint</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="af5bf83e21b33b5c327c44bd612d55d63"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::utf8 </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> *&#160;</td>
-          <td class="paramname"><em>codepoints</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>codepointsSize</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a247962c24fc6737aa51b23cb5385d65e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string helpers::utf8 </td>
-          <td>(</td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>codepoints</em></td><td>)</td>
-          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1117,7 +1117,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacehelpers.html">helpers</a></li>
-    <li class="footer">Generated on Wed Mar 4 2015 11:10:08 for utf8rewind by
+    <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
   </ul>

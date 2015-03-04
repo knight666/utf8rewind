@@ -50,7 +50,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
@@ -74,9 +74,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
-      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
-      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Data&#160;Fields</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -110,15 +110,14 @@ $(document).ready(function(){initNavTree('struct_stream_state.html','');});
 
 <div class="header">
   <div class="summary">
-<a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="struct_stream_state-members.html">List of all members</a>  </div>
+<a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle">
 <div class="title">StreamState Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
+Data Fields</h2></td></tr>
 <tr class="memitem:a905503dbb301ea1a8d4514293254f432"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_stream_state.html#a905503dbb301ea1a8d4514293254f432">src</a></td></tr>
 <tr class="separator:a905503dbb301ea1a8d4514293254f432"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad126e43bcd4f692946c87454a224c8ee"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_stream_state.html#ad126e43bcd4f692946c87454a224c8ee">src_size</a></td></tr>
@@ -140,25 +139,37 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:aa514266c689097ee5105e698a5de3666"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_stream_state.html#aa514266c689097ee5105e698a5de3666">canonical_combining_class</a> [<a class="el" href="streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba">STREAM_BUFFER_MAX</a>]</td></tr>
 <tr class="separator:aa514266c689097ee5105e698a5de3666"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="aa514266c689097ee5105e698a5de3666"></a>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a905503dbb301ea1a8d4514293254f432"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t StreamState::canonical_combining_class[<a class="el" href="streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba">STREAM_BUFFER_MAX</a>]</td>
+          <td class="memname">const char* StreamState::src</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a class="anchor" id="ad4b27ff173fe60a29cb0788dd128884e"></a>
+<a class="anchor" id="ad126e43bcd4f692946c87454a224c8ee"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> StreamState::codepoint[<a class="el" href="streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba">STREAM_BUFFER_MAX</a>]</td>
+          <td class="memname">size_t StreamState::src_size</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afdccb70afa86ba6961eb434d342aa38c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t StreamState::index</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -189,12 +200,12 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="afdccb70afa86ba6961eb434d342aa38c"></a>
+<a class="anchor" id="a917fde7b57f25f6540ddf1556e0cdb8b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t StreamState::index</td>
+          <td class="memname">uint8_t StreamState::stable</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -213,6 +224,18 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ad4b27ff173fe60a29cb0788dd128884e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> StreamState::codepoint[<a class="el" href="streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba">STREAM_BUFFER_MAX</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="ac8bac3e1bbfb13b79c93522c09ec961e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -225,36 +248,12 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a905503dbb301ea1a8d4514293254f432"></a>
+<a class="anchor" id="aa514266c689097ee5105e698a5de3666"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const char* StreamState::src</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ad126e43bcd4f692946c87454a224c8ee"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t StreamState::src_size</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a917fde7b57f25f6540ddf1556e0cdb8b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t StreamState::stable</td>
+          <td class="memname">uint8_t StreamState::canonical_combining_class[<a class="el" href="streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba">STREAM_BUFFER_MAX</a>]</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -270,7 +269,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="struct_stream_state.html">StreamState</a></li>
-    <li class="footer">Generated on Wed Mar 4 2015 11:10:08 for utf8rewind by
+    <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
   </ul>

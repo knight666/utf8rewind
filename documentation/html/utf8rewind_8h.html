@@ -50,7 +50,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
@@ -75,7 +75,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
-      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -218,20 +218,6 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions for working with UTF-8 encoded text. </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
-<a class="anchor" id="ae128fe5bd9e57be736e64d3638229988"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Unicode codepoint. </p>
-
-</div>
-</div>
 <a class="anchor" id="a1c56c34e8f9e0fbcf4949782f110df8f"></a>
 <div class="memitem">
 <div class="memproto">
@@ -246,7 +232,52 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ae128fe5bd9e57be736e64d3638229988"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Unicode codepoint. </p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="aa6a3ebdecf49591cff736ccf054c048e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t utf8len </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the length in codepoints of a UTF-8 encoded string. </p>
+<p>Example:</p>
+<div class="fragment"><div class="line">uint8_t CheckPassword(<span class="keyword">const</span> <span class="keywordtype">char</span>* password)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordtype">size_t</span> length = <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(password);</div>
+<div class="line">    <span class="keywordflow">return</span> (length == <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(<span class="stringliteral">&quot;hunter2&quot;</span>));</div>
+<div class="line">}</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">text</td><td>UTF-8 encoded string.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Length in codepoints. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a4d6a9017be860a575c8dc1ac8c5a9253"></a>
 <div class="memitem">
 <div class="memproto">
@@ -435,288 +466,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aa7c54fadc9bc04c439e9923f54968a33"></a>
+<a class="anchor" id="ad4670f2b7165731bff971559f85690a5"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t utf8isnormalized </td>
+          <td class="memname">size_t widetoutf8 </td>
           <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>input</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>inputSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>flags</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t *&#160;</td>
-          <td class="paramname"><em>offset</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Check if a string is stable in the specified normalization form. </p>
-<p>This function can be used as a preprocessing step, before attempting to normalize a string. Normalization is a very expensive process, it is often cheaper to first determine if the string is unstable in the requested normalization form.</p>
-<p>Unicode Normalization Forms are formally defined normalizations of Unicode strings which make it possible to determine whether any two Unicode strings are equivalent to each other. Depending on the particular Unicode Normalization Form, that equivalence can either be a canonical equivalence or a compatibility equivalence.</p>
-<p>Essentially, the Unicode Normalization Algorithm puts all combining marks in a specified order, and uses rules for decomposition and composition to transform each string into one of the Unicode Normalization Forms. A binary comparison of the transformed strings will then determine equivalence.</p>
-<p>There are four Unicode Normalization Forms:</p>
-<table class="doxtable">
-<tr>
-<th>Unicode </th><th>Flags  </th></tr>
-<tr>
-<td>Normalization Form C (NFC) </td><td><a class="el" href="group__flags.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to NFC. ">UTF8_NORMALIZE_COMPOSE</a> </td></tr>
-<tr>
-<td>Normalization Form KC (NFKC) </td><td><a class="el" href="group__flags.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to NFC. ">UTF8_NORMALIZE_COMPOSE</a> + <a class="el" href="group__flags.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Changes composed normalization to NFKC or decomposed normalization to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
-<tr>
-<td>Normalization Form D (NFD) </td><td><a class="el" href="group__flags.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to NFD. ">UTF8_NORMALIZE_DECOMPOSE</a> </td></tr>
-<tr>
-<td>Normalization Form KD (NFKD) </td><td><a class="el" href="group__flags.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to NFD. ">UTF8_NORMALIZE_DECOMPOSE</a> + <a class="el" href="group__flags.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Changes composed normalization to NFKC or decomposed normalization to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
-</table>
-<p>For a more detailed explanation, please see the documentation regarding normalization.</p>
-<p>The result of the check will be YES if the string is stable and MAYBE or NO if it is unstable. If the result is MAYBE, the string does not necessarily have to be normalized.</p>
-<p>Example:</p>
-<div class="fragment"><div class="line">uint8_t Text_InspectComposed(<span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
-<div class="line">{</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* src = text;</div>
-<div class="line">    <span class="keywordtype">size_t</span> src_size = strlen(text);</div>
-<div class="line">    <span class="keywordtype">size_t</span> offset;</div>
-<div class="line">    <span class="keywordtype">size_t</span> total_offset;</div>
-<div class="line"></div>
-<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="utf8rewind_8h.html#aa7c54fadc9bc04c439e9923f54968a33">utf8isnormalized</a>(src, src_size, <a class="code" href="group__flags.html#ga6b8ab40213f4505f96b4655fd468848d">UTF8_NORMALIZE_COMPOSE</a>, &amp;offset) == <a class="code" href="group__quickcheck.html#gae047d522ffc5afe11b150b6d5c527b80">UTF8_NORMALIZATION_RESULT_YES</a>)</div>
-<div class="line">    {</div>
-<div class="line">        printf(<span class="stringliteral">&quot;Clean!\n&quot;</span>);</div>
-<div class="line"></div>
-<div class="line">        <span class="keywordflow">return</span> 1;</div>
-<div class="line">    }</div>
-<div class="line"></div>
-<div class="line">    total_offset = offset;</div>
-<div class="line"></div>
-<div class="line">    <span class="keywordflow">do</span></div>
-<div class="line">    {</div>
-<div class="line">        <span class="keyword">const</span> <span class="keywordtype">char</span>* next;</div>
-<div class="line"></div>
-<div class="line">        printf(<span class="stringliteral">&quot;Unstable at byte %d\n&quot;</span>, total_offset);</div>
-<div class="line"></div>
-<div class="line">        next = <a class="code" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8seek</a>(src, text, 1, SEEK_CUR);</div>
-<div class="line">        <span class="keywordflow">if</span> (next == src)</div>
-<div class="line">        {</div>
-<div class="line">            <span class="keywordflow">break</span>;</div>
-<div class="line">        }</div>
-<div class="line"></div>
-<div class="line">        total_offset += offset;</div>
-<div class="line"></div>
-<div class="line">        src = next;</div>
-<div class="line">        src_size -= next - src;</div>
-<div class="line">    }</div>
-<div class="line">    <span class="keywordflow">while</span> (<a class="code" href="utf8rewind_8h.html#aa7c54fadc9bc04c439e9923f54968a33">utf8isnormalized</a>(src, src_size, <a class="code" href="group__flags.html#ga6b8ab40213f4505f96b4655fd468848d">UTF8_NORMALIZE_COMPOSE</a>, &amp;offset) != <a class="code" href="group__quickcheck.html#gae047d522ffc5afe11b150b6d5c527b80">UTF8_NORMALIZATION_RESULT_YES</a>);</div>
-<div class="line"></div>
-<div class="line">    <span class="keywordflow">return</span> 0;</div>
-<div class="line">}</div>
-</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">flags</td><td>Desired normalization form. Must be a combination of <a class="el" href="group__flags.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to NFC. ">UTF8_NORMALIZE_COMPOSE</a>, <a class="el" href="group__flags.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to NFD. ">UTF8_NORMALIZE_DECOMPOSE</a> and <a class="el" href="group__flags.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Changes composed normalization to NFKC or decomposed normalization to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">offset</td><td>Offset of first unstable codepoint.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname"><a class="el" href="group__quickcheck.html#gae047d522ffc5afe11b150b6d5c527b80" title="Text is stable and does not have to be normalized. ">UTF8_NORMALIZATION_RESULT_YES</a></td><td>Text is stable and does not have to be normalized. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__quickcheck.html#ga8ea4d576e89529e074392175230dc352" title="Text is unstable, but normalization may be skipped. ">UTF8_NORMALIZATION_RESULT_MAYBE</a></td><td>Text is unstable, but normalization may be skipped. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__quickcheck.html#ga9a59070cc87c6b141ab742986af0f223" title="Text is unstable and must be normalized. ">UTF8_NORMALIZATION_RESULT_NO</a></td><td>Text is unstable and must be normalized. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="aa6a3ebdecf49591cff736ccf054c048e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t utf8len </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>text</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get the length in codepoints of a UTF-8 encoded string. </p>
-<p>Example:</p>
-<div class="fragment"><div class="line">uint8_t CheckPassword(<span class="keyword">const</span> <span class="keywordtype">char</span>* password)</div>
-<div class="line">{</div>
-<div class="line">    <span class="keywordtype">size_t</span> length = <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(password);</div>
-<div class="line">    <span class="keywordflow">return</span> (length == <a class="code" href="utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e">utf8len</a>(<span class="stringliteral">&quot;hunter2&quot;</span>));</div>
-<div class="line">}</div>
-</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">text</td><td>UTF-8 encoded string.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Length in codepoints. </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ad53ccbe67130de7c9c34a8aaec52f4be"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t utf8normalize </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>input</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>inputSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>target</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>targetSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>flags</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int32_t *&#160;</td>
-          <td class="paramname"><em>errors</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a13d55ea3402d6d91cfb965f3605ec3eb"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const char* utf8seek </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>text</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>textStart</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">off_t&#160;</td>
-          <td class="paramname"><em>offset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>direction</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Seek into a UTF-8 encoded string. </p>
-<p>Working with UTF-8 encoded strings can be tricky due to the nature of the variable-length encoding. Because one character no longer equals one byte, it can be difficult to skip around in a UTF-8 encoded string without decoding the codepoints.</p>
-<p>This function provides an interface similar to <code>fseek</code> in order to enable skipping to another part of the string.</p>
-<dl class="section note"><dt>Note</dt><dd><code>textStart</code> must come before <code>text</code> in memory when seeking from the current or end position.</dd></dl>
-<p>Example:</p>
-<div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* text = <span class="stringliteral">&quot;Press \xE0\x80\x13 to continue.&quot;</span>;</div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span> fixed[1024];</div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* commandStart;</div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* commandEnd;</div>
-<div class="line"></div>
-<div class="line">memset(fixed, 0, 1024);</div>
-<div class="line"></div>
-<div class="line">commandStart = strstr(text, <span class="stringliteral">&quot;\xE0\x80\x13&quot;</span>);</div>
-<div class="line"><span class="keywordflow">if</span> (commandStart == 0)</div>
-<div class="line">{</div>
-<div class="line">    <span class="keywordflow">return</span> 0;</div>
-<div class="line">}</div>
-<div class="line"></div>
-<div class="line">strncpy(fixed, text, commandStart - text);</div>
-<div class="line">strcat(fixed, <span class="stringliteral">&quot;ENTER&quot;</span>);</div>
-<div class="line"></div>
-<div class="line">commandEnd = <a class="code" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8seek</a>(commandStart, text, 1, SEEK_CUR);</div>
-<div class="line"><span class="keywordflow">if</span> (commandEnd != commandStart)</div>
-<div class="line">{</div>
-<div class="line">    strcat(fixed, commandEnd);</div>
-<div class="line">}</div>
-</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">text</td><td>Input string. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">textStart</td><td>Start of input string. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">offset</td><td>Requested offset in codepoints. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">direction</td><td>Direction to seek in. <ul>
-<li><code>SEEK_SET</code> Offset is from the start of the string. </li>
-<li><code>SEEK_CUR</code> Offset is from the current position of the string. </li>
-<li><code>SEEK_END</code> Offset is from the end of the string.</li>
-</ul>
-</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Changed string or no change on error. </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ada1349c86f22e9fcf5b97e469d303c58"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t utf8tolower </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">const wchar_t *&#160;</td>
           <td class="paramname"><em>input</em>, </td>
         </tr>
         <tr>
@@ -751,109 +508,19 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a class="anchor" id="a97fe2a89787f22d1d6b978909289ae34"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t utf8totitle </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>input</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>inputSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>target</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>targetSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int32_t *&#160;</td>
-          <td class="paramname"><em>errors</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ae9296a74c3a6ed4f2d28c4af29a9e7c0"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t utf8toupper </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>input</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>inputSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>target</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>targetSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int32_t *&#160;</td>
-          <td class="paramname"><em>errors</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Convert UTF-8 encoded text to uppercase. </p>
-<p>This function allows users to convert UTF-8 encoded strings to uppercase without first changing the encoding to UTF-32. Conversion is fully compliant with the Unicode 7.0 standard.</p>
-<p>Although most codepoints can be converted in-place, there are notable exceptions. For example, U+00DF (LATIN SMALL LETTER SHARP S) maps to "U+0053 U+0053" (LATIN CAPITAL LETTER S) when uppercasing. Therefor, it is advised to first determine the size in bytes of the output by calling the function with a NULL output buffer.</p>
-<p>Only a handful of scripts make a distinction between upper- and lowercase. In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic, a few historic or archaic scripts have case. The vast majority of scripts do not have case distinctions.</p>
-<dl class="section note"><dt>Note</dt><dd>Case mapping is not reversible. That is, <code>toUpper(toLower(x)) != toLower(toUpper(x))</code>.</dd></dl>
+<p>Convert a wide string to a UTF-8 encoded string. </p>
+<p>Depending on the platform, wide strings are either UTF-16 or UTF-32 encoded. This function takes a wide string as input and automatically calls the correct conversion function.</p>
+<p>This allows for a cross-platform treatment of wide text and is preferable to using the UTF-16 or UTF-32 versions directly.</p>
 <p>Example:</p>
-<div class="fragment"><div class="line"><span class="keywordtype">void</span> Button_Draw(int32_t x, int32_t y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
+<div class="fragment"><div class="line">texture_t Texture_Load_Wide(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* input)</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordtype">size_t</span> input_size = strlen(text);</div>
 <div class="line">    <span class="keywordtype">char</span>* converted = NULL;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
-<div class="line">    int32_t text_box_width, text_box_height;</div>
+<div class="line">    <span class="keywordtype">size_t</span> input_size = wcslen(input) * <span class="keyword">sizeof</span>(wchar_t);</div>
+<div class="line">    texture_t result = NULL;</div>
 <div class="line">    int32_t errors = 0;</div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#ae9296a74c3a6ed4f2d28c4af29a9e7c0">utf8toupper</a>(text, input_size, NULL, 0, &amp;errors);</div>
+<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#ad4670f2b7165731bff971559f85690a5">widetoutf8</a>(input, input_size, NULL, 0, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
 <div class="line">        errors != 0)</div>
 <div class="line">    {</div>
@@ -861,15 +528,10 @@ Functions</h2></td></tr>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    converted = (<span class="keywordtype">char</span>*)malloc(converted_size + 1);</div>
-<div class="line">    <a class="code" href="utf8rewind_8h.html#ae9296a74c3a6ed4f2d28c4af29a9e7c0">utf8toupper</a>(text, input_size, converted, converted_size, NULL);</div>
-<div class="line">    converted[converted_size] = 0;</div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#ad4670f2b7165731bff971559f85690a5">widetoutf8</a>(input, input_size, converted, converted_size, NULL);</div>
+<div class="line">    converted[converted_size / <span class="keyword">sizeof</span>(wchar_t)] = 0;</div>
 <div class="line"></div>
-<div class="line">    Font_GetTextDimensions(converted, &amp;text_box_width, &amp;text_box_height);</div>
-<div class="line"></div>
-<div class="line">    Draw_BoxFilled(x - 4, y - 4, text_box_width + 8, text_box_height + 8, 0x088A08);</div>
-<div class="line">    Draw_BoxOutline(x - 4, y - 4, text_box_width + 8, text_box_height + 8, 0xA9F5A9);</div>
-<div class="line">    Font_DrawText(x + 2, y + 1, converted, 0x000000);</div>
-<div class="line">    Font_DrawText(x, y, converted, 0xFFFFFF);</div>
+<div class="line">    result = Texture_Load(converted);</div>
 <div class="line"></div>
 <div class="line">cleanup:</div>
 <div class="line">    <span class="keywordflow">if</span> (converted != NULL)</div>
@@ -877,10 +539,12 @@ Functions</h2></td></tr>
 <div class="line">        free(converted);</div>
 <div class="line">        converted = NULL;</div>
 <div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">return</span> result;</div>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>Wide-encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
@@ -891,12 +555,18 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for encoding. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga0661d820dd006e49adfbdf0c7a9dec14" title="Unmatched high codepoint in surrogate pair. ">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a></td><td>High surrogate pair was not matched. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga892fe61a47f8258d88e292553a459a1c" title="Unmatched low codepoint in surrogate pair. ">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a></td><td>Low surrogate pair was not matched. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#a70996b8a2475177e9156948fe9c1996d" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide</a> </dd>
+<dd>
+<a class="el" href="utf8rewind_8h.html#a4d6a9017be860a575c8dc1ac8c5a9253" title="Convert a UTF-16 encoded string to a UTF-8 encoded string. ">utf16toutf8</a> </dd>
+<dd>
+<a class="el" href="utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80" title="Convert a UTF-32 encoded string to a UTF-8 encoded string. ">utf32toutf8</a> </dd></dl>
 
 </div>
 </div>
@@ -1166,14 +836,94 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ad4670f2b7165731bff971559f85690a5"></a>
+<a class="anchor" id="a13d55ea3402d6d91cfb965f3605ec3eb"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t widetoutf8 </td>
+          <td class="memname">const char* utf8seek </td>
           <td>(</td>
-          <td class="paramtype">const wchar_t *&#160;</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>textStart</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">off_t&#160;</td>
+          <td class="paramname"><em>offset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>direction</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Seek into a UTF-8 encoded string. </p>
+<p>Working with UTF-8 encoded strings can be tricky due to the nature of the variable-length encoding. Because one character no longer equals one byte, it can be difficult to skip around in a UTF-8 encoded string without decoding the codepoints.</p>
+<p>This function provides an interface similar to <code>fseek</code> in order to enable skipping to another part of the string.</p>
+<dl class="section note"><dt>Note</dt><dd><code>textStart</code> must come before <code>text</code> in memory when seeking from the current or end position.</dd></dl>
+<p>Example:</p>
+<div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* text = <span class="stringliteral">&quot;Press \xE0\x80\x13 to continue.&quot;</span>;</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span> fixed[1024];</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* commandStart;</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* commandEnd;</div>
+<div class="line"></div>
+<div class="line">memset(fixed, 0, 1024);</div>
+<div class="line"></div>
+<div class="line">commandStart = strstr(text, <span class="stringliteral">&quot;\xE0\x80\x13&quot;</span>);</div>
+<div class="line"><span class="keywordflow">if</span> (commandStart == 0)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+<div class="line"></div>
+<div class="line">strncpy(fixed, text, commandStart - text);</div>
+<div class="line">strcat(fixed, <span class="stringliteral">&quot;ENTER&quot;</span>);</div>
+<div class="line"></div>
+<div class="line">commandEnd = <a class="code" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8seek</a>(commandStart, text, 1, SEEK_CUR);</div>
+<div class="line"><span class="keywordflow">if</span> (commandEnd != commandStart)</div>
+<div class="line">{</div>
+<div class="line">    strcat(fixed, commandEnd);</div>
+<div class="line">}</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">text</td><td>Input string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">textStart</td><td>Start of input string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">offset</td><td>Requested offset in codepoints. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">direction</td><td>Direction to seek in. <ul>
+<li><code>SEEK_SET</code> Offset is from the start of the string. </li>
+<li><code>SEEK_CUR</code> Offset is from the current position of the string. </li>
+<li><code>SEEK_END</code> Offset is from the end of the string.</li>
+</ul>
+</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Changed string or no change on error. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ae9296a74c3a6ed4f2d28c4af29a9e7c0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t utf8toupper </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>input</em>, </td>
         </tr>
         <tr>
@@ -1208,19 +958,21 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Convert a wide string to a UTF-8 encoded string. </p>
-<p>Depending on the platform, wide strings are either UTF-16 or UTF-32 encoded. This function takes a wide string as input and automatically calls the correct conversion function.</p>
-<p>This allows for a cross-platform treatment of wide text and is preferable to using the UTF-16 or UTF-32 versions directly.</p>
+<p>Convert UTF-8 encoded text to uppercase. </p>
+<p>This function allows users to convert UTF-8 encoded strings to uppercase without first changing the encoding to UTF-32. Conversion is fully compliant with the Unicode 7.0 standard.</p>
+<p>Although most codepoints can be converted in-place, there are notable exceptions. For example, U+00DF (LATIN SMALL LETTER SHARP S) maps to "U+0053 U+0053" (LATIN CAPITAL LETTER S) when uppercasing. Therefor, it is advised to first determine the size in bytes of the output by calling the function with a NULL output buffer.</p>
+<p>Only a handful of scripts make a distinction between upper- and lowercase. In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic, a few historic or archaic scripts have case. The vast majority of scripts do not have case distinctions.</p>
+<dl class="section note"><dt>Note</dt><dd>Case mapping is not reversible. That is, <code>toUpper(toLower(x)) != toLower(toUpper(x))</code>.</dd></dl>
 <p>Example:</p>
-<div class="fragment"><div class="line">texture_t Texture_Load_Wide(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* input)</div>
+<div class="fragment"><div class="line"><span class="keywordtype">void</span> Button_Draw(int32_t x, int32_t y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
+<div class="line">    <span class="keywordtype">size_t</span> input_size = strlen(text);</div>
 <div class="line">    <span class="keywordtype">char</span>* converted = NULL;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
-<div class="line">    <span class="keywordtype">size_t</span> input_size = wcslen(input) * <span class="keyword">sizeof</span>(wchar_t);</div>
-<div class="line">    texture_t result = NULL;</div>
+<div class="line">    int32_t text_box_width, text_box_height;</div>
 <div class="line">    int32_t errors = 0;</div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#ad4670f2b7165731bff971559f85690a5">widetoutf8</a>(input, input_size, NULL, 0, &amp;errors);</div>
+<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#ae9296a74c3a6ed4f2d28c4af29a9e7c0">utf8toupper</a>(text, input_size, NULL, 0, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
 <div class="line">        errors != 0)</div>
 <div class="line">    {</div>
@@ -1228,10 +980,15 @@ Functions</h2></td></tr>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    converted = (<span class="keywordtype">char</span>*)malloc(converted_size + 1);</div>
-<div class="line">    <a class="code" href="utf8rewind_8h.html#ad4670f2b7165731bff971559f85690a5">widetoutf8</a>(input, input_size, converted, converted_size, NULL);</div>
-<div class="line">    converted[converted_size / <span class="keyword">sizeof</span>(wchar_t)] = 0;</div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#ae9296a74c3a6ed4f2d28c4af29a9e7c0">utf8toupper</a>(text, input_size, converted, converted_size, NULL);</div>
+<div class="line">    converted[converted_size] = 0;</div>
 <div class="line"></div>
-<div class="line">    result = Texture_Load(converted);</div>
+<div class="line">    Font_GetTextDimensions(converted, &amp;text_box_width, &amp;text_box_height);</div>
+<div class="line"></div>
+<div class="line">    Draw_BoxFilled(x - 4, y - 4, text_box_width + 8, text_box_height + 8, 0x088A08);</div>
+<div class="line">    Draw_BoxOutline(x - 4, y - 4, text_box_width + 8, text_box_height + 8, 0xA9F5A9);</div>
+<div class="line">    Font_DrawText(x + 2, y + 1, converted, 0x000000);</div>
+<div class="line">    Font_DrawText(x, y, converted, 0xFFFFFF);</div>
 <div class="line"></div>
 <div class="line">cleanup:</div>
 <div class="line">    <span class="keywordflow">if</span> (converted != NULL)</div>
@@ -1239,12 +996,10 @@ Functions</h2></td></tr>
 <div class="line">        free(converted);</div>
 <div class="line">        converted = NULL;</div>
 <div class="line">    }</div>
-<div class="line"></div>
-<div class="line">    <span class="keywordflow">return</span> result;</div>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>Wide-encoded string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
@@ -1255,18 +1010,263 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for encoding. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga0661d820dd006e49adfbdf0c7a9dec14" title="Unmatched high codepoint in surrogate pair. ">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a></td><td>High surrogate pair was not matched. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga892fe61a47f8258d88e292553a459a1c" title="Unmatched low codepoint in surrogate pair. ">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a></td><td>Low surrogate pair was not matched. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="utf8rewind_8h.html#a70996b8a2475177e9156948fe9c1996d" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide</a> </dd>
-<dd>
-<a class="el" href="utf8rewind_8h.html#a4d6a9017be860a575c8dc1ac8c5a9253" title="Convert a UTF-16 encoded string to a UTF-8 encoded string. ">utf16toutf8</a> </dd>
-<dd>
-<a class="el" href="utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80" title="Convert a UTF-32 encoded string to a UTF-8 encoded string. ">utf32toutf8</a> </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ada1349c86f22e9fcf5b97e469d303c58"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t utf8tolower </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>inputSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>targetSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t *&#160;</td>
+          <td class="paramname"><em>errors</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a97fe2a89787f22d1d6b978909289ae34"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t utf8totitle </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>inputSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>targetSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t *&#160;</td>
+          <td class="paramname"><em>errors</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa7c54fadc9bc04c439e9923f54968a33"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t utf8isnormalized </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>inputSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>flags</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>offset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check if a string is stable in the specified normalization form. </p>
+<p>This function can be used as a preprocessing step, before attempting to normalize a string. Normalization is a very expensive process, it is often cheaper to first determine if the string is unstable in the requested normalization form.</p>
+<p>Unicode Normalization Forms are formally defined normalizations of Unicode strings which make it possible to determine whether any two Unicode strings are equivalent to each other. Depending on the particular Unicode Normalization Form, that equivalence can either be a canonical equivalence or a compatibility equivalence.</p>
+<p>Essentially, the Unicode Normalization Algorithm puts all combining marks in a specified order, and uses rules for decomposition and composition to transform each string into one of the Unicode Normalization Forms. A binary comparison of the transformed strings will then determine equivalence.</p>
+<p>There are four Unicode Normalization Forms:</p>
+<table class="doxtable">
+<tr>
+<th>Unicode </th><th>Flags  </th></tr>
+<tr>
+<td>Normalization Form C (NFC) </td><td><a class="el" href="group__flags.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to NFC. ">UTF8_NORMALIZE_COMPOSE</a> </td></tr>
+<tr>
+<td>Normalization Form KC (NFKC) </td><td><a class="el" href="group__flags.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to NFC. ">UTF8_NORMALIZE_COMPOSE</a> + <a class="el" href="group__flags.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Changes composed normalization to NFKC or decomposed normalization to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
+<tr>
+<td>Normalization Form D (NFD) </td><td><a class="el" href="group__flags.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to NFD. ">UTF8_NORMALIZE_DECOMPOSE</a> </td></tr>
+<tr>
+<td>Normalization Form KD (NFKD) </td><td><a class="el" href="group__flags.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to NFD. ">UTF8_NORMALIZE_DECOMPOSE</a> + <a class="el" href="group__flags.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Changes composed normalization to NFKC or decomposed normalization to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
+</table>
+<p>For a more detailed explanation, please see the documentation regarding normalization.</p>
+<p>The result of the check will be YES if the string is stable and MAYBE or NO if it is unstable. If the result is MAYBE, the string does not necessarily have to be normalized.</p>
+<p>Example:</p>
+<div class="fragment"><div class="line">uint8_t Text_InspectComposed(<span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* src = text;</div>
+<div class="line">    <span class="keywordtype">size_t</span> src_size = strlen(text);</div>
+<div class="line">    <span class="keywordtype">size_t</span> offset;</div>
+<div class="line">    <span class="keywordtype">size_t</span> total_offset;</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="utf8rewind_8h.html#aa7c54fadc9bc04c439e9923f54968a33">utf8isnormalized</a>(src, src_size, <a class="code" href="group__flags.html#ga6b8ab40213f4505f96b4655fd468848d">UTF8_NORMALIZE_COMPOSE</a>, &amp;offset) == <a class="code" href="group__quickcheck.html#gae047d522ffc5afe11b150b6d5c527b80">UTF8_NORMALIZATION_RESULT_YES</a>)</div>
+<div class="line">    {</div>
+<div class="line">        printf(<span class="stringliteral">&quot;Clean!\n&quot;</span>);</div>
+<div class="line"></div>
+<div class="line">        <span class="keywordflow">return</span> 1;</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    total_offset = offset;</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">do</span></div>
+<div class="line">    {</div>
+<div class="line">        <span class="keyword">const</span> <span class="keywordtype">char</span>* next;</div>
+<div class="line"></div>
+<div class="line">        printf(<span class="stringliteral">&quot;Unstable at byte %d\n&quot;</span>, total_offset);</div>
+<div class="line"></div>
+<div class="line">        next = <a class="code" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb">utf8seek</a>(src, text, 1, SEEK_CUR);</div>
+<div class="line">        <span class="keywordflow">if</span> (next == src)</div>
+<div class="line">        {</div>
+<div class="line">            <span class="keywordflow">break</span>;</div>
+<div class="line">        }</div>
+<div class="line"></div>
+<div class="line">        total_offset += offset;</div>
+<div class="line"></div>
+<div class="line">        src = next;</div>
+<div class="line">        src_size -= next - src;</div>
+<div class="line">    }</div>
+<div class="line">    <span class="keywordflow">while</span> (<a class="code" href="utf8rewind_8h.html#aa7c54fadc9bc04c439e9923f54968a33">utf8isnormalized</a>(src, src_size, <a class="code" href="group__flags.html#ga6b8ab40213f4505f96b4655fd468848d">UTF8_NORMALIZE_COMPOSE</a>, &amp;offset) != <a class="code" href="group__quickcheck.html#gae047d522ffc5afe11b150b6d5c527b80">UTF8_NORMALIZATION_RESULT_YES</a>);</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">flags</td><td>Desired normalization form. Must be a combination of <a class="el" href="group__flags.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to NFC. ">UTF8_NORMALIZE_COMPOSE</a>, <a class="el" href="group__flags.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to NFD. ">UTF8_NORMALIZE_DECOMPOSE</a> and <a class="el" href="group__flags.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Changes composed normalization to NFKC or decomposed normalization to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">offset</td><td>Offset of first unstable codepoint.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname"><a class="el" href="group__quickcheck.html#gae047d522ffc5afe11b150b6d5c527b80" title="Text is stable and does not have to be normalized. ">UTF8_NORMALIZATION_RESULT_YES</a></td><td>Text is stable and does not have to be normalized. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__quickcheck.html#ga8ea4d576e89529e074392175230dc352" title="Text is unstable, but normalization may be skipped. ">UTF8_NORMALIZATION_RESULT_MAYBE</a></td><td>Text is unstable, but normalization may be skipped. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__quickcheck.html#ga9a59070cc87c6b141ab742986af0f223" title="Text is unstable and must be normalized. ">UTF8_NORMALIZATION_RESULT_NO</a></td><td>Text is unstable and must be normalized. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ad53ccbe67130de7c9c34a8aaec52f4be"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t utf8normalize </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>inputSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>targetSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>flags</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t *&#160;</td>
+          <td class="paramname"><em>errors</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -1276,7 +1276,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_19f418181f8b699045c2f8e6c49f857e.html">utf8rewind</a></li><li class="navelem"><a class="el" href="utf8rewind_8h.html">utf8rewind.h</a></li>
-    <li class="footer">Generated on Wed Mar 4 2015 11:10:07 for utf8rewind by
+    <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
   </ul>
