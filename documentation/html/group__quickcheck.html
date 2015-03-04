@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.9.1"/>
-<title>utf8rewind: source Directory Reference</title>
+<title>utf8rewind: Normalization results</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -84,7 +84,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html','');});
+$(document).ready(function(){initNavTree('group__quickcheck.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -102,29 +102,74 @@ $(document).ready(function(){initNavTree('dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.h
 </div>
 
 <div class="header">
+  <div class="summary">
+<a href="#define-members">Macros</a>  </div>
   <div class="headertitle">
-<div class="title">source Directory Reference</div>  </div>
+<div class="title">Normalization results</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="subdirs"></a>
-Directories</h2></td></tr>
-<tr class="memitem:dir_a1987cf8ca160ad0403a567bf62072d3"><td class="memItemLeft" align="right" valign="top">directory &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dir_a1987cf8ca160ad0403a567bf62072d3.html">internal</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:dir_bcc475e2baa7fb4fddbbf77a013083ee"><td class="memItemLeft" align="right" valign="top">directory &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dir_bcc475e2baa7fb4fddbbf77a013083ee.html">tests</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="files"></a>
-Files</h2></td></tr>
-<tr class="memitem:unicodedatabase_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unicodedatabase_8h.html">unicodedatabase.h</a> <a href="unicodedatabase_8h_source.html">[code]</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:gae047d522ffc5afe11b150b6d5c527b80"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__quickcheck.html#gae047d522ffc5afe11b150b6d5c527b80">UTF8_NORMALIZATION_RESULT_YES</a>&#160;&#160;&#160;(0)</td></tr>
+<tr class="memdesc:gae047d522ffc5afe11b150b6d5c527b80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Text is stable and does not have to be normalized.  <a href="#gae047d522ffc5afe11b150b6d5c527b80">More...</a><br /></td></tr>
+<tr class="separator:gae047d522ffc5afe11b150b6d5c527b80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8ea4d576e89529e074392175230dc352"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__quickcheck.html#ga8ea4d576e89529e074392175230dc352">UTF8_NORMALIZATION_RESULT_MAYBE</a>&#160;&#160;&#160;(1)</td></tr>
+<tr class="memdesc:ga8ea4d576e89529e074392175230dc352"><td class="mdescLeft">&#160;</td><td class="mdescRight">Text is unstable, but normalization may be skipped.  <a href="#ga8ea4d576e89529e074392175230dc352">More...</a><br /></td></tr>
+<tr class="separator:ga8ea4d576e89529e074392175230dc352"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9a59070cc87c6b141ab742986af0f223"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__quickcheck.html#ga9a59070cc87c6b141ab742986af0f223">UTF8_NORMALIZATION_RESULT_NO</a>&#160;&#160;&#160;(2)</td></tr>
+<tr class="memdesc:ga9a59070cc87c6b141ab742986af0f223"><td class="mdescLeft">&#160;</td><td class="mdescRight">Text is unstable and must be normalized.  <a href="#ga9a59070cc87c6b141ab742986af0f223">More...</a><br /></td></tr>
+<tr class="separator:ga9a59070cc87c6b141ab742986af0f223"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="ga8ea4d576e89529e074392175230dc352"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UTF8_NORMALIZATION_RESULT_MAYBE&#160;&#160;&#160;(1)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Text is unstable, but normalization may be skipped. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga9a59070cc87c6b141ab742986af0f223"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UTF8_NORMALIZATION_RESULT_NO&#160;&#160;&#160;(2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Text is unstable and must be normalized. </p>
+
+</div>
+</div>
+<a class="anchor" id="gae047d522ffc5afe11b150b6d5c527b80"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UTF8_NORMALIZATION_RESULT_YES&#160;&#160;&#160;(0)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Text is stable and does not have to be normalized. </p>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li>
     <li class="footer">Generated on Wed Mar 4 2015 11:10:08 for utf8rewind by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
