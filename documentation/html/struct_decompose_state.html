@@ -50,7 +50,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
@@ -74,9 +74,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
-      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
-      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Data&#160;Fields</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -110,15 +110,14 @@ $(document).ready(function(){initNavTree('struct_decompose_state.html','');});
 
 <div class="header">
   <div class="summary">
-<a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="struct_decompose_state-members.html">List of all members</a>  </div>
+<a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle">
 <div class="title">DecomposeState Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
+Data Fields</h2></td></tr>
 <tr class="memitem:a9126e6cb1de9cce7a63c48eba1e1f508"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_stream_state.html">StreamState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_decompose_state.html#a9126e6cb1de9cce7a63c48eba1e1f508">input</a></td></tr>
 <tr class="separator:a9126e6cb1de9cce7a63c48eba1e1f508"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae533212e7f53cd1fe1044e0606e56d25"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_stream_state.html">StreamState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_decompose_state.html#ae533212e7f53cd1fe1044e0606e56d25">output</a></td></tr>
@@ -134,55 +133,7 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a971def19e2893221afa3b6b1fbca10c5"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_decompose_state.html#a971def19e2893221afa3b6b1fbca10c5">cache_filled</a></td></tr>
 <tr class="separator:a971def19e2893221afa3b6b1fbca10c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a0bddf2566888f8fd5b7e56b129539a2b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t DecomposeState::cache_canonical_combining_class[<a class="el" href="streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba">STREAM_BUFFER_MAX</a>]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="aa0d1b1890b0f2027e9b9fdcd03056862"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> DecomposeState::cache_codepoint[<a class="el" href="streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba">STREAM_BUFFER_MAX</a>]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a40c4a7992c0446c0455e7fbddab9daf2"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t DecomposeState::cache_current</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a971def19e2893221afa3b6b1fbca10c5"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t DecomposeState::cache_filled</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
+<h2 class="groupheader">Field Documentation</h2>
 <a class="anchor" id="a9126e6cb1de9cce7a63c48eba1e1f508"></a>
 <div class="memitem">
 <div class="memproto">
@@ -219,6 +170,54 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="aa0d1b1890b0f2027e9b9fdcd03056862"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> DecomposeState::cache_codepoint[<a class="el" href="streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba">STREAM_BUFFER_MAX</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0bddf2566888f8fd5b7e56b129539a2b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t DecomposeState::cache_canonical_combining_class[<a class="el" href="streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba">STREAM_BUFFER_MAX</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a40c4a7992c0446c0455e7fbddab9daf2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t DecomposeState::cache_current</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a971def19e2893221afa3b6b1fbca10c5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t DecomposeState::cache_filled</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>source/internal/<a class="el" href="decomposition_8h_source.html">decomposition.h</a></li>
 </ul>
@@ -228,7 +227,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="struct_decompose_state.html">DecomposeState</a></li>
-    <li class="footer">Generated on Wed Mar 4 2015 11:10:08 for utf8rewind by
+    <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
   </ul>
