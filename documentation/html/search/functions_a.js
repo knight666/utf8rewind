@@ -5,6 +5,7 @@ var searchData=
   ['utf32',['utf32',['../namespacehelpers.html#ab407284146b236953737dea18b86ac69',1,'helpers']]],
   ['utf32toutf8',['utf32toutf8',['../utf8rewind_8h.html#a8b5f39b5fe6fd55a6fc40dd54eaa8a80',1,'utf8rewind.h']]],
   ['utf8',['utf8',['../namespacehelpers.html#af6c9049488f27f80aa5240ffb9728852',1,'helpers::utf8(unicode_t codepoint)'],['../namespacehelpers.html#af5bf83e21b33b5c327c44bd612d55d63',1,'helpers::utf8(unicode_t *codepoints, size_t codepointsSize)'],['../namespacehelpers.html#a247962c24fc6737aa51b23cb5385d65e',1,'helpers::utf8(const std::vector&lt; unicode_t &gt; &amp;codepoints)']]],
+  ['utf8isnormalized',['utf8isnormalized',['../utf8rewind_8h.html#aa7c54fadc9bc04c439e9923f54968a33',1,'utf8rewind.h']]],
   ['utf8len',['utf8len',['../utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e',1,'utf8rewind.h']]],
   ['utf8normalize',['utf8normalize',['../utf8rewind_8h.html#ad53ccbe67130de7c9c34a8aaec52f4be',1,'utf8rewind.h']]],
   ['utf8seek',['utf8seek',['../utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb',1,'utf8rewind.h']]],

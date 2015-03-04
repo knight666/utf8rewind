@@ -82,9 +82,32 @@
 	\}
 */
 
+/*!
+	\defgroup quickcheck Normalization results
+	\{
+*/
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_YES
+	\brief Text is stable and does not have to be normalized.
+*/
 #define UTF8_NORMALIZATION_RESULT_YES           (0)
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_MAYBE
+	\brief Text is unstable, but normalization may be skipped.
+*/
 #define UTF8_NORMALIZATION_RESULT_MAYBE         (1)
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_NO
+	\brief Text is unstable and must be normalized.
+*/
 #define UTF8_NORMALIZATION_RESULT_NO            (2)
+
+/*!
+	\}
+*/
 
 /*!
 	\defgroup flags Flags
@@ -664,6 +687,95 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
+/*!
+	\brief Check if a string is stable in the specified normalization form.
+
+	This function can be used as a preprocessing step, before attempting to
+	normalize a string. Normalization is a very expensive process, it is often
+	cheaper to first determine if the string is unstable in the requested
+	normalization form.
+
+	Unicode Normalization Forms are formally defined normalizations of Unicode
+	strings which make it possible to determine whether any two Unicode
+	strings are equivalent to each other. Depending on the particular Unicode
+	Normalization Form, that equivalence can either be a canonical equivalence
+	or a compatibility equivalence.
+
+	Essentially, the Unicode Normalization Algorithm puts all combining marks
+	in a specified order, and uses rules for decomposition and composition to
+	transform each string into one of the Unicode Normalization Forms. A
+	binary comparison of the transformed strings will then determine
+	equivalence.
+
+	There are four Unicode Normalization Forms:
+
+	Unicode                      | Flags
+	--------------------------- | ---------------------------------------------------------
+	Normalization Form C (NFC)   | #UTF8_NORMALIZE_COMPOSE
+	Normalization Form KC (NFKC) | #UTF8_NORMALIZE_COMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
+	Normalization Form D (NFD)   | #UTF8_NORMALIZE_DECOMPOSE
+	Normalization Form KD (NFKD) | #UTF8_NORMALIZE_DECOMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
+
+	For a more detailed explanation, please see the documentation regarding
+	normalization.
+
+	The result of the check will be YES if the string is stable and MAYBE or
+	NO if it is unstable. If the result is MAYBE, the string does not
+	necessarily have to be normalized.
+
+	Example:
+
+	\code{.c}
+		uint8_t Text_InspectComposed(const char* text)
+		{
+			const char* src = text;
+			size_t src_size = strlen(text);
+			size_t offset;
+			size_t total_offset;
+
+			if (utf8isnormalized(src, src_size, UTF8_NORMALIZE_COMPOSE, &offset) == UTF8_NORMALIZATION_RESULT_YES)
+			{
+				printf("Clean!\n");
+
+				return 1;
+			}
+
+			total_offset = offset;
+
+			do
+			{
+				const char* next;
+
+				printf("Unstable at byte %d\n", total_offset);
+
+				next = utf8seek(src, text, 1, SEEK_CUR);
+				if (next == src)
+				{
+					break;
+				}
+
+				total_offset += offset;
+
+				src = next;
+				src_size -= next - src;
+			}
+			while (utf8isnormalized(src, src_size, UTF8_NORMALIZE_COMPOSE, &offset) != UTF8_NORMALIZATION_RESULT_YES);
+
+			return 0;
+		}
+	\endcode
+
+	\param[in]   input       UTF-8 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[in]   flags       Desired normalization form. Must be a combination
+	                         of #UTF8_NORMALIZE_COMPOSE, #UTF8_NORMALIZE_DECOMPOSE and
+	                         #UTF8_NORMALIZE_COMPATIBILITY
+	\param[out]  offset      Offset of first unstable codepoint.
+
+	\retval  #UTF8_NORMALIZATION_RESULT_YES    Text is stable and does not have to be normalized.
+	\retval  #UTF8_NORMALIZATION_RESULT_MAYBE  Text is unstable, but normalization may be skipped.
+	\retval  #UTF8_NORMALIZATION_RESULT_NO     Text is unstable and must be normalized.
+*/
 uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size_t* offset);
 
 size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
