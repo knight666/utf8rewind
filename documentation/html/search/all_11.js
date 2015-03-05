@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['utf8rewind',['utf8rewind',['../index.html',1,'']]],
   ['unicode_5ft',['unicode_t',['../utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988',1,'utf8rewind.h']]],
   ['unicodecompositionrecordcount',['UnicodeCompositionRecordCount',['../unicodedatabase_8h.html#adedce48a6447b2be8c222ef80c5c4c57',1,'unicodedatabase.h']]],
   ['unicodecompositionrecordptr',['UnicodeCompositionRecordPtr',['../unicodedatabase_8h.html#a395b5d1323edd86735e7a98cb5bbd9bf',1,'unicodedatabase.h']]],
