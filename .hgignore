@@ -16,10 +16,12 @@ ipch/*
 *.idb
 *.ilk
 *.pdb
+*.props
 *.ncv
 *.opensdf
 *.sdf
 *.suo
+*.targets
 syntax: regexp
 .*UpgradeLog([0-9]*)\.XML
 
