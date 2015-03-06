@@ -15,7 +15,12 @@ var NAVTREE =
       [ "Helping out", "index.html#helping-out", null ],
       [ "Contact", "index.html#contact", null ]
     ] ],
-    [ "Library interface", "utf8rewind_8h.html", null ],
+    [ "Interface", "utf8rewind_8h.html", null ],
+    [ "Examples", "examples.html", null ],
+    [ "Examples", "examples.html", [
+      [ "Changes to existing code", "examples.html#example-changes", null ],
+      [ "Dealing with user input", "examples.html#example-user-input", null ]
+    ] ],
     [ "Modules", "modules.html", "modules" ],
     [ "Data Structures", null, [
       [ "Data Structures", "annotated.html", "annotated" ],
@@ -36,8 +41,7 @@ var NAVTREE =
         [ "Enumerator", "globals_eval.html", null ],
         [ "Macros", "globals_defs.html", null ]
       ] ]
-    ] ],
-    [ "Examples", "examples.html", "examples" ]
+    ] ]
   ] ]
 ];
 
