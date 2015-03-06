@@ -158,4 +158,94 @@
 	With only a few changes, we've upgraded a text field that previously only
 	accepted ASCII to accept the full range of Unicode. And we didn't have to
 	change the algorithm at all.
+
+	\section example-display Displaying Unicode text
+
+	Even though the user is now able to enter Unicode text, it won't show up
+	right on the screen. That's because the font rendering implementation
+	expects ASCII instead of Unicode.
+
+	Let's take a look at the offending function:
+
+	\code{.c}
+		void InputField_Draw(int x, int y, const char* text)
+		{
+			const char* src = text;
+			size_t i;
+
+			FontBatch_Start("Arial20");
+
+			for (i = 0; i < strlen(text); ++i)
+			{
+				FontBatch_AddCharacter(*src);
+
+				src++;
+			}
+
+			FontBatch_End();
+			FontBatch_Draw(x, y);
+		}
+	\endcode
+
+	The issue here is that `FontBatch_AddCharacter` expects codepoints encoded
+	as one byte per codepoint. Because UTF-8 is a variable-length encoding,
+	this isn't necessarily true anymore.
+
+	In order for the font renderer to display Unicode text, we'll need to
+	convert the UTF-8 encoded text to UTF-32. To that end, we'll use
+	#utf8toutf32.
+
+	\code{.c}
+		void InputField_Draw(int x, int y, const char* text)
+		{
+			size_t text_size = strlen(text);
+			unicode_t* converted = NULL;
+			size_t converted_size;
+			int32_t errors = 0;
+			size_t i;
+			unicode_t* src;
+
+			converted_size = utf8toutf32(text, text_size, NULL, 0, &errors);
+			if (converted_size == 0 ||
+				errors != 0)
+			{
+				goto cleanup;
+			}
+
+			converted = (unicode_t*)malloc(converted_size);
+
+			utf8toutf32(text, text_size, converted, converted_size, NULL);
+
+			FontBatch_Start("Arial20");
+
+			src = decoded;
+
+			for (i = 0; i < decoded_size / sizeof(unicode_t); ++i)
+			{
+				FontBatch_AddCharacter(*src);
+
+				src++;
+			}
+
+			FontBatch_End();
+			FontBatch_Draw(x, y);
+
+		cleanup:
+			if (converted != NULL)
+			{
+				free(converted);
+				converted = NULL;
+			}
+		}
+	\endcode
+
+	After this conversion, the `FontBatch_AddCharacter` function would have to
+	be modified in order to handle Unicode codepoints. Fortunately this is a
+	string handling library, not a font rendering one, so I can get away with
+	saying I'm leaving it as an exercise to the reader.
+
+	One thing to keep in mind is that even though we convert the entire input
+	string to UTF-32 before rendering it in this example, it's equally valid to
+	read only one codepoint at a time. However, you'll need to use #utf8seek to
+	move the cursor to the next codepoint.
 */
