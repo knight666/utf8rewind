@@ -87,6 +87,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="toc"><h3>Table of Contents</h3>
 <ul><li class="level1"><a href="#example-changes">Changes to existing code</a></li>
 <li class="level1"><a href="#example-user-input">Dealing with user input</a></li>
+<li class="level1"><a href="#example-display">Displaying Unicode text</a></li>
 </ul>
 </div>
 <div class="textblock"><h1><a class="anchor" id="example-changes"></a>
@@ -186,7 +187,73 @@ Dealing with user input</h1>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">return</span> 1;</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>With only a few changes, we've upgraded a text field that previously only accepted ASCII to accept the full range of Unicode. And we didn't have to change the algorithm at all. </p>
+</div><!-- fragment --><p>With only a few changes, we've upgraded a text field that previously only accepted ASCII to accept the full range of Unicode. And we didn't have to change the algorithm at all.</p>
+<h1><a class="anchor" id="example-display"></a>
+Displaying Unicode text</h1>
+<p>Even though the user is now able to enter Unicode text, it won't show up right on the screen. That's because the font rendering implementation expects ASCII instead of Unicode.</p>
+<p>Let's take a look at the offending function:</p>
+<div class="fragment"><div class="line"><span class="keywordtype">void</span> InputField_Draw(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* src = text;</div>
+<div class="line">    <span class="keywordtype">size_t</span> i;</div>
+<div class="line"></div>
+<div class="line">    FontBatch_Start(<span class="stringliteral">&quot;Arial20&quot;</span>);</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">for</span> (i = 0; i &lt; strlen(text); ++i)</div>
+<div class="line">    {</div>
+<div class="line">        FontBatch_AddCharacter(*src);</div>
+<div class="line"></div>
+<div class="line">        src++;</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    FontBatch_End();</div>
+<div class="line">    FontBatch_Draw(x, y);</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>The issue here is that <code>FontBatch_AddCharacter</code> expects codepoints encoded as one byte per codepoint. Because UTF-8 is a variable-length encoding, this isn't necessarily true anymore.</p>
+<p>In order for the font renderer to display Unicode text, we'll need to convert the UTF-8 encoded text to UTF-32. To that end, we'll use <a class="el" href="utf8rewind_8h.html#a8f262c70a9fea7b45647ffea8b571008" title="Convert a UTF-8 encoded string to a UTF-32 encoded string. ">utf8toutf32</a>.</p>
+<div class="fragment"><div class="line"><span class="keywordtype">void</span> InputField_Draw(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordtype">size_t</span> text_size = strlen(text);</div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* converted = NULL;</div>
+<div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
+<div class="line">    int32_t errors = 0;</div>
+<div class="line">    <span class="keywordtype">size_t</span> i;</div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* src;</div>
+<div class="line"></div>
+<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a8f262c70a9fea7b45647ffea8b571008">utf8toutf32</a>(text, text_size, NULL, 0, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
+<div class="line">        errors != 0)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    converted = (<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>*)malloc(converted_size);</div>
+<div class="line"></div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#a8f262c70a9fea7b45647ffea8b571008">utf8toutf32</a>(text, text_size, converted, converted_size, NULL);</div>
+<div class="line"></div>
+<div class="line">    FontBatch_Start(<span class="stringliteral">&quot;Arial20&quot;</span>);</div>
+<div class="line"></div>
+<div class="line">    src = decoded;</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">for</span> (i = 0; i &lt; decoded_size / <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>); ++i)</div>
+<div class="line">    {</div>
+<div class="line">        FontBatch_AddCharacter(*src);</div>
+<div class="line"></div>
+<div class="line">        src++;</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    FontBatch_End();</div>
+<div class="line">    FontBatch_Draw(x, y);</div>
+<div class="line"></div>
+<div class="line">cleanup:</div>
+<div class="line">    <span class="keywordflow">if</span> (converted != NULL)</div>
+<div class="line">    {</div>
+<div class="line">        free(converted);</div>
+<div class="line">        converted = NULL;</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>After this conversion, the <code>FontBatch_AddCharacter</code> function would have to be modified in order to handle Unicode codepoints. Fortunately this is a string handling library, not a font rendering one, so I can get away with saying I'm leaving it as an exercise to the reader.</p>
+<p>One thing to keep in mind is that even though we convert the entire input string to UTF-32 before rendering it in this example, it's equally valid to read only one codepoint at a time. However, you'll need to use <a class="el" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb" title="Seek into a UTF-8 encoded string. ">utf8seek</a> to move the cursor to the next codepoint. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
