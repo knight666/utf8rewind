@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['normalization_20results',['Normalization results',['../group__quickcheck.html',1,'']]]
+  ['normalization',['Normalization',['../group__normalization.html',1,'']]]
 ];

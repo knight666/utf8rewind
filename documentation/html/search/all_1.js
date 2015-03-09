@@ -5,6 +5,7 @@ var searchData=
   ['cache_5fcurrent',['cache_current',['../struct_decompose_state.html#a40c4a7992c0446c0455e7fbddab9daf2',1,'DecomposeState']]],
   ['cache_5ffilled',['cache_filled',['../struct_decompose_state.html#a971def19e2893221afa3b6b1fbca10c5',1,'DecomposeState']]],
   ['canonical_5fcombining_5fclass',['canonical_combining_class',['../struct_stream_state.html#aa514266c689097ee5105e698a5de3666',1,'StreamState']]],
+  ['case_20mapping',['Case mapping',['../group__casemapping.html',1,'']]],
   ['casemapping_2eh',['casemapping.h',['../casemapping_8h.html',1,'']]],
   ['casemapping_5fexecute',['casemapping_execute',['../casemapping_8h.html#aeeeb95d1cec1016de22a570b9f7a1854',1,'casemapping.h']]],
   ['casemapping_5finitialize',['casemapping_initialize',['../casemapping_8h.html#a01a2a2a122d88330150e3044b953079d',1,'casemapping.h']]],
@@ -17,6 +18,7 @@ var searchData=
   ['composestate',['ComposeState',['../struct_compose_state.html',1,'']]],
   ['composition_2eh',['composition.h',['../composition_8h.html',1,'']]],
   ['compositionrecord',['CompositionRecord',['../struct_composition_record.html',1,'']]],
+  ['conversion',['Conversion',['../group__conversion.html',1,'']]],
   ['count_5fand_5fvalue',['count_and_value',['../struct_quick_check_record.html#aebfed4c7a0715bd48c26294b0713b40b',1,'QuickCheckRecord']]],
   ['current',['current',['../struct_stream_state.html#a96a5d1ae40676778261a4c85132e8686',1,'StreamState']]]
 ];
