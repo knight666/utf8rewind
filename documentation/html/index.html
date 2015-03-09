@@ -86,9 +86,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
 <ul><li class="level1"><a href="#introduction">Introduction</a></li>
+<li class="level1"><a href="#features">Features</a></li>
+<li class="level1"><a href="#license">Licensing</a></li>
 <li class="level1"><a href="#why-utf8">Why UTF-8?</a></li>
 <li class="level1"><a href="#why-not-utf16">Why not UTF-16?</a></li>
-<li class="level1"><a href="#license">Licensing</a></li>
 <li class="level1"><a href="#building">Building the project</a><ul><li class="level2"><a href="#building-windows">Building on Windows with Visual Studio</a></li>
 <li class="level2"><a href="#building-linux">Building on Linux with GCC</a></li>
 <li class="level2"><a href="#building-mac">Building on Mac OS X using Xcode</a></li>
@@ -101,11 +102,25 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="textblock"><h1><a class="anchor" id="introduction"></a>
 Introduction</h1>
-<p><code>utf8rewind</code> is a C library designed to extend default string handling functions in order to add support for UTF-8 encoded text. Besides providing functions to deal with UTF-8 encoded text, it also provides functions for converting to and from UTF-16 encoded text, the default on Windows.</p>
-<p>For a full summary of the interface, please refer to the <a class="el" href="utf8rewind_8h.html">library interface</a>.</p>
+<p><code>utf8rewind</code> is a C library designed to extend the default string handling functions in order to add support for UTF-8 encoded text.</p>
+<h1><a class="anchor" id="features"></a>
+Features</h1>
+<p><b>Conversion to and from UTF-8</b> - utf8rewind provides functions for converting from and to <a class="el" href="group__conversion.html#gad4670f2b7165731bff971559f85690a5">wide</a>, <a class="el" href="group__conversion.html#ga4d6a9017be860a575c8dc1ac8c5a9253">UTF-16</a> and <a class="el" href="group__conversion.html#ga8b5f39b5fe6fd55a6fc40dd54eaa8a80">UTF-32</a> encoded text.</p>
+<p><b>Case mapping</b> - The library also provides function for converting text to <a class="el" href="group__casemapping.html#gae9296a74c3a6ed4f2d28c4af29a9e7c0">uppercase</a>, <a class="el" href="group__casemapping.html#gada1349c86f22e9fcf5b97e469d303c58">lowercase</a> and <a class="el" href="group__casemapping.html#ga97fe2a89787f22d1d6b978909289ae34">titlecase</a>.</p>
+<p><b>Normalization</b> - With <a class="el" href="group__normalization.html#gad53ccbe67130de7c9c34a8aaec52f4be">utf8normalize</a>, you can normalize UTF-8 encoded text without first converting it to UTF-32.</p>
+<p><b>Seeking</b> - Using <a class="el" href="utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb" title="Seek into a UTF-8 encoded string. ">utf8seek</a>, you can seek forwards and backwards in UTF-8 encoded text.</p>
+<p><b>Cross-platform</b> - utf8rewind is written in plain C, which means it can be used on any platform with a compliant C compiler. Currently, Windows, Linux and Mac versions are available.</p>
+<p><b>Easy to integrate</b> - The library consists of only 13 public functions and requires no initialization. Any C or C++ project can add utf8rewind without breaking existing code.</p>
+<p><b>Simple bindings</b> - No structs are used in the public interface, only pointers. Even if you don't use C, if the language of your choice allows bindings to C functions (e.g. Python), you could integrate utf8rewind.</p>
+<p><b>No heap allocations</b> - All allocations in UTF-8 happen on the stack. You provide the memory, without having to override <code>malloc</code>. This makes the library perfectly tailored to game engines, integrated systems and other performance-critical or memory-constrained projects.</p>
+<p><b>Safety</b> - Over 1200 automated unit and integration tests guarantee the safety and security of the library.</p>
+<p>For a full summary of the interface, please refer to the <a class="el" href="utf8rewind_8h.html">interface page</a>.</p>
+<h1><a class="anchor" id="license"></a>
+Licensing</h1>
+<p>This project is licensed under the MIT license, a full copy of which should have been provided with the project.</p>
 <h1><a class="anchor" id="why-utf8"></a>
 Why UTF-8?</h1>
-<p>UTF-8 encoded Unicode accounts for<a href="http://googleblog.blogspot.nl/2012/02/unicode-over-60-percent-of-web.html">over 60 percent of the web</a>. And with good reason! Because UTF-8 is completely backwards-compatible with ASCII, developers only need to change code dealing with codepoints. UTF-8 can encode the full range of Unicode codepoints in a maximum of four bytes per codepoint. However, because most text tends to be the Latin alphabet mixed with special characters, the common case is strings not much longer than pure ASCII.</p>
+<p>UTF-8 encoded Unicode accounts for <a href="http://googleblog.blogspot.nl/2012/02/unicode-over-60-percent-of-web.html">over 60 percent of the web</a>. And with good reason! Because UTF-8 is completely backwards-compatible with ASCII, developers only need to change code dealing with codepoints. UTF-8 can encode the full range of Unicode codepoints in a maximum of four bytes per codepoint. However, because most text tends to be the Latin alphabet mixed with special characters, the common case is strings not much longer than pure ASCII.</p>
 <h1><a class="anchor" id="why-not-utf16"></a>
 Why not UTF-16?</h1>
 <p>UTF-16 encoding solves the same problems as UTF-8, but in a different way. UTF-16 is not backwards-compatible with ASCII, resulting in invalid codepoints being encountered when the string is treated as ASCII. As a result, all code dealing with strings must be changed in order to handle these new strings. This can be seen in the changes made in the C strings API:</p>
@@ -122,9 +137,6 @@ Why not UTF-16?</h1>
 <td>Convert to lowercase </td><td>tolower </td><td>towlower </td></tr>
 </table>
 <p>Converting a project to use UTF-16 after the fact is a serious endeavour that touches <em>all</em> code dealing with strings. On the other hand, changing existing code to use UTF-8 only deals with codepoint processing.</p>
-<h1><a class="anchor" id="license"></a>
-Licensing</h1>
-<p>This project is licensed under the MIT license, a full copy of which should have been provided with the project.</p>
 <h1><a class="anchor" id="building"></a>
 Building the project</h1>
 <p>All supported platforms use <a href="http://code.google.com/p/gyp/">GYP</a> to generate a solution. This generated solution can be used to compile the project and its dependencies.</p>
