@@ -39,10 +39,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li class="current"><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="index.html"><span>Overview</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -88,11 +87,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <ul><li class="level1"><a href="#introduction">Introduction</a></li>
 <li class="level1"><a href="#features">Features</a></li>
 <li class="level1"><a href="#license">Licensing</a></li>
-<li class="level1"><a href="#why-utf8">Why UTF-8?</a></li>
-<li class="level1"><a href="#why-not-utf16">Why not UTF-16?</a></li>
 <li class="level1"><a href="#building">Building the project</a><ul><li class="level2"><a href="#building-windows">Building on Windows with Visual Studio</a></li>
 <li class="level2"><a href="#building-linux">Building on Linux with GCC</a></li>
-<li class="level2"><a href="#building-mac">Building on Mac OS X using Xcode</a></li>
+<li class="level2"><a href="#building-mac">Building on Mac OS X with XCode</a></li>
 <li class="level2"><a href="#running-tests">Running the tests</a></li>
 </ul>
 </li>
@@ -102,7 +99,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="textblock"><h1><a class="anchor" id="introduction"></a>
 Introduction</h1>
-<p><code>utf8rewind</code> is a C library designed to extend the default string handling functions in order to add support for UTF-8 encoded text.</p>
+<p><code>utf8rewind</code> is a cross-platform and open source C library designed to extend the default string handling functions in order to add support for UTF-8 encoded text.</p>
 <h1><a class="anchor" id="features"></a>
 Features</h1>
 <p><b>Conversion to and from UTF-8</b> - utf8rewind provides functions for converting from and to <a class="el" href="group__conversion.html#gad4670f2b7165731bff971559f85690a5">wide</a>, <a class="el" href="group__conversion.html#ga4d6a9017be860a575c8dc1ac8c5a9253">UTF-16</a> and <a class="el" href="group__conversion.html#ga8b5f39b5fe6fd55a6fc40dd54eaa8a80">UTF-32</a> encoded text.</p>
@@ -118,25 +115,6 @@ Features</h1>
 <h1><a class="anchor" id="license"></a>
 Licensing</h1>
 <p>This project is licensed under the MIT license, a full copy of which should have been provided with the project.</p>
-<h1><a class="anchor" id="why-utf8"></a>
-Why UTF-8?</h1>
-<p>UTF-8 encoded Unicode accounts for <a href="http://googleblog.blogspot.nl/2012/02/unicode-over-60-percent-of-web.html">over 60 percent of the web</a>. And with good reason! Because UTF-8 is completely backwards-compatible with ASCII, developers only need to change code dealing with codepoints. UTF-8 can encode the full range of Unicode codepoints in a maximum of four bytes per codepoint. However, because most text tends to be the Latin alphabet mixed with special characters, the common case is strings not much longer than pure ASCII.</p>
-<h1><a class="anchor" id="why-not-utf16"></a>
-Why not UTF-16?</h1>
-<p>UTF-16 encoding solves the same problems as UTF-8, but in a different way. UTF-16 is not backwards-compatible with ASCII, resulting in invalid codepoints being encountered when the string is treated as ASCII. As a result, all code dealing with strings must be changed in order to handle these new strings. This can be seen in the changes made in the C strings API:</p>
-<table class="doxtable">
-<tr>
-<th>Description </th><th>ASCII </th><th>UTF-16  </th></tr>
-<tr>
-<td>Get the length of a string </td><td>strlen </td><td>wcslen </td></tr>
-<tr>
-<td>Copy a string to another </td><td>strcpy </td><td>wcscpy </td></tr>
-<tr>
-<td>Append to a string </td><td>strcat </td><td>wcscat </td></tr>
-<tr>
-<td>Convert to lowercase </td><td>tolower </td><td>towlower </td></tr>
-</table>
-<p>Converting a project to use UTF-16 after the fact is a serious endeavour that touches <em>all</em> code dealing with strings. On the other hand, changing existing code to use UTF-8 only deals with codepoint processing.</p>
 <h1><a class="anchor" id="building"></a>
 Building the project</h1>
 <p>All supported platforms use <a href="http://code.google.com/p/gyp/">GYP</a> to generate a solution. This generated solution can be used to compile the project and its dependencies.</p>
@@ -151,15 +129,16 @@ Building on Windows with Visual Studio</h2>
 Building on Linux with GCC</h2>
 <p>Open a command window at the project's root.</p>
 <p>Ensure you have all dependencies installed using your favorite preferred package manager: </p><pre class="fragment">sudo apt-get install gyp gcc g++
-</pre><p>Use GYP to generate a soluation: </p><pre class="fragment">gyp --depth= utf8rewind.gyp
+</pre><p>Use GYP to generate a Makefile: </p><pre class="fragment">gyp --depth= utf8rewind.gyp
 </pre><p>Build the project using <code>make</code>: </p><pre class="fragment">make
 </pre><p>For a release build, specify the build type: </p><pre class="fragment">make BUILDTYPE=Release
-</pre><h2><a class="anchor" id="building-mac"></a>
-Building on Mac OS X using Xcode</h2>
+</pre><p>The generated Makefile does not contain a "clean" target. In order to do a full rebuild, you must delete the files in the "output" directory manually.</p>
+<h2><a class="anchor" id="building-mac"></a>
+Building on Mac OS X with XCode</h2>
 <dl class="section note"><dt>Note</dt><dd>Building on Mac OS X is currently untested. Please let us know if you can help us in this regard.</dd></dl>
 <p>Open a command window at the project's root.</p>
 <p>Use GYP to generate a solution: </p><pre class="fragment">tools\gyp\gyp --depth utf8rewind.gyp
-</pre><p>Open the solution in Xcode and you can build the library and tests.</p>
+</pre><p>Open the solution in XCode and you can build the library and tests.</p>
 <h2><a class="anchor" id="running-tests"></a>
 Running the tests</h2>
 <p>After generating a solution, build and run the "tests-rewind" project. Verify that all tests pass on your system configuration before continuing.</p>
