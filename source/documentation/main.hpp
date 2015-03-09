@@ -5,17 +5,56 @@
 
 	\section introduction Introduction
 
-	`utf8rewind` is a C library designed to extend default string handling
-	functions in order to add support for UTF-8 encoded text. Besides providing
-	functions to deal with UTF-8 encoded text, it also provides functions for
-	converting to and from UTF-16 encoded text, the default on Windows.
+	`utf8rewind` is a C library designed to extend the default string handling
+	functions in order to add support for UTF-8 encoded text.
+	
+	\section features Features
+
+	* **Conversion to and from UTF-8** - utf8rewind provides functions for
+	converting from and to [wide](\ref widetoutf8), [UTF-16](\ref utf16toutf8)
+	and [UTF-32](\ref utf32toutf8) encoded text.
+
+	* **Case mapping** - The library also provides function for converting text
+	to [uppercase](\ref utf8toupper), [lowercase](\ref utf8tolower) and
+	[titlecase](\ref utf8totitle).
+
+	* **Normalization** - With #utf8normalize, you can normalize UTF-8 encoded
+	text without first converting it to UTF-32.
+
+	* **Seeking** - Using #utf8seek, you can seek forwards and backwards in
+	UTF-8 encoded text.
+
+	* **Cross-platform** - utf8rewind is written in plain C, which means it can
+	be used on any platform with a compliant C compiler. Currently, Windows,
+	Linux and Mac versions are available.
+
+	* **Easy to integrate** - The library consists of only 13 public functions
+	and requires no initialization. Any C or C++ project can add utf8rewind
+	without breaking existing code.
+
+	* **Simple bindings** - No structs are used in the public interface, only
+	pointers. Even if you don't use C, if the language of your choice allows
+	bindings to C functions (e.g. Python), you could integrate utf8rewind.
+
+	* **No heap allocations** - All allocations in UTF-8 happen on the stack.
+	You provide the memory, without having to override `malloc`. This makes the
+	library perfectly tailored to game engines, integrated systems and other
+	performance-critical or memory-constrained projects.
+
+	* **Safety** - Over 1200 automated unit and integration tests guarantee the
+	safety and security of the library.
 
 	For a full summary of the interface, please refer to the
-	[library interface](\ref utf8rewind.h).
+	[interface page](\ref utf8rewind.h).
+
+	\section license Licensing
+
+	This project is licensed under the MIT license, a full copy of which
+	should have been provided with the project.
 
 	\section why-utf8 Why UTF-8?
 
-	UTF-8 encoded Unicode accounts for[over 60 percent of the web]
+	UTF-8 encoded Unicode accounts for [over 60 percent of the web]
 	(http://googleblog.blogspot.nl/2012/02/unicode-over-60-percent-of-web.html).
 	And with good reason! Because UTF-8 is completely backwards-compatible with
 	ASCII, developers only need to change code dealing with codepoints. UTF-8
@@ -43,11 +82,6 @@
 	Converting a project to use UTF-16 after the fact is a serious endeavour
 	that touches *all* code dealing with strings. On the other hand,
 	changing existing code to use UTF-8 only deals with codepoint processing.
-
-	\section license Licensing
-
-	This project is licensed under the MIT license, a full copy of which
-	should have been provided with the project.
 
 	\section building Building the project
 
