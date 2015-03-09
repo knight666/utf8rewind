@@ -27,8 +27,8 @@
 #define _UTF8REWIND_H_
 
 /*!
-	\file utf8rewind.h
-	\brief Functions for working with UTF-8 encoded text.
+	\file
+	\brief Public interface for UTF-8 functions.
 */
 
 #include <stddef.h>
@@ -164,12 +164,21 @@
 #endif
 
 /*!
-	\}
+	\def UTF8_API
+	\brief Calling convention for public functions.
 */
 
-#if defined(__cplusplus)
-extern "C" {
+#ifndef UTF8_API
+	#ifdef __cplusplus
+		#define UTF8_API extern "C"
+	#else
+		#define UTF8_API
+	#endif
 #endif
+
+/*!
+	\}
+*/
 
 /*!
 	\var utf16_t
@@ -200,7 +209,7 @@ typedef uint32_t unicode_t;
 
 	\return Length in codepoints.
 */
-size_t utf8len(const char* text);
+UTF8_API size_t utf8len(const char* text);
 
 /*!
 	\addtogroup conversion Conversion
@@ -253,7 +262,7 @@ size_t utf8len(const char* text);
 	\sa utf32toutf8
 	\sa widetoutf8
 */
-size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 /*!
 	\brief Convert a UTF-32 encoded string to a UTF-8 encoded string.
@@ -313,7 +322,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 	\sa utf16toutf8
 	\sa widetoutf8
 */
-size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 /*!
 	\brief Convert a wide string to a UTF-8 encoded string.
@@ -380,7 +389,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 	\sa utf16toutf8
 	\sa utf32toutf8
 */
-size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 /*!
 	\brief Convert a UTF-8 encoded string to a UTF-16 encoded string.
@@ -427,7 +436,7 @@ size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target, size_t t
 	\sa utf8towide
 	\sa utf8toutf32
 */
-size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t targetSize, int32_t* errors);
 
 /*!
 	\brief Convert a UTF-8 encoded string to a UTF-32 encoded string.
@@ -472,7 +481,7 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 	\sa utf8towide
 	\sa utf8toutf16
 */
-size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_t targetSize, int32_t* errors);
 
 /*!
 	\brief Convert a UTF-8 encoded string to a wide string.
@@ -548,7 +557,7 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	\sa utf8toutf16
 	\sa utf8toutf32
 */
-size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors);
 
 /*!
 	\}
@@ -606,7 +615,7 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 
 	\return Changed string or no change on error.
 */
-const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
+UTF8_API const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
 
 /*!
 	\addtogroup casemapping Case mapping
@@ -686,11 +695,11 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	\retval  #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
 	\retval  #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
 */
-size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
-size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
-size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 /*!
 	\}
@@ -790,16 +799,12 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 	\retval  #UTF8_NORMALIZATION_RESULT_MAYBE  Text is unstable, but normalization may be skipped.
 	\retval  #UTF8_NORMALIZATION_RESULT_NO     Text is unstable and must be normalized.
 */
-uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size_t* offset);
+UTF8_API uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size_t* offset);
 
-size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
+UTF8_API size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
 
 /*!
 	\}
 */
 
-#if defined(__cplusplus)
-}
-#endif
-
-#endif
+#endif /* _UTF8REWIND_H_ */
