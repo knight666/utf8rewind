@@ -1,10 +1,10 @@
 #pragma once
 
 /*!
-	\cond INTERNAL
+	\file
+	\brief Streaming helper functions.
 
-	\file helpers-streams.hpp
-	\brief Functions for streaming tests.
+	\cond INTERNAL
 */
 
 #include "tests-base.hpp"

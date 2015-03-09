@@ -23,8 +23,15 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef _UTFREWIND_INTERNAL_SEEKING_H_
-#define _UTFREWIND_INTERNAL_SEEKING_H_
+#ifndef _UTF8REWIND_INTERNAL_SEEKING_H_
+#define _UTF8REWIND_INTERNAL_SEEKING_H_
+
+/*!
+	\file
+	\brief Seeking interface.
+
+	\cond INTERNAL
+*/
 
 #include "utf8rewind.h"
 
@@ -32,4 +39,6 @@ const char* seeking_forward(const char* src, const char* srcEnd, size_t srcLengt
 
 const char* seeking_rewind(const char* srcStart, const char* src, size_t srcLength, off_t offset);
 
-#endif
+/*! \endcond */
+
+#endif /* _UTF8REWIND_INTERNAL_SEEKING_H_ */

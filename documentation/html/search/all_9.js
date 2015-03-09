@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['last_5fgeneral_5fcategory',['last_general_category',['../struct_case_mapping_state.html#a5edbbd711a5181d6ae02372c05ab7b67',1,'CaseMappingState']]],
-  ['last_5flength',['last_length',['../struct_stream_state.html#a63cd1a95e9292f48586e742ffc2d6ecc',1,'StreamState']]]
+  ['seeking_2eh',['seeking.h',['../seeking_8h.html',1,'']]],
+  ['streaming_2eh',['streaming.h',['../streaming_8h.html',1,'']]]
 ];

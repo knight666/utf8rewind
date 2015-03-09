@@ -43,7 +43,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -89,112 +88,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#nested-classes">Data Structures</a> &#124;
-<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">composition.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
+<p>Composition interface.  
+<a href="#details">More...</a></p>
+
 <p><a href="composition_8h_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_compose_state.html">ComposeState</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a8d2acf86e312237249c982d30e9c2a86"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="composition_8h.html#a8d2acf86e312237249c982d30e9c2a86">compose_initialize</a> (<a class="el" href="struct_compose_state.html">ComposeState</a> *state, <a class="el" href="struct_stream_state.html">StreamState</a> *input, <a class="el" href="struct_stream_state.html">StreamState</a> *output, uint8_t compatibility)</td></tr>
-<tr class="separator:a8d2acf86e312237249c982d30e9c2a86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1411d654292aee94b14cc4f65c87d601"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="composition_8h.html#a1411d654292aee94b14cc4f65c87d601">compose_readcodepoint</a> (<a class="el" href="struct_compose_state.html">ComposeState</a> *state, uint8_t index)</td></tr>
-<tr class="separator:a1411d654292aee94b14cc4f65c87d601"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aacd5bfde5dd10ef2b17baff75f2ed6d1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="composition_8h.html#aacd5bfde5dd10ef2b17baff75f2ed6d1">compose_execute</a> (<a class="el" href="struct_compose_state.html">ComposeState</a> *state)</td></tr>
-<tr class="separator:aacd5bfde5dd10ef2b17baff75f2ed6d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-<h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a8d2acf86e312237249c982d30e9c2a86"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t compose_initialize </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="struct_compose_state.html">ComposeState</a> *&#160;</td>
-          <td class="paramname"><em>state</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="struct_stream_state.html">StreamState</a> *&#160;</td>
-          <td class="paramname"><em>input</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="struct_stream_state.html">StreamState</a> *&#160;</td>
-          <td class="paramname"><em>output</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>compatibility</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a1411d654292aee94b14cc4f65c87d601"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t compose_readcodepoint </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="struct_compose_state.html">ComposeState</a> *&#160;</td>
-          <td class="paramname"><em>state</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>index</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="aacd5bfde5dd10ef2b17baff75f2ed6d1"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> compose_execute </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="struct_compose_state.html">ComposeState</a> *&#160;</td>
-          <td class="paramname"><em>state</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Composition interface. </p>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

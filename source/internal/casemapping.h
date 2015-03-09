@@ -23,8 +23,15 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef _UTFREWIND_INTERNAL_CASEMAPPING_H_
-#define _UTFREWIND_INTERNAL_CASEMAPPING_H_
+#ifndef _UTF8REWIND_INTERNAL_CASEMAPPING_H_
+#define _UTF8REWIND_INTERNAL_CASEMAPPING_H_
+
+/*!
+	\file
+	\brief Case mapping interface.
+
+	\cond INTERNAL
+*/
 
 #include "utf8rewind.h"
 
@@ -41,4 +48,6 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 
 size_t casemapping_execute(CaseMappingState* state);
 
-#endif
+/*! \endcond */
+
+#endif /* _UTF8REWIND_INTERNAL_CASEMAPPING_H_ */

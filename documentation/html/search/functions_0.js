@@ -1,8 +1,15 @@
 var searchData=
 [
-  ['casemapping_5fexecute',['casemapping_execute',['../casemapping_8h.html#aeeeb95d1cec1016de22a570b9f7a1854',1,'casemapping.h']]],
-  ['casemapping_5finitialize',['casemapping_initialize',['../casemapping_8h.html#a01a2a2a122d88330150e3044b953079d',1,'casemapping.h']]],
-  ['compose_5fexecute',['compose_execute',['../composition_8h.html#aacd5bfde5dd10ef2b17baff75f2ed6d1',1,'composition.h']]],
-  ['compose_5finitialize',['compose_initialize',['../composition_8h.html#a8d2acf86e312237249c982d30e9c2a86',1,'composition.h']]],
-  ['compose_5freadcodepoint',['compose_readcodepoint',['../composition_8h.html#a1411d654292aee94b14cc4f65c87d601',1,'composition.h']]]
+  ['utf16toutf8',['utf16toutf8',['../group__conversion.html#ga4d6a9017be860a575c8dc1ac8c5a9253',1,'utf8rewind.h']]],
+  ['utf32toutf8',['utf32toutf8',['../group__conversion.html#ga8b5f39b5fe6fd55a6fc40dd54eaa8a80',1,'utf8rewind.h']]],
+  ['utf8isnormalized',['utf8isnormalized',['../group__normalization.html#gaa7c54fadc9bc04c439e9923f54968a33',1,'utf8rewind.h']]],
+  ['utf8len',['utf8len',['../utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e',1,'utf8rewind.h']]],
+  ['utf8normalize',['utf8normalize',['../group__normalization.html#gad53ccbe67130de7c9c34a8aaec52f4be',1,'utf8rewind.h']]],
+  ['utf8seek',['utf8seek',['../utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb',1,'utf8rewind.h']]],
+  ['utf8tolower',['utf8tolower',['../group__casemapping.html#gada1349c86f22e9fcf5b97e469d303c58',1,'utf8rewind.h']]],
+  ['utf8totitle',['utf8totitle',['../group__casemapping.html#ga97fe2a89787f22d1d6b978909289ae34',1,'utf8rewind.h']]],
+  ['utf8toupper',['utf8toupper',['../group__casemapping.html#gae9296a74c3a6ed4f2d28c4af29a9e7c0',1,'utf8rewind.h']]],
+  ['utf8toutf16',['utf8toutf16',['../group__conversion.html#ga384129f817fbbcc7cad6c08b2db354f5',1,'utf8rewind.h']]],
+  ['utf8toutf32',['utf8toutf32',['../group__conversion.html#ga8f262c70a9fea7b45647ffea8b571008',1,'utf8rewind.h']]],
+  ['utf8towide',['utf8towide',['../group__conversion.html#ga70996b8a2475177e9156948fe9c1996d',1,'utf8rewind.h']]]
 ];

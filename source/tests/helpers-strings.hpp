@@ -1,10 +1,10 @@
 #pragma once
 
 /*!
-	\cond INTERNAL
+	\file
+	\brief String helper functions.
 
-	\file helpers-strings.hpp
-	\brief Functions for working with strings in tests.
+	\cond INTERNAL
 */
 
 #include "tests-base.hpp"
