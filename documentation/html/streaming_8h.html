@@ -43,7 +43,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -89,179 +88,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#nested-classes">Data Structures</a> &#124;
-<a href="#define-members">Macros</a> &#124;
-<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">streaming.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
+<p>Streaming interface.  
+<a href="#details">More...</a></p>
+
 <p><a href="streaming_8h_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_stream_state.html">StreamState</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:ad5413ecfe645b9558374e3bd110ea158"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="streaming_8h.html#ad5413ecfe645b9558374e3bd110ea158">STREAM_SAFE_MAX</a>&#160;&#160;&#160;30</td></tr>
-<tr class="separator:ad5413ecfe645b9558374e3bd110ea158"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60fccf56b95a35825ecaf8e965a7d7ba"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba">STREAM_BUFFER_MAX</a>&#160;&#160;&#160;32</td></tr>
-<tr class="separator:a60fccf56b95a35825ecaf8e965a7d7ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a16a75053622f0157c125a5dfd34bc3b2"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="streaming_8h.html#a16a75053622f0157c125a5dfd34bc3b2">stream_initialize</a> (<a class="el" href="struct_stream_state.html">StreamState</a> *state, const char *input, size_t inputSize)</td></tr>
-<tr class="separator:a16a75053622f0157c125a5dfd34bc3b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a008dd0d7de257098d0e10cd3eacd778e"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="streaming_8h.html#a008dd0d7de257098d0e10cd3eacd778e">stream_read</a> (<a class="el" href="struct_stream_state.html">StreamState</a> *state, uint8_t property)</td></tr>
-<tr class="separator:a008dd0d7de257098d0e10cd3eacd778e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a824519466ad91529dc2b47509fbfd48d"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="streaming_8h.html#a824519466ad91529dc2b47509fbfd48d">stream_write</a> (<a class="el" href="struct_stream_state.html">StreamState</a> *state, char *output, size_t outputSize, uint8_t *bytesWritten)</td></tr>
-<tr class="separator:a824519466ad91529dc2b47509fbfd48d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10fe79a4bb3bceb3c6093b33e0e65911"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="streaming_8h.html#a10fe79a4bb3bceb3c6093b33e0e65911">stream_reorder</a> (<a class="el" href="struct_stream_state.html">StreamState</a> *state)</td></tr>
-<tr class="separator:a10fe79a4bb3bceb3c6093b33e0e65911"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a class="anchor" id="ad5413ecfe645b9558374e3bd110ea158"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define STREAM_SAFE_MAX&#160;&#160;&#160;30</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a60fccf56b95a35825ecaf8e965a7d7ba"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define STREAM_BUFFER_MAX&#160;&#160;&#160;32</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a16a75053622f0157c125a5dfd34bc3b2"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t stream_initialize </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="struct_stream_state.html">StreamState</a> *&#160;</td>
-          <td class="paramname"><em>state</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>input</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>inputSize</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a008dd0d7de257098d0e10cd3eacd778e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t stream_read </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="struct_stream_state.html">StreamState</a> *&#160;</td>
-          <td class="paramname"><em>state</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>property</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a824519466ad91529dc2b47509fbfd48d"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t stream_write </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="struct_stream_state.html">StreamState</a> *&#160;</td>
-          <td class="paramname"><em>state</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>output</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>outputSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>bytesWritten</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a10fe79a4bb3bceb3c6093b33e0e65911"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t stream_reorder </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="struct_stream_state.html">StreamState</a> *&#160;</td>
-          <td class="paramname"><em>state</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Streaming interface. </p>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

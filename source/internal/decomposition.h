@@ -23,8 +23,15 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef _UTFREWIND_INTERNAL_DECOMPOSITION_H_
-#define _UTFREWIND_INTERNAL_DECOMPOSITION_H_
+#ifndef _UTF8REWIND_INTERNAL_DECOMPOSITION_H_
+#define _UTF8REWIND_INTERNAL_DECOMPOSITION_H_
+
+/*!
+	\file
+	\brief Decomposition interface.
+
+	\cond INTERNAL
+*/
 
 #include "utf8rewind.h"
 #include "streaming.h"
@@ -43,4 +50,6 @@ uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamSt
 
 uint8_t decompose_execute(DecomposeState* state);
 
-#endif
+/*! \endcond */
+
+#endif /* _UTF8REWIND_INTERNAL_DECOMPOSITION_H_ */

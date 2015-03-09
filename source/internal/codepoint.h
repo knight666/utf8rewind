@@ -27,10 +27,10 @@
 #define _UTF8REWIND_INTERNAL_CODEPOINT_H_
 
 /*!
-	\cond INTERNAL
+	\file
+	\brief Codepoint interface.
 
-	\file codepoint.h
-	\brief Internal functions and definitions used for managing codepoints.
+	\cond INTERNAL
 */
 
 #include "utf8rewind.h"
@@ -208,4 +208,4 @@ uint8_t codepoint_read(const char* input, size_t inputSize, unicode_t* decoded);
 
 /*! \endcond */
 
-#endif
+#endif /* _UTF8REWIND_INTERNAL_CODEPOINT_H_ */

@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['helpers_2dcasemapping_2ehpp',['helpers-casemapping.hpp',['../helpers-casemapping_8hpp.html',1,'']]],
-  ['helpers_2dnormalization_2ehpp',['helpers-normalization.hpp',['../helpers-normalization_8hpp.html',1,'']]],
-  ['helpers_2dstreams_2ehpp',['helpers-streams.hpp',['../helpers-streams_8hpp.html',1,'']]],
-  ['helpers_2dstrings_2ehpp',['helpers-strings.hpp',['../helpers-strings_8hpp.html',1,'']]]
+  ['main_2ehpp',['main.hpp',['../main_8hpp.html',1,'']]]
 ];

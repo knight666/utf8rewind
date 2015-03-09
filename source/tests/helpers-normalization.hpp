@@ -1,10 +1,10 @@
 #pragma once
 
 /*!
-	\cond INTERNAL
+	\file
+	\brief Normalization helper functions.
 
-	\file helpers-normalization.hpp
-	\brief Functions for normalization tests.
+	\cond INTERNAL
 */
 
 #include "tests-base.hpp"

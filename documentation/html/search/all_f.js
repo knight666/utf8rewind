@@ -1,8 +1,6 @@
 var searchData=
 [
   ['seeking_2eh',['seeking.h',['../seeking_8h.html',1,'']]],
-  ['seeking_5fforward',['seeking_forward',['../seeking_8h.html#a32a65c51b992a7683bf348b5da6913b0',1,'seeking.h']]],
-  ['seeking_5frewind',['seeking_rewind',['../seeking_8h.html#a4251878fb457cddd00127e61f37a12f7',1,'seeking.h']]],
   ['src',['src',['../struct_case_mapping_state.html#a7c3c20467630ca30c30e4ac172a0c5e4',1,'CaseMappingState::src()'],['../struct_stream_state.html#a905503dbb301ea1a8d4514293254f432',1,'StreamState::src()']]],
   ['src_5fsize',['src_size',['../struct_case_mapping_state.html#afd9f98e720a195939163a871938b40c0',1,'CaseMappingState::src_size()'],['../struct_stream_state.html#ad126e43bcd4f692946c87454a224c8ee',1,'StreamState::src_size()']]],
   ['stable',['stable',['../struct_stream_state.html#a917fde7b57f25f6540ddf1556e0cdb8b',1,'StreamState']]],

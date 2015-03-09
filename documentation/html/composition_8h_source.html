@@ -43,7 +43,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -118,36 +117,28 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">    OTHER DEALINGS IN THE SOFTWARE.</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#ifndef _UTFREWIND_INTERNAL_COMPOSITION_H_</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define _UTFREWIND_INTERNAL_COMPOSITION_H_</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#ifndef _UTF8REWIND_INTERNAL_COMPOSITION_H_</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define _UTF8REWIND_INTERNAL_COMPOSITION_H_</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="streaming_8h.html">streaming.h</a>&quot;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="struct_compose_state.html">   32</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="struct_compose_state.html#a423629542388f55f7a624458cf91eb1b">   33</a></span>&#160;    <a class="code" href="struct_stream_state.html">StreamState</a>* <a class="code" href="struct_compose_state.html#a423629542388f55f7a624458cf91eb1b">input</a>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="struct_compose_state.html#a36dcdc95b9d065999265f4ede367002a">   34</a></span>&#160;    <a class="code" href="struct_stream_state.html">StreamState</a>* <a class="code" href="struct_compose_state.html#a36dcdc95b9d065999265f4ede367002a">output</a>;</div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="struct_compose_state.html#a3719ad51f8653ffcb79932529d5023ac">   35</a></span>&#160;    uint8_t <a class="code" href="struct_compose_state.html#a3719ad51f8653ffcb79932529d5023ac">property</a>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;} <a class="code" href="struct_compose_state.html">ComposeState</a>;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;uint8_t <a class="code" href="composition_8h.html#a8d2acf86e312237249c982d30e9c2a86">compose_initialize</a>(<a class="code" href="struct_compose_state.html">ComposeState</a>* state, <a class="code" href="struct_stream_state.html">StreamState</a>* input, <a class="code" href="struct_stream_state.html">StreamState</a>* output, uint8_t compatibility);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;uint8_t <a class="code" href="composition_8h.html#a1411d654292aee94b14cc4f65c87d601">compose_readcodepoint</a>(<a class="code" href="struct_compose_state.html">ComposeState</a>* state, uint8_t index);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> <a class="code" href="composition_8h.html#aacd5bfde5dd10ef2b17baff75f2ed6d1">compose_execute</a>(<a class="code" href="struct_compose_state.html">ComposeState</a>* state);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _UTFREWIND_INTERNAL_COMPOSITION_H_ */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="composition_8h_html_aacd5bfde5dd10ef2b17baff75f2ed6d1"><div class="ttname"><a href="composition_8h.html#aacd5bfde5dd10ef2b17baff75f2ed6d1">compose_execute</a></div><div class="ttdeci">unicode_t compose_execute(ComposeState *state)</div></div>
-<div class="ttc" id="composition_8h_html_a8d2acf86e312237249c982d30e9c2a86"><div class="ttname"><a href="composition_8h.html#a8d2acf86e312237249c982d30e9c2a86">compose_initialize</a></div><div class="ttdeci">uint8_t compose_initialize(ComposeState *state, StreamState *input, StreamState *output, uint8_t compatibility)</div></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="streaming_8h.html">streaming.h</a>&quot;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    StreamState* input;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    StreamState* output;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    uint8_t property;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;} ComposeState;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;uint8_t compose_readcodepoint(ComposeState* state, uint8_t index);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> compose_execute(ComposeState* state);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _UTF8REWIND_INTERNAL_COMPOSITION_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">Unicode codepoint. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:184</div></div>
-<div class="ttc" id="struct_compose_state_html_a36dcdc95b9d065999265f4ede367002a"><div class="ttname"><a href="struct_compose_state.html#a36dcdc95b9d065999265f4ede367002a">ComposeState::output</a></div><div class="ttdeci">StreamState * output</div><div class="ttdef"><b>Definition:</b> composition.h:34</div></div>
-<div class="ttc" id="streaming_8h_html"><div class="ttname"><a href="streaming_8h.html">streaming.h</a></div></div>
-<div class="ttc" id="struct_compose_state_html_a3719ad51f8653ffcb79932529d5023ac"><div class="ttname"><a href="struct_compose_state.html#a3719ad51f8653ffcb79932529d5023ac">ComposeState::property</a></div><div class="ttdeci">uint8_t property</div><div class="ttdef"><b>Definition:</b> composition.h:35</div></div>
-<div class="ttc" id="struct_stream_state_html"><div class="ttname"><a href="struct_stream_state.html">StreamState</a></div><div class="ttdef"><b>Definition:</b> streaming.h:54</div></div>
-<div class="ttc" id="struct_compose_state_html"><div class="ttname"><a href="struct_compose_state.html">ComposeState</a></div><div class="ttdef"><b>Definition:</b> composition.h:32</div></div>
-<div class="ttc" id="struct_compose_state_html_a423629542388f55f7a624458cf91eb1b"><div class="ttname"><a href="struct_compose_state.html#a423629542388f55f7a624458cf91eb1b">ComposeState::input</a></div><div class="ttdeci">StreamState * input</div><div class="ttdef"><b>Definition:</b> composition.h:33</div></div>
+<div class="ttc" id="streaming_8h_html"><div class="ttname"><a href="streaming_8h.html">streaming.h</a></div><div class="ttdoc">Streaming interface. </div></div>
 <div class="ttc" id="utf8rewind_8h_html"><div class="ttname"><a href="utf8rewind_8h.html">utf8rewind.h</a></div><div class="ttdoc">Functions for working with UTF-8 encoded text. </div></div>
-<div class="ttc" id="composition_8h_html_a1411d654292aee94b14cc4f65c87d601"><div class="ttname"><a href="composition_8h.html#a1411d654292aee94b14cc4f65c87d601">compose_readcodepoint</a></div><div class="ttdeci">uint8_t compose_readcodepoint(ComposeState *state, uint8_t index)</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

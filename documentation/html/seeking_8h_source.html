@@ -43,7 +43,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -118,18 +117,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">    OTHER DEALINGS IN THE SOFTWARE.</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#ifndef _UTFREWIND_INTERNAL_SEEKING_H_</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define _UTFREWIND_INTERNAL_SEEKING_H_</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#ifndef _UTF8REWIND_INTERNAL_SEEKING_H_</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define _UTF8REWIND_INTERNAL_SEEKING_H_</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="seeking_8h.html#a32a65c51b992a7683bf348b5da6913b0">seeking_forward</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* src, <span class="keyword">const</span> <span class="keywordtype">char</span>* srcEnd, <span class="keywordtype">size_t</span> srcLength, off_t offset);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="seeking_8h.html#a4251878fb457cddd00127e61f37a12f7">seeking_rewind</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* srcStart, <span class="keyword">const</span> <span class="keywordtype">char</span>* src, <span class="keywordtype">size_t</span> srcLength, off_t offset);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="seeking_8h_html_a4251878fb457cddd00127e61f37a12f7"><div class="ttname"><a href="seeking_8h.html#a4251878fb457cddd00127e61f37a12f7">seeking_rewind</a></div><div class="ttdeci">const char * seeking_rewind(const char *srcStart, const char *src, size_t srcLength, off_t offset)</div></div>
-<div class="ttc" id="seeking_8h_html_a32a65c51b992a7683bf348b5da6913b0"><div class="ttname"><a href="seeking_8h.html#a32a65c51b992a7683bf348b5da6913b0">seeking_forward</a></div><div class="ttdeci">const char * seeking_forward(const char *src, const char *srcEnd, size_t srcLength, off_t offset)</div></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* seeking_forward(<span class="keyword">const</span> <span class="keywordtype">char</span>* src, <span class="keyword">const</span> <span class="keywordtype">char</span>* srcEnd, <span class="keywordtype">size_t</span> srcLength, off_t offset);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* seeking_rewind(<span class="keyword">const</span> <span class="keywordtype">char</span>* srcStart, <span class="keyword">const</span> <span class="keywordtype">char</span>* src, <span class="keywordtype">size_t</span> srcLength, off_t offset);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _UTF8REWIND_INTERNAL_SEEKING_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="utf8rewind_8h_html"><div class="ttname"><a href="utf8rewind_8h.html">utf8rewind.h</a></div><div class="ttdoc">Functions for working with UTF-8 encoded text. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

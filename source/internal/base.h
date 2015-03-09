@@ -23,8 +23,15 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef _UTFREWIND_INTERNAL_BASE_H_
-#define _UTFREWIND_INTERNAL_BASE_H_
+#ifndef _UTF8REWIND_INTERNAL_BASE_H_
+#define _UTF8REWIND_INTERNAL_BASE_H_
+
+/*!
+	\file
+	\brief Base header for internal interface.
+
+	\cond INTERNAL
+*/
 
 #include "utf8rewind.h"
 
@@ -49,4 +56,6 @@
 	if (delta < (inputSize + targetSize)) { goto overlap; } \
 } while (0);
 
-#endif
+/*! \endcond */
+
+#endif /* _UTF8REWIND_INTERNAL_BASE_H_ */

@@ -1,10 +1,10 @@
 #pragma once
 
 /*!
-	\cond INTERNAL
+	\file
+	\brief Case mapping helper functions.
 
-	\file helpers-casemapping.hpp
-	\brief Functions for case mapping tests.
+	\cond INTERNAL
 */
 
 #include "tests-base.hpp"
