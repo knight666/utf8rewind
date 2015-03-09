@@ -23,8 +23,15 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef _UTFREWIND_UNICODEDATABASE_H_
-#define _UTFREWIND_UNICODEDATABASE_H_
+#ifndef _UTF8REWIND_UNICODEDATABASE_H_
+#define _UTF8REWIND_UNICODEDATABASE_H_
+
+/*!
+	\file
+	\brief Unicode property database.
+
+	\cond INTERNAL
+*/
 
 #include "utf8rewind.h"
 
@@ -83,4 +90,6 @@ extern const CompositionRecord* UnicodeCompositionRecordPtr;
 extern const char* DecompositionData;
 extern const size_t DecompositionDataLength;
 
-#endif
+/*! \endcond */
+
+#endif /* _UTF8REWIND_UNICODEDATABASE_H_ */

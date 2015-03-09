@@ -23,8 +23,15 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef _UTFREWIND_INTERNAL_STREAMING_H_
-#define _UTFREWIND_INTERNAL_STREAMING_H_
+#ifndef _UTF8REWIND_INTERNAL_STREAMING_H_
+#define _UTF8REWIND_INTERNAL_STREAMING_H_
+
+/*!
+	\file
+	\brief Streaming interface.
+
+	\cond INTERNAL
+*/
 
 #include "utf8rewind.h"
 
@@ -72,4 +79,6 @@ uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_
 
 uint8_t stream_reorder(StreamState* state);
 
-#endif // _UTFREWIND_INTERNAL_STREAMING_H_
+/*! \endcond */
+
+#endif /* _UTF8REWIND_INTERNAL_STREAMING_H_ */

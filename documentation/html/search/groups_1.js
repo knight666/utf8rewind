@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['flags',['Flags',['../group__flags.html',1,'']]]
+  ['error_20codes',['Error codes',['../group__errors.html',1,'']]]
 ];

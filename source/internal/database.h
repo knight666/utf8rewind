@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2014 Quinten Lansu
+	Copyright (C) 2014-2015 Quinten Lansu
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -25,6 +25,13 @@
 
 #ifndef _UTF8REWIND_INTERNAL_DATABASE_H_
 #define _UTF8REWIND_INTERNAL_DATABASE_H_
+
+/*!
+	\file
+	\brief Database interface.
+
+	\cond INTERNAL
+*/
 
 #include "utf8rewind.h"
 
@@ -68,4 +75,6 @@ const char* database_querydecomposition(unicode_t codepoint, uint8_t property);
 
 unicode_t database_querycomposition(unicode_t left, unicode_t right);
 
-#endif
+/*! \endcond */
+
+#endif /* _UTF8REWIND_INTERNAL_DATABASE_H_ */

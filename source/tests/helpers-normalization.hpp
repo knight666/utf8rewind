@@ -1,5 +1,12 @@
 #pragma once
 
+/*!
+	\file
+	\brief Normalization helper functions.
+
+	\cond INTERNAL
+*/
+
 #include "tests-base.hpp"
 
 #include "utf8rewind.h"
@@ -74,3 +81,5 @@ namespace helpers {
 		const NormalizationEntry& entryExpected, const NormalizationEntry& entryActual);
 
 };
+
+/*! \endcond */

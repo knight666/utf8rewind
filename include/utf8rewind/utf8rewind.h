@@ -23,13 +23,13 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#ifndef _UTF8REWIND_H_
+#define _UTF8REWIND_H_
+
 /*!
 	\file utf8rewind.h
 	\brief Functions for working with UTF-8 encoded text.
 */
-
-#ifndef _UTF8REWIND_H_
-#define _UTF8REWIND_H_
 
 #include <stddef.h>
 #include <stdio.h>
@@ -82,14 +82,28 @@
 	\}
 */
 
-#define UTF8_NORMALIZATION_RESULT_YES           (0)
-#define UTF8_NORMALIZATION_RESULT_MAYBE         (1)
-#define UTF8_NORMALIZATION_RESULT_NO            (2)
-
 /*!
-	\defgroup flags Flags
+	\addtogroup normalization Normalization
 	\{
 */
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_YES
+	\brief Text is stable and does not have to be normalized.
+*/
+#define UTF8_NORMALIZATION_RESULT_YES           (0)
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_MAYBE
+	\brief Text is unstable, but normalization may be skipped.
+*/
+#define UTF8_NORMALIZATION_RESULT_MAYBE         (1)
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_NO
+	\brief Text is unstable and must be normalized.
+*/
+#define UTF8_NORMALIZATION_RESULT_NO            (2)
 
 /*!
 	\def UTF8_NORMALIZE_COMPOSE
@@ -189,6 +203,11 @@ typedef uint32_t unicode_t;
 size_t utf8len(const char* text);
 
 /*!
+	\addtogroup conversion Conversion
+	\{
+*/
+
+/*!
 	\brief Convert a UTF-16 encoded string to a UTF-8 encoded string.
 
 	\note This function should only be called directly if you are positive
@@ -248,7 +267,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 	\code{.c}
 		uint8_t Database_ExecuteQuery_Unicode(const unicode_t* query, size_t querySize)
 		{
-			char* converted = 0;
+			char* converted = NULL;
 			size_t converted_size;
 			int8_t result = 0;
 			int32_t errors = 0;
@@ -267,7 +286,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 			result = Database_ExecuteQuery(converted);
 
 		cleanup:
-			if (converted != 0)
+			if (converted != NULL)
 			{
 				free(converted);
 				converted = 0;
@@ -314,14 +333,12 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 		texture_t Texture_Load_Wide(const wchar_t* input)
 		{
 			char* converted = NULL;
-			size_t converted_size = 0;
-			size_t input_size;
+			size_t converted_size;
+			size_t input_size = wcslen(input) * sizeof(wchar_t);
 			texture_t result = NULL;
 			int32_t errors = 0;
 
-			input_size = wcslen(input) * sizeof(wchar_t);
-
-			converted_size = widetoutf8(input, input_size, 0, 0, &errors);
+			converted_size = widetoutf8(input, input_size, NULL, 0, &errors);
 			if (converted_size == 0 ||
 				errors != 0)
 			{
@@ -330,7 +347,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 
 			converted = (char*)malloc(converted_size + 1);
 			widetoutf8(input, input_size, converted, converted_size, NULL);
-			converted[converted_size] = 0;
+			converted[converted_size / sizeof(wchar_t)] = 0;
 
 			result = Texture_Load(converted);
 
@@ -488,19 +505,20 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	\code{.c}
 		void Window_SetTitle(void* windowHandle, const char* text)
 		{
+			size_t input_size = strlen(text);
 			wchar_t* converted = NULL;
 			size_t converted_size;
 			int32_t errors = 0;
 
-			converted_size = utf8towide(text, strlen(text), NULL, 0, &errors);
+			converted_size = utf8towide(text, input_size, NULL, 0, &errors);
 			if (converted_size == 0 ||
 				errors != 0)
 			{
 				goto cleanup;
 			}
 
-			converted = malloc(converted_size + sizeof(wchar_t));
-			utf8towide(text, strlen(text), converted, converted_size, &errors);
+			converted = (wchar_t*)malloc(converted_size + sizeof(wchar_t));
+			utf8towide(text, input_size, converted, converted_size, NULL);
 			converted[converted_size / sizeof(wchar_t)] = 0;
 
 			SetWindowTextW((HWND)windowHandle, converted);
@@ -531,6 +549,10 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	\sa utf8toutf32
 */
 size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors);
+
+/*!
+	\}
+*/
 
 /*!
 	\brief Seek into a UTF-8 encoded string.
@@ -587,6 +609,11 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
 
 /*!
+	\addtogroup casemapping Case mapping
+	\{
+*/
+
+/*!
 	\brief Convert UTF-8 encoded text to uppercase.
 
 	This function allows users to convert UTF-8 encoded strings to
@@ -613,20 +640,21 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	\code{.c}
 		void Button_Draw(int32_t x, int32_t y, const char* text)
 		{
+			size_t input_size = strlen(text);
 			char* converted = NULL;
 			size_t converted_size;
 			int32_t text_box_width, text_box_height;
 			int32_t errors = 0;
 
-			converted_size = utf8toupper(text, strlen(text), NULL, 0, &errors);
+			converted_size = utf8toupper(text, input_size, NULL, 0, &errors);
 			if (converted_size == 0 ||
 				errors != 0)
 			{
 				goto cleanup;
 			}
 
-			converted = malloc(converted_size + 1);
-			utf8toupper(text, strlen(text), converted, converted_size, &errors);
+			converted = (char*)malloc(converted_size + 1);
+			utf8toupper(text, input_size, converted, converted_size, NULL);
 			converted[converted_size] = 0;
 
 			Font_GetTextDimensions(converted, &text_box_width, &text_box_height);
@@ -664,9 +692,111 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
+/*!
+	\}
+*/
+
+/*!
+	\addtogroup normalization Normalization
+	\{
+*/
+
+/*!
+	\brief Check if a string is stable in the specified normalization form.
+
+	This function can be used as a preprocessing step, before attempting to
+	normalize a string. Normalization is a very expensive process, it is often
+	cheaper to first determine if the string is unstable in the requested
+	normalization form.
+
+	Unicode Normalization Forms are formally defined normalizations of Unicode
+	strings which make it possible to determine whether any two Unicode
+	strings are equivalent to each other. Depending on the particular Unicode
+	Normalization Form, that equivalence can either be a canonical equivalence
+	or a compatibility equivalence.
+
+	Essentially, the Unicode Normalization Algorithm puts all combining marks
+	in a specified order, and uses rules for decomposition and composition to
+	transform each string into one of the Unicode Normalization Forms. A
+	binary comparison of the transformed strings will then determine
+	equivalence.
+
+	There are four Unicode Normalization Forms:
+
+	Unicode                      | Flags
+	--------------------------- | ---------------------------------------------------------
+	Normalization Form C (NFC)   | #UTF8_NORMALIZE_COMPOSE
+	Normalization Form KC (NFKC) | #UTF8_NORMALIZE_COMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
+	Normalization Form D (NFD)   | #UTF8_NORMALIZE_DECOMPOSE
+	Normalization Form KD (NFKD) | #UTF8_NORMALIZE_DECOMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
+
+	For a more detailed explanation, please see the documentation regarding
+	normalization.
+
+	The result of the check will be YES if the string is stable and MAYBE or
+	NO if it is unstable. If the result is MAYBE, the string does not
+	necessarily have to be normalized.
+
+	Example:
+
+	\code{.c}
+		uint8_t Text_InspectComposed(const char* text)
+		{
+			const char* src = text;
+			size_t src_size = strlen(text);
+			size_t offset;
+			size_t total_offset;
+
+			if (utf8isnormalized(src, src_size, UTF8_NORMALIZE_COMPOSE, &offset) == UTF8_NORMALIZATION_RESULT_YES)
+			{
+				printf("Clean!\n");
+
+				return 1;
+			}
+
+			total_offset = offset;
+
+			do
+			{
+				const char* next;
+
+				printf("Unstable at byte %d\n", total_offset);
+
+				next = utf8seek(src, text, 1, SEEK_CUR);
+				if (next == src)
+				{
+					break;
+				}
+
+				total_offset += offset;
+
+				src = next;
+				src_size -= next - src;
+			}
+			while (utf8isnormalized(src, src_size, UTF8_NORMALIZE_COMPOSE, &offset) != UTF8_NORMALIZATION_RESULT_YES);
+
+			return 0;
+		}
+	\endcode
+
+	\param[in]   input       UTF-8 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[in]   flags       Desired normalization form. Must be a combination
+	                         of #UTF8_NORMALIZE_COMPOSE, #UTF8_NORMALIZE_DECOMPOSE and
+	                         #UTF8_NORMALIZE_COMPATIBILITY
+	\param[out]  offset      Offset of first unstable codepoint.
+
+	\retval  #UTF8_NORMALIZATION_RESULT_YES    Text is stable and does not have to be normalized.
+	\retval  #UTF8_NORMALIZATION_RESULT_MAYBE  Text is unstable, but normalization may be skipped.
+	\retval  #UTF8_NORMALIZATION_RESULT_NO     Text is unstable and must be normalized.
+*/
 uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size_t* offset);
 
 size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
+
+/*!
+	\}
+*/
 
 #if defined(__cplusplus)
 }

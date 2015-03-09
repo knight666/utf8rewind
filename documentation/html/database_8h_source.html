@@ -8,14 +8,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
-<script type="text/javascript">
-  $(document).ready(initResizable);
-  $(window).load(resizeHeight);
-</script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -34,6 +26,7 @@
    <div id="projectname">utf8rewind
    &#160;<span id="projectnumber">1.2.0</span>
    </div>
+   <div id="projectbrief">Cross-platform library for UTF-8 encoded text</div>
   </td>
  </tr>
  </tbody>
@@ -46,14 +39,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
-      <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li class="current"><a href="files.html"><span>Files</span></a></li>
-      <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
+      <li><a href="index.html"><span>Overview</span></a></li>
+      <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -75,24 +65,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
-      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
     </ul>
   </div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-$(document).ready(function(){initNavTree('database_8h_source.html','');});
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -107,13 +82,18 @@ $(document).ready(function(){initNavTree('database_8h_source.html','');});
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li><li class="navelem"><a class="el" href="dir_a1987cf8ca160ad0403a567bf62072d3.html">internal</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">database.h</div>  </div>
 </div><!--header-->
 <div class="contents">
 <a href="database_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">    Copyright (C) 2014 Quinten Lansu</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">    Copyright (C) 2014-2015 Quinten Lansu</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"></span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">    Permission is hereby granted, free of charge, to any person</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">    obtaining a copy of this software and associated documentation</span></div>
@@ -140,87 +120,57 @@ $(document).ready(function(){initNavTree('database_8h_source.html','');});
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#ifndef _UTF8REWIND_INTERNAL_DATABASE_H_</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define _UTF8REWIND_INTERNAL_DATABASE_H_</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="database_8h.html#af6ae6dbb9378c07c32cecb1e2633ed64">   31</a></span>&#160;<span class="preprocessor">#define UTF8_INVALID_PROPERTY (uint8_t)-1</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17b">   33</a></span>&#160;<span class="keyword">enum</span> <a class="code" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17b">UnicodeProperty</a></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;{</div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba9fb1ff0d3a056a57617221b792da3b6a">   35</a></span>&#160;    <a class="code" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba9fb1ff0d3a056a57617221b792da3b6a">UnicodeProperty_GeneralCategory</a>,</div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba943f6991c237befde7f8bac067abf126">   36</a></span>&#160;    <a class="code" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba943f6991c237befde7f8bac067abf126">UnicodeProperty_CanonicalCombiningClass</a>,</div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17bafac20c62f6dac5b70c1e493324428cdd">   37</a></span>&#160;    <a class="code" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17bafac20c62f6dac5b70c1e493324428cdd">UnicodeProperty_Normalization_Compose</a>,</div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba72cb237d2c5544830dac44becdbce450">   38</a></span>&#160;    <a class="code" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba72cb237d2c5544830dac44becdbce450">UnicodeProperty_Normalization_Decompose</a>,</div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba9f181e1f1c2aa197bc32a1d2df0dd819">   39</a></span>&#160;    <a class="code" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba9f181e1f1c2aa197bc32a1d2df0dd819">UnicodeProperty_Normalization_Compatibility_Compose</a>,</div>
-<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba499d31238c9512416bf25a4e9e8352a1">   40</a></span>&#160;    <a class="code" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba499d31238c9512416bf25a4e9e8352a1">UnicodeProperty_Normalization_Compatibility_Decompose</a>,</div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba5cfd45c029e95cba1cdfa82fb1904a0f">   41</a></span>&#160;    <a class="code" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba5cfd45c029e95cba1cdfa82fb1904a0f">UnicodeProperty_Uppercase</a>,</div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba88467d3baf7ae108163886ace815cfb8">   42</a></span>&#160;    <a class="code" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba88467d3baf7ae108163886ace815cfb8">UnicodeProperty_Lowercase</a>,</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba1be0ebd82e1dad85dc4138bcca3126bb">   43</a></span>&#160;    <a class="code" href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba1be0ebd82e1dad85dc4138bcca3126bb">UnicodeProperty_Titlecase</a>,</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;};</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865f">   46</a></span>&#160;<span class="keyword">enum</span> <a class="code" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865f">GeneralCategory</a></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;{</div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa8228aae2f2cc747db64796f076277365">   48</a></span>&#160;    <a class="code" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa8228aae2f2cc747db64796f076277365">GeneralCategory_Letter</a> = 0x01,</div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa16900e981ae7bebaaae41adadb9fa582">   49</a></span>&#160;    <a class="code" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa16900e981ae7bebaaae41adadb9fa582">GeneralCategory_CaseMapped</a> = 0x02,</div>
-<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa50f80d8519b7de73ac63661e5f4f7a1a">   50</a></span>&#160;    <a class="code" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa50f80d8519b7de73ac63661e5f4f7a1a">GeneralCategory_Mark</a> = 0x04,</div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa1480d3b7e6918f11416022395989610f">   51</a></span>&#160;    <a class="code" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa1480d3b7e6918f11416022395989610f">GeneralCategory_Number</a> = 0x08,</div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa6742d3cfae4f6bb11c8c12b31ddcbb14">   52</a></span>&#160;    <a class="code" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa6742d3cfae4f6bb11c8c12b31ddcbb14">GeneralCategory_Punctuation</a> = 0x10,</div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa0180de64ef198c89fff3542fa0fa4d2c">   53</a></span>&#160;    <a class="code" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa0180de64ef198c89fff3542fa0fa4d2c">GeneralCategory_Symbol</a> = 0x20,</div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa41c5d90bbd599eeca5a133004d2504f3">   54</a></span>&#160;    <a class="code" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa41c5d90bbd599eeca5a133004d2504f3">GeneralCategory_Separator</a> = 0x40,</div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa3d587f8b6590dc4116bc21a93810dbfc">   55</a></span>&#160;    <a class="code" href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa3d587f8b6590dc4116bc21a93810dbfc">GeneralCategory_Other</a> = 0x80,</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;};</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
-<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34">   58</a></span>&#160;<span class="keyword">enum</span> <a class="code" href="database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34">QuickCheckResult</a></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;{</div>
-<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34ac3c715b5a9b7a9480e04690c3d153ab5">   60</a></span>&#160;    <a class="code" href="database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34ac3c715b5a9b7a9480e04690c3d153ab5">QuickCheckResult_Yes</a>,</div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34a1ca94e639fe1031e3f23741e214b1321">   61</a></span>&#160;    <a class="code" href="database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34a1ca94e639fe1031e3f23741e214b1321">QuickCheckResult_Maybe</a>,</div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34ab7ab1f4271a614f87d4ba4ddf83b178b">   62</a></span>&#160;    <a class="code" href="database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34ab7ab1f4271a614f87d4ba4ddf83b178b">QuickCheckResult_No</a>,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#define UTF8_INVALID_PROPERTY (uint8_t)-1</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">enum</span> UnicodeProperty</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;{</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    UnicodeProperty_GeneralCategory,</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    UnicodeProperty_CanonicalCombiningClass,</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    UnicodeProperty_Normalization_Compose,</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    UnicodeProperty_Normalization_Decompose,</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    UnicodeProperty_Normalization_Compatibility_Compose,</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    UnicodeProperty_Normalization_Compatibility_Decompose,</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    UnicodeProperty_Uppercase,</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    UnicodeProperty_Lowercase,</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    UnicodeProperty_Titlecase,</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;};</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">enum</span> GeneralCategory</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;{</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    GeneralCategory_Letter = 0x01,</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    GeneralCategory_CaseMapped = 0x02,</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    GeneralCategory_Mark = 0x04,</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    GeneralCategory_Number = 0x08,</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    GeneralCategory_Punctuation = 0x10,</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    GeneralCategory_Symbol = 0x20,</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    GeneralCategory_Separator = 0x40,</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    GeneralCategory_Other = 0x80,</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;};</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;uint8_t <a class="code" href="database_8h.html#a10c584e6472fe42981544832adef2a31">database_queryproperty</a>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint, uint8_t property);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="database_8h.html#afad35cdcf883413b7aa72a9dc7317bc8">database_querydecomposition</a>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint, uint8_t property);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> <a class="code" href="database_8h.html#a2fde5786d5142fcb67fa70d225028b56">database_querycomposition</a>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> left, <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> right);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="database_8h_html_a1bb6f7508c238bd3154f11b4c674865fa3d587f8b6590dc4116bc21a93810dbfc"><div class="ttname"><a href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa3d587f8b6590dc4116bc21a93810dbfc">GeneralCategory_Other</a></div><div class="ttdef"><b>Definition:</b> database.h:55</div></div>
-<div class="ttc" id="database_8h_html_a2fde5786d5142fcb67fa70d225028b56"><div class="ttname"><a href="database_8h.html#a2fde5786d5142fcb67fa70d225028b56">database_querycomposition</a></div><div class="ttdeci">unicode_t database_querycomposition(unicode_t left, unicode_t right)</div></div>
-<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">Unicode codepoint. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:166</div></div>
-<div class="ttc" id="database_8h_html_a1bb6f7508c238bd3154f11b4c674865fa8228aae2f2cc747db64796f076277365"><div class="ttname"><a href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa8228aae2f2cc747db64796f076277365">GeneralCategory_Letter</a></div><div class="ttdef"><b>Definition:</b> database.h:48</div></div>
-<div class="ttc" id="database_8h_html_ad4a29d3c235fbf1da8c4104116ba8c34"><div class="ttname"><a href="database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34">QuickCheckResult</a></div><div class="ttdeci">QuickCheckResult</div><div class="ttdef"><b>Definition:</b> database.h:58</div></div>
-<div class="ttc" id="database_8h_html_a1bb6f7508c238bd3154f11b4c674865fa16900e981ae7bebaaae41adadb9fa582"><div class="ttname"><a href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa16900e981ae7bebaaae41adadb9fa582">GeneralCategory_CaseMapped</a></div><div class="ttdef"><b>Definition:</b> database.h:49</div></div>
-<div class="ttc" id="database_8h_html_a10c584e6472fe42981544832adef2a31"><div class="ttname"><a href="database_8h.html#a10c584e6472fe42981544832adef2a31">database_queryproperty</a></div><div class="ttdeci">uint8_t database_queryproperty(unicode_t codepoint, uint8_t property)</div></div>
-<div class="ttc" id="database_8h_html_a877a1e5b419a0c6d9e0e0c9b92c9d17ba72cb237d2c5544830dac44becdbce450"><div class="ttname"><a href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba72cb237d2c5544830dac44becdbce450">UnicodeProperty_Normalization_Decompose</a></div><div class="ttdef"><b>Definition:</b> database.h:38</div></div>
-<div class="ttc" id="database_8h_html_a877a1e5b419a0c6d9e0e0c9b92c9d17ba9f181e1f1c2aa197bc32a1d2df0dd819"><div class="ttname"><a href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba9f181e1f1c2aa197bc32a1d2df0dd819">UnicodeProperty_Normalization_Compatibility_Compose</a></div><div class="ttdef"><b>Definition:</b> database.h:39</div></div>
-<div class="ttc" id="database_8h_html_a877a1e5b419a0c6d9e0e0c9b92c9d17ba943f6991c237befde7f8bac067abf126"><div class="ttname"><a href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba943f6991c237befde7f8bac067abf126">UnicodeProperty_CanonicalCombiningClass</a></div><div class="ttdef"><b>Definition:</b> database.h:36</div></div>
-<div class="ttc" id="database_8h_html_a877a1e5b419a0c6d9e0e0c9b92c9d17bafac20c62f6dac5b70c1e493324428cdd"><div class="ttname"><a href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17bafac20c62f6dac5b70c1e493324428cdd">UnicodeProperty_Normalization_Compose</a></div><div class="ttdef"><b>Definition:</b> database.h:37</div></div>
-<div class="ttc" id="database_8h_html_a877a1e5b419a0c6d9e0e0c9b92c9d17b"><div class="ttname"><a href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17b">UnicodeProperty</a></div><div class="ttdeci">UnicodeProperty</div><div class="ttdef"><b>Definition:</b> database.h:33</div></div>
-<div class="ttc" id="database_8h_html_afad35cdcf883413b7aa72a9dc7317bc8"><div class="ttname"><a href="database_8h.html#afad35cdcf883413b7aa72a9dc7317bc8">database_querydecomposition</a></div><div class="ttdeci">const char * database_querydecomposition(unicode_t codepoint, uint8_t property)</div></div>
-<div class="ttc" id="database_8h_html_a1bb6f7508c238bd3154f11b4c674865fa41c5d90bbd599eeca5a133004d2504f3"><div class="ttname"><a href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa41c5d90bbd599eeca5a133004d2504f3">GeneralCategory_Separator</a></div><div class="ttdef"><b>Definition:</b> database.h:54</div></div>
-<div class="ttc" id="database_8h_html_ad4a29d3c235fbf1da8c4104116ba8c34ac3c715b5a9b7a9480e04690c3d153ab5"><div class="ttname"><a href="database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34ac3c715b5a9b7a9480e04690c3d153ab5">QuickCheckResult_Yes</a></div><div class="ttdef"><b>Definition:</b> database.h:60</div></div>
-<div class="ttc" id="database_8h_html_a1bb6f7508c238bd3154f11b4c674865fa50f80d8519b7de73ac63661e5f4f7a1a"><div class="ttname"><a href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa50f80d8519b7de73ac63661e5f4f7a1a">GeneralCategory_Mark</a></div><div class="ttdef"><b>Definition:</b> database.h:50</div></div>
-<div class="ttc" id="database_8h_html_a1bb6f7508c238bd3154f11b4c674865fa6742d3cfae4f6bb11c8c12b31ddcbb14"><div class="ttname"><a href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa6742d3cfae4f6bb11c8c12b31ddcbb14">GeneralCategory_Punctuation</a></div><div class="ttdef"><b>Definition:</b> database.h:52</div></div>
-<div class="ttc" id="database_8h_html_a877a1e5b419a0c6d9e0e0c9b92c9d17ba1be0ebd82e1dad85dc4138bcca3126bb"><div class="ttname"><a href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba1be0ebd82e1dad85dc4138bcca3126bb">UnicodeProperty_Titlecase</a></div><div class="ttdef"><b>Definition:</b> database.h:43</div></div>
-<div class="ttc" id="database_8h_html_a877a1e5b419a0c6d9e0e0c9b92c9d17ba88467d3baf7ae108163886ace815cfb8"><div class="ttname"><a href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba88467d3baf7ae108163886ace815cfb8">UnicodeProperty_Lowercase</a></div><div class="ttdef"><b>Definition:</b> database.h:42</div></div>
-<div class="ttc" id="database_8h_html_a877a1e5b419a0c6d9e0e0c9b92c9d17ba5cfd45c029e95cba1cdfa82fb1904a0f"><div class="ttname"><a href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba5cfd45c029e95cba1cdfa82fb1904a0f">UnicodeProperty_Uppercase</a></div><div class="ttdef"><b>Definition:</b> database.h:41</div></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">enum</span> QuickCheckResult</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;{</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    QuickCheckResult_Yes,</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    QuickCheckResult_Maybe,</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    QuickCheckResult_No,</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;};</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;uint8_t database_queryproperty(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint, uint8_t property);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* database_querydecomposition(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint, uint8_t property);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> database_querycomposition(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> left, <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> right);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _UTF8REWIND_INTERNAL_DATABASE_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">Unicode codepoint. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:184</div></div>
 <div class="ttc" id="utf8rewind_8h_html"><div class="ttname"><a href="utf8rewind_8h.html">utf8rewind.h</a></div><div class="ttdoc">Functions for working with UTF-8 encoded text. </div></div>
-<div class="ttc" id="database_8h_html_a877a1e5b419a0c6d9e0e0c9b92c9d17ba9fb1ff0d3a056a57617221b792da3b6a"><div class="ttname"><a href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba9fb1ff0d3a056a57617221b792da3b6a">UnicodeProperty_GeneralCategory</a></div><div class="ttdef"><b>Definition:</b> database.h:35</div></div>
-<div class="ttc" id="database_8h_html_a1bb6f7508c238bd3154f11b4c674865fa0180de64ef198c89fff3542fa0fa4d2c"><div class="ttname"><a href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa0180de64ef198c89fff3542fa0fa4d2c">GeneralCategory_Symbol</a></div><div class="ttdef"><b>Definition:</b> database.h:53</div></div>
-<div class="ttc" id="database_8h_html_a1bb6f7508c238bd3154f11b4c674865fa1480d3b7e6918f11416022395989610f"><div class="ttname"><a href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865fa1480d3b7e6918f11416022395989610f">GeneralCategory_Number</a></div><div class="ttdef"><b>Definition:</b> database.h:51</div></div>
-<div class="ttc" id="database_8h_html_ad4a29d3c235fbf1da8c4104116ba8c34ab7ab1f4271a614f87d4ba4ddf83b178b"><div class="ttname"><a href="database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34ab7ab1f4271a614f87d4ba4ddf83b178b">QuickCheckResult_No</a></div><div class="ttdef"><b>Definition:</b> database.h:62</div></div>
-<div class="ttc" id="database_8h_html_a1bb6f7508c238bd3154f11b4c674865f"><div class="ttname"><a href="database_8h.html#a1bb6f7508c238bd3154f11b4c674865f">GeneralCategory</a></div><div class="ttdeci">GeneralCategory</div><div class="ttdef"><b>Definition:</b> database.h:46</div></div>
-<div class="ttc" id="database_8h_html_ad4a29d3c235fbf1da8c4104116ba8c34a1ca94e639fe1031e3f23741e214b1321"><div class="ttname"><a href="database_8h.html#ad4a29d3c235fbf1da8c4104116ba8c34a1ca94e639fe1031e3f23741e214b1321">QuickCheckResult_Maybe</a></div><div class="ttdef"><b>Definition:</b> database.h:61</div></div>
-<div class="ttc" id="database_8h_html_a877a1e5b419a0c6d9e0e0c9b92c9d17ba499d31238c9512416bf25a4e9e8352a1"><div class="ttname"><a href="database_8h.html#a877a1e5b419a0c6d9e0e0c9b92c9d17ba499d31238c9512416bf25a4e9e8352a1">UnicodeProperty_Normalization_Compatibility_Decompose</a></div><div class="ttdef"><b>Definition:</b> database.h:40</div></div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li><li class="navelem"><a class="el" href="dir_a1987cf8ca160ad0403a567bf62072d3.html">internal</a></li><li class="navelem"><a class="el" href="database_8h.html">database.h</a></li>
-    <li class="footer">Generated on Tue Mar 3 2015 10:47:24 for utf8rewind by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
 </body>
 </html>

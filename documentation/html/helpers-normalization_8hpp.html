@@ -8,14 +8,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
-<script type="text/javascript">
-  $(document).ready(initResizable);
-  $(window).load(resizeHeight);
-</script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -34,6 +26,7 @@
    <div id="projectname">utf8rewind
    &#160;<span id="projectnumber">1.2.0</span>
    </div>
+   <div id="projectbrief">Cross-platform library for UTF-8 encoded text</div>
   </td>
  </tr>
  </tbody>
@@ -46,14 +39,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
-      <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li class="current"><a href="files.html"><span>Files</span></a></li>
-      <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
+      <li><a href="index.html"><span>Overview</span></a></li>
+      <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -75,24 +65,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
-      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
     </ul>
   </div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-$(document).ready(function(){initNavTree('helpers-normalization_8hpp.html','');});
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -107,209 +82,29 @@ $(document).ready(function(){initNavTree('helpers-normalization_8hpp.html','');}
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li><li class="navelem"><a class="el" href="dir_bcc475e2baa7fb4fddbbf77a013083ee.html">tests</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a> &#124;
-<a href="#define-members">Macros</a> &#124;
-<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">helpers-normalization.hpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
+<p>Normalization helper functions.  
+<a href="#details">More...</a></p>
+
 <p><a href="helpers-normalization_8hpp_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhelpers_1_1_normalization_entry.html">helpers::NormalizationEntry</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
-Namespaces</h2></td></tr>
-<tr class="memitem:namespacehelpers"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehelpers.html">helpers</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a38296948baaf8aacc533de609cbccf5b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="helpers-normalization_8hpp.html#a38296948baaf8aacc533de609cbccf5b">CHECK_NORMALIZE_CODEPOINT</a>(_codepoint,  _decomposed,  _composed,  _decomposedCompatibility,  _composedCompatibility,  _name)</td></tr>
-<tr class="separator:a38296948baaf8aacc533de609cbccf5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab19173fe5c49c1df4eb81901e477d175"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="helpers-normalization_8hpp.html#ab19173fe5c49c1df4eb81901e477d175">CHECK_NORMALIZE_SEQUENCE</a>(_sequence,  _decomposed,  _composed,  _decomposedCompatibility,  _composedCompatibility)</td></tr>
-<tr class="separator:ab19173fe5c49c1df4eb81901e477d175"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a0fec547845e05bf8b26921e0b2a00a37"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehelpers.html#a0fec547845e05bf8b26921e0b2a00a37">helpers::nfc</a> (<a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint)</td></tr>
-<tr class="separator:a0fec547845e05bf8b26921e0b2a00a37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad82de448d6af3d9aaab58a51ce9d94a0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehelpers.html#ad82de448d6af3d9aaab58a51ce9d94a0">helpers::nfc</a> (const std::string &amp;text)</td></tr>
-<tr class="separator:ad82de448d6af3d9aaab58a51ce9d94a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa464604cf4c92accb033b66376b5c17c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehelpers.html#aa464604cf4c92accb033b66376b5c17c">helpers::nfd</a> (<a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint)</td></tr>
-<tr class="separator:aa464604cf4c92accb033b66376b5c17c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade793c56d18e5775489cf97907893f9a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehelpers.html#ade793c56d18e5775489cf97907893f9a">helpers::nfd</a> (const std::string &amp;text)</td></tr>
-<tr class="separator:ade793c56d18e5775489cf97907893f9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac029d9adc9b343804371151e71b6901"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehelpers.html#aac029d9adc9b343804371151e71b6901">helpers::nfkc</a> (<a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint)</td></tr>
-<tr class="separator:aac029d9adc9b343804371151e71b6901"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a873e7c92bb15d0788b4f2fad3e2dd083"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehelpers.html#a873e7c92bb15d0788b4f2fad3e2dd083">helpers::nfkc</a> (const std::string &amp;text)</td></tr>
-<tr class="separator:a873e7c92bb15d0788b4f2fad3e2dd083"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86bb583db56f2387f7e55dad6186dbbf"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehelpers.html#a86bb583db56f2387f7e55dad6186dbbf">helpers::nfkd</a> (<a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint)</td></tr>
-<tr class="separator:a86bb583db56f2387f7e55dad6186dbbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48dd10d083fec4967bf476f53510c197"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehelpers.html#a48dd10d083fec4967bf476f53510c197">helpers::nfkd</a> (const std::string &amp;text)</td></tr>
-<tr class="separator:a48dd10d083fec4967bf476f53510c197"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67248b2c219c14146e391f11f4e27805"><td class="memItemLeft" align="right" valign="top">::testing::AssertionResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehelpers.html#a67248b2c219c14146e391f11f4e27805">helpers::CompareNormalizationCodepoint</a> (const char *expressionExpected, const char *expressionActual, const NormalizationEntry &amp;entryExpected, const NormalizationEntry &amp;entryActual)</td></tr>
-<tr class="separator:a67248b2c219c14146e391f11f4e27805"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a799eb353ec14cb39d34dc9a20ff464a1"><td class="memItemLeft" align="right" valign="top">::testing::AssertionResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehelpers.html#a799eb353ec14cb39d34dc9a20ff464a1">helpers::CompareNormalizationSequence</a> (const char *expressionExpected, const char *expressionActual, const NormalizationEntry &amp;entryExpected, const NormalizationEntry &amp;entryActual)</td></tr>
-<tr class="separator:a799eb353ec14cb39d34dc9a20ff464a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a class="anchor" id="a38296948baaf8aacc533de609cbccf5b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define CHECK_NORMALIZE_CODEPOINT</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_codepoint, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_decomposed, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_composed, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_decomposedCompatibility, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_composedCompatibility, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_name&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{ \</div>
-<div class="line">    <a class="code" href="structhelpers_1_1_normalization_entry.html">::helpers::NormalizationEntry</a> e; \</div>
-<div class="line">    e.<a class="code" href="structhelpers_1_1_normalization_entry.html#a48ab06cb9722f3ba9b0771ecedd9202a">codepoint</a> = _codepoint; \</div>
-<div class="line">    e.name = _name; \</div>
-<div class="line">    e.decomposed = _decomposed; \</div>
-<div class="line">    e.composed = _composed; \</div>
-<div class="line">    e.decomposedCompatibility = _decomposedCompatibility; \</div>
-<div class="line">    e.composedCompatibility = _composedCompatibility; \</div>
-<div class="line">    <a class="code" href="structhelpers_1_1_normalization_entry.html">::helpers::NormalizationEntry</a> a; \</div>
-<div class="line">    a.<a class="code" href="structhelpers_1_1_normalization_entry.html#a77d89bd8429bccbadaa3f05576542807">decomposed</a> = <a class="code" href="namespacehelpers.html#aa464604cf4c92accb033b66376b5c17c">helpers::nfd</a>(_codepoint); \</div>
-<div class="line">    a.composed = <a class="code" href="namespacehelpers.html#a0fec547845e05bf8b26921e0b2a00a37">helpers::nfc</a>(_codepoint); \</div>
-<div class="line">    a.decomposedCompatibility = <a class="code" href="namespacehelpers.html#a86bb583db56f2387f7e55dad6186dbbf">helpers::nfkd</a>(_codepoint); \</div>
-<div class="line">    a.composedCompatibility = <a class="code" href="namespacehelpers.html#aac029d9adc9b343804371151e71b6901">helpers::nfkc</a>(_codepoint); \</div>
-<div class="line">    EXPECT_PRED_FORMAT2(::<a class="code" href="namespacehelpers.html#a67248b2c219c14146e391f11f4e27805">helpers::CompareNormalizationCodepoint</a>, e, a); \</div>
-<div class="line">}</div>
-<div class="ttc" id="namespacehelpers_html_aa464604cf4c92accb033b66376b5c17c"><div class="ttname"><a href="namespacehelpers.html#aa464604cf4c92accb033b66376b5c17c">helpers::nfd</a></div><div class="ttdeci">std::string nfd(unicode_t codepoint)</div></div>
-<div class="ttc" id="namespacehelpers_html_a0fec547845e05bf8b26921e0b2a00a37"><div class="ttname"><a href="namespacehelpers.html#a0fec547845e05bf8b26921e0b2a00a37">helpers::nfc</a></div><div class="ttdeci">std::string nfc(unicode_t codepoint)</div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html_a77d89bd8429bccbadaa3f05576542807"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html#a77d89bd8429bccbadaa3f05576542807">helpers::NormalizationEntry::decomposed</a></div><div class="ttdeci">std::string decomposed</div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:62</div></div>
-<div class="ttc" id="namespacehelpers_html_a86bb583db56f2387f7e55dad6186dbbf"><div class="ttname"><a href="namespacehelpers.html#a86bb583db56f2387f7e55dad6186dbbf">helpers::nfkd</a></div><div class="ttdeci">std::string nfkd(unicode_t codepoint)</div></div>
-<div class="ttc" id="namespacehelpers_html_aac029d9adc9b343804371151e71b6901"><div class="ttname"><a href="namespacehelpers.html#aac029d9adc9b343804371151e71b6901">helpers::nfkc</a></div><div class="ttdeci">std::string nfkc(unicode_t codepoint)</div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html">helpers::NormalizationEntry</a></div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:52</div></div>
-<div class="ttc" id="namespacehelpers_html_a67248b2c219c14146e391f11f4e27805"><div class="ttname"><a href="namespacehelpers.html#a67248b2c219c14146e391f11f4e27805">helpers::CompareNormalizationCodepoint</a></div><div class="ttdeci">::testing::AssertionResult CompareNormalizationCodepoint(const char *expressionExpected, const char *expressionActual, const NormalizationEntry &amp;entryExpected, const NormalizationEntry &amp;entryActual)</div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html_a48ab06cb9722f3ba9b0771ecedd9202a"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html#a48ab06cb9722f3ba9b0771ecedd9202a">helpers::NormalizationEntry::codepoint</a></div><div class="ttdeci">unicode_t codepoint</div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:59</div></div>
-</div><!-- fragment -->
-</div>
-</div>
-<a class="anchor" id="ab19173fe5c49c1df4eb81901e477d175"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define CHECK_NORMALIZE_SEQUENCE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_sequence, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_decomposed, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_composed, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_decomposedCompatibility, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_composedCompatibility&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{ \</div>
-<div class="line">    <a class="code" href="structhelpers_1_1_normalization_entry.html">::helpers::NormalizationEntry</a> e; \</div>
-<div class="line">    e.<a class="code" href="structhelpers_1_1_normalization_entry.html#aa84a60f8d85c82cc4312f19e6eab417e">sequence</a> = _sequence; \</div>
-<div class="line">    e.decomposed = _decomposed; \</div>
-<div class="line">    e.composed = _composed; \</div>
-<div class="line">    e.decomposedCompatibility = _decomposedCompatibility; \</div>
-<div class="line">    e.composedCompatibility = _composedCompatibility; \</div>
-<div class="line">    <a class="code" href="structhelpers_1_1_normalization_entry.html">::helpers::NormalizationEntry</a> a; \</div>
-<div class="line">    a.<a class="code" href="structhelpers_1_1_normalization_entry.html#a77d89bd8429bccbadaa3f05576542807">decomposed</a> = <a class="code" href="namespacehelpers.html#aa464604cf4c92accb033b66376b5c17c">helpers::nfd</a>(_sequence); \</div>
-<div class="line">    a.composed = <a class="code" href="namespacehelpers.html#a0fec547845e05bf8b26921e0b2a00a37">helpers::nfc</a>(_sequence); \</div>
-<div class="line">    a.decomposedCompatibility = <a class="code" href="namespacehelpers.html#a86bb583db56f2387f7e55dad6186dbbf">helpers::nfkd</a>(_sequence); \</div>
-<div class="line">    a.composedCompatibility = <a class="code" href="namespacehelpers.html#aac029d9adc9b343804371151e71b6901">helpers::nfkc</a>(_sequence); \</div>
-<div class="line">    EXPECT_PRED_FORMAT2(::<a class="code" href="namespacehelpers.html#a799eb353ec14cb39d34dc9a20ff464a1">helpers::CompareNormalizationSequence</a>, e, a); \</div>
-<div class="line">}</div>
-<div class="ttc" id="namespacehelpers_html_aa464604cf4c92accb033b66376b5c17c"><div class="ttname"><a href="namespacehelpers.html#aa464604cf4c92accb033b66376b5c17c">helpers::nfd</a></div><div class="ttdeci">std::string nfd(unicode_t codepoint)</div></div>
-<div class="ttc" id="namespacehelpers_html_a0fec547845e05bf8b26921e0b2a00a37"><div class="ttname"><a href="namespacehelpers.html#a0fec547845e05bf8b26921e0b2a00a37">helpers::nfc</a></div><div class="ttdeci">std::string nfc(unicode_t codepoint)</div></div>
-<div class="ttc" id="namespacehelpers_html_a799eb353ec14cb39d34dc9a20ff464a1"><div class="ttname"><a href="namespacehelpers.html#a799eb353ec14cb39d34dc9a20ff464a1">helpers::CompareNormalizationSequence</a></div><div class="ttdeci">::testing::AssertionResult CompareNormalizationSequence(const char *expressionExpected, const char *expressionActual, const NormalizationEntry &amp;entryExpected, const NormalizationEntry &amp;entryActual)</div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html_a77d89bd8429bccbadaa3f05576542807"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html#a77d89bd8429bccbadaa3f05576542807">helpers::NormalizationEntry::decomposed</a></div><div class="ttdeci">std::string decomposed</div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:62</div></div>
-<div class="ttc" id="namespacehelpers_html_a86bb583db56f2387f7e55dad6186dbbf"><div class="ttname"><a href="namespacehelpers.html#a86bb583db56f2387f7e55dad6186dbbf">helpers::nfkd</a></div><div class="ttdeci">std::string nfkd(unicode_t codepoint)</div></div>
-<div class="ttc" id="namespacehelpers_html_aac029d9adc9b343804371151e71b6901"><div class="ttname"><a href="namespacehelpers.html#aac029d9adc9b343804371151e71b6901">helpers::nfkc</a></div><div class="ttdeci">std::string nfkc(unicode_t codepoint)</div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html">helpers::NormalizationEntry</a></div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:52</div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html_aa84a60f8d85c82cc4312f19e6eab417e"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html#aa84a60f8d85c82cc4312f19e6eab417e">helpers::NormalizationEntry::sequence</a></div><div class="ttdeci">std::string sequence</div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:60</div></div>
-</div><!-- fragment -->
-</div>
-</div>
-</div><!-- contents -->
-</div><!-- doc-content -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Normalization helper functions. </p>
+</div></div><!-- contents -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li><li class="navelem"><a class="el" href="dir_bcc475e2baa7fb4fddbbf77a013083ee.html">tests</a></li><li class="navelem"><a class="el" href="helpers-normalization_8hpp.html">helpers-normalization.hpp</a></li>
-    <li class="footer">Generated on Tue Mar 3 2015 10:47:24 for utf8rewind by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
 </body>
 </html>

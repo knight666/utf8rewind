@@ -8,14 +8,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
-<script type="text/javascript">
-  $(document).ready(initResizable);
-  $(window).load(resizeHeight);
-</script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -34,6 +26,7 @@
    <div id="projectname">utf8rewind
    &#160;<span id="projectnumber">1.2.0</span>
    </div>
+   <div id="projectbrief">Cross-platform library for UTF-8 encoded text</div>
   </td>
  </tr>
  </tbody>
@@ -46,14 +39,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
-      <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li class="current"><a href="files.html"><span>Files</span></a></li>
-      <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
+      <li><a href="index.html"><span>Overview</span></a></li>
+      <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -75,24 +65,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
-      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
     </ul>
   </div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-$(document).ready(function(){initNavTree('unicodedatabase_8h_source.html','');});
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -107,6 +82,11 @@ $(document).ready(function(){initNavTree('unicodedatabase_8h_source.html','');})
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">unicodedatabase.h</div>  </div>
@@ -137,115 +117,75 @@ $(document).ready(function(){initNavTree('unicodedatabase_8h_source.html','');})
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">    OTHER DEALINGS IN THE SOFTWARE.</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#ifndef _UTFREWIND_UNICODEDATABASE_H_</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define _UTFREWIND_UNICODEDATABASE_H_</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#ifndef _UTF8REWIND_UNICODEDATABASE_H_</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define _UTF8REWIND_UNICODEDATABASE_H_</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="struct_quick_check_record.html">   31</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="struct_quick_check_record.html#af92ba69f3ea9451e91e0e938ab2714ad">   32</a></span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> <a class="code" href="struct_quick_check_record.html#af92ba69f3ea9451e91e0e938ab2714ad">start</a>;</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="struct_quick_check_record.html#add41a68ee110ead75eacd151b00898ef">   33</a></span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> <a class="code" href="struct_quick_check_record.html#add41a68ee110ead75eacd151b00898ef">end</a>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="struct_quick_check_record.html#aebfed4c7a0715bd48c26294b0713b40b">   34</a></span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> <a class="code" href="struct_quick_check_record.html#aebfed4c7a0715bd48c26294b0713b40b">count_and_value</a>;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;} <a class="code" href="struct_quick_check_record.html">QuickCheckRecord</a>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="struct_decomposition_record.html">   37</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="struct_decomposition_record.html#a45cbbe027971a2561a5cd82225a569b2">   38</a></span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> <a class="code" href="struct_decomposition_record.html#a45cbbe027971a2561a5cd82225a569b2">codepoint</a>;</div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="struct_decomposition_record.html#a3ee193bbcab4357fc119b7dca7d349a2">   39</a></span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="struct_decomposition_record.html#a3ee193bbcab4357fc119b7dca7d349a2">offset</a>;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;} <a class="code" href="struct_decomposition_record.html">DecompositionRecord</a>;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="struct_composition_record.html">   42</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="struct_composition_record.html#a9ab01163abf2bb54069d63f39040c59f">   43</a></span>&#160;    uint64_t <a class="code" href="struct_composition_record.html#a9ab01163abf2bb54069d63f39040c59f">key</a>;</div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="struct_composition_record.html#a225cc42087502955b9066f660d13dfed">   44</a></span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> <a class="code" href="struct_composition_record.html#a225cc42087502955b9066f660d13dfed">value</a>;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;} <a class="code" href="struct_composition_record.html">CompositionRecord</a>;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="unicodedatabase_8h.html#aff385de6f50dc46ca0fbf92f9f597d46">UnicodeQuickCheckGeneralCategoryRecordCount</a>;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="struct_quick_check_record.html">QuickCheckRecord</a>* <a class="code" href="unicodedatabase_8h.html#a0018df27b010b467c2548eeed4b52e63">UnicodeQuickCheckGeneralCategoryRecordPtr</a>;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="unicodedatabase_8h.html#ac50942db5d3d940b3a236db7cde5c237">UnicodeQuickCheckCanonicalCombiningClassRecordCount</a>;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="struct_quick_check_record.html">QuickCheckRecord</a>* <a class="code" href="unicodedatabase_8h.html#aaff1bcda12dd161494bc395f449999ca">UnicodeQuickCheckCanonicalCombiningClassRecordPtr</a>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="unicodedatabase_8h.html#ae2c4ba53e5c519c615d19553bb99d5d4">UnicodeQuickCheckNFCRecordCount</a>;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="struct_quick_check_record.html">QuickCheckRecord</a>* <a class="code" href="unicodedatabase_8h.html#a3aa8c4c127f769f2bb079bb41dd5d130">UnicodeQuickCheckNFCRecordPtr</a>;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="unicodedatabase_8h.html#a92b61f9fc6c6ac84453e7c93a09741ce">UnicodeQuickCheckNFDRecordCount</a>;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="struct_quick_check_record.html">QuickCheckRecord</a>* <a class="code" href="unicodedatabase_8h.html#a6b01364811447c03a3ad19e6d7a2cf51">UnicodeQuickCheckNFDRecordPtr</a>;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="unicodedatabase_8h.html#ac39561c07bc2e2691beade6523b3f6db">UnicodeQuickCheckNFKCRecordCount</a>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="struct_quick_check_record.html">QuickCheckRecord</a>* <a class="code" href="unicodedatabase_8h.html#a51206c25b913691f27a340562f09f29a">UnicodeQuickCheckNFKCRecordPtr</a>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="unicodedatabase_8h.html#ad854bdfc965ddee295e5272c3d69bd05">UnicodeQuickCheckNFKDRecordCount</a>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="struct_quick_check_record.html">QuickCheckRecord</a>* <a class="code" href="unicodedatabase_8h.html#a9d09c29a7f1f07dd811893bb1dfb3912">UnicodeQuickCheckNFKDRecordPtr</a>;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="unicodedatabase_8h.html#ac3a289ad23f0e147e8ac518087700d73">UnicodeNFDRecordCount</a>;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="struct_decomposition_record.html">DecompositionRecord</a>* <a class="code" href="unicodedatabase_8h.html#abde3760e5b39edc4d2b97fd0fea6f4a9">UnicodeNFDRecordPtr</a>;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="unicodedatabase_8h.html#a60ae92fb96085e9c50d269e95dcddff4">UnicodeNFKDRecordCount</a>;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="struct_decomposition_record.html">DecompositionRecord</a>* <a class="code" href="unicodedatabase_8h.html#a5148848762b8da7878fa1852cab1bcd3">UnicodeNFKDRecordPtr</a>;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="unicodedatabase_8h.html#a744976185f2ab9261f81377a74d06b73">UnicodeUppercaseRecordCount</a>;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="struct_decomposition_record.html">DecompositionRecord</a>* <a class="code" href="unicodedatabase_8h.html#a854855e51d9b5d9da62f2a29dceb8196">UnicodeUppercaseRecordPtr</a>;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="unicodedatabase_8h.html#a3b732a2af995a1cc402177acd69641c2">UnicodeLowercaseRecordCount</a>;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="struct_decomposition_record.html">DecompositionRecord</a>* <a class="code" href="unicodedatabase_8h.html#a68f63ee618e7e97dccae78d89ec33844">UnicodeLowercaseRecordPtr</a>;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="unicodedatabase_8h.html#aa89890567714ba2f0e6f92e90e19f150">UnicodeTitlecaseRecordCount</a>;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="struct_decomposition_record.html">DecompositionRecord</a>* <a class="code" href="unicodedatabase_8h.html#a6d70fc5110fd3cebf18fa5dd29021ea6">UnicodeTitlecaseRecordPtr</a>;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="unicodedatabase_8h.html#adedce48a6447b2be8c222ef80c5c4c57">UnicodeCompositionRecordCount</a>;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="struct_composition_record.html">CompositionRecord</a>* <a class="code" href="unicodedatabase_8h.html#a395b5d1323edd86735e7a98cb5bbd9bf">UnicodeCompositionRecordPtr</a>;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="unicodedatabase_8h.html#a0d80b5a692a8736d21f5ffd8c373ed51">DecompositionData</a>;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="unicodedatabase_8h.html#a406d08f87b9ad4dd103712ba7d251a89">DecompositionDataLength</a>;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="unicodedatabase_8h_html_a5148848762b8da7878fa1852cab1bcd3"><div class="ttname"><a href="unicodedatabase_8h.html#a5148848762b8da7878fa1852cab1bcd3">UnicodeNFKDRecordPtr</a></div><div class="ttdeci">const DecompositionRecord * UnicodeNFKDRecordPtr</div></div>
-<div class="ttc" id="struct_quick_check_record_html_add41a68ee110ead75eacd151b00898ef"><div class="ttname"><a href="struct_quick_check_record.html#add41a68ee110ead75eacd151b00898ef">QuickCheckRecord::end</a></div><div class="ttdeci">unicode_t end</div><div class="ttdef"><b>Definition:</b> unicodedatabase.h:33</div></div>
-<div class="ttc" id="struct_composition_record_html_a225cc42087502955b9066f660d13dfed"><div class="ttname"><a href="struct_composition_record.html#a225cc42087502955b9066f660d13dfed">CompositionRecord::value</a></div><div class="ttdeci">unicode_t value</div><div class="ttdef"><b>Definition:</b> unicodedatabase.h:44</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a6d70fc5110fd3cebf18fa5dd29021ea6"><div class="ttname"><a href="unicodedatabase_8h.html#a6d70fc5110fd3cebf18fa5dd29021ea6">UnicodeTitlecaseRecordPtr</a></div><div class="ttdeci">const DecompositionRecord * UnicodeTitlecaseRecordPtr</div></div>
-<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">Unicode codepoint. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:166</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_ac50942db5d3d940b3a236db7cde5c237"><div class="ttname"><a href="unicodedatabase_8h.html#ac50942db5d3d940b3a236db7cde5c237">UnicodeQuickCheckCanonicalCombiningClassRecordCount</a></div><div class="ttdeci">const size_t UnicodeQuickCheckCanonicalCombiningClassRecordCount</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a6b01364811447c03a3ad19e6d7a2cf51"><div class="ttname"><a href="unicodedatabase_8h.html#a6b01364811447c03a3ad19e6d7a2cf51">UnicodeQuickCheckNFDRecordPtr</a></div><div class="ttdeci">const QuickCheckRecord * UnicodeQuickCheckNFDRecordPtr</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_aa89890567714ba2f0e6f92e90e19f150"><div class="ttname"><a href="unicodedatabase_8h.html#aa89890567714ba2f0e6f92e90e19f150">UnicodeTitlecaseRecordCount</a></div><div class="ttdeci">const size_t UnicodeTitlecaseRecordCount</div></div>
-<div class="ttc" id="struct_quick_check_record_html_aebfed4c7a0715bd48c26294b0713b40b"><div class="ttname"><a href="struct_quick_check_record.html#aebfed4c7a0715bd48c26294b0713b40b">QuickCheckRecord::count_and_value</a></div><div class="ttdeci">unicode_t count_and_value</div><div class="ttdef"><b>Definition:</b> unicodedatabase.h:34</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_adedce48a6447b2be8c222ef80c5c4c57"><div class="ttname"><a href="unicodedatabase_8h.html#adedce48a6447b2be8c222ef80c5c4c57">UnicodeCompositionRecordCount</a></div><div class="ttdeci">const size_t UnicodeCompositionRecordCount</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a68f63ee618e7e97dccae78d89ec33844"><div class="ttname"><a href="unicodedatabase_8h.html#a68f63ee618e7e97dccae78d89ec33844">UnicodeLowercaseRecordPtr</a></div><div class="ttdeci">const DecompositionRecord * UnicodeLowercaseRecordPtr</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_aaff1bcda12dd161494bc395f449999ca"><div class="ttname"><a href="unicodedatabase_8h.html#aaff1bcda12dd161494bc395f449999ca">UnicodeQuickCheckCanonicalCombiningClassRecordPtr</a></div><div class="ttdeci">const QuickCheckRecord * UnicodeQuickCheckCanonicalCombiningClassRecordPtr</div></div>
-<div class="ttc" id="struct_decomposition_record_html_a45cbbe027971a2561a5cd82225a569b2"><div class="ttname"><a href="struct_decomposition_record.html#a45cbbe027971a2561a5cd82225a569b2">DecompositionRecord::codepoint</a></div><div class="ttdeci">unicode_t codepoint</div><div class="ttdef"><b>Definition:</b> unicodedatabase.h:38</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a51206c25b913691f27a340562f09f29a"><div class="ttname"><a href="unicodedatabase_8h.html#a51206c25b913691f27a340562f09f29a">UnicodeQuickCheckNFKCRecordPtr</a></div><div class="ttdeci">const QuickCheckRecord * UnicodeQuickCheckNFKCRecordPtr</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a395b5d1323edd86735e7a98cb5bbd9bf"><div class="ttname"><a href="unicodedatabase_8h.html#a395b5d1323edd86735e7a98cb5bbd9bf">UnicodeCompositionRecordPtr</a></div><div class="ttdeci">const CompositionRecord * UnicodeCompositionRecordPtr</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_abde3760e5b39edc4d2b97fd0fea6f4a9"><div class="ttname"><a href="unicodedatabase_8h.html#abde3760e5b39edc4d2b97fd0fea6f4a9">UnicodeNFDRecordPtr</a></div><div class="ttdeci">const DecompositionRecord * UnicodeNFDRecordPtr</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a406d08f87b9ad4dd103712ba7d251a89"><div class="ttname"><a href="unicodedatabase_8h.html#a406d08f87b9ad4dd103712ba7d251a89">DecompositionDataLength</a></div><div class="ttdeci">const size_t DecompositionDataLength</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a744976185f2ab9261f81377a74d06b73"><div class="ttname"><a href="unicodedatabase_8h.html#a744976185f2ab9261f81377a74d06b73">UnicodeUppercaseRecordCount</a></div><div class="ttdeci">const size_t UnicodeUppercaseRecordCount</div></div>
-<div class="ttc" id="struct_composition_record_html_a9ab01163abf2bb54069d63f39040c59f"><div class="ttname"><a href="struct_composition_record.html#a9ab01163abf2bb54069d63f39040c59f">CompositionRecord::key</a></div><div class="ttdeci">uint64_t key</div><div class="ttdef"><b>Definition:</b> unicodedatabase.h:43</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a854855e51d9b5d9da62f2a29dceb8196"><div class="ttname"><a href="unicodedatabase_8h.html#a854855e51d9b5d9da62f2a29dceb8196">UnicodeUppercaseRecordPtr</a></div><div class="ttdeci">const DecompositionRecord * UnicodeUppercaseRecordPtr</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a0d80b5a692a8736d21f5ffd8c373ed51"><div class="ttname"><a href="unicodedatabase_8h.html#a0d80b5a692a8736d21f5ffd8c373ed51">DecompositionData</a></div><div class="ttdeci">const char * DecompositionData</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a9d09c29a7f1f07dd811893bb1dfb3912"><div class="ttname"><a href="unicodedatabase_8h.html#a9d09c29a7f1f07dd811893bb1dfb3912">UnicodeQuickCheckNFKDRecordPtr</a></div><div class="ttdeci">const QuickCheckRecord * UnicodeQuickCheckNFKDRecordPtr</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a0018df27b010b467c2548eeed4b52e63"><div class="ttname"><a href="unicodedatabase_8h.html#a0018df27b010b467c2548eeed4b52e63">UnicodeQuickCheckGeneralCategoryRecordPtr</a></div><div class="ttdeci">const QuickCheckRecord * UnicodeQuickCheckGeneralCategoryRecordPtr</div></div>
-<div class="ttc" id="struct_decomposition_record_html_a3ee193bbcab4357fc119b7dca7d349a2"><div class="ttname"><a href="struct_decomposition_record.html#a3ee193bbcab4357fc119b7dca7d349a2">DecompositionRecord::offset</a></div><div class="ttdeci">size_t offset</div><div class="ttdef"><b>Definition:</b> unicodedatabase.h:39</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_ac39561c07bc2e2691beade6523b3f6db"><div class="ttname"><a href="unicodedatabase_8h.html#ac39561c07bc2e2691beade6523b3f6db">UnicodeQuickCheckNFKCRecordCount</a></div><div class="ttdeci">const size_t UnicodeQuickCheckNFKCRecordCount</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_ac3a289ad23f0e147e8ac518087700d73"><div class="ttname"><a href="unicodedatabase_8h.html#ac3a289ad23f0e147e8ac518087700d73">UnicodeNFDRecordCount</a></div><div class="ttdeci">const size_t UnicodeNFDRecordCount</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_aff385de6f50dc46ca0fbf92f9f597d46"><div class="ttname"><a href="unicodedatabase_8h.html#aff385de6f50dc46ca0fbf92f9f597d46">UnicodeQuickCheckGeneralCategoryRecordCount</a></div><div class="ttdeci">const size_t UnicodeQuickCheckGeneralCategoryRecordCount</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a3aa8c4c127f769f2bb079bb41dd5d130"><div class="ttname"><a href="unicodedatabase_8h.html#a3aa8c4c127f769f2bb079bb41dd5d130">UnicodeQuickCheckNFCRecordPtr</a></div><div class="ttdeci">const QuickCheckRecord * UnicodeQuickCheckNFCRecordPtr</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_ad854bdfc965ddee295e5272c3d69bd05"><div class="ttname"><a href="unicodedatabase_8h.html#ad854bdfc965ddee295e5272c3d69bd05">UnicodeQuickCheckNFKDRecordCount</a></div><div class="ttdeci">const size_t UnicodeQuickCheckNFKDRecordCount</div></div>
-<div class="ttc" id="struct_composition_record_html"><div class="ttname"><a href="struct_composition_record.html">CompositionRecord</a></div><div class="ttdef"><b>Definition:</b> unicodedatabase.h:42</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_ae2c4ba53e5c519c615d19553bb99d5d4"><div class="ttname"><a href="unicodedatabase_8h.html#ae2c4ba53e5c519c615d19553bb99d5d4">UnicodeQuickCheckNFCRecordCount</a></div><div class="ttdeci">const size_t UnicodeQuickCheckNFCRecordCount</div></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> start;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> end;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> count_and_value;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;} QuickCheckRecord;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">size_t</span> offset;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;} DecompositionRecord;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    uint64_t key;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> value;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;} CompositionRecord;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> UnicodeQuickCheckGeneralCategoryRecordCount;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> QuickCheckRecord* UnicodeQuickCheckGeneralCategoryRecordPtr;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> UnicodeQuickCheckCanonicalCombiningClassRecordCount;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> QuickCheckRecord* UnicodeQuickCheckCanonicalCombiningClassRecordPtr;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> UnicodeQuickCheckNFCRecordCount;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> QuickCheckRecord* UnicodeQuickCheckNFCRecordPtr;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> UnicodeQuickCheckNFDRecordCount;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> QuickCheckRecord* UnicodeQuickCheckNFDRecordPtr;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> UnicodeQuickCheckNFKCRecordCount;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> QuickCheckRecord* UnicodeQuickCheckNFKCRecordPtr;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> UnicodeQuickCheckNFKDRecordCount;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> QuickCheckRecord* UnicodeQuickCheckNFKDRecordPtr;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> UnicodeNFDRecordCount;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> DecompositionRecord* UnicodeNFDRecordPtr;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> UnicodeNFKDRecordCount;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> DecompositionRecord* UnicodeNFKDRecordPtr;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> UnicodeUppercaseRecordCount;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> DecompositionRecord* UnicodeUppercaseRecordPtr;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> UnicodeLowercaseRecordCount;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> DecompositionRecord* UnicodeLowercaseRecordPtr;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> UnicodeTitlecaseRecordCount;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> DecompositionRecord* UnicodeTitlecaseRecordPtr;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> UnicodeCompositionRecordCount;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> CompositionRecord* UnicodeCompositionRecordPtr;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* DecompositionData;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> DecompositionDataLength;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _UTF8REWIND_UNICODEDATABASE_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">Unicode codepoint. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:184</div></div>
 <div class="ttc" id="utf8rewind_8h_html"><div class="ttname"><a href="utf8rewind_8h.html">utf8rewind.h</a></div><div class="ttdoc">Functions for working with UTF-8 encoded text. </div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a60ae92fb96085e9c50d269e95dcddff4"><div class="ttname"><a href="unicodedatabase_8h.html#a60ae92fb96085e9c50d269e95dcddff4">UnicodeNFKDRecordCount</a></div><div class="ttdeci">const size_t UnicodeNFKDRecordCount</div></div>
-<div class="ttc" id="struct_decomposition_record_html"><div class="ttname"><a href="struct_decomposition_record.html">DecompositionRecord</a></div><div class="ttdef"><b>Definition:</b> unicodedatabase.h:37</div></div>
-<div class="ttc" id="struct_quick_check_record_html_af92ba69f3ea9451e91e0e938ab2714ad"><div class="ttname"><a href="struct_quick_check_record.html#af92ba69f3ea9451e91e0e938ab2714ad">QuickCheckRecord::start</a></div><div class="ttdeci">unicode_t start</div><div class="ttdef"><b>Definition:</b> unicodedatabase.h:32</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a3b732a2af995a1cc402177acd69641c2"><div class="ttname"><a href="unicodedatabase_8h.html#a3b732a2af995a1cc402177acd69641c2">UnicodeLowercaseRecordCount</a></div><div class="ttdeci">const size_t UnicodeLowercaseRecordCount</div></div>
-<div class="ttc" id="struct_quick_check_record_html"><div class="ttname"><a href="struct_quick_check_record.html">QuickCheckRecord</a></div><div class="ttdef"><b>Definition:</b> unicodedatabase.h:31</div></div>
-<div class="ttc" id="unicodedatabase_8h_html_a92b61f9fc6c6ac84453e7c93a09741ce"><div class="ttname"><a href="unicodedatabase_8h.html#a92b61f9fc6c6ac84453e7c93a09741ce">UnicodeQuickCheckNFDRecordCount</a></div><div class="ttdeci">const size_t UnicodeQuickCheckNFDRecordCount</div></div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li><li class="navelem"><a class="el" href="unicodedatabase_8h.html">unicodedatabase.h</a></li>
-    <li class="footer">Generated on Tue Mar 3 2015 10:47:24 for utf8rewind by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
 </body>
 </html>

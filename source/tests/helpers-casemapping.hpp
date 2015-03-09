@@ -1,5 +1,12 @@
 #pragma once
 
+/*!
+	\file
+	\brief Case mapping helper functions.
+
+	\cond INTERNAL
+*/
+
 #include "tests-base.hpp"
 
 #include "utf8rewind.h"
@@ -48,3 +55,5 @@ namespace helpers {
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual);
 
 };
+
+/*! \endcond */
