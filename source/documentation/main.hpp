@@ -5,8 +5,9 @@
 
 	\section introduction Introduction
 
-	`utf8rewind` is a C library designed to extend the default string handling
-	functions in order to add support for UTF-8 encoded text.
+	`utf8rewind` is a cross-platform and open source C library designed to
+	extend the default string handling functions in order to add support for
+	UTF-8 encoded text.
 	
 	\section features Features
 
@@ -52,37 +53,6 @@
 	This project is licensed under the MIT license, a full copy of which
 	should have been provided with the project.
 
-	\section why-utf8 Why UTF-8?
-
-	UTF-8 encoded Unicode accounts for [over 60 percent of the web]
-	(http://googleblog.blogspot.nl/2012/02/unicode-over-60-percent-of-web.html).
-	And with good reason! Because UTF-8 is completely backwards-compatible with
-	ASCII, developers only need to change code dealing with codepoints. UTF-8
-	can encode the full range of Unicode codepoints in a maximum of four bytes
-	per codepoint. However, because most text tends to be the Latin alphabet
-	mixed with special characters, the common case is strings not much longer
-	than pure ASCII.
-
-	\section why-not-utf16 Why not UTF-16?
-
-	UTF-16 encoding solves the same problems as UTF-8, but in a different way.
-	UTF-16 is not backwards-compatible with ASCII, resulting in invalid
-	codepoints being encountered when the string is treated as ASCII. As a
-	result, all code dealing with strings must be changed in order to handle
-	these new strings. This can be seen in the changes made in the C strings
-	API:
-
-	Description                | ASCII   | UTF-16
-	-------------------------- | ------- | ------
-	Get the length of a string | strlen  | wcslen
-	Copy a string to another   | strcpy  | wcscpy
-	Append to a string         | strcat  | wcscat
-	Convert to lowercase       | tolower | towlower
-
-	Converting a project to use UTF-16 after the fact is a serious endeavour
-	that touches *all* code dealing with strings. On the other hand,
-	changing existing code to use UTF-8 only deals with codepoint processing.
-
 	\section building Building the project
 
 	All supported platforms use [GYP](http://code.google.com/p/gyp/) to
@@ -116,7 +86,7 @@
 
 		sudo apt-get install gyp gcc g++
 
-	Use GYP to generate a soluation:
+	Use GYP to generate a Makefile:
 
 		gyp --depth= utf8rewind.gyp
 
@@ -128,7 +98,11 @@
 
 		make BUILDTYPE=Release
 
-	\subsection building-mac Building on Mac OS X using Xcode
+	The generated Makefile does not contain a "clean" target. In order to do
+	a full rebuild, you must delete the files in the "output" directory
+	manually.
+
+	\subsection building-mac Building on Mac OS X with XCode
 
 	\note Building on Mac OS X is currently untested. Please let us know if
 	you can help us in this regard.
@@ -139,7 +113,7 @@
 
 		tools\gyp\gyp --depth utf8rewind.gyp
 
-	Open the solution in Xcode and you can build the library and tests.
+	Open the solution in XCode and you can build the library and tests.
 
 	\subsection running-tests Running the tests
 
