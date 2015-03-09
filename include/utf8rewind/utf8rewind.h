@@ -83,7 +83,7 @@
 */
 
 /*!
-	\defgroup quickcheck Normalization results
+	\addtogroup normalization Normalization
 	\{
 */
 
@@ -104,15 +104,6 @@
 	\brief Text is unstable and must be normalized.
 */
 #define UTF8_NORMALIZATION_RESULT_NO            (2)
-
-/*!
-	\}
-*/
-
-/*!
-	\defgroup flags Flags
-	\{
-*/
 
 /*!
 	\def UTF8_NORMALIZE_COMPOSE
@@ -210,6 +201,11 @@ typedef uint32_t unicode_t;
 	\return Length in codepoints.
 */
 size_t utf8len(const char* text);
+
+/*!
+	\addtogroup conversion Conversion
+	\{
+*/
 
 /*!
 	\brief Convert a UTF-16 encoded string to a UTF-8 encoded string.
@@ -555,6 +551,10 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors);
 
 /*!
+	\}
+*/
+
+/*!
 	\brief Seek into a UTF-8 encoded string.
 
 	Working with UTF-8 encoded strings can be tricky due to
@@ -607,6 +607,11 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 	\return Changed string or no change on error.
 */
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
+
+/*!
+	\addtogroup casemapping Case mapping
+	\{
+*/
 
 /*!
 	\brief Convert UTF-8 encoded text to uppercase.
@@ -686,6 +691,15 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+
+/*!
+	\}
+*/
+
+/*!
+	\addtogroup normalization Normalization
+	\{
+*/
 
 /*!
 	\brief Check if a string is stable in the specified normalization form.
@@ -779,6 +793,10 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size_t* offset);
 
 size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
+
+/*!
+	\}
+*/
 
 #if defined(__cplusplus)
 }
