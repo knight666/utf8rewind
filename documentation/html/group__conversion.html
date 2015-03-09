@@ -26,7 +26,7 @@
    <div id="projectname">utf8rewind
    &#160;<span id="projectnumber">1.2.0</span>
    </div>
-   <div id="projectbrief">UTF-8 functions for C</div>
+   <div id="projectbrief">Cross-platform library for UTF-8 encoded text</div>
   </td>
  </tr>
  </tbody>
@@ -152,8 +152,6 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><code>#include &lt;<a class="el" href="utf8rewind_8h.html">include/utf8rewind/utf8rewind.h</a>&gt;</code></p>
-
 <p>Convert a UTF-16 encoded string to a UTF-8 encoded string. </p>
 <dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you're working with UTF-16 encoded text. If you're working with wide strings, take a look at <a class="el" href="group__conversion.html#gad4670f2b7165731bff971559f85690a5" title="Convert a wide string to a UTF-8 encoded string. ">widetoutf8()</a> instead.</dd></dl>
 <p>Example:</p>
@@ -241,8 +239,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p><code>#include &lt;<a class="el" href="utf8rewind_8h.html">include/utf8rewind/utf8rewind.h</a>&gt;</code></p>
 
 <p>Convert a UTF-32 encoded string to a UTF-8 encoded string. </p>
 <dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you're working with UTF-32 encoded text. If you're working with wide strings, take a look at <a class="el" href="group__conversion.html#gad4670f2b7165731bff971559f85690a5" title="Convert a wide string to a UTF-8 encoded string. ">widetoutf8()</a> instead.</dd></dl>
@@ -343,8 +339,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p><code>#include &lt;<a class="el" href="utf8rewind_8h.html">include/utf8rewind/utf8rewind.h</a>&gt;</code></p>
 
 <p>Convert a wide string to a UTF-8 encoded string. </p>
 <p>Depending on the platform, wide strings are either UTF-16 or UTF-32 encoded. This function takes a wide string as input and automatically calls the correct conversion function.</p>
@@ -450,8 +444,6 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><code>#include &lt;<a class="el" href="utf8rewind_8h.html">include/utf8rewind/utf8rewind.h</a>&gt;</code></p>
-
 <p>Convert a UTF-8 encoded string to a UTF-16 encoded string. </p>
 <dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-16, independent of platform. If you're working with wide strings, take a look at <a class="el" href="group__conversion.html#ga70996b8a2475177e9156948fe9c1996d" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide()</a> instead.</dd></dl>
 <p>Erroneous byte sequences such as missing bytes, illegal bytes or overlong encodings of codepoints are converted to the replacement character U+FFFD.</p>
@@ -535,8 +527,6 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><code>#include &lt;<a class="el" href="utf8rewind_8h.html">include/utf8rewind/utf8rewind.h</a>&gt;</code></p>
-
 <p>Convert a UTF-8 encoded string to a UTF-32 encoded string. </p>
 <dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-32, independent of platform. If you're working with wide strings, take a look at <a class="el" href="group__conversion.html#ga70996b8a2475177e9156948fe9c1996d" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide()</a> instead.</dd></dl>
 <p>Erroneous byte sequences such as missing bytes, illegal bytes or overlong encodings of codepoints are converted to the replacement character U+FFFD.</p>
@@ -617,8 +607,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p><code>#include &lt;<a class="el" href="utf8rewind_8h.html">include/utf8rewind/utf8rewind.h</a>&gt;</code></p>
 
 <p>Convert a UTF-8 encoded string to a wide string. </p>
 <p>Depending on the platform, wide strings are either UTF-16 or UTF-32 encoded. This function takes a UTF-8 encoded string as input and automatically calls the correct conversion function.</p>

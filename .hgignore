@@ -2,6 +2,7 @@
 syntax: glob
 intermediate/*
 output/*
+patches/*
 *.zip
 
 syntax: regexp
@@ -24,6 +25,7 @@ ipch/*
 *.targets
 syntax: regexp
 .*UpgradeLog([0-9]*)\.XML
+documentation.xml
 
 # Makefile
 syntax: glob
