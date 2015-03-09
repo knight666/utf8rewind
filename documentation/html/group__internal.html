@@ -8,14 +8,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
-<script type="text/javascript">
-  $(document).ready(initResizable);
-  $(window).load(resizeHeight);
-</script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -34,6 +26,7 @@
    <div id="projectname">utf8rewind
    &#160;<span id="projectnumber">1.2.0</span>
    </div>
+   <div id="projectbrief">Cross-platform library for UTF-8 encoded text</div>
   </td>
  </tr>
  </tbody>
@@ -46,14 +39,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="index.html"><span>Overview</span></a></li>
+      <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
+      <li><a href="examples.html"><span>Examples</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
-      <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
-      <li><a href="examples.html"><span>Examples</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -73,20 +65,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     </ul>
   </div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-$(document).ready(function(){initNavTree('group__internal.html','');});
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -194,188 +172,6 @@ Variables</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a class="anchor" id="ga92dad258f85784ad7cd97ac456368c0f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HANGUL_L_COUNT&#160;&#160;&#160;19</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The number of codepoints in the Hangul L section. </p>
-
-</div>
-</div>
-<a class="anchor" id="gae6662271e28370f989c56de8c39c2ef0"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HANGUL_L_FIRST&#160;&#160;&#160;0x1100</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The minimum codepoint for Hangul L values. </p>
-
-</div>
-</div>
-<a class="anchor" id="gac764a36a728587f6b2dba92295d11c50"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HANGUL_L_LAST&#160;&#160;&#160;0x1112</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The maximum codepoint for Hangul L values. </p>
-
-</div>
-</div>
-<a class="anchor" id="ga33ab88271eb7c8264b36bd30e05c378e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HANGUL_N_COUNT&#160;&#160;&#160;588 /* VCount * TCount */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Combined count of Hangul V and T sections. </p>
-
-</div>
-</div>
-<a class="anchor" id="ga2a1a36768f7f157866bedb2a214884b3"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HANGUL_S_COUNT&#160;&#160;&#160;11172 /* LCount * NCount */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The number of codepoints in the Hangul S section (combines L with N). </p>
-
-</div>
-</div>
-<a class="anchor" id="gafa8aa71655ca9bbcfe266d2ccc3874d9"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HANGUL_S_FIRST&#160;&#160;&#160;0xAC00</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The minimum codepoint for Hangul S values. </p>
-
-</div>
-</div>
-<a class="anchor" id="gaac333abbdc8ed77b2962f8d11d742c86"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HANGUL_S_LAST&#160;&#160;&#160;0xD7A3</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The maximum codepoint for Hangul S values. </p>
-
-</div>
-</div>
-<a class="anchor" id="ga26f03a1ca3c0a0d8bd368d67ce1f6ea1"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HANGUL_T_COUNT&#160;&#160;&#160;28</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The number of codepoints in the Hangul T section. </p>
-
-</div>
-</div>
-<a class="anchor" id="gae5fbc68bb447b1e3a3f2d7115a23818d"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HANGUL_T_FIRST&#160;&#160;&#160;0x11A7</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The minimum codepoint for Hangul T values. </p>
-
-</div>
-</div>
-<a class="anchor" id="ga7d3fca8f7201ec41e6f3fcbf31f8b26c"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HANGUL_T_LAST&#160;&#160;&#160;0x11C2</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The maximum codepoint for Hangul T values. </p>
-
-</div>
-</div>
-<a class="anchor" id="ga075614f57b6ab09efade4e86c4ccbf12"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HANGUL_V_COUNT&#160;&#160;&#160;21</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The number of codepoints in the Hangul V section. </p>
-
-</div>
-</div>
-<a class="anchor" id="ga5fd7e3fbb4b413b0a01e13662befed9a"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HANGUL_V_FIRST&#160;&#160;&#160;0x1161</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The minimum codepoint for Hangul V values. </p>
-
-</div>
-</div>
-<a class="anchor" id="ga29dc142e6d4b8522164e2cd252dd8eae"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HANGUL_V_LAST&#160;&#160;&#160;0x1175</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The maximum codepoint for Hangul V values. </p>
-
-</div>
-</div>
 <a class="anchor" id="ga504f5f3135c1c144c9d3c20cc3fafb58"></a>
 <div class="memitem">
 <div class="memproto">
@@ -418,6 +214,20 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga29828bc1d74913647fba056e332fe658"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SURROGATE_HIGH_START&#160;&#160;&#160;0xD800</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The minimum codepoint for the high member of a surrogate pair. </p>
+
+</div>
+</div>
 <a class="anchor" id="ga4f311d7277a571d18368d4a03859bf26"></a>
 <div class="memitem">
 <div class="memproto">
@@ -432,17 +242,17 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga29828bc1d74913647fba056e332fe658"></a>
+<a class="anchor" id="gaa44dbeadd13419376f603b472b9e7995"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define SURROGATE_HIGH_START&#160;&#160;&#160;0xD800</td>
+          <td class="memname">#define SURROGATE_LOW_START&#160;&#160;&#160;0xDC00</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>The minimum codepoint for the high member of a surrogate pair. </p>
+<p>The minimum codepoint for the low member of a surrogate pair. </p>
 
 </div>
 </div>
@@ -460,17 +270,185 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gaa44dbeadd13419376f603b472b9e7995"></a>
+<a class="anchor" id="gae6662271e28370f989c56de8c39c2ef0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define SURROGATE_LOW_START&#160;&#160;&#160;0xDC00</td>
+          <td class="memname">#define HANGUL_L_FIRST&#160;&#160;&#160;0x1100</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>The minimum codepoint for the low member of a surrogate pair. </p>
+<p>The minimum codepoint for Hangul L values. </p>
+
+</div>
+</div>
+<a class="anchor" id="gac764a36a728587f6b2dba92295d11c50"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HANGUL_L_LAST&#160;&#160;&#160;0x1112</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The maximum codepoint for Hangul L values. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga92dad258f85784ad7cd97ac456368c0f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HANGUL_L_COUNT&#160;&#160;&#160;19</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The number of codepoints in the Hangul L section. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga5fd7e3fbb4b413b0a01e13662befed9a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HANGUL_V_FIRST&#160;&#160;&#160;0x1161</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The minimum codepoint for Hangul V values. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga29dc142e6d4b8522164e2cd252dd8eae"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HANGUL_V_LAST&#160;&#160;&#160;0x1175</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The maximum codepoint for Hangul V values. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga075614f57b6ab09efade4e86c4ccbf12"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HANGUL_V_COUNT&#160;&#160;&#160;21</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The number of codepoints in the Hangul V section. </p>
+
+</div>
+</div>
+<a class="anchor" id="gae5fbc68bb447b1e3a3f2d7115a23818d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HANGUL_T_FIRST&#160;&#160;&#160;0x11A7</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The minimum codepoint for Hangul T values. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga7d3fca8f7201ec41e6f3fcbf31f8b26c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HANGUL_T_LAST&#160;&#160;&#160;0x11C2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The maximum codepoint for Hangul T values. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga26f03a1ca3c0a0d8bd368d67ce1f6ea1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HANGUL_T_COUNT&#160;&#160;&#160;28</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The number of codepoints in the Hangul T section. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga33ab88271eb7c8264b36bd30e05c378e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HANGUL_N_COUNT&#160;&#160;&#160;588 /* VCount * TCount */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Combined count of Hangul V and T sections. </p>
+
+</div>
+</div>
+<a class="anchor" id="gafa8aa71655ca9bbcfe266d2ccc3874d9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HANGUL_S_FIRST&#160;&#160;&#160;0xAC00</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The minimum codepoint for Hangul S values. </p>
+
+</div>
+</div>
+<a class="anchor" id="gaac333abbdc8ed77b2962f8d11d742c86"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HANGUL_S_LAST&#160;&#160;&#160;0xD7A3</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The maximum codepoint for Hangul S values. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga2a1a36768f7f157866bedb2a214884b3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HANGUL_S_COUNT&#160;&#160;&#160;11172 /* LCount * NCount */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The number of codepoints in the Hangul S section (combines L with N). </p>
 
 </div>
 </div>
@@ -497,49 +475,6 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes needed for encoding or 0 if input is illegal. </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="gaa78810d94d12af8b3f4da86e82456903"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t codepoint_read </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>input</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>inputSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> *&#160;</td>
-          <td class="paramname"><em>decoded</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Read Unicode codepoint from UTF-8 encoded string. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>Input buffer </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of input buffer in bytes </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">decoded</td><td>Unicode codepoint</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Bytes read from string or 0 on error. </dd></dl>
 
 </div>
 </div>
@@ -587,6 +522,49 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="gaa78810d94d12af8b3f4da86e82456903"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t codepoint_read </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>inputSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> *&#160;</td>
+          <td class="paramname"><em>decoded</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Read Unicode codepoint from UTF-8 encoded string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>Input buffer </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of input buffer in bytes </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">decoded</td><td>Unicode codepoint</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Bytes read from string or 0 on error. </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a class="anchor" id="ga233f120e3e536775da07774489008a33"></a>
 <div class="memitem">
@@ -610,14 +588,11 @@ Variables</h2></td></tr>
 </div>
 </div>
 </div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated on Tue Mar 3 2015 10:47:24 for utf8rewind by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
 </body>
 </html>

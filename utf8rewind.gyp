@@ -119,5 +119,29 @@
 				}],
 			],
 		},
+		{
+			'target_name': 'documentation',
+			'type': 'none',
+			'rules': [
+				{
+					'rule_name': 'Doxyfile',
+					'msvs_cygwin_shell': 0,
+					'msvs_quote_cmd': 0,
+					'extension': 'doxyfile',
+					'outputs': [
+						'$(SolutionDir)/documentation/html/index.html',
+					],
+					'action': [
+						'doxygen',
+						'$(InputPath)',
+					],
+				},
+			],
+			'sources': [
+				'source/documentation/examples.hpp',
+				'source/documentation/main.hpp',
+				'utf8rewind.doxyfile'
+			],
+		},
 	],
 }

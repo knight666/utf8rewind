@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['error_20codes',['Error codes',['../group__errors.html',1,'']]]
+  ['case_20mapping',['Case mapping',['../group__casemapping.html',1,'']]],
+  ['conversion',['Conversion',['../group__conversion.html',1,'']]]
 ];

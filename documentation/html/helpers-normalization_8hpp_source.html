@@ -8,14 +8,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
-<script type="text/javascript">
-  $(document).ready(initResizable);
-  $(window).load(resizeHeight);
-</script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -34,6 +26,7 @@
    <div id="projectname">utf8rewind
    &#160;<span id="projectnumber">1.2.0</span>
    </div>
+   <div id="projectbrief">Cross-platform library for UTF-8 encoded text</div>
   </td>
  </tr>
  </tbody>
@@ -46,14 +39,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
-      <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li class="current"><a href="files.html"><span>Files</span></a></li>
-      <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
+      <li><a href="index.html"><span>Overview</span></a></li>
+      <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -75,24 +65,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
-      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
     </ul>
   </div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-$(document).ready(function(){initNavTree('helpers-normalization_8hpp_source.html','');});
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -107,6 +82,11 @@ $(document).ready(function(){initNavTree('helpers-normalization_8hpp_source.html
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li><li class="navelem"><a class="el" href="dir_bcc475e2baa7fb4fddbbf77a013083ee.html">tests</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">helpers-normalization.hpp</div>  </div>
@@ -114,109 +94,90 @@ $(document).ready(function(){initNavTree('helpers-normalization_8hpp_source.html
 <div class="contents">
 <a href="helpers-normalization_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;</div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="tests-base_8hpp.html">tests-base.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
-<div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="helpers-normalization_8hpp.html#a38296948baaf8aacc533de609cbccf5b">    7</a></span>&#160;<span class="preprocessor">#define CHECK_NORMALIZE_CODEPOINT(_codepoint, _decomposed, _composed, _decomposedCompatibility, _composedCompatibility, _name) { \</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">    ::helpers::NormalizationEntry e; \</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">    e.codepoint = _codepoint; \</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">    e.name = _name; \</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">    e.decomposed = _decomposed; \</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">    e.composed = _composed; \</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">    e.decomposedCompatibility = _decomposedCompatibility; \</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">    e.composedCompatibility = _composedCompatibility; \</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">    ::helpers::NormalizationEntry a; \</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">    a.decomposed = helpers::nfd(_codepoint); \</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">    a.composed = helpers::nfc(_codepoint); \</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">    a.decomposedCompatibility = helpers::nfkd(_codepoint); \</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">    a.composedCompatibility = helpers::nfkc(_codepoint); \</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">    EXPECT_PRED_FORMAT2(::helpers::CompareNormalizationCodepoint, e, a); \</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">}</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="helpers-normalization_8hpp.html#ab19173fe5c49c1df4eb81901e477d175">   23</a></span>&#160;<span class="preprocessor">#define CHECK_NORMALIZE_SEQUENCE(_sequence, _decomposed, _composed, _decomposedCompatibility, _composedCompatibility) { \</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">    ::helpers::NormalizationEntry e; \</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">    e.sequence = _sequence; \</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">    e.decomposed = _decomposed; \</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">    e.composed = _composed; \</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">    e.decomposedCompatibility = _decomposedCompatibility; \</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">    e.composedCompatibility = _composedCompatibility; \</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">    ::helpers::NormalizationEntry a; \</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">    a.decomposed = helpers::nfd(_sequence); \</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">    a.composed = helpers::nfc(_sequence); \</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">    a.decomposedCompatibility = helpers::nfkd(_sequence); \</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">    a.composedCompatibility = helpers::nfkc(_sequence); \</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">    EXPECT_PRED_FORMAT2(::helpers::CompareNormalizationSequence, e, a); \</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">}</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacehelpers.html">helpers</a> {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::string <a class="code" href="namespacehelpers.html#a0fec547845e05bf8b26921e0b2a00a37">nfc</a>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    std::string <a class="code" href="namespacehelpers.html#a0fec547845e05bf8b26921e0b2a00a37">nfc</a>(<span class="keyword">const</span> std::string&amp; text);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    std::string <a class="code" href="namespacehelpers.html#aa464604cf4c92accb033b66376b5c17c">nfd</a>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    std::string <a class="code" href="namespacehelpers.html#aa464604cf4c92accb033b66376b5c17c">nfd</a>(<span class="keyword">const</span> std::string&amp; text);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    std::string <a class="code" href="namespacehelpers.html#aac029d9adc9b343804371151e71b6901">nfkc</a>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    std::string <a class="code" href="namespacehelpers.html#aac029d9adc9b343804371151e71b6901">nfkc</a>(<span class="keyword">const</span> std::string&amp; text);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    std::string <a class="code" href="namespacehelpers.html#a86bb583db56f2387f7e55dad6186dbbf">nfkd</a>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    std::string <a class="code" href="namespacehelpers.html#a86bb583db56f2387f7e55dad6186dbbf">nfkd</a>(<span class="keyword">const</span> std::string&amp; text);</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structhelpers_1_1_normalization_entry.html">   52</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    {</div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="structhelpers_1_1_normalization_entry.html#aa7807536f8bfef12b18379227d84cc3c">   54</a></span>&#160;        <a class="code" href="structhelpers_1_1_normalization_entry.html#aa7807536f8bfef12b18379227d84cc3c">NormalizationEntry</a>()</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            : codepoint(0)</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        }</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="tests-base_8hpp.html">tests-base.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#define CHECK_NORMALIZE_CODEPOINT(_codepoint, _decomposed, _composed, _decomposedCompatibility, _composedCompatibility, _name) { \</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">    ::helpers::NormalizationEntry e; \</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">    e.codepoint = _codepoint; \</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">    e.name = _name; \</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">    e.decomposed = _decomposed; \</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">    e.composed = _composed; \</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">    e.decomposedCompatibility = _decomposedCompatibility; \</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">    e.composedCompatibility = _composedCompatibility; \</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">    ::helpers::NormalizationEntry a; \</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">    a.decomposed = helpers::nfd(_codepoint); \</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">    a.composed = helpers::nfc(_codepoint); \</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">    a.decomposedCompatibility = helpers::nfkd(_codepoint); \</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">    a.composedCompatibility = helpers::nfkc(_codepoint); \</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">    EXPECT_PRED_FORMAT2(::helpers::CompareNormalizationCodepoint, e, a); \</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">}</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#define CHECK_NORMALIZE_SEQUENCE(_sequence, _decomposed, _composed, _decomposedCompatibility, _composedCompatibility) { \</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">    ::helpers::NormalizationEntry e; \</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">    e.sequence = _sequence; \</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">    e.decomposed = _decomposed; \</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">    e.composed = _composed; \</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">    e.decomposedCompatibility = _decomposedCompatibility; \</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">    e.composedCompatibility = _composedCompatibility; \</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">    ::helpers::NormalizationEntry a; \</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">    a.decomposed = helpers::nfd(_sequence); \</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">    a.composed = helpers::nfc(_sequence); \</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">    a.decomposedCompatibility = helpers::nfkd(_sequence); \</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">    a.composedCompatibility = helpers::nfkc(_sequence); \</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">    EXPECT_PRED_FORMAT2(::helpers::CompareNormalizationSequence, e, a); \</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">}</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">namespace </span>helpers {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    std::string nfc(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    std::string nfc(<span class="keyword">const</span> std::string&amp; text);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    std::string nfd(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    std::string nfd(<span class="keyword">const</span> std::string&amp; text);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    std::string nfkc(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    std::string nfkc(<span class="keyword">const</span> std::string&amp; text);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    std::string nfkd(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    std::string nfkd(<span class="keyword">const</span> std::string&amp; text);</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="structhelpers_1_1_normalization_entry.html#a48ab06cb9722f3ba9b0771ecedd9202a">   59</a></span>&#160;        <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> <a class="code" href="structhelpers_1_1_normalization_entry.html#a48ab06cb9722f3ba9b0771ecedd9202a">codepoint</a>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="structhelpers_1_1_normalization_entry.html#aa84a60f8d85c82cc4312f19e6eab417e">   60</a></span>&#160;        std::string <a class="code" href="structhelpers_1_1_normalization_entry.html#aa84a60f8d85c82cc4312f19e6eab417e">sequence</a>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="structhelpers_1_1_normalization_entry.html#a7c9dd12d83b602ec2ce76059780b9ebd">   61</a></span>&#160;        std::string <a class="code" href="structhelpers_1_1_normalization_entry.html#a7c9dd12d83b602ec2ce76059780b9ebd">name</a>;</div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structhelpers_1_1_normalization_entry.html#a77d89bd8429bccbadaa3f05576542807">   62</a></span>&#160;        std::string <a class="code" href="structhelpers_1_1_normalization_entry.html#a77d89bd8429bccbadaa3f05576542807">decomposed</a>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="structhelpers_1_1_normalization_entry.html#aa126f84ff3b2b51bde8ceda0265aee7e">   63</a></span>&#160;        std::string <a class="code" href="structhelpers_1_1_normalization_entry.html#aa126f84ff3b2b51bde8ceda0265aee7e">composed</a>;</div>
-<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="structhelpers_1_1_normalization_entry.html#a80ee51ae2df0ef1ec495c0741232ad93">   64</a></span>&#160;        std::string <a class="code" href="structhelpers_1_1_normalization_entry.html#a80ee51ae2df0ef1ec495c0741232ad93">decomposedCompatibility</a>;</div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="structhelpers_1_1_normalization_entry.html#aea8e3c315afa04d58851116e58c47e9d">   65</a></span>&#160;        std::string <a class="code" href="structhelpers_1_1_normalization_entry.html#aea8e3c315afa04d58851116e58c47e9d">composedCompatibility</a>;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    };</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    ::testing::AssertionResult <a class="code" href="namespacehelpers.html#a67248b2c219c14146e391f11f4e27805">CompareNormalizationCodepoint</a>(</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual,</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keyword">const</span> <a class="code" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a>&amp; entryExpected, <span class="keyword">const</span> <a class="code" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a>&amp; entryActual);</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    ::testing::AssertionResult <a class="code" href="namespacehelpers.html#a799eb353ec14cb39d34dc9a20ff464a1">CompareNormalizationSequence</a>(</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual,</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keyword">const</span> <a class="code" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a>&amp; entryExpected, <span class="keyword">const</span> <a class="code" href="structhelpers_1_1_normalization_entry.html">NormalizationEntry</a>&amp; entryActual);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;};</div>
-<div class="ttc" id="namespacehelpers_html_aa464604cf4c92accb033b66376b5c17c"><div class="ttname"><a href="namespacehelpers.html#aa464604cf4c92accb033b66376b5c17c">helpers::nfd</a></div><div class="ttdeci">std::string nfd(unicode_t codepoint)</div></div>
-<div class="ttc" id="namespacehelpers_html_a0fec547845e05bf8b26921e0b2a00a37"><div class="ttname"><a href="namespacehelpers.html#a0fec547845e05bf8b26921e0b2a00a37">helpers::nfc</a></div><div class="ttdeci">std::string nfc(unicode_t codepoint)</div></div>
-<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">Unicode codepoint. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:166</div></div>
-<div class="ttc" id="namespacehelpers_html_a799eb353ec14cb39d34dc9a20ff464a1"><div class="ttname"><a href="namespacehelpers.html#a799eb353ec14cb39d34dc9a20ff464a1">helpers::CompareNormalizationSequence</a></div><div class="ttdeci">::testing::AssertionResult CompareNormalizationSequence(const char *expressionExpected, const char *expressionActual, const NormalizationEntry &amp;entryExpected, const NormalizationEntry &amp;entryActual)</div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html_a77d89bd8429bccbadaa3f05576542807"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html#a77d89bd8429bccbadaa3f05576542807">helpers::NormalizationEntry::decomposed</a></div><div class="ttdeci">std::string decomposed</div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:62</div></div>
-<div class="ttc" id="namespacehelpers_html_a86bb583db56f2387f7e55dad6186dbbf"><div class="ttname"><a href="namespacehelpers.html#a86bb583db56f2387f7e55dad6186dbbf">helpers::nfkd</a></div><div class="ttdeci">std::string nfkd(unicode_t codepoint)</div></div>
-<div class="ttc" id="namespacehelpers_html_aac029d9adc9b343804371151e71b6901"><div class="ttname"><a href="namespacehelpers.html#aac029d9adc9b343804371151e71b6901">helpers::nfkc</a></div><div class="ttdeci">std::string nfkc(unicode_t codepoint)</div></div>
-<div class="ttc" id="tests-base_8hpp_html"><div class="ttname"><a href="tests-base_8hpp.html">tests-base.hpp</a></div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html">helpers::NormalizationEntry</a></div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:52</div></div>
-<div class="ttc" id="namespacehelpers_html_a67248b2c219c14146e391f11f4e27805"><div class="ttname"><a href="namespacehelpers.html#a67248b2c219c14146e391f11f4e27805">helpers::CompareNormalizationCodepoint</a></div><div class="ttdeci">::testing::AssertionResult CompareNormalizationCodepoint(const char *expressionExpected, const char *expressionActual, const NormalizationEntry &amp;entryExpected, const NormalizationEntry &amp;entryActual)</div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html_aea8e3c315afa04d58851116e58c47e9d"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html#aea8e3c315afa04d58851116e58c47e9d">helpers::NormalizationEntry::composedCompatibility</a></div><div class="ttdeci">std::string composedCompatibility</div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:65</div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html_aa7807536f8bfef12b18379227d84cc3c"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html#aa7807536f8bfef12b18379227d84cc3c">helpers::NormalizationEntry::NormalizationEntry</a></div><div class="ttdeci">NormalizationEntry()</div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:54</div></div>
-<div class="ttc" id="namespacehelpers_html"><div class="ttname"><a href="namespacehelpers.html">helpers</a></div><div class="ttdef"><b>Definition:</b> helpers-casemapping.hpp:21</div></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">struct </span>NormalizationEntry</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        NormalizationEntry()</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            : codepoint(0)</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        {</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        }</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        std::string sequence;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        std::string name;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        std::string decomposed;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        std::string composed;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        std::string decomposedCompatibility;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        std::string composedCompatibility;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    };</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    ::testing::AssertionResult CompareNormalizationCodepoint(</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual,</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keyword">const</span> NormalizationEntry&amp; entryExpected, <span class="keyword">const</span> NormalizationEntry&amp; entryActual);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    ::testing::AssertionResult CompareNormalizationSequence(</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual,</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keyword">const</span> NormalizationEntry&amp; entryExpected, <span class="keyword">const</span> NormalizationEntry&amp; entryActual);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;};</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
+<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">Unicode codepoint. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:184</div></div>
+<div class="ttc" id="tests-base_8hpp_html"><div class="ttname"><a href="tests-base_8hpp.html">tests-base.hpp</a></div><div class="ttdoc">Base includes for tests. </div></div>
 <div class="ttc" id="utf8rewind_8h_html"><div class="ttname"><a href="utf8rewind_8h.html">utf8rewind.h</a></div><div class="ttdoc">Functions for working with UTF-8 encoded text. </div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html_a48ab06cb9722f3ba9b0771ecedd9202a"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html#a48ab06cb9722f3ba9b0771ecedd9202a">helpers::NormalizationEntry::codepoint</a></div><div class="ttdeci">unicode_t codepoint</div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:59</div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html_a7c9dd12d83b602ec2ce76059780b9ebd"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html#a7c9dd12d83b602ec2ce76059780b9ebd">helpers::NormalizationEntry::name</a></div><div class="ttdeci">std::string name</div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:61</div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html_aa126f84ff3b2b51bde8ceda0265aee7e"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html#aa126f84ff3b2b51bde8ceda0265aee7e">helpers::NormalizationEntry::composed</a></div><div class="ttdeci">std::string composed</div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:63</div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html_aa84a60f8d85c82cc4312f19e6eab417e"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html#aa84a60f8d85c82cc4312f19e6eab417e">helpers::NormalizationEntry::sequence</a></div><div class="ttdeci">std::string sequence</div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:60</div></div>
-<div class="ttc" id="structhelpers_1_1_normalization_entry_html_a80ee51ae2df0ef1ec495c0741232ad93"><div class="ttname"><a href="structhelpers_1_1_normalization_entry.html#a80ee51ae2df0ef1ec495c0741232ad93">helpers::NormalizationEntry::decomposedCompatibility</a></div><div class="ttdeci">std::string decomposedCompatibility</div><div class="ttdef"><b>Definition:</b> helpers-normalization.hpp:64</div></div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li><li class="navelem"><a class="el" href="dir_bcc475e2baa7fb4fddbbf77a013083ee.html">tests</a></li><li class="navelem"><a class="el" href="helpers-normalization_8hpp.html">helpers-normalization.hpp</a></li>
-    <li class="footer">Generated on Tue Mar 3 2015 10:47:24 for utf8rewind by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
 </body>
 </html>

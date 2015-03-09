@@ -1,21 +1,15 @@
 var searchData=
 [
-  ['canonicalcombiningclass',['canonicalCombiningClass',['../namespacehelpers.html#a45d834d9a1c0de7f3edaebf141fed66e',1,'helpers::canonicalCombiningClass(unicode_t codepoint)'],['../namespacehelpers.html#a67b8fec34d0de43703adcc9d92ce6a01',1,'helpers::canonicalCombiningClass(unicode_t *codepoint, size_t codepointsSize)'],['../namespacehelpers.html#a11dc1ae71e85395b3c07e256cfc28a86',1,'helpers::canonicalCombiningClass(const std::string &amp;text)']]],
-  ['casemapping_5fexecute',['casemapping_execute',['../casemapping_8h.html#aeeeb95d1cec1016de22a570b9f7a1854',1,'casemapping.h']]],
-  ['casemapping_5finitialize',['casemapping_initialize',['../casemapping_8h.html#a01a2a2a122d88330150e3044b953079d',1,'casemapping.h']]],
-  ['casemappingentry',['CaseMappingEntry',['../structhelpers_1_1_case_mapping_entry.html#a6096affa23d21ea9a30b481af543ba1e',1,'helpers::CaseMappingEntry']]],
-  ['codepoint_5fencoded_5flength',['codepoint_encoded_length',['../group__internal.html#ga8f0a5892945fe31d05275ac263a62e06',1,'codepoint.h']]],
-  ['codepoint_5fread',['codepoint_read',['../group__internal.html#gaa78810d94d12af8b3f4da86e82456903',1,'codepoint.h']]],
-  ['codepoint_5fwrite',['codepoint_write',['../group__internal.html#ga71e6812cd50fca7e72a714793dc6a8ef',1,'codepoint.h']]],
-  ['comparecasemapping',['CompareCasemapping',['../namespacehelpers.html#a1d80eb38f4c2b14c4db166206f5f44b9',1,'helpers']]],
-  ['comparecodepoints',['CompareCodepoints',['../namespacehelpers.html#aeebd510a92733f904134019ffa9bf4a2',1,'helpers']]],
-  ['comparenormalizationcodepoint',['CompareNormalizationCodepoint',['../namespacehelpers.html#a67248b2c219c14146e391f11f4e27805',1,'helpers']]],
-  ['comparenormalizationsequence',['CompareNormalizationSequence',['../namespacehelpers.html#a799eb353ec14cb39d34dc9a20ff464a1',1,'helpers']]],
-  ['comparestream',['CompareStream',['../namespacehelpers.html#af6fa86191b83254e7c585f7373578d78',1,'helpers']]],
-  ['compareutf8',['CompareUtf8',['../namespacetesting.html#a9c977a35a9bbbd2cf7719881a2e2bfce',1,'testing']]],
-  ['compareutf8strings',['CompareUtf8Strings',['../namespacehelpers.html#aff680a0781433578601bb1bb80d665a3',1,'helpers']]],
-  ['compose_5fexecute',['compose_execute',['../composition_8h.html#aacd5bfde5dd10ef2b17baff75f2ed6d1',1,'composition.h']]],
-  ['compose_5finitialize',['compose_initialize',['../composition_8h.html#a8d2acf86e312237249c982d30e9c2a86',1,'composition.h']]],
-  ['compose_5freadcodepoint',['compose_readcodepoint',['../composition_8h.html#a1411d654292aee94b14cc4f65c87d601',1,'composition.h']]],
-  ['createstream',['createStream',['../namespacehelpers.html#a0943a42f527fe0b3b9b8b921167f429e',1,'helpers']]]
+  ['utf16toutf8',['utf16toutf8',['../group__conversion.html#ga4d6a9017be860a575c8dc1ac8c5a9253',1,'utf8rewind.h']]],
+  ['utf32toutf8',['utf32toutf8',['../group__conversion.html#ga8b5f39b5fe6fd55a6fc40dd54eaa8a80',1,'utf8rewind.h']]],
+  ['utf8isnormalized',['utf8isnormalized',['../group__normalization.html#gaa7c54fadc9bc04c439e9923f54968a33',1,'utf8rewind.h']]],
+  ['utf8len',['utf8len',['../utf8rewind_8h.html#aa6a3ebdecf49591cff736ccf054c048e',1,'utf8rewind.h']]],
+  ['utf8normalize',['utf8normalize',['../group__normalization.html#gad53ccbe67130de7c9c34a8aaec52f4be',1,'utf8rewind.h']]],
+  ['utf8seek',['utf8seek',['../utf8rewind_8h.html#a13d55ea3402d6d91cfb965f3605ec3eb',1,'utf8rewind.h']]],
+  ['utf8tolower',['utf8tolower',['../group__casemapping.html#gada1349c86f22e9fcf5b97e469d303c58',1,'utf8rewind.h']]],
+  ['utf8totitle',['utf8totitle',['../group__casemapping.html#ga97fe2a89787f22d1d6b978909289ae34',1,'utf8rewind.h']]],
+  ['utf8toupper',['utf8toupper',['../group__casemapping.html#gae9296a74c3a6ed4f2d28c4af29a9e7c0',1,'utf8rewind.h']]],
+  ['utf8toutf16',['utf8toutf16',['../group__conversion.html#ga384129f817fbbcc7cad6c08b2db354f5',1,'utf8rewind.h']]],
+  ['utf8toutf32',['utf8toutf32',['../group__conversion.html#ga8f262c70a9fea7b45647ffea8b571008',1,'utf8rewind.h']]],
+  ['utf8towide',['utf8towide',['../group__conversion.html#ga70996b8a2475177e9156948fe9c1996d',1,'utf8rewind.h']]]
 ];

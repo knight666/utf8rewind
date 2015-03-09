@@ -2,6 +2,7 @@
 syntax: glob
 intermediate/*
 output/*
+patches/*
 *.zip
 
 syntax: regexp
@@ -16,12 +17,15 @@ ipch/*
 *.idb
 *.ilk
 *.pdb
+*.props
 *.ncv
 *.opensdf
 *.sdf
 *.suo
+*.targets
 syntax: regexp
 .*UpgradeLog([0-9]*)\.XML
+documentation.xml
 
 # Makefile
 syntax: glob

@@ -8,14 +8,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
-<script type="text/javascript">
-  $(document).ready(initResizable);
-  $(window).load(resizeHeight);
-</script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -34,6 +26,7 @@
    <div id="projectname">utf8rewind
    &#160;<span id="projectnumber">1.2.0</span>
    </div>
+   <div id="projectbrief">Cross-platform library for UTF-8 encoded text</div>
   </td>
  </tr>
  </tbody>
@@ -46,14 +39,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
-      <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li class="current"><a href="files.html"><span>Files</span></a></li>
-      <li><a href="utf8rewind_8h.html"><span>Library&#160;interface</span></a></li>
+      <li><a href="index.html"><span>Overview</span></a></li>
+      <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -75,24 +65,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
-      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
     </ul>
   </div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-$(document).ready(function(){initNavTree('decomposition_8h_source.html','');});
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -107,6 +82,11 @@ $(document).ready(function(){initNavTree('decomposition_8h_source.html','');});
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li><li class="navelem"><a class="el" href="dir_a1987cf8ca160ad0403a567bf62072d3.html">internal</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">decomposition.h</div>  </div>
@@ -137,50 +117,36 @@ $(document).ready(function(){initNavTree('decomposition_8h_source.html','');});
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">    OTHER DEALINGS IN THE SOFTWARE.</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#ifndef _UTFREWIND_INTERNAL_DECOMPOSITION_H_</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define _UTFREWIND_INTERNAL_DECOMPOSITION_H_</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#ifndef _UTF8REWIND_INTERNAL_DECOMPOSITION_H_</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define _UTF8REWIND_INTERNAL_DECOMPOSITION_H_</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="streaming_8h.html">streaming.h</a>&quot;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="struct_decompose_state.html">   32</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="struct_decompose_state.html#a9126e6cb1de9cce7a63c48eba1e1f508">   33</a></span>&#160;    <a class="code" href="struct_stream_state.html">StreamState</a>* <a class="code" href="struct_decompose_state.html#a9126e6cb1de9cce7a63c48eba1e1f508">input</a>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="struct_decompose_state.html#ae533212e7f53cd1fe1044e0606e56d25">   34</a></span>&#160;    <a class="code" href="struct_stream_state.html">StreamState</a>* <a class="code" href="struct_decompose_state.html#ae533212e7f53cd1fe1044e0606e56d25">output</a>;</div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="struct_decompose_state.html#ac5f89032ffc64a42294a2837b6b599c8">   35</a></span>&#160;    uint8_t <a class="code" href="struct_decompose_state.html#ac5f89032ffc64a42294a2837b6b599c8">property</a>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="struct_decompose_state.html#aa0d1b1890b0f2027e9b9fdcd03056862">   36</a></span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> cache_codepoint[<a class="code" href="streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba">STREAM_BUFFER_MAX</a>];</div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="struct_decompose_state.html#a0bddf2566888f8fd5b7e56b129539a2b">   37</a></span>&#160;    uint8_t cache_canonical_combining_class[<a class="code" href="streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba">STREAM_BUFFER_MAX</a>];</div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="struct_decompose_state.html#a40c4a7992c0446c0455e7fbddab9daf2">   38</a></span>&#160;    uint8_t <a class="code" href="struct_decompose_state.html#a40c4a7992c0446c0455e7fbddab9daf2">cache_current</a>;</div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="struct_decompose_state.html#a971def19e2893221afa3b6b1fbca10c5">   39</a></span>&#160;    uint8_t <a class="code" href="struct_decompose_state.html#a971def19e2893221afa3b6b1fbca10c5">cache_filled</a>;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;} <a class="code" href="struct_decompose_state.html">DecomposeState</a>;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;uint8_t <a class="code" href="decomposition_8h.html#a670fc725d570e1d85f3cf9d0a30c55d1">decompose_initialize</a>(<a class="code" href="struct_decompose_state.html">DecomposeState</a>* state, <a class="code" href="struct_stream_state.html">StreamState</a>* input, <a class="code" href="struct_stream_state.html">StreamState</a>* output, uint8_t compatibility);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;uint8_t <a class="code" href="decomposition_8h.html#a50987fb7aaa88cf3b989488fa2e3eb20">decompose_execute</a>(<a class="code" href="struct_decompose_state.html">DecomposeState</a>* state);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="decomposition_8h_html_a50987fb7aaa88cf3b989488fa2e3eb20"><div class="ttname"><a href="decomposition_8h.html#a50987fb7aaa88cf3b989488fa2e3eb20">decompose_execute</a></div><div class="ttdeci">uint8_t decompose_execute(DecomposeState *state)</div></div>
-<div class="ttc" id="struct_decompose_state_html_ae533212e7f53cd1fe1044e0606e56d25"><div class="ttname"><a href="struct_decompose_state.html#ae533212e7f53cd1fe1044e0606e56d25">DecomposeState::output</a></div><div class="ttdeci">StreamState * output</div><div class="ttdef"><b>Definition:</b> decomposition.h:34</div></div>
-<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">Unicode codepoint. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:166</div></div>
-<div class="ttc" id="struct_decompose_state_html_a971def19e2893221afa3b6b1fbca10c5"><div class="ttname"><a href="struct_decompose_state.html#a971def19e2893221afa3b6b1fbca10c5">DecomposeState::cache_filled</a></div><div class="ttdeci">uint8_t cache_filled</div><div class="ttdef"><b>Definition:</b> decomposition.h:39</div></div>
-<div class="ttc" id="streaming_8h_html"><div class="ttname"><a href="streaming_8h.html">streaming.h</a></div></div>
-<div class="ttc" id="decomposition_8h_html_a670fc725d570e1d85f3cf9d0a30c55d1"><div class="ttname"><a href="decomposition_8h.html#a670fc725d570e1d85f3cf9d0a30c55d1">decompose_initialize</a></div><div class="ttdeci">uint8_t decompose_initialize(DecomposeState *state, StreamState *input, StreamState *output, uint8_t compatibility)</div></div>
-<div class="ttc" id="struct_decompose_state_html_a40c4a7992c0446c0455e7fbddab9daf2"><div class="ttname"><a href="struct_decompose_state.html#a40c4a7992c0446c0455e7fbddab9daf2">DecomposeState::cache_current</a></div><div class="ttdeci">uint8_t cache_current</div><div class="ttdef"><b>Definition:</b> decomposition.h:38</div></div>
-<div class="ttc" id="struct_decompose_state_html_a9126e6cb1de9cce7a63c48eba1e1f508"><div class="ttname"><a href="struct_decompose_state.html#a9126e6cb1de9cce7a63c48eba1e1f508">DecomposeState::input</a></div><div class="ttdeci">StreamState * input</div><div class="ttdef"><b>Definition:</b> decomposition.h:33</div></div>
-<div class="ttc" id="struct_stream_state_html"><div class="ttname"><a href="struct_stream_state.html">StreamState</a></div><div class="ttdef"><b>Definition:</b> streaming.h:54</div></div>
-<div class="ttc" id="struct_decompose_state_html_ac5f89032ffc64a42294a2837b6b599c8"><div class="ttname"><a href="struct_decompose_state.html#ac5f89032ffc64a42294a2837b6b599c8">DecomposeState::property</a></div><div class="ttdeci">uint8_t property</div><div class="ttdef"><b>Definition:</b> decomposition.h:35</div></div>
-<div class="ttc" id="streaming_8h_html_a60fccf56b95a35825ecaf8e965a7d7ba"><div class="ttname"><a href="streaming_8h.html#a60fccf56b95a35825ecaf8e965a7d7ba">STREAM_BUFFER_MAX</a></div><div class="ttdeci">#define STREAM_BUFFER_MAX</div><div class="ttdef"><b>Definition:</b> streaming.h:52</div></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="streaming_8h.html">streaming.h</a>&quot;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    StreamState* input;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    StreamState* output;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    uint8_t property;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> cache_codepoint[STREAM_BUFFER_MAX];</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    uint8_t cache_canonical_combining_class[STREAM_BUFFER_MAX];</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    uint8_t cache_current;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    uint8_t cache_filled;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;} DecomposeState;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;uint8_t decompose_execute(DecomposeState* state);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _UTF8REWIND_INTERNAL_DECOMPOSITION_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">Unicode codepoint. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:184</div></div>
+<div class="ttc" id="streaming_8h_html"><div class="ttname"><a href="streaming_8h.html">streaming.h</a></div><div class="ttdoc">Streaming interface. </div></div>
 <div class="ttc" id="utf8rewind_8h_html"><div class="ttname"><a href="utf8rewind_8h.html">utf8rewind.h</a></div><div class="ttdoc">Functions for working with UTF-8 encoded text. </div></div>
-<div class="ttc" id="struct_decompose_state_html"><div class="ttname"><a href="struct_decompose_state.html">DecomposeState</a></div><div class="ttdef"><b>Definition:</b> decomposition.h:32</div></div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li><li class="navelem"><a class="el" href="dir_a1987cf8ca160ad0403a567bf62072d3.html">internal</a></li><li class="navelem"><a class="el" href="decomposition_8h.html">decomposition.h</a></li>
-    <li class="footer">Generated on Tue Mar 3 2015 10:47:24 for utf8rewind by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
 </body>
 </html>

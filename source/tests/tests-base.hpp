@@ -1,5 +1,12 @@
 #pragma once
 
+/*!
+	\file
+	\brief Base includes for tests.
+
+	\cond INTERNAL
+*/
+
 // C/C++
 
 #include <stdint.h>
@@ -18,3 +25,5 @@
 // Google Test
 
 #include <gtest/gtest.h>
+
+/*! \endcond */

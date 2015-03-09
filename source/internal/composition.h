@@ -23,8 +23,15 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef _UTFREWIND_INTERNAL_COMPOSITION_H_
-#define _UTFREWIND_INTERNAL_COMPOSITION_H_
+#ifndef _UTF8REWIND_INTERNAL_COMPOSITION_H_
+#define _UTF8REWIND_INTERNAL_COMPOSITION_H_
+
+/*!
+	\file
+	\brief Composition interface.
+
+	\cond INTERNAL
+*/
 
 #include "utf8rewind.h"
 #include "streaming.h"
@@ -41,4 +48,6 @@ uint8_t compose_readcodepoint(ComposeState* state, uint8_t index);
 
 unicode_t compose_execute(ComposeState* state);
 
-#endif /* _UTFREWIND_INTERNAL_COMPOSITION_H_ */
+/*! \endcond */
+
+#endif /* _UTF8REWIND_INTERNAL_COMPOSITION_H_ */

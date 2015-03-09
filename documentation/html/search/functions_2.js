@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['getfailediteratorresult',['GetFailedIteratorResult',['../namespacetesting.html#ab4a821bf7560ab9fe5874b9002a527cc',1,'testing']]],
-  ['getunicodestring',['GetUnicodeString',['../namespacetesting.html#a507bebc4e7ce30fe4ee84b79397f879d',1,'testing']]]
+  ['stream_5finitialize',['stream_initialize',['../streaming_8h.html#a16a75053622f0157c125a5dfd34bc3b2',1,'streaming.h']]],
+  ['stream_5fread',['stream_read',['../streaming_8h.html#a008dd0d7de257098d0e10cd3eacd778e',1,'streaming.h']]],
+  ['stream_5freorder',['stream_reorder',['../streaming_8h.html#a10fe79a4bb3bceb3c6093b33e0e65911',1,'streaming.h']]],
+  ['stream_5fwrite',['stream_write',['../streaming_8h.html#a824519466ad91529dc2b47509fbfd48d',1,'streaming.h']]]
 ];
