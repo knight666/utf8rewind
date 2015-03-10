@@ -625,21 +625,20 @@ UTF8_API const char* utf8seek(const char* text, const char* textStart, off_t off
 /*!
 	\brief Convert UTF-8 encoded text to uppercase.
 
-	This function allows users to convert UTF-8 encoded strings to
-	uppercase without first changing the encoding to UTF-32.
-	Conversion is fully compliant with the Unicode 7.0 standard.
+	This function allows conversion of UTF-8 encoded strings to uppercase
+	without first changing the encoding to UTF-32. Conversion is fully
+	compliant with the Unicode 7.0 standard.
 
-	Although most codepoints can be converted in-place, there
-	are notable exceptions. For example, U+00DF (LATIN SMALL LETTER
-	SHARP S) maps to "U+0053 U+0053" (LATIN CAPITAL LETTER S) when
-	uppercasing. Therefor, it is advised to first determine the size
-	in bytes of the output by calling the function with a NULL output
-	buffer.
+	Although most codepoints can be converted in-place, there are notable
+	exceptions. For example, U+00DF (LATIN SMALL LETTER SHARP S) maps to
+	"U+0053 U+0053" (LATIN CAPITAL LETTER S and LATIN CAPITAL LETTER S) when
+	converted to uppercase. Therefor, it is advised to first determine the size
+	in bytes of the output by calling the function with a NULL output buffer.
 
-	Only a handful of scripts make a distinction between upper- and
-	lowercase. In addition to modern scripts, such as Latin, Greek,
-	Armenian and Cyrillic, a few historic or archaic scripts have
-	case. The vast majority of scripts do not have case distinctions.
+	Only a handful of scripts make a distinction between upper- and lowercase.
+	In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic,
+	a few historic or archaic scripts have case. The vast majority of scripts
+	do not have case distinctions.
 
 	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
 	!= toLower(toUpper(x))`.
@@ -697,6 +696,83 @@ UTF8_API const char* utf8seek(const char* text, const char* textStart, off_t off
 */
 UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
+/*!
+	\brief Convert UTF-8 encoded text to lowercase.
+
+	This function allows conversion of UTF-8 encoded strings to lowercase
+	without first changing the encoding to UTF-32. Conversion is fully
+	compliant with the Unicode 7.0 standard.
+
+	Although most codepoints can be converted to lowercase in-place, there are
+	notable exceptions. For example, U+0130 (LATIN CAPITAL LETTER I WITH DOT
+	ABOVE) maps to "U+0069 U+0307" (LATIN SMALL LETTER I and COMBINING DOT
+	ABOVE) when converted to lowercase. Therefor, it is advised to first
+	determine the size in bytes of the output by calling the function with a
+	NULL output buffer.
+
+	Only a handful of scripts make a distinction between upper- and lowercase.
+	In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic,
+	a few historic or archaic scripts have case. The vast majority of scripts
+	do not have case distinctions.
+
+	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
+	!= toLower(toUpper(x))`.
+
+	Example:
+
+	\code{.c}
+		author_t* Author_ByName(const char* name)
+		{
+			author_t* result = NULL;
+			size_t name_size = strlen(name);
+			char* converted = NULL;
+			size_t converted_size;
+			int32_t errors = 0;
+			size_t i;
+			
+			converted_size = utf8tolower(name, name_size, NULL, 0, &errors);
+			if (converted_size == 0 ||
+				errors != 0)
+			{
+				goto cleanup;
+			}
+
+			converted = (char*)malloc(converted_size + 1);
+			utf8tolower(name, name_size, converted, converted_size, NULL);
+			converted[converted_size] = 0;
+			
+			for (i = 0; i < g_AuthorCount; ++i)
+			{
+				if (!strcmp(g_Author[i].name, converted))
+				{
+					result = &g_Author[i];
+					break;
+				}
+			}
+		
+		cleanup:
+			if (converted != NULL)
+			{
+				free(converted);
+				converted = NULL;
+			}
+			return result;
+		}
+	\endcode
+
+	\param[in]   input       UTF-8 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[out]  target      Output buffer for the result.
+	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[out]  errors      Output for errors.
+
+	\return Bytes written or amount of bytes needed for output if target
+	buffer is specified as NULL.
+
+	\retval  #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
+	\retval  #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
+	\retval  #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
+*/
 UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
