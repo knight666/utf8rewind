@@ -94,6 +94,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:ga2b8b64b410a600e2148e0bfe8f9a15d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert UTF-8 encoded text to lowercase.  <a href="#ga2b8b64b410a600e2148e0bfe8f9a15d4">More...</a><br /></td></tr>
 <tr class="separator:ga2b8b64b410a600e2148e0bfe8f9a15d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8c55b8635f998a2405aa0a5483289264"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__configuration.html#gaf8233f2b15c97ad97ccec2beff1d24a2">UTF8_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__casemapping.html#ga8c55b8635f998a2405aa0a5483289264">utf8totitle</a> (const char *input, size_t inputSize, char *target, size_t targetSize, int32_t *errors)</td></tr>
+<tr class="memdesc:ga8c55b8635f998a2405aa0a5483289264"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert UTF-8 encoded text to titlecase.  <a href="#ga8c55b8635f998a2405aa0a5483289264">More...</a><br /></td></tr>
 <tr class="separator:ga8c55b8635f998a2405aa0a5483289264"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -194,10 +195,13 @@ Functions</h2></td></tr>
   <table class="retval">
     <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__casemapping.html#ga2b8b64b410a600e2148e0bfe8f9a15d4" title="Convert UTF-8 encoded text to lowercase. ">utf8tolower</a> </dd>
+<dd>
+<a class="el" href="group__casemapping.html#ga8c55b8635f998a2405aa0a5483289264" title="Convert UTF-8 encoded text to titlecase. ">utf8totitle</a> </dd></dl>
 
 </div>
 </div>
@@ -301,10 +305,13 @@ Functions</h2></td></tr>
   <table class="retval">
     <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__casemapping.html#gae9de7d7b0fbde81c2c2d62a9d045775e" title="Convert UTF-8 encoded text to uppercase. ">utf8toupper</a> </dd>
+<dd>
+<a class="el" href="group__casemapping.html#ga8c55b8635f998a2405aa0a5483289264" title="Convert UTF-8 encoded text to titlecase. ">utf8totitle</a> </dd></dl>
 
 </div>
 </div>
@@ -349,6 +356,64 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Convert UTF-8 encoded text to titlecase. </p>
+<p>This function allows conversion of UTF-8 encoded strings to titlecase without first changing the encoding to UTF-32. Conversion is fully compliant with the Unicode 7.0 standard.</p>
+<p>Titlecase requires a bit more explanation than uppercase and lowercase, bacause it is not a common text transformation. Titlecase uses uppercase for the first letter of each word and lowercase for the rest. Words are defined as "collections of codepoints with general category Lu, Ll, Lt, Lm
+or Lo according to the Unicode database".</p>
+<p>Effectively, any type of punctuation can break up a word, even if this is not grammatically valid. This is because titlecasing does not take grammar rules into account.</p>
+<table class="doxtable">
+<tr>
+<th>Text </th><th>Titlecase  </th></tr>
+<tr>
+<td>The running man </td><td>The Running Man </td></tr>
+<tr>
+<td>NATO Alliance </td><td>Nato Alliance </td></tr>
+<tr>
+<td>You're amazing at building libraries </td><td>You'Re Amazing At Building Libraries </td></tr>
+</table>
+<p>Although most codepoints can be converted to titlecase in-place, there are notable exceptions. For example, U+00DF (LATIN SMALL LETTER SHARP S) maps to "U+0053 U+0073" (LATIN CAPITAL LETTER S and LATIN SMALL LETTER S) when converted to titlecase. Therefor, it is advised to first determine the size in bytes of the output by calling the function with a NULL output buffer.</p>
+<p>Only a handful of scripts make a distinction between upper- and lowercase. In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic, a few historic or archaic scripts have case. The vast majority of scripts do not have case distinctions.</p>
+<dl class="section note"><dt>Note</dt><dd>Case mapping is not reversible. That is, <code>toUpper(toLower(x)) != toLower(toUpper(x))</code>.</dd></dl>
+<p>Example:</p>
+<div class="fragment"><div class="line"><span class="keywordtype">void</span> Book_SetTitle(book_t* book, <span class="keyword">const</span> <span class="keywordtype">char</span>* title)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
+<div class="line">    int32_t errors = 0;</div>
+<div class="line">    <span class="keywordtype">size_t</span> i;</div>
+<div class="line"></div>
+<div class="line">    converted_size = <a class="code" href="group__casemapping.html#ga8c55b8635f998a2405aa0a5483289264">utf8totitle</a>(title, strlen(title), book-&gt;title, 255, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
+<div class="line">        errors != 0)</div>
+<div class="line">    {</div>
+<div class="line">        memset(book-&gt;title, 0, 256);</div>
+<div class="line"></div>
+<div class="line">        <span class="keywordflow">return</span>;</div>
+<div class="line">    }</div>
+<div class="line">    book-&gt;title[converted_size] = 0;</div>
+<div class="line">}</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__casemapping.html#ga2b8b64b410a600e2148e0bfe8f9a15d4" title="Convert UTF-8 encoded text to lowercase. ">utf8tolower</a> </dd>
+<dd>
+<a class="el" href="group__casemapping.html#gae9de7d7b0fbde81c2c2d62a9d045775e" title="Convert UTF-8 encoded text to uppercase. ">utf8toupper</a> </dd></dl>
 
 </div>
 </div>

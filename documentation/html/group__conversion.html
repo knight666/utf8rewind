@@ -151,7 +151,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Convert a UTF-16 encoded string to a UTF-8 encoded string. </p>
-<dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you're working with UTF-16 encoded text. If you're working with wide strings, take a look at <a class="el" href="group__conversion.html#gaedea488052a8d820af3d192485e814e8" title="Convert a wide string to a UTF-8 encoded string. ">widetoutf8()</a> instead.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you are working with UTF-16 encoded text. If you're working with wide strings, take a look at <a class="el" href="group__conversion.html#gaedea488052a8d820af3d192485e814e8" title="Convert a wide string to a UTF-8 encoded string. ">widetoutf8</a> instead.</dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line">uint8_t Player_SetNameUtf16(<span class="keyword">const</span> <a class="code" href="utf8rewind_8h.html#a1c56c34e8f9e0fbcf4949782f110df8f">utf16_t</a>* name, <span class="keywordtype">size_t</span> nameSize)</div>
 <div class="line">{</div>
@@ -239,7 +239,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Convert a UTF-32 encoded string to a UTF-8 encoded string. </p>
-<dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you're working with UTF-32 encoded text. If you're working with wide strings, take a look at <a class="el" href="group__conversion.html#gaedea488052a8d820af3d192485e814e8" title="Convert a wide string to a UTF-8 encoded string. ">widetoutf8()</a> instead.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you are working with UTF-32 encoded text. If you're working with wide strings, take a look at <a class="el" href="group__conversion.html#gaedea488052a8d820af3d192485e814e8" title="Convert a wide string to a UTF-8 encoded string. ">widetoutf8</a> instead.</dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line">uint8_t Database_ExecuteQuery_Unicode(<span class="keyword">const</span> <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* query, <span class="keywordtype">size_t</span> querySize)</div>
 <div class="line">{</div>
@@ -443,7 +443,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Convert a UTF-8 encoded string to a UTF-16 encoded string. </p>
-<dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-16, independent of platform. If you're working with wide strings, take a look at <a class="el" href="group__conversion.html#ga8653854fdb4550ec3a9515ecede1f73a" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide()</a> instead.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-16, independent of platform. If you're working with wide strings, take a look at <a class="el" href="group__conversion.html#ga8653854fdb4550ec3a9515ecede1f73a" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide</a> instead.</dd></dl>
 <p>Erroneous byte sequences such as missing bytes, illegal bytes or overlong encodings of codepoints are converted to the replacement character U+FFFD.</p>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Font_DrawText(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
@@ -526,7 +526,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Convert a UTF-8 encoded string to a UTF-32 encoded string. </p>
-<dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-32, independent of platform. If you're working with wide strings, take a look at <a class="el" href="group__conversion.html#ga8653854fdb4550ec3a9515ecede1f73a" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide()</a> instead.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-32, independent of platform. If you're working with wide strings, take a look at <a class="el" href="group__conversion.html#ga8653854fdb4550ec3a9515ecede1f73a" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide</a> instead.</dd></dl>
 <p>Erroneous byte sequences such as missing bytes, illegal bytes or overlong encodings of codepoints are converted to the replacement character U+FFFD.</p>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> TextField_AddCharacter(<span class="keyword">const</span> <span class="keywordtype">char</span>* encoded)</div>
@@ -611,7 +611,7 @@ Functions</h2></td></tr>
 <p>This allows for a cross-platform treatment of wide text and is preferable to using the UTF-16 or UTF-32 versions directly.</p>
 <p>Erroneous byte sequences such as missing bytes, illegal bytes or overlong encodings of codepoints are converted to the replacement character U+FFFD.</p>
 <dl class="section note"><dt>Note</dt><dd>Codepoints outside the Basic Multilingual Plane (BMP) are converted to surrogate pairs when using UTF-16. This means that strings containing characters outside the BMP converted on a platform with UTF-32 wide strings are <em>not</em> compatible with platforms with UTF-16 wide strings.</dd></dl>
-<dl class="section user"><dt>Hence, it is preferable to keep all data as UTF-8 and only</dt><dd>convert to wide strings when required by a third-party interface.</dd></dl>
+<dl class="section user"><dt>Hence, it is preferable to keep all data as UTF-8 and only convert to</dt><dd>wide strings when required by a third-party interface.</dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Window_SetTitle(<span class="keywordtype">void</span>* windowHandle, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
