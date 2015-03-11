@@ -40,6 +40,10 @@
 	\{
 */
 
+#define MAX_BASIC_LATIN               0x007F
+
+#define MAX_LATIN_1                   0x00FF
+
 /*!
 	\def MAX_BASIC_MULTILINGUAR_PLANE
 	\brief The maximum legal codepoint in the Basic Multilinguar Plane (BMP).
@@ -81,6 +85,9 @@
 	\brief The maximum codepoint for the low member of a surrogate pair.
 */
 #define SURROGATE_LOW_END             0xDFFF
+
+#define HANGUL_GROUP_FIRST            0x1100
+#define HANGUL_GROUP_LAST             0x11FF
 
 /*!
 	\def HANGUL_L_FIRST
