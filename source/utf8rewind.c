@@ -725,9 +725,10 @@ uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size
 
 			/* Get canonical combining class and quick check value */
 
-			if (decoded <= MAX_LATIN_1)
+			if ((decoded <= MAX_LATIN_1 && (flags & UTF8_NORMALIZE_COMPATIBILITY) == 0) ||
+				decoded <= MAX_BASIC_LATIN)
 			{
-				/* Basic Latin and Latin-1 are already composed */
+				/* Basic Latin and Latin-1 are already composed, except in compatibility mode */
 
 				canonical_class = 0;
 				quick_check = QuickCheckResult_Yes;
@@ -742,14 +743,14 @@ uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size
 				quick_check = QuickCheckResult_Yes;
 			}
 			else if (
-				decoded >= HANGUL_GROUP_FIRST &&
-				decoded <= HANGUL_GROUP_LAST)
+				decoded >= HANGUL_JAMO_FIRST &&
+				decoded <= HANGUL_JAMO_LAST)
 			{
-				/* Hangul components */
+				/* Hangul Jamo */
 
 				canonical_class = 0;
 
-				/* Check for Hangul V or T section */
+				/* Check for Hangul V or T */
 
 				if ((decoded >= HANGUL_V_FIRST && decoded <= HANGUL_V_LAST) ||
 					(decoded >= HANGUL_T_FIRST && decoded <= HANGUL_T_LAST))
@@ -824,18 +825,10 @@ uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size
 
 			/* Get canonical combining class and quick check value */
 
-			if (decoded <= MAX_BASIC_LATIN)
+			if (decoded <= MAX_BASIC_LATIN ||
+				(decoded >= HANGUL_JAMO_FIRST && decoded <= HANGUL_JAMO_LAST))
 			{
-				/* Basic Latin is already decomposed */
-
-				canonical_class = 0;
-				quick_check = QuickCheckResult_Yes;
-			}
-			else if (
-				decoded >= HANGUL_GROUP_FIRST &&
-				decoded <= HANGUL_GROUP_LAST)
-			{
-				/* Hangul components are already decomposed */
+				/* Basic Latin and Hangul Jamo are already decomposed */
 
 				canonical_class = 0;
 				quick_check = QuickCheckResult_Yes;

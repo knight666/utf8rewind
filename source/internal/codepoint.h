@@ -86,8 +86,8 @@
 */
 #define SURROGATE_LOW_END             0xDFFF
 
-#define HANGUL_GROUP_FIRST            0x1100
-#define HANGUL_GROUP_LAST             0x11FF
+#define HANGUL_JAMO_FIRST             0x1100
+#define HANGUL_JAMO_LAST              0x11FF
 
 /*!
 	\def HANGUL_L_FIRST

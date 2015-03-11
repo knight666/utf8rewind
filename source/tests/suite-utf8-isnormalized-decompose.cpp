@@ -100,8 +100,6 @@ TEST(Utf8IsNormalizedDecompose, Latin1YesCompatibility)
 	size_t is = strlen(i);
 	size_t o = 0;
 
-	std::string sd = helpers::sequence(i, UnicodeProperty_Normalization_Compatibility_Decompose);
-
 	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
 	EXPECT_EQ(6, o);
 }

@@ -56,6 +56,70 @@ TEST(Utf8IsNormalizedCompose, BasicLatinCompatibility)
 	EXPECT_EQ(5, o);
 }
 
+TEST(Utf8IsNormalizedCompose, Latin1YesSingle)
+{
+	/*
+		U+00E9
+		     Y
+		     0
+	*/
+
+	const char* i = "\xC3\xA9";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(2, o);
+}
+
+TEST(Utf8IsNormalizedCompose, Latin1YesMultiple)
+{
+	/*
+		U+00F4 U+00CF U+00FC
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xC3\xB4\xC3\x8F\xC3\xBC";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(6, o);
+}
+
+TEST(Utf8IsNormalizedCompose, Latin1YesCompatibility)
+{
+	/*
+		U+00A4 U+00B1 U+00AE
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xC2\xA4\xC2\xB1\xC2\xAE";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPOSE, &o));
+	EXPECT_EQ(6, o);
+}
+
+TEST(Utf8IsNormalizedCompose, Latin1NoCompatibility)
+{
+	/*
+		U+00A1 U+00A0 U+00B9
+		     Y      N      N
+		     0      0      0
+	*/
+
+	const char* i = "\xC2\xA1\xC2\xA0\xC2\xB9";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
+	EXPECT_EQ(2, o);
+}
+
 TEST(Utf8IsNormalizedCompose, MultiByteYesSingle)
 {
 	/*
