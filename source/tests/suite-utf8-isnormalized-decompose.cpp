@@ -101,7 +101,7 @@ TEST(Utf8IsNormalizedDecompose, MultiByteYesUnordered)
 	size_t o = 0;
 
 	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
-	EXPECT_EQ(7, o);
+	EXPECT_EQ(2, o);
 }
 
 TEST(Utf8IsNormalizedDecompose, MultiByteYesCompatibility)
@@ -118,4 +118,100 @@ TEST(Utf8IsNormalizedDecompose, MultiByteYesCompatibility)
 
 	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
 	EXPECT_EQ(6, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, MultiByteNoSingle)
+{
+	/*
+		U+30B4
+		     N
+		     0
+	*/
+
+	const char* i = "\xE3\x82\xB4";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(0, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, MultiByteNoMultiple)
+{
+	/*
+		U+0F57 U+1109C U+040D
+		     N       N      N
+		     0       0      0
+	*/
+
+	const char* i = "\xE0\xBD\x97\xF0\x91\x82\x9C\xD0\x8D";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(0, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, MultiByteNoSequenceStart)
+{
+	/*
+		U+30B2 U+0327
+		     N      Y
+		     0    202
+	*/
+
+	const char* i = "\xE3\x82\xB2\xCC\xA7";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(0, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, MultiByteNoSequenceEnd)
+{
+	/*
+		U+080A U+02BC U+1F59
+		     Y      Y      N
+		     0      0      0
+	*/
+
+	const char* i = "\xE0\xA0\x8A\xCA\xBC\xE1\xBD\x99";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(5, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, MultiByteNoUnordered)
+{
+	/*
+		U+302B U+0344 U+05AE
+		     Y      N      Y
+		   228    230    228
+	*/
+
+	const char* i = "\xE3\x80\xAB\xCD\x84\xD6\xAE";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(3, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, MultiByteNoCompatibility)
+{
+	/*
+		U+2105 U+210B U+2009
+		     N      N      N
+		     0      0      0
+	*/
+
+	const char* i = "\xE2\x84\x85\xE2\x84\x8B\xE2\x80\x89";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
+	EXPECT_EQ(0, o);
 }
