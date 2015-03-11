@@ -56,6 +56,104 @@ TEST(Utf8IsNormalizedDecompose, BasicLatinCompatibility)
 	EXPECT_EQ(4, o);
 }
 
+TEST(Utf8IsNormalizedDecompose, Latin1YesSingle)
+{
+	/*
+		U+009A
+		     Y
+		     0
+	*/
+
+	const char* i = "\xC2\x9A";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(2, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, Latin1YesMultiple)
+{
+	/*
+		U+00B6 U+00D0 U+00A1
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xC2\xB6\xC3\x90\xC2\xA1";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(6, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, Latin1YesCompatibility)
+{
+	/*
+		U+00A6 U+00BF U+00FE
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xC2\xA6\xC2\xBF\xC3\xBE";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	std::string sd = helpers::sequence(i, UnicodeProperty_Normalization_Compatibility_Decompose);
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
+	EXPECT_EQ(6, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, Latin1NoSingle)
+{
+	/*
+		U+00DD
+		     N
+		     0
+	*/
+
+	const char* i = "\xC3\x9D";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(0, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, Latin1NoMultiple)
+{
+	/*
+		U+00D9 U+00C3 U+00C1
+		     N      N      N
+		     0      0      0
+	*/
+
+	const char* i = "\xC3\x99\xC3\x83\xC3\x81";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(0, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, Latin1NoCompatibility)
+{
+	/*
+		U+00B4 U+00BA U+00AF U+00BD
+		     N      N      N      N
+		     0      0      0      0
+	*/
+
+	const char* i = "\xC2\xB4\xC2\xBA\xC2\xAF\xC2\xBD";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
+	EXPECT_EQ(0, o);
+}
+
 TEST(Utf8IsNormalizedDecompose, MultiByteYesSingle)
 {
 	/*
