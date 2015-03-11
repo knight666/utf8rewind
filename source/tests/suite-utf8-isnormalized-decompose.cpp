@@ -215,3 +215,131 @@ TEST(Utf8IsNormalizedDecompose, MultiByteNoCompatibility)
 	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
 	EXPECT_EQ(0, o);
 }
+
+TEST(Utf8IsNormalizedDecompose, HangulYesSingle)
+{
+	/*
+		U+1111
+		     Y
+		     0
+	*/
+
+	const char* i = "\xE1\x84\x91";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(3, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, HangulYesMultiple)
+{
+	/*
+		U+11E2 U+11FC U+11C5
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xE1\x87\xA2\xE1\x87\xBC\xE1\x87\x85";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(9, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, HangulYesCompatibility)
+{
+	/*
+		U+11E2 U+11FC U+11C5
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xE1\x87\xA2\xE1\x87\xBC\xE1\x87\x85";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_YES, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
+	EXPECT_EQ(9, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, HangulNoSingle)
+{
+	/*
+		U+AC21
+		     N
+		     0
+	*/
+
+	const char* i = "\xEA\xB0\xA1";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(0, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, HangulNoMultiple)
+{
+	/*
+		U+AD9F U+C7FA U+ACAB
+		     N      N      N
+		     0      0      0
+	*/
+
+	const char* i = "\xEA\xB6\x9F\xEC\x9F\xBA\xEA\xB2\xAB";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(0, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, HangulNoSequenceStart)
+{
+	/*
+		U+AD88 U+1199 U+113B
+		     N      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "\xEA\xB6\x88\xE1\x86\x99\xE1\x84\xBB";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(0, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, HangulNoSequenceEnd)
+{
+	/*
+		U+1138 U+11A4 U+1185 U+BC8A
+		     Y      Y      Y      N
+		     0      0      0      0
+	*/
+
+	const char* i = "\xE1\x84\xB8\xE1\x86\xA4\xE1\x86\x85\xEB\xB2\x8A";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE, &o));
+	EXPECT_EQ(9, o);
+}
+
+TEST(Utf8IsNormalizedDecompose, HangulNoCompatibility)
+{
+	/*
+		U+D5A7 U+AFFF U+B000
+		     N      N      N
+		     0      0      0
+	*/
+
+	const char* i = "\xED\x96\xA7\xEA\xBF\xBF\xEB\x80\x80";
+	size_t is = strlen(i);
+	size_t o = 0;
+
+	EXPECT_EQ(UTF8_NORMALIZATION_RESULT_NO, utf8isnormalized(i, is, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &o));
+	EXPECT_EQ(0, o);
+}
