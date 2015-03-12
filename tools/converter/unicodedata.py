@@ -455,7 +455,6 @@ class Database(libs.unicode.UnicodeVisitor):
 		return True
 	
 	def getBlockByCodepoint(self, codepoint):
-		print hex(codepoint)
 		for b in self.blocks:
 			if codepoint >= b.start and codepoint <= b.end:
 				return b
