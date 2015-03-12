@@ -36,7 +36,7 @@
 
 size_t utf8len(const char* text)
 {
-	const char* src;
+	const uint8_t* src;
 	size_t src_length;
 	size_t length;
 
@@ -52,7 +52,7 @@ size_t utf8len(const char* text)
 
 	/* Determine length in codepoints */
 
-	src = text;
+	src = (const uint8_t*)text;
 	src_length = strlen(text);
 
 	while (src_length > 0)
@@ -68,10 +68,9 @@ size_t utf8len(const char* text)
 
 			do
 			{
-				if ((src[src_offset] & 0x80) == 0)
+				if (src[src_offset] < 0x80 ||  /* Not a continuation byte */
+					src[src_offset] > 0xBF)    /* Start of a new sequence */
 				{
-					/* Not a continuation byte */
-
 					break;
 				}
 			}
