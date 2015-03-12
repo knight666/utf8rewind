@@ -6,7 +6,8 @@ namespace helpers {
 
 	StreamState createStream(const std::string& text)
 	{
-		StreamState stream = { 0 };
+		StreamState stream;
+		memset(&stream, 0, sizeof(StreamState));
 
 		std::vector<unicode_t> converted = helpers::utf32(text);
 
@@ -46,7 +47,7 @@ namespace helpers {
 	}
 
 	::testing::AssertionResult CompareStream(
-		const char* expressionExpected, const char* expressionActual,
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const StreamEntry& entryExpected, const StreamEntry& entryActual)
 	{
 		if (entryActual.codepoint == entryExpected.codepoint &&

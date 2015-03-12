@@ -131,7 +131,7 @@
 					'msvs_quote_cmd': 0,
 					'extension': 'doxyfile',
 					'outputs': [
-						'$(SolutionDir)/documentation/html/index.html',
+						'documentation/html/index.html',
 					],
 					'action': [
 						'doxygen',

@@ -310,7 +310,7 @@ namespace helpers {
 	}
 
 	::testing::AssertionResult CompareNormalizationCodepoint(
-		const char* expressionExpected, const char* expressionActual,
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const NormalizationEntry& entryExpected, const NormalizationEntry& entryActual)
 	{
 		if (entryExpected.decomposed == entryActual.decomposed &&
