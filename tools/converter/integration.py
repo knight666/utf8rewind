@@ -125,7 +125,7 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 			else:
 				converted_titlecase = libs.utf8.codepointToUtf8(r.codepoint)[0]
 			
-			self.header.writeLine("CHECK_UTF8_CASEMAPPING(" + converted_codepoint + ", \"" + converted_uppercase + "\", \"" + converted_lowercase + "\", \"" + converted_titlecase + "\", \"" + r.name + "\");")
+			self.header.writeLine("CHECK_CASEMAPPING(" + converted_codepoint + ", \"" + converted_uppercase + "\", \"" + converted_lowercase + "\", \"" + converted_titlecase + "\", \"" + r.name + "\");")
 		
 		self.header.outdent()
 		self.header.write("}")
