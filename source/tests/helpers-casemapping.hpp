@@ -11,7 +11,7 @@
 
 #include "utf8rewind.h"
 
-#define CHECK_UTF8_CASEMAPPING(_codepoint, _uppercase, _lowercase, _titlecase, _name) { \
+#define CHECK_CASEMAPPING(_codepoint, _uppercase, _lowercase, _titlecase, _name) { \
 	::helpers::CaseMappingEntry e; \
 	e.codepoint = _codepoint; \
 	e.uppercase = _uppercase; \
