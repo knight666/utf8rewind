@@ -69,7 +69,7 @@
 				'source/tests/helpers-strings.hpp',
 				'source/tests/integration-casemapping.cpp',
 				'source/tests/integration-conformance.cpp',
-				'source/test/\integration-isnormalized.cpp',
+				'source/tests/integration-isnormalized.cpp',
 				'source/tests/integration-normalization.cpp',
 				'source/tests/integration-quickbrown-casemapping.cpp',
 				'source/tests/integration-quickbrown.cpp',
