@@ -339,6 +339,45 @@ class CompositionExclusionIntegrationSuite(IntegrationSuite):
 			self.entries.append(entry)
 		return True
 
+class QuickCheckEntry:
+	def __init__(self, codepoint):
+		self.codepoint = codepoint
+		self.nfc = "YES"
+		self.nfd = "YES"
+		self.nfkc = "YES"
+		self.nfkd = "YES"
+
+class IsNormalizedIntegrationSuite(IntegrationSuite):
+	def __init__(self, db):
+		self.db = db
+		self.entries = dict()
+	
+	def execute(self):
+		print "Writing is-normalized tests..."
+		
+		self.open('/../../source/tests/integration-isnormalized.cpp')
+		
+		self.header.writeLine("#include \"helpers-normalization.hpp\"")
+		
+		for r in db.qcNFCRecords:
+			#print "start " + str(r.start) + " count " + str(r.count) + " value " + str(r.value)
+			value_map = {
+				1: "MAYBE",
+				2: "NO"
+			}
+			str_value = value_map[r.value]
+			
+			for c in range(r.start, r.start + r.count + 1):
+				if c in self.entries:
+					e = self.entries[c]
+				else:
+					e = QuickCheckEntry(c)
+					self.entries[c] = e
+				e.nfc = str_value
+		
+		for key, value in self.entries.iteritems():
+			print "codepoint " + hex(value.codepoint) + " nfc " + value.nfc
+	
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Parse Unicode codepoint database and write integration tests.')
 	parser.add_argument(
@@ -359,9 +398,15 @@ if __name__ == '__main__':
 		action = 'store_true',
 		help = 'write normalization tests'
 	)
+	parser.add_argument(
+		'--is-normalized',
+		dest = 'isnormalized',
+		action = 'store_true',
+		help = 'write is-normalized tests'
+	)
 	args = parser.parse_args()
 	
-	if not args.casemapping and not args.normalization:
+	if not args.casemapping and not args.normalization and not args.isnormalized:
 		all = True
 	else:
 		all = False
@@ -375,4 +420,8 @@ if __name__ == '__main__':
 	
 	if all or args.normalization:
 		suite = NormalizationIntegrationSuite(db)
+		suite.execute()
+	
+	if all or args.isnormalized:
+		suite = IsNormalizedIntegrationSuite(db)
 		suite.execute()
