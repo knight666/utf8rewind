@@ -236,7 +236,7 @@ TEST(Utf8Len, IllegalByteFFInString)
 	EXPECT_EQ(6, utf8len(c));
 }
 
-TEST(Utf8Len, ZeroUtf8Len)
+TEST(Utf8Len, ZeroLength)
 {
 	const char* c = "";
 

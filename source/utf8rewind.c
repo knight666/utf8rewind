@@ -37,60 +37,60 @@
 size_t utf8len(const char* text)
 {
 	const char* src;
-	size_t src_index;
-	size_t length = 0;
-	size_t codepoint_length = 0;
-	size_t text_length = 0;
-	uint8_t codepoint = 0;
+	size_t src_length;
+	size_t length;
 
-	if (text == 0)
+	/* Validate input */
+
+	if (text == 0 ||
+		text[0] == 0)
 	{
-		return length;
+		return 0;
 	}
 
-	text_length = strlen(text);
-	if (text_length == 0)
-	{
-		return length;
-	}
+	length = 0;
 
-	while (*text != 0)
-	{
-		codepoint = (uint8_t)*text;
+	/* Determine length in codepoints */
 
-		codepoint_length = codepoint_decoded_length[codepoint];
-		if (codepoint_length != 0)
+	src = text;
+	src_length = strlen(text);
+
+	while (src_length > 0)
+	{
+		uint8_t src_offset = 1;
+
+		/* Check if the current byte is part of a multi-byte sequence */
+
+		uint8_t codepoint_length = codepoint_decoded_length[(uint8_t)*src];
+		if (codepoint_length > 1)
 		{
-			/* Check if encoding is valid */
+			/* Check every byte of the sequence */
 
-			src = text + 1;
-
-			for (src_index = 1; src_index < codepoint_length; ++src_index)
+			do
 			{
-				if ((*src & 0x80) == 0)
+				if ((src[src_offset] & 0x80) == 0)
 				{
-					/* Not a continuation byte for a multi-byte sequence */
+					/* Not a continuation byte */
 
 					break;
 				}
-
-				src++;
 			}
+			while (++src_offset < codepoint_length);
 		}
-		else
-		{
-			src_index = 1;
-		}
+
+		/* Found a codepoint */
 
 		length++;
 
-		if (src_index > text_length)
+		/* Move cursor */
+
+		if (src_offset >= src_length)
 		{
 			break;
 		}
 
-		text += src_index;
-		text_length -= src_index;
+		src += src_offset;
+		src_length -= src_offset;
 	}
 
 	return length;
