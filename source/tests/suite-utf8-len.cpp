@@ -4,67 +4,97 @@
 
 TEST(Utf8Len, Valid)
 {
-	const char* c = "\xE0\xA4\x9C\xE0\xA4\xA1\xE0\xA4\xA4";
-
-	EXPECT_EQ(3, utf8len(c));
+	EXPECT_EQ(3, utf8len("\xE0\xA4\x9C\xE0\xA4\xA1\xE0\xA4\xA4"));
 }
 
-TEST(Utf8Len, EndsInMiddle)
+TEST(Utf8Len, StringEndsAtStart)
 {
-	const char* c = "Forest\0dweller";
-
-	EXPECT_EQ(6, utf8len(c));
+	EXPECT_EQ(0, utf8len("\0Spaceship"));
 }
 
-TEST(Utf8Len, OneByteCodepoint)
+TEST(Utf8Len, StringEndsInMiddle)
 {
-	const char* c = "\x30";
-
-	EXPECT_EQ(1, utf8len(c));
+	EXPECT_EQ(6, utf8len("Forest\0dweller"));
 }
 
-TEST(Utf8Len, TwoByteCodepoint)
+TEST(Utf8Len, OneByteSingle)
 {
-	const char* c = "\xC4\xB3";
-
-	EXPECT_EQ(1, utf8len(c));
+	EXPECT_EQ(1, utf8len("\x30"));
 }
 
-TEST(Utf8Len, TwoByteCodepointLonelyStart)
+TEST(Utf8Len, OneByteSingleInvalidContinuation)
 {
-	const char* c = "\xDA";
-
-	EXPECT_EQ(1, utf8len(c));
+	EXPECT_EQ(1, utf8len("\x81"));
 }
 
-TEST(Utf8Len, TwoByteCodepointLonelyStartAll)
+TEST(Utf8Len, OneByteSingleIllegal)
 {
-	const char* c =
-		"\xC0 \xC1 \xC2 \xC3 \xC4 \xC5 \xC6 \xC7 \xC8 \xC9 \xCA \xCB \xCC \xCD \xCE \xCF "\
-		"\xD0 \xD1 \xD2 \xD3 \xD4 \xD5 \xD6 \xD7 \xD8 \xD9 \xDA \xDB \xDC \xDD \xDE \xDF ";
-
-	EXPECT_EQ(64, utf8len(c));
+	EXPECT_EQ(1, utf8len("\xFE"));
 }
 
-TEST(Utf8Len, TwoByteCodepointNotEnoughData)
+TEST(Utf8Len, OneByteMultiple)
 {
-	const char* c = "\xCC";
-
-	EXPECT_EQ(1, utf8len(c));
+	EXPECT_EQ(5, utf8len("%@#!&"));
 }
 
-TEST(Utf8Len, TwoByteCodepointOverlong)
+TEST(Utf8Len, OneByteMultipleInvalidContinuation)
 {
-	const char* c = "\xC0\xAF";
-
-	EXPECT_EQ(1, utf8len(c));
+	EXPECT_EQ(3, utf8len("\x84\x9A\xB8"));
 }
 
-TEST(Utf8Len, TwoByteCodepointOverlongNotEnoughData)
+TEST(Utf8Len, OneByteMultipleIllegal)
 {
-	const char* c = "\xC0";
+	EXPECT_EQ(4, utf8len("\xFF\xFE\xFF\xFE"));
+}
 
-	EXPECT_EQ(1, utf8len(c));
+TEST(Utf8Len, TwoBytesSingle)
+{
+	EXPECT_EQ(1, utf8len("\xC4\xB3"));
+}
+
+TEST(Utf8Len, TwoBytesSingleNotEnoughDataOneByte)
+{
+	EXPECT_EQ(1, utf8len("\xDA"));
+}
+
+TEST(Utf8Len, TwoBytesSingleInvalidContinuation)
+{
+	EXPECT_EQ(2, utf8len("\xC8\x7F"));
+}
+
+TEST(Utf8Len, TwoByteSingleOverlong)
+{
+	EXPECT_EQ(1, utf8len("\xC0\xAF"));
+}
+
+TEST(Utf8Len, TwoByteSingleOverlongNotEnoughData)
+{
+	EXPECT_EQ(1, utf8len("\xC1"));
+}
+
+TEST(Utf8Len, TwoBytesMultiple)
+{
+	EXPECT_EQ(3, utf8len("\xC2\xA7\xC5\xBC\xC2\xA9"));
+}
+
+TEST(Utf8Len, TwoBytesMultipleNotEnoughData)
+{
+	EXPECT_EQ(4, utf8len("\xC0\xDA\xCB\xDE"));
+}
+
+TEST(Utf8Len, TwoBytesMultipleInvalidContinuation)
+{
+	EXPECT_EQ(6, utf8len("\xDB\x6A\xDC\x12\xDE\x70"));
+}
+
+TEST(Utf8Len, TwoBytesMultipleOverlong)
+{
+	EXPECT_EQ(3, utf8len("\xC0\x9A\xC0\xA0\xC1\x80"));
+}
+
+TEST(Utf8Len, TwoBytesMultipleOverlongNotEnoughData)
+{
+	EXPECT_EQ(3, utf8len("\xC0\xC1\xC0"));
 }
 
 TEST(Utf8Len, ThreeByteCodepoint)
