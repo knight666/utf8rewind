@@ -485,6 +485,47 @@ namespace helpers {
 		}
 	}
 
+
+	::testing::AssertionResult CompareMemory(
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_, const char* expressionCount GTEST_ATTRIBUTE_UNUSED_,
+		const char* memoryExpected, const char* memoryActual, size_t memorySize)
+	{
+		if (!memcmp(memoryExpected, memoryActual, memorySize))
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << "Memory mismatch" << std::endl;
+
+			const char* src_a = memoryActual;
+			const char* src_e = memoryExpected;
+
+			for (size_t i = 0; i < memorySize; ++i)
+			{
+				if (*src_a != *src_e)
+				{
+					result << "[Index " << i << "]" << std::endl;
+
+					std::stringstream ssa;
+					ssa << "0x" << std::uppercase << std::setfill('0') << std::hex << std::setw(2) << ((uint32_t)*src_a & 0x000000FF);
+					result << "    Actual: " << ssa.str() << std::endl;
+
+					std::stringstream sse;
+					sse << "0x" << std::uppercase << std::setfill('0') << std::hex << std::setw(2) << ((uint32_t)*src_e & 0x000000FF);
+					result << "  Expected: " << sse.str() << std::endl;
+				}
+
+				++src_a;
+				++src_e;
+			}
+
+			return result;
+		}
+	}
+
 	::testing::AssertionResult CompareCodepoints(
 		const char* expressionExpected, const char* expressionActual,
 		unicode_t codepointExpected, unicode_t codepointActual)
