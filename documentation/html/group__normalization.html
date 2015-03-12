@@ -240,6 +240,8 @@ Functions</h2></td></tr>
 
 <p>Check if a string is stable in the specified normalization form. </p>
 <p>This function can be used as a preprocessing step, before attempting to normalize a string. Normalization is a very expensive process, it is often cheaper to first determine if the string is unstable in the requested normalization form.</p>
+<p>The result of the check will be YES if the string is stable and MAYBE or NO if it is unstable. If the result is MAYBE, the string does not necessarily have to be normalized.</p>
+<p>If the result is unstable, the offset parameter is set to the offset for the first unstable codepoint. If the string is stable, the offset is equivalent to the length of the string in bytes.</p>
 <p>Unicode Normalization Forms are formally defined normalizations of Unicode strings which make it possible to determine whether any two Unicode strings are equivalent to each other. Depending on the particular Unicode Normalization Form, that equivalence can either be a canonical equivalence or a compatibility equivalence.</p>
 <p>Essentially, the Unicode Normalization Algorithm puts all combining marks in a specified order, and uses rules for decomposition and composition to transform each string into one of the Unicode Normalization Forms. A binary comparison of the transformed strings will then determine equivalence.</p>
 <p>There are four Unicode Normalization Forms:</p>
@@ -255,8 +257,6 @@ Functions</h2></td></tr>
 <tr>
 <td>Normalization Form KD (NFKD) </td><td><a class="el" href="group__normalization.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to NFD. ">UTF8_NORMALIZE_DECOMPOSE</a> + <a class="el" href="group__normalization.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Changes composed normalization to NFKC or decomposed normalization to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
 </table>
-<p>For a more detailed explanation, please see the documentation regarding normalization.</p>
-<p>The result of the check will be YES if the string is stable and MAYBE or NO if it is unstable. If the result is MAYBE, the string does not necessarily have to be normalized.</p>
 <p>Example:</p>
 <div class="fragment"><div class="line">uint8_t Text_InspectComposed(<span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
@@ -300,18 +300,19 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">flags</td><td>Desired normalization form. Must be a combination of <a class="el" href="group__normalization.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to NFC. ">UTF8_NORMALIZE_COMPOSE</a>, <a class="el" href="group__normalization.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to NFD. ">UTF8_NORMALIZE_DECOMPOSE</a> and <a class="el" href="group__normalization.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Changes composed normalization to NFKC or decomposed normalization to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">offset</td><td>Offset of first unstable codepoint.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">offset</td><td>Offset to first unstable codepoint or length of input in bytes if stable.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname"><a class="el" href="group__normalization.html#gae047d522ffc5afe11b150b6d5c527b80" title="Text is stable and does not have to be normalized. ">UTF8_NORMALIZATION_RESULT_YES</a></td><td>Text is stable and does not have to be normalized. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__normalization.html#ga8ea4d576e89529e074392175230dc352" title="Text is unstable, but normalization may be skipped. ">UTF8_NORMALIZATION_RESULT_MAYBE</a></td><td>Text is unstable, but normalization may be skipped. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__normalization.html#ga9a59070cc87c6b141ab742986af0f223" title="Text is unstable and must be normalized. ">UTF8_NORMALIZATION_RESULT_NO</a></td><td>Text is unstable and must be normalized. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__normalization.html#gae047d522ffc5afe11b150b6d5c527b80" title="Text is stable and does not have to be normalized. ">UTF8_NORMALIZATION_RESULT_YES</a></td><td>Input is stable and does not have to be normalized. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__normalization.html#ga8ea4d576e89529e074392175230dc352" title="Text is unstable, but normalization may be skipped. ">UTF8_NORMALIZATION_RESULT_MAYBE</a></td><td>Input is unstable, but normalization may be skipped. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__normalization.html#ga9a59070cc87c6b141ab742986af0f223" title="Text is unstable and must be normalized. ">UTF8_NORMALIZATION_RESULT_NO</a></td><td>Input is unstable and must be normalized.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__normalization.html#gadfa0210609054db368b6af9837ca69db">utf8normalize</a> </dd></dl>
 
 </div>
 </div>

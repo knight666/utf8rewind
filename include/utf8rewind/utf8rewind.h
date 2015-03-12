@@ -777,7 +777,7 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 	with the Unicode 7.0 standard.
 
 	Titlecase requires a bit more explanation than uppercase and lowercase,
-	bacause it is not a common text transformation. Titlecase uses uppercase
+	because it is not a common text transformation. Titlecase uses uppercase
 	for the first letter of each word and lowercase for the rest. Words are
 	defined as "collections of codepoints with general category Lu, Ll, Lt, Lm
 	or Lo according to the Unicode database".
@@ -862,6 +862,14 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	cheaper to first determine if the string is unstable in the requested
 	normalization form.
 
+	The result of the check will be YES if the string is stable and MAYBE or
+	NO if it is unstable. If the result is MAYBE, the string does not
+	necessarily have to be normalized.
+
+	If the result is unstable, the offset parameter is set to the offset for the
+	first unstable codepoint. If the string is stable, the offset is equivalent
+	to the length of the string in bytes.
+
 	Unicode Normalization Forms are formally defined normalizations of Unicode
 	strings which make it possible to determine whether any two Unicode
 	strings are equivalent to each other. Depending on the particular Unicode
@@ -882,13 +890,6 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	Normalization Form KC (NFKC) | #UTF8_NORMALIZE_COMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
 	Normalization Form D (NFD)   | #UTF8_NORMALIZE_DECOMPOSE
 	Normalization Form KD (NFKD) | #UTF8_NORMALIZE_DECOMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
-
-	For a more detailed explanation, please see the documentation regarding
-	normalization.
-
-	The result of the check will be YES if the string is stable and MAYBE or
-	NO if it is unstable. If the result is MAYBE, the string does not
-	necessarily have to be normalized.
 
 	Example:
 
@@ -934,14 +935,14 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 
 	\param[in]   input       UTF-8 encoded string.
 	\param[in]   inputSize   Size of the input in bytes.
-	\param[in]   flags       Desired normalization form. Must be a combination
-	                         of #UTF8_NORMALIZE_COMPOSE, #UTF8_NORMALIZE_DECOMPOSE and
-	                         #UTF8_NORMALIZE_COMPATIBILITY
-	\param[out]  offset      Offset of first unstable codepoint.
+	\param[in]   flags       Desired normalization form. Must be a combination of #UTF8_NORMALIZE_COMPOSE, #UTF8_NORMALIZE_DECOMPOSE and #UTF8_NORMALIZE_COMPATIBILITY.
+	\param[out]  offset      Offset to first unstable codepoint or length of input in bytes if stable.
 
-	\retval  #UTF8_NORMALIZATION_RESULT_YES    Text is stable and does not have to be normalized.
-	\retval  #UTF8_NORMALIZATION_RESULT_MAYBE  Text is unstable, but normalization may be skipped.
-	\retval  #UTF8_NORMALIZATION_RESULT_NO     Text is unstable and must be normalized.
+	\retval  #UTF8_NORMALIZATION_RESULT_YES    Input is stable and does not have to be normalized.
+	\retval  #UTF8_NORMALIZATION_RESULT_MAYBE  Input is unstable, but normalization may be skipped.
+	\retval  #UTF8_NORMALIZATION_RESULT_NO     Input is unstable and must be normalized.
+
+	\sa utf8normalize
 */
 UTF8_API uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size_t* offset);
 
