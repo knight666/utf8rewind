@@ -40,25 +40,33 @@
 	\{
 */
 
+/*!
+	\def MAX_BASIC_LATIN
+	\brief The last codepoint part of Basic Latin (U+0000 - U+007F).
+*/
 #define MAX_BASIC_LATIN               0x007F
 
+/*!
+	\def MAX_LATIN_1
+	\brief The last codepoint part of Latin-1 Supplement (U+0080 - U+00FF).
+*/
 #define MAX_LATIN_1                   0x00FF
 
 /*!
 	\def MAX_BASIC_MULTILINGUAR_PLANE
-	\brief The maximum legal codepoint in the Basic Multilinguar Plane (BMP).
+	\brief The last legal codepoint in the Basic Multilingual Plane (BMP).
 */
 #define MAX_BASIC_MULTILINGUAR_PLANE  0xFFFF
 
 /*!
 	\def MAX_LEGAL_UNICODE
-	\brief The maximum legal codepoint in Unicode
+	\brief The last legal codepoint in Unicode.
 */
 #define MAX_LEGAL_UNICODE             0x10FFFF
 
 /*!
 	\def REPLACEMENT_CHARACTER
-	\brief The replacement character used to replace illegal codepoints.
+	\brief The replacement value used to replace illegal codepoints.
 */
 #define REPLACEMENT_CHARACTER         0xFFFD
 
@@ -86,84 +94,99 @@
 */
 #define SURROGATE_LOW_END             0xDFFF
 
+/*!
+	\def HANGUL_JAMO_FIRST
+	\brief The first codepoint part of the Hangul Jamo block.
+*/
 #define HANGUL_JAMO_FIRST             0x1100
+
+/*!
+	\def HANGUL_JAMO_LAST
+	\brief The last codepoint part of the Hangul Jamo block.
+*/
 #define HANGUL_JAMO_LAST              0x11FF
 
 /*!
 	\def HANGUL_L_FIRST
-	\brief The minimum codepoint for Hangul L values.
+	\brief The first codepoint part of the Hangul Jamo L section used for
+	normalization.
 */
 #define HANGUL_L_FIRST                0x1100
 
 /*!
 	\def HANGUL_L_LAST
-	\brief The maximum codepoint for Hangul L values.
+	\brief The last codepoint part of the Hangul Jamo L section used for
+	normalization.
 */
 #define HANGUL_L_LAST                 0x1112
 
 /*!
 	\def HANGUL_L_COUNT
-	\brief The number of codepoints in the Hangul L section.
+	\brief The number of codepoints in the Hangul Jamo L section.
 */
 #define HANGUL_L_COUNT                19
 
 /*!
 	\def HANGUL_V_FIRST
-	\brief The minimum codepoint for Hangul V values.
+	\brief The first codepoint part of the Hangul Jamo V section used for
+	normalization.
 */
 #define HANGUL_V_FIRST                0x1161
 
 /*!
 	\def HANGUL_V_LAST
-	\brief The maximum codepoint for Hangul V values.
+	\brief The last codepoint part of the Hangul Jamo V section used for
+	normalization.
 */
 #define HANGUL_V_LAST                 0x1175
 
 /*!
 	\def HANGUL_V_COUNT
-	\brief The number of codepoints in the Hangul V section.
+	\brief The number of codepoints in the Hangul Jamo V section.
 */
 #define HANGUL_V_COUNT                21
 
 /*!
 	\def HANGUL_T_FIRST
-	\brief The minimum codepoint for Hangul T values.
+	\brief The first codepoint part of the Hangul Jamo T section used for
+	normalization.
 */
 #define HANGUL_T_FIRST                0x11A7
 
 /*!
 	\def HANGUL_T_LAST
-	\brief The maximum codepoint for Hangul T values.
+	\brief The last codepoint part of the Hangul Jamo V section used for
+	normalization.
 */
 #define HANGUL_T_LAST                 0x11C2
 
 /*!
 	\def HANGUL_T_COUNT
-	\brief The number of codepoints in the Hangul T section.
+	\brief The number of codepoints in the Hangul Jamo T section.
 */
 #define HANGUL_T_COUNT                28
 
 /*!
 	\def HANGUL_N_COUNT
-	\brief Combined count of Hangul V and T sections.
+	\brief Number of codepoints part of the Hangul Jamo V and T sections.
 */
 #define HANGUL_N_COUNT                588 /* VCount * TCount */
 
 /*!
 	\def HANGUL_S_FIRST
-	\brief The minimum codepoint for Hangul S values.
+	\brief The first codepoint in the Hangul Syllables block.
 */
 #define HANGUL_S_FIRST                0xAC00
 
 /*!
 	\def HANGUL_S_LAST
-	\brief The maximum codepoint for Hangul S values.
+	\brief The last codepoint in the Hangul Syllables block.
 */
 #define HANGUL_S_LAST                 0xD7A3
 
 /*!
 	\def HANGUL_S_COUNT
-	\brief The number of codepoints in the Hangul S section (combines L with N).
+	\brief The number of codepoints in the Hangul Syllables block.
 */
 #define HANGUL_S_COUNT                11172 /* LCount * NCount */
 
