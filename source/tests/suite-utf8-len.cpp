@@ -212,6 +212,11 @@ TEST(Utf8Len, FourBytesMultipleNotEnoughData)
 	EXPECT_EQ(5, utf8len("\xF1\x91\xF4\x8A\x8A\xF6\x81\xF7\xF4"));
 }
 
+TEST(Utf8Len, FourBytesMultipleInvalidContinuationByte)
+{
+	EXPECT_EQ(4, utf8len("\xF1\x5A\xF2\x81\xA8\xC6\x87"));
+}
+
 TEST(Utf8Len, FourBytesMultipleOverlong)
 {
 	EXPECT_EQ(2, utf8len("\xF4\x90\x80\x80\xF7\xBF\x80\x80"));
@@ -292,32 +297,104 @@ TEST(Utf8Len, FiveBytesMultipleNotEnoughData)
 	EXPECT_EQ(5, utf8len("\xFA\xFB\x80\xFA\x8A\x88\xFB\xF8"));
 }
 
-TEST(Utf8Len, SixByteCodepointLonelyStart)
+TEST(Utf8Len, FiveBytesMultipleInvalidContinuationByte)
 {
-	const char* c = "\xFC";
-
-	EXPECT_EQ(1, utf8len(c));
+	EXPECT_EQ(4, utf8len("\xF8\x80\x1A\xF2\xA8\x80\xC7\x80"));
 }
 
-TEST(Utf8Len, SixByteCodepointLonelyStartAll)
+TEST(Utf8Len, SixBytesSingle)
 {
-	const char* c = "\xFC \xFD ";
-
-	EXPECT_EQ(4, utf8len(c));
+	EXPECT_EQ(1, utf8len("\xFC\x83\xBF\xBF\xBF\xBF"));
 }
 
-TEST(Utf8Len, SixByteCodepointOverlong)
+TEST(Utf8Len, SixBytesSingleNotEnoughDataOneByte)
 {
-	const char* c = "\xFC\x83\xBF\xBF\xBF\xBF";
-
-	EXPECT_EQ(1, utf8len(c));
+	EXPECT_EQ(1, utf8len("\xFC"));
 }
 
-TEST(Utf8Len, SixByteCodepointOverlongNotEnoughData)
+TEST(Utf8Len, SixBytesSingleNotEnoughDataTwoBytes)
 {
-	const char* c = "\xFC\x83\xBF\xBF\xBF";
+	EXPECT_EQ(1, utf8len("\xFD\x8A"));
+}
 
-	EXPECT_EQ(1, utf8len(c));
+TEST(Utf8Len, SixBytesSingleNotEnoughDataThreeBytes)
+{
+	EXPECT_EQ(1, utf8len("\xFD\xBF\xBA"));
+}
+
+TEST(Utf8Len, SixBytesSingleNotEnoughDataFourBytes)
+{
+	EXPECT_EQ(1, utf8len("\xFC\xA6\xB6\xBB"));
+}
+
+TEST(Utf8Len, SixBytesSingleNotEnoughDataFiveBytes)
+{
+	EXPECT_EQ(1, utf8len("\xFD\x81\x82\x83\x84"));
+}
+
+TEST(Utf8Len, SixBytesSingleInvalidContinuationByteFirstLower)
+{
+	EXPECT_EQ(6, utf8len("\xFD\x17\x80\x82\x8A\xAA"));
+}
+
+TEST(Utf8Len, SixBytesSingleInvalidContinuationByteFirstUpper)
+{
+	EXPECT_EQ(5, utf8len("\xFC\xC3\xA8\xB2\xB2\xBF"));
+}
+
+TEST(Utf8Len, SixBytesSingleInvalidContinuationByteSecondLower)
+{
+	EXPECT_EQ(5, utf8len("\xFC\xA8\x56\xB1\xAF\xAF"));
+}
+
+TEST(Utf8Len, SixBytesSingleInvalidContinuationByteSecondUpper)
+{
+	EXPECT_EQ(3, utf8len("\xFD\x8A\xE2\xA1\x87\x80"));
+}
+
+TEST(Utf8Len, SixBytesSingleInvalidContinuationByteThirdLower)
+{
+	EXPECT_EQ(4, utf8len("\xFD\x87\x87\x11\x8A\xA8"));
+}
+
+TEST(Utf8Len, SixBytesSingleInvalidContinuationByteThirdUpper)
+{
+	EXPECT_EQ(2, utf8len("\xFD\xAA\xA2\xF1\xB4\xB4"));
+}
+
+TEST(Utf8Len, SixBytesSingleInvalidContinuationByteFourthLower)
+{
+	EXPECT_EQ(3, utf8len("\xFD\xA1\xA2\xB4\x06\x88"));
+}
+
+TEST(Utf8Len, SixBytesSingleInvalidContinuationByteFourthUpper)
+{
+	EXPECT_EQ(2, utf8len("\xFC\x8A\x8B\xAB\xC0\x87"));
+}
+
+TEST(Utf8Len, SixBytesSingleInvalidContinuationByteFifthLower)
+{
+	EXPECT_EQ(2, utf8len("\xFC\x80\x80\x80\x80\x45"));
+}
+
+TEST(Utf8Len, SixBytesSingleInvalidContinuationByteFifthUpper)
+{
+	EXPECT_EQ(2, utf8len("\xFD\xBF\xBF\xBF\xBF\xFE"));
+}
+
+TEST(Utf8Len, SixBytesMultiple)
+{
+	EXPECT_EQ(3, utf8len("\xFD\x8A\xA7\xBA\xA1\x80\xFD\xBF\xBF\xBF\xBF\xBF\xFD\xBF\xBF\xBF\xBF\xBF"));
+}
+
+TEST(Utf8Len, SixBytesMultipleNotEnoughData)
+{
+	EXPECT_EQ(4, utf8len("\xFC\x80\xFC\xFD\x80\x8A\xFC\xA7\x90\xA8"));
+}
+
+TEST(Utf8Len, SixBytesMultipleInvalidContinuationByte)
+{
+	EXPECT_EQ(6, utf8len("\xFC\xC2\xFD\x80\x12\xFD\x8A\xA8\xC7"));
 }
 
 TEST(Utf8Len, StringEndsInMiddle)
