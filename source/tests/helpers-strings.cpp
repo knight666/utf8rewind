@@ -527,7 +527,7 @@ namespace helpers {
 	}
 
 	::testing::AssertionResult CompareCodepoints(
-		const char* expressionExpected, const char* expressionActual,
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		unicode_t codepointExpected, unicode_t codepointActual)
 	{
 		if (codepointActual == codepointExpected)
