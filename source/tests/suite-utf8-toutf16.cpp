@@ -1188,6 +1188,18 @@ TEST(Utf8ToUtf16, AmountOfBytesNoData)
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
+TEST(Utf8ToUtf16, ErrorsIsReset)
+{
+	const char* i = "\xC2\x89";
+	const size_t s = 256;
+	utf16_t o[s] = { 0 };
+	int32_t errors = 12334;
+
+	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_EQ(0x0089, o[0]);
+}
+
 TEST(Utf8ToUtf16, OverlappingParametersFits)
 {
 	int32_t errors = 0;

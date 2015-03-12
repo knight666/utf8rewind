@@ -386,6 +386,10 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 		src_size -= decoded_size;
 	}
 
+	if (errors != 0)
+	{
+		*errors = 0;
+	}
 	return bytes_written;
 
 invaliddata:
