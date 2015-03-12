@@ -44,17 +44,15 @@
 /* Validates input before transforming */
 /* Check for parameter overlap using the separating axis theorem */
 
-#define UTF8_VALIDATE_INPUT do { \
-	char* input_center; \
-	char* target_center; \
-	size_t delta; \
+#define UTF8_VALIDATE_INPUT \
 	if (input == 0 || inputSize == 0) { goto invaliddata; } \
-	if (input == target) { goto overlap; } \
-	input_center = (char*)input + (inputSize / 2); \
-	target_center = (char*)target + (targetSize / 2); \
-	delta = (size_t)((input_center > target_center) ? (input_center - target_center) : (target_center - input_center)) * 2; \
-	if (delta < (inputSize + targetSize)) { goto overlap; } \
-} while (0);
+	if ((char*)input == (char*)target) { goto overlap; } \
+	{ \
+		char* input_center = (char*)input + (inputSize / 2); \
+		char* target_center = (char*)target + (targetSize / 2); \
+		size_t delta = (size_t)((input_center > target_center) ? (input_center - target_center) : (target_center - input_center)) * 2; \
+		if (delta < (inputSize + targetSize)) { goto overlap; } \
+	}
 
 /*! \endcond */
 

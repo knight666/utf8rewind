@@ -306,17 +306,17 @@ size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target, size_t t
 
 size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t targetSize, int32_t* errors)
 {
-	const char* src = input;
-	size_t src_length = inputSize;
-	utf16_t* dst = target;
-	size_t dst_size = targetSize;
+	const char* src;
+	size_t src_size;
+	utf16_t* dst;
+	size_t dst_size;
 	size_t bytes_written = 0;
 
-	if (input == 0 ||
-		inputSize == 0)
-	{
-		goto invaliddata;
-	}
+	/* Validate input */
+
+	UTF8_VALIDATE_INPUT;
+
+	/* Validate output */
 
 	if (target != 0 &&
 		targetSize < sizeof(utf16_t))
@@ -324,30 +324,34 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 		goto outofspace;
 	}
 
-	while (src_length > 0)
+	/* Setup cursors */
+
+	src = input;
+	src_size = inputSize;
+	dst = target;
+	dst_size = targetSize;
+
+	/* Loop over input */
+
+	while (src_size > 0)
 	{
 		unicode_t decoded;
-		uint8_t decoded_size = codepoint_read(src, src_length, &decoded);
+		uint8_t decoded_size = codepoint_read(src, src_size, &decoded);
 
 		if (decoded <= MAX_BASIC_MULTILINGUAR_PLANE)
 		{
+			/* Codepoint fits in a single UTF-16 codepoint */
+
 			if (dst != 0)
 			{
+				/* Write to output */
+
 				if (dst_size < sizeof(utf16_t))
 				{
 					goto outofspace;
 				}
 
-				if (decoded >= SURROGATE_HIGH_START &&
-					decoded <= SURROGATE_LOW_END)
-				{
-					*dst++ = REPLACEMENT_CHARACTER;
-				}
-				else
-				{
-					*dst++ = (utf16_t)decoded;
-				}
-
+				*dst++ = (utf16_t)decoded;
 				dst_size -= sizeof(utf16_t);
 			}
 
@@ -355,27 +359,31 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 		}
 		else
 		{
+			/* Codepoint must be encoded using a surrogate pair */
+
 			if (dst != 0)
 			{
-				/* Codepoint must be converted to a surrogate pair. */
+				/* Write to output */
 
 				if (dst_size < sizeof(unicode_t))
 				{
 					goto outofspace;
 				}
 
-				decoded -= 0x10000;
-				*dst++ = (decoded >> 10) + SURROGATE_HIGH_START;
-				*dst++ = (decoded & 0x3FF) + SURROGATE_LOW_START;
+				/* Encoded value is always beyond BMP */
 
-				dst_size -= sizeof(unicode_t);
+				decoded -= (MAX_BASIC_MULTILINGUAR_PLANE + 1);
+				*dst++ = SURROGATE_HIGH_START + (decoded >> 10);
+				*dst++ = SURROGATE_LOW_START + (decoded & 0x03FF);
+
+				dst_size -= 2 * sizeof(utf16_t);
 			}
 
-			bytes_written += sizeof(unicode_t);
+			bytes_written += 2 * sizeof(utf16_t);
 		}
 
 		src += decoded_size;
-		src_length -= decoded_size;
+		src_size -= decoded_size;
 	}
 
 	return bytes_written;
@@ -384,6 +392,13 @@ invaliddata:
 	if (errors != 0)
 	{
 		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+overlap:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_OVERLAPPING_PARAMETERS;
 	}
 	return bytes_written;
 
