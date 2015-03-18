@@ -10,7 +10,7 @@ TEST(Utf8ToWide, String)
 	int32_t errors = 0;
 
 	EXPECT_EQ(3 * UTF8_WCHAR_SIZE, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ(L"\x91C\x921\x924", b);
 }
 
@@ -22,7 +22,7 @@ TEST(Utf8ToWide, Ascii)
 	int32_t errors = 0;
 
 	EXPECT_EQ(1 * UTF8_WCHAR_SIZE, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ(L"7", b);
 }
 
@@ -34,7 +34,7 @@ TEST(Utf8ToWide, AsciiNotEnoughData)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, utf8towide(c, 0, b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_STREQ(L"", b);
 }
 
@@ -46,7 +46,7 @@ TEST(Utf8ToWide, AsciiNotEnoughSpace)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_STREQ(L"", b);
 }
 
@@ -58,7 +58,7 @@ TEST(Utf8ToWide, TwoBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(1 * UTF8_WCHAR_SIZE, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ(L"\x02CC", b);
 }
 
@@ -70,7 +70,7 @@ TEST(Utf8ToWide, TwoBytesNotEnoughData)
 	int32_t errors = 0;
 
 	EXPECT_EQ(1 * UTF8_WCHAR_SIZE, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ(L"\xFFFD", b);
 }
 
@@ -82,7 +82,7 @@ TEST(Utf8ToWide, TwoBytesNotEnoughSpace)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, utf8towide(c, strlen(c), (wchar_t*)b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_STREQ("", b);
 }
 
@@ -94,7 +94,7 @@ TEST(Utf8ToWide, ThreeBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(1 * UTF8_WCHAR_SIZE, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ(L"\xAB01", b);
 }
 
@@ -106,7 +106,7 @@ TEST(Utf8ToWide, ThreeBytesNotEnoughData)
 	int32_t errors = 0;
 
 	EXPECT_EQ(UTF8_WCHAR_SIZE, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ(L"\xFFFD", b);
 }
 
@@ -124,7 +124,7 @@ TEST(Utf8ToWide, AboveBasicMultilingualPlane)
 	EXPECT_EQ(4, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_STREQ(L"\x10C11", b);
 #endif
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8ToWide, AboveBasicMultilingualPlaneFirst)
@@ -141,7 +141,7 @@ TEST(Utf8ToWide, AboveBasicMultilingualPlaneFirst)
 	EXPECT_EQ(4, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_STREQ(L"\x10000", b);
 #endif
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8ToWide, AboveBasicMultilingualPlaneLast)
@@ -158,7 +158,7 @@ TEST(Utf8ToWide, AboveBasicMultilingualPlaneLast)
 	EXPECT_EQ(4, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
 	EXPECT_STREQ(L"\x10FFFF", b);
 #endif
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8ToWide, AboveBasicMultilingualPlaneNotEnoughData)
@@ -169,7 +169,7 @@ TEST(Utf8ToWide, AboveBasicMultilingualPlaneNotEnoughData)
 	int32_t errors = 0;
 
 	EXPECT_EQ(UTF8_WCHAR_SIZE, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ(L"\xFFFD", b);
 }
 
@@ -181,7 +181,7 @@ TEST(Utf8ToWide, AboveBasicMultilingualPlaneNotEnoughSpace)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, utf8towide(c, strlen(c), (wchar_t*)b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_STREQ("", b);
 }
 
@@ -193,6 +193,6 @@ TEST(Utf8ToWide, NoData)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, utf8towide(c, 2, b, s * sizeof(wchar_t), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_STREQ(L"", b);
 }

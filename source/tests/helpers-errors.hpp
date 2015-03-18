@@ -7,10 +7,6 @@
 	\cond INTERNAL
 */
 
-#include "tests-base.hpp"
-
-#include "utf8rewind.h"
-
 #define EXPECT_ERROREQ(_expected, _actual) EXPECT_PRED_FORMAT2(::helpers::CompareErrors, _expected, _actual)
 
 namespace helpers {

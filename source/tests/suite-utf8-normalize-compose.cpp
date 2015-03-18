@@ -24,7 +24,7 @@ TEST(Utf8NormalizeCompose, BasicLatinSingle)
 
 	EXPECT_EQ(1, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("J", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, BasicLatinMultiple)
@@ -43,7 +43,7 @@ TEST(Utf8NormalizeCompose, BasicLatinMultiple)
 
 	EXPECT_EQ(10, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("Screenshot", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, BasicLatinCompatibility)
@@ -62,7 +62,7 @@ TEST(Utf8NormalizeCompose, BasicLatinCompatibility)
 
 	EXPECT_EQ(4, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("aXXo", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, BasicLatinAmountOfBytes)
@@ -78,7 +78,7 @@ TEST(Utf8NormalizeCompose, BasicLatinAmountOfBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(8, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, BasicLatinNotEnoughSpace)
@@ -97,7 +97,7 @@ TEST(Utf8NormalizeCompose, BasicLatinNotEnoughSpace)
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("App", o);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf8NormalizeCompose, MultiByteUnaffectedSingle)
@@ -116,7 +116,7 @@ TEST(Utf8NormalizeCompose, MultiByteUnaffectedSingle)
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE2\x83\x97", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, MultiByteUnaffectedMultiple)
@@ -135,7 +135,7 @@ TEST(Utf8NormalizeCompose, MultiByteUnaffectedMultiple)
 
 	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE2\x81\xAF\xE1\xBA\x9F\xE2\x80\xAB", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, MultiByteUnaffectedCompatibility)
@@ -154,7 +154,7 @@ TEST(Utf8NormalizeCompose, MultiByteUnaffectedCompatibility)
 
 	EXPECT_EQ(12, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("\xE2\x82\xA0\xE2\x82\xAC\xE2\x82\xB0\xE2\x82\xAF", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, MultiByteUnaffectedAmountOfBytes)
@@ -170,7 +170,7 @@ TEST(Utf8NormalizeCompose, MultiByteUnaffectedAmountOfBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(9, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, MultiByteUnaffectedNotEnoughSpace)
@@ -189,7 +189,7 @@ TEST(Utf8NormalizeCompose, MultiByteUnaffectedNotEnoughSpace)
 
 	EXPECT_EQ(6, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE2\x88\x9A\xE2\x88\x95", o);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf8NormalizeCompose, SequenceSingleComposeTwoCodepoints)
@@ -208,7 +208,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleComposeTwoCodepoints)
 
 	EXPECT_EQ(2, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xC3\x9D", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, SequenceSingleComposeMultipleCodepoints)
@@ -227,7 +227,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleComposeMultipleCodepoints)
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE1\xBE\xA2", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, SequenceSingleComposeUnordered)
@@ -246,7 +246,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleComposeUnordered)
 
 	EXPECT_EQ(5, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE1\xBE\xAA\xD9\x91", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, SequenceSingleDecomposeAndComposeOrdered)
@@ -265,7 +265,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleDecomposeAndComposeOrdered)
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE1\xBE\xAA", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, SequenceSingleDecomposeAndComposeUnordered)
@@ -284,7 +284,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleDecomposeAndComposeUnordered)
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE1\xB9\xA8", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, SequenceSingleComposeCompatibility)
@@ -303,7 +303,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleComposeCompatibility)
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("D\xC5\xBD", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, SequenceSingleComposeAmountOfBytes)
@@ -319,7 +319,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleComposeAmountOfBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(3, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, SequenceSingleComposeNotEnoughSpace)
@@ -338,7 +338,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleComposeNotEnoughSpace)
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("", o);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf8NormalizeCompose, HangulUnaffectedSingle)
@@ -357,7 +357,7 @@ TEST(Utf8NormalizeCompose, HangulUnaffectedSingle)
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xEA\xB6\xA4", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, HangulUnaffectedMultiple)
@@ -376,7 +376,7 @@ TEST(Utf8NormalizeCompose, HangulUnaffectedMultiple)
 
 	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xEA\xB6\xAA\xEB\x8B\xA9\xEA\xB9\xAE", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, HangulUnaffectedCompatibility)
@@ -395,7 +395,7 @@ TEST(Utf8NormalizeCompose, HangulUnaffectedCompatibility)
 
 	EXPECT_EQ(12, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("\xEB\x88\x9E\xEA\xB9\x92\xEB\x91\xAA\xEB\x97\xB0", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, HangulUnaffectedAmountOfBytes)
@@ -411,7 +411,7 @@ TEST(Utf8NormalizeCompose, HangulUnaffectedAmountOfBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(9, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, HangulUnaffectedNotEnoughSpace)
@@ -430,7 +430,7 @@ TEST(Utf8NormalizeCompose, HangulUnaffectedNotEnoughSpace)
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xEB\x9A\xB8", o);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf8NormalizeCompose, HangulComposeSingleTwoCodepoints)
@@ -449,7 +449,7 @@ TEST(Utf8NormalizeCompose, HangulComposeSingleTwoCodepoints)
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xEB\xA2\x94", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, HangulComposeSingleThreeCodepoints)
@@ -468,7 +468,7 @@ TEST(Utf8NormalizeCompose, HangulComposeSingleThreeCodepoints)
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xEB\xAA\xA9", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, HangulComposeMultiple)
@@ -487,7 +487,7 @@ TEST(Utf8NormalizeCompose, HangulComposeMultiple)
 
 	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xEB\xA9\xBF\xEB\xA4\x84\xEB\xAA\xB0", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, HangulComposeCompatibility)
@@ -506,7 +506,7 @@ TEST(Utf8NormalizeCompose, HangulComposeCompatibility)
 
 	EXPECT_EQ(6, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("\xEB\xAB\x8E\xEB\xAE\x88", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, HangulComposeAmountOfBytes)
@@ -524,7 +524,7 @@ TEST(Utf8NormalizeCompose, HangulComposeAmountOfBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(9, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, HangulComposeNotEnoughSpace)
@@ -543,7 +543,7 @@ TEST(Utf8NormalizeCompose, HangulComposeNotEnoughSpace)
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("", o);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf8NormalizeCompose, SequenceMultipleComposeOrdered)
@@ -562,7 +562,7 @@ TEST(Utf8NormalizeCompose, SequenceMultipleComposeOrdered)
 
 	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE1\xBF\xBC\xE1\xBE\x9A\xE1\xBC\xA4", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, SequenceMultipleComposeUnordered)
@@ -581,7 +581,7 @@ TEST(Utf8NormalizeCompose, SequenceMultipleComposeUnordered)
 
 	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE1\xBB\x86\xE1\xBE\x82\xE1\xBE\xAD", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, SequenceMultipleComposeCompatibility)
@@ -600,7 +600,7 @@ TEST(Utf8NormalizeCompose, SequenceMultipleComposeCompatibility)
 
 	EXPECT_EQ(13, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("\xEC\xB0\xB8\xEA\xB3\xA0\xE3\x83\x87\xD9\x84\xD8\xA2", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, SequenceMultipleComposeAmountOfBytes)
@@ -616,7 +616,7 @@ TEST(Utf8NormalizeCompose, SequenceMultipleComposeAmountOfBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(9, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8NormalizeCompose, SequenceMultipleComposeNotEnoughSpace)
@@ -635,5 +635,5 @@ TEST(Utf8NormalizeCompose, SequenceMultipleComposeNotEnoughSpace)
 
 	EXPECT_EQ(2, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xC8\xAB", o);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
