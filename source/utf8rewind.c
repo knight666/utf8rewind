@@ -174,7 +174,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 
 	if (errors != 0)
 	{
-		*errors = 0;
+		*errors = UTF8_ERR_NONE;
 	}
 	return bytes_written;
 
@@ -282,6 +282,10 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 		src_size -= sizeof(unicode_t);
 	}
 
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NONE;
+	}
 	return bytes_written;
 
 invaliddata:
@@ -400,7 +404,7 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 
 	if (errors != 0)
 	{
-		*errors = 0;
+		*errors = UTF8_ERR_NONE;
 	}
 	return bytes_written;
 
@@ -473,7 +477,7 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 
 	if (errors != 0)
 	{
-		*errors = 0;
+		*errors = UTF8_ERR_NONE;
 	}
 	return bytes_written;
 
@@ -1105,7 +1109,7 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 	if (errors != 0)
 	{
-		*errors = 0;
+		*errors = UTF8_ERR_NONE;
 	}
 	return bytes_written;
 
