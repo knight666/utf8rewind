@@ -8,6 +8,7 @@ var searchData=
   ['utf8_5fapi',['UTF8_API',['../group__configuration.html#gaf8233f2b15c97ad97ccec2beff1d24a2',1,'utf8rewind.h']]],
   ['utf8_5ferr_5finvalid_5fdata',['UTF8_ERR_INVALID_DATA',['../group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b',1,'utf8rewind.h']]],
   ['utf8_5ferr_5finvalid_5fflag',['UTF8_ERR_INVALID_FLAG',['../group__errors.html#gae91fa4856dd1f05861b3924c90bef23c',1,'utf8rewind.h']]],
+  ['utf8_5ferr_5fnone',['UTF8_ERR_NONE',['../group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3',1,'utf8rewind.h']]],
   ['utf8_5ferr_5fnot_5fenough_5fspace',['UTF8_ERR_NOT_ENOUGH_SPACE',['../group__errors.html#ga2c80a4201b65d282db98489204f6d5d8',1,'utf8rewind.h']]],
   ['utf8_5ferr_5foverlapping_5fparameters',['UTF8_ERR_OVERLAPPING_PARAMETERS',['../group__errors.html#ga212f91820ec425df66d59f187e78412c',1,'utf8rewind.h']]],
   ['utf8_5ferr_5funmatched_5fhigh_5fsurrogate_5fpair',['UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR',['../group__errors.html#ga0661d820dd006e49adfbdf0c7a9dec14',1,'utf8rewind.h']]],
