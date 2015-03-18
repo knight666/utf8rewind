@@ -177,17 +177,24 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 
 size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
-	const unicode_t* src = input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
+	const unicode_t* src;
+	size_t src_size;
+	char* dst;
+	size_t dst_size;
 	size_t bytes_written = 0;
 
-	if (input == 0 ||
-		inputSize < sizeof(unicode_t))
-	{
-		UTF8_RETURN(INVALID_DATA, bytes_written);
-	}
+	/* Validate parameters */
+
+	UTF8_VALIDATE_PARAMETERS(unicode_t, char, bytes_written);
+
+	/* Setup cursors */
+
+	src = input;
+	src_size = inputSize;
+	dst = target;
+	dst_size = targetSize;
+
+	/* Loop over input */
 
 	while (src_size > 0)
 	{
@@ -203,6 +210,8 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 			codepoint <= SURROGATE_LOW_END)
 		{
 			unicode_t surrogate_low;
+
+			/* Decode surrogate pair */
 
 			if (codepoint > SURROGATE_HIGH_END)
 			{
@@ -226,7 +235,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 			}
 
 			codepoint =
-				0x10000 +
+				(MAX_BASIC_MULTILINGUAR_PLANE + 1) +
 				(surrogate_low - SURROGATE_LOW_START) +
 				((codepoint - SURROGATE_HIGH_START) << 10);
 		}
