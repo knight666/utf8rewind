@@ -1103,6 +1103,10 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 	}
 	while (!finished);
 
+	if (errors != 0)
+	{
+		*errors = 0;
+	}
 	return bytes_written;
 
 invaliddata:

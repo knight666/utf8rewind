@@ -8,6 +8,25 @@ extern "C" {
 
 #include "helpers-strings.hpp"
 
+TEST(Utf8Normalize, ErrorsIsReset)
+{
+	/*
+		U+0054 U+0065 U+0061
+		     Y      Y      Y
+		     0      0      0
+	*/
+
+	const char* i = "Tea";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 1877;
+
+	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPATIBILITY | UTF8_NORMALIZE_COMPOSE, &errors));
+	EXPECT_UTF8EQ("Tea", o);
+	EXPECT_EQ(0, errors);
+}
+
 TEST(Utf8Normalize, InvalidFlag)
 {
 	/*
@@ -47,6 +66,25 @@ TEST(Utf8Normalize, InvalidFlagAndInvalidData)
 	EXPECT_EQ(0, utf8normalize(nullptr, 166, o, os, 0x00001B28, &errors));
 	EXPECT_UTF8EQ("", o);
 	EXPECT_EQ(UTF8_ERR_INVALID_FLAG, errors);
+}
+
+TEST(Utf8Normalize, NotEnoughSpace)
+{
+	/*
+		U+006D U+0065 U+0063 U+0068
+		     Y      Y      Y      Y
+		     0      0      0      0
+	*/
+
+	const char* i = "mech";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 0;
+	int32_t errors = 0;
+
+	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf8Normalize, OverlappingParametersFits)
