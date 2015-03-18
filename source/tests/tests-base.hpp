@@ -26,4 +26,12 @@
 
 #include <gtest/gtest.h>
 
+// utf8rewind
+
+#include "utf8rewind.h"
+
+// Helpers
+
+#include "helpers-errors.hpp"
+
 /*! \endcond */

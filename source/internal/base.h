@@ -41,18 +41,22 @@
 	#define UTF8_UNUSED(_parameter) _parameter
 #endif
 
+#define UTF8_RETURN(_error, _result) \
+	if (errors != 0) { *errors = UTF8_ERR_ ## _error; } \
+	return _result;
+
 /* Validates input before transforming */
 /* Check for parameter overlap using the separating axis theorem */
 
-#define UTF8_VALIDATE_PARAMETERS(_inputType, _targetType) \
-	if (input == 0 || inputSize < sizeof(_inputType)) { goto invaliddata; } \
-	if (target != 0 && targetSize < sizeof(_targetType)) { goto outofspace; } \
-	if ((char*)input == (char*)target) { goto overlap; } \
+#define UTF8_VALIDATE_PARAMETERS(_inputType, _targetType, _result) \
+	if (input == 0 || inputSize < sizeof(_inputType)) { UTF8_RETURN(INVALID_DATA, _result); } \
+	if (target != 0 && targetSize < sizeof(_targetType)) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
+	if ((char*)input == (char*)target) { UTF8_RETURN(OVERLAPPING_PARAMETERS, _result); } \
 	{ \
 		char* input_center = (char*)input + (inputSize / 2); \
 		char* target_center = (char*)target + (targetSize / 2); \
 		size_t delta = (size_t)((input_center > target_center) ? (input_center - target_center) : (target_center - input_center)); \
-		if (delta < (inputSize + targetSize) / 2) { goto overlap; } \
+		if (delta < (inputSize + targetSize) / 2) { UTF8_RETURN(OVERLAPPING_PARAMETERS, _result); } \
 	}
 
 /*! \endcond */
