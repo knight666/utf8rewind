@@ -121,7 +121,8 @@
 
 /*!
 	\def UTF8_NORMALIZE_COMPATIBILITY
-	\brief Changes composed normalization to NFKC or decomposed normalization to NFKD.
+	\brief Changes composed normalization to NFKC or decomposed normalization to
+	NFKD.
 */
 #define UTF8_NORMALIZE_COMPATIBILITY            0x00000004
 
@@ -136,9 +137,9 @@
 
 /*!
 	\def UTF8_WCHAR_SIZE
-	\brief Specifies the size of the `wchar_t` type. On Windows this
-	is 2, on POSIX systems it is 4. If not specified on the command
-	line, the compiler tries to automatically determine the value.
+	\brief Specifies the size of the `wchar_t` type. On Windows this is 2, on
+	POSIX systems it is 4. If not specified on the command line, the compiler
+	tries to automatically determine the value.
 */
 
 #ifndef UTF8_WCHAR_SIZE
@@ -221,9 +222,9 @@ UTF8_API size_t utf8len(const char* text);
 /*!
 	\brief Convert a UTF-16 encoded string to a UTF-8 encoded string.
 
-	\note This function should only be called directly if you are positive
-	that you're working with UTF-16 encoded text. If you're working
-	with wide strings, take a look at widetoutf8() instead.
+	\note This function should only be called directly if you are positive that
+	you are working with UTF-16 encoded text. If you're working with wide
+	strings, take a look at #widetoutf8 instead.
 
 	Example:
 
@@ -253,8 +254,8 @@ UTF8_API size_t utf8len(const char* text);
 	\param[in]   targetSize  Size of the output buffer in bytes.
 	\param[out]  errors      Output for errors.
 
-	\return Bytes written or amount of bytes needed for output
-	if target buffer is specified as NULL.
+	\return Bytes written or amount of bytes needed for output if target buffer 
+	is specified as NULL.
 
 	\retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
 	\retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
@@ -269,9 +270,9 @@ UTF8_API size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target
 /*!
 	\brief Convert a UTF-32 encoded string to a UTF-8 encoded string.
 
-	\note This function should only be called directly if you are positive
-	that you're working with UTF-32 encoded text. If you're working
-	with wide strings, take a look at widetoutf8() instead.
+	\note This function should only be called directly if you are positive that
+	you are working with UTF-32 encoded text. If you're working with wide
+	strings, take a look at #widetoutf8 instead.
 
 	Example:
 
@@ -313,8 +314,8 @@ UTF8_API size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target
 	\param[in]   targetSize  Size of the output buffer in bytes.
 	\param[out]  errors      Output for errors.
 
-	\return Bytes written or amount of bytes needed for output
-	if target buffer is specified as NULL.
+	\return Bytes written or amount of bytes needed for output if target buffer 
+	is specified as NULL.
 
 	\retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
 	\retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
@@ -329,14 +330,12 @@ UTF8_API size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* targ
 /*!
 	\brief Convert a wide string to a UTF-8 encoded string.
 
-	Depending on the platform, wide strings are either UTF-16
-	or UTF-32 encoded. This function takes a wide string as
-	input and automatically calls the correct conversion
-	function.
+	Depending on the platform, wide strings are either UTF-16 or UTF-32 encoded.
+	This function takes a wide string as input and automatically calls the
+	correct conversion function.
 	
-	This allows for a cross-platform treatment of wide text and
-	is preferable to using the UTF-16 or UTF-32 versions
-	directly.
+	This allows for a cross-platform treatment of wide text and is preferable to
+	using the UTF-16 or UTF-32 versions directly.
 
 	Example:
 
@@ -379,8 +378,8 @@ UTF8_API size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* targ
 	\param[in]   targetSize  Size of the output buffer in bytes.
 	\param[out]  errors      Output for errors.
 
-	\return Bytes written or amount of bytes needed for output
-	if target buffer is specified as NULL.
+	\return Bytes written or amount of bytes needed for output if target buffer 
+	is specified as NULL.
 
 	\retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
 	\retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
@@ -396,14 +395,12 @@ UTF8_API size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target,
 /*!
 	\brief Convert a UTF-8 encoded string to a UTF-16 encoded string.
 
-	\note This function should only be called directly if you are positive
-	that you *must* convert to UTF-16, independent of platform.
-	If you're working with wide strings, take a look at utf8towide()
-	instead.
+	\note This function should only be called directly if you are positive that
+	you *must* convert to UTF-16, independent of platform. If you're working
+	with wide strings, take a look at #utf8towide instead.
 
-	Erroneous byte sequences such as missing bytes, illegal bytes or
-	overlong encodings of codepoints are converted to the
-	replacement character U+FFFD.
+	Erroneous byte sequences such as missing bytes, illegal bytes or overlong
+	encodings of codepoints are converted to the replacement character U+FFFD.
 
 	Example:
 
@@ -429,8 +426,8 @@ UTF8_API size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target,
 	\param[in]   targetSize  Size of the output buffer in bytes.
 	\param[out]  errors      Output for errors.
 
-	\return Bytes written or amount of bytes needed for output
-	if target buffer is specified as NULL.
+	\return Bytes written or amount of bytes needed for output if target buffer 
+	is specified as NULL.
 
 	\retval #UTF8_ERR_INVALID_DATA      Input does not contain enough bytes for decoding.
 	\retval #UTF8_ERR_NOT_ENOUGH_SPACE  Target buffer could not contain result.
@@ -443,14 +440,12 @@ UTF8_API size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target
 /*!
 	\brief Convert a UTF-8 encoded string to a UTF-32 encoded string.
 
-	\note This function should only be called directly if you are positive
-	that you *must* convert to UTF-32, independent of platform.
-	If you're working with wide strings, take a look at utf8towide()
-	instead.
+	\note This function should only be called directly if you are positive that
+	you *must* convert to UTF-32, independent of platform. If you're working
+	with wide strings, take a look at #utf8towide instead.
 
-	Erroneous byte sequences such as missing bytes, illegal bytes or
-	overlong encodings of codepoints are converted to the
-	replacement character U+FFFD.
+	Erroneous byte sequences such as missing bytes, illegal bytes or overlong
+	encodings of codepoints are converted to the replacement character U+FFFD.
 
 	Example:
 
@@ -474,11 +469,11 @@ UTF8_API size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target
 	\param[in]   targetSize  Size of the output buffer in bytes.
 	\param[out]  errors      Output for errors.
 
-	\return Bytes written or amount of bytes needed for output
-	if target buffer is specified as NULL.
+	\return Bytes written or amount of bytes needed for output if target buffer 
+	is specified as NULL.
 
-	\retval #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
-	\retval #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+	\retval #UTF8_ERR_INVALID_DATA      Input does not contain enough bytes for decoding.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE  Target buffer could not contain result.
 
 	\sa utf8towide
 	\sa utf8toutf16
@@ -488,28 +483,23 @@ UTF8_API size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* targ
 /*!
 	\brief Convert a UTF-8 encoded string to a wide string.
 
-	Depending on the platform, wide strings are either UTF-16
-	or UTF-32 encoded. This function takes a UTF-8 encoded
-	string as input and automatically calls the correct
-	conversion function.
+	Depending on the platform, wide strings are either UTF-16 or UTF-32 encoded.
+	This function takes a UTF-8 encoded string as input and automatically calls
+	the correct conversion function.
 
-	This allows for a cross-platform treatment of wide text and
-	is preferable to using the UTF-16 or UTF-32 versions
-	directly.
+	This allows for a cross-platform treatment of wide text and is preferable to
+	using the UTF-16 or UTF-32 versions directly.
 
-	Erroneous byte sequences such as missing bytes, illegal bytes or
-	overlong encodings of codepoints are converted to the
-	replacement character U+FFFD.
+	Erroneous byte sequences such as missing bytes, illegal bytes or overlong
+	encodings of codepoints are converted to the replacement character U+FFFD.
 
-	\note Codepoints outside the Basic Multilingual Plane (BMP) are
-	converted to surrogate pairs when using UTF-16. This means
-	that strings containing characters outside the BMP
-	converted on a platform with UTF-32 wide strings are *not*
-	compatible with platforms with UTF-16 wide strings.
+	\note Codepoints outside the Basic Multilingual Plane (BMP) are converted to
+	surrogate pairs when using UTF-16. This means that strings containing
+	characters outside the BMP converted on a platform with UTF-32 wide strings
+	are *not* compatible with platforms with UTF-16 wide strings.
 
-	\par Hence, it is preferable to keep all data as UTF-8 and only
-	convert to wide strings when required by a third-party
-	interface.
+	\par Hence, it is preferable to keep all data as UTF-8 and only convert to
+	wide strings when required by a third-party interface.
 
 	Example:
 
@@ -549,11 +539,11 @@ UTF8_API size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* targ
 	\param[in]   targetSize  Size of the output buffer in bytes.
 	\param[out]  errors      Output for errors.
 
-	\return Bytes written or amount of bytes needed for output
-	if target buffer is specified as NULL.
+	\return Bytes written or amount of bytes needed for output if target buffer 
+	is specified as NULL.
 
-	\retval #UTF8_ERR_INVALID_DATA Input does not contain enough bytes for decoding.
-	\retval #UTF8_ERR_NOT_ENOUGH_SPACE Target buffer could not contain result.
+	\retval #UTF8_ERR_INVALID_DATA      Input does not contain enough bytes for decoding.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE  Target buffer could not contain result.
 
 	\sa widetoutf8
 	\sa utf8toutf16
@@ -568,18 +558,16 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 /*!
 	\brief Seek into a UTF-8 encoded string.
 
-	Working with UTF-8 encoded strings can be tricky due to
-	the nature of the variable-length encoding. Because one
-	character no longer equals one byte, it can be difficult
-	to skip around in a UTF-8 encoded string without
+	Working with UTF-8 encoded strings can be tricky due to the nature of the
+	variable-length encoding. Because one character no longer equals one byte,
+	it can be difficult to skip around in a UTF-8 encoded string without
 	decoding the codepoints.
 
-	This function provides an interface similar to `fseek`
-	in order to enable skipping to another part of the
-	string.
+	This function provides an interface similar to `fseek` in order to enable
+	skipping to another part of the string.
 
-	\note `textStart` must come before `text` in memory when
-	seeking from the current or end position.
+	\note `textStart` must come before `text` in memory when seeking from the
+	current or end position.
 
 	Example:
 
@@ -627,21 +615,20 @@ UTF8_API const char* utf8seek(const char* text, const char* textStart, off_t off
 /*!
 	\brief Convert UTF-8 encoded text to uppercase.
 
-	This function allows users to convert UTF-8 encoded strings to
-	uppercase without first changing the encoding to UTF-32.
-	Conversion is fully compliant with the Unicode 7.0 standard.
+	This function allows conversion of UTF-8 encoded strings to uppercase
+	without first changing the encoding to UTF-32. Conversion is fully compliant
+	with the Unicode 7.0 standard.
 
-	Although most codepoints can be converted in-place, there
-	are notable exceptions. For example, U+00DF (LATIN SMALL LETTER
-	SHARP S) maps to "U+0053 U+0053" (LATIN CAPITAL LETTER S) when
-	uppercasing. Therefor, it is advised to first determine the size
-	in bytes of the output by calling the function with a NULL output
-	buffer.
+	Although most codepoints can be converted in-place, there are notable
+	exceptions. For example, U+00DF (LATIN SMALL LETTER SHARP S) maps to
+	"U+0053 U+0053" (LATIN CAPITAL LETTER S and LATIN CAPITAL LETTER S) when
+	converted to uppercase. Therefor, it is advised to first determine the size
+	in bytes of the output by calling the function with a NULL output buffer.
 
-	Only a handful of scripts make a distinction between upper- and
-	lowercase. In addition to modern scripts, such as Latin, Greek,
-	Armenian and Cyrillic, a few historic or archaic scripts have
-	case. The vast majority of scripts do not have case distinctions.
+	Only a handful of scripts make a distinction between upper- and lowercase.
+	In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic,
+	a few historic or archaic scripts have case. The vast majority of scripts
+	do not have case distinctions.
 
 	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
 	!= toLower(toUpper(x))`.
@@ -690,17 +677,174 @@ UTF8_API const char* utf8seek(const char* text, const char* textStart, off_t off
 	\param[in]   targetSize  Size of the output buffer in bytes.
 	\param[out]  errors      Output for errors.
 
-	\return Bytes written or amount of bytes needed for output if
-	target buffer is specified as NULL.
+	\return Bytes written or amount of bytes needed for output if target buffer 
+	is specified as NULL.
 
 	\retval  #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
 	\retval  #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
 	\retval  #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
+
+	\sa utf8tolower
+	\sa utf8totitle
 */
 UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
+/*!
+	\brief Convert UTF-8 encoded text to lowercase.
+
+	This function allows conversion of UTF-8 encoded strings to lowercase
+	without first changing the encoding to UTF-32. Conversion is fully compliant
+	with the Unicode 7.0 standard.
+
+	Although most codepoints can be converted to lowercase in-place, there are
+	notable exceptions. For example, U+0130 (LATIN CAPITAL LETTER I WITH DOT
+	ABOVE) maps to "U+0069 U+0307" (LATIN SMALL LETTER I and COMBINING DOT
+	ABOVE) when converted to lowercase. Therefor, it is advised to first
+	determine the size in bytes of the output by calling the function with a
+	NULL output buffer.
+
+	Only a handful of scripts make a distinction between upper- and lowercase.
+	In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic,
+	a few historic or archaic scripts have case. The vast majority of scripts do
+	not have case distinctions.
+
+	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
+	!= toLower(toUpper(x))`.
+
+	Example:
+
+	\code{.c}
+		author_t* Author_ByName(const char* name)
+		{
+			author_t* result = NULL;
+			size_t name_size = strlen(name);
+			char* converted = NULL;
+			size_t converted_size;
+			int32_t errors = 0;
+			size_t i;
+			
+			converted_size = utf8tolower(name, name_size, NULL, 0, &errors);
+			if (converted_size == 0 ||
+				errors != 0)
+			{
+				goto cleanup;
+			}
+
+			converted = (char*)malloc(converted_size + 1);
+			utf8tolower(name, name_size, converted, converted_size, NULL);
+			converted[converted_size] = 0;
+			
+			for (i = 0; i < g_AuthorCount; ++i)
+			{
+				if (!strcmp(g_Author[i].name, converted))
+				{
+					result = &g_Author[i];
+					break;
+				}
+			}
+		
+		cleanup:
+			if (converted != NULL)
+			{
+				free(converted);
+				converted = NULL;
+			}
+			return result;
+		}
+	\endcode
+
+	\param[in]   input       UTF-8 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[out]  target      Output buffer for the result.
+	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[out]  errors      Output for errors.
+
+	\return Bytes written or amount of bytes needed for output if target buffer 
+	is specified as NULL.
+
+	\retval  #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
+	\retval  #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
+	\retval  #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
+
+	\sa utf8toupper
+	\sa utf8totitle
+*/
 UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
+/*!
+	\brief Convert UTF-8 encoded text to titlecase.
+
+	This function allows conversion of UTF-8 encoded strings to titlecase
+	without first changing the encoding to UTF-32. Conversion is fully compliant
+	with the Unicode 7.0 standard.
+
+	Titlecase requires a bit more explanation than uppercase and lowercase,
+	because it is not a common text transformation. Titlecase uses uppercase
+	for the first letter of each word and lowercase for the rest. Words are
+	defined as "collections of codepoints with general category Lu, Ll, Lt, Lm
+	or Lo according to the Unicode database".
+
+	Effectively, any type of punctuation can break up a word, even if this is
+	not grammatically valid. This is because titlecasing does not take grammar
+	rules into account.
+
+	Text                                 | Titlecase
+	-------------------------------------|-------------------------------------
+	The running man                      | The Running Man
+	NATO Alliance                        | Nato Alliance
+	You're amazing at building libraries | You'Re Amazing At Building Libraries
+	
+	Although most codepoints can be converted to titlecase in-place, there are
+	notable exceptions. For example, U+00DF (LATIN SMALL LETTER SHARP S) maps to
+	"U+0053 U+0073" (LATIN CAPITAL LETTER S and LATIN SMALL LETTER S) when
+	converted to titlecase. Therefor, it is advised to first determine the size
+	in bytes of the output by calling the function with a NULL output buffer.
+
+	Only a handful of scripts make a distinction between upper- and lowercase.
+	In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic,
+	a few historic or archaic scripts have case. The vast majority of scripts
+	do not have case distinctions.
+
+	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
+	!= toLower(toUpper(x))`.
+
+	Example:
+
+	\code{.c}
+		void Book_SetTitle(book_t* book, const char* title)
+		{
+			size_t converted_size;
+			int32_t errors = 0;
+			size_t i;
+
+			converted_size = utf8totitle(title, strlen(title), book->title, 255, &errors);
+			if (converted_size == 0 ||
+				errors != 0)
+			{
+				memset(book->title, 0, 256);
+
+				return;
+			}
+			book->title[converted_size] = 0;
+		}
+	\endcode
+
+	\param[in]   input       UTF-8 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[out]  target      Output buffer for the result.
+	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[out]  errors      Output for errors.
+
+	\return Bytes written or amount of bytes needed for output if target buffer 
+	is specified as NULL.
+
+	\retval  #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
+	\retval  #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
+	\retval  #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
+
+	\sa utf8tolower
+	\sa utf8toupper
+*/
 UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 /*!
@@ -719,6 +863,14 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	normalize a string. Normalization is a very expensive process, it is often
 	cheaper to first determine if the string is unstable in the requested
 	normalization form.
+
+	The result of the check will be YES if the string is stable and MAYBE or
+	NO if it is unstable. If the result is MAYBE, the string does not
+	necessarily have to be normalized.
+
+	If the result is unstable, the offset parameter is set to the offset for the
+	first unstable codepoint. If the string is stable, the offset is equivalent
+	to the length of the string in bytes.
 
 	Unicode Normalization Forms are formally defined normalizations of Unicode
 	strings which make it possible to determine whether any two Unicode
@@ -740,13 +892,6 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	Normalization Form KC (NFKC) | #UTF8_NORMALIZE_COMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
 	Normalization Form D (NFD)   | #UTF8_NORMALIZE_DECOMPOSE
 	Normalization Form KD (NFKD) | #UTF8_NORMALIZE_DECOMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
-
-	For a more detailed explanation, please see the documentation regarding
-	normalization.
-
-	The result of the check will be YES if the string is stable and MAYBE or
-	NO if it is unstable. If the result is MAYBE, the string does not
-	necessarily have to be normalized.
 
 	Example:
 
@@ -792,14 +937,14 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 
 	\param[in]   input       UTF-8 encoded string.
 	\param[in]   inputSize   Size of the input in bytes.
-	\param[in]   flags       Desired normalization form. Must be a combination
-	                         of #UTF8_NORMALIZE_COMPOSE, #UTF8_NORMALIZE_DECOMPOSE and
-	                         #UTF8_NORMALIZE_COMPATIBILITY
-	\param[out]  offset      Offset of first unstable codepoint.
+	\param[in]   flags       Desired normalization form. Must be a combination of #UTF8_NORMALIZE_COMPOSE, #UTF8_NORMALIZE_DECOMPOSE and #UTF8_NORMALIZE_COMPATIBILITY.
+	\param[out]  offset      Offset to first unstable codepoint or length of input in bytes if stable.
 
-	\retval  #UTF8_NORMALIZATION_RESULT_YES    Text is stable and does not have to be normalized.
-	\retval  #UTF8_NORMALIZATION_RESULT_MAYBE  Text is unstable, but normalization may be skipped.
-	\retval  #UTF8_NORMALIZATION_RESULT_NO     Text is unstable and must be normalized.
+	\retval  #UTF8_NORMALIZATION_RESULT_YES    Input is stable and does not have to be normalized.
+	\retval  #UTF8_NORMALIZATION_RESULT_MAYBE  Input is unstable, but normalization may be skipped.
+	\retval  #UTF8_NORMALIZATION_RESULT_NO     Input is unstable and must be normalized.
+
+	\sa utf8normalize
 */
 UTF8_API uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size_t* offset);
 
