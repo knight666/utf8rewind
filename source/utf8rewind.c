@@ -105,13 +105,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 
 	/* Validate parameters */
 
-	UTF8_VALIDATE_INPUT(utf16_t);
-
-	if (target != 0 &&
-		targetSize < sizeof(char))
-	{
-		goto outofspace;
-	}
+	UTF8_VALIDATE_PARAMETERS(utf16_t, char);
 
 	/* Setup cursors */
 
@@ -338,17 +332,9 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 	size_t dst_size;
 	size_t bytes_written = 0;
 
-	/* Validate input */
+	/* Validate parameters */
 
-	UTF8_VALIDATE_INPUT(char);
-
-	/* Validate output */
-
-	if (target != 0 &&
-		targetSize < sizeof(utf16_t))
-	{
-		goto outofspace;
-	}
+	UTF8_VALIDATE_PARAMETERS(char, utf16_t);
 
 	/* Setup cursors */
 
@@ -448,17 +434,9 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 	size_t dst_size;
 	size_t bytes_written = 0;
 
-	/* Validate input */
+	/* Validate parameters */
 
-	UTF8_VALIDATE_INPUT(char);
-
-	/* Validate output */
-
-	if (target != 0 &&
-		targetSize < sizeof(unicode_t))
-	{
-		goto outofspace;
-	}
+	UTF8_VALIDATE_PARAMETERS(char, unicode_t);
 
 	/* Setup cursors */
 
@@ -582,9 +560,9 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 	CaseMappingState state;
 	size_t bytes_written = 0;
 
-	/* Validate input */
+	/* Validate parameters */
 
-	UTF8_VALIDATE_INPUT(char);
+	UTF8_VALIDATE_PARAMETERS(char, char);
 
 	/* Initialize case mapping */
 
@@ -635,9 +613,9 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 	CaseMappingState state;
 	size_t bytes_written = 0;
 
-	/* Validate input */
+	/* Validate parameters */
 
-	UTF8_VALIDATE_INPUT(char);
+	UTF8_VALIDATE_PARAMETERS(char, char);
 
 	/* Initialize case mapping */
 
@@ -688,9 +666,9 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 	CaseMappingState state;
 	size_t bytes_written = 0;
 
-	/* Validate input */
+	/* Validate parameters */
 
-	UTF8_VALIDATE_INPUT(char);
+	UTF8_VALIDATE_PARAMETERS(char, char);
 
 	/* Initialize case mapping */
 
@@ -1003,9 +981,9 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 		goto invalidflag;
 	}
 
-	/* Validate input */
+	/* Validate parameters */
 
-	UTF8_VALIDATE_INPUT(char);
+	UTF8_VALIDATE_PARAMETERS(char, char);
 
 	/* Initialize decomposition */
 
