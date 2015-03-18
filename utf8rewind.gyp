@@ -61,6 +61,8 @@
 			'sources': [
 				'source/tests/helpers-casemapping.cpp',
 				'source/tests/helpers-casemapping.hpp',
+				'source/tests/helpers-errors.cpp',
+				'source/tests/helpers-errors.hpp',
 				'source/tests/helpers-normalization.cpp',
 				'source/tests/helpers-normalization.hpp',
 				'source/tests/helpers-streams.cpp',

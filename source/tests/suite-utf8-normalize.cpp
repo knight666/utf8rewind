@@ -6,6 +6,7 @@ extern "C" {
 	#include "../internal/database.h"
 };
 
+#include "helpers-errors.hpp"
 #include "helpers-strings.hpp"
 
 TEST(Utf8Normalize, ErrorsIsReset)
@@ -24,7 +25,7 @@ TEST(Utf8Normalize, ErrorsIsReset)
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPATIBILITY | UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("Tea", o);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8Normalize, InvalidFlag)
@@ -43,7 +44,7 @@ TEST(Utf8Normalize, InvalidFlag)
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, 0x00000008, &errors));
 	EXPECT_UTF8EQ("", o);
-	EXPECT_EQ(UTF8_ERR_INVALID_FLAG, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_FLAG, errors);
 }
 
 TEST(Utf8Normalize, InvalidData)
@@ -54,7 +55,7 @@ TEST(Utf8Normalize, InvalidData)
 
 	EXPECT_EQ(0, utf8normalize(nullptr, 7, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("", o);
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8Normalize, InvalidFlagAndInvalidData)
@@ -65,7 +66,7 @@ TEST(Utf8Normalize, InvalidFlagAndInvalidData)
 
 	EXPECT_EQ(0, utf8normalize(nullptr, 166, o, os, 0x00001B28, &errors));
 	EXPECT_UTF8EQ("", o);
-	EXPECT_EQ(UTF8_ERR_INVALID_FLAG, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_FLAG, errors);
 }
 
 TEST(Utf8Normalize, NotEnoughSpace)
@@ -84,7 +85,7 @@ TEST(Utf8Normalize, NotEnoughSpace)
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
 	EXPECT_UTF8EQ("", o);
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf8Normalize, OverlappingParametersFits)
@@ -101,7 +102,7 @@ TEST(Utf8Normalize, OverlappingParametersFits)
 
 	EXPECT_EQ(5, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
 	EXPECT_UTF8EQ("crashcrash", data);
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8Normalize, OverlappingParametersStartsEqual)
@@ -116,7 +117,7 @@ TEST(Utf8Normalize, OverlappingParametersStartsEqual)
 	size_t os = 27;
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
-	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
 TEST(Utf8Normalize, OverlappingParametersEndsEqual)
@@ -131,7 +132,7 @@ TEST(Utf8Normalize, OverlappingParametersEndsEqual)
 	size_t os = 28;
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
-	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
 TEST(Utf8Normalize, OverlappingParametersInputStartsInTarget)
@@ -146,7 +147,7 @@ TEST(Utf8Normalize, OverlappingParametersInputStartsInTarget)
 	size_t os = 56;
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
-	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
 TEST(Utf8Normalize, OverlappingParametersInputEndsInTarget)
@@ -161,7 +162,7 @@ TEST(Utf8Normalize, OverlappingParametersInputEndsInTarget)
 	size_t os = 16;
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
-	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
 TEST(Utf8Normalize, OverlappingParametersInputInsideTarget)
@@ -176,7 +177,7 @@ TEST(Utf8Normalize, OverlappingParametersInputInsideTarget)
 	size_t os = 92;
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPOSE, &errors));
-	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
 TEST(Utf8Normalize, OverlappingParametersTargetStartsInInput)
@@ -191,7 +192,7 @@ TEST(Utf8Normalize, OverlappingParametersTargetStartsInInput)
 	size_t os = 27;
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
-	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
 TEST(Utf8Normalize, OverlappingParametersTargetEndsInInput)
@@ -206,7 +207,7 @@ TEST(Utf8Normalize, OverlappingParametersTargetEndsInInput)
 	size_t os = 25;
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
-	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
 TEST(Utf8Normalize, OverlappingParametersTargetInsideInput)
@@ -221,5 +222,5 @@ TEST(Utf8Normalize, OverlappingParametersTargetInsideInput)
 	size_t os = 19;
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
-	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
