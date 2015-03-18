@@ -97,17 +97,30 @@ size_t utf8len(const char* text)
 
 size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
-	const utf16_t* src = input;
-	size_t src_size = inputSize;
-	char* dst = target;
-	size_t dst_size = targetSize;
+	const utf16_t* src;
+	size_t src_size;
+	char* dst;
+	size_t dst_size;
 	size_t bytes_written = 0;
 
-	if (input == 0 ||
-		inputSize < sizeof(utf16_t))
+	/* Validate parameters */
+
+	UTF8_VALIDATE_INPUT(utf16_t);
+
+	if (target != 0 &&
+		targetSize < sizeof(char))
 	{
-		goto invaliddata;
+		goto outofspace;
 	}
+
+	/* Setup cursors */
+
+	src = input;
+	src_size = inputSize;
+	dst = target;
+	dst_size = targetSize;
+
+	/* Loop over input */
 
 	while (src_size > 0)
 	{
@@ -123,6 +136,8 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 			codepoint <= SURROGATE_LOW_END)
 		{
 			utf16_t surrogate_low;
+
+			/* Decode surrogate pair */
 
 			if (codepoint > SURROGATE_HIGH_END)
 			{
@@ -146,7 +161,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 			}
 
 			codepoint =
-				0x10000 +
+				(MAX_BASIC_MULTILINGUAR_PLANE + 1) +
 				(surrogate_low - SURROGATE_LOW_START) +
 				((codepoint - SURROGATE_HIGH_START) << 10);
 		}
@@ -163,12 +178,23 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 		src_size -= sizeof(utf16_t);
 	}
 
+	if (errors != 0)
+	{
+		*errors = 0;
+	}
 	return bytes_written;
 
 invaliddata:
 	if (errors != 0)
 	{
 		*errors = UTF8_ERR_INVALID_DATA;
+	}
+	return bytes_written;
+
+overlap:
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_OVERLAPPING_PARAMETERS;
 	}
 	return bytes_written;
 
@@ -314,7 +340,7 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 
 	/* Validate input */
 
-	UTF8_VALIDATE_INPUT;
+	UTF8_VALIDATE_INPUT(char);
 
 	/* Validate output */
 
@@ -424,7 +450,7 @@ size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* target, size_
 
 	/* Validate input */
 
-	UTF8_VALIDATE_INPUT;
+	UTF8_VALIDATE_INPUT(char);
 
 	/* Validate output */
 
@@ -558,7 +584,7 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Validate input */
 
-	UTF8_VALIDATE_INPUT;
+	UTF8_VALIDATE_INPUT(char);
 
 	/* Initialize case mapping */
 
@@ -611,7 +637,7 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Validate input */
 
-	UTF8_VALIDATE_INPUT;
+	UTF8_VALIDATE_INPUT(char);
 
 	/* Initialize case mapping */
 
@@ -664,7 +690,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Validate input */
 
-	UTF8_VALIDATE_INPUT;
+	UTF8_VALIDATE_INPUT(char);
 
 	/* Initialize case mapping */
 
@@ -979,7 +1005,7 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 	/* Validate input */
 
-	UTF8_VALIDATE_INPUT;
+	UTF8_VALIDATE_INPUT(char);
 
 	/* Initialize decomposition */
 
