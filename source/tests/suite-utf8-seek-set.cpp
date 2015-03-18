@@ -70,7 +70,7 @@ TEST(Utf8SeekSet, PastEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, EndsInMiddle)
@@ -85,7 +85,7 @@ TEST(Utf8SeekSet, EndsInMiddle)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, LonelyStartDouble)
@@ -128,7 +128,7 @@ TEST(Utf8SeekSet, Empty)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, Ascii)
@@ -227,7 +227,7 @@ TEST(Utf8SeekSet, TwoBytesOverlongPastEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, TwoBytesLonelyStart)
@@ -256,7 +256,7 @@ TEST(Utf8SeekSet, TwoBytesLonelyStartAtEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, ThreeBytes)
@@ -299,7 +299,7 @@ TEST(Utf8SeekSet, ThreeBytesOverlongPastEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, ThreeBytesLonelyStart)
@@ -328,7 +328,7 @@ TEST(Utf8SeekSet, ThreeBytesLonelyStartAtEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, ThreeBytesNotEnoughData)
@@ -357,7 +357,7 @@ TEST(Utf8SeekSet, ThreeBytesNotEnoughDataAtEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, FourBytes)
@@ -400,7 +400,7 @@ TEST(Utf8SeekSet, FourBytesOverlongPastEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, FourBytesLonelyStart)
@@ -429,7 +429,7 @@ TEST(Utf8SeekSet, FourBytesLonelyStartAtEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, FourBytesNotEnoughData)
@@ -458,7 +458,7 @@ TEST(Utf8SeekSet, FourBytesNotEnoughDataAtEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, FiveBytesOverlong)
@@ -487,7 +487,7 @@ TEST(Utf8SeekSet, FiveBytesOverlongPastEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, FiveBytesLonelyStart)
@@ -516,7 +516,7 @@ TEST(Utf8SeekSet, FiveBytesLonelyStartAtEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, FiveBytesNotEnoughData)
@@ -545,7 +545,7 @@ TEST(Utf8SeekSet, FiveBytesNotEnoughDataAtEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, SixBytesOverlong)
@@ -588,7 +588,7 @@ TEST(Utf8SeekSet, SixBytesLonelyStartAtEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8SeekSet, SixBytesNotEnoughData)
@@ -617,5 +617,5 @@ TEST(Utf8SeekSet, SixBytesNotEnoughDataAtEnd)
 	unicode_t o = 0;
 	int32_t errors = 0;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }

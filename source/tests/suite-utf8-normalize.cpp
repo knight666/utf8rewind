@@ -6,7 +6,6 @@ extern "C" {
 	#include "../internal/database.h"
 };
 
-#include "helpers-errors.hpp"
 #include "helpers-strings.hpp"
 
 TEST(Utf8Normalize, ErrorsIsReset)

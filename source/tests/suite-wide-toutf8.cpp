@@ -14,7 +14,7 @@ TEST(WideToUtf8, Convert)
 	int32_t errors = 0;
 
 	EXPECT_EQ(9, widetoutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ("\xE0\xA4\x9C\xE0\xA4\xA1\xE0\xA4\xA4", b);
 }
 
@@ -26,7 +26,7 @@ TEST(WideToUtf8, OneByte)
 	int32_t errors = 0;
 
 	EXPECT_EQ(1, widetoutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ("*", b);
 }
 
@@ -38,7 +38,7 @@ TEST(WideToUtf8, TwoBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(2, widetoutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ("\xCB\x8C", b);
 }
 
@@ -50,7 +50,7 @@ TEST(WideToUtf8, ThreeBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(3, widetoutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ("\xE1\x8A\x80", b);
 }
 
@@ -64,7 +64,7 @@ TEST(WideToUtf8, FourBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(4, widetoutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ("\xF0\x9F\x98\x92", b);
 }
 
@@ -81,7 +81,7 @@ TEST(WideToUtf8, SurrogatePair)
 	int32_t errors = 0;
 
 	EXPECT_EQ(4, widetoutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ("\xF0\x9D\x84\x9E", b);
 }
 
@@ -95,7 +95,7 @@ TEST(WideToUtf8, SurrogatePairMinimum)
 	int32_t errors = 0;
 
 	EXPECT_EQ(4, widetoutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ("\xF0\x90\x80\x80", b);
 }
 
@@ -109,7 +109,7 @@ TEST(WideToUtf8, SurrogatePairMaximum)
 	int32_t errors = 0;
 
 	EXPECT_EQ(4, widetoutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_STREQ("\xF4\x8F\xBF\xBF", b);
 }
 
@@ -123,7 +123,7 @@ TEST(WideToUtf8, UnmatchedLowSurrogatePair)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, widetoutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR, errors);
+	EXPECT_ERROREQ(UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR, errors);
 	EXPECT_STREQ("", b);
 }
 
@@ -137,7 +137,7 @@ TEST(WideToUtf8, UnmatchedHighSurrogatePair)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, widetoutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR, errors);
+	EXPECT_ERROREQ(UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR, errors);
 	EXPECT_STREQ("", b);
 }
 
@@ -148,7 +148,7 @@ TEST(WideToUtf8, NoData)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, widetoutf8(nullptr, sizeof(wchar_t), b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_STREQ("", b);
 }
 
@@ -162,7 +162,7 @@ TEST(WideToUtf8, NotEnoughSpace)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, widetoutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_STREQ("", b);
 }
 
@@ -176,7 +176,7 @@ TEST(WideToUtf8, InvalidLength)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, widetoutf8(c, 1, b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 	EXPECT_STREQ("", b);
 }
 
@@ -190,7 +190,7 @@ TEST(WideToUtf8, InvalidData)
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, widetoutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_EQ(UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR, errors);
+	EXPECT_ERROREQ(UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR, errors);
 	EXPECT_STREQ("", b);
 }
 
@@ -202,7 +202,7 @@ TEST(WideToUtf8, OutputLengthOneByte)
 	int32_t errors = 0;
 
 	EXPECT_EQ(1, widetoutf8(c, sizeof(c), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(WideToUtf8, OutputLengthTwoBytes)
@@ -213,7 +213,7 @@ TEST(WideToUtf8, OutputLengthTwoBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(2, widetoutf8(c, sizeof(c), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(WideToUtf8, OutputLengthThreeBytes)
@@ -224,7 +224,7 @@ TEST(WideToUtf8, OutputLengthThreeBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(3, widetoutf8(c, sizeof(c), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 #if UTF8_WCHAR_UTF32
@@ -237,7 +237,7 @@ TEST(WideToUtf8, OutputLengthFourBytes)
 	int32_t errors = 0;
 
 	EXPECT_EQ(4, widetoutf8(c, sizeof(c), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 #endif
@@ -250,5 +250,5 @@ TEST(WideToUtf8, OutputLengthSurrogatePair)
 	int32_t errors = 0;
 
 	EXPECT_EQ(4, widetoutf8(c, sizeof(c), nullptr, 0, &errors));
-	EXPECT_EQ(0, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
