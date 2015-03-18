@@ -42,6 +42,8 @@
 	\{
 */
 
+#define UTF8_ERR_NONE                           (0)
+
 /*!
 	\def UTF8_ERR_INVALID_DATA
 	\brief Input data is invalid.
