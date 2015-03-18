@@ -44,8 +44,9 @@
 /* Validates input before transforming */
 /* Check for parameter overlap using the separating axis theorem */
 
-#define UTF8_VALIDATE_INPUT(_inputType) \
+#define UTF8_VALIDATE_PARAMETERS(_inputType, _targetType) \
 	if (input == 0 || inputSize < sizeof(_inputType)) { goto invaliddata; } \
+	if (target != 0 && targetSize < sizeof(_targetType)) { goto outofspace; } \
 	if ((char*)input == (char*)target) { goto overlap; } \
 	{ \
 		char* input_center = (char*)input + (inputSize / 2); \
