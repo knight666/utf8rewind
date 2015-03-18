@@ -588,6 +588,10 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 		bytes_written += result;
 	}
 
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NONE;
+	}
 	return bytes_written;
 
 invaliddata:
@@ -641,6 +645,10 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 		bytes_written += result;
 	}
 
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NONE;
+	}
 	return bytes_written;
 
 invaliddata:
@@ -708,6 +716,10 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 		bytes_written += result;
 	}
 
+	if (errors != 0)
+	{
+		*errors = UTF8_ERR_NONE;
+	}
 	return bytes_written;
 
 invaliddata:

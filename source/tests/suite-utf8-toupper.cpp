@@ -338,6 +338,18 @@ TEST(Utf8ToUpper, InvalidCodepointNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(Utf8ToUpper, ErrorsIsReset)
+{
+	const char* c = "Wood Log";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 1989;
+
+	EXPECT_EQ(8, utf8toupper(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("WOOD LOG", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
 TEST(Utf8ToUpper, InvalidData)
 {
 	int32_t errors = 0;

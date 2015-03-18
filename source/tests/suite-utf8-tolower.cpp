@@ -339,6 +339,18 @@ TEST(Utf8ToLower, InvalidCodepointNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(Utf8ToLower, ErrorsIsReset)
+{
+	const char* c = "MANIAC";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 1691;
+
+	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("maniac", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
 TEST(Utf8ToLower, InvalidData)
 {
 	int32_t errors = 0;
