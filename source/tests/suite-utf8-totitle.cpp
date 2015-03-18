@@ -394,7 +394,7 @@ TEST(Utf8ToTitle, InvalidData)
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(Utf8ToTitle, OverlapFits)
+TEST(Utf8ToTitle, OverlappingParametersFits)
 {
 	int32_t errors = 0;
 
@@ -411,7 +411,7 @@ TEST(Utf8ToTitle, OverlapFits)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, OverlapStartsEqual)
+TEST(Utf8ToTitle, OverlappingParametersStartsEqual)
 {
 	int32_t errors = 0;
 
@@ -426,7 +426,7 @@ TEST(Utf8ToTitle, OverlapStartsEqual)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlapEndsEqual)
+TEST(Utf8ToTitle, OverlappingParametersEndsEqual)
 {
 	int32_t errors = 0;
 
@@ -441,7 +441,7 @@ TEST(Utf8ToTitle, OverlapEndsEqual)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlapInputStartsInTarget)
+TEST(Utf8ToTitle, OverlappingParametersInputStartsInTarget)
 {
 	int32_t errors = 0;
 
@@ -456,7 +456,7 @@ TEST(Utf8ToTitle, OverlapInputStartsInTarget)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlapInputEndsInTarget)
+TEST(Utf8ToTitle, OverlappingParametersInputEndsInTarget)
 {
 	int32_t errors = 0;
 
@@ -471,7 +471,7 @@ TEST(Utf8ToTitle, OverlapInputEndsInTarget)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlapInputInsideTarget)
+TEST(Utf8ToTitle, OverlappingParametersInputInsideTarget)
 {
 	int32_t errors = 0;
 
@@ -486,7 +486,7 @@ TEST(Utf8ToTitle, OverlapInputInsideTarget)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlapTargetStartsInInput)
+TEST(Utf8ToTitle, OverlappingParametersTargetStartsInInput)
 {
 	int32_t errors = 0;
 
@@ -501,7 +501,7 @@ TEST(Utf8ToTitle, OverlapTargetStartsInInput)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlapTargetEndsInInput)
+TEST(Utf8ToTitle, OverlappingParametersTargetEndsInInput)
 {
 	int32_t errors = 0;
 
@@ -516,7 +516,7 @@ TEST(Utf8ToTitle, OverlapTargetEndsInInput)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlapTargetInsideInput)
+TEST(Utf8ToTitle, OverlappingParametersTargetInsideInput)
 {
 	int32_t errors = 0;
 
