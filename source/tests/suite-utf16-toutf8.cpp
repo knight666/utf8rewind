@@ -2,6 +2,8 @@
 
 #include "utf8rewind.h"
 
+#include "helpers-strings.hpp"
+
 TEST(Utf16ToUtf8, Character)
 {
 	utf16_t c = 0xDD;
@@ -399,4 +401,155 @@ TEST(Utf16ToUtf8, AmountOfBytesNoData)
 
 	EXPECT_EQ(0, utf16toutf8(nullptr, 1, nullptr, 0, &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf16ToUtf8, ErrorsIsReset)
+{
+	utf16_t c = 0x1A8D;
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 128;
+
+	EXPECT_EQ(3, utf16toutf8(&c, sizeof(c), b, s - 1, &errors));
+	EXPECT_EQ(0, errors);
+	EXPECT_UTF8EQ("\xE1\xAA\x8D", b);
+}
+
+TEST(Utf16ToUtf8, OverlappingParametersFits)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+	data[0] = 'A';
+	data[2] = 'n';
+	data[4] = 's';
+
+	const utf16_t* i = (const utf16_t*)data;
+	size_t is = 6;
+	char* o = (char*)(data + 6);
+	size_t os = 3;
+
+	EXPECT_EQ(3, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_MEMEQ("A\0n\0s\0Ans", (const char*)data, 9);
+	EXPECT_EQ(0, errors);
+}
+
+TEST(Utf16ToUtf8, OverlappingParametersStartsEqual)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const utf16_t* i = (const utf16_t*)data;
+	size_t is = 24;
+	char* o = (char*)data;
+	size_t os = 48;
+
+	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(Utf16ToUtf8, OverlappingParametersEndsEqual)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const utf16_t* i = (const utf16_t*)(data + 20);
+	size_t is = 30;
+	char* o = (char*)(data + 10);
+	size_t os = 40;
+
+	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(Utf16ToUtf8, OverlappingParametersInputStartsInTarget)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const utf16_t* i = (const utf16_t*)(data + 21);
+	size_t is = 76;
+	char* o = (char*)(data + 12);
+	size_t os = 61;
+
+	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(Utf16ToUtf8, OverlappingParametersInputEndsInTarget)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const utf16_t* i = (const utf16_t*)(data + 39);
+	size_t is = 11;
+	char* o = (char*)(data + 45);
+	size_t os = 23;
+
+	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(Utf16ToUtf8, OverlappingParametersInputInsideTarget)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const utf16_t* i = (const utf16_t*)(data + 22);
+	size_t is = 15;
+	char* o = (char*)(data + 18);
+	size_t os = 40;
+
+	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(Utf16ToUtf8, OverlappingParametersTargetStartsInInput)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const utf16_t* i = (const utf16_t*)(data + 15);
+	size_t is = 20;
+	char* o = (char*)(data + 21);
+	size_t os = 41;
+
+	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(Utf16ToUtf8, OverlappingParametersTargetEndsInInput)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const utf16_t* i = (const utf16_t*)(data + 67);
+	size_t is = 28;
+	char* o = (char*)(data + 49);
+	size_t os = 31;
+
+	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(Utf16ToUtf8, OverlappingParametersTargetInsideInput)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const utf16_t* i = (const utf16_t*)(data + 41);
+	size_t is = 28;
+	char* o = (char*)(data + 48);
+	size_t os = 10;
+
+	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_EQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
