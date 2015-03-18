@@ -374,6 +374,18 @@ TEST(Utf8ToTitle, InvalidCodepointNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(Utf8ToTitle, ErrorsIsReset)
+{
+	const char* c = "cAPS lOCK";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = 11111;
+
+	EXPECT_EQ(9, utf8totitle(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("Caps Lock", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
 TEST(Utf8ToTitle, InvalidData)
 {
 	int32_t errors = 0;
