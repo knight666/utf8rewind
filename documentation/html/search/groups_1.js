@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['error_20codes',['Error codes',['../group__errors.html',1,'']]]
+  ['global_20configuration',['Global configuration',['../group__configuration.html',1,'']]]
 ];

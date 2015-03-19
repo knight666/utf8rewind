@@ -140,19 +140,19 @@ Dealing with user input</h1>
 </div><!-- fragment --><p>What we want to do is make sure the password field can accept Unicode input. To that end, we'll change the input type to <a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988" title="Unicode codepoint. ">unicode_t</a>, which can encode every valid Unicode codepoint.</p>
 <div class="fragment"><div class="line">uint8_t PasswordField_EnterCharacter(<span class="keywordtype">char</span> input)</div>
 </div><!-- fragment --><p>Every location that calls <code>PasswordField_EnterCharacter</code> will have to cast the parameter to <a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988" title="Unicode codepoint. ">unicode_t</a>, but luckily this is backwards-compatible. All ASCII codepoints are valid in Unicode as well.</p>
-<p>Inside the function, we'll want to convert the UTF-32 codepoint to UTF-8. To that end, we'll use <a class="el" href="group__conversion.html#ga325b2612f0a2afdacb81d5e6831bd43b" title="Convert a UTF-32 encoded string to a UTF-8 encoded string. ">utf32toutf8</a>.</p>
+<p>Inside the function, we'll want to convert the UTF-32 codepoint to UTF-8. To that end, we'll use <a class="el" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b" title="Convert a UTF-32 encoded string to a UTF-8 encoded string. ">utf32toutf8</a>.</p>
 <div class="fragment"><div class="line"><span class="keywordtype">char</span> text_input[8];</div>
 <div class="line"><span class="keywordtype">size_t</span> converted_size;</div>
 <div class="line">int32_t errors = 0;</div>
 <div class="line"></div>
-<div class="line">converted_size = <a class="code" href="group__conversion.html#ga325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>), text_input, 7, &amp;errors);</div>
+<div class="line">converted_size = <a class="code" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>), text_input, 7, &amp;errors);</div>
 <div class="line"><span class="keywordflow">if</span> (converted_size == 0 ||</div>
 <div class="line">    errors != 0)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="line">text_input[converted_size] = 0;</div>
-</div><!-- fragment --><p>Although the call to <a class="el" href="group__conversion.html#ga325b2612f0a2afdacb81d5e6831bd43b" title="Convert a UTF-32 encoded string to a UTF-8 encoded string. ">utf32toutf8</a> is guaranteed not to fail, because the maximum length of a Unicode codepoint in UTF-8 is 4 bytes, it's good practice to check for and respond to error conditions.</p>
+</div><!-- fragment --><p>Although the call to <a class="el" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b" title="Convert a UTF-32 encoded string to a UTF-8 encoded string. ">utf32toutf8</a> is guaranteed not to fail, because the maximum length of a Unicode codepoint in UTF-8 is 4 bytes, it's good practice to check for and respond to error conditions.</p>
 <p>Because the converted string can now consist of more than one byte, we'll have to change the check to see if we're out of bounds of the password input array.</p>
 <div class="fragment"><div class="line"><span class="keywordflow">if</span> ((strlen(g_PasswordInput) + strlen(text_input)) &gt; g_PasswordInputMaximum)</div>
 <div class="line">{</div>
@@ -168,7 +168,7 @@ Dealing with user input</h1>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
 <div class="line">    int32_t errors = 0;</div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="group__conversion.html#ga325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>), text_input, 7, &amp;errors);</div>
+<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>), text_input, 7, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
 <div class="line">        errors != 0)</div>
 <div class="line">    {</div>
@@ -208,7 +208,7 @@ Displaying Unicode text</h1>
 <div class="line">    FontBatch_Draw(x, y);</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>The issue here is that <code>FontBatch_AddCharacter</code> expects codepoints encoded as one byte per codepoint. Because UTF-8 is a variable-length encoding, this isn't necessarily true anymore.</p>
-<p>In order for the font renderer to display Unicode text, we'll need to convert the UTF-8 encoded text to UTF-32. To that end, we'll use <a class="el" href="group__conversion.html#ga353e5c4a977a630d154db221d6c36159" title="Convert a UTF-8 encoded string to a UTF-32 encoded string. ">utf8toutf32</a>.</p>
+<p>In order for the font renderer to display Unicode text, we'll need to convert the UTF-8 encoded text to UTF-32. To that end, we'll use <a class="el" href="utf8rewind_8h.html#a353e5c4a977a630d154db221d6c36159" title="Convert a UTF-8 encoded string to a UTF-32 encoded string. ">utf8toutf32</a>.</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> InputField_Draw(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">size_t</span> text_size = strlen(text);</div>
@@ -218,7 +218,7 @@ Displaying Unicode text</h1>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
 <div class="line">    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* src;</div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="group__conversion.html#ga353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(text, text_size, NULL, 0, &amp;errors);</div>
+<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(text, text_size, NULL, 0, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
 <div class="line">        errors != 0)</div>
 <div class="line">    {</div>
@@ -227,7 +227,7 @@ Displaying Unicode text</h1>
 <div class="line"></div>
 <div class="line">    converted = (<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>*)malloc(converted_size);</div>
 <div class="line"></div>
-<div class="line">    <a class="code" href="group__conversion.html#ga353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(text, text_size, converted, converted_size, NULL);</div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#a353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(text, text_size, converted, converted_size, NULL);</div>
 <div class="line"></div>
 <div class="line">    FontBatch_Start(<span class="stringliteral">&quot;Arial20&quot;</span>);</div>
 <div class="line"></div>
