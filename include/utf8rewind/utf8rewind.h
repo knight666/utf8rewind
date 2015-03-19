@@ -89,29 +89,6 @@
 */
 
 /*!
-	\addtogroup normalization Normalization
-	\{
-*/
-
-/*!
-	\def UTF8_NORMALIZATION_RESULT_YES
-	\brief Text is stable and does not have to be normalized.
-*/
-#define UTF8_NORMALIZATION_RESULT_YES           (0)
-
-/*!
-	\def UTF8_NORMALIZATION_RESULT_MAYBE
-	\brief Text is unstable, but normalization may be skipped.
-*/
-#define UTF8_NORMALIZATION_RESULT_MAYBE         (1)
-
-/*!
-	\def UTF8_NORMALIZATION_RESULT_NO
-	\brief Text is unstable and must be normalized.
-*/
-#define UTF8_NORMALIZATION_RESULT_NO            (2)
-
-/*!
 	\def UTF8_NORMALIZE_COMPOSE
 	\brief Normalize input to Normalization Form C (NFC).
 */
@@ -130,8 +107,22 @@
 #define UTF8_NORMALIZE_COMPATIBILITY            0x00000004
 
 /*!
-	\}
+	\def UTF8_NORMALIZATION_RESULT_YES
+	\brief Text is stable and does not have to be normalized.
 */
+#define UTF8_NORMALIZATION_RESULT_YES           (0)
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_MAYBE
+	\brief Text is unstable, but normalization may be skipped.
+*/
+#define UTF8_NORMALIZATION_RESULT_MAYBE         (1)
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_NO
+	\brief Text is unstable and must be normalized.
+*/
+#define UTF8_NORMALIZATION_RESULT_NO            (2)
 
 /*!
 	\defgroup configuration Global configuration
@@ -216,11 +207,6 @@ typedef uint32_t unicode_t;
 	\return Length in codepoints.
 */
 UTF8_API size_t utf8len(const char* text);
-
-/*!
-	\addtogroup conversion Conversion
-	\{
-*/
 
 /*!
 	\brief Convert a UTF-16 encoded string to a UTF-8 encoded string.
@@ -567,10 +553,6 @@ UTF8_API size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* targ
 UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t targetSize, int32_t* errors);
 
 /*!
-	\}
-*/
-
-/*!
 	\brief Seek into a UTF-8 encoded string.
 
 	Working with UTF-8 encoded strings can be tricky due to the nature of the
@@ -621,11 +603,6 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 	\return Changed string or no change on error.
 */
 UTF8_API const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
-
-/*!
-	\addtogroup casemapping Case mapping
-	\{
-*/
 
 /*!
 	\brief Convert UTF-8 encoded text to uppercase.
@@ -866,15 +843,6 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 /*!
-	\}
-*/
-
-/*!
-	\addtogroup normalization Normalization
-	\{
-*/
-
-/*!
 	\brief Check if a string is stable in the specified Unicode Normalization
 	Form.
 
@@ -1091,9 +1059,5 @@ UTF8_API uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t fl
 	\sa utf8isnormalized
 */
 UTF8_API size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
-
-/*!
-	\}
-*/
 
 #endif /* _UTF8REWIND_H_ */
