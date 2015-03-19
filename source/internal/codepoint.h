@@ -53,10 +53,10 @@
 #define MAX_LATIN_1                   0x00FF
 
 /*!
-	\def MAX_BASIC_MULTILINGUAR_PLANE
+	\def MAX_BASIC_MULTILINGUAL_PLANE
 	\brief The last legal codepoint in the Basic Multilingual Plane (BMP).
 */
-#define MAX_BASIC_MULTILINGUAR_PLANE  0xFFFF
+#define MAX_BASIC_MULTILINGUAL_PLANE  0xFFFF
 
 /*!
 	\def MAX_LEGAL_UNICODE

@@ -991,7 +991,7 @@ UTF8_API uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t fl
 				if (converted_size > 0 &&
 					errors == UTF8_ERR_NONE)
 				{
-					converted = (char*)malloc(converted_size);
+					converted = (char*)malloc(converted_size + 1);
 					utf8normalize(input, input_size, converted, converted_size, UTF8_NORMALIZE_COMPOSE, NULL);
 					converted[converted_size] = 0;
 
