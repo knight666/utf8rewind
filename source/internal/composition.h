@@ -46,7 +46,7 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 
 uint8_t compose_readcodepoint(ComposeState* state, uint8_t index);
 
-unicode_t compose_execute(ComposeState* state);
+uint8_t compose_execute(ComposeState* state);
 
 /*! \endcond */
 
