@@ -78,7 +78,7 @@ uint8_t compose_readcodepoint(ComposeState* state, uint8_t index)
 	return 1;
 }
 
-unicode_t compose_execute(ComposeState* state)
+uint8_t compose_execute(ComposeState* state)
 {
 	uint8_t output_index;
 	uint8_t cursor_current;
