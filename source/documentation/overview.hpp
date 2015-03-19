@@ -6,27 +6,27 @@
 	\section introduction Introduction
 
 	`utf8rewind` is a cross-platform and open source C library designed to
-	extend the default string handling functions in order to add support for
-	UTF-8 encoded text.
+	extend the default string handling functions and add support for UTF-8
+	encoded text.
 	
 	\section features Features
 
-	* **Conversion to and from UTF-8** - utf8rewind provides functions for
+	* **Conversion to and from UTF-8** - `utf8rewind` provides functions for
 	converting from and to [wide](\ref widetoutf8), [UTF-16](\ref utf16toutf8)
 	and [UTF-32](\ref utf32toutf8) encoded text.
 
-	* **Case mapping** - The library also provides function for converting text
-	to [uppercase](\ref utf8toupper), [lowercase](\ref utf8tolower) and
+	* **Case mapping** - The library also provides functionality for converting
+	text to [uppercase](\ref utf8toupper), [lowercase](\ref utf8tolower) and
 	[titlecase](\ref utf8totitle).
 
 	* **Normalization** - With #utf8normalize, you can normalize UTF-8 encoded
-	text without first converting it to UTF-32.
+	text without converting it to UTF-32 first.
 
 	* **Seeking** - Using #utf8seek, you can seek forwards and backwards in
 	UTF-8 encoded text.
 
-	* **Cross-platform** - utf8rewind is written in plain C, which means it can
-	be used on any platform with a compliant C compiler. Currently, Windows,
+	* **Cross-platform** - `utf8rewind` is written in plain C, which means it
+	can be used on any platform with a compliant C compiler. Currently, Windows,
 	Linux and Mac versions are available.
 
 	* **Easy to integrate** - The library consists of only 13 public functions
@@ -35,14 +35,15 @@
 
 	* **Simple bindings** - No structs are used in the public interface, only
 	pointers. Even if you don't use C, if the language of your choice allows
-	bindings to C functions (e.g. Python), you could integrate utf8rewind.
+	bindings to C functions (e.g. Python), you can benefit from integrating
+	utf8rewind into your project.
 
 	* **No heap allocations** - All allocations in UTF-8 happen on the stack.
 	You provide the memory, without having to override `malloc`. This makes the
 	library perfectly tailored to game engines, integrated systems and other
 	performance-critical or memory-constrained projects.
 
-	* **Safety** - Over 1200 automated unit and integration tests guarantee the
+	* **Safety** - Over 1500 automated unit and integration tests guarantee the
 	safety and security of the library.
 
 	For a full summary of the interface, please refer to the
@@ -81,8 +82,8 @@
 
 	Open a command window at the project's root.
 
-	Ensure you have all dependencies installed using your favorite preferred
-	package manager:
+	Ensure you have all dependencies installed using your preferred package
+	manager:
 
 		sudo apt-get install gyp gcc g++
 
@@ -98,8 +99,8 @@
 
 		make BUILDTYPE=Release
 
-	The generated Makefile does not contain a "clean" target. In order to do
-	a full rebuild, you must delete the files in the "output" directory
+	\note The generated Makefile does not contain a "clean" target. In order to
+	do a full rebuild, you must delete the files in the "output" directory
 	manually.
 
 	\subsection building-mac Building on Mac OS X with XCode
@@ -125,13 +126,12 @@
 	As a user, you can help the project in a number of ways, in order of
 	difficulty:
 
-	* **Use it** - Designers of a public interface often have very different
-	ideas about usability than those actually using it. By using the library,
-	you are helping the project spread and could potentially improve it by us
-	taking your project into consideration when we design the API.
+	* **Use it** - By using the library, you are helping the project spread. It
+	is very important to us to have the project be used by as many different
+	projects as possible. This will allow us to create better public interfaces.
 
 	* **Spread the word** - If you find `utf8rewind` useful, recommend it to
-	your friends and coworkers.
+	your friends or coworkers.
 
 	* **Complain** - No library is perfect and `utf8rewind` is no exception.
 	If you find a fault but lack the means (time, resources, etc.) to fix it,
@@ -148,5 +148,6 @@
 
 	\section contact Contact
 
-	For inquiries, complaints and patches, please contact `{quinten}{lansu} {at} {gmail}.{com}`. Remove the brackets to get a valid e-mail address.
+	For inquiries, complaints and patches, please contact `{quinten}{lansu} {at}
+	{gmail}.{com}`. Remove the brackets to get a valid e-mail address.
 */
