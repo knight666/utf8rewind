@@ -4,17 +4,115 @@
 
 #include "helpers-strings.hpp"
 
-TEST(Utf32ToUtf8, Character)
+TEST(Utf32ToUtf8, BasicLatinSingle)
 {
-	unicode_t c = 'U';
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	unicode_t i[] = { 'U' };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
 
-	EXPECT_EQ(1, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("U", b);
+	EXPECT_EQ(1, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("U", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
+
+TEST(Utf32ToUtf8, BasicLatinSingleFirst)
+{
+	unicode_t i[] = { 0x00 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(1, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinSingleLast)
+{
+	unicode_t i[] = { 0x7F };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(1, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\x7F", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinSingleAmountOfBytes)
+{
+	unicode_t i[] = { '%' };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(1, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinSingleNotEnoughSpace)
+{
+	unicode_t i[] = { '#' };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 0;
+	int32_t errors;
+
+	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinMultiple)
+{
+	unicode_t i[] = { 'W', 'o', 'r', 'k', '!' };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(5, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("Work!", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinMultipleEndsInMiddle)
+{
+	unicode_t i[] = { 'S', 't', 'a', 'n', 0x00, 'd', 's' };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(7, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_MEMEQ("Stan\x00" "ds", o, 7);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinMultipleAmountOfBytes)
+{
+	unicode_t i[] = { 'F', 'r', 'o', 'g' };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(4, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinMultipleNotEnoughSpace)
+{
+	unicode_t i[] = { 'W', 'e', 'a', 't', 'h', 'e', 'r' };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 5;
+	int32_t errors;
+
+	EXPECT_EQ(5, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 
 TEST(Utf32ToUtf8, BufferTooSmall)
 {
