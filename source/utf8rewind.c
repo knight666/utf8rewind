@@ -155,7 +155,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 			}
 
 			codepoint =
-				(MAX_BASIC_MULTILINGUAR_PLANE + 1) +
+				(MAX_BASIC_MULTILINGUAL_PLANE + 1) +
 				(surrogate_low - SURROGATE_LOW_START) +
 				((codepoint - SURROGATE_HIGH_START) << 10);
 		}
@@ -235,7 +235,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 			}
 
 			codepoint =
-				(MAX_BASIC_MULTILINGUAR_PLANE + 1) +
+				(MAX_BASIC_MULTILINGUAL_PLANE + 1) +
 				(surrogate_low - SURROGATE_LOW_START) +
 				((codepoint - SURROGATE_HIGH_START) << 10);
 		}
@@ -292,7 +292,7 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 		unicode_t decoded;
 		uint8_t decoded_size = codepoint_read(src, src_size, &decoded);
 
-		if (decoded <= MAX_BASIC_MULTILINGUAR_PLANE)
+		if (decoded <= MAX_BASIC_MULTILINGUAL_PLANE)
 		{
 			/* Codepoint fits in a single UTF-16 codepoint */
 
@@ -326,7 +326,7 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 
 				/* Encoded value is always beyond BMP */
 
-				decoded -= (MAX_BASIC_MULTILINGUAR_PLANE + 1);
+				decoded -= (MAX_BASIC_MULTILINGUAL_PLANE + 1);
 				*dst++ = SURROGATE_HIGH_START + (decoded >> 10);
 				*dst++ = SURROGATE_LOW_START + (decoded & 0x03FF);
 

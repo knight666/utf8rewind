@@ -1534,7 +1534,7 @@ or Lo according to the Unicode database".</p>
 <div class="line">        <span class="keywordflow">if</span> (converted_size &gt; 0 &amp;&amp;</div>
 <div class="line">            errors == <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">        {</div>
-<div class="line">            converted = (<span class="keywordtype">char</span>*)malloc(converted_size);</div>
+<div class="line">            converted = (<span class="keywordtype">char</span>*)malloc(converted_size + 1);</div>
 <div class="line">            <a class="code" href="utf8rewind_8h.html#adfa0210609054db368b6af9837ca69db">utf8normalize</a>(input, input_size, converted, converted_size, <a class="code" href="utf8rewind_8h.html#a6b8ab40213f4505f96b4655fd468848d">UTF8_NORMALIZE_COMPOSE</a>, NULL);</div>
 <div class="line">            converted[converted_size] = 0;</div>
 <div class="line"></div>
