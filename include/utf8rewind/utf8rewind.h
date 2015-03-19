@@ -42,6 +42,10 @@
 	\{
 */
 
+/*!
+	\def UTF8_ERR_NONE
+	\brief No errors.
+*/
 #define UTF8_ERR_NONE                           (0)
 
 /*!
@@ -109,20 +113,19 @@
 
 /*!
 	\def UTF8_NORMALIZE_COMPOSE
-	\brief Normalize input to NFC.
+	\brief Normalize input to Normalization Form C (NFC).
 */
 #define UTF8_NORMALIZE_COMPOSE                  0x00000001
 
 /*!
 	\def UTF8_NORMALIZE_DECOMPOSE
-	\brief Normalize input to NFD.
+	\brief Normalize input to Normalization Form D (NFD).
 */
 #define UTF8_NORMALIZE_DECOMPOSE                0x00000002
 
 /*!
 	\def UTF8_NORMALIZE_COMPATIBILITY
-	\brief Changes composed normalization to NFKC or decomposed normalization to
-	NFKD.
+	\brief Change Normalization Form from NFC to NFKC or from NFD to NFKD.
 */
 #define UTF8_NORMALIZE_COMPATIBILITY            0x00000004
 
@@ -257,7 +260,9 @@ UTF8_API size_t utf8len(const char* text);
 	\return Bytes written or amount of bytes needed for output if target buffer 
 	is specified as NULL.
 
+	\retval #UTF8_ERR_NONE                           No errors.
 	\retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
+	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS         Input and output buffers overlap in memory.
 	\retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
 	\retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
 	\retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
@@ -317,7 +322,9 @@ UTF8_API size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target
 	\return Bytes written or amount of bytes needed for output if target buffer 
 	is specified as NULL.
 
+	\retval #UTF8_ERR_NONE                           No errors.
 	\retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
+	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS         Input and output buffers overlap in memory.
 	\retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
 	\retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
 	\retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
@@ -381,7 +388,9 @@ UTF8_API size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* targ
 	\return Bytes written or amount of bytes needed for output if target buffer 
 	is specified as NULL.
 
+	\retval #UTF8_ERR_NONE                           No errors.
 	\retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
+	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS         Input and output buffers overlap in memory.
 	\retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
 	\retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
 	\retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
@@ -429,8 +438,10 @@ UTF8_API size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target,
 	\return Bytes written or amount of bytes needed for output if target buffer 
 	is specified as NULL.
 
-	\retval #UTF8_ERR_INVALID_DATA      Input does not contain enough bytes for decoding.
-	\retval #UTF8_ERR_NOT_ENOUGH_SPACE  Target buffer could not contain result.
+	\retval #UTF8_ERR_NONE                    No errors.
+	\retval #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
+	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
 
 	\sa utf8towide
 	\sa utf8toutf32
@@ -472,8 +483,10 @@ UTF8_API size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target
 	\return Bytes written or amount of bytes needed for output if target buffer 
 	is specified as NULL.
 
-	\retval #UTF8_ERR_INVALID_DATA      Input does not contain enough bytes for decoding.
-	\retval #UTF8_ERR_NOT_ENOUGH_SPACE  Target buffer could not contain result.
+	\retval #UTF8_ERR_NONE                    No errors.
+	\retval #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
+	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
 
 	\sa utf8towide
 	\sa utf8toutf16
@@ -542,8 +555,10 @@ UTF8_API size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* targ
 	\return Bytes written or amount of bytes needed for output if target buffer 
 	is specified as NULL.
 
-	\retval #UTF8_ERR_INVALID_DATA      Input does not contain enough bytes for decoding.
-	\retval #UTF8_ERR_NOT_ENOUGH_SPACE  Target buffer could not contain result.
+	\retval #UTF8_ERR_NONE                    No errors.
+	\retval #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
+	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
 
 	\sa widetoutf8
 	\sa utf8toutf16
@@ -680,9 +695,10 @@ UTF8_API const char* utf8seek(const char* text, const char* textStart, off_t off
 	\return Bytes written or amount of bytes needed for output if target buffer 
 	is specified as NULL.
 
-	\retval  #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
-	\retval  #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
-	\retval  #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
+	\retval #UTF8_ERR_NONE                    No errors.
+	\retval #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
+	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
 
 	\sa utf8tolower
 	\sa utf8totitle
@@ -762,9 +778,10 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 	\return Bytes written or amount of bytes needed for output if target buffer 
 	is specified as NULL.
 
-	\retval  #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
-	\retval  #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
-	\retval  #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
+	\retval #UTF8_ERR_NONE                    No errors.
+	\retval #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
+	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
 
 	\sa utf8toupper
 	\sa utf8totitle
@@ -838,9 +855,10 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 	\return Bytes written or amount of bytes needed for output if target buffer 
 	is specified as NULL.
 
-	\retval  #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
-	\retval  #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
-	\retval  #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
+	\retval #UTF8_ERR_NONE                    No errors.
+	\retval #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
+	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
 
 	\sa utf8tolower
 	\sa utf8toupper
@@ -857,7 +875,8 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 */
 
 /*!
-	\brief Check if a string is stable in the specified normalization form.
+	\brief Check if a string is stable in the specified Unicode Normalization
+	Form.
 
 	This function can be used as a preprocessing step, before attempting to
 	normalize a string. Normalization is a very expensive process, it is often
@@ -872,26 +891,18 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	first unstable codepoint. If the string is stable, the offset is equivalent
 	to the length of the string in bytes.
 
-	Unicode Normalization Forms are formally defined normalizations of Unicode
-	strings which make it possible to determine whether any two Unicode
-	strings are equivalent to each other. Depending on the particular Unicode
-	Normalization Form, that equivalence can either be a canonical equivalence
-	or a compatibility equivalence.
-
-	Essentially, the Unicode Normalization Algorithm puts all combining marks
-	in a specified order, and uses rules for decomposition and composition to
-	transform each string into one of the Unicode Normalization Forms. A
-	binary comparison of the transformed strings will then determine
-	equivalence.
-
-	There are four Unicode Normalization Forms:
+	You must specify the desired Unicode Normalization Form by using a
+	combination of flags:
 
 	Unicode                      | Flags
-	--------------------------- | ---------------------------------------------------------
+	---------------------------- | ---------------------------------------------------------
 	Normalization Form C (NFC)   | #UTF8_NORMALIZE_COMPOSE
 	Normalization Form KC (NFKC) | #UTF8_NORMALIZE_COMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
 	Normalization Form D (NFD)   | #UTF8_NORMALIZE_DECOMPOSE
 	Normalization Form KD (NFKD) | #UTF8_NORMALIZE_DECOMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
+
+	For more information, please review [Unicode Standard Annex #15 - Unicode
+	Normalization Forms](http://www.unicode.org/reports/tr15/).
 
 	Example:
 
@@ -940,14 +951,145 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	\param[in]   flags       Desired normalization form. Must be a combination of #UTF8_NORMALIZE_COMPOSE, #UTF8_NORMALIZE_DECOMPOSE and #UTF8_NORMALIZE_COMPATIBILITY.
 	\param[out]  offset      Offset to first unstable codepoint or length of input in bytes if stable.
 
-	\retval  #UTF8_NORMALIZATION_RESULT_YES    Input is stable and does not have to be normalized.
-	\retval  #UTF8_NORMALIZATION_RESULT_MAYBE  Input is unstable, but normalization may be skipped.
-	\retval  #UTF8_NORMALIZATION_RESULT_NO     Input is unstable and must be normalized.
+	\retval #UTF8_NORMALIZATION_RESULT_YES    Input is stable and does not have to be normalized.
+	\retval #UTF8_NORMALIZATION_RESULT_MAYBE  Input is unstable, but normalization may be skipped.
+	\retval #UTF8_NORMALIZATION_RESULT_NO     Input is unstable and must be normalized.
 
 	\sa utf8normalize
 */
 UTF8_API uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size_t* offset);
 
+/*!
+	\brief Normalize a string to the specified Unicode Normalization Form.
+
+	The Unicode standard defines two standards for equivalence between
+	characters: canonical and compatibility equivalence. Canonically equivalent
+	characters and sequence represent the same abstract character and must be
+	rendered with the same appearance and behavior. Compatibility equivalent
+	characters have a weaker equivalence and may be rendered differently.
+
+	Unicode Normalization Forms are formally defined standards that can be used
+	to test whether any two strings of characters are equivalent to each other.
+	This equivalence may be canonical or compatibility.
+
+	The algorithm puts all combining marks into a specified order and uses the
+	rules for decomposition and composition to transform the string into one of
+	four Unicode Normalization Forms. A binary comparison can then be used to
+	determine equivalence.
+
+	These are the Unicode Normalization Forms:
+
+	Form                         | Description
+	---------------------------- | ---------------------------------------------
+	Normalization Form D (NFD)   | Canonical decomposition
+	Normalization Form C (NFC)   | Canonical decomposition, followed by canonical composition
+	Normalization Form KD (NFKD) | Compatibility decomposition
+	Normalization Form KC (NFKC) | Compatibility decomposition, followed by canonical composition
+
+	This function can be used to transform text into one of these forms. You
+	must specify the desired Unicode Normalization Form by using a combination
+	of flags:
+
+	Form                          | Flags
+	----------------------------  | ---------------------------------------------------------
+	Normalization Form D (NFD)    | #UTF8_NORMALIZE_COMPOSE
+	Normalization Form C (NFC)    | #UTF8_NORMALIZE_COMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
+	Normalization Form KD (NFKD)  | #UTF8_NORMALIZE_DECOMPOSE
+	Normalization Form KC (NFKC)  | #UTF8_NORMALIZE_DECOMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
+
+	For more information, please review [Unicode Standard Annex #15 - Unicode
+	Normalization Forms](http://www.unicode.org/reports/tr15/).
+
+	\note Unnormalized text is rare in the wild. As an example, *all* text found
+	on the web as HTML source code is NFC.
+
+	Example:
+
+	\code{.c}
+		void Font_RenderTextNormalized(const char* input)
+		{
+			const char* src = NULL;
+			const char* src_start;
+			size_t src_size;
+			char* converted = NULL;
+			size_t converted_size = 0;
+			size_t input_size = strlen(input);
+
+			if (utf8isnormalized(input, input_size, UTF8_NORMALIZE_COMPOSE, NULL) != UTF8_NORMALIZATION_RESULT_YES)
+			{
+				int32_t errors;
+
+				converted_size = utf8normalize(input, input_size, NULL, 0, UTF8_NORMALIZE_COMPOSE, &errors);
+				if (converted_size > 0 &&
+					errors == UTF8_ERR_NONE)
+				{
+					converted = (char*)malloc(converted_size);
+					utf8normalize(input, input_size, converted, converted_size, UTF8_NORMALIZE_COMPOSE, NULL);
+					converted[converted_size] = 0;
+
+					src = (const char*)converted;
+					src_size = converted_size;
+				}
+			}
+
+			if (src == NULL)
+			{
+				src = (const char*)input;
+				src_size = input_size;
+			}
+
+			src_start = src;
+
+			while (src_size > 0)
+			{
+				const char* next;
+				int32_t errors;
+
+				next = utf8seek(src, src_start, 1, SEEK_CUR);
+				if (next == src)
+				{
+					break;
+				}
+
+				unicode_t codepoint;
+				utf8toutf32(src, (size_t)(next - src), &codepoint, sizeof(unicode_t), &errors);
+				if (errors != UTF8_ERR_NONE)
+				{
+					break;
+				}
+
+				Font_RenderCodepoint(codepoint);
+
+				src_size -= next - src;
+				src = next;
+			}
+
+			if (converted != NULL)
+			{
+				free(converted);
+				converted = NULL;
+			}
+		}
+	\endcode
+
+	\param[in]   input       UTF-8 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[out]  target      Output buffer for the result.
+	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[in]   flags       Desired normalization form. Must be a combination of #UTF8_NORMALIZE_COMPOSE, #UTF8_NORMALIZE_DECOMPOSE and #UTF8_NORMALIZE_COMPATIBILITY.
+	\param[out]  errors      Output for errors.
+
+	\return Bytes written or amount of bytes needed for output if target buffer 
+	is specified as NULL.
+
+	\retval #UTF8_ERR_NONE                    No errors.
+	\retval #UTF8_ERR_INVALID_FLAG            Invalid combination of flags was specified.
+	\retval #UTF8_ERR_INVALID_DATA            Input does not contain enough bytes for decoding.
+	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer could not contain result.
+
+	\sa utf8isnormalized
+*/
 UTF8_API size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
 
 /*!
