@@ -143,7 +143,7 @@
 			],
 			'sources': [
 				'source/documentation/examples.hpp',
-				'source/documentation/main.hpp',
+				'source/documentation/overview.hpp',
 				'utf8rewind.doxyfile'
 			],
 		},
