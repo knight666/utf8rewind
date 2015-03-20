@@ -218,57 +218,127 @@ TEST(Utf32ToUtf8, TwoBytesMultipleNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(Utf32ToUtf8, ThreeBytes)
+TEST(Utf32ToUtf8, ThreeBytesSingle)
 {
-	unicode_t c = 0x00003DB1; // 㶱
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	// IDEOGRAPHIC TELEGRAPH SYMBOL FOR DAY ONE
 
-	EXPECT_EQ(3, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xE3\xB6\xB1", b);
+	unicode_t i[] = { 0x33E0 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xE3\x8F\xA0", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf32ToUtf8, ThreeBytesFirst)
+TEST(Utf32ToUtf8, ThreeBytesSingleFirst)
 {
-	unicode_t c = 0x00000800;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	// SAMARITAN LETTER ALAF
 
-	EXPECT_EQ(3, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xE0\xA0\x80", b);
+	unicode_t i[] = { 0x0800 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xE0\xA0\x80", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf32ToUtf8, ThreeBytesLast)
+TEST(Utf32ToUtf8, ThreeBytesSingleLast)
 {
-	unicode_t c = 0x0000FFFF;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	unicode_t i[] = { 0xFFFF };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
 
-	EXPECT_EQ(3, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xEF\xBF\xBF", b);
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBF", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf32ToUtf8, ThreeBytesString)
+TEST(Utf32ToUtf8, ThreeBytesSingleAmountOfBytes)
 {
-	unicode_t c[] = {
-		0x00002776, // ❶
-		0x00002778, // ❸
-		0x00002665, // ♥
-		0x0000277D  // ❽
-	};
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	// TIBETAN SIGN RDEL NAG RDEL DKAR
 
-	EXPECT_EQ(12, utf32toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xE2\x9D\xB6\xE2\x9D\xB8\xE2\x99\xA5\xE2\x9D\xBD", b);
+	unicode_t i[] = { 0x0FCE };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, ThreeBytesSingleNotEnoughSpace)
+{
+	// WHITE SQUARE WITH CENTRE VERTICAL LINE
+
+	unicode_t i[] = { 0x2385 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 2;
+	int32_t errors;
+
+	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf32ToUtf8, ThreeBytesMultiple)
+{
+	// DINGBAT NEGATIVE CIRCLED DIGIT ONE
+	// DINGBAT NEGATIVE CIRCLED DIGIT THREE
+	// BLACK HEART SUIT
+	// DINGBAT NEGATIVE CIRCLED DIGIT EIGHT
+
+	unicode_t i[] = { 0x2776, 0x2778, 0x2665, 0x277D };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(12, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xE2\x9D\xB6\xE2\x9D\xB8\xE2\x99\xA5\xE2\x9D\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, ThreeBytesMultipleAmountOfBytes)
+{
+	// EIGHTH NOTE
+	// EIGHTH NOTE
+	// BEAMED SIXTEENTH NOTES
+	// BEAMED SIXTEENTH NOTES
+	// BEAMED SIXTEENTH NOTES
+	// BEAMED SIXTEENTH NOTES
+
+	unicode_t i[] = { 0x266A, 0x266A, 0x266C, 0x266C, 0x266C, 0x266C };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(18, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, ThreeBytesMultipleNotEnoughSpace)
+{
+	// INVERTED PENTAGRAM
+	// UNIVERSAL RECYCLING SYMBOL
+	// STAFF OF AESCULAPIUS
+	// DIE FACE-6
+
+	unicode_t i[] = { 0x26E7, 0x2672, 0x2695, 0x2685 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 11;
+	int32_t errors;
+
+	EXPECT_EQ(9, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xE2\x9B\xA7\xE2\x99\xB2\xE2\x9A\x95", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf32ToUtf8, FourBytes)
@@ -513,24 +583,25 @@ TEST(Utf32ToUtf8, AmountOfBytesAboveLegalUnicode)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf32ToUtf8, AmountOfBytesNoData)
+TEST(Utf32ToUtf8, ErrorsIsReset)
+{
+	unicode_t i[] = { 0x1B001 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 1288;
+
+	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF0\x9B\x80\x81", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, InvalidData)
 {
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, utf32toutf8(nullptr, 1, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
-}
-
-TEST(Utf32ToUtf8, ErrorsIsReset)
-{
-	unicode_t c = 0x1788A;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 1288;
-
-	EXPECT_EQ(4, utf32toutf8(&c, sizeof(c), b, s - 1, &errors));
-	EXPECT_UTF8EQ("\xF0\x97\xA2\x8A", b);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf32ToUtf8, OverlappingParametersFits)
