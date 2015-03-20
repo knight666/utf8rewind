@@ -121,43 +121,38 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 		unicode_t codepoint = (unicode_t)*src;
 		uint8_t encoded_size;
 
-		if (codepoint == 0)
-		{
-			break;
-		}
-
 		if (codepoint >= SURROGATE_HIGH_START &&
 			codepoint <= SURROGATE_LOW_END)
 		{
-			utf16_t surrogate_low;
-
 			/* Decode surrogate pair */
 
-			if (codepoint > SURROGATE_HIGH_END)
+			if (codepoint > SURROGATE_HIGH_END || /* Missing high surrogate codepoint */
+				src_size < sizeof(utf16_t))       /* Not enough data */
 			{
-				UTF8_RETURN(UNMATCHED_HIGH_SURROGATE_PAIR, bytes_written);
+				codepoint = REPLACEMENT_CHARACTER;
 			}
-
-			if (src_size < sizeof(utf16_t))
+			else
 			{
-				UTF8_RETURN(INVALID_DATA, bytes_written);
+				/* Read low surrogate codepoint */
+
+				if (src[1] < SURROGATE_LOW_START ||
+					src[1] > SURROGATE_LOW_END)
+				{
+					/* Missing low surrogate codepoint */
+
+					codepoint = REPLACEMENT_CHARACTER;
+				}
+				else
+				{
+					codepoint =
+						(MAX_BASIC_MULTILINGUAL_PLANE + 1) +
+						(src[1] - SURROGATE_LOW_START) +
+						((src[0] - SURROGATE_HIGH_START) << 10);
+
+					src++;
+					src_size -= sizeof(utf16_t);
+				}
 			}
-
-			src++;
-			src_size -= sizeof(utf16_t);
-
-			surrogate_low = *src;
-
-			if (surrogate_low < SURROGATE_LOW_START ||
-				surrogate_low > SURROGATE_LOW_END)
-			{
-				UTF8_RETURN(UNMATCHED_LOW_SURROGATE_PAIR, bytes_written);
-			}
-
-			codepoint =
-				(MAX_BASIC_MULTILINGUAL_PLANE + 1) +
-				(surrogate_low - SURROGATE_LOW_START) +
-				((codepoint - SURROGATE_HIGH_START) << 10);
 		}
 
 		encoded_size = codepoint_write(codepoint, &dst, &dst_size);
