@@ -461,16 +461,76 @@ TEST(Utf32ToUtf8, FourBytesMultipleNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(Utf32ToUtf8, AboveLegalUnicode)
+TEST(Utf32ToUtf8, AboveLegalUnicodeSingle)
 {
-	unicode_t c = 0x110001;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	unicode_t i[] = { 0x110001 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
 
-	EXPECT_EQ(3, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xEF\xBF\xBD", b);
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, AboveLegalUnicodeSingleAmountOfBytes)
+{
+	unicode_t i[] = { 0x199128 };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, AboveLegalUnicodeSingleNotEnoughSpace)
+{
+	unicode_t i[] = { 0x1D2D3D4D };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 1;
+	int32_t errors;
+
+	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf32ToUtf8, AboveLegalUnicodeMultiple)
+{
+	unicode_t i[] = { 0x0ADA108A, 0xBADBADBA, 0xDEADBEA7 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(9, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, AboveLegalUnicodeMultipleAmountOfBytes)
+{
+	unicode_t i[] = { 0x55518281, 0x10000000, 0xAEDBCAED };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(9, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, AboveLegalUnicodeMultipleNotEnoughSpace)
+{
+	unicode_t i[] = { 0x25AE1DD1, 0xAB18ECD9 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 0;
+	int32_t errors;
+
+	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf32ToUtf8, SurrogatePair)
@@ -630,15 +690,6 @@ TEST(Utf32ToUtf8, AmountOfBytesSurrogatePair)
 	int32_t errors = 0;
 
 	EXPECT_EQ(4, utf32toutf8(c, sizeof(c), nullptr, 0, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf32ToUtf8, AmountOfBytesAboveLegalUnicode)
-{
-	unicode_t c = 0x199128;
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf32toutf8(&c, sizeof(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
