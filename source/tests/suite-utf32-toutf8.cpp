@@ -341,65 +341,124 @@ TEST(Utf32ToUtf8, ThreeBytesMultipleNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(Utf32ToUtf8, FourBytes)
+TEST(Utf32ToUtf8, FourBytesSingle)
 {
-	unicode_t c = 0x0001D424; // 𝐤
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	// MATHEMATICAL BOLD SMALL K
 
-	EXPECT_EQ(4, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xF0\x9D\x90\xA4", b);
+	unicode_t i[] = { 0x1D424 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF0\x9D\x90\xA4", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf32ToUtf8, FourBytesFirst)
+TEST(Utf32ToUtf8, FourBytesSingleFirst)
 {
-	unicode_t c = 0x00010000;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	// 10000;LINEAR B SYLLABLE B008 A
 
-	EXPECT_EQ(4, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xF0\x90\x80\x80", b);
+	unicode_t i[] = { 0x10000 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF0\x90\x80\x80", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf32ToUtf8, FourBytesLast)
+TEST(Utf32ToUtf8, FourByteSingleLast)
 {
-	unicode_t c = 0x0010FFFF;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	unicode_t i[] = { 0x10FFFF };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
 
-	EXPECT_EQ(4, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xF4\x8F\xBF\xBF", b);
+	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF4\x8F\xBF\xBF", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf32ToUtf8, FourBytesLength)
+TEST(Utf32ToUtf8, FourByteSingleAmountOfBytes)
 {
-	unicode_t c = 0x1200D;
-	int32_t errors = 0;
+	// CUNEIFORM SIGN AB TIMES GAL
 
-	EXPECT_EQ(4, utf32toutf8(&c, sizeof(c), nullptr, 0, &errors));
+	unicode_t i[] = { 0x1200D };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(4, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf32ToUtf8, FourBytesString)
+TEST(Utf32ToUtf8, FourByteSingleNotEnoughSpace)
 {
-	unicode_t c[] = {
-		0x1F191, // 🆑
-		0x1F198, // 🆘
-		0x1F19A  // 🆚
-	};
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	// EGYPTIAN HIEROGLYPH X008A
 
-	EXPECT_EQ(12, utf32toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xF0\x9F\x86\x91\xF0\x9F\x86\x98\xF0\x9F\x86\x9A", b);
+	unicode_t i[] = { 0x133DA };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 3;
+	int32_t errors;
+
+	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf32ToUtf8, FourBytesMultiple)
+{
+	// SQUARED CL
+	// SQUARED SOS
+	// SQUARED VS
+
+	unicode_t i[] = { 0x1F191, 0x1F198, 0x1F19A };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(12, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF0\x9F\x86\x91\xF0\x9F\x86\x98\xF0\x9F\x86\x9A", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, FourBytesMultipleAmountOfBytes)
+{
+	// LAST QUARTER MOON SYMBOL
+	// CLOUD WITH RAIN
+	// SLICE OF PIZZA
+	// SOFT ICE CREAM
+
+	unicode_t i[] = { 0x1F317, 0x1F327, 0x1F355, 0x1F366 };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(16, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, FourBytesMultipleNotEnoughSpace)
+{
+	// NEGATIVE CIRCLED LATIN CAPITAL LETTER F
+	// SQUARED MV
+	// CINEMA
+	// CHERRIES
+
+	unicode_t i[] = { 0x1F155, 0x1F14B, 0x1F3A6, 0x1F352 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 9;
+	int32_t errors;
+
+	EXPECT_EQ(8, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF0\x9F\x85\x95\xF0\x9F\x85\x8B", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf32ToUtf8, AboveLegalUnicode)
