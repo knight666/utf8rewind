@@ -62,6 +62,7 @@ TEST(Utf32ToUtf8, BasicLatinSingleNotEnoughSpace)
 	int32_t errors;
 
 	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
