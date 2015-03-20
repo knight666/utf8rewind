@@ -102,6 +102,125 @@ TEST(Utf16ToUtf8, BasicLatinMultipleNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(Utf16ToUtf8, TwoBytesSingle)
+{
+	// LATIN SMALL LETTER O WITH DOUBLE GRAVE
+
+	utf16_t i[] = { 0x020D };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(2, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xC8\x8D", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf16ToUtf8, TwoBytesSingleFirst)
+{
+	utf16_t i[] = { 0x0080 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(2, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xC2\x80", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf16ToUtf8, TwoBytesSingleLast)
+{
+	utf16_t i[] = { 0x07FF };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(2, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xDF\xBF", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf16ToUtf8, TwoBytesSingleAmountOfBytes)
+{
+	// CYRILLIC SMALL LETTER GHE
+
+	utf16_t i[] = { 0x0433 };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(2, utf16toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf16ToUtf8, TwoBytesSingleNotEnoughSpace)
+{
+	// COMBINING CYRILLIC TITLO
+
+	utf16_t i[] = { 0x0483 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 1;
+	int32_t errors;
+
+	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf16ToUtf8, TwoBytesMultiple)
+{
+	// LATIN SMALL LETTER U WITH TILDE
+	// LATIN CAPITAL LETTER O WITH BREVE
+	// LATIN CAPITAL LETTER F WITH HOOK
+	// LATIN CAPITAL LETTER ENG
+
+	utf16_t i[] = { 0x0169, 0x014E, 0x0191, 0x014A };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(8, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_STREQ("\xC5\xA9\xC5\x8E\xC6\x91\xC5\x8A", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf16ToUtf8, TwoBytesMultipleAmountOfBytes)
+{
+	// COMBINING DOUBLE VERTICAL LINE ABOVE
+	// LATIN SMALL LETTER S WITH CIRCUMFLEX
+	// ARABIC POETIC VERSE SIGN
+
+	utf16_t i[] = { 0x030E, 0x015D, 0x060E };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(6, utf16toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf16ToUtf8, TwoBytesMultipleNotEnoughSpace)
+{
+	// ARABIC SEMICOLON
+	// NKO LETTER KA
+	// COMBINING DOUBLE INVERTED BREVE
+
+	utf16_t i[] = { 0x061B, 0x07DE, 0x0361 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 5;
+	int32_t errors;
+
+	EXPECT_EQ(4, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_STREQ("\xD8\x9B\xDF\x9E", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+
+
 TEST(Utf16ToUtf8, BufferTooSmall)
 {
 	utf16_t c = 0x0922;
@@ -202,59 +321,6 @@ TEST(Utf16ToUtf8, StringBufferTooSmall)
 	EXPECT_EQ(1, utf16toutf8(c, sizeof(c), b, s, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_STREQ("D", b);
-}
-
-TEST(Utf16ToUtf8, TwoBytes)
-{
-	utf16_t c = 0x20D;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf16toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_STREQ("\xC8\x8D", b);
-}
-
-TEST(Utf16ToUtf8, TwoBytesFirst)
-{
-	utf16_t c = 0x80;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf16toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_STREQ("\xC2\x80", b);
-}
-
-TEST(Utf16ToUtf8, TwoBytesLast)
-{
-	utf16_t c = 0x07FF;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf16toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_STREQ("\xDF\xBF", b);
-}
-
-TEST(Utf16ToUtf8, TwoBytesString)
-{
-	utf16_t c[] = {
-		0x0169, // ũ
-		0x014E, // Ŏ
-		0x0191, // Ƒ
-		0x014A  // Ŋ
-	};
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(8, utf16toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_STREQ("\xC5\xA9\xC5\x8E\xC6\x91\xC5\x8A", b);
 }
 
 TEST(Utf16ToUtf8, ThreeBytes)
