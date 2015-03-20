@@ -582,7 +582,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingleAmountOfBytes)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf32ToUtf8, SurrogatePairSingleUnmatchedLow)
+TEST(Utf32ToUtf8, SurrogatePairSingleUnmatchedHigh)
 {
 	unicode_t i[] = { 0xD820, 0x0017 };
 	size_t is = sizeof(i);
@@ -590,14 +590,27 @@ TEST(Utf32ToUtf8, SurrogatePairSingleUnmatchedLow)
 	size_t os = 255;
 	int32_t errors;
 
-	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
-	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD\x17", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf32ToUtf8, SurrogatePairSingleUnmatchedHigh)
+TEST(Utf32ToUtf8, SurrogatePairSingleUnmatchedLow)
 {
 	unicode_t i[] = { 0xDD1E, 0xD834 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(6, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, SurrogatePairSingleMissingLow)
+{
+	unicode_t i[] = { 0xDAA2 };
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
@@ -608,9 +621,9 @@ TEST(Utf32ToUtf8, SurrogatePairSingleUnmatchedHigh)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf32ToUtf8, SurrogatePairSingleNotEnoughData)
+TEST(Utf32ToUtf8, SurrogatePairSingleMissingHigh)
 {
-	unicode_t i[] = { 0xDBAD };
+	unicode_t i[] = { 0xDD1A };
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
@@ -659,14 +672,14 @@ TEST(Utf32ToUtf8, SurrogatePairMultipleAmountOfBytes)
 
 TEST(Utf32ToUtf8, SurrogatePairMultipleUnmatchedPair)
 {
-	unicode_t i[] = { 0x0D87, 0xDE12, 0xD83D, 0x988, 0xD999 };
+	unicode_t i[] = { 0x0D87, 0xDE12, 0xD83D, 0x0988, 0xD999 };
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
 	int32_t errors;
 
-	EXPECT_EQ(12, utf32toutf8(i, is, o, os, &errors));
-	EXPECT_UTF8EQ("\xE0\xB6\x87\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBD", o);
+	EXPECT_EQ(15, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xE0\xB6\x87\xEF\xBF\xBD\xEF\xBF\xBD\xE0\xA6\x88\xEF\xBF\xBD", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
