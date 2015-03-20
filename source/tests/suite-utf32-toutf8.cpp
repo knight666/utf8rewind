@@ -78,19 +78,6 @@ TEST(Utf32ToUtf8, BasicLatinMultiple)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf32ToUtf8, BasicLatinMultipleEndsInMiddle)
-{
-	unicode_t i[] = { 'S', 't', 'a', 'n', 0x00, 'd', 's' };
-	size_t is = sizeof(i);
-	char o[256] = { 0 };
-	size_t os = 255;
-	int32_t errors;
-
-	EXPECT_EQ(7, utf32toutf8(i, is, o, os, &errors));
-	EXPECT_MEMEQ("Stan\x00" "ds", o, 7);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
 TEST(Utf32ToUtf8, BasicLatinMultipleAmountOfBytes)
 {
 	unicode_t i[] = { 'F', 'r', 'o', 'g' };
@@ -113,207 +100,122 @@ TEST(Utf32ToUtf8, BasicLatinMultipleNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-
-TEST(Utf32ToUtf8, BufferTooSmall)
+TEST(Utf32ToUtf8, TwoBytesSingle)
 {
-	unicode_t c = 0x00001F61; // ὡ
-	const size_t s = 2;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	// GREEK CAPITAL LETTER OMEGA
 
-	EXPECT_EQ(0, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("", b);
+	unicode_t i[] = { 0x03A9 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(2, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xCE\xA9", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, TwoBytesSingleFirst)
+{
+	unicode_t i[] = { 0x0080 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(2, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xC2\x80", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, TwoBytesSingleLast)
+{
+	unicode_t i[] = { 0x07FF };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(2, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xDF\xBF", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, TwoBytesSingleAmountOfBytes)
+{
+	// LATIN CAPITAL LETTER D WITH HOOK
+
+	unicode_t i[] = { 0x018A };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(2, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, TwoBytesSingleNotEnoughSpace)
+{
+	// CYRILLIC SMALL LETTER STRAIGHT U WITH STROKE
+
+	unicode_t i[] = { 0x04B1 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 1;
+	int32_t errors;
+
+	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(Utf32ToUtf8, ZeroLength)
+TEST(Utf32ToUtf8, TwoBytesMultiple)
 {
-	unicode_t c = 0x8712;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	// LATIN SMALL LETTER U WITH TILDE
+	// LATIN CAPITAL LETTER O WITH BREVE
+	// LATIN CAPITAL LETTER F WITH HOOK
+	// LATIN CAPITAL LETTER ENG
 
-	EXPECT_EQ(0, utf32toutf8(&c, sizeof(c), b, 0, &errors));
-	EXPECT_UTF8EQ("", b);
+	unicode_t i[] = { 0x0169, 0x014E, 0x0191, 0x014A };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(8, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xC5\xA9\xC5\x8E\xC6\x91\xC5\x8A", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, TwoBytesMultipleAmountOfBytes)
+{
+	// CYRILLIC SMALL LETTER KA
+	// LATIN SMALL LETTER Z WITH RETROFLEX HOOK
+	// GREEK CAPITAL LETTER RHO
+
+	unicode_t i[] = { 0x043A, 0x0290, 0x03A1 };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(6, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, TwoBytesMultipleNotEnoughSpace)
+{
+	// SMALL TILDE
+	// LATIN SMALL LETTER OPEN E
+	// LATIN LETTER SMALL CAPITAL I
+	// LATIN CAPITAL LETTER H WITH CARON
+
+	unicode_t i[] = { 0x02DC, 0x025B, 0x026A, 0x021E };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 5;
+	int32_t errors;
+
+	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xCB\x9C\xC9\x9B", o);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-}
-
-TEST(Utf32ToUtf8, ZeroBuffer)
-{
-	unicode_t c = 'K';
-	const size_t s = 256;
-	int32_t errors = 0;
-
-	EXPECT_EQ(1, utf32toutf8(&c, sizeof(c), nullptr, s, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf32ToUtf8, String)
-{
-	unicode_t c[] = {
-		'S',
-		0x1F12E,
-		'H',
-		0xA840, // ꡀ
-		0x07D4  // ߔ
-	};
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(11, utf32toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("S\xF0\x9F\x84\xAEH\xEA\xA1\x80\xDF\x94", b);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf32ToUtf8, StringEndsInMiddle)
-{
-	unicode_t c[] = {
-		0x2488, // ⒈
-		'[',
-		'r',
-		0,
-		'n'
-	};
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(5, utf32toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xE2\x92\x88[r", b);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf32ToUtf8, StringEmpty)
-{
-	unicode_t c[] = {
-		0
-	};
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf32toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("", b);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf32ToUtf8, StringBufferTooSmall)
-{
-	unicode_t c[] = {
-		'F',
-		'o',
-		'o',
-		0x3DB1 // 㶱
-	};
-	const size_t s = 4;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(3, utf32toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("Foo", b);
-	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
-}
-
-TEST(Utf32ToUtf8, Ascii)
-{
-	unicode_t c = ')';
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(1, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ(")", b);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf32ToUtf8, AsciiFirst)
-{
-	unicode_t c = 0;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("", b);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf32ToUtf8, AsciiLast)
-{
-	unicode_t c = 0x7F;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(1, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\x7F", b);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf32ToUtf8, AsciiString)
-{
-	unicode_t c[] = { 'B', 'o', 'm', 'b' };
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(4, utf32toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("Bomb", b);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf32ToUtf8, TwoBytes)
-{
-	unicode_t c = 0x000003A9; // Ω
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xCE\xA9", b);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf32ToUtf8, TwoBytesFirst)
-{
-	unicode_t c = 0x00000080; // Ω
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xC2\x80", b);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf32ToUtf8, TwoBytesLast)
-{
-	unicode_t c = 0x000007FF;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(2, utf32toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xDF\xBF", b);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf32ToUtf8, TwoBytesString)
-{
-	unicode_t c[] = {
-		0x00000169, // ũ
-		0x0000014E, // Ŏ
-		0x00000191, // Ƒ
-		0x0000014A  // Ŋ
-	};
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(8, utf32toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xC5\xA9\xC5\x8E\xC6\x91\xC5\x8A", b);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf32ToUtf8, ThreeBytes)
@@ -544,6 +446,44 @@ TEST(Utf32ToUtf8, SurrogatePairStringUnmatchedPair)
 	EXPECT_ERROREQ(UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR, errors);
 }
 
+TEST(Utf32ToUtf8, String)
+{
+	// LATIN CAPITAL LETTER S
+	// CIRCLED WZ
+	// LATIN CAPITAL LETTER H
+	// PHAGS-PA LETTER KA
+	// NKO LETTER PA
+
+	unicode_t i[] = { 0x0053, 0x1F12E, 0x0048, 0xA840, 0x07D4 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(11, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("S\xF0\x9F\x84\xAEH\xEA\xA1\x80\xDF\x94", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, StringEndsInMiddle)
+{
+	// DIGIT ONE FULL STOP
+	// LEFT SQUARE BRACKET
+	// LATIN SMALL LETTER R
+	// NULL
+	// LATIN SMALL LETTER N
+
+	unicode_t i[] = { 0x2488, 0x005B, 0x0072, 0, 0x006E };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(7, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_MEMEQ("\xE2\x92\x88[r\x00" "n", o, 7);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
 TEST(Utf32ToUtf8, AmountOfBytes)
 {
 	unicode_t c = 0x00000656;
@@ -586,7 +526,7 @@ TEST(Utf32ToUtf8, ErrorsIsReset)
 	unicode_t c = 0x1788A;
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = 1288;
 
 	EXPECT_EQ(4, utf32toutf8(&c, sizeof(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xF0\x97\xA2\x8A", b);
