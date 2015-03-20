@@ -4,16 +4,102 @@
 
 #include "helpers-strings.hpp"
 
-TEST(Utf16ToUtf8, Character)
+TEST(Utf16ToUtf8, BasicLatinSingle)
 {
-	utf16_t c = 0xDD;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
+	utf16_t i[] = { 'j' };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
 
-	EXPECT_EQ(2, utf16toutf8(&c, sizeof(c), b, s, &errors));
+	EXPECT_EQ(1, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("j", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_STREQ("\xC3\x9D", b);
+}
+
+TEST(Utf16ToUtf8, BasicLatinSingleFirst)
+{
+	utf16_t i[] = { 0x00 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(1, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf16ToUtf8, BasicLatinSingleLast)
+{
+	utf16_t i[] = { 0x7F };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(1, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\x7F", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf16ToUtf8, BasicLatinSingleAmountOfBytes)
+{
+	utf16_t i[] = { '~' };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(1, utf16toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf16ToUtf8, BasicLatinSingleNotEnoughSpace)
+{
+	utf16_t i[] = { '1' };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 0;
+	int32_t errors;
+
+	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf16ToUtf8, BasicLatinMultiple)
+{
+	utf16_t i[] = { 'x', '=', '(', '2', '*', '2', ')' };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors;
+
+	EXPECT_EQ(7, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("x=(2*2)", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf16ToUtf8, BasicLatinMultipleAmountOfBytes)
+{
+	utf16_t i[] = { 'H', 'a', 'r', 'd' };
+	size_t is = sizeof(i);
+	int32_t errors;
+
+	EXPECT_EQ(4, utf16toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf16ToUtf8, BasicLatinMultipleNotEnoughSpace)
+{
+	utf16_t i[] = { 'B', 'a', 't', 't', 'e', 'r', 'y' };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 4;
+	int32_t errors;
+
+	EXPECT_EQ(4, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("Batt", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf16ToUtf8, BufferTooSmall)
@@ -116,54 +202,6 @@ TEST(Utf16ToUtf8, StringBufferTooSmall)
 	EXPECT_EQ(1, utf16toutf8(c, sizeof(c), b, s, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 	EXPECT_STREQ("D", b);
-}
-
-TEST(Utf16ToUtf8, Ascii)
-{
-	utf16_t c = 'j';
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(1, utf16toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_STREQ("j", b);
-}
-
-TEST(Utf16ToUtf8, AsciiFirst)
-{
-	utf16_t c = 0;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(0, utf16toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_STREQ("", b);
-}
-
-TEST(Utf16ToUtf8, AsciiLast)
-{
-	utf16_t c = 0x7F;
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(1, utf16toutf8(&c, sizeof(c), b, s, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_STREQ("\x7F", b);
-}
-
-TEST(Utf16ToUtf8, AsciiString)
-{
-	utf16_t c[] = { 'x', '=', '(', '2', '*', '2', ')' };
-	const size_t s = 256;
-	char b[s] = { 0 };
-	int32_t errors = 0;
-
-	EXPECT_EQ(7, utf16toutf8(c, sizeof(c), b, s, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_STREQ("x=(2*2)", b);
 }
 
 TEST(Utf16ToUtf8, TwoBytes)
