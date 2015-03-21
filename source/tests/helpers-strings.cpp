@@ -57,40 +57,38 @@ namespace helpers {
 
 	std::string utf8(unicode_t codepoint)
 	{
-		int32_t errors = 0;
+		std::string converted;
+
+		int32_t errors;
 		size_t size_in_bytes = utf32toutf8(&codepoint, sizeof(unicode_t), nullptr, 0, &errors);
 
 		if (size_in_bytes == 0 ||
-			errors != 0)
+			errors != UTF8_ERR_NONE)
 		{
-			return "";
+			return converted;
 		}
 
-		char buffer[32] = { 0 };
-		utf32toutf8(&codepoint, sizeof(unicode_t), buffer, 31, &errors);
-		return std::string(buffer);
+		converted.resize(size_in_bytes);
+		utf32toutf8(&codepoint, sizeof(unicode_t), &converted[0], size_in_bytes, nullptr);
+
+		return converted;
 	}
 
 	std::string utf8(unicode_t* codepoints, size_t codepointsSize)
 	{
 		std::string converted;
 
-		int32_t errors = 0;
+		int32_t errors;
 		size_t size_in_bytes = utf32toutf8(codepoints, codepointsSize, nullptr, 0, &errors);
 
 		if (size_in_bytes == 0 ||
-			errors != 0)
+			errors != UTF8_ERR_NONE)
 		{
 			return converted;
 		}
 
-		char* buffer = new char[size_in_bytes + 1];
-		utf32toutf8(codepoints, codepointsSize, buffer, size_in_bytes, &errors);
-		buffer[size_in_bytes] = 0;
-
-		converted = buffer;
-
-		delete [] buffer;
+		converted.resize(size_in_bytes);
+		utf32toutf8(codepoints, codepointsSize, &converted[0], size_in_bytes, nullptr);
 
 		return converted;
 	}
@@ -99,22 +97,17 @@ namespace helpers {
 	{
 		std::string converted;
 
-		int32_t errors = 0;
+		int32_t errors;
 		size_t size_in_bytes = utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), nullptr, 0, &errors);
 
 		if (size_in_bytes == 0 ||
-			errors != 0)
+			errors != UTF8_ERR_NONE)
 		{
 			return converted;
 		}
 
-		char* buffer = new char[size_in_bytes + 1];
-		utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), buffer, size_in_bytes, &errors);
-		buffer[size_in_bytes] = 0;
-
-		converted = buffer;
-
-		delete [] buffer;
+		converted.resize(size_in_bytes);
+		utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
 	}
@@ -123,16 +116,11 @@ namespace helpers {
 	{
 		std::vector<unicode_t> converted;
 
-		if (text.length() == 0)
-		{
-			return converted;
-		}
-
-		int32_t errors = 0;
-
+		int32_t errors;
 		size_t size_in_bytes = utf8toutf32(text.c_str(), text.size(), nullptr, 0, &errors);
+
 		if (size_in_bytes == 0 ||
-			errors != 0)
+			errors != UTF8_ERR_NONE)
 		{
 			return converted;
 		}
@@ -230,17 +218,17 @@ namespace helpers {
 	{
 		std::string converted;
 
-		int32_t errors = 0;
+		int32_t errors;
 		size_t size_in_bytes = utf32toutf8(codepoints, codepointsSize, nullptr, 0, &errors);
 
 		if (size_in_bytes == 0 ||
-			errors != 0)
+			errors != UTF8_ERR_NONE)
 		{
 			return converted;
 		}
 
-		converted.resize(size_in_bytes + 1);
-		utf32toutf8(codepoints, codepointsSize, &converted[0], size_in_bytes, &errors);
+		converted.resize(size_in_bytes);
+		utf32toutf8(codepoints, codepointsSize, &converted[0], size_in_bytes, nullptr);
 
 		return printable(converted);
 	}
