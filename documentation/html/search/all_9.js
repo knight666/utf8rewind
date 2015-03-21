@@ -11,8 +11,6 @@ var searchData=
   ['utf8_5ferr_5fnone',['UTF8_ERR_NONE',['../group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3',1,'utf8rewind.h']]],
   ['utf8_5ferr_5fnot_5fenough_5fspace',['UTF8_ERR_NOT_ENOUGH_SPACE',['../group__errors.html#ga2c80a4201b65d282db98489204f6d5d8',1,'utf8rewind.h']]],
   ['utf8_5ferr_5foverlapping_5fparameters',['UTF8_ERR_OVERLAPPING_PARAMETERS',['../group__errors.html#ga212f91820ec425df66d59f187e78412c',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5funmatched_5fhigh_5fsurrogate_5fpair',['UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR',['../group__errors.html#ga0661d820dd006e49adfbdf0c7a9dec14',1,'utf8rewind.h']]],
-  ['utf8_5ferr_5funmatched_5flow_5fsurrogate_5fpair',['UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR',['../group__errors.html#ga892fe61a47f8258d88e292553a459a1c',1,'utf8rewind.h']]],
   ['utf8_5fnormalization_5fresult_5fmaybe',['UTF8_NORMALIZATION_RESULT_MAYBE',['../utf8rewind_8h.html#a8ea4d576e89529e074392175230dc352',1,'utf8rewind.h']]],
   ['utf8_5fnormalization_5fresult_5fno',['UTF8_NORMALIZATION_RESULT_NO',['../utf8rewind_8h.html#a9a59070cc87c6b141ab742986af0f223',1,'utf8rewind.h']]],
   ['utf8_5fnormalization_5fresult_5fyes',['UTF8_NORMALIZATION_RESULT_YES',['../utf8rewind_8h.html#ae047d522ffc5afe11b150b6d5c527b80',1,'utf8rewind.h']]],
