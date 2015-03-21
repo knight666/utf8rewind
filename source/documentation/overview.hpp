@@ -85,11 +85,11 @@
 	Ensure you have all dependencies installed using your preferred package
 	manager:
 
-		sudo apt-get install gyp gcc g++
+		sudo apt-get install gcc g++ gyp doxygen
 
 	Use GYP to generate a Makefile:
 
-		gyp --depth= utf8rewind.gyp
+		gyp --depth=. utf8rewind.gyp
 
 	Build the project using `make`:
 

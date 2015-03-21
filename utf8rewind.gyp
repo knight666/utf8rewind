@@ -133,11 +133,11 @@
 					'msvs_quote_cmd': 0,
 					'extension': 'doxyfile',
 					'outputs': [
-						'documentation/html/index.html',
+						'./documentation/html/index.html',
 					],
 					'action': [
 						'doxygen',
-						'$(InputPath)',
+						'utf8rewind.doxyfile',
 					],
 				},
 			],

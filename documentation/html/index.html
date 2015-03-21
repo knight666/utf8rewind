@@ -127,8 +127,8 @@ Building on Windows with Visual Studio</h2>
 <h2><a class="anchor" id="building-linux"></a>
 Building on Linux with GCC</h2>
 <p>Open a command window at the project's root.</p>
-<p>Ensure you have all dependencies installed using your preferred package manager: </p><pre class="fragment">sudo apt-get install gyp gcc g++
-</pre><p>Use GYP to generate a Makefile: </p><pre class="fragment">gyp --depth= utf8rewind.gyp
+<p>Ensure you have all dependencies installed using your preferred package manager: </p><pre class="fragment">sudo apt-get install gcc g++ gyp doxygen
+</pre><p>Use GYP to generate a Makefile: </p><pre class="fragment">gyp --depth=. utf8rewind.gyp
 </pre><p>Build the project using <code>make</code>: </p><pre class="fragment">make
 </pre><p>For a release build, specify the build type: </p><pre class="fragment">make BUILDTYPE=Release
 </pre><dl class="section note"><dt>Note</dt><dd>The generated Makefile does not contain a "clean" target. In order to do a full rebuild, you must delete the files in the "output" directory manually.</dd></dl>
