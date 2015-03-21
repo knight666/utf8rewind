@@ -10,7 +10,7 @@ TEST(Utf32ToUtf8, BasicLatinSingle)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(1, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("U", o);
@@ -23,7 +23,7 @@ TEST(Utf32ToUtf8, BasicLatinSingleFirst)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(1, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -36,7 +36,7 @@ TEST(Utf32ToUtf8, BasicLatinSingleLast)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(1, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\x7F", o);
@@ -47,7 +47,7 @@ TEST(Utf32ToUtf8, BasicLatinSingleAmountOfBytes)
 {
 	unicode_t i[] = { '%' };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(1, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -59,7 +59,7 @@ TEST(Utf32ToUtf8, BasicLatinSingleNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 0;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -72,7 +72,7 @@ TEST(Utf32ToUtf8, BasicLatinMultiple)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(5, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("Work!", o);
@@ -83,7 +83,7 @@ TEST(Utf32ToUtf8, BasicLatinMultipleAmountOfBytes)
 {
 	unicode_t i[] = { 'F', 'r', 'o', 'g' };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -95,7 +95,7 @@ TEST(Utf32ToUtf8, BasicLatinMultipleNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 5;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(5, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
@@ -109,7 +109,7 @@ TEST(Utf32ToUtf8, TwoBytesSingle)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(2, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xCE\xA9", o);
@@ -122,7 +122,7 @@ TEST(Utf32ToUtf8, TwoBytesSingleFirst)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(2, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xC2\x80", o);
@@ -135,7 +135,7 @@ TEST(Utf32ToUtf8, TwoBytesSingleLast)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(2, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xDF\xBF", o);
@@ -148,7 +148,7 @@ TEST(Utf32ToUtf8, TwoBytesSingleAmountOfBytes)
 
 	unicode_t i[] = { 0x018A };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(2, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -162,7 +162,7 @@ TEST(Utf32ToUtf8, TwoBytesSingleNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 1;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -180,7 +180,7 @@ TEST(Utf32ToUtf8, TwoBytesMultiple)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(8, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xC5\xA9\xC5\x8E\xC6\x91\xC5\x8A", o);
@@ -195,7 +195,7 @@ TEST(Utf32ToUtf8, TwoBytesMultipleAmountOfBytes)
 
 	unicode_t i[] = { 0x043A, 0x0290, 0x03A1 };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(6, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -212,7 +212,7 @@ TEST(Utf32ToUtf8, TwoBytesMultipleNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 5;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xCB\x9C\xC9\x9B", o);
@@ -227,7 +227,7 @@ TEST(Utf32ToUtf8, ThreeBytesSingle)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xE3\x8F\xA0", o);
@@ -242,7 +242,7 @@ TEST(Utf32ToUtf8, ThreeBytesSingleFirst)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xE0\xA0\x80", o);
@@ -255,7 +255,7 @@ TEST(Utf32ToUtf8, ThreeBytesSingleLast)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBF", o);
@@ -268,7 +268,7 @@ TEST(Utf32ToUtf8, ThreeBytesSingleAmountOfBytes)
 
 	unicode_t i[] = { 0x0FCE };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -282,7 +282,7 @@ TEST(Utf32ToUtf8, ThreeBytesSingleNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 2;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -300,7 +300,7 @@ TEST(Utf32ToUtf8, ThreeBytesMultiple)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(12, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xE2\x9D\xB6\xE2\x9D\xB8\xE2\x99\xA5\xE2\x9D\xBD", o);
@@ -318,7 +318,7 @@ TEST(Utf32ToUtf8, ThreeBytesMultipleAmountOfBytes)
 
 	unicode_t i[] = { 0x266A, 0x266A, 0x266C, 0x266C, 0x266C, 0x266C };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(18, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -335,7 +335,7 @@ TEST(Utf32ToUtf8, ThreeBytesMultipleNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 11;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xE2\x9B\xA7\xE2\x99\xB2\xE2\x9A\x95", o);
@@ -350,7 +350,7 @@ TEST(Utf32ToUtf8, FourBytesSingle)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF0\x9D\x90\xA4", o);
@@ -365,7 +365,7 @@ TEST(Utf32ToUtf8, FourBytesSingleFirst)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF0\x90\x80\x80", o);
@@ -378,7 +378,7 @@ TEST(Utf32ToUtf8, FourByteSingleLast)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF4\x8F\xBF\xBF", o);
@@ -391,7 +391,7 @@ TEST(Utf32ToUtf8, FourByteSingleAmountOfBytes)
 
 	unicode_t i[] = { 0x1200D };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -405,7 +405,7 @@ TEST(Utf32ToUtf8, FourByteSingleNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 3;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -422,7 +422,7 @@ TEST(Utf32ToUtf8, FourBytesMultiple)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(12, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF0\x9F\x86\x91\xF0\x9F\x86\x98\xF0\x9F\x86\x9A", o);
@@ -438,7 +438,7 @@ TEST(Utf32ToUtf8, FourBytesMultipleAmountOfBytes)
 
 	unicode_t i[] = { 0x1F317, 0x1F327, 0x1F355, 0x1F366 };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(16, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -455,7 +455,7 @@ TEST(Utf32ToUtf8, FourBytesMultipleNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 9;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(8, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF0\x9F\x85\x95\xF0\x9F\x85\x8B", o);
@@ -468,7 +468,7 @@ TEST(Utf32ToUtf8, AboveLegalUnicodeSingle)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
@@ -479,7 +479,7 @@ TEST(Utf32ToUtf8, AboveLegalUnicodeSingleAmountOfBytes)
 {
 	unicode_t i[] = { 0x199128 };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -491,7 +491,7 @@ TEST(Utf32ToUtf8, AboveLegalUnicodeSingleNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 1;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -504,7 +504,7 @@ TEST(Utf32ToUtf8, AboveLegalUnicodeMultiple)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBD", o);
@@ -515,7 +515,7 @@ TEST(Utf32ToUtf8, AboveLegalUnicodeMultipleAmountOfBytes)
 {
 	unicode_t i[] = { 0x55518281, 0x10000000, 0xAEDBCAED };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -527,7 +527,7 @@ TEST(Utf32ToUtf8, AboveLegalUnicodeMultipleNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 0;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -540,7 +540,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingle)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF0\x9D\x89\x85", o);
@@ -553,7 +553,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingleFirst)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF0\x90\x80\x80", o);
@@ -566,7 +566,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingleLast)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF4\x8F\xBF\xBF", o);
@@ -577,7 +577,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingleAmountOfBytes)
 {
 	unicode_t i[] = { 0xD9AD, 0xDCAD };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -589,7 +589,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingleUnmatchedHigh)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\x17", o);
@@ -602,7 +602,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingleUnmatchedLow)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(6, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD", o);
@@ -615,7 +615,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingleMissingLow)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
@@ -628,7 +628,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingleMissingHigh)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
@@ -641,7 +641,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingleNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 2;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -654,7 +654,7 @@ TEST(Utf32ToUtf8, SurrogatePairMultiple)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(12, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF0\x9F\x98\x92\xF0\x9F\x98\xA2\xF0\x9F\x98\xA4", o);
@@ -665,7 +665,7 @@ TEST(Utf32ToUtf8, SurrogatePairMultipleAmountOfBytes)
 {
 	unicode_t i[] = { 0xD9AD, 0xDDA7, 0xD8FA, 0xDF18 };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(8, utf32toutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -677,7 +677,7 @@ TEST(Utf32ToUtf8, SurrogatePairMultipleUnmatchedPair)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(15, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xE0\xB6\x87\xEF\xBF\xBD\xEF\xBF\xBD\xE0\xA6\x88\xEF\xBF\xBD", o);
@@ -690,7 +690,7 @@ TEST(Utf32ToUtf8, SurrogatePairMultipleNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 5;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF1\xBB\x96\xA7", o);
@@ -709,7 +709,7 @@ TEST(Utf32ToUtf8, String)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(11, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("S\xF0\x9F\x84\xAEH\xEA\xA1\x80\xDF\x94", o);
@@ -728,7 +728,7 @@ TEST(Utf32ToUtf8, StringEndsInMiddle)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(7, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_MEMEQ("\xE2\x92\x88[r\x00" "n", o, 7);

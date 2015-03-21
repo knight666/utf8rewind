@@ -10,7 +10,7 @@ TEST(WideToUtf8, BasicLatin)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(7, widetoutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("connect", o);
@@ -21,7 +21,7 @@ TEST(WideToUtf8, BasicLatinAmountOfBytes)
 {
 	wchar_t i[] = { '$', ' ', '4', '.', '3', '3' };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(6, widetoutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -33,7 +33,7 @@ TEST(WideToUtf8, BasicLatinNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 4;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, widetoutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("rock", o);
@@ -50,7 +50,7 @@ TEST(WideToUtf8, TwoBytes)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(6, widetoutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xCB\x8C\xDA\xBA\xCE\x92", o);
@@ -65,7 +65,7 @@ TEST(WideToUtf8, TwoBytesAmountOfBytes)
 
 	wchar_t i[] = { 0x03F7, 0x0572, 0x03CF };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(6, widetoutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -81,7 +81,7 @@ TEST(WideToUtf8, TwoBytesNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 5;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, widetoutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xD6\xB1\xDF\x8A", o);
@@ -98,7 +98,7 @@ TEST(WideToUtf8, ThreeBytes)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, widetoutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xE0\xA4\x9C\xE0\xA4\xA1\xE0\xA4\xA4", o);
@@ -114,7 +114,7 @@ TEST(WideToUtf8, ThreeBytesAmountOfBytes)
 
 	wchar_t i[] = { 0x1261, 0x1CED, 0x19A8, 0x0B2D };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(12, widetoutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -130,7 +130,7 @@ TEST(WideToUtf8, ThreeBytesNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 7;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(6, widetoutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xE1\xA2\x9A\xE1\x92\xA5", o);
@@ -149,7 +149,7 @@ TEST(WideToUtf8, FourBytes)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(12, widetoutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF0\x9F\x98\x92\xF0\x9F\x9D\xA0\xF0\x9F\x99\x9C", o);
@@ -165,7 +165,7 @@ TEST(WideToUtf8, FourBytesAmountOfBytes)
 
 	wchar_t i[] = { 0x1F686, 0x1F56D, 0x1F5BD, 0x1F5BB };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(16, widetoutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -180,7 +180,7 @@ TEST(WideToUtf8, FourBytesNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 5;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, widetoutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF0\x9F\x9A\xBC", o);
@@ -195,7 +195,7 @@ TEST(WideToUtf8, SurrogatePair)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(8, widetoutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF0\x9D\x84\x9E\xF2\xB2\x80\x90", o);
@@ -206,7 +206,7 @@ TEST(WideToUtf8, SurrogatePairAmountOfBytes)
 {
 	const wchar_t i[] = { 0xDAAD, 0xDC12, 0xDB01, 0xDC45 };
 	size_t is = sizeof(i);
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(8, widetoutf8(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -218,7 +218,7 @@ TEST(WideToUtf8, SurrogatePairNotEnoughSpace)
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
 	size_t os = 3;
-	int32_t errors;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, widetoutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("", o);
