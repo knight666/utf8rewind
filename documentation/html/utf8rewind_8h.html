@@ -119,12 +119,6 @@ Macros</h2></td></tr>
 <tr class="memitem:ga212f91820ec425df66d59f187e78412c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c">UTF8_ERR_OVERLAPPING_PARAMETERS</a>&#160;&#160;&#160;(-4)</td></tr>
 <tr class="memdesc:ga212f91820ec425df66d59f187e78412c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters overlap in memory.  <a href="group__errors.html#ga212f91820ec425df66d59f187e78412c">More...</a><br /></td></tr>
 <tr class="separator:ga212f91820ec425df66d59f187e78412c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0661d820dd006e49adfbdf0c7a9dec14"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__errors.html#ga0661d820dd006e49adfbdf0c7a9dec14">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a>&#160;&#160;&#160;(-5)</td></tr>
-<tr class="memdesc:ga0661d820dd006e49adfbdf0c7a9dec14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmatched high codepoint in surrogate pair.  <a href="group__errors.html#ga0661d820dd006e49adfbdf0c7a9dec14">More...</a><br /></td></tr>
-<tr class="separator:ga0661d820dd006e49adfbdf0c7a9dec14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga892fe61a47f8258d88e292553a459a1c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__errors.html#ga892fe61a47f8258d88e292553a459a1c">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a>&#160;&#160;&#160;(-6)</td></tr>
-<tr class="memdesc:ga892fe61a47f8258d88e292553a459a1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmatched low codepoint in surrogate pair.  <a href="group__errors.html#ga892fe61a47f8258d88e292553a459a1c">More...</a><br /></td></tr>
-<tr class="separator:ga892fe61a47f8258d88e292553a459a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b8ab40213f4505f96b4655fd468848d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a6b8ab40213f4505f96b4655fd468848d">UTF8_NORMALIZE_COMPOSE</a>&#160;&#160;&#160;0x00000001</td></tr>
 <tr class="memdesc:a6b8ab40213f4505f96b4655fd468848d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalize input to Normalization Form C (NFC).  <a href="#a6b8ab40213f4505f96b4655fd468848d">More...</a><br /></td></tr>
 <tr class="separator:a6b8ab40213f4505f96b4655fd468848d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -430,8 +424,6 @@ Functions</h2></td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3" title="No errors. ">UTF8_ERR_NONE</a></td><td>No errors. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for encoding. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga0661d820dd006e49adfbdf0c7a9dec14" title="Unmatched high codepoint in surrogate pair. ">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a></td><td>High surrogate pair was not matched. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga892fe61a47f8258d88e292553a459a1c" title="Unmatched low codepoint in surrogate pair. ">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a></td><td>Low surrogate pair was not matched. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
   </table>
   </dd>
@@ -532,8 +524,6 @@ Functions</h2></td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3" title="No errors. ">UTF8_ERR_NONE</a></td><td>No errors. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for encoding. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga0661d820dd006e49adfbdf0c7a9dec14" title="Unmatched high codepoint in surrogate pair. ">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a></td><td>High surrogate pair was not matched. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga892fe61a47f8258d88e292553a459a1c" title="Unmatched low codepoint in surrogate pair. ">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a></td><td>Low surrogate pair was not matched. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
   </table>
   </dd>
@@ -636,8 +626,6 @@ Functions</h2></td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3" title="No errors. ">UTF8_ERR_NONE</a></td><td>No errors. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for encoding. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga0661d820dd006e49adfbdf0c7a9dec14" title="Unmatched high codepoint in surrogate pair. ">UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR</a></td><td>High surrogate pair was not matched. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga892fe61a47f8258d88e292553a459a1c" title="Unmatched low codepoint in surrogate pair. ">UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR</a></td><td>Low surrogate pair was not matched. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
   </table>
   </dd>

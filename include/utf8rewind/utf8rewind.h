@@ -73,18 +73,6 @@
 #define UTF8_ERR_OVERLAPPING_PARAMETERS         (-4)
 
 /*!
-	\def UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR
-	\brief Unmatched high codepoint in surrogate pair.
-*/
-#define UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  (-5)
-
-/*!
-	\def UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR
-	\brief Unmatched low codepoint in surrogate pair.
-*/
-#define UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   (-6)
-
-/*!
 	\}
 */
 
@@ -249,8 +237,6 @@ UTF8_API size_t utf8len(const char* text);
 	\retval #UTF8_ERR_NONE                           No errors.
 	\retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
 	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS         Input and output buffers overlap in memory.
-	\retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
-	\retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
 	\retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
 
 	\sa utf32toutf8
@@ -311,8 +297,6 @@ UTF8_API size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target
 	\retval #UTF8_ERR_NONE                           No errors.
 	\retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
 	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS         Input and output buffers overlap in memory.
-	\retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
-	\retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
 	\retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
 
 	\sa utf16toutf8
@@ -377,8 +361,6 @@ UTF8_API size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* targ
 	\retval #UTF8_ERR_NONE                           No errors.
 	\retval #UTF8_ERR_INVALID_DATA                   Input does not contain enough bytes for encoding.
 	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS         Input and output buffers overlap in memory.
-	\retval #UTF8_ERR_UNMATCHED_HIGH_SURROGATE_PAIR  High surrogate pair was not matched.
-	\retval #UTF8_ERR_UNMATCHED_LOW_SURROGATE_PAIR   Low surrogate pair was not matched.
 	\retval #UTF8_ERR_NOT_ENOUGH_SPACE               Target buffer could not contain result.
 
 	\sa utf8towide
