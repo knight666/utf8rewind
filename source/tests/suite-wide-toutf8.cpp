@@ -179,7 +179,7 @@ TEST(WideToUtf8, FourBytesNotEnoughSpace)
 	wchar_t i[] = { 0x1F6BC, 0x2F93A };
 	size_t is = sizeof(i);
 	char o[256] = { 0 };
-	size_t os = 255;
+	size_t os = 5;
 	int32_t errors;
 
 	EXPECT_EQ(4, widetoutf8(i, is, o, os, &errors));

@@ -42,8 +42,15 @@
 						},
 					}],
 					['OS=="linux"', {
-						'cflags': [ '-g', '-Wall', '-Wextra' ],
-						'cflags_cc': [ '-std=c++11' ],
+						'cflags': [
+							'-g',
+							'-Wall',
+							'-Wextra',
+							'-Wno-missing-field-initializers', # don't warn on initializing structs with "= { 0 };"
+						],
+						'cflags_cc': [
+							'-std=c++11'
+						],
 					}],
 				],
 			},

@@ -519,8 +519,6 @@ TEST(Utf8NormalizeCompose, HangulComposeAmountOfBytes)
 
 	const char* i = "\xE1\x84\x86\xE1\x85\xA7\xE1\x86\xBF\xEB\xAD\x8B\xE1\x84\x88\xE1\x85\xB3\xE1\x86\xA8";
 	size_t is = strlen(i);
-	char o[256] = { 0 };
-	size_t os = 255;
 	int32_t errors = 0;
 
 	EXPECT_EQ(9, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
