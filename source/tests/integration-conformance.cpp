@@ -35,7 +35,7 @@ protected:
 		size_t decoded_size = 0;
 
 		decoded_size = utf8toutf32(input, input_size, nullptr, 0, &errors);
-		ASSERT_EQ(80628, decoded_size);
+		ASSERT_EQ(80608, decoded_size);
 		ASSERT_EQ(0, errors);
 
 		output = new unicode_t[decoded_size + 1];
@@ -70,7 +70,7 @@ protected:
 
 TEST_F(ConformanceSuite, ReadTheEnd)
 {
-	unicode_t* the_end = output + 20077;
+	unicode_t* the_end = output + 20072;
 	EXPECT_EQ('T', the_end[0]);
 	EXPECT_EQ('H', the_end[1]);
 	EXPECT_EQ('E', the_end[2]);

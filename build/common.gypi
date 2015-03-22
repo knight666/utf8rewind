@@ -22,6 +22,7 @@
 				'abstract': 1,
 				'conditions': [
 					['OS=="win"', {
+						'defines': [ '_WINDOWS', '_CRT_SECURE_NO_WARNINGS' ],
 						'msvs_configuration_attributes': {
 							'OutputDirectory': '$(SolutionDir)output\\<(platform_name)\\<(architecture_name)\\$(ConfigurationName)',
 							'IntermediateDirectory': '$(SolutionDir)intermediate\\$(ProjectName)\\<(architecture_name)\\$(ConfigurationName)',
@@ -41,8 +42,15 @@
 						},
 					}],
 					['OS=="linux"', {
-						'cflags': [ '-g', '-Wall', '-Wextra' ],
-						'cflags_cc': [ '-std=c++11' ],
+						'cflags': [
+							'-g',
+							'-Wall',
+							'-Wextra',
+							'-Wno-missing-field-initializers', # don't warn on initializing structs with "= { 0 };"
+						],
+						'cflags_cc': [
+							'-std=c++11'
+						],
 					}],
 				],
 			},
