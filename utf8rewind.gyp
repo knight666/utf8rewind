@@ -97,6 +97,7 @@
 				'source/tests/suite-utf8-normalize-compose.cpp',
 				'source/tests/suite-utf8-normalize-decompose.cpp',
 				'source/tests/suite-utf8-normalize.cpp',
+				'source/tests/suite-utf8-seek-backwards.cpp',
 				'source/tests/suite-utf8-seek-current.cpp',
 				'source/tests/suite-utf8-seek-end.cpp',
 				'source/tests/suite-utf8-seek-forward.cpp',
