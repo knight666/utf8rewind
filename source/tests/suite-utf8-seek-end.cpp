@@ -40,7 +40,7 @@ TEST(Utf8SeekEnd, ZeroOffset)
 	EXPECT_STREQ("", r);
 
 	unicode_t o = 0;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
@@ -55,7 +55,7 @@ TEST(Utf8SeekEnd, NegativeOffset)
 	EXPECT_STREQ("", r);
 
 	unicode_t o = 0;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
@@ -112,7 +112,7 @@ TEST(Utf8SeekEnd, SwappedParameters)
 	EXPECT_STREQ("", r);
 
 	unicode_t o = 0;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
@@ -127,7 +127,7 @@ TEST(Utf8SeekEnd, Empty)
 	EXPECT_STREQ("", r);
 
 	unicode_t o = 0;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }

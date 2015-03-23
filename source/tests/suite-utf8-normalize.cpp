@@ -39,7 +39,7 @@ TEST(Utf8Normalize, InvalidFlag)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, 0x00000008, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -50,7 +50,7 @@ TEST(Utf8Normalize, InvalidData)
 {
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf8normalize(nullptr, 7, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -61,7 +61,7 @@ TEST(Utf8Normalize, InvalidFlagAndInvalidData)
 {
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf8normalize(nullptr, 166, o, os, 0x00001B28, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -80,7 +80,7 @@ TEST(Utf8Normalize, NotEnoughSpace)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 0;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_DECOMPOSE, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -89,7 +89,7 @@ TEST(Utf8Normalize, NotEnoughSpace)
 
 TEST(Utf8Normalize, OverlappingParametersFits)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 	strcpy(data, "crash");
@@ -106,7 +106,7 @@ TEST(Utf8Normalize, OverlappingParametersFits)
 
 TEST(Utf8Normalize, OverlappingParametersStartsEqual)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -121,7 +121,7 @@ TEST(Utf8Normalize, OverlappingParametersStartsEqual)
 
 TEST(Utf8Normalize, OverlappingParametersEndsEqual)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -136,7 +136,7 @@ TEST(Utf8Normalize, OverlappingParametersEndsEqual)
 
 TEST(Utf8Normalize, OverlappingParametersInputStartsInTarget)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -151,7 +151,7 @@ TEST(Utf8Normalize, OverlappingParametersInputStartsInTarget)
 
 TEST(Utf8Normalize, OverlappingParametersInputEndsInTarget)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -166,7 +166,7 @@ TEST(Utf8Normalize, OverlappingParametersInputEndsInTarget)
 
 TEST(Utf8Normalize, OverlappingParametersInputInsideTarget)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -181,7 +181,7 @@ TEST(Utf8Normalize, OverlappingParametersInputInsideTarget)
 
 TEST(Utf8Normalize, OverlappingParametersTargetStartsInInput)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -196,7 +196,7 @@ TEST(Utf8Normalize, OverlappingParametersTargetStartsInInput)
 
 TEST(Utf8Normalize, OverlappingParametersTargetEndsInInput)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -211,7 +211,7 @@ TEST(Utf8Normalize, OverlappingParametersTargetEndsInInput)
 
 TEST(Utf8Normalize, OverlappingParametersTargetInsideInput)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 

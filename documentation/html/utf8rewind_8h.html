@@ -396,11 +396,11 @@ Functions</h2></td></tr>
 <div class="line">    <span class="keywordtype">char</span> buffer[256];</div>
 <div class="line">    <span class="keywordtype">size_t</span> buffer_size = 255;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
-<div class="line">    int32_t errors = 0;</div>
+<div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line"></div>
 <div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a84f067fc0293c142137d308ded6f130c">utf16toutf8</a>(name, nameSize, buffer, buffer_size, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
-<div class="line">        errors != 0)</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">    }</div>
@@ -484,11 +484,11 @@ Functions</h2></td></tr>
 <div class="line">    <span class="keywordtype">char</span>* converted = NULL;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
 <div class="line">    int8_t result = 0;</div>
-<div class="line">    int32_t errors = 0;</div>
+<div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line">    </div>
 <div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(query, querySize, NULL, 0, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
-<div class="line">        errors != 0)</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>
@@ -586,11 +586,11 @@ Functions</h2></td></tr>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
 <div class="line">    <span class="keywordtype">size_t</span> input_size = wcslen(input) * <span class="keyword">sizeof</span>(wchar_t);</div>
 <div class="line">    texture_t result = NULL;</div>
-<div class="line">    int32_t errors = 0;</div>
+<div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line"></div>
 <div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#aedea488052a8d820af3d192485e814e8">widetoutf8</a>(input, input_size, NULL, 0, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
-<div class="line">        errors != 0)</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>
@@ -688,7 +688,7 @@ Functions</h2></td></tr>
 <div class="line">{</div>
 <div class="line">    <a class="code" href="utf8rewind_8h.html#a1c56c34e8f9e0fbcf4949782f110df8f">utf16_t</a> buffer[256];</div>
 <div class="line">    <span class="keywordtype">size_t</span> buffer_size = 255 * <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#a1c56c34e8f9e0fbcf4949782f110df8f">utf16_t</a>);</div>
-<div class="line">    int32_t errors = 0;</div>
+<div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line">    </div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size = <a class="code" href="utf8rewind_8h.html#a303bbcceee232fdd0656e30ca1423efa">utf8toutf16</a>(text, strlen(text), buffer, buffer_size, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size &gt; 0 &amp;&amp;</div>
@@ -772,7 +772,7 @@ Functions</h2></td></tr>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> TextField_AddCharacter(<span class="keyword">const</span> <span class="keywordtype">char</span>* encoded)</div>
 <div class="line">{</div>
 <div class="line">    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint = 0;</div>
-<div class="line">    int32_t errors = 0;</div>
+<div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line"></div>
 <div class="line">    <a class="code" href="utf8rewind_8h.html#a353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(encoded, strlen(encoded), &amp;codepoint, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>), &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (errors == 0)</div>
@@ -860,11 +860,11 @@ Functions</h2></td></tr>
 <div class="line">    <span class="keywordtype">size_t</span> input_size = strlen(text);</div>
 <div class="line">    <span class="keywordtype">wchar_t</span>* converted = NULL;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
-<div class="line">    int32_t errors = 0;</div>
+<div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line"></div>
 <div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a8653854fdb4550ec3a9515ecede1f73a">utf8towide</a>(text, input_size, NULL, 0, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
-<div class="line">        errors != 0)</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>
@@ -1044,11 +1044,11 @@ Functions</h2></td></tr>
 <div class="line">    <span class="keywordtype">char</span>* converted = NULL;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
 <div class="line">    int32_t text_box_width, text_box_height;</div>
-<div class="line">    int32_t errors = 0;</div>
+<div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line"></div>
 <div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#ae9de7d7b0fbde81c2c2d62a9d045775e">utf8toupper</a>(text, input_size, NULL, 0, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
-<div class="line">        errors != 0)</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>
@@ -1151,12 +1151,12 @@ Functions</h2></td></tr>
 <div class="line">    <span class="keywordtype">size_t</span> name_size = strlen(name);</div>
 <div class="line">    <span class="keywordtype">char</span>* converted = NULL;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
-<div class="line">    int32_t errors = 0;</div>
+<div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
 <div class="line">    </div>
 <div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a2b8b64b410a600e2148e0bfe8f9a15d4">utf8tolower</a>(name, name_size, NULL, 0, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
-<div class="line">        errors != 0)</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>
@@ -1272,12 +1272,12 @@ or Lo according to the Unicode database".</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Book_SetTitle(book_t* book, <span class="keyword">const</span> <span class="keywordtype">char</span>* title)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
-<div class="line">    int32_t errors = 0;</div>
+<div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
 <div class="line"></div>
 <div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a8c55b8635f998a2405aa0a5483289264">utf8totitle</a>(title, strlen(title), book-&gt;title, 255, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
-<div class="line">        errors != 0)</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        memset(book-&gt;title, 0, 256);</div>
 <div class="line"></div>

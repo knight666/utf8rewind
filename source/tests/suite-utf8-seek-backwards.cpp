@@ -82,7 +82,7 @@ TEST(Utf8SeekBackwards, EndsInMiddle)
 	EXPECT_STREQ("", r);
 
 	unicode_t o = 0;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
 	EXPECT_EQ(UTF8_ERR_INVALID_DATA, errors);
 }

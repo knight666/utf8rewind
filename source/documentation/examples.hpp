@@ -97,12 +97,13 @@
 
 	\code{.c}
 		char text_input[8];
+		static const size_t text_input_size = 7;
 		size_t converted_size;
-		int32_t errors = 0;
+		int32_t errors = UTF8_ERR_NONE;
 
-		converted_size = utf32toutf8(input, sizeof(unicode_t), text_input, 7, &errors);
+		converted_size = utf32toutf8(input, sizeof(unicode_t), text_input, text_input_size, &errors);
 		if (converted_size == 0 ||
-			errors != 0)
+			errors != UTF8_ERR_NONE)
 		{
 			return 0;
 		}
@@ -134,11 +135,11 @@
 		{
 			char text_input[8];
 			size_t converted_size;
-			int32_t errors = 0;
+			int32_t errors = UTF8_ERR_NONE;
 
 			converted_size = utf32toutf8(input, sizeof(unicode_t), text_input, 7, &errors);
 			if (converted_size == 0 ||
-				errors != 0)
+				errors != UTF8_ERR_NONE)
 			{
 				return 0;
 			}
@@ -201,13 +202,13 @@
 			size_t text_size = strlen(text);
 			unicode_t* converted = NULL;
 			size_t converted_size;
-			int32_t errors = 0;
+			int32_t errors = UTF8_ERR_NONE;
 			size_t i;
 			unicode_t* src;
 
 			converted_size = utf8toutf32(text, text_size, NULL, 0, &errors);
 			if (converted_size == 0 ||
-				errors != 0)
+				errors != UTF8_ERR_NONE)
 			{
 				goto cleanup;
 			}

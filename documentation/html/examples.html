@@ -142,12 +142,13 @@ Dealing with user input</h1>
 </div><!-- fragment --><p>Every location that calls <code>PasswordField_EnterCharacter</code> will have to cast the parameter to <a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988" title="Unicode codepoint. ">unicode_t</a>, but luckily this is backwards-compatible. All ASCII codepoints are valid in Unicode as well.</p>
 <p>Inside the function, we'll want to convert the UTF-32 codepoint to UTF-8. To that end, we'll use <a class="el" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b" title="Convert a UTF-32 encoded string to a UTF-8 encoded string. ">utf32toutf8</a>.</p>
 <div class="fragment"><div class="line"><span class="keywordtype">char</span> text_input[8];</div>
+<div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> text_input_size = 7;</div>
 <div class="line"><span class="keywordtype">size_t</span> converted_size;</div>
-<div class="line">int32_t errors = 0;</div>
+<div class="line">int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line"></div>
-<div class="line">converted_size = <a class="code" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>), text_input, 7, &amp;errors);</div>
+<div class="line">converted_size = <a class="code" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>), text_input, text_input_size, &amp;errors);</div>
 <div class="line"><span class="keywordflow">if</span> (converted_size == 0 ||</div>
-<div class="line">    errors != 0)</div>
+<div class="line">    errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
@@ -166,11 +167,11 @@ Dealing with user input</h1>
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">char</span> text_input[8];</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
-<div class="line">    int32_t errors = 0;</div>
+<div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line"></div>
 <div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>), text_input, 7, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
-<div class="line">        errors != 0)</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">    }</div>
@@ -214,13 +215,13 @@ Displaying Unicode text</h1>
 <div class="line">    <span class="keywordtype">size_t</span> text_size = strlen(text);</div>
 <div class="line">    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* converted = NULL;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
-<div class="line">    int32_t errors = 0;</div>
+<div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
 <div class="line">    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* src;</div>
 <div class="line"></div>
 <div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(text, text_size, NULL, 0, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
-<div class="line">        errors != 0)</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>

@@ -9,7 +9,7 @@ TEST(Utf8ToLower, BasicLatinSingleUppercase)
 	const char* c = "G";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(1, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("g", b);
@@ -21,7 +21,7 @@ TEST(Utf8ToLower, BasicLatinSingleLowercase)
 	const char* c = "y";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(1, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("y", b);
@@ -33,7 +33,7 @@ TEST(Utf8ToLower, BasicLatinSingleUnaffected)
 	const char* c = "@";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(1, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("@", b);
@@ -45,7 +45,7 @@ TEST(Utf8ToLower, BasicLatinMultipleUppercase)
 	const char* c = "MULTI";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(5, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("multi", b);
@@ -57,7 +57,7 @@ TEST(Utf8ToLower, BasicLatinMultipleLowercase)
 	const char* c = "jazz";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("jazz", b);
@@ -69,7 +69,7 @@ TEST(Utf8ToLower, BasicLatinMultipleUnaffected)
 	const char* c = "(-(#)-)";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(7, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("(-(#)-)", b);
@@ -81,7 +81,7 @@ TEST(Utf8ToLower, BasicLatinWord)
 	const char* c = "MuMbLinG";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(8, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("mumbling", b);
@@ -93,7 +93,7 @@ TEST(Utf8ToLower, BasicLatinSentence)
 	const char* c = "Hello World!";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(12, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("hello world!", b);
@@ -103,7 +103,7 @@ TEST(Utf8ToLower, BasicLatinSentence)
 TEST(Utf8ToLower, BasicLatinAmountOfBytes)
 {
 	const char* c = "Houten";
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(6, utf8tolower(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -114,7 +114,7 @@ TEST(Utf8ToLower, BasicLatinNotEnoughSpace)
 	const char* c = "Interested?";
 	const size_t s = 4;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("int", b);
@@ -128,7 +128,7 @@ TEST(Utf8ToLower, GeneralCategoryCaseMappedSingleUppercase)
 	const char* c = "\xC3\x82";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xC3\xA2", b);
@@ -142,7 +142,7 @@ TEST(Utf8ToLower, GeneralCategoryCaseMappedSingleLowercase)
 	const char* c = "\xF0\x90\x90\xB6";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xF0\x90\x90\xB6", b);
@@ -156,7 +156,7 @@ TEST(Utf8ToLower, GeneralCategoryCaseMappedSingleTitlecase)
 	const char* c = "\xC7\x85";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xC7\x86", b);
@@ -170,7 +170,7 @@ TEST(Utf8ToLower, GeneralCategoryCaseMappedSingleUnaffected)
 	const char* c = "\xE2\x86\x89";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xE2\x86\x89", b);
@@ -187,7 +187,7 @@ TEST(Utf8ToLower, GeneralCategoryCaseMappedMultipleUppercase)
 	const char* c = "\xC8\x92\xC7\xAE\xC9\x85\xCE\x8C";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(8, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xC8\x93\xC7\xAF\xCA\x8C\xCF\x8C", b);
@@ -203,7 +203,7 @@ TEST(Utf8ToLower, GeneralCategoryCaseMappedMultipleLowercase)
 	const char* c = "\xD0\xB9\xD6\x83\xCF\x86";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xD0\xB9\xD6\x83\xCF\x86", b);
@@ -219,7 +219,7 @@ TEST(Utf8ToLower, GeneralCategoryCaseMappedMultipleTitlecase)
 	const char* c = "\xC3\x9F\xC7\xB2\xC4\xB3";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xC3\x9F\xC7\xB3\xC4\xB3", b);
@@ -236,7 +236,7 @@ TEST(Utf8ToLower, GeneralCategoryCaseMappedMultipleUnaffected)
 	const char* c = "\xD2\x83\xF0\x9F\x96\xA0\xF0\x90\xAB\x9D\xDB\xAE";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(12, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xD2\x83\xF0\x9F\x96\xA0\xF0\x90\xAB\x9D\xDB\xAE", b);
@@ -248,7 +248,7 @@ TEST(Utf8ToLower, GeneralCategoryCaseMappedWord)
 	const char* c = "\xCF\x88\xCF\x85\xCF\x87\xCE\xBF\xCF\x86\xCE\xB8\xCF\x8C\xCF\x81\xCE\xB1";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(18, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xCF\x88\xCF\x85\xCF\x87\xCE\xBF\xCF\x86\xCE\xB8\xCF\x8C\xCF\x81\xCE\xB1", b);
@@ -260,7 +260,7 @@ TEST(Utf8ToLower, GeneralCategoryCaseMappedSentence)
 	const char* c = "\xCE\x93\xCE\xB1\xCE\xB6\xCE\xAD\xCE\xB5\xCF\x82 \xCE\xBA\xCE\xB1\xE1\xBD\xB6 \xCE\xBC\xCF\x85\xCF\x81\xCF\x84\xCE\xB9\xE1\xBD\xB2\xCF\x82";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(36, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xCE\xB3\xCE\xB1\xCE\xB6\xCE\xAD\xCE\xB5\xCF\x82 \xCE\xBA\xCE\xB1\xE1\xBD\xB6 \xCE\xBC\xCF\x85\xCF\x81\xCF\x84\xCE\xB9\xE1\xBD\xB2\xCF\x82", b);
@@ -273,7 +273,7 @@ TEST(Utf8ToLower, GeneralCategoryCaseMappedAmountOfBytes)
 	// 0069 0307 01A3 24D2
 
 	const char* c = "\xC4\xB0\xC6\xA2\xE2\x93\x92";
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(8, utf8tolower(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -287,7 +287,7 @@ TEST(Utf8ToLower, GeneralCategoryCaseMappedNotEnoughSpace)
 	const char* c = "\xE1\xBF\xA4\xE1\xB9\x94\xE1\xBD\x8D";
 	const size_t s = 8;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xE1\xBF\xA4\xE1\xB9\x95", b);
@@ -299,7 +299,7 @@ TEST(Utf8ToLower, InvalidCodepointSingle)
 	const char* c = "\xF0\x92";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD", b);
@@ -311,7 +311,7 @@ TEST(Utf8ToLower, InvalidCodepointMultiple)
 	const char* c = "\xED\x89\xC0\x9A\xCA";
 	const size_t s = 256;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBD", b);
@@ -321,7 +321,7 @@ TEST(Utf8ToLower, InvalidCodepointMultiple)
 TEST(Utf8ToLower, InvalidCodepointAmountOfBytes)
 {
 	const char* c = "\xDE\xDE\xDA\xCA";
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(12, utf8tolower(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -332,7 +332,7 @@ TEST(Utf8ToLower, InvalidCodepointNotEnoughSpace)
 	const char* c = "\xDF\xDF\xDF";
 	const size_t s = 8;
 	char b[s] = { 0 };
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s - 1, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD", b);
@@ -353,7 +353,7 @@ TEST(Utf8ToLower, ErrorsIsReset)
 
 TEST(Utf8ToLower, InvalidData)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf8tolower(nullptr, 1, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
@@ -361,7 +361,7 @@ TEST(Utf8ToLower, InvalidData)
 
 TEST(Utf8ToLower, OverlappingParametersFits)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 	strcpy(data, "HORROR");
@@ -378,7 +378,7 @@ TEST(Utf8ToLower, OverlappingParametersFits)
 
 TEST(Utf8ToLower, OverlappingParametersStartsEqual)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -393,7 +393,7 @@ TEST(Utf8ToLower, OverlappingParametersStartsEqual)
 
 TEST(Utf8ToLower, OverlappingParametersEndsEqual)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -408,7 +408,7 @@ TEST(Utf8ToLower, OverlappingParametersEndsEqual)
 
 TEST(Utf8ToLower, OverlappingParametersInputStartsInTarget)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -423,7 +423,7 @@ TEST(Utf8ToLower, OverlappingParametersInputStartsInTarget)
 
 TEST(Utf8ToLower, OverlappingParametersInputEndsInTarget)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -438,7 +438,7 @@ TEST(Utf8ToLower, OverlappingParametersInputEndsInTarget)
 
 TEST(Utf8ToLower, OverlappingParametersInputInsideTarget)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -453,7 +453,7 @@ TEST(Utf8ToLower, OverlappingParametersInputInsideTarget)
 
 TEST(Utf8ToLower, OverlappingParametersTargetStartsInInput)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -468,7 +468,7 @@ TEST(Utf8ToLower, OverlappingParametersTargetStartsInInput)
 
 TEST(Utf8ToLower, OverlappingParametersTargetEndsInInput)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 
@@ -483,7 +483,7 @@ TEST(Utf8ToLower, OverlappingParametersTargetEndsInInput)
 
 TEST(Utf8ToLower, OverlappingParametersTargetInsideInput)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	char data[128] = { 0 };
 

@@ -10,7 +10,7 @@ protected:
 
 	void SetUp()
 	{
-		errors = 0;
+		errors = UTF8_ERR_NONE;
 		output = nullptr;
 
 		memset(input, 0, 8192);

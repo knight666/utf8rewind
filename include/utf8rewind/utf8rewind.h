@@ -211,11 +211,11 @@ UTF8_API size_t utf8len(const char* text);
 			char buffer[256];
 			size_t buffer_size = 255;
 			size_t converted_size;
-			int32_t errors = 0;
+			int32_t errors = UTF8_ERR_NONE;
 
 			converted_size = utf16toutf8(name, nameSize, buffer, buffer_size, &errors);
 			if (converted_size == 0 ||
-				errors != 0)
+				errors != UTF8_ERR_NONE)
 			{
 				return 0;
 			}
@@ -259,11 +259,11 @@ UTF8_API size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target
 			char* converted = NULL;
 			size_t converted_size;
 			int8_t result = 0;
-			int32_t errors = 0;
+			int32_t errors = UTF8_ERR_NONE;
 			
 			converted_size = utf32toutf8(query, querySize, NULL, 0, &errors);
 			if (converted_size == 0 ||
-				errors != 0)
+				errors != UTF8_ERR_NONE)
 			{
 				goto cleanup;
 			}
@@ -323,11 +323,11 @@ UTF8_API size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* targ
 			size_t converted_size;
 			size_t input_size = wcslen(input) * sizeof(wchar_t);
 			texture_t result = NULL;
-			int32_t errors = 0;
+			int32_t errors = UTF8_ERR_NONE;
 
 			converted_size = widetoutf8(input, input_size, NULL, 0, &errors);
 			if (converted_size == 0 ||
-				errors != 0)
+				errors != UTF8_ERR_NONE)
 			{
 				goto cleanup;
 			}
@@ -386,7 +386,7 @@ UTF8_API size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target,
 		{
 			utf16_t buffer[256];
 			size_t buffer_size = 255 * sizeof(utf16_t);
-			int32_t errors = 0;
+			int32_t errors = UTF8_ERR_NONE;
 			
 			size_t converted_size = utf8toutf16(text, strlen(text), buffer, buffer_size, &errors);
 			if (converted_size > 0 &&
@@ -432,7 +432,7 @@ UTF8_API size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target
 		void TextField_AddCharacter(const char* encoded)
 		{
 			unicode_t codepoint = 0;
-			int32_t errors = 0;
+			int32_t errors = UTF8_ERR_NONE;
 
 			utf8toutf32(encoded, strlen(encoded), &codepoint, sizeof(unicode_t), &errors);
 			if (errors == 0)
@@ -490,11 +490,11 @@ UTF8_API size_t utf8toutf32(const char* input, size_t inputSize, unicode_t* targ
 			size_t input_size = strlen(text);
 			wchar_t* converted = NULL;
 			size_t converted_size;
-			int32_t errors = 0;
+			int32_t errors = UTF8_ERR_NONE;
 
 			converted_size = utf8towide(text, input_size, NULL, 0, &errors);
 			if (converted_size == 0 ||
-				errors != 0)
+				errors != UTF8_ERR_NONE)
 			{
 				goto cleanup;
 			}
@@ -616,11 +616,11 @@ UTF8_API const char* utf8seek(const char* text, const char* textStart, off_t off
 			char* converted = NULL;
 			size_t converted_size;
 			int32_t text_box_width, text_box_height;
-			int32_t errors = 0;
+			int32_t errors = UTF8_ERR_NONE;
 
 			converted_size = utf8toupper(text, input_size, NULL, 0, &errors);
 			if (converted_size == 0 ||
-				errors != 0)
+				errors != UTF8_ERR_NONE)
 			{
 				goto cleanup;
 			}
@@ -695,12 +695,12 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 			size_t name_size = strlen(name);
 			char* converted = NULL;
 			size_t converted_size;
-			int32_t errors = 0;
+			int32_t errors = UTF8_ERR_NONE;
 			size_t i;
 			
 			converted_size = utf8tolower(name, name_size, NULL, 0, &errors);
 			if (converted_size == 0 ||
-				errors != 0)
+				errors != UTF8_ERR_NONE)
 			{
 				goto cleanup;
 			}
@@ -790,12 +790,12 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 		void Book_SetTitle(book_t* book, const char* title)
 		{
 			size_t converted_size;
-			int32_t errors = 0;
+			int32_t errors = UTF8_ERR_NONE;
 			size_t i;
 
 			converted_size = utf8totitle(title, strlen(title), book->title, 255, &errors);
 			if (converted_size == 0 ||
-				errors != 0)
+				errors != UTF8_ERR_NONE)
 			{
 				memset(book->title, 0, 256);
 
