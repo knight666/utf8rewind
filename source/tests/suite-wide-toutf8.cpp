@@ -225,10 +225,169 @@ TEST(WideToUtf8, SurrogatePairNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(WideToUtf8, ErrorsIsReset)
+{
+	const wchar_t i[] = { 0x0A9A };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = 776;
+
+	EXPECT_EQ(3, widetoutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xE0\xAA\x9A", o);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
 TEST(WideToUtf8, InvalidData)
 {
 	int32_t errors = 0;
 
 	EXPECT_EQ(0, widetoutf8(nullptr, sizeof(wchar_t), nullptr, 1, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(WideToUtf8, OverlappingParametersFits)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+	data[0 * sizeof(wchar_t)] = 'o';
+	data[1 * sizeof(wchar_t)] = 'f';
+	data[2 * sizeof(wchar_t)] = 'f';
+	data[3 * sizeof(wchar_t)] = 's';
+	data[4 * sizeof(wchar_t)] = 'e';
+	data[5 * sizeof(wchar_t)] = 't';
+
+	const wchar_t* i = (const wchar_t*)data;
+	size_t is = 6 * sizeof(wchar_t);
+	char* o = (char*)(data + is);
+	size_t os = 6;
+
+	EXPECT_EQ(6, widetoutf8(i, is, o, os, &errors));
+#if UTF8_WCHAR_UTF32
+	EXPECT_MEMEQ("o\0\0\0f\0\0\0f\0\0\0s\0\0\0e\0\0\0t\0\0\0offset", (const char*)data, 30);
+#else
+	EXPECT_MEMEQ("o\0f\0f\0s\0e\0t\0offset", (const char*)data, 18);
+#endif
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(WideToUtf8, OverlappingParametersStartsEqual)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const wchar_t* i = (const wchar_t*)data;
+	size_t is = 13 * sizeof(wchar_t);
+	char* o = (char*)data;
+	size_t os = 4 * sizeof(wchar_t);
+
+	EXPECT_EQ(0, widetoutf8(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(WideToUtf8, OverlappingParametersEndsEqual)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const wchar_t* i = (const wchar_t*)data;
+	size_t is = 12 * sizeof(wchar_t);
+	char* o = (char*)(data + (4 * sizeof(wchar_t)));
+	size_t os = 8 * sizeof(wchar_t);
+
+	EXPECT_EQ(0, widetoutf8(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(WideToUtf8, OverlappingParametersInputStartsInTarget)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const wchar_t* i = (const wchar_t*)(data + (17 * sizeof(wchar_t)));
+	size_t is = 12 * sizeof(wchar_t);
+	char* o = (char*)(data + (8 * sizeof(wchar_t)));
+	size_t os = 27 * sizeof(wchar_t);
+
+	EXPECT_EQ(0, widetoutf8(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(WideToUtf8, OverlappingParametersInputEndsInTarget)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const wchar_t* i = (const wchar_t*)(data + (3 * sizeof(wchar_t)));
+	size_t is = 27 * sizeof(wchar_t);
+	char* o = (char*)(data + (24 * sizeof(wchar_t)));
+	size_t os = 16 * sizeof(wchar_t);
+
+	EXPECT_EQ(0, widetoutf8(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(WideToUtf8, OverlappingParametersInputInsideTarget)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const wchar_t* i = (const wchar_t*)(data + (12 * sizeof(wchar_t)));
+	size_t is = 6 * sizeof(wchar_t);
+	char* o = (char*)(data + (10 * sizeof(wchar_t)));
+	size_t os = 10 * sizeof(wchar_t);
+
+	EXPECT_EQ(0, widetoutf8(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(WideToUtf8, OverlappingParametersTargetStartsInInput)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const wchar_t* i = (const wchar_t*)(data + (15 * sizeof(wchar_t)));
+	size_t is = 11 * sizeof(wchar_t);
+	char* o = (char*)(data + (18 * sizeof(wchar_t)));
+	size_t os = 23 * sizeof(wchar_t);
+
+	EXPECT_EQ(0, widetoutf8(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(WideToUtf8, OverlappingParametersTargetEndsInInput)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const wchar_t* i = (const wchar_t*)(data + (5 * sizeof(wchar_t)));
+	size_t is = 18 * sizeof(wchar_t);
+	char* o = (char*)(data + (2 * sizeof(wchar_t)));
+	size_t os = 9 * sizeof(wchar_t);
+
+	EXPECT_EQ(0, widetoutf8(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST(WideToUtf8, OverlappingParametersTargetInsideInput)
+{
+	int32_t errors = 0;
+
+	uint8_t data[128] = { 0 };
+
+	const wchar_t* i = (const wchar_t*)(data + (14 * sizeof(wchar_t)));
+	size_t is = 21 * sizeof(wchar_t);
+	char* o = (char*)(data + (17 * sizeof(wchar_t)));
+	size_t os = 7 * sizeof(wchar_t);
+
+	EXPECT_EQ(0, widetoutf8(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
