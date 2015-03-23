@@ -12,7 +12,7 @@ protected:
 
 	void SetUp()
 	{
-		errors = 0;
+		errors = UTF8_ERR_NONE;
 
 		fileRegular.open("testdata/quickbrown.txt", std::ios_base::in);
 		ASSERT_TRUE(fileRegular.is_open());

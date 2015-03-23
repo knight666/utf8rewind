@@ -10,7 +10,7 @@ protected:
 
 	void SetUp()
 	{
-		errors = 0;
+		errors = UTF8_ERR_NONE;
 		input = nullptr;
 		input_size = 0;
 		output = nullptr;

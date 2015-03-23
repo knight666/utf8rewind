@@ -240,7 +240,7 @@ TEST(WideToUtf8, ErrorsIsReset)
 
 TEST(WideToUtf8, InvalidData)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, widetoutf8(nullptr, sizeof(wchar_t), nullptr, 1, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
@@ -248,7 +248,7 @@ TEST(WideToUtf8, InvalidData)
 
 TEST(WideToUtf8, OverlappingParametersFits)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 	data[0 * sizeof(wchar_t)] = 'o';
@@ -274,7 +274,7 @@ TEST(WideToUtf8, OverlappingParametersFits)
 
 TEST(WideToUtf8, OverlappingParametersStartsEqual)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -289,7 +289,7 @@ TEST(WideToUtf8, OverlappingParametersStartsEqual)
 
 TEST(WideToUtf8, OverlappingParametersEndsEqual)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -304,7 +304,7 @@ TEST(WideToUtf8, OverlappingParametersEndsEqual)
 
 TEST(WideToUtf8, OverlappingParametersInputStartsInTarget)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -319,7 +319,7 @@ TEST(WideToUtf8, OverlappingParametersInputStartsInTarget)
 
 TEST(WideToUtf8, OverlappingParametersInputEndsInTarget)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -334,7 +334,7 @@ TEST(WideToUtf8, OverlappingParametersInputEndsInTarget)
 
 TEST(WideToUtf8, OverlappingParametersInputInsideTarget)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -349,7 +349,7 @@ TEST(WideToUtf8, OverlappingParametersInputInsideTarget)
 
 TEST(WideToUtf8, OverlappingParametersTargetStartsInInput)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -364,7 +364,7 @@ TEST(WideToUtf8, OverlappingParametersTargetStartsInInput)
 
 TEST(WideToUtf8, OverlappingParametersTargetEndsInInput)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -379,7 +379,7 @@ TEST(WideToUtf8, OverlappingParametersTargetEndsInInput)
 
 TEST(WideToUtf8, OverlappingParametersTargetInsideInput)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 

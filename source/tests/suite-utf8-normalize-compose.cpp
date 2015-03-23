@@ -20,7 +20,7 @@ TEST(Utf8NormalizeCompose, BasicLatinSingle)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(1, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("J", o);
@@ -39,7 +39,7 @@ TEST(Utf8NormalizeCompose, BasicLatinMultiple)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(10, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("Screenshot", o);
@@ -58,7 +58,7 @@ TEST(Utf8NormalizeCompose, BasicLatinCompatibility)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("aXXo", o);
@@ -75,7 +75,7 @@ TEST(Utf8NormalizeCompose, BasicLatinAmountOfBytes)
 
 	const char* i = "Handsome";
 	size_t is = strlen(i);
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(8, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -93,7 +93,7 @@ TEST(Utf8NormalizeCompose, BasicLatinNotEnoughSpace)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 3;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("App", o);
@@ -112,7 +112,7 @@ TEST(Utf8NormalizeCompose, MultiByteUnaffectedSingle)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE2\x83\x97", o);
@@ -131,7 +131,7 @@ TEST(Utf8NormalizeCompose, MultiByteUnaffectedMultiple)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE2\x81\xAF\xE1\xBA\x9F\xE2\x80\xAB", o);
@@ -150,7 +150,7 @@ TEST(Utf8NormalizeCompose, MultiByteUnaffectedCompatibility)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(12, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("\xE2\x82\xA0\xE2\x82\xAC\xE2\x82\xB0\xE2\x82\xAF", o);
@@ -167,7 +167,7 @@ TEST(Utf8NormalizeCompose, MultiByteUnaffectedAmountOfBytes)
 
 	const char* i = "\xE2\x84\x9C\xE2\x84\x9F\xE2\x84\xA2";
 	size_t is = strlen(i);
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -185,7 +185,7 @@ TEST(Utf8NormalizeCompose, MultiByteUnaffectedNotEnoughSpace)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 6;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(6, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE2\x88\x9A\xE2\x88\x95", o);
@@ -204,7 +204,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleComposeTwoCodepoints)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(2, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xC3\x9D", o);
@@ -223,7 +223,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleComposeMultipleCodepoints)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE1\xBE\xA2", o);
@@ -242,7 +242,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleComposeUnordered)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(5, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE1\xBE\xAA\xD9\x91", o);
@@ -261,7 +261,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleDecomposeAndComposeOrdered)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE1\xBE\xAA", o);
@@ -280,7 +280,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleDecomposeAndComposeUnordered)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE1\xB9\xA8", o);
@@ -299,7 +299,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleComposeCompatibility)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("D\xC5\xBD", o);
@@ -316,7 +316,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleComposeAmountOfBytes)
 
 	const char* i = "L\xCC\xA3\xCC\x84";
 	size_t is = strlen(i);
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -334,7 +334,7 @@ TEST(Utf8NormalizeCompose, SequenceSingleComposeNotEnoughSpace)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 2;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -353,7 +353,7 @@ TEST(Utf8NormalizeCompose, HangulUnaffectedSingle)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xEA\xB6\xA4", o);
@@ -372,7 +372,7 @@ TEST(Utf8NormalizeCompose, HangulUnaffectedMultiple)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xEA\xB6\xAA\xEB\x8B\xA9\xEA\xB9\xAE", o);
@@ -391,7 +391,7 @@ TEST(Utf8NormalizeCompose, HangulUnaffectedCompatibility)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(12, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("\xEB\x88\x9E\xEA\xB9\x92\xEB\x91\xAA\xEB\x97\xB0", o);
@@ -408,7 +408,7 @@ TEST(Utf8NormalizeCompose, HangulUnaffectedAmountOfBytes)
 
 	const char* i = "\xEB\xA7\xA1\xEB\xA4\x9C\xEB\xA6\x91";
 	size_t is = strlen(i);
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -426,7 +426,7 @@ TEST(Utf8NormalizeCompose, HangulUnaffectedNotEnoughSpace)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 5;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xEB\x9A\xB8", o);
@@ -445,7 +445,7 @@ TEST(Utf8NormalizeCompose, HangulComposeSingleTwoCodepoints)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xEB\xA2\x94", o);
@@ -464,7 +464,7 @@ TEST(Utf8NormalizeCompose, HangulComposeSingleThreeCodepoints)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(3, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xEB\xAA\xA9", o);
@@ -483,7 +483,7 @@ TEST(Utf8NormalizeCompose, HangulComposeMultiple)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xEB\xA9\xBF\xEB\xA4\x84\xEB\xAA\xB0", o);
@@ -502,7 +502,7 @@ TEST(Utf8NormalizeCompose, HangulComposeCompatibility)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(6, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("\xEB\xAB\x8E\xEB\xAE\x88", o);
@@ -519,7 +519,7 @@ TEST(Utf8NormalizeCompose, HangulComposeAmountOfBytes)
 
 	const char* i = "\xE1\x84\x86\xE1\x85\xA7\xE1\x86\xBF\xEB\xAD\x8B\xE1\x84\x88\xE1\x85\xB3\xE1\x86\xA8";
 	size_t is = strlen(i);
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -537,7 +537,7 @@ TEST(Utf8NormalizeCompose, HangulComposeNotEnoughSpace)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 2;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("", o);
@@ -556,7 +556,7 @@ TEST(Utf8NormalizeCompose, SequenceMultipleComposeOrdered)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE1\xBF\xBC\xE1\xBE\x9A\xE1\xBC\xA4", o);
@@ -575,7 +575,7 @@ TEST(Utf8NormalizeCompose, SequenceMultipleComposeUnordered)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xE1\xBB\x86\xE1\xBE\x82\xE1\xBE\xAD", o);
@@ -594,7 +594,7 @@ TEST(Utf8NormalizeCompose, SequenceMultipleComposeCompatibility)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(13, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors));
 	EXPECT_UTF8EQ("\xEC\xB0\xB8\xEA\xB3\xA0\xE3\x83\x87\xD9\x84\xD8\xA2", o);
@@ -611,7 +611,7 @@ TEST(Utf8NormalizeCompose, SequenceMultipleComposeAmountOfBytes)
 
 	const char* i = "\xCE\xB9\xCC\x84\xCE\xB1\xCC\x94\xCD\x85" "A\xCC\x82\xCC\x83";
 	size_t is = strlen(i);
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf8normalize(i, is, nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
@@ -629,7 +629,7 @@ TEST(Utf8NormalizeCompose, SequenceMultipleComposeNotEnoughSpace)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 3;
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(2, utf8normalize(i, is, o, os, UTF8_NORMALIZE_COMPOSE, &errors));
 	EXPECT_UTF8EQ("\xC8\xAB", o);

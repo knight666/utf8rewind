@@ -553,7 +553,7 @@ TEST(Utf16ToUtf8, ErrorsIsReset)
 
 TEST(Utf16ToUtf8, InvalidData)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf16toutf8(nullptr, 1, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
@@ -561,7 +561,7 @@ TEST(Utf16ToUtf8, InvalidData)
 
 TEST(Utf16ToUtf8, OverlappingParametersFits)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 	data[0] = 'A';
@@ -580,7 +580,7 @@ TEST(Utf16ToUtf8, OverlappingParametersFits)
 
 TEST(Utf16ToUtf8, OverlappingParametersStartsEqual)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -595,7 +595,7 @@ TEST(Utf16ToUtf8, OverlappingParametersStartsEqual)
 
 TEST(Utf16ToUtf8, OverlappingParametersEndsEqual)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -610,7 +610,7 @@ TEST(Utf16ToUtf8, OverlappingParametersEndsEqual)
 
 TEST(Utf16ToUtf8, OverlappingParametersInputStartsInTarget)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -625,7 +625,7 @@ TEST(Utf16ToUtf8, OverlappingParametersInputStartsInTarget)
 
 TEST(Utf16ToUtf8, OverlappingParametersInputEndsInTarget)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -640,7 +640,7 @@ TEST(Utf16ToUtf8, OverlappingParametersInputEndsInTarget)
 
 TEST(Utf16ToUtf8, OverlappingParametersInputInsideTarget)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -655,7 +655,7 @@ TEST(Utf16ToUtf8, OverlappingParametersInputInsideTarget)
 
 TEST(Utf16ToUtf8, OverlappingParametersTargetStartsInInput)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -670,7 +670,7 @@ TEST(Utf16ToUtf8, OverlappingParametersTargetStartsInInput)
 
 TEST(Utf16ToUtf8, OverlappingParametersTargetEndsInInput)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
@@ -685,7 +685,7 @@ TEST(Utf16ToUtf8, OverlappingParametersTargetEndsInInput)
 
 TEST(Utf16ToUtf8, OverlappingParametersTargetInsideInput)
 {
-	int32_t errors = 0;
+	int32_t errors = UTF8_ERR_NONE;
 
 	uint8_t data[128] = { 0 };
 
