@@ -1,22 +1,38 @@
 ## Introduction ##
 
-`utf8rewind` is a UTF-8 library written in C, designed to extend default string handling functions in order to add support for UTF-8 encoded text. Besides providing functions to deal with UTF-8 encoded text, it also provides functions for converting to and from wide strings. Wide strings of both the UTF-16 and UTF-32 variety are supported.
+`utf8rewind` is a cross-platform and open source C library designed to extend the default string handling functions and add support for UTF-8 encoded text.
 
-**Download**
+## Features
 
-[utf8rewind-1.1.1.zip (1.95 MB)](https://bitbucket.org/knight666/utf8rewind/downloads/utf8rewind-1.1.1.zip)
+* **Conversion to and from UTF-8** - `utf8rewind` provides functions for converting from and to [wide](\ref widetoutf8), [UTF-16](\ref utf16toutf8) and [UTF-32](\ref utf32toutf8) encoded text.
 
-**Clone in Mercurial**
+* **Case mapping** - The library also provides functionality for converting text to [uppercase](\ref utf8toupper), [lowercase](\ref utf8tolower) and [titlecase](\ref utf8totitle).
+
+* **Normalization** - With #utf8normalize, you can normalize UTF-8 encoded text without converting it to UTF-32 first.
+
+* **Seeking** - Using #utf8seek, you can seek forwards and backwards in UTF-8 encoded text.
+
+* **Cross-platform** - `utf8rewind` is written in plain C, which means it can be used on any platform with a compliant C compiler. Currently, Windows, Linux and Mac versions are available.
+
+* **Easy to integrate** - The library consists of only 13 public functions and requires no initialization. Any C or C++ project can add utf8rewind without breaking existing code.
+
+* **Simple bindings** - No structs are used in the public interface, only pointers. Even if you don't use C, if the language of your choice allows bindings to C functions (e.g. Python), you can benefit from integrating utf8rewind into your project.
+
+* **No heap allocations** - All allocations in UTF-8 happen on the stack. You provide the memory, without having to override `malloc`. This makes the library perfectly tailored to game engines, integrated systems and other performance-critical or memory-constrained projects.
+
+* **Safety** - Over 1500 automated unit and integration tests guarantee the safety and security of the library.
+
+## Download
+
+[utf8rewind-1.2.0.zip (3.15 MB)](https://bitbucket.org/knight666/utf8rewind/downloads/utf8rewind-1.2.0.zip)
+
+### Clone in Mercurial
 
     hg clone https://bitbucket.org/knight666/utf8rewind utf8rewind
 
 ## Licensing ##
 
 This project is licensed under the MIT license, a full copy of which should have been provided with the project.
-
-## Installation ###
-
-There are two ways to use the library: you can either create a static library and link to that or paste the source files directly into your source. This is a viable alternative because the project consists of only two files: 'utf8rewind.h' (header) and 'utf8rewind.c' (source).
 
 ## Building the project ##
 
@@ -28,25 +44,29 @@ You will need to have Visual Studio 2010 or above installed.
 
 Open a command window at the project's root.
 
-Execute the following to generate a solution:
+If you have multiple versions of Visual Studio installed, you must first specify the version you want to use:
 
-	tools\gyp\gyp --depth --format=msvs utf8rewind.gyp
+	set GYP_MSVS_VERSION=2012
 
-Open the solution in Visual Studio and you can build the library and tests.
+Use GYP to generate a solution:
+
+	tools\gyp\gyp --depth utf8rewind.gyp
+
+Open the solution in Visual Studio. You can use the different build configurations to generate a static library.
 
 ### Building on Linux with GCC ###
 
 Open a command window at the project's root.
 
-First, make sure you have all dependencies installed using your favorite package manager.
+Ensure you have all dependencies installed using your preferred package manager:
 
-	sudo apt-get install gyp gcc g++
+	sudo apt-get install gcc g++ gyp doxygen
 
-Next, execute the following command to generate a makefile:
+Use GYP to generate a Makefile:
 
-	gyp --depth=./ --format=make utf8rewind.gyp
+	gyp --depth=. utf8rewind.gyp
 
-Now you can build the project:
+Build the project using `make`:
 
 	make
 
@@ -54,33 +74,31 @@ For a release build, specify the build type:
 
 	make BUILDTYPE=Release
 
-### Building on Mac OS X using Xcode ###
+The generated Makefile does not contain a "clean" target. In order to do a full rebuild, you must delete the files in the "output" directory manually.
+
+### Building on Mac OS X with XCode ###
 
 Building on Mac OS X is currently untested. Please let us know if you can help us in this regard.
 
 Open a command window at the project's root.
 
-Execute the following to generate a solution:
+Use GYP to generate a solution:
 
-	tools\gyp\gyp --depth --format=xcode utf8rewind.gyp
+	tools\gyp\gyp --depth utf8rewind.gyp
 
-Open the solution in Xcode and you can build the library and tests.
-
-### Using the source directly ###
-
-Copy 'include/utf8rewind/utf8rewind.h' and 'source/utf8rewind.c' directly into your existing solution. Make sure you specify that the source file should be compiled as C code (`/TC` in Visual Studio). Include the header from your source and start using it.
+Open the solution in XCode and you can build the library and tests.
 
 ### Running the tests ###
 
-After generating a solution, build and run the "tests-rewind" project. Verify that all tests pass on your system before continuing.
+After generating a solution, build and run the "tests-rewind" project. Verify that all tests pass on your system configuration before continuing.
 
 ## Helping out ##
 
 As a user, you can help the project in a number of ways, in order of difficulty:
 
-* **Use it** - Designers of a public interface often have very different ideas about usability than those actually using it. By using the library, you are helping the project spread and could potentially improve it by us taking your project into consideration when we design the API.
+* **Use it** - By using the library, you are helping the project spread. It is very important to us to have the project be used by as many different projects as possible. This will allow us to create better public interfaces.
 
-* **Spread the word** - If you find `utf8rewind` useful, recommend it to your friends and coworkers.
+* **Spread the word** - If you find `utf8rewind` useful, recommend it to your friends or coworkers.
 
 * **Complain** - No library is perfect and `utf8rewind` is no exception. If you find a fault but lack the means (time, resources, etc.) to fix it, sending complaints to the proper channels can help the project out a lot.
 
