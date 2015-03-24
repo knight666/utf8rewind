@@ -54,9 +54,8 @@
 		if (target != 0) { \
 			if (targetSize < 3) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
 			memcpy(target, "\xEF\xBF\xBD", 3); \
-			bytes_written += 3; \
 		} \
-		UTF8_RETURN(INVALID_DATA, bytes_written); \
+		UTF8_RETURN(INVALID_DATA, _result + 3); \
 	} \
 	if (target != 0 && targetSize == 0) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
 	if ((char*)input == target) { UTF8_RETURN(OVERLAPPING_PARAMETERS, _result); } \
@@ -73,9 +72,8 @@
 		if (target != 0) { \
 			if (targetSize < sizeof(_outputType)) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
 			*target = REPLACEMENT_CHARACTER; \
-			bytes_written += sizeof(_outputType); \
 		} \
-		UTF8_RETURN(INVALID_DATA, bytes_written); \
+		UTF8_RETURN(INVALID_DATA, _result + sizeof(_outputType)); \
 	} \
 	if (target != 0 && targetSize < sizeof(_outputType)) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
 	if ((char*)input == (char*)target) { UTF8_RETURN(OVERLAPPING_PARAMETERS, _result); } \

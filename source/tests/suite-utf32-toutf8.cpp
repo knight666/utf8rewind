@@ -66,6 +66,68 @@ TEST(Utf32ToUtf8, BasicLatinSingleNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(Utf32ToUtf8, BasicLatinSingleMissingOneByte)
+{
+	unicode_t i[] = { '_' };
+	size_t is = sizeof(i) - 1;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinSingleMissingTwoBytes)
+{
+	unicode_t i[] = { '0' };
+	size_t is = sizeof(i) - 2;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinSingleMissingThreeBytes)
+{
+	unicode_t i[] = { ' ' };
+	size_t is = sizeof(i) - 3;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinSingleMissingAmountOfBytes)
+{
+	unicode_t i[] = { 'b' };
+	size_t is = sizeof(i) - 2;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinSingleMissingNotEnoughSpace)
+{
+	unicode_t i[] = { '{' };
+	size_t is = sizeof(i) - 1;
+	char o[256] = { 0 };
+	size_t os = 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST(Utf32ToUtf8, BasicLatinMultiple)
 {
 	unicode_t i[] = { 'W', 'o', 'r', 'k', '!' };
@@ -98,6 +160,68 @@ TEST(Utf32ToUtf8, BasicLatinMultipleNotEnoughSpace)
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(5, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinMultipleMissingOneByte)
+{
+	unicode_t i[] = { 'G', 'e', 'l' };
+	size_t is = sizeof(i) - 1;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(5, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("Ge\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinMultipleMissingTwoBytes)
+{
+	unicode_t i[] = { 'M', 'e', 'g', 'a' };
+	size_t is = sizeof(i) - 2;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(6, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("Meg\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinMultipleMissingThreeBytes)
+{
+	unicode_t i[] = { 'r', 'a', 'd', 'i', 'u', 'm' };
+	size_t is = sizeof(i) - 3;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("radiu\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinMultipleMissingAmountOfBytes)
+{
+	unicode_t i[] = { '[', '+', ']', '=' };
+	size_t is = sizeof(i) - 3;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(6, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, BasicLatinMultipleMissingNotEnoughSpace)
+{
+	unicode_t i[] = { 'c', 'o', 'd' };
+	size_t is = sizeof(i) - 2;
+	char o[256] = { 0 };
+	size_t os = 3;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(2, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("co", o);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
