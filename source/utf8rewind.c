@@ -173,6 +173,8 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 				}
 				else
 				{
+					/* Decode codepoint from surrogate pair */
+
 					codepoint =
 						(MAX_BASIC_MULTILINGUAL_PLANE + 1) +
 						(src[1] - SURROGATE_LOW_START) +
@@ -277,6 +279,8 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 				}
 				else
 				{
+					/* Decode codepoint from surrogate pair */
+
 					codepoint =
 						(MAX_BASIC_MULTILINGUAL_PLANE + 1) +
 						(src[1] - SURROGATE_LOW_START) +

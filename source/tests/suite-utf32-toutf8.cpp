@@ -413,6 +413,78 @@ TEST(Utf32ToUtf8, ThreeBytesSingleNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(Utf32ToUtf8, ThreeBytesSingleMissingOneByte)
+{
+	// BRAILLE PATTERN DOTS-1278
+
+	unicode_t i[] = { 0x28C3 };
+	size_t is = sizeof(i) - 1;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, ThreeBytesSingleMissingTwoBytes)
+{
+	// BLACK CLUB SUIT
+
+	unicode_t i[] = { 0x2663 };
+	size_t is = sizeof(i) - 2;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, ThreeBytesSingleMissingThreeBytes)
+{
+	// CIRCLED LATIN CAPITAL LETTER H
+
+	unicode_t i[] = { 0x24BD };
+	size_t is = sizeof(i) - 3;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, ThreeBytesSingleMissingAmountOfBytes)
+{
+	// NUMBER SIXTEEN FULL STOP
+
+	unicode_t i[] = { 0x2497 };
+	size_t is = sizeof(i) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, ThreeBytesSingleMissingNotEnoughSpace)
+{
+	// NEGATIVE CIRCLED NUMBER ELEVEN
+
+	unicode_t i[] = { 0x24EB };
+	size_t is = sizeof(i) - 2;
+	char o[256] = { 0 };
+	size_t os = 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST(Utf32ToUtf8, ThreeBytesMultiple)
 {
 	// DINGBAT NEGATIVE CIRCLED DIGIT ONE
@@ -463,6 +535,88 @@ TEST(Utf32ToUtf8, ThreeBytesMultipleNotEnoughSpace)
 
 	EXPECT_EQ(9, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xE2\x9B\xA7\xE2\x99\xB2\xE2\x9A\x95", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf32ToUtf8, ThreeBytesMultipleMissingOneByte)
+{
+	// PRECEDES UNDER RELATION
+	// NOT TRUE
+	// EXCESS
+
+	unicode_t i[] = { 0x22B0, 0x22AD, 0x2239 };
+	size_t is = sizeof(i) - 1;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(9, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xE2\x8A\xB0\xE2\x8A\xAD\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, ThreeBytesMultipleMissingTwoBytes)
+{
+	// APL FUNCTIONAL SYMBOL LEFT SHOE STILE
+	// ELEMENT OF WITH UNDERBAR
+
+	unicode_t i[] = { 0x2367, 0x22F8 };
+	size_t is = sizeof(i) - 2;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(6, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xE2\x8D\xA7\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, ThreeBytesMultipleMissingThreeBytes)
+{
+	// PARENTHESIZED LATIN SMALL LETTER O
+	// SYMBOL FOR LINE FEED
+	// SYMBOL FOR DATA LINK ESCAPE
+	// SYMBOL FOR END OF TRANSMISSION
+
+	unicode_t i[] = { 0x24AA, 0x240A, 0x2410, 0x2404 };
+	size_t is = sizeof(i) - 3;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(12, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xE2\x92\xAA\xE2\x90\x8A\xE2\x90\x90\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, ThreeBytesMultipleMissingAmountOfBytes)
+{
+	// GEORGIAN SMALL LETTER HE
+	// KANGXI RADICAL MORTAR
+	// CIRCLED LATIN SMALL LETTER A
+
+	unicode_t i[] = { 0x2D21, 0x2F85, 0x24D0 };
+	size_t is = sizeof(i) - 3;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(9, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, ThreeBytesMultipleMissingNotEnoughSpace)
+{
+	// CJK RADICAL MORTAR
+	// REJANG VOWEL SIGN I
+	// VAI SYLLABLE ON
+
+	unicode_t i[] = { 0x2EBD, 0xA947, 0xA5BB };
+	size_t is = sizeof(i) - 1;
+	char o[256] = { 0 };
+	size_t os = 7;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(6, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xE2\xBA\xBD\xEA\xA5\x87", o);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
@@ -730,7 +884,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingleUnmatchedLow)
 
 	EXPECT_EQ(6, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD", o);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf32ToUtf8, SurrogatePairSingleMissingLow)
