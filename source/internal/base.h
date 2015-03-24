@@ -48,9 +48,36 @@
 /* Validates input before transforming */
 /* Check for parameter overlap using the separating axis theorem */
 
-#define UTF8_VALIDATE_PARAMETERS(_inputType, _targetType, _result) \
-	if (input == 0 || inputSize < sizeof(_inputType)) { UTF8_RETURN(INVALID_DATA, _result); } \
-	if (target != 0 && targetSize < sizeof(_targetType)) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
+#define UTF8_VALIDATE_PARAMETERS_CHAR(_inputType, _result) \
+	if (input == 0) { UTF8_RETURN(INVALID_DATA, _result); } \
+	else if (inputSize < sizeof(_inputType)) { \
+		if (target != 0) { \
+			if (targetSize < 3) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
+			memcpy(target, "\xEF\xBF\xBD", 3); \
+			bytes_written += 3; \
+		} \
+		UTF8_RETURN(INVALID_DATA, bytes_written); \
+	} \
+	if (target != 0 && targetSize == 0) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
+	if ((char*)input == target) { UTF8_RETURN(OVERLAPPING_PARAMETERS, _result); } \
+	{ \
+		char* input_center = (char*)input + (inputSize / 2); \
+		char* target_center = target + (targetSize / 2); \
+		size_t delta = (size_t)((input_center > target_center) ? (input_center - target_center) : (target_center - input_center)); \
+		if (delta < (inputSize + targetSize) / 2) { UTF8_RETURN(OVERLAPPING_PARAMETERS, _result); } \
+	}
+
+#define UTF8_VALIDATE_PARAMETERS(_inputType, _outputType, _result) \
+	if (input == 0) { UTF8_RETURN(INVALID_DATA, _result); } \
+	else if (inputSize < sizeof(_inputType)) { \
+		if (target != 0) { \
+			if (targetSize < sizeof(_outputType)) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
+			*target = REPLACEMENT_CHARACTER; \
+			bytes_written += sizeof(_outputType); \
+		} \
+		UTF8_RETURN(INVALID_DATA, bytes_written); \
+	} \
+	if (target != 0 && targetSize < sizeof(_outputType)) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
 	if ((char*)input == (char*)target) { UTF8_RETURN(OVERLAPPING_PARAMETERS, _result); } \
 	{ \
 		char* input_center = (char*)input + (inputSize / 2); \

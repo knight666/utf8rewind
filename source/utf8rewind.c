@@ -105,28 +105,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 
 	/* Validate parameters */
 
-	/* TODO: Fix for all functions */
-
-	if (input != 0 &&
-		inputSize < sizeof(utf16_t))
-	{
-		/* Not enough data */
-
-		if (target != 0)
-		{
-			if (targetSize < 3)
-			{
-				UTF8_RETURN(NOT_ENOUGH_SPACE, bytes_written);
-			}
-
-			memcpy(target, "\xEF\xBF\xBD", 3);
-			bytes_written += 3;
-		}
-
-		UTF8_RETURN(INVALID_DATA, bytes_written);
-	}
-
-	UTF8_VALIDATE_PARAMETERS(utf16_t, char, bytes_written);
+	UTF8_VALIDATE_PARAMETERS_CHAR(utf16_t, bytes_written);
 
 	/* Setup cursors */
 
@@ -226,7 +205,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 
 	/* Validate parameters */
 
-	UTF8_VALIDATE_PARAMETERS(unicode_t, char, bytes_written);
+	UTF8_VALIDATE_PARAMETERS_CHAR(unicode_t, bytes_written);
 
 	/* Setup cursors */
 
@@ -490,7 +469,7 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Validate parameters */
 
-	UTF8_VALIDATE_PARAMETERS(char, char, bytes_written);
+	UTF8_VALIDATE_PARAMETERS_CHAR(char, bytes_written);
 
 	/* Initialize case mapping */
 
@@ -522,7 +501,7 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Validate parameters */
 
-	UTF8_VALIDATE_PARAMETERS(char, char, bytes_written);
+	UTF8_VALIDATE_PARAMETERS_CHAR(char, bytes_written);
 
 	/* Initialize case mapping */
 
@@ -554,7 +533,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Validate parameters */
 
-	UTF8_VALIDATE_PARAMETERS(char, char, bytes_written);
+	UTF8_VALIDATE_PARAMETERS_CHAR(char, bytes_written);
 
 	/* Initialize case mapping */
 
@@ -848,7 +827,7 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 	/* Validate parameters */
 
-	UTF8_VALIDATE_PARAMETERS(char, char, bytes_written);
+	UTF8_VALIDATE_PARAMETERS_CHAR(char, bytes_written);
 
 	/* Initialize decomposition */
 
