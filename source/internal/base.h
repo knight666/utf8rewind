@@ -43,7 +43,7 @@
 
 #define UTF8_RETURN(_error, _result) \
 	if (errors != 0) { *errors = UTF8_ERR_ ## _error; } \
-	return _result;
+	return (_result);
 
 /* Validates input before transforming */
 /* Check for parameter overlap using the separating axis theorem */
