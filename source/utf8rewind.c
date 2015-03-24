@@ -125,13 +125,17 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 		{
 			/* Not enough data */
 
-			encoded_size = codepoint_write(REPLACEMENT_CHARACTER, &dst, &dst_size);
-			if (encoded_size == 0)
+			if (dst != 0)
 			{
-				UTF8_RETURN(NOT_ENOUGH_SPACE, bytes_written);
+				if (dst_size < 3)
+				{
+					UTF8_RETURN(NOT_ENOUGH_SPACE, bytes_written);
+				}
+
+				memcpy(dst, "\xEF\xBF\xBD", 3);
 			}
 
-			UTF8_RETURN(INVALID_DATA, bytes_written + encoded_size);
+			UTF8_RETURN(INVALID_DATA, bytes_written + 3);
 		}
 
 		codepoint = (unicode_t)*src;
@@ -218,18 +222,47 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 
 	while (src_size > 0)
 	{
-		unicode_t codepoint = *src;
+		unicode_t codepoint;
 		uint8_t encoded_size;
+
+		if (src_size < sizeof(unicode_t))
+		{
+			/* Not enough data */
+
+			if (dst != 0)
+			{
+				if (dst_size < 3)
+				{
+					UTF8_RETURN(NOT_ENOUGH_SPACE, bytes_written);
+				}
+
+				memcpy(dst, "\xEF\xBF\xBD", 3);
+			}
+
+			UTF8_RETURN(INVALID_DATA, bytes_written + 3);
+		}
+
+		codepoint = *src;
 
 		if (codepoint >= SURROGATE_HIGH_START &&
 			codepoint <= SURROGATE_LOW_END)
 		{
 			/* Decode surrogate pair */
 
-			if (codepoint > SURROGATE_HIGH_END || /* Missing high surrogate codepoint */
-				src_size < sizeof(unicode_t))     /* Not enough data */
+			if (codepoint > SURROGATE_HIGH_END) 
 			{
+				/* Missing high surrogate codepoint */
+
 				codepoint = REPLACEMENT_CHARACTER;
+			}
+			else if (
+				src_size < 2 * sizeof(unicode_t))
+			{
+				/* Not enough data */
+
+				src_size = 1;
+
+				continue;
 			}
 			else
 			{
