@@ -61,7 +61,7 @@ size_t utf8len(const char* text)
 
 		/* Check if the current byte is part of a multi-byte sequence */
 
-		uint8_t codepoint_length = codepoint_decoded_length[(uint8_t)*src];
+		uint8_t codepoint_length = codepoint_decoded_length[*src];
 		if (codepoint_length > 1)
 		{
 			/* Check every byte of the sequence */
@@ -105,6 +105,27 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 
 	/* Validate parameters */
 
+	/* TODO: Fix for all functions */
+
+	if (input != 0 &&
+		inputSize < sizeof(utf16_t))
+	{
+		/* Not enough data */
+
+		if (target != 0)
+		{
+			if (targetSize < 3)
+			{
+				UTF8_RETURN(NOT_ENOUGH_SPACE, bytes_written);
+			}
+
+			memcpy(target, "\xEF\xBF\xBD", 3);
+			bytes_written += 3;
+		}
+
+		UTF8_RETURN(INVALID_DATA, bytes_written);
+	}
+
 	UTF8_VALIDATE_PARAMETERS(utf16_t, char, bytes_written);
 
 	/* Setup cursors */
@@ -118,18 +139,43 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 
 	while (src_size > 0)
 	{
-		unicode_t codepoint = (unicode_t)*src;
+		unicode_t codepoint;
 		uint8_t encoded_size;
+
+		if (src_size < sizeof(utf16_t))
+		{
+			/* Not enough data */
+
+			encoded_size = codepoint_write(REPLACEMENT_CHARACTER, &dst, &dst_size);
+			if (encoded_size == 0)
+			{
+				UTF8_RETURN(NOT_ENOUGH_SPACE, bytes_written);
+			}
+
+			UTF8_RETURN(INVALID_DATA, bytes_written + encoded_size);
+		}
+
+		codepoint = (unicode_t)*src;
 
 		if (codepoint >= SURROGATE_HIGH_START &&
 			codepoint <= SURROGATE_LOW_END)
 		{
 			/* Decode surrogate pair */
 
-			if (codepoint > SURROGATE_HIGH_END || /* Missing high surrogate codepoint */
-				src_size < sizeof(utf16_t))       /* Not enough data */
+			if (codepoint > SURROGATE_HIGH_END)
 			{
+				/* Missing high surrogate codepoint */
+
 				codepoint = REPLACEMENT_CHARACTER;
+			}
+			else if (
+				src_size < 2 * sizeof(utf16_t))
+			{
+				/* Not enough data */
+
+				src_size = 1;
+
+				continue;
 			}
 			else
 			{
