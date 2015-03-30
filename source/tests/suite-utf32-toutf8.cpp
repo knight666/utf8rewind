@@ -846,6 +846,78 @@ TEST(Utf32ToUtf8, FourByteSingleNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(Utf32ToUtf8, FourBytesSingleMissingOneByte)
+{
+	// LINEAR B SYMBOL B018
+
+	unicode_t i[] = { 0x10050 };
+	size_t is = sizeof(i) - 1;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, FourBytesSingleMissingTwoBytes)
+{
+	// SHAVIAN LETTER PEEP
+
+	unicode_t i[] = { 0x10450 };
+	size_t is = sizeof(i) - 2;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, FourBytesSingleMissingThreeBytes)
+{
+	// MODI VOWEL SIGN U
+
+	unicode_t i[] = { 0x11633 };
+	size_t is = sizeof(i) - 3;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, FourBytesSingleMissingAmountOfBytes)
+{
+	// EGYPTIAN HIEROGLYPH I012
+
+	unicode_t i[] = { 0x13197 };
+	size_t is = sizeof(i) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, FourBytesSingleMissingNotEnoughSpace)
+{
+	// CUNEIFORM SIGN NUNUZ AB2 TIMES BI
+
+	unicode_t i[] = { 0x1226F };
+	size_t is = sizeof(i) - 2;
+	char o[256] = { 0 };
+	size_t os = 2;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST(Utf32ToUtf8, FourBytesMultiple)
 {
 	// SQUARED CL
@@ -893,6 +965,90 @@ TEST(Utf32ToUtf8, FourBytesMultipleNotEnoughSpace)
 
 	EXPECT_EQ(8, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF0\x9F\x85\x95\xF0\x9F\x85\x8B", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf32ToUtf8, FourBytesMultipleMissingOneByte)
+{
+	// BAMUM LETTER PHASE-E NJEUX
+	// BAMUM LETTER PHASE-B PARUM
+	// BAMUM LETTER PHASE-A NGKUENZEUM
+
+	unicode_t i[] = { 0x16983, 0x16872, 0x16816 };
+	size_t is = sizeof(i) - 1;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(11, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF0\x96\xA6\x83\xF0\x96\xA1\xB2\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, FourBytesMultipleMissingTwoBytes)
+{
+	// BYZANTINE MUSICAL SYMBOL NANA
+	// MUSICAL SYMBOL COMBINING RIP
+	// MUSICAL SYMBOL ONE-LINE STAFF
+	// MUSICAL SYMBOL OTTAVA ALTA
+
+	unicode_t i[] = { 0x1D040, 0x1D186, 0x1D116, 0x1D136 };
+	size_t is = sizeof(i) - 2;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(15, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF0\x9D\x81\x80\xF0\x9D\x86\x86\xF0\x9D\x84\x96\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, FourBytesMultipleMissingThreeBytes)
+{
+	// TETRAGRAM FOR GREATNESS
+	// MUSICAL SYMBOL SEMIBREVIS WHITE
+	// MUSICAL SYMBOL COMBINING TREMOLO-1
+
+	unicode_t i[] = { 0x1D332, 0x1D1B9, 0x1D167 };
+	size_t is = sizeof(i) - 3;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(11, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF0\x9D\x8C\xB2\xF0\x9D\x86\xB9\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, FourBytesMultipleMissingAmountOfBytes)
+{
+	// MATHEMATICAL BOLD FRAKTUR SMALL I
+	// MATHEMATICAL BOLD SCRIPT CAPITAL X
+	// MATHEMATICAL BOLD ITALIC SMALL U
+	// MATHEMATICAL BOLD ITALIC CAPITAL Z
+
+	unicode_t i[] = { 0x1D58E, 0x1D4E7, 0x1D496, 0x1D481 };
+	size_t is = sizeof(i) - 2;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(15, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, FourBytesMultipleMissingNotEnoughSpace)
+{
+	// TETRAGRAM FOR UNITY
+	// DIGRAM FOR HUMAN EARTH
+	// TETRAGRAM FOR BARRIER
+
+	unicode_t i[] = { 0x1D33B, 0x1D302, 0x1D309 };
+	size_t is = sizeof(i) - 1;
+	char o[256] = { 0 };
+	size_t os = 6;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF0\x9D\x8C\xBB", o);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
