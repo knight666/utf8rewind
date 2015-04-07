@@ -1127,6 +1127,29 @@ TEST(Utf32ToUtf8, AboveLegalUnicodeSingleMissingThreeBytes)
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
+TEST(Utf32ToUtf8, AboveLegalUnicodeSingleMissingAmountOfBytes)
+{
+	unicode_t i[] = { 0xDA818A12 };
+	size_t is = sizeof(i) - 2;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, AboveLegalUnicodeSingleMissingNotEnoughSpace)
+{
+	unicode_t i[] = { 0x66AAFEDE };
+	size_t is = sizeof(i) - 1;
+	char o[256] = { 0 };
+	size_t os = 2;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST(Utf32ToUtf8, AboveLegalUnicodeMultiple)
 {
 	unicode_t i[] = { 0x0ADA108A, 0xBADBADBA, 0xDEADBEA7 };
@@ -1310,7 +1333,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingleMissingLow)
 
 	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf32ToUtf8, SurrogatePairSingleMissingHigh)
@@ -1434,7 +1457,7 @@ TEST(Utf32ToUtf8, SurrogatePairMultipleUnmatchedPair)
 
 	EXPECT_EQ(15, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xE0\xB6\x87\xEF\xBF\xBD\xEF\xBF\xBD\xE0\xA6\x88\xEF\xBF\xBD", o);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf32ToUtf8, SurrogatePairMultipleNotEnoughSpace)
@@ -1447,6 +1470,68 @@ TEST(Utf32ToUtf8, SurrogatePairMultipleNotEnoughSpace)
 
 	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF1\xBB\x96\xA7", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf32ToUtf8, SurrogatePairMultipleMissingOneByte)
+{
+	unicode_t i[] = { 0xD802, 0xDDA0, 0xD804, 0xDC19, 0xD83D, 0xDF13 };
+	size_t is = sizeof(i) - 1;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(11, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF0\x90\xA6\xA0\xF0\x91\x80\x99\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, SurrogatePairMultipleMissingTwoBytes)
+{
+	unicode_t i[] = { 0xD83D, 0xDE3F, 0xD83D, 0xDE0D, 0xD83D, 0xDE22 };
+	size_t is = sizeof(i) - 2;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(11, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF0\x9F\x98\xBF\xF0\x9F\x98\x8D\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, SurrogatePairMultipleMissingThreeBytes)
+{
+	unicode_t i[] = { 0xD83C, 0xDCCF, 0xD83C, 0xDD71, 0xD83C, 0xDCA0, 0xD83C, 0xDD97 };
+	size_t is = sizeof(i) - 3;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(15, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF0\x9F\x83\x8F\xF0\x9F\x85\xB1\xF0\x9F\x82\xA0\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, SurrogatePairMultipleMissingAmountOfBytes)
+{
+	unicode_t i[] = { 0xD83C, 0xDD7F, 0xD83C, 0xDD99, 0xD83C, 0xDDF5, 0xD83C, 0xDDEA };
+	size_t is = sizeof(i) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(15, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, SurrogatePairMultipleMissingNotEnoughSpace)
+{
+	unicode_t i[] = { 0xD83C, 0xDD98, 0xD834, 0xDF1A, 0xD83C, 0xDC04 };
+	size_t is = sizeof(i) - 3;
+	char o[256] = { 0 };
+	size_t os = 9;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xF0\x9F\x86\x98\xF0\x9D\x8C\x9A", o);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
