@@ -125,17 +125,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 		{
 			/* Not enough data */
 
-			if (dst != 0)
-			{
-				if (dst_size < 3)
-				{
-					UTF8_RETURN(NOT_ENOUGH_SPACE, bytes_written);
-				}
-
-				memcpy(dst, "\xEF\xBF\xBD", 3);
-			}
-
-			UTF8_RETURN(INVALID_DATA, bytes_written + 3);
+			goto invaliddata;
 		}
 
 		codepoint = (unicode_t)*src;
@@ -156,9 +146,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 			{
 				/* Not enough data */
 
-				src_size = 1;
-
-				continue;
+				goto invaliddata;
 			}
 			else
 			{
@@ -199,6 +187,19 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 	}
 
 	UTF8_RETURN(NONE, bytes_written);
+
+invaliddata:
+	if (dst != 0)
+	{
+		if (dst_size < 3)
+		{
+			UTF8_RETURN(NOT_ENOUGH_SPACE, bytes_written);
+		}
+
+		memcpy(dst, "\xEF\xBF\xBD", 3);
+	}
+
+	UTF8_RETURN(INVALID_DATA, bytes_written + 3);
 }
 
 size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
