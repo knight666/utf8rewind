@@ -435,7 +435,22 @@ TEST(Utf16ToUtf8, ThreeBytesSingleAmountOfBytes)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf16ToUtf8, ThreeBytesSingleOneByteMissing)
+TEST(Utf16ToUtf8, ThreeBytesSingleNotEnoughSpace)
+{
+	// GURMUKHI DIGIT THREE
+
+	utf16_t i[] = { 0x0A69 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf16ToUtf8, ThreeBytesSingleMissingOneByte)
 {
 	// GURMUKHI VOWEL SIGN AU
 
@@ -450,14 +465,26 @@ TEST(Utf16ToUtf8, ThreeBytesSingleOneByteMissing)
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(Utf16ToUtf8, ThreeBytesSingleNotEnoughSpace)
+TEST(Utf16ToUtf8, ThreeBytesSingleMissingAmountOfBytes)
 {
-	// GURMUKHI DIGIT THREE
+	// TAMIL LETTER MA
 
-	utf16_t i[] = { 0x0A69 };
-	size_t is = sizeof(i);
+	utf16_t i[] = { 0x0BAE };
+	size_t is = sizeof(i) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf16toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf16ToUtf8, ThreeBytesSingleMissingNotEnoughSpace)
+{
+	// OL CHIKI LETTER EDD
+
+	utf16_t i[] = { 0x1C70 };
+	size_t is = sizeof(i) - 1;
 	char o[256] = { 0 };
-	size_t os = 1;
+	size_t os = 2;
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
@@ -497,7 +524,25 @@ TEST(Utf16ToUtf8, ThreeBytesMultipleAmountOfBytes)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf16ToUtf8, ThreeBytesMultipleOneByteMissing)
+TEST(Utf16ToUtf8, ThreeBytesMultipleNotEnoughSpace)
+{
+	// BOX DRAWINGS LIGHT HORIZONTAL
+	// CIRCLED ANTICLOCKWISE-ROTATED DIVISION SIGN
+	// NEGATIVE CIRCLED NUMBER SIXTEEN
+	// RIGHT WIGGLY FENCE
+
+	utf16_t i[] = { 0x2500, 0x29BC, 0x24F0, 0x29D9 };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 8;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(6, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xE2\x94\x80\xE2\xA6\xBC", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf16ToUtf8, ThreeBytesMultipleMissingOneByte)
 {
 	// BRAILLE PATTERN DOTS-1234568
 	// ETHIOPIC SYLLABLE LE
@@ -515,21 +560,35 @@ TEST(Utf16ToUtf8, ThreeBytesMultipleOneByteMissing)
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(Utf16ToUtf8, ThreeBytesMultipleNotEnoughSpace)
+TEST(Utf16ToUtf8, ThreeBytesMultipleMissingAmountOfBytes)
 {
-	// BOX DRAWINGS LIGHT HORIZONTAL
-	// CIRCLED ANTICLOCKWISE-ROTATED DIVISION SIGN
-	// NEGATIVE CIRCLED NUMBER SIXTEEN
-	// RIGHT WIGGLY FENCE
+	// MODIFIER LETTER CAPITAL H
+	// MINUS-OR-PLUS SIGN
+	// N-ARY SUMMATION
 
-	utf16_t i[] = { 0x2500, 0x29BC, 0x24F0, 0x29D9 };
-	size_t is = sizeof(i);
-	char o[256] = { 0 };
-	size_t os = 8;
+	utf16_t i[] = { 0x1D34, 0x213D, 0x2211 };
+	size_t is = sizeof(i) - 1;
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(6, utf16toutf8(i, is, o, os, &errors));
-	EXPECT_UTF8EQ("\xE2\x94\x80\xE2\xA6\xBC", o);
+	EXPECT_EQ(9, utf16toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf16ToUtf8, ThreeBytesMultipleMissingNotEnoughSpace)
+{
+	// CONTAINS WITH LONG HORIZONTAL STROKE
+	// BALLOT BOX WITH LIGHT X
+	// YI SYLLABLE XY
+	// APL FUNCTIONAL SYMBOL QUAD NOT EQUAL
+
+	utf16_t i[] = { 0x22FA, 0x2BBD, 0xA46D, 0x236F };
+	size_t is = sizeof(i) - 1;
+	char o[256] = { 0 };
+	size_t os = 10;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(9, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xE2\x8B\xBA\xE2\xAE\xBD\xEA\x91\xAD", o);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
