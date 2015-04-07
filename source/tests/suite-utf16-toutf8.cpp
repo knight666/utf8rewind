@@ -53,7 +53,20 @@ TEST(Utf16ToUtf8, BasicLatinSingleAmountOfBytes)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf16ToUtf8, BasicLatinSingleOneByteMissing)
+TEST(Utf16ToUtf8, BasicLatinSingleNotEnoughSpace)
+{
+	utf16_t i[] = { '1' };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 0;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf16ToUtf8, BasicLatinSingleMissingOneByte)
 {
 	utf16_t i[] = { 'O' };
 	size_t is = sizeof(i) - 1;
@@ -66,12 +79,22 @@ TEST(Utf16ToUtf8, BasicLatinSingleOneByteMissing)
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(Utf16ToUtf8, BasicLatinSingleNotEnoughSpace)
+TEST(Utf16ToUtf8, BasicLatinSingleMissingAmountOfBytes)
 {
-	utf16_t i[] = { '1' };
-	size_t is = sizeof(i);
+	utf16_t i[] = { 'n' };
+	size_t is = sizeof(i) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf16toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf16ToUtf8, BasicLatinSingleMissingNotEnoughSpace)
+{
+	utf16_t i[] = { '^' };
+	size_t is = sizeof(i) - 1;
 	char o[256] = { 0 };
-	size_t os = 0;
+	size_t os = 2;
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(0, utf16toutf8(i, is, o, os, &errors));
@@ -102,7 +125,20 @@ TEST(Utf16ToUtf8, BasicLatinMultipleAmountOfBytes)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf16ToUtf8, BasicLatinMultipleOneByteMissing)
+TEST(Utf16ToUtf8, BasicLatinMultipleNotEnoughSpace)
+{
+	utf16_t i[] = { 'B', 'a', 't', 't', 'e', 'r', 'y' };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 4;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf16toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("Batt", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf16ToUtf8, BasicLatinMultipleMissingOneByte)
 {
 	utf16_t i[] = { 'T', 'R', 'A', 'S', 'H' };
 	size_t is = sizeof(i) - 1;
@@ -115,16 +151,26 @@ TEST(Utf16ToUtf8, BasicLatinMultipleOneByteMissing)
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(Utf16ToUtf8, BasicLatinMultipleNotEnoughSpace)
+TEST(Utf16ToUtf8, BasicLatinMultipleMissingAmountOfBytes)
 {
-	utf16_t i[] = { 'B', 'a', 't', 't', 'e', 'r', 'y' };
-	size_t is = sizeof(i);
+	utf16_t i[] = { 'z', 'i', 'n', 'g' };
+	size_t is = sizeof(i) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(6, utf16toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf16ToUtf8, BasicLatinMultipleMissingNotEnoughSpace)
+{
+	utf16_t i[] = { 'm', 'a', 'x', '-', '1' };
+	size_t is = sizeof(i) - 1;
 	char o[256] = { 0 };
-	size_t os = 4;
+	size_t os = 6;
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf16toutf8(i, is, o, os, &errors));
-	EXPECT_UTF8EQ("Batt", o);
+	EXPECT_UTF8EQ("max-", o);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
