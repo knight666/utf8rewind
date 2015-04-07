@@ -1339,6 +1339,68 @@ TEST(Utf32ToUtf8, SurrogatePairSingleNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(Utf32ToUtf8, SurrogatePairSingleMissingOneByte)
+{
+	unicode_t i[] = { 0xDAF2, 0xDCDC };
+	size_t is = sizeof(i) - 1;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, SurrogatePairSingleMissingTwoBytes)
+{
+	unicode_t i[] = { 0xDBA1, 0xDDAA };
+	size_t is = sizeof(i) - 2;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, SurrogatePairSingleMissingThreeBytes)
+{
+	unicode_t i[] = { 0xD891, 0xDEAF };
+	size_t is = sizeof(i) - 3;
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, SurrogatePairSingleMissingAmountOfBytes)
+{
+	unicode_t i[] = { 0xD9A8, 0xDDDC };
+	size_t is = sizeof(i) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf32toutf8(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, SurrogatePairSingleMissingNotEnoughSpace)
+{
+	unicode_t i[] = { 0xD9B2, 0xDDF5 };
+	size_t is = sizeof(i) - 3;
+	char o[256] = { 0 };
+	size_t os = 2;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST(Utf32ToUtf8, SurrogatePairMultiple)
 {
 	unicode_t i[] = { 0xD83D, 0xDE12, 0xD83D, 0xDE22, 0xD83D, 0xDE24 };
