@@ -902,7 +902,7 @@ TEST(Utf8ToUtf32, ThreeBytes)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000130A, o[0]);
+	EXPECT_CPEQ(0x130A, o[0]);
 }
 
 TEST(Utf8ToUtf32, ThreeBytesFirst)
@@ -915,7 +915,7 @@ TEST(Utf8ToUtf32, ThreeBytesFirst)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x00000800, o[0]);
+	EXPECT_CPEQ(0x0800, o[0]);
 }
 
 TEST(Utf8ToUtf32, ThreeBytesLast)
@@ -928,7 +928,7 @@ TEST(Utf8ToUtf32, ThreeBytesLast)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFF, o[0]);
+	EXPECT_CPEQ(0xFFFF, o[0]);
 }
 
 TEST(Utf8ToUtf32, ThreeBytesString)
@@ -941,10 +941,10 @@ TEST(Utf8ToUtf32, ThreeBytesString)
 
 	EXPECT_EQ(16, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000304A, o[0]);
-	EXPECT_EQ(0x0000304D, o[1]);
-	EXPECT_EQ(0x00003059, o[2]);
-	EXPECT_EQ(0x00003048, o[3]);
+	EXPECT_CPEQ(0x304A, o[0]);
+	EXPECT_CPEQ(0x304D, o[1]);
+	EXPECT_CPEQ(0x3059, o[2]);
+	EXPECT_CPEQ(0x3048, o[3]);
 }
 
 TEST(Utf8ToUtf32, ThreeBytesOverlong)
@@ -957,7 +957,7 @@ TEST(Utf8ToUtf32, ThreeBytesOverlong)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, ThreeBytesOverlongNull)
@@ -970,7 +970,7 @@ TEST(Utf8ToUtf32, ThreeBytesOverlongNull)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, ThreeBytesOverlongMaximum)
@@ -983,7 +983,7 @@ TEST(Utf8ToUtf32, ThreeBytesOverlongMaximum)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, ThreeBytesLonelyStartFirst)
@@ -996,7 +996,7 @@ TEST(Utf8ToUtf32, ThreeBytesLonelyStartFirst)
 
 	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 	EXPECT_EQ(' ', o[1]);
 }
 
@@ -1010,7 +1010,7 @@ TEST(Utf8ToUtf32, ThreeBytesLonelyStartLast)
 
 	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 	EXPECT_EQ(' ', o[1]);
 }
 
@@ -1028,7 +1028,7 @@ TEST(Utf8ToUtf32, ThreeBytesLonelyStartCombined)
 
 	for (size_t i = 0; i < 16; i += 2)
 	{
-		EXPECT_EQ(0x0000FFFD, o[i]);
+		EXPECT_CPEQ(0xFFFD, o[i]);
 		EXPECT_EQ(' ', o[i + 1]);
 	}
 }
@@ -1043,7 +1043,7 @@ TEST(Utf8ToUtf32, ThreeBytesNotEnoughData)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, FourBytes)
@@ -1056,7 +1056,7 @@ TEST(Utf8ToUtf32, FourBytes)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0001F60E, o[0]);
+	EXPECT_CPEQ(0x1F60E, o[0]);
 }
 
 TEST(Utf8ToUtf32, FourBytesFirst)
@@ -1069,7 +1069,7 @@ TEST(Utf8ToUtf32, FourBytesFirst)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x00010000, o[0]);
+	EXPECT_CPEQ(0x10000, o[0]);
 }
 
 TEST(Utf8ToUtf32, FourBytesLast)
@@ -1082,7 +1082,7 @@ TEST(Utf8ToUtf32, FourBytesLast)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x001000FF, o[0]);
+	EXPECT_CPEQ(0x1000FF, o[0]);
 }
 
 TEST(Utf8ToUtf32, FourBytesString)
@@ -1095,9 +1095,9 @@ TEST(Utf8ToUtf32, FourBytesString)
 
 	EXPECT_EQ(12, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x00010C17, o[0]);
-	EXPECT_EQ(0x00010C0C, o[1]);
-	EXPECT_EQ(0x00010A15, o[2]);
+	EXPECT_CPEQ(0x10C17, o[0]);
+	EXPECT_CPEQ(0x10C0C, o[1]);
+	EXPECT_CPEQ(0x10A15, o[2]);
 }
 
 TEST(Utf8ToUtf32, FourBytesOverlong)
@@ -1110,7 +1110,7 @@ TEST(Utf8ToUtf32, FourBytesOverlong)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, FourBytesOverlongNull)
@@ -1123,7 +1123,7 @@ TEST(Utf8ToUtf32, FourBytesOverlongNull)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, FourBytesOverlongFirst)
@@ -1136,7 +1136,7 @@ TEST(Utf8ToUtf32, FourBytesOverlongFirst)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, FourBytesOverlongLast)
@@ -1149,7 +1149,7 @@ TEST(Utf8ToUtf32, FourBytesOverlongLast)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, FourBytesOverlongMaximum)
@@ -1162,7 +1162,7 @@ TEST(Utf8ToUtf32, FourBytesOverlongMaximum)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, FourBytesLonelyStartFirst)
@@ -1175,7 +1175,7 @@ TEST(Utf8ToUtf32, FourBytesLonelyStartFirst)
 
 	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 	EXPECT_EQ(' ', o[1]);
 }
 
@@ -1189,7 +1189,7 @@ TEST(Utf8ToUtf32, FourBytesLonelyStartLast)
 
 	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 	EXPECT_EQ(' ', o[1]);
 }
 
@@ -1207,7 +1207,7 @@ TEST(Utf8ToUtf32, FourBytesLonelyStartCombined)
 
 	for (size_t i = 0; i < 8; i += 2)
 	{
-		EXPECT_EQ(0x0000FFFD, o[i]);
+		EXPECT_CPEQ(0xFFFD, o[i]);
 		EXPECT_EQ(' ', o[i + 1]);
 	}
 }
@@ -1222,7 +1222,7 @@ TEST(Utf8ToUtf32, FourBytesNotEnoughData)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, FiveBytesOverlong)
@@ -1235,7 +1235,7 @@ TEST(Utf8ToUtf32, FiveBytesOverlong)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, FiveBytesOverlongFirst)
@@ -1248,7 +1248,7 @@ TEST(Utf8ToUtf32, FiveBytesOverlongFirst)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, FiveBytesOverlongLast)
@@ -1261,7 +1261,7 @@ TEST(Utf8ToUtf32, FiveBytesOverlongLast)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, FiveBytesOverlongNull)
@@ -1274,7 +1274,7 @@ TEST(Utf8ToUtf32, FiveBytesOverlongNull)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, FiveBytesOverlongMaximum)
@@ -1287,7 +1287,7 @@ TEST(Utf8ToUtf32, FiveBytesOverlongMaximum)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, FiveBytesLonelyStartFirst)
@@ -1300,7 +1300,7 @@ TEST(Utf8ToUtf32, FiveBytesLonelyStartFirst)
 
 	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 	EXPECT_EQ(' ', o[1]);
 }
 
@@ -1314,7 +1314,7 @@ TEST(Utf8ToUtf32, FiveBytesLonelyStartLast)
 
 	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 	EXPECT_EQ(' ', o[1]);
 }
 
@@ -1332,7 +1332,7 @@ TEST(Utf8ToUtf32, FiveBytesLonelyStartCombined)
 
 	for (size_t i = 0; i < 4; i += 2)
 	{
-		EXPECT_EQ(0x0000FFFD, o[i]);
+		EXPECT_CPEQ(0xFFFD, o[i]);
 		EXPECT_EQ(' ', o[i + 1]);
 	}
 }
@@ -1347,7 +1347,7 @@ TEST(Utf8ToUtf32, FiveBytesNotEnoughData)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SixBytesOverlong)
@@ -1360,7 +1360,7 @@ TEST(Utf8ToUtf32, SixBytesOverlong)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SixBytesOverlongFirst)
@@ -1373,7 +1373,7 @@ TEST(Utf8ToUtf32, SixBytesOverlongFirst)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SixBytesOverlongLast)
@@ -1386,7 +1386,7 @@ TEST(Utf8ToUtf32, SixBytesOverlongLast)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SixBytesOverlongNull)
@@ -1399,7 +1399,7 @@ TEST(Utf8ToUtf32, SixBytesOverlongNull)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SixBytesOverlongMaximum)
@@ -1412,7 +1412,7 @@ TEST(Utf8ToUtf32, SixBytesOverlongMaximum)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SixBytesLonelyStartFirst)
@@ -1425,7 +1425,7 @@ TEST(Utf8ToUtf32, SixBytesLonelyStartFirst)
 
 	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 	EXPECT_EQ(' ', o[1]);
 }
 
@@ -1439,7 +1439,7 @@ TEST(Utf8ToUtf32, SixBytesLonelyStartLast)
 
 	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 	EXPECT_EQ(' ', o[1]);
 }
 
@@ -1457,7 +1457,7 @@ TEST(Utf8ToUtf32, SixBytesLonelyStartCombined)
 
 	for (size_t i = 0; i < 2; i += 2)
 	{
-		EXPECT_EQ(0x0000FFFD, o[i]);
+		EXPECT_CPEQ(0xFFFD, o[i]);
 		EXPECT_EQ(' ', o[i + 1]);
 	}
 }
@@ -1472,7 +1472,7 @@ TEST(Utf8ToUtf32, SixBytesNotEnoughData)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SixBytesNotEnoughSpace)
@@ -1488,7 +1488,7 @@ TEST(Utf8ToUtf32, SixBytesNotEnoughSpace)
 	EXPECT_EQ('D', o[0]);
 	EXPECT_EQ('e', o[1]);
 	EXPECT_EQ('r', o[2]);
-	EXPECT_EQ(0x0000FFFD, o[3]);
+	EXPECT_CPEQ(0xFFFD, o[3]);
 }
 
 TEST(Utf8ToUtf32, SurrogatePair)
@@ -1501,8 +1501,8 @@ TEST(Utf8ToUtf32, SurrogatePair)
 
 	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
-	EXPECT_EQ(0x0000FFFD, o[1]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[1]);
 }
 
 TEST(Utf8ToUtf32, SurrogatePairCombined)
@@ -1523,22 +1523,22 @@ TEST(Utf8ToUtf32, SurrogatePairCombined)
 
 	EXPECT_EQ(64, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
-	EXPECT_EQ(0x0000FFFD, o[1]);
-	EXPECT_EQ(0x0000FFFD, o[2]);
-	EXPECT_EQ(0x0000FFFD, o[3]);
-	EXPECT_EQ(0x0000FFFD, o[4]);
-	EXPECT_EQ(0x0000FFFD, o[5]);
-	EXPECT_EQ(0x0000FFFD, o[6]);
-	EXPECT_EQ(0x0000FFFD, o[7]);
-	EXPECT_EQ(0x0000FFFD, o[8]);
-	EXPECT_EQ(0x0000FFFD, o[9]);
-	EXPECT_EQ(0x0000FFFD, o[10]);
-	EXPECT_EQ(0x0000FFFD, o[11]);
-	EXPECT_EQ(0x0000FFFD, o[12]);
-	EXPECT_EQ(0x0000FFFD, o[13]);
-	EXPECT_EQ(0x0000FFFD, o[14]);
-	EXPECT_EQ(0x0000FFFD, o[15]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[1]);
+	EXPECT_CPEQ(0xFFFD, o[2]);
+	EXPECT_CPEQ(0xFFFD, o[3]);
+	EXPECT_CPEQ(0xFFFD, o[4]);
+	EXPECT_CPEQ(0xFFFD, o[5]);
+	EXPECT_CPEQ(0xFFFD, o[6]);
+	EXPECT_CPEQ(0xFFFD, o[7]);
+	EXPECT_CPEQ(0xFFFD, o[8]);
+	EXPECT_CPEQ(0xFFFD, o[9]);
+	EXPECT_CPEQ(0xFFFD, o[10]);
+	EXPECT_CPEQ(0xFFFD, o[11]);
+	EXPECT_CPEQ(0xFFFD, o[12]);
+	EXPECT_CPEQ(0xFFFD, o[13]);
+	EXPECT_CPEQ(0xFFFD, o[14]);
+	EXPECT_CPEQ(0xFFFD, o[15]);
 }
 
 TEST(Utf8ToUtf32, SurrogatePairHigh)
@@ -1551,7 +1551,7 @@ TEST(Utf8ToUtf32, SurrogatePairHigh)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SurrogatePairHighStart)
@@ -1564,7 +1564,7 @@ TEST(Utf8ToUtf32, SurrogatePairHighStart)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SurrogatePairHighEnd)
@@ -1577,7 +1577,7 @@ TEST(Utf8ToUtf32, SurrogatePairHighEnd)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SurrogatePairLow)
@@ -1590,7 +1590,7 @@ TEST(Utf8ToUtf32, SurrogatePairLow)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SurrogatePairLowStart)
@@ -1603,7 +1603,7 @@ TEST(Utf8ToUtf32, SurrogatePairLowStart)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SurrogatePairLowEnd)
@@ -1616,7 +1616,7 @@ TEST(Utf8ToUtf32, SurrogatePairLowEnd)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SurrogatePairOverlongHighStart)
@@ -1629,7 +1629,7 @@ TEST(Utf8ToUtf32, SurrogatePairOverlongHighStart)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SurrogatePairOverlongHighEnd)
@@ -1642,7 +1642,7 @@ TEST(Utf8ToUtf32, SurrogatePairOverlongHighEnd)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SurrogatePairOverlongLowStart)
@@ -1655,7 +1655,7 @@ TEST(Utf8ToUtf32, SurrogatePairOverlongLowStart)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SurrogatePairOverlongLowEnd)
@@ -1668,7 +1668,7 @@ TEST(Utf8ToUtf32, SurrogatePairOverlongLowEnd)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, SurrogatePairNotEnoughData)
@@ -1681,7 +1681,7 @@ TEST(Utf8ToUtf32, SurrogatePairNotEnoughData)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000FFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[0]);
 }
 
 TEST(Utf8ToUtf32, Character)
@@ -1694,7 +1694,7 @@ TEST(Utf8ToUtf32, Character)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0001F624, o[0]);
+	EXPECT_CPEQ(0x1F624, o[0]);
 }
 
 TEST(Utf8ToUtf32, String)
@@ -1707,9 +1707,9 @@ TEST(Utf8ToUtf32, String)
 
 	EXPECT_EQ(12, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x0000091C, o[0]);
-	EXPECT_EQ(0x00000921, o[1]);
-	EXPECT_EQ(0x00000924, o[2]);
+	EXPECT_CPEQ(0x091C, o[0]);
+	EXPECT_CPEQ(0x0921, o[1]);
+	EXPECT_CPEQ(0x0924, o[2]);
 }
 
 TEST(Utf8ToUtf32, StringEndsInMiddle)
@@ -1824,7 +1824,7 @@ TEST(Utf8ToUtf32, ErrorsIsReset)
 
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x000008A8, o[0]);
+	EXPECT_CPEQ(0x08A8, o[0]);
 }
 
 TEST(Utf8ToUtf32, OverlappingParametersFits)
