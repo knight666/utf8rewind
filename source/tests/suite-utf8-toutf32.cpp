@@ -1856,8 +1856,12 @@ TEST(Utf8ToUtf32, FourBytesSingleOverlongThreeBytesLast)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToUtf32, FourBytesString)
+TEST(Utf8ToUtf32, FourBytesMultiple)
 {
+	// OLD TURKIC LETTER YENISEI AY
+	// OLD TURKIC LETTER YENISEI AEB
+	// KHAROSHTHI LETTER CA
+
 	const char* i = "\xF0\x90\xB0\x97\xF0\x90\xB0\x8C\xF0\x90\xA8\x95";
 	size_t is = strlen(i);
 	unicode_t o[256] = { 0 };
@@ -1865,10 +1869,116 @@ TEST(Utf8ToUtf32, FourBytesString)
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(12, utf8toutf32(i, is, o, os, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_CPEQ(0x10C17, o[0]);
 	EXPECT_CPEQ(0x10C0C, o[1]);
 	EXPECT_CPEQ(0x10A15, o[2]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, FourBytesMultipleOverlong)
+{
+	const char* i = "\xF0\x80\xA2\x81\xF0\x8E\x97\x97\xF0\x81\xAA\x8E";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(12, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[1]);
+	EXPECT_CPEQ(0xFFFD, o[2]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, FourBytesMultipleAmountOfBytes)
+{
+	// OLD TURKIC LETTER ORKHON AL
+	// BRAHMI NUMBER EIGHT
+	// AVESTAN LETTER GGE
+	// SHARADA DIGIT SIX
+
+	const char* i = "\xF0\x90\xB0\x9E\xF0\x91\x81\x99\xF0\x90\xAC\x95\xF0\x91\x87\x96";
+	size_t is = strlen(i);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(16, utf8toutf32(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, FourBytesMultipleNotEnoughSpaceOneByte)
+{
+	// COMBINING GRANTHA LETTER A
+	// WARANG CITI SMALL LETTER ENY
+	// BRAHMI NUMBER TWENTY
+
+	const char* i = "\xF0\x91\x8D\xB0\xF0\x91\xA3\x8D\xF0\x91\x81\x9C";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = (3 * sizeof(unicode_t)) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0x11370, o[0]);
+	EXPECT_CPEQ(0x118CD, o[1]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, FourBytesMultipleNotEnoughSpaceTwoBytes)
+{
+	// SORA SOMPENG DIGIT FIVE
+	// KHOJKI WORD SEPARATOR
+	// SHARADA LETTER II
+
+	const char* i = "\xF0\x91\x83\xB5\xF0\x91\x88\xBA\xF0\x91\x86\x86";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = (3 * sizeof(unicode_t)) - 2;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0x110F5, o[0]);
+	EXPECT_CPEQ(0x1123A, o[1]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, FourBytesMultipleNotEnoughSpaceThreeBytes)
+{
+	// CUNEIFORM SIGN BAHAR2
+	// PAU CIN HAU LETTER NGA
+	// EGYPTIAN HIEROGLYPH O029A
+	// BAMUM LETTER PHASE-D MFIEE
+
+	const char* i = "\xF0\x92\x81\x83\xF0\x91\xAB\x87\xF0\x93\x89\xBC\xF0\x96\xA4\xB2";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = (4 * sizeof(unicode_t)) - 3;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(12, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0x12043, o[0]);
+	EXPECT_CPEQ(0x11AC7, o[1]);
+	EXPECT_CPEQ(0x1327C, o[2]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, FourBytesMultipleNotEnoughSpaceFourBytes)
+{
+	// DUPLOYAN LETTER SLOAN DH
+	// BYZANTINE MUSICAL SYMBOL ETERON ARGOSYNTHETON
+	// BYZANTINE MUSICAL SYMBOL KENTIMA ARCHAION
+	// BYZANTINE MUSICAL SYMBOL PSIFISTOPARAKALESMA
+
+	const char* i = "\xF0\x9B\xB0\x92\xF0\x9D\x81\xB4\xF0\x9D\x80\x9B\xF0\x9D\x81\xAF";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = (4 * sizeof(unicode_t)) - 4;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(12, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0x1BC12, o[0]);
+	EXPECT_CPEQ(0x1D074, o[1]);
+	EXPECT_CPEQ(0x1D01B, o[2]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf8ToUtf32, FiveBytesOverlong)
