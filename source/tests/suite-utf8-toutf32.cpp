@@ -2073,6 +2073,37 @@ TEST(Utf8ToUtf32, FiveBytesSingleAboveLegalUnicodeNotEnoughSpaceFourBytes)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(Utf8ToUtf32, FiveBytesSingleMissingInvalidContinuationFirstByteLower)
+{
+	const char* i = "\xF8\x12\x82\x88\x9A";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(20, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0x0012, o[1]);
+	EXPECT_CPEQ(0xFFFD, o[2]);
+	EXPECT_CPEQ(0xFFFD, o[3]);
+	EXPECT_CPEQ(0xFFFD, o[4]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, FiveBytesSingleMissingInvalidContinuationFirstByteUpper)
+{
+	const char* i = "\xF8\xF4\xA2\xB8\x9A";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[1]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
 TEST(Utf8ToUtf32, FiveBytesSingleOverlongOneByteFirst)
 {
 	// U+0000
@@ -2253,6 +2284,31 @@ TEST(Utf8ToUtf32, FiveBytesSingleOverlongNotEnoughSpaceFourBytes)
 	EXPECT_EQ(0, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_CPEQ(0x0000, o[0]);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, FiveBytesMultiple)
+{
+	const char* i = "\xFA\x87\xB1\xB2\xA3\xF8\xA4\xB4\x87\x9A\xFB\xA2\xB0\xAE\x97";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(12, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[1]);
+	EXPECT_CPEQ(0xFFFD, o[2]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, FiveBytesMultipleAmountOfBytes)
+{
+	const char* i = "\xFB\x88\x99\x9A\xA2\xF9\xAA\xAB\xAC\xAD";
+	size_t is = strlen(i);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toutf32(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST(Utf8ToUtf32, SixBytesOverlong)
