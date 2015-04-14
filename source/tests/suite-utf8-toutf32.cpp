@@ -2812,7 +2812,132 @@ TEST(Utf8ToUtf32, SixBytesSingleInvalidContinuationFifthByteUpper)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-// missing
+TEST(Utf8ToUtf32, SixBytesSingleMissingOneByte)
+{
+	const char* i = "\xFD\x87\xB1\x9A\xA2";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleMissingTwoBytes)
+{
+	const char* i = "\xFC\x88\xA8\x83";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleMissingThreeBytes)
+{
+	const char* i = "\xFD\xA2\xB4";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleMissingFourBytes)
+{
+	const char* i = "\xFD\x89";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleMissingSixBytes)
+{
+	const char* i = "\xFD";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleMissingAmountOfBytes)
+{
+	const char* i = "\xFD\x87\x95\xA2";
+	size_t is = strlen(i);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toutf32(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleMissingNotEnoughSpaceOneByte)
+{
+	const char* i = "\xFC\xA2\x84\xB2";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = sizeof(unicode_t) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0x0000, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleMissingNotEnoughSpaceTwoBytes)
+{
+	const char* i = "\xFC\AA\xB5\x92\x8D";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = sizeof(unicode_t) - 2;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0x0000, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleMissingNotEnoughSpaceThreeBytes)
+{
+	const char* i = "\xFC\xB2\xB7\xA8";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = sizeof(unicode_t) - 3;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0x0000, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleMissingNotEnoughSpaceFourBytes)
+{
+	const char* i = "\xFC\x8A\x92";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = sizeof(unicode_t) - 4;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0x0000, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
 
 // overlong
 
