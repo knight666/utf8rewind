@@ -2567,6 +2567,257 @@ TEST(Utf8ToUtf32, FiveBytesMultipleNotEnoughSpaceFourBytes)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST(Utf8ToUtf32, SixBytesSingleAboveLegalUnicodeFirst)
+{
+	// U+110000
+
+	const char* i = "\xFC\x80\x80\x91\x80\x80";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleAboveLegalUnicodeLast)
+{
+	// U+1000002
+
+	const char* i = "\xFC\x80\xBF\xBF\xBF\xBF";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleAboveLegalUnicodeAmountOfBytes)
+{
+	const char* i = "\xFC\x82\x87\x92\x9A\xA8";
+	size_t is = strlen(i);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toutf32(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleAboveLegalUnicodeNotEnoughSpaceOneByte)
+{
+	const char* i = "\xFD\x81\x82\x84\x88\xA0";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = sizeof(unicode_t) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0x0000, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleAboveLegalUnicodeNotEnoughSpaceTwoBytes)
+{
+	const char* i = "\xFC\x87\x88\x8A\x92\xA6";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = sizeof(unicode_t) - 2;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0x0000, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleAboveLegalUnicodeNotEnoughSpaceThreeBytes)
+{
+	const char* i = "\xFD\x89\x96\x8B\x8F\xA3";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = sizeof(unicode_t) - 3;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0x0000, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleAboveLegalUnicodeNotEnoughSpaceFourBytes)
+{
+	const char* i = "\xFD\x82\xA2\xA7\xB7\xB0";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = sizeof(unicode_t) - 4;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0x0000, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleInvalidContinuationFirstByteLower)
+{
+	const char* i = "\xFC\x35\x89\x9A\xB2\x8A";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(24, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0x0035, o[1]);
+	EXPECT_CPEQ(0xFFFD, o[2]);
+	EXPECT_CPEQ(0xFFFD, o[3]);
+	EXPECT_CPEQ(0xFFFD, o[4]);
+	EXPECT_CPEQ(0xFFFD, o[5]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleInvalidContinuationFirstByteUpper)
+{
+	const char* i = "\xFC\xF2\x8A\x96\xB7\xB1";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(12, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0x8A5B7, o[1]);
+	EXPECT_CPEQ(0xFFFD, o[2]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleInvalidContinuationSecondByteLower)
+{
+	const char* i = "\xFD\x82\x67\xA4\x88\xB3";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(20, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0x0067, o[1]);
+	EXPECT_CPEQ(0xFFFD, o[2]);
+	EXPECT_CPEQ(0xFFFD, o[3]);
+	EXPECT_CPEQ(0xFFFD, o[4]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleInvalidContinuationSecondByteUpper)
+{
+	const char* i = "\xFD\x8F\xE9\x86\xA4\x8F";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(12, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0x91A4, o[1]);
+	EXPECT_CPEQ(0xFFFD, o[2]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleInvalidContinuationThirdByteLower)
+{
+	const char* i = "\xFC\xB5\x86\x57\x81\x8A";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(16, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0x0057, o[1]);
+	EXPECT_CPEQ(0xFFFD, o[2]);
+	EXPECT_CPEQ(0xFFFD, o[3]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleInvalidContinuationThirdByteUpper)
+{
+	const char* i = "\xFD\x9A\x87\xD2\x87\xA4";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(12, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0x0487, o[1]);
+	EXPECT_CPEQ(0xFFFD, o[2]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleInvalidContinuationFourthByteLower)
+{
+	const char* i = "\xFD\x82\x83\x82\x7E\xB2";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(12, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0x007E, o[1]);
+	EXPECT_CPEQ(0xFFFD, o[2]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleInvalidContinuationFourthByteUpper)
+{
+	const char* i = "\xFC\x87\x81\xA2\xCE\x87";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0x0387, o[1]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleInvalidContinuationFifthByteLower)
+{
+	const char* i = "\xFC\x9A\x82\x9A\x8F\x24";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0x0024, o[1]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SixBytesSingleInvalidContinuationFifthByteUpper)
+{
+	const char* i = "\xFC\xBF\x9A\x8A\xB6\xDE";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[1]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+// missing
+
+// overlong
+
+// multiple
+
 TEST(Utf8ToUtf32, SixBytesOverlong)
 {
 	const char* i = "\xFC\x80\x80\x80\x80\xAF";
