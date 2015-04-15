@@ -262,9 +262,9 @@ uint8_t codepoint_read(const char* input, size_t inputSize, unicode_t* decoded)
 
 			/* Check for overlong sequences and surrogate pairs */
 
-			if ((*decoded < SequenceMinimum[decoded_length] || *decoded > MAX_LEGAL_UNICODE) ||
-				(*decoded >= SURROGATE_HIGH_START && *decoded <= SURROGATE_HIGH_END) ||
-				(*decoded >= SURROGATE_LOW_START && *decoded <= SURROGATE_LOW_END))
+			if (*decoded < SequenceMinimum[decoded_length] ||
+				*decoded > MAX_LEGAL_UNICODE ||
+				(*decoded >= SURROGATE_HIGH_START && *decoded <= SURROGATE_LOW_END))
 			{
 				*decoded = REPLACEMENT_CHARACTER;
 			}
