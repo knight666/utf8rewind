@@ -3200,7 +3200,7 @@ TEST(Utf8ToUtf32, SixBytesMultipleNotEnoughSpaceFourBytes)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(Utf8ToUtf32, SurrogatePair)
+TEST(Utf8ToUtf32, SurrogatePairSingle)
 {
 	const char* i = "\xED\xAD\x80\xED\xBE\x80";
 	size_t is = strlen(i);
@@ -3209,9 +3209,113 @@ TEST(Utf8ToUtf32, SurrogatePair)
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_CPEQ(0xFFFD, o[0]);
 	EXPECT_CPEQ(0xFFFD, o[1]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SurrogatePairSingleFirst)
+{
+	// U+D800 U+DC00
+
+	const char* i = "\xED\xA0\x80\xED\xB0\x80";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[1]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SurrogatePairSingleLast)
+{
+	// U+DBFF U+DFFF
+
+	const char* i = "\xED\xAF\xBF\xED\xBF\xBF";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = 255 * sizeof(unicode_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_CPEQ(0xFFFD, o[1]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SurrogatePairSingleAmountOfBytes)
+{
+	// U+DA23 U+DD5F
+
+	const char* i = "\xED\xA8\xA3\xED\xB5\x9F";
+	size_t is = strlen(i);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toutf32(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf32, SurrogatePairSingleNotEnoughSpaceOneByte)
+{
+	// U+D9A2 U+DCDA
+
+	const char* i = "\xED\xA6\xA2\xED\xB3\x9A";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = (2 * sizeof(unicode_t)) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, SurrogatePairSingleNotEnoughSpaceTwoBytes)
+{
+	// U+D8A8 U+DDE5
+
+	const char* i = "\xED\xA2\xA8\xED\xB7\xA5";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = (2 * sizeof(unicode_t)) - 2;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, SurrogatePairSingleNotEnoughSpaceThreeBytes)
+{
+	// U+D990 U+DE3F
+
+	const char* i = "\xED\xA6\x90\xED\xB8\xBF";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = (2 * sizeof(unicode_t)) - 3;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf32, SurrogatePairSingleNotEnoughSpaceFourBytes)
+{
+	// U+D87E U+DEF5
+
+	const char* i = "\xED\xA1\xBE\xED\xBB\xB5";
+	size_t is = strlen(i);
+	unicode_t o[256] = { 0 };
+	size_t os = (2 * sizeof(unicode_t)) - 4;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ(0xFFFD, o[0]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf8ToUtf32, SurrogatePairCombined)
