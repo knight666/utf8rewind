@@ -3970,34 +3970,6 @@ TEST(Utf8ToUtf32, SurrogatePairMultipleNotEnoughSpaceFourBytes)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(Utf8ToUtf32, Character)
-{
-	const char* i = "\xF0\x9F\x98\xA4";
-	size_t is = strlen(i);
-	unicode_t o[256] = { 0 };
-	size_t os = 255 * sizeof(unicode_t);
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_CPEQ(0x1F624, o[0]);
-}
-
-TEST(Utf8ToUtf32, String)
-{
-	const char* i = "\xE0\xA4\x9C\xE0\xA4\xA1\xE0\xA4\xA4";
-	size_t is = strlen(i);
-	unicode_t o[256] = { 0 };
-	size_t os = 255 * sizeof(unicode_t);
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(12, utf8toutf32(i, is, o, os, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_CPEQ(0x091C, o[0]);
-	EXPECT_CPEQ(0x0921, o[1]);
-	EXPECT_CPEQ(0x0924, o[2]);
-}
-
 TEST(Utf8ToUtf32, StringEndsInMiddle)
 {
 	const char* i = "How un\0for";
@@ -4007,17 +3979,17 @@ TEST(Utf8ToUtf32, StringEndsInMiddle)
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(40, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ('H', o[0]);
+	EXPECT_CPEQ('o', o[1]);
+	EXPECT_CPEQ('w', o[2]);
+	EXPECT_CPEQ(' ', o[3]);
+	EXPECT_CPEQ('u', o[4]);
+	EXPECT_CPEQ('n', o[5]);
+	EXPECT_CPEQ(0, o[6]);
+	EXPECT_CPEQ('f', o[7]);
+	EXPECT_CPEQ('o', o[8]);
+	EXPECT_CPEQ('r', o[9]);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ('H', o[0]);
-	EXPECT_EQ('o', o[1]);
-	EXPECT_EQ('w', o[2]);
-	EXPECT_EQ(' ', o[3]);
-	EXPECT_EQ('u', o[4]);
-	EXPECT_EQ('n', o[5]);
-	EXPECT_EQ(0, o[6]);
-	EXPECT_EQ('f', o[7]);
-	EXPECT_EQ('o', o[8]);
-	EXPECT_EQ('r', o[9]);
 }
 
 TEST(Utf8ToUtf32, StringDataSizeUnder)
@@ -4029,10 +4001,10 @@ TEST(Utf8ToUtf32, StringDataSizeUnder)
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(12, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ('T', o[0]);
+	EXPECT_CPEQ('r', o[1]);
+	EXPECT_CPEQ('e', o[2]);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ('T', o[0]);
-	EXPECT_EQ('r', o[1]);
-	EXPECT_EQ('e', o[2]);
 }
 
 TEST(Utf8ToUtf32, StringDataSizeOver)
@@ -4044,60 +4016,12 @@ TEST(Utf8ToUtf32, StringDataSizeOver)
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(32, utf8toutf32(i, is, o, os, &errors));
+	EXPECT_CPEQ('B', o[0]);
+	EXPECT_CPEQ('a', o[1]);
+	EXPECT_CPEQ('r', o[2]);
+	EXPECT_CPEQ('k', o[3]);
+	EXPECT_CPEQ(0, o[4]);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ('B', o[0]);
-	EXPECT_EQ('a', o[1]);
-	EXPECT_EQ('r', o[2]);
-	EXPECT_EQ('k', o[3]);
-	EXPECT_EQ(0, o[4]);
-}
-
-TEST(Utf8ToUtf32, AmountOfBytes)
-{
-	const char* i = "\xF0\x90\xB0\xAC";
-	size_t is = strlen(i);
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(4, utf8toutf32(i, is, nullptr, 0, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf8ToUtf32, AmountOfBytesString)
-{
-	const char* i = "Pchn\xC4\x85\xC4\x87 w t\xC4\x99";
-	size_t is = strlen(i);
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(44, utf8toutf32(i, is, nullptr, 0, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf8ToUtf32, AmountOfBytesNotEnoughData)
-{
-	const char* i = "\xC8";
-	size_t is = strlen(i);
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(4, utf8toutf32(i, is, nullptr, 0, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf8ToUtf32, AmountOfBytesOverlong)
-{
-	const char* i = "\xFC\x84\x80\x80\x80\x80";
-	size_t is = strlen(i);
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(4, utf8toutf32(i, is, nullptr, 0, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf8ToUtf32, AmountOfBytesNoData)
-{
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(0, utf8toutf32(nullptr, 1, nullptr, 0, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8ToUtf32, ErrorsIsReset)
@@ -4111,6 +4035,14 @@ TEST(Utf8ToUtf32, ErrorsIsReset)
 	EXPECT_EQ(4, utf8toutf32(i, is, o, os, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_CPEQ(0x08A8, o[0]);
+}
+
+TEST(Utf8ToUtf32, InvalidData)
+{
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8toutf32(nullptr, 1, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8ToUtf32, OverlappingParametersFits)
