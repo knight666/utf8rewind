@@ -203,16 +203,147 @@ TEST(Utf8ToUtf16, OneByteSingleIllegalByteNotEnoughSpaceTwoBytes)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(Utf8ToUtf16, Character)
+TEST(Utf8ToUtf16, OneByteMultiple)
 {
-	const char* i = "\xE0\xA4\x9C";
-	const size_t s = 256;
-	utf16_t o[s] = { 0 };
+	const char* i = "home";
+	size_t is = strlen(i);
+	utf16_t o[256] = { 0 };
+	size_t os = 255 * sizeof(utf16_t);
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
+	EXPECT_EQ(8, utf8toutf16(i, is, o, os, &errors));
+	EXPECT_EQ('h', o[0]);
+	EXPECT_EQ('o', o[1]);
+	EXPECT_EQ('m', o[2]);
+	EXPECT_EQ('e', o[3]);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_EQ(0x091C, o[0]);
+}
+
+TEST(Utf8ToUtf16, OneByteMultipleInvalidContinuationByteCombined)
+{
+	const char* i =
+		"\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F" \
+		"\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F" \
+		"\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF" \
+		"\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF";
+	size_t is = strlen(i);
+	utf16_t o[256] = { 0 };
+	size_t os = 255 * sizeof(utf16_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(128, utf8toutf16(i, is, o, os, &errors));
+	for (size_t i = 0; i < 64; ++i)
+	{
+		EXPECT_CPEQ(0x0000FFFD, o[i]);
+	}
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf16, OneByteMultipleInvalidContinuationByteAndValid)
+{
+	const char* i = "\x87" "ab";
+	size_t is = strlen(i);
+	utf16_t o[256] = { 0 };
+	size_t os = 255 * sizeof(utf16_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(6, utf8toutf16(i, is, o, os, &errors));
+	EXPECT_EQ(0xFFFD, o[0]);
+	EXPECT_EQ('a', o[1]);
+	EXPECT_EQ('b', o[2]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf16, OneByteMultipleValidAndInvalidContinuationByte)
+{
+	const char* i = "and" "\xB7";
+	size_t is = strlen(i);
+	utf16_t o[256] = { 0 };
+	size_t os = 255 * sizeof(utf16_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toutf16(i, is, o, os, &errors));
+	EXPECT_EQ('a', o[0]);
+	EXPECT_EQ('n', o[1]);
+	EXPECT_EQ('d', o[2]);
+	EXPECT_EQ(0xFFFD, o[3]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf16, OneByteMultipleIllegalAndValid)
+{
+	const char* i = "\xFE" "yum";
+	size_t is = strlen(i);
+	utf16_t o[256] = { 0 };
+	size_t os = 255 * sizeof(utf16_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toutf16(i, is, o, os, &errors));
+	EXPECT_EQ(0xFFFD, o[0]);
+	EXPECT_EQ('y', o[1]);
+	EXPECT_EQ('u', o[2]);
+	EXPECT_EQ('m', o[3]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf16, OneByteMultipleValidAndIllegal)
+{
+	const char* i = "soup\xFE";
+	size_t is = strlen(i);
+	utf16_t o[256] = { 0 };
+	size_t os = 255 * sizeof(utf16_t);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(10, utf8toutf16(i, is, o, os, &errors));
+	EXPECT_EQ('s', o[0]);
+	EXPECT_EQ('o', o[1]);
+	EXPECT_EQ('u', o[2]);
+	EXPECT_EQ('p', o[3]);
+	EXPECT_EQ(0xFFFD, o[4]);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf16, OneByteMultipleAmountOfBytes)
+{
+	const char* i = "denker";
+	size_t is = strlen(i);
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(12, utf8toutf16(i, is, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf8ToUtf16, OneByteMultipleNotEnoughSpaceOneByte)
+{
+	const char* i = "valid";
+	size_t is = strlen(i);
+	utf16_t o[256] = { 0 };
+	size_t os = (5 * sizeof(utf16_t)) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toutf16(i, is, o, os, &errors));
+	EXPECT_EQ('v', o[0]);
+	EXPECT_EQ('a', o[1]);
+	EXPECT_EQ('l', o[2]);
+	EXPECT_EQ('i', o[3]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToUtf16, OneByteMultipleNotEnoughSpaceTwoBytes)
+{
+	const char* i = "return";
+	size_t is = strlen(i);
+	utf16_t o[256] = { 0 };
+	size_t os = (6 * sizeof(utf16_t)) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(10, utf8toutf16(i, is, o, os, &errors));
+	EXPECT_EQ('r', o[0]);
+	EXPECT_EQ('e', o[1]);
+	EXPECT_EQ('t', o[2]);
+	EXPECT_EQ('u', o[3]);
+	EXPECT_EQ('r', o[4]);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf8ToUtf16, String)
