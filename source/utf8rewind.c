@@ -196,7 +196,9 @@ invaliddata:
 			UTF8_RETURN(NOT_ENOUGH_SPACE, bytes_written);
 		}
 
-		memcpy(dst, "\xEF\xBF\xBD", 3);
+		/* Write replacement codepoint to output */
+
+		memcpy(dst, REPLACEMENT_CHARACTER_STRING, REPLACEMENT_CHARACTER_STRING_LENGTH);
 	}
 
 	UTF8_RETURN(INVALID_DATA, bytes_written + 3);
@@ -303,7 +305,9 @@ invaliddata:
 			UTF8_RETURN(NOT_ENOUGH_SPACE, bytes_written);
 		}
 
-		memcpy(dst, "\xEF\xBF\xBD", 3);
+		/* Write replacement codepoint to output */
+
+		memcpy(dst, REPLACEMENT_CHARACTER_STRING, REPLACEMENT_CHARACTER_STRING_LENGTH);
 	}
 
 	UTF8_RETURN(INVALID_DATA, bytes_written + 3);

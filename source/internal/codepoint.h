@@ -44,151 +44,163 @@
 	\def MAX_BASIC_LATIN
 	\brief The last codepoint part of Basic Latin (U+0000 - U+007F).
 */
-#define MAX_BASIC_LATIN               0x007F
+#define MAX_BASIC_LATIN                      0x007F
 
 /*!
 	\def MAX_LATIN_1
 	\brief The last codepoint part of Latin-1 Supplement (U+0080 - U+00FF).
 */
-#define MAX_LATIN_1                   0x00FF
+#define MAX_LATIN_1                          0x00FF
 
 /*!
 	\def MAX_BASIC_MULTILINGUAL_PLANE
 	\brief The last legal codepoint in the Basic Multilingual Plane (BMP).
 */
-#define MAX_BASIC_MULTILINGUAL_PLANE  0xFFFF
+#define MAX_BASIC_MULTILINGUAL_PLANE         0xFFFF
 
 /*!
 	\def MAX_LEGAL_UNICODE
 	\brief The last legal codepoint in Unicode.
 */
-#define MAX_LEGAL_UNICODE             0x10FFFF
+#define MAX_LEGAL_UNICODE                    0x10FFFF
 
 /*!
 	\def REPLACEMENT_CHARACTER
-	\brief The replacement value used to replace illegal codepoints.
+	\brief The codepoint used to replace illegal codepoints.
 */
-#define REPLACEMENT_CHARACTER         0xFFFD
+#define REPLACEMENT_CHARACTER                0xFFFD
+
+/*!
+	\def REPLACEMENT_CHARACTER_STRING
+	\brief The replacement character as a UTF-8 encoded string.
+*/
+#define REPLACEMENT_CHARACTER_STRING         "\xEF\xBF\xBD"
+
+/*!
+	\def REPLACEMENT_CHARACTER_STRING_LENGTH
+	\brief Length of the UTF-8 encoded string of the replacment character.
+*/
+#define REPLACEMENT_CHARACTER_STRING_LENGTH  3
 
 /*!
 	\def SURROGATE_HIGH_START
 	\brief The minimum codepoint for the high member of a surrogate pair.
 */
-#define SURROGATE_HIGH_START          0xD800
+#define SURROGATE_HIGH_START                 0xD800
 
 /*!
 	\def SURROGATE_HIGH_END
 	\brief The maximum codepoint for the high member of a surrogate pair.
 */
-#define SURROGATE_HIGH_END            0xDBFF
+#define SURROGATE_HIGH_END                   0xDBFF
 
 /*!
 	\def SURROGATE_LOW_START
 	\brief The minimum codepoint for the low member of a surrogate pair.
 */
-#define SURROGATE_LOW_START           0xDC00
+#define SURROGATE_LOW_START                  0xDC00
 
 /*!
 	\def SURROGATE_LOW_END
 	\brief The maximum codepoint for the low member of a surrogate pair.
 */
-#define SURROGATE_LOW_END             0xDFFF
+#define SURROGATE_LOW_END                    0xDFFF
 
 /*!
 	\def HANGUL_JAMO_FIRST
 	\brief The first codepoint part of the Hangul Jamo block.
 */
-#define HANGUL_JAMO_FIRST             0x1100
+#define HANGUL_JAMO_FIRST                    0x1100
 
 /*!
 	\def HANGUL_JAMO_LAST
 	\brief The last codepoint part of the Hangul Jamo block.
 */
-#define HANGUL_JAMO_LAST              0x11FF
+#define HANGUL_JAMO_LAST                     0x11FF
 
 /*!
 	\def HANGUL_L_FIRST
 	\brief The first codepoint part of the Hangul Jamo L section used for
 	normalization.
 */
-#define HANGUL_L_FIRST                0x1100
+#define HANGUL_L_FIRST                       0x1100
 
 /*!
 	\def HANGUL_L_LAST
 	\brief The last codepoint part of the Hangul Jamo L section used for
 	normalization.
 */
-#define HANGUL_L_LAST                 0x1112
+#define HANGUL_L_LAST                        0x1112
 
 /*!
 	\def HANGUL_L_COUNT
 	\brief The number of codepoints in the Hangul Jamo L section.
 */
-#define HANGUL_L_COUNT                19
+#define HANGUL_L_COUNT                       19
 
 /*!
 	\def HANGUL_V_FIRST
 	\brief The first codepoint part of the Hangul Jamo V section used for
 	normalization.
 */
-#define HANGUL_V_FIRST                0x1161
+#define HANGUL_V_FIRST                       0x1161
 
 /*!
 	\def HANGUL_V_LAST
 	\brief The last codepoint part of the Hangul Jamo V section used for
 	normalization.
 */
-#define HANGUL_V_LAST                 0x1175
+#define HANGUL_V_LAST                        0x1175
 
 /*!
 	\def HANGUL_V_COUNT
 	\brief The number of codepoints in the Hangul Jamo V section.
 */
-#define HANGUL_V_COUNT                21
+#define HANGUL_V_COUNT                       21
 
 /*!
 	\def HANGUL_T_FIRST
 	\brief The first codepoint part of the Hangul Jamo T section used for
 	normalization.
 */
-#define HANGUL_T_FIRST                0x11A7
+#define HANGUL_T_FIRST                       0x11A7
 
 /*!
 	\def HANGUL_T_LAST
 	\brief The last codepoint part of the Hangul Jamo V section used for
 	normalization.
 */
-#define HANGUL_T_LAST                 0x11C2
+#define HANGUL_T_LAST                        0x11C2
 
 /*!
 	\def HANGUL_T_COUNT
 	\brief The number of codepoints in the Hangul Jamo T section.
 */
-#define HANGUL_T_COUNT                28
+#define HANGUL_T_COUNT                       28
 
 /*!
 	\def HANGUL_N_COUNT
 	\brief Number of codepoints part of the Hangul Jamo V and T sections.
 */
-#define HANGUL_N_COUNT                588 /* VCount * TCount */
+#define HANGUL_N_COUNT                       588 /* VCount * TCount */
 
 /*!
 	\def HANGUL_S_FIRST
 	\brief The first codepoint in the Hangul Syllables block.
 */
-#define HANGUL_S_FIRST                0xAC00
+#define HANGUL_S_FIRST                       0xAC00
 
 /*!
 	\def HANGUL_S_LAST
 	\brief The last codepoint in the Hangul Syllables block.
 */
-#define HANGUL_S_LAST                 0xD7A3
+#define HANGUL_S_LAST                        0xD7A3
 
 /*!
 	\def HANGUL_S_COUNT
 	\brief The number of codepoints in the Hangul Syllables block.
 */
-#define HANGUL_S_COUNT                11172 /* LCount * NCount */
+#define HANGUL_S_COUNT                       11172 /* LCount * NCount */
 
 /*!
 	\brief Get the number of bytes used for encoding a codepoint.
