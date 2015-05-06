@@ -1985,7 +1985,7 @@ TEST(Utf8ToUtf32, FiveBytesSingleAboveLegalUnicodeFirst)
 {
 	// U+110000
 
-	const char* i = "\xF8\x80\x91\x80\x80";
+	const char* i = "\xF8\x84\x90\x80\x80";
 	size_t is = strlen(i);
 	unicode_t o[256] = { 0 };
 	size_t os = 255 * sizeof(unicode_t);
@@ -2415,7 +2415,7 @@ TEST(Utf8ToUtf32, FiveBytesSingleOverlongFourBytesLast)
 {
 	// U+10FFFF
 
-	const char* i = "\xF8\x80\x90\xBF\xBF";
+	const char* i = "\xF8\x84\x8F\xBF\xBF";
 	size_t is = strlen(i);
 	unicode_t o[256] = { 0 };
 	size_t os = 255 * sizeof(unicode_t);
@@ -2571,7 +2571,7 @@ TEST(Utf8ToUtf32, SixBytesSingleAboveLegalUnicodeFirst)
 {
 	// U+110000
 
-	const char* i = "\xFC\x80\x80\x91\x80\x80";
+	const char* i = "\xFC\x80\x84\x90\x80\x80";
 	size_t is = strlen(i);
 	unicode_t o[256] = { 0 };
 	size_t os = 255 * sizeof(unicode_t);
@@ -2584,9 +2584,9 @@ TEST(Utf8ToUtf32, SixBytesSingleAboveLegalUnicodeFirst)
 
 TEST(Utf8ToUtf32, SixBytesSingleAboveLegalUnicodeLast)
 {
-	// U+1000002
+	// U+7FFFFFFF
 
-	const char* i = "\xFC\x80\xBF\xBF\xBF\xBF";
+	const char* i = "\xFD\xBF\xBF\xBF\xBF\xBF";
 	size_t is = strlen(i);
 	unicode_t o[256] = { 0 };
 	size_t os = 255 * sizeof(unicode_t);
@@ -3048,7 +3048,7 @@ TEST(Utf8ToUtf32, SixBytesSingleOverlongFourBytesLast)
 {
 	// U+10FFFF
 
-	const char* i = "\xFC\x80\x80\x90\xBF\xBF";
+	const char* i = "\xFC\x80\x84\x8F\xBF\xBF";
 	size_t is = strlen(i);
 	unicode_t o[256] = { 0 };
 	size_t os = 255 * sizeof(unicode_t);

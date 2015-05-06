@@ -1515,7 +1515,7 @@ TEST(Utf8ToUtf16, FiveBytesSingleAboveLegalUnicodeFirst)
 {
 	// U+110000
 
-	const char* i = "\xF8\x80\x91\x80\x80";
+	const char* i = "\xF8\x84\x90\x80\x80";
 	size_t is = strlen(i);
 	utf16_t o[256] = { 0 };
 	size_t os = 255 * sizeof(utf16_t);
@@ -1895,7 +1895,7 @@ TEST(Utf8ToUtf16, FiveBytesSingleOverlongFourBytesLast)
 {
 	// U+10FFFF
 
-	const char* i = "\xF8\x80\x90\xBF\xBF";
+	const char* i = "\xF8\x84\x8F\xBF\xBF";
 	size_t is = strlen(i);
 	utf16_t o[256] = { 0 };
 	size_t os = 255 * sizeof(utf16_t);
