@@ -2971,7 +2971,7 @@ TEST(Utf8ToUtf32, SixBytesSingleOverlongOneByteLast)
 
 TEST(Utf8ToUtf32, SixBytesSingleOverlongTwoBytesFirst)
 {
-	// U+0800
+	// U+0080
 
 	const char* i = "\xF8\x80\x80\x82\x80";
 	size_t is = strlen(i);
