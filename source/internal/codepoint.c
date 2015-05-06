@@ -192,8 +192,14 @@ uint8_t codepoint_read(const char* input, size_t inputSize, unicode_t* decoded)
 	{
 		/* Multi-byte sequence */
 
-		static const uint8_t SequenceMask[7] = { 0x00, 0x7F, 0x1F, 0x0F, 0x07, 0x03, 0x01 };
-		static const unicode_t SequenceMinimum[7] = { 0x0000, 0x0000, 0x0080, 0x0800, 0x10000, 0x0000, 0x0000 };
+		static const uint8_t SequenceMask[7] = {
+			0x00, 0x7F, 0x1F, 0x0F,
+			0x07, 0x03, 0x01
+		};
+		static const unicode_t SequenceMinimum[7] = {
+			0x0000, 0x0000, 0x0080, 0x0800,
+			0x10000, MAX_LEGAL_UNICODE, MAX_LEGAL_UNICODE
+		};
 
 		size_t src_size = inputSize;
 		uint8_t src_index;
