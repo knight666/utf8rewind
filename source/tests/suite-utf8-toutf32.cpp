@@ -3350,11 +3350,11 @@ TEST(Utf8ToUtf32, SurrogatePairSingleUnmatchedLow)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToUtf32, SurrogatePairSingleMissingLow)
+TEST(Utf8ToUtf32, SurrogatePairSingleMissingHigh)
 {
-	// U+DA9A
+	// U+DDE5
 
-	const char* i = "\xED\xAA\x9A";
+	const char* i = "\xED\xB7\xA5";
 	size_t is = strlen(i);
 	unicode_t o[256] = { 0 };
 	size_t os = 255 * sizeof(unicode_t);
@@ -3365,11 +3365,11 @@ TEST(Utf8ToUtf32, SurrogatePairSingleMissingLow)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToUtf32, SurrogatePairSingleMissingHigh)
+TEST(Utf8ToUtf32, SurrogatePairSingleMissingLow)
 {
-	// U+DDE5
+	// U+DA9A
 
-	const char* i = "\xED\xB7\xA5";
+	const char* i = "\xED\xAA\x9A";
 	size_t is = strlen(i);
 	unicode_t o[256] = { 0 };
 	size_t os = 255 * sizeof(unicode_t);
@@ -3830,7 +3830,7 @@ TEST(Utf8ToUtf32, SurrogatePairSingleOverlongAmountOfBytes)
 
 TEST(Utf8ToUtf32, SurrogatePairSingleOverlongNotEnoughSpaceOneByte)
 {
-	const char* i = "\xF8\x80\x8E\xB2\x21";
+	const char* i = "\xF8\x80\x8E\xB2\x81";
 	size_t is = strlen(i);
 	unicode_t o[256] = { 0 };
 	size_t os = sizeof(unicode_t) - 1;
