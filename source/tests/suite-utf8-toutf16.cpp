@@ -3216,203 +3216,21 @@ TEST(Utf8ToUtf16, SurrogatePairMultipleNotEnoughSpaceOneByte)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(Utf8ToUtf16, SurrogatePairCombined)
+TEST(Utf8ToUtf16, SurrogatePairMultipleNotEnoughSpaceTwoBytes)
 {
-	const char* i = "\
-\xED\xA0\x80\xED\xB0\x80\
-\xED\xA0\x80\xED\xBF\xBF\
-\xED\xAD\xBF\xED\xB0\x80\
-\xED\xAD\xBF\xED\xBF\xBF\
-\xED\xAE\x80\xED\xB0\x80\
-\xED\xAE\x80\xED\xBF\xBF\
-\xED\xAF\xBF\xED\xB0\x80\
-\xED\xAF\xBF\xED\xBF\xBF";
-	const size_t s = 256;
-	utf16_t o[s] = { 0 };
+	const char* i = "\xED\xA0\x97\xED\xB4\x98\xED\xA2\x97\xED\xB3\x87\xED\xAA\xAB\xED\xB2\xAC";
+	size_t is = strlen(i);
+	utf16_t o[256] = { 0 };
+	size_t os = (6 * sizeof(utf16_t)) - 2;
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(32, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+	EXPECT_EQ(10, utf8toutf16(i, is, o, os, &errors));
 	EXPECT_CPEQ(0xFFFD, o[0]);
 	EXPECT_CPEQ(0xFFFD, o[1]);
 	EXPECT_CPEQ(0xFFFD, o[2]);
 	EXPECT_CPEQ(0xFFFD, o[3]);
 	EXPECT_CPEQ(0xFFFD, o[4]);
-	EXPECT_CPEQ(0xFFFD, o[5]);
-	EXPECT_CPEQ(0xFFFD, o[6]);
-	EXPECT_CPEQ(0xFFFD, o[7]);
-	EXPECT_CPEQ(0xFFFD, o[8]);
-	EXPECT_CPEQ(0xFFFD, o[9]);
-	EXPECT_EQ(0xFFFD, o[10]);
-	EXPECT_EQ(0xFFFD, o[11]);
-	EXPECT_EQ(0xFFFD, o[12]);
-	EXPECT_EQ(0xFFFD, o[13]);
-	EXPECT_EQ(0xFFFD, o[14]);
-	EXPECT_EQ(0xFFFD, o[15]);
-}
-
-TEST(Utf8ToUtf16, SurrogatePairHighStart)
-{
-	const char* i = "\xED\xA0\x80";
-	const size_t s = 256;
-	utf16_t o[s] = { 0 };
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_CPEQ(0xFFFD, o[0]);
-}
-
-TEST(Utf8ToUtf16, SurrogatePairHighEnd)
-{
-	const char* i = "\xED\xAF\xBF";
-	const size_t s = 256;
-	utf16_t o[s] = { 0 };
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_CPEQ(0xFFFD, o[0]);
-}
-
-TEST(Utf8ToUtf16, SurrogatePairLow)
-{
-	const char* i = "\xED\xBE\x80";
-	const size_t s = 256;
-	utf16_t o[s] = { 0 };
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_CPEQ(0xFFFD, o[0]);
-}
-
-TEST(Utf8ToUtf16, SurrogatePairLowStart)
-{
-	const char* i = "\xED\xB0\x80";
-	const size_t s = 256;
-	utf16_t o[s] = { 0 };
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_CPEQ(0xFFFD, o[0]);
-}
-
-TEST(Utf8ToUtf16, SurrogatePairLowEnd)
-{
-	const char* i = "\xED\xBF\xBF";
-	const size_t s = 256;
-	utf16_t o[s] = { 0 };
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_CPEQ(0xFFFD, o[0]);
-}
-
-TEST(Utf8ToUtf16, SurrogatePairOverlongHighStart)
-{
-	const char* i = "\xF0\x8D\xA0\x80";
-	const size_t s = 256;
-	utf16_t o[s] = { 0 };
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_CPEQ(0xFFFD, o[0]);
-}
-
-TEST(Utf8ToUtf16, SurrogatePairOverlongHighEnd)
-{
-	const char* i = "\xF0\x8D\xAF\xBF";
-	const size_t s = 256;
-	utf16_t o[s] = { 0 };
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_CPEQ(0xFFFD, o[0]);
-}
-
-TEST(Utf8ToUtf16, SurrogatePairOverlongLowStart)
-{
-	const char* i = "\xF0\x8D\xAD\xBF";
-	const size_t s = 256;
-	utf16_t o[s] = { 0 };
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_CPEQ(0xFFFD, o[0]);
-}
-
-TEST(Utf8ToUtf16, SurrogatePairOverlongLowEnd)
-{
-	const char* i = "\xF0\x8D\xBF\xBF";
-	const size_t s = 256;
-	utf16_t o[s] = { 0 };
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_CPEQ(0xFFFD, o[0]);
-}
-
-TEST(Utf8ToUtf16, SurrogatePairNotEnoughData)
-{
-	const char* i = "\xED\xBF";
-	const size_t s = 256;
-	utf16_t o[s] = { 0 };
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_CPEQ(0xFFFD, o[0]);
-}
-
-TEST(Utf8ToUtf16, AmountOfBytes)
-{
-	const char* i = "\xE0\xB4\x8B";
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf8ToUtf16, AmountOfBytesString)
-{
-	const char* i = "Pchn\xC4\x85\xC4\x87 w t\xC4\x99";
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(22, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf8ToUtf16, AmountOfBytesNotEnoughData)
-{
-	const char* i = "\xF0\x90\xB1";
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf8ToUtf16, AmountOfBytesOverlong)
-{
-	const char* i = "\xFC\x84\x80\x80\x80\x80";
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(2, utf8toutf16(i, strlen(i), nullptr, 0, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-}
-
-TEST(Utf8ToUtf16, AmountOfBytesNoData)
-{
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_EQ(0, utf8toutf16(nullptr, 1, nullptr, 0, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf8ToUtf16, StringEndsInMiddle)
@@ -3475,6 +3293,14 @@ TEST(Utf8ToUtf16, ErrorsIsReset)
 	EXPECT_EQ(2, utf8toutf16(i, strlen(i), o, s * sizeof(utf16_t), &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_CPEQ(0x0089, o[0]);
+}
+
+TEST(Utf8ToUtf16, InvalidData)
+{
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8toutf16(nullptr, 1, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf8ToUtf16, OverlappingParametersFits)
