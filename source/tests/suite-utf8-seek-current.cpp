@@ -2,6 +2,8 @@
 
 #include "utf8rewind.h"
 
+#include "helpers-strings.hpp"
+
 TEST(Utf8SeekCurrent, SwappedParameters)
 {
 	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
@@ -9,11 +11,7 @@ TEST(Utf8SeekCurrent, SwappedParameters)
 	const char* r = utf8seek(t, t + strlen(t), 2, SEEK_CUR);
 
 	EXPECT_EQ(t, r);
-	EXPECT_STREQ("\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ(0x10480, o);
+	EXPECT_UTF8EQ("\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80", r);
 }
 
 TEST(Utf8SeekCurrent, ZeroOffset)
@@ -23,9 +21,5 @@ TEST(Utf8SeekCurrent, ZeroOffset)
 	const char* r = utf8seek(t + 2, t, 0, SEEK_CUR);
 
 	EXPECT_EQ(t + 2, r);
-	EXPECT_STREQ("nana", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ(0x6E, o);
+	EXPECT_UTF8EQ("nana", r);
 }
