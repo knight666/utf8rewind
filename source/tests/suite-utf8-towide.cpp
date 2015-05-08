@@ -61,12 +61,12 @@ TEST(Utf8ToWide, BasicLatinNotEnoughSpaceThreeBytes)
 	size_t os = (6 * sizeof(wchar_t)) - 3;
 	int32_t errors = UTF8_ERR_NONE;
 
-#if UTF8_WCHAR_UTF32
-	EXPECT_EQ(5 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
-	EXPECT_STREQ(L"Washe", o);
-#else
+#if UTF8_WCHAR_UTF16
 	EXPECT_EQ(4 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
 	EXPECT_STREQ(L"Wash", o);
+#elif UTF8_WCHAR_UTF32
+	EXPECT_EQ(5 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
+	EXPECT_STREQ(L"Washe", o);
 #endif
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -79,12 +79,12 @@ TEST(Utf8ToWide, BasicLatinNotEnoughSpaceFourBytes)
 	size_t os = (6 * sizeof(wchar_t)) - 4;
 	int32_t errors = UTF8_ERR_NONE;
 
-#if UTF8_WCHAR_UTF32
-	EXPECT_EQ(5 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
-	EXPECT_STREQ(L"Engin", o);
-#else
+#if UTF8_WCHAR_UTF16
 	EXPECT_EQ(4 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
 	EXPECT_STREQ(L"Engi", o);
+#elif UTF8_WCHAR_UTF32
+	EXPECT_EQ(5 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
+	EXPECT_STREQ(L"Engin", o);
 #endif
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -146,12 +146,12 @@ TEST(Utf8ToWide, TwoBytesNotEnoughSpaceThreeBytes)
 	size_t os = (4 * sizeof(wchar_t)) - 3;
 	int32_t errors = UTF8_ERR_NONE;
 
-#if UTF8_WCHAR_UTF32
-	EXPECT_EQ(3 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
-	EXPECT_STREQ(L"\x01BB\x05C3\x0244", o);
-#else
+#if UTF8_WCHAR_UTF16
 	EXPECT_EQ(2 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
 	EXPECT_STREQ(L"\x01BB\x05C3", o);
+#elif UTF8_WCHAR_UTF32
+	EXPECT_EQ(3 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
+	EXPECT_STREQ(L"\x01BB\x05C3\x0244", o);
 #endif
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -164,38 +164,99 @@ TEST(Utf8ToWide, TwoBytesNotEnoughSpaceFourBytes)
 	size_t os = (4 * sizeof(wchar_t)) - 4;
 	int32_t errors = UTF8_ERR_NONE;
 
-#if UTF8_WCHAR_UTF32
-	EXPECT_EQ(3 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
-	EXPECT_STREQ(L"\x02F8\x022D\x041C", o);
-#else
+#if UTF8_WCHAR_UTF16
 	EXPECT_EQ(2 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
 	EXPECT_STREQ(L"\x02F8\x022D", o);
+#elif UTF8_WCHAR_UTF32
+	EXPECT_EQ(3 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
+	EXPECT_STREQ(L"\x02F8\x022D\x041C", o);
 #endif
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf8ToWide, ThreeBytes)
 {
-	const char* c = "\xEA\xAC\x81";
-	const size_t s = 256;
-	wchar_t b[s] = { 0 };
+	const char* i = "\xEA\xAC\x81\xEA\x8C\xBC\xEB\x90\x92\xEC\x99\xBA";
+	size_t is = strlen(i);
+	wchar_t o[256] = { 0 };
+	size_t os = 255 * sizeof(wchar_t);
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1 * UTF8_WCHAR_SIZE, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(4 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
+	EXPECT_STREQ(L"\xAB01\xA33C\xB412\xC67A", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_STREQ(L"\xAB01", b);
 }
 
-TEST(Utf8ToWide, ThreeBytesNotEnoughData)
+TEST(Utf8ToWide, ThreeBytesAmountOfBytes)
 {
-	const char* c = "\xEA\xAC";
-	const size_t s = 256;
-	wchar_t b[s] = { 0 };
+	const char* i = "\xEA\xAA\x91\xE5\xB3\x91\xE4\xB0\xA4";
+	size_t is = strlen(i);
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(UTF8_WCHAR_SIZE, utf8towide(c, strlen(c), b, s * sizeof(wchar_t), &errors));
+	EXPECT_EQ(3 * UTF8_WCHAR_SIZE, utf8towide(i, is, nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_STREQ(L"\xFFFD", b);
+}
+
+TEST(Utf8ToWide, ThreeBytesNotEnoughSpaceOneByte)
+{
+	const char* i = "\xE2\x9F\x9A\xEA\x99\x95\xE9\xA2\x87";
+	size_t is = strlen(i);
+	wchar_t o[256] = { 0 };
+	size_t os = (3 * sizeof(wchar_t)) - 1;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(2 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
+	EXPECT_STREQ(L"\x27DA\xA655", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToWide, ThreeBytesNotEnoughSpaceTwoBytes)
+{
+	const char* i = "\xE3\x9A\xAA\xE9\xB3\x8A\xE5\xBC\xA2";
+	size_t is = strlen(i);
+	wchar_t o[256] = { 0 };
+	size_t os = (3 * sizeof(wchar_t)) - 2;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(2 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
+	EXPECT_STREQ(L"\x36AA\x9CCA", o);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToWide, ThreeBytesNotEnoughSpaceThreeBytes)
+{
+	const char* i = "\xE1\x9E\xAA\xE6\x96\xA1\xEB\x88\xAC";
+	size_t is = strlen(i);
+	wchar_t o[256] = { 0 };
+	size_t os = (3 * sizeof(wchar_t)) - 3;
+	int32_t errors = UTF8_ERR_NONE;
+
+#if UTF8_WCHAR_UTF16
+	EXPECT_EQ(1 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
+	EXPECT_STREQ(L"\x17AA", o);
+#elif UTF8_WCHAR_UTF32
+	EXPECT_EQ(2 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
+	EXPECT_STREQ(L"\x17AA\x65A1", o);
+#endif
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST(Utf8ToWide, ThreeBytesNotEnoughSpaceFourBytes)
+{
+	const char* i = "\xE2\x9A\xA2\xE3\x8C\xB4\xE7\x9A\xA2\xE8\x8A\xA1";
+	size_t is = strlen(i);
+	wchar_t o[256] = { 0 };
+	size_t os = (3 * sizeof(wchar_t)) - 4;
+	int32_t errors = UTF8_ERR_NONE;
+
+#if UTF8_WCHAR_UTF16
+	EXPECT_EQ(1 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
+	EXPECT_STREQ(L"\x26A2", o);
+#elif UTF8_WCHAR_UTF32
+	EXPECT_EQ(2 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
+	EXPECT_STREQ(L"\x26A2\x3334", o);
+#endif
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
 TEST(Utf8ToWide, AboveBasicMultilingualPlane)
