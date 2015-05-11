@@ -15,6 +15,6 @@
 
 #define EXPECT_SEEKEQ(_expectedString, _expectedOffset, _actual) \
 	EXPECT_UTF8EQ(_expectedString, _actual); \
-	EXPECT_EQ(t + _expectedOffset, _actual);
+	EXPECT_OFFSETEQ((t + _expectedOffset), _actual, t);
 
 /*! \endcond */

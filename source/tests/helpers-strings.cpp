@@ -473,6 +473,37 @@ namespace helpers {
 		}
 	}
 
+	::testing::AssertionResult CompareOffsets(
+		const char* expressionExpected, const char* expressionActual, const char* expressionCount,
+		const char* offsetExpected, const char* offsetActual, const char* offsetStart)
+	{
+		if (offsetExpected == offsetActual)
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << "Offset mismatch." << std::endl;
+
+			result << std::endl;
+
+			result
+				<< "[Offset]" << std::endl
+				<< "    Actual: " << (ptrdiff_t)(offsetActual - offsetStart) << std::endl
+				<< "  Expected: " << (ptrdiff_t)(offsetExpected - offsetStart) << std::endl;
+
+			result << std::endl;
+
+			result
+				<< "[Text]" << std::endl
+				<< "    Actual: " << printable(offsetActual) << "\"" << std::endl
+				<< "  Expected: " << printable(offsetExpected) << "\"" << std::endl;
+
+			return result;
+		}
+	}
 
 	::testing::AssertionResult CompareMemory(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_, const char* expressionCount GTEST_ATTRIBUTE_UNUSED_,
