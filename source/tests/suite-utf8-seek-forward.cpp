@@ -60,32 +60,18 @@ TEST(Utf8SeekForward, OneByteMultiple)
 	EXPECT_SEEKEQ("ion", 6, utf8seek(t, t, 6, SEEK_CUR));
 }
 
-TEST(Utf8SeekForward, OneByteMultipleInvalidContinuationByteAndValid)
+TEST(Utf8SeekForward, OneByteMultipleInvalidContinuationByte)
 {
-	const char* t = "\x91" "o";
+	const char* t = "\x91\x45\x89\x82\xA2";
 	
-	EXPECT_SEEKEQ("", 2, utf8seek(t, t, 2, SEEK_CUR));
+	EXPECT_SEEKEQ("\x82\xA2", 3, utf8seek(t, t, 3, SEEK_CUR));
 }
 
-TEST(Utf8SeekForward, OneByteMultipleValidAndInvalidContinuationByte)
+TEST(Utf8SeekForward, OneByteMultipleIllegal)
 {
-	const char* t = "4" "\xA2";
+	const char* t = "\xFE\x23\xFF\x60\x55";
 
-	EXPECT_SEEKEQ("", 2, utf8seek(t, t, 2, SEEK_CUR));
-}
-
-TEST(Utf8SeekForward, OneByteMultipleIllegalAndValid)
-{
-	const char* t = "\xFE" "d";
-
-	EXPECT_SEEKEQ("", 2, utf8seek(t, t, 2, SEEK_CUR));
-}
-
-TEST(Utf8SeekForward, OneByteMultipleValidAndIllegal)
-{
-	const char* t = "b" "\xFF";
-
-	EXPECT_SEEKEQ("", 2, utf8seek(t, t, 2, SEEK_CUR));
+	EXPECT_SEEKEQ("\x60\x55", 3, utf8seek(t, t, 3, SEEK_CUR));
 }
 
 TEST(Utf8SeekForward, TwoBytesSingle)
@@ -130,20 +116,6 @@ TEST(Utf8SeekForward, TwoBytesSingleMissingOneByte)
 	EXPECT_SEEKEQ("", 1, utf8seek(t, t, 1, SEEK_CUR));
 }
 
-TEST(Utf8SeekForward, TwoBytesSingleOverlongOneByteFirst)
-{
-	const char* t = "\xC0\x80";
-
-	EXPECT_SEEKEQ("", 2, utf8seek(t, t, 1, SEEK_CUR));
-}
-
-TEST(Utf8SeekForward, TwoBytesSingleOverlongOneByteLast)
-{
-	const char* t = "\xC1\xBF";
-
-	EXPECT_SEEKEQ("", 2, utf8seek(t, t, 1, SEEK_CUR));
-}
-
 TEST(Utf8SeekForward, TwoBytesMultiple)
 {
 	const char* t = "\xC1\xA7\xC0\xB2\xD1\x98";
@@ -151,18 +123,11 @@ TEST(Utf8SeekForward, TwoBytesMultiple)
 	EXPECT_SEEKEQ("\xD1\x98", 4, utf8seek(t, t, 2, SEEK_CUR));
 }
 
-TEST(Utf8SeekForward, TwoBytesMultipleInvalidContinuationByte)
+TEST(Utf8SeekForward, TwoBytesMultipleInvalid)
 {
 	const char* t = "\x23\xC4\xC5\x80\xD4";
 
 	EXPECT_SEEKEQ("\xD4", 4, utf8seek(t, t, 3, SEEK_CUR));
-}
-
-TEST(Utf8SeekForward, TwoBytesMultipleOverlong)
-{
-	const char* t = "\xC0\x85\xC1\xA2\xC0\x85\xC0\xA4";
-
-	EXPECT_SEEKEQ("\xC0\x85\xC0\xA4", 4, utf8seek(t, t, 2, SEEK_CUR));
 }
 
 TEST(Utf8SeekForward, ThreeBytesSingle)
@@ -228,34 +193,6 @@ TEST(Utf8SeekForward, ThreeBytesSingleMissingTwoBytes)
 	EXPECT_SEEKEQ("", 1, utf8seek(t, t, 1, SEEK_CUR));
 }
 
-TEST(Utf8SeekForward, ThreeBytesSingleOverlongOneByteFirst)
-{
-	const char* t = "\xE0\x80\x80";
-
-	EXPECT_SEEKEQ("", 3, utf8seek(t, t, 1, SEEK_CUR));
-}
-
-TEST(Utf8SeekForward, ThreeBytesSingleOverlongOneByteLast)
-{
-	const char* t = "\xE0\x81\xBF";
-
-	EXPECT_SEEKEQ("", 3, utf8seek(t, t, 1, SEEK_CUR));
-}
-
-TEST(Utf8SeekForward, ThreeBytesSingleOverlongTwoBytesFirst)
-{
-	const char* t = "\xE0\x82\x80";
-
-	EXPECT_SEEKEQ("", 3, utf8seek(t, t, 1, SEEK_CUR));
-}
-
-TEST(Utf8SeekForward, ThreeBytesSingleOverlongTwoBytesLast)
-{
-	const char* t = "\xE0\x9F\xBF";
-
-	EXPECT_SEEKEQ("", 3, utf8seek(t, t, 1, SEEK_CUR));
-}
-
 TEST(Utf8SeekForward, ThreeBytesMultiple)
 {
 	const char* t = "\xE1\xA5\x98\xE1\xB0\xB1\xEA\x8F\x9F";
@@ -263,18 +200,11 @@ TEST(Utf8SeekForward, ThreeBytesMultiple)
 	EXPECT_SEEKEQ("\xEA\x8F\x9F", 6, utf8seek(t, t, 2, SEEK_CUR));
 }
 
-TEST(Utf8SeekForward, ThreeBytesMultipleInvalidContinuationByte)
+TEST(Utf8SeekForward, ThreeBytesMultipleInvalid)
 {
 	const char* t = "\xE0\xE2\x82\xE3\x87\x17\xE3\xD2";
 
 	EXPECT_SEEKEQ("\x17\xE3\xD2", 5, utf8seek(t, t, 3, SEEK_CUR));
-}
-
-TEST(Utf8SeekForward, ThreeBytesMultipleOverlong)
-{
-	const char* t = "\xE0\x80\xA4\xE0\x81\x9A\xE0\x80\xBA\xE0\x80\xA4";
-
-	EXPECT_SEEKEQ("\xE0\x80\xA4", 9, utf8seek(t, t, 3, SEEK_CUR));
 }
 
 TEST(Utf8SeekForward, FourBytesSingle)
@@ -368,25 +298,11 @@ TEST(Utf8SeekForward, FourBytesMultiple)
 	EXPECT_SEEKEQ("\xF2\x86\xA3\x94", 12, utf8seek(t, t, 3, SEEK_CUR));
 }
 
-TEST(Utf8SeekForward, FourBytesMultipleInvalidContinuationByte)
+TEST(Utf8SeekForward, FourBytesMultipleInvalid)
 {
 	const char* t = "\xF1\xC3\x82\x25\xF4\x87\xD5\x99\xC3\x81";
 
 	EXPECT_SEEKEQ("\xD5\x99\xC3\x81", 6, utf8seek(t, t, 4, SEEK_CUR));
-}
-
-TEST(Utf8SeekForward, Valid)
-{
-	const char* t = "\xCF\x84\xE1\xBD\xB4\xCE\xBD \xCE\xBA\xE1\xBD\xB9\xCF\x88\xCE\xB7";
-
-	const char* r = utf8seek(t, t, 4, SEEK_CUR);
-
-	EXPECT_EQ(t + 8, r);
-	EXPECT_STREQ("\xCE\xBA\xE1\xBD\xB9\xCF\x88\xCE\xB7", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ(0x3BA, o);
 }
 
 TEST(Utf8SeekForward, StringPastEnd)
