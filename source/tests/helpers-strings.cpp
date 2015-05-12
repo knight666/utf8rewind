@@ -498,8 +498,8 @@ namespace helpers {
 
 			result
 				<< "[Text]" << std::endl
-				<< "    Actual: " << printable(offsetActual) << "\"" << std::endl
-				<< "  Expected: " << printable(offsetExpected) << "\"" << std::endl;
+				<< "    Actual: \"" << printable(offsetActual) << "\"" << std::endl
+				<< "  Expected: \"" << printable(offsetExpected) << "\"" << std::endl;
 
 			return result;
 		}
