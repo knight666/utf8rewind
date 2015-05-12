@@ -123,105 +123,81 @@ TEST(Utf8SeekSet, TwoBytesMultipleInvalid)
 	EXPECT_SEEKEQ("\x15", 3, utf8seek(t, t, 3, SEEK_SET));
 }
 
-TEST(Utf8SeekSet, ThreeBytes)
+TEST(Utf8SeekSet, ThreeBytesSingle)
 {
-	const char* t = "\xE0\xA4\x81\xE0\xA4\x8B\xE0\xA4\xB4\xE0\xA4\xBD";
+	const char* t = "\xE5\xB8\x84";
 
-	const char* r = utf8seek(t, t, 2, SEEK_SET);
-
-	EXPECT_EQ(t + 6, r);
-	EXPECT_STREQ("\xE0\xA4\xB4\xE0\xA4\xBD", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ(0x934, o);
+	EXPECT_SEEKEQ("", 3, utf8seek(t, t, 1, SEEK_CUR));
 }
 
-TEST(Utf8SeekSet, ThreeBytesOverlong)
+TEST(Utf8SeekSet, ThreeBytesSingleFirst)
 {
-	const char* t = "\xE0\x80\xAF\xE0\x9F\xBF\xE0\x80\xAF";
+	const char* t = "\xE0\x80\x80";
 
-	const char* r = utf8seek(t, t, 1, SEEK_SET);
-
-	EXPECT_EQ(t + 3, r);
-	EXPECT_STREQ("\xE0\x9F\xBF\xE0\x80\xAF", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ(0xFFFD, o);
+	EXPECT_SEEKEQ("", 3, utf8seek(t, t, 1, SEEK_CUR));
 }
 
-TEST(Utf8SeekSet, ThreeBytesOverlongPastEnd)
+TEST(Utf8SeekSet, ThreeBytesSingleLast)
 {
-	const char* t = "\xE0\x80\xAF\xE0\x80\xAF\xE0\x80\xAF";
+	const char* t = "\xEF\xBF\xBF";
 
-	const char* r = utf8seek(t, t, 12, SEEK_SET);
-
-	EXPECT_EQ(t + 9, r);
-	EXPECT_STREQ("", r);
-
-	unicode_t o = 0;
-	int32_t errors = UTF8_ERR_NONE;
-	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_SEEKEQ("", 3, utf8seek(t, t, 1, SEEK_CUR));
 }
 
-TEST(Utf8SeekSet, ThreeBytesLonelyStart)
+TEST(Utf8SeekSet, ThreeBytesSingleInvalidContinuationFirstByteLower)
 {
-	const char* t = "Rocker\xE4" "coaster";
+	const char* t = "\xE5\x3A\x9A";
 
-	const char* r = utf8seek(t, t, 10, SEEK_SET);
-
-	EXPECT_EQ(t + 10, r);
-	EXPECT_STREQ("ster", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('s', o);
+	EXPECT_SEEKEQ("\x3A\x9A", 1, utf8seek(t, t, 1, SEEK_CUR));
 }
 
-TEST(Utf8SeekSet, ThreeBytesLonelyStartAtEnd)
+TEST(Utf8SeekSet, ThreeBytesSingleInvalidContinuationFirstByteUpper)
 {
-	const char* t = "Submarine\xED";
+	const char* t = "\xEA\xC4\x81";
 
-	const char* r = utf8seek(t, t, 10, SEEK_SET);
-
-	EXPECT_EQ(t + 10, r);
-	EXPECT_STREQ("", r);
-
-	unicode_t o = 0;
-	int32_t errors = UTF8_ERR_NONE;
-	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_SEEKEQ("\xC4\x81", 1, utf8seek(t, t, 1, SEEK_CUR));
 }
 
-TEST(Utf8SeekSet, ThreeBytesNotEnoughData)
+TEST(Utf8SeekSet, ThreeBytesSingleInvalidContinuationSecondByteLower)
 {
-	const char* t = "Compan\xEF\xBFions";
+	const char* t = "\xE8\x81\x24";
 
-	const char* r = utf8seek(t, t, 7, SEEK_SET);
-
-	EXPECT_EQ(t + 8, r);
-	EXPECT_STREQ("ions", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('i', o);
+	EXPECT_SEEKEQ("\x24", 2, utf8seek(t, t, 1, SEEK_CUR));
 }
 
-TEST(Utf8SeekSet, ThreeBytesNotEnoughDataAtEnd)
+TEST(Utf8SeekSet, ThreeBytesSingleInvalidContinuationSecondByteUpper)
 {
-	const char* t = "BBBark\xEF\xBF";
+	const char* t = "\xE1\x94\xD4";
 
-	const char* r = utf8seek(t, t, 7, SEEK_SET);
+	EXPECT_SEEKEQ("\xD4", 2, utf8seek(t, t, 1, SEEK_CUR));
+}
 
-	EXPECT_EQ(t + 8, r);
-	EXPECT_STREQ("", r);
+TEST(Utf8SeekSet, ThreeBytesSingleMissingOneByte)
+{
+	const char* t = "\xE2\x90";
 
-	unicode_t o = 0;
-	int32_t errors = UTF8_ERR_NONE;
-	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_SEEKEQ("", 2, utf8seek(t, t, 1, SEEK_CUR));
+}
+
+TEST(Utf8SeekSet, ThreeBytesSingleMissingTwoBytes)
+{
+	const char* t = "\xEB";
+
+	EXPECT_SEEKEQ("", 1, utf8seek(t, t, 1, SEEK_CUR));
+}
+
+TEST(Utf8SeekSet, ThreeBytesMultiple)
+{
+	const char* t = "\xE5\x8A\x99\xE7\xBA\x8A\xE9\x9A\x9A\xE2\xB8\x87";
+
+	EXPECT_SEEKEQ("\xE2\xB8\x87", 9, utf8seek(t, t, 3, SEEK_CUR));
+}
+
+TEST(Utf8SeekSet, ThreeBytesMultipleInvalid)
+{
+	const char* t = "\xE6\x82\xE3\xA2\xE4\xB2\x15\xE2\xE2";
+
+	EXPECT_SEEKEQ("\xE2", 8, utf8seek(t, t, 5, SEEK_CUR));
 }
 
 TEST(Utf8SeekSet, FourBytes)
