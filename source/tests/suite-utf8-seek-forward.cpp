@@ -428,7 +428,7 @@ TEST(Utf8SeekForward, SixBytesSingle)
 {
 	const char* t = "\xFC\x88\x9A\x81\x92\x94";
 
-	EXPECT_SEEKEQ("", 6, utf8seek(t, t, 2, SEEK_CUR));
+	EXPECT_SEEKEQ("", 6, utf8seek(t, t, 1, SEEK_CUR));
 }
 
 TEST(Utf8SeekForward, SixBytesSingleFirst)
