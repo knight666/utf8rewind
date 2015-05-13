@@ -29,12 +29,13 @@
 
 const char* seeking_forward(const char* src, const char* srcEnd, size_t srcLength, off_t offset)
 {
-	size_t i;
-
-	if (srcEnd <= src || offset <= 0 || srcLength == 0)
+	if (srcEnd <= src ||
+		offset <= 0 ||
+		srcLength == 0)
 	{
 		return src;
 	}
+
 	if (offset >= (off_t)srcLength)
 	{
 		return srcEnd;
@@ -42,27 +43,28 @@ const char* seeking_forward(const char* src, const char* srcEnd, size_t srcLengt
 
 	do
 	{
-		size_t codepoint_length = codepoint_decoded_length[(uint8_t)*src];
-		if (codepoint_length == 0)
-		{
-			codepoint_length = 1;
-		}
-
+		uint8_t current = (uint8_t)*src;
+		size_t codepoint_length = codepoint_decoded_length[current];
+		
 		src++;
 		srcLength--;
 
-		for (i = 1; i < codepoint_length && srcLength > 0; ++i)
+		if (codepoint_length > 1)
 		{
-			if (
-				(*src & 0x80) == 0    || /* Not a continuation byte */
-				(*src & 0xC0) == 0xC0    /* Start of a new sequence */
-			)
+			size_t i;
+			for (i = 1; i < codepoint_length && srcLength > 0; ++i)
 			{
-				break;
-			}
+				current = (uint8_t)*src;
 
-			src++;
-			srcLength--;
+				if (current < 0x80 ||  /* Single byte codepoint */
+					current > 0xBF)    /* Start of a new sequence */
+				{
+					break;
+				}
+
+				src++;
+				srcLength--;
+			}
 		}
 	}
 	while (--offset > 0 && srcLength > 0);
