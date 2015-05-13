@@ -2,6 +2,78 @@
 
 #include "utf8rewind.h"
 
+#include "helpers-seeking.hpp"
+
+TEST(Utf8SeekBackwards, OneByteSingle)
+{
+	const char* t = "*";
+
+	EXPECT_SEEKEQ("*", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, OneByteSingleFirst)
+{
+	const char* t = "\0";
+
+	EXPECT_SEEKEQ("", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, OneByteSingleLast)
+{
+	const char* t = "\x7F";
+
+	EXPECT_SEEKEQ("\x7F", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, OneByteSingleInvalidContinuationByteFirst)
+{
+	const char* t = "\x80";
+
+	EXPECT_SEEKEQ("\x80", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, OneByteSingleInvalidContinuationByteLast)
+{
+	const char* t = "\xBF";
+
+	EXPECT_SEEKEQ("\xBF", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, OneByteSingleIllegalByteFirst)
+{
+	const char* t = "\xFE";
+
+	EXPECT_SEEKEQ("\xFE", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, OneByteSingleIllegalByteLast)
+{
+	const char* t = "\xFF";
+
+	EXPECT_SEEKEQ("\xFF", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, OneByteMultiple)
+{
+	const char* t = "Heartbreaker";
+
+	EXPECT_SEEKEQ("breaker", 5, utf8seek(t + strlen(t), t, -7, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, OneByteMultipleInvalidContinuationByte)
+{
+	const char* t = "\x98\x92\xB4\x81\xA5\x88\x93";
+
+	EXPECT_SEEKEQ("\x98\x92\xB4\x81\xA5\x88\x93", 0, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, OneByteMultipleIllegal)
+{
+	const char* t = "\xFE\xFE\xFF\xFE\xFE\xFF";
+
+	EXPECT_SEEKEQ("\xFE\xFF", 4, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
+}
+
 TEST(Utf8SeekBackwards, Valid)
 {
 	const char* t = "\xCF\x84\xE1\xBD\xB4\xCE\xBD \xCE\xBA\xE1\xBD\xB9\xCF\x88\xCE\xB7";
