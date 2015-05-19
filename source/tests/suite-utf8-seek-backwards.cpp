@@ -169,14 +169,14 @@ TEST(Utf8SeekBackwards, ThreeBytesSingleInvalidContinuationFirstByteLower)
 {
 	const char* t = "\xE2\x5A\x9A";
 
-	EXPECT_SEEKEQ("\x5A\x9A", 1, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\x9A", 2, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, ThreeBytesSingleInvalidContinuationFirstByteUpper)
 {
 	const char* t = "\xEA\xD1\x8B";
 
-	EXPECT_SEEKEQ("\xD1\x8B", 1, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\x8B", 2, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, ThreeBytesSingleInvalidContinuationSecondByteLower)
@@ -235,6 +235,121 @@ TEST(Utf8SeekBackwards, ThreeBytesMultipleOverlong)
 					"\xE5\x8A\x8A\x81\xE2\x96\x99\x99";
 
 	EXPECT_SEEKEQ("\xE3\x97\xA9\x88\x92\xE4\x81\x9A\x91\xE4\x88\xA4\xB4\x81\xE5\x8A\x8A", 17, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesSingle)
+{
+	const char* t = "\xF1\xB2\x91\x81";
+
+	EXPECT_SEEKEQ("\xF1\xB2\x91\x81", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesSingleFirst)
+{
+	const char* t = "\xF0\x80\x80\x80";
+
+	EXPECT_SEEKEQ("\xF0\x80\x80\x80", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesSingleLast)
+{
+	const char* t = "\xF4\xBF\xBF\xBF";
+
+	EXPECT_SEEKEQ("\xF4\xBF\xBF\xBF", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesSingleInvalidContinuationFirstByteLower)
+{
+	const char* t = "\xF3\x17\x99\xA8";
+
+	EXPECT_SEEKEQ("\xA8", 3, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesSingleInvalidContinuationFirstByteUpper)
+{
+	const char* t = "\xF1\xD5\xB2\x8B";
+
+	EXPECT_SEEKEQ("\x8B", 3, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesSingleInvalidContinuationSecondByteLower)
+{
+	const char* t = "\xF1\x85\x26\xB2";
+
+	EXPECT_SEEKEQ("\xB2", 3, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesSingleInvalidContinuationSecondByteUpper)
+{
+	const char* t = "\xF4\x87\xE1\x88";
+
+	EXPECT_SEEKEQ("\x88", 3, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesSingleInvalidContinuationThirdByteLower)
+{
+	const char* t = "\xF2\x9A\x81\x31";
+
+	EXPECT_SEEKEQ("\x31", 3, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesSingleInvalidContinuationThirdByteUpper)
+{
+	const char* t = "\xF2\x82\x92\xF5";
+
+	EXPECT_SEEKEQ("\xF5", 3, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesSingleMissingOneByte)
+{
+	const char* t = "\xF4\x87\x92";
+
+	EXPECT_SEEKEQ("\xF4\x87\x92", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesSingleMissingTwoByte)
+{
+	const char* t = "\xF2\x8A";
+
+	EXPECT_SEEKEQ("\xF2\x8A", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesSingleMissingThreeBytes)
+{
+	const char* t = "\xF0";
+
+	EXPECT_SEEKEQ("\xF0", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesSingleOverlong)
+{
+	const char* t = "\xF4\xB1\xAF\xAF\x9A";
+
+	EXPECT_SEEKEQ("\x9A", 4, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesMultiple)
+{
+	const char* t = "\xF2\x8A\x91\x99\xF4\x8A\x92\x90\xF1\x92\xA9\x92"
+					"\xF4\xB4\xA4\x85\xF2\x95\x85\x86";
+
+	EXPECT_SEEKEQ("\xF4\x8A\x92\x90\xF1\x92\xA9\x92\xF4\xB4\xA4\x85\xF2\x95\x85\x86", 4, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesMultipleInvalid)
+{
+	const char* t = "\xF2\x87\xF9\xF4\x87\xF1\xF2\x81\x12";
+
+	EXPECT_SEEKEQ("\xF4\x87\xF1\xF2\x81\x12", 3, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, FourBytesMultipleOverlong)
+{
+	const char* t = "\xF3\x81\x81\x84\x84\xF4\x91\x95\xA8\x99"
+					"\xF2\x87\x86\x9A\xA2\xF1\x92\x90\xA9\xA9"
+					"\xF2\x81\x92\x92\x92";
+
+	EXPECT_SEEKEQ("\xA2\xF1\x92\x90\xA9\xA9\xF2\x81\x92\x92\x92", 14, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, Valid)
