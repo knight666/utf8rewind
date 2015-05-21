@@ -299,6 +299,6 @@ TEST(CodepointDecodedLength, SixBytes)
 
 TEST(CodepointDecodedLength, Invalid)
 {
-	EXPECT_EQ(0, codepoint_decoded_length[0xFE]);
-	EXPECT_EQ(0, codepoint_decoded_length[0xFF]);
+	EXPECT_EQ(7, codepoint_decoded_length[0xFE]);
+	EXPECT_EQ(7, codepoint_decoded_length[0xFF]);
 }

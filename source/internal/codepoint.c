@@ -74,7 +74,7 @@ const uint8_t codepoint_decoded_length[256] = {
 	6, 6,                   /* 0xFC - 0xFD */
 
 	/* Invalid */
-	0, 0                    /* 0xFE - 0xFF */
+	7, 7                    /* 0xFE - 0xFF */
 };
 
 uint8_t codepoint_encoded_length(unicode_t codepoint)
@@ -207,14 +207,15 @@ uint8_t codepoint_read(const char* input, size_t inputSize, unicode_t* decoded)
 		/* Length of sequence is determined by first byte */
 
 		uint8_t decoded_length = codepoint_decoded_length[*src];
-		if (decoded_length == 0)
+		if (decoded_length < 1 ||
+			decoded_length > 6)
 		{
 			/* Not a multi-byte sequence starter */
 
 			*decoded = REPLACEMENT_CHARACTER;
 			decoded_length = 1;
 		}
-		else if (decoded_length >= 5)
+		else if (decoded_length > 4)
 		{
 			/* Always an overlong sequence */
 

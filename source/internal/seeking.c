@@ -29,6 +29,9 @@
 
 const char* seeking_forward(const char* src, const char* srcEnd, size_t srcLength, off_t offset)
 {
+	uint8_t current;
+	uint8_t codepoint_length;
+
 	if (srcEnd <= src ||
 		offset <= 0 ||
 		srcLength == 0)
@@ -43,31 +46,48 @@ const char* seeking_forward(const char* src, const char* srcEnd, size_t srcLengt
 
 	do
 	{
-		uint8_t current = (uint8_t)*src;
-		size_t codepoint_length = codepoint_decoded_length[current];
-		
-		src++;
-		srcLength--;
+		current = (uint8_t)*src;
 
-		if (codepoint_length > 1)
+		src++;
+		if (--srcLength == 0)
 		{
+			/* End of data, codepoint may be invalid */
+
+			break;
+		}
+
+		/* First byte determines encoded length */
+
+		codepoint_length = codepoint_decoded_length[current];
+
+		if (codepoint_length > 1 &&
+			codepoint_length < 7)
+		{
+			/* Check all bytes of multi-byte sequence */
+
 			size_t i;
-			for (i = 1; i < codepoint_length && srcLength > 0; ++i)
+			for (i = 1; i < codepoint_length; ++i)
 			{
 				current = (uint8_t)*src;
 
-				if (current < 0x80 ||  /* Single byte codepoint */
-					current > 0xBF)    /* Start of a new sequence */
+				if (codepoint_decoded_length[current] != 0)
 				{
+					/* Not a continuation byte */
+
 					break;
 				}
 
 				src++;
-				srcLength--;
+				if (--srcLength == 0)
+				{
+					/* End of data, codepoint may be invalid */
+
+					return src;
+				}
 			}
 		}
 	}
-	while (--offset > 0 && srcLength > 0);
+	while (--offset > 0);
 
 	return src;
 }
