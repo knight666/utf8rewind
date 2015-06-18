@@ -232,13 +232,16 @@ TEST(Utf8SeekBackwards, ThreeBytesSingleInvalidContinuationFirstByteLower)
 	const char* t = "\xE2\x5A\x9A";
 
 	EXPECT_SEEKEQ("\x9A", 2, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\x5A\x9A", 1, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE2\x5A\x9A", 0, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, ThreeBytesSingleInvalidContinuationFirstByteUpper)
 {
 	const char* t = "\xEA\xD1\x8B";
 
-	EXPECT_SEEKEQ("\x8B", 2, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\xD1\x8B", 1, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\xEA\xD1\x8B", 0, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, ThreeBytesSingleInvalidContinuationSecondByteLower)
@@ -246,6 +249,8 @@ TEST(Utf8SeekBackwards, ThreeBytesSingleInvalidContinuationSecondByteLower)
 	const char* t = "\xED\x8B\x2F";
 
 	EXPECT_SEEKEQ("\x2F", 2, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\x8B\x2F", 1, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
+	EXPECT_SEEKEQ("\xED\x8B\x2F", 0, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, ThreeBytesSingleInvalidContinuationSecondByteUpper)
@@ -253,6 +258,7 @@ TEST(Utf8SeekBackwards, ThreeBytesSingleInvalidContinuationSecondByteUpper)
 	const char* t = "\xE2\x91\xD5";
 
 	EXPECT_SEEKEQ("\xD5", 2, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE2\x91\xD5", 0, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, ThreeBytesSingleMissingOneByte)
@@ -269,11 +275,41 @@ TEST(Utf8SeekBackwards, ThreeBytesSingleMissingTwoBytes)
 	EXPECT_SEEKEQ("\xE5", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
 }
 
-TEST(Utf8SeekBackwards, ThreeBytesSingleOverlong)
+TEST(Utf8SeekBackwards, ThreeBytesSingleOverlongOneByte)
 {
 	const char* t = "\xE8\x98\x9A\x86";
 
 	EXPECT_SEEKEQ("\x86", 3, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE8\x98\x9A\x86", 0, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, ThreeBytesSingleOverlongTwoBytes)
+{
+	const char* t = "\xEA\xA7\x91\x92\xA1";
+
+	EXPECT_SEEKEQ("\xA1", 4, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\x92\xA1", 3, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
+	EXPECT_SEEKEQ("\xEA\xA7\x91\x92\xA1", 0, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, ThreeBytesSingleOverlongThreeBytes)
+{
+	const char* t = "\xE9\x81\x91\x91\x99\xA9";
+
+	EXPECT_SEEKEQ("\xA9", 5, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\x99\xA9", 4, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
+	EXPECT_SEEKEQ("\x91\x99\xA9", 3, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE9\x81\x91\x91\x99\xA9", 0, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, ThreeBytesSingleOverlongFourBytes)
+{
+	const char* t = "\xE1\xA9\x82\x81\x80\x92\x99";
+
+	EXPECT_SEEKEQ("\xA9", 5, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\x99\xA9", 4, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
+	EXPECT_SEEKEQ("\x91\x99\xA9", 3, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE1\xA9\x82\x81\x80\x92\x99", 0, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, ThreeBytesMultiple)
@@ -281,22 +317,49 @@ TEST(Utf8SeekBackwards, ThreeBytesMultiple)
 	const char* t = "\xE2\x87\x99\xE4\x9A\xAB\xE3\xBD\xBD"
 					"\xE5\x99\xA8\xE7\xB1\x8A";
 
+	EXPECT_SEEKEQ("\xE7\xB1\x8A", 12, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE5\x99\xA8\xE7\xB1\x8A", 9, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
 	EXPECT_SEEKEQ("\xE3\xBD\xBD\xE5\x99\xA8\xE7\xB1\x8A", 6, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE4\x9A\xAB\xE3\xBD\xBD\xE5\x99\xA8\xE7\xB1\x8A", 3, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE2\x87\x99\xE4\x9A\xAB\xE3\xBD\xBD\xE5\x99\xA8\xE7\xB1\x8A", 0, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, ThreeBytesMultipleInvalid)
 {
 	const char* t = "\xE8\x92\xEF\x16\xE4\x92\xE0";
 
+	EXPECT_SEEKEQ("\xE0", 6, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE4\x92\xE0", 4, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
+	EXPECT_SEEKEQ("\x16\xE4\x92\xE0", 3, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
 	EXPECT_SEEKEQ("\xEF\x16\xE4\x92\xE0", 2, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE8\x92\xEF\x16\xE4\x92\xE0", 0, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, ThreeBytesMultipleOverlong)
 {
-	const char* t = "\xE3\x97\xA9\x88\x92\xE4\x81\x9A\x91\xE4\x88\xA4\xB4\x81"
-					"\xE5\x8A\x8A\x81\xE2\x96\x99\x99";
+	const char* t = "\xE3\x97\xA9\x88\x81\x92"
+					"\xE4\x81\x9A\x91\x99"
+					"\xE4\x88\xA4\xB4\x81"
+					"\xE5\x8A\x8A\x81\x99\x9A\x9B"
+					"\xE2\x96\x99\x99";
 
-	EXPECT_SEEKEQ("\xE3\x97\xA9\x88\x92\xE4\x81\x9A\x91\xE4\x88\xA4\xB4\x81\xE5\x8A\x8A", 17, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
+	EXPECT_SEEKEQ("\x99", 26, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE2\x96\x99\x99", 23, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
+	EXPECT_SEEKEQ("\x9B\xE2\x96\x99\x99", 22, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
+	EXPECT_SEEKEQ("\x9A\x9B\xE2\x96\x99\x99", 21, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
+	EXPECT_SEEKEQ("\x99\x9A\x9B\xE2\x96\x99\x99", 20, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
+	EXPECT_SEEKEQ("\x81\x99\x9A\x9B\xE2\x96\x99\x99", 19, utf8seek(t + strlen(t), t, -6, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE5\x8A\x8A\x81\x99\x9A\x9B\xE2\x96\x99\x99", 16, utf8seek(t + strlen(t), t, -7, SEEK_CUR));
+	EXPECT_SEEKEQ("\x81\xE5\x8A\x8A\x81\x99\x9A\x9B\xE2\x96\x99\x99", 15, utf8seek(t + strlen(t), t, -8, SEEK_CUR));
+	EXPECT_SEEKEQ("\xB4\x81\xE5\x8A\x8A\x81\x99\x9A\x9B\xE2\x96\x99\x99", 14, utf8seek(t + strlen(t), t, -9, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE4\x88\xA4\xB4\x81\xE5\x8A\x8A\x81\x99\x9A\x9B\xE2\x96\x99\x99", 11, utf8seek(t + strlen(t), t, -10, SEEK_CUR));
+	EXPECT_SEEKEQ("\x99\xE4\x88\xA4\xB4\x81\xE5\x8A\x8A\x81\x99\x9A\x9B\xE2\x96\x99\x99", 10, utf8seek(t + strlen(t), t, -11, SEEK_CUR));
+	EXPECT_SEEKEQ("\x91\x99\xE4\x88\xA4\xB4\x81\xE5\x8A\x8A\x81\x99\x9A\x9B\xE2\x96\x99\x99", 9, utf8seek(t + strlen(t), t, -12, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE4\x81\x9A\x91\x99\xE4\x88\xA4\xB4\x81\xE5\x8A\x8A\x81\x99\x9A\x9B\xE2\x96\x99\x99", 6, utf8seek(t + strlen(t), t, -13, SEEK_CUR));
+	EXPECT_SEEKEQ("\x92\xE4\x81\x9A\x91\x99\xE4\x88\xA4\xB4\x81\xE5\x8A\x8A\x81\x99\x9A\x9B\xE2\x96\x99\x99", 5, utf8seek(t + strlen(t), t, -14, SEEK_CUR));
+	EXPECT_SEEKEQ("\x81\x92\xE4\x81\x9A\x91\x99\xE4\x88\xA4\xB4\x81\xE5\x8A\x8A\x81\x99\x9A\x9B\xE2\x96\x99\x99", 4, utf8seek(t + strlen(t), t, -15, SEEK_CUR));
+	EXPECT_SEEKEQ("\x88\x81\x92\xE4\x81\x9A\x91\x99\xE4\x88\xA4\xB4\x81\xE5\x8A\x8A\x81\x99\x9A\x9B\xE2\x96\x99\x99", 3, utf8seek(t + strlen(t), t, -16, SEEK_CUR));
+	EXPECT_SEEKEQ("\xE3\x97\xA9\x88\x81\x92\xE4\x81\x9A\x91\x99\xE4\x88\xA4\xB4\x81\xE5\x8A\x8A\x81\x99\x9A\x9B\xE2\x96\x99\x99", 0, utf8seek(t + strlen(t), t, -17, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, FourBytesSingle)
