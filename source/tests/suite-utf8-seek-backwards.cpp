@@ -581,8 +581,7 @@ TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationSecondByteLower)
 	EXPECT_SEEKEQ("\xA9\x9A", 4, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
 	EXPECT_SEEKEQ("\x91\xA9\x9A", 3, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
 	EXPECT_SEEKEQ("\x26\x91\xA9\x9A", 2, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
-	EXPECT_SEEKEQ("\x85\x26\x91\xA9\x9A", 1, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
-	EXPECT_SEEKEQ("\xFC\x85\x26\x91\xA9\x9A", 6, utf8seek(t + strlen(t), t, -6, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFC\x85\x26\x91\xA9\x9A", 6, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationSecondByteUpper)
@@ -591,8 +590,7 @@ TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationSecondByteUpper)
 
 	EXPECT_SEEKEQ("\xAB", 5, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
 	EXPECT_SEEKEQ("\xE2\x9A\x99\xAB", 2, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
-	EXPECT_SEEKEQ("\x81\xE2\x9A\x99\xAB", 1, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
-	EXPECT_SEEKEQ("\xFD\x81\xE2\x9A\x99\xAB", 0, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFD\x81\xE2\x9A\x99\xAB", 0, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationThirdByteLower)
@@ -602,9 +600,7 @@ TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationThirdByteLower)
 	EXPECT_SEEKEQ("\xA2", 5, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
 	EXPECT_SEEKEQ("\x92\xA2", 4, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
 	EXPECT_SEEKEQ("\x1F\x92\xA2", 3, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
-	EXPECT_SEEKEQ("\x9B\x1F\x92\xA2", 2, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
-	EXPECT_SEEKEQ("\xA8\x9B\x1F\x92\xA2", 1, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
-	EXPECT_SEEKEQ("\xFC\xA8\x9B\x1F\x92\xA2", 0, utf8seek(t + strlen(t), t, -6, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFC\xA8\x9B\x1F\x92\xA2", 0, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationThirdByteUpper)
@@ -612,9 +608,7 @@ TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationThirdByteUpper)
 	const char* t = "\xFD\x97\xA2\xF2\x9A\xB4";
 
 	EXPECT_SEEKEQ("\xF2\x9A\xB4", 3, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
-	EXPECT_SEEKEQ("\xA2\xF2\x9A\xB4", 2, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
-	EXPECT_SEEKEQ("\x97\xA2\xF2\x9A\xB4", 1, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
-	EXPECT_SEEKEQ("\xFD\x97\xA2\xF2\x9A\xB4", 0, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFD\x97\xA2\xF2\x9A\xB4", 0, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationFourthByteLower)
@@ -623,10 +617,7 @@ TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationFourthByteLower)
 
 	EXPECT_SEEKEQ("x81", 5, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
 	EXPECT_SEEKEQ("\x72\x81", 4, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
-	EXPECT_SEEKEQ("\x91\x72\x81", 3, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
-	EXPECT_SEEKEQ("\x9A\x91\x72\x81", 2, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
-	EXPECT_SEEKEQ("\x98\x9A\x91\x72\x81", 1, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
-	EXPECT_SEEKEQ("\xFD\x98\x9A\x91\x72\x81", 0, utf8seek(t + strlen(t), t, -6, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFD\x98\x9A\x91\x72\x81", 0, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationFourthByteUpper)
@@ -634,10 +625,7 @@ TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationFourthByteUpper)
 	const char* t = "\xFC\xA1\xA4\xA3\xC5\x90";
 
 	EXPECT_SEEKEQ("\xC5\x90", 4, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
-	EXPECT_SEEKEQ("\xA3\xC5\x90", 3, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
-	EXPECT_SEEKEQ("\xA4\xA3\xC5\x90", 2, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
-	EXPECT_SEEKEQ("\xA1\xA4\xA3\xC5\x90", 1, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
-	EXPECT_SEEKEQ("\xFC\xA1\xA4\xA3\xC5\x90", 0, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFC\xA1\xA4\xA3\xC5\x90", 0, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationFifthByteLower)
@@ -645,11 +633,7 @@ TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationFifthByteLower)
 	const char* t = "\xFC\x91\x82\x9A\x92\x22";
 
 	EXPECT_SEEKEQ("\x22", 5, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
-	EXPECT_SEEKEQ("\x92\x22", 4, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
-	EXPECT_SEEKEQ("\x9A\x92\x22", 3, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
-	EXPECT_SEEKEQ("\x82\x9A\x92\x22", 2, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
-	EXPECT_SEEKEQ("\x91\x82\x9A\x92\x22", 1, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
-	EXPECT_SEEKEQ("\xFC\x91\x82\x9A\x92\x22", 0, utf8seek(t + strlen(t), t, -6, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFC\x91\x82\x9A\x92\x22", 0, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationFifthByteUpper)
@@ -657,49 +641,35 @@ TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationFifthByteUpper)
 	const char* t = "\xFC\x9A\x9F\x8A\x82\xDE";
 
 	EXPECT_SEEKEQ("\xDE", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
-	EXPECT_SEEKEQ("\x82\xDE", 4, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
-	EXPECT_SEEKEQ("\x8A\x82\xDE", 3, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
-	EXPECT_SEEKEQ("\x9F\x8A\x82\xDE", 2, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
-	EXPECT_SEEKEQ("\x9A\x9F\x8A\x82\xDE", 1, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
-	EXPECT_SEEKEQ("\xFC\x9A\x9F\x8A\x82\xDE", 0, utf8seek(t + strlen(t), t, -6, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFC\x9A\x9F\x8A\x82\xDE", 0, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, SixBytesSingleMissingOneByte)
 {
-	const char* t = "\xFD\x98\x92\x9A\x21";
+	const char* t = "\xFD\x98\x92\x9A\x81";
 
-	EXPECT_SEEKEQ("\x21", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
-	EXPECT_SEEKEQ("\x9A\x21", 0, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
-	EXPECT_SEEKEQ("\x92\x9A\x21", 2, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
-	EXPECT_SEEKEQ("\x98\x92\x9A\x21", 1, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
-	EXPECT_SEEKEQ("\xFD\x98\x92\x9A\x21", 0, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFD\x98\x92\x9A\x81", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, SixBytesSingleMissingTwoBytes)
 {
 	const char* t = "\xFC\x92\x92\x92";
 
-	EXPECT_SEEKEQ("\x92", 3, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
-	EXPECT_SEEKEQ("\x92\x92", 2, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
-	EXPECT_SEEKEQ("\x92\x92\x92", 1, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
-	EXPECT_SEEKEQ("\xFC\x92\x92\x92", 0, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFC\x92\x92\x92", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, SixBytesSingleMissingThreeBytes)
 {
 	const char* t = "\xFD\x81\x9B";
 
-	EXPECT_SEEKEQ("\x9B", 2, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
-	EXPECT_SEEKEQ("\x81\x9B", 1, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
-	EXPECT_SEEKEQ("\xFD\x81\x9B", 0, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFD\x81\x9B", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, SixBytesSingleMissingFourBytes)
 {
 	const char* t = "\xFC\xB2";
 
-	EXPECT_SEEKEQ("\xB2", 1, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
-	EXPECT_SEEKEQ("\xFC\xB2", 0, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFC\xB2", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, SixBytesSingleMissingFiveBytes)
@@ -707,6 +677,14 @@ TEST(Utf8SeekBackwards, SixBytesSingleMissingFiveBytes)
 	const char* t = "\xFD";
 
 	EXPECT_SEEKEQ("\xFD", 0, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, SixBytesSingleOverlongOneByte)
+{
+	const char* t = "\xFD\x81\x92\x99\xA9\xAB\x87";
+
+	EXPECT_SEEKEQ("\x87", 6, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFD\x81\x92\x99\xA9\xAB\x87", 0, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, SixBytesMultiple)
@@ -729,6 +707,20 @@ TEST(Utf8SeekBackwards, SixBytesMultipleInvalid)
 	EXPECT_SEEKEQ("\xFD\x92\xFC\xFD\x81\x92\x15", 5, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
 	EXPECT_SEEKEQ("\x12\xFD\x92\xFC\xFD\x81\x92\x15", 4, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
 	EXPECT_SEEKEQ("\xFC\x98\xA2\x90\x12\xFD\x92\xFC\xFD\x81\x92\x15", 0, utf8seek(t + strlen(t), t, -6, SEEK_CUR));
+}
+
+TEST(Utf8SeekBackwards, SixBytesMultipleOverlong)
+{
+	const char* t = "\xFC\x82\x81\x99\xA9\x92\x92"
+					"\xFD\x86\x92\x9A\xA9\x82\x81"
+					"\xFC\x86\xA8\x92\x93\x94\xAB";
+
+	EXPECT_SEEKEQ("\xAB", 19, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFC\x86\xA8\x92\x93\x94\xAB", 13, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
+	EXPECT_SEEKEQ("\x81\xFC\x86\xA8\x92\x93\x94\xAB", 12, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFD\x86\x92\x9A\xA9\x82\x81\xFC\x86\xA8\x92\x93\x94\xAB", 6, utf8seek(t + strlen(t), t, -4, SEEK_CUR));
+	EXPECT_SEEKEQ("\x92\xFD\x86\x92\x9A\xA9\x82\x81\xFC\x86\xA8\x92\x93\x94\xAB", 5, utf8seek(t + strlen(t), t, -5, SEEK_CUR));
+	EXPECT_SEEKEQ("\xFC\x82\x81\x99\xA9\x92\x92\xFD\x86\x92\x9A\xA9\x82\x81\xFC\x86\xA8\x92\x93\x94\xAB", 0, utf8seek(t + strlen(t), t, -6, SEEK_CUR));
 }
 
 TEST(Utf8SeekBackwards, Valid)
