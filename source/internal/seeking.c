@@ -95,6 +95,10 @@ const char* seeking_forward(const char* src, const char* srcEnd, size_t srcLengt
 const char* seeking_rewind(const char* inputStart, const char* input, size_t inputLength, off_t offset)
 {
 	const char* src;
+	size_t marker_length;
+	const char* marker_current;
+	const char* marker_start;
+	const char* marker_valid;
 
 	if (inputStart >= input ||  /* Swapped parameters */
 		offset >= 0 ||          /* Invalid offset */
@@ -111,20 +115,67 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 	/* Ignore NUL codepoint at end of input */
 	src = input - 1;
 
-	while (src != inputStart)
-	{
-		if ((*src & 0x80) == 0 ||   /* Basic Latin*/
-			(*src & 0xC0) == 0xC0)  /* Multi-byte sequence */
-		{
-			/* Move cursor by one */
+	marker_length = 0;
+	marker_current = src;
+	marker_start = src;
+	marker_valid = src;
 
+	while (1)
+	{
+		uint8_t current = (uint8_t)*src;
+
+		if (marker_start >= marker_valid)
+		{
+			uint8_t codepoint_length = codepoint_decoded_length[(uint8_t)*src];
+
+			if (codepoint_length > 1)
+			{
+				marker_valid = src + codepoint_length - 1;
+				src = marker_start;
+				marker_start = marker_current;
+			}
+			else if (codepoint_length == 1)
+			{
+				src = marker_current;
+
+				if (++offset == 0)
+				{
+					break;
+				}
+
+				marker_start = marker_current;
+			}
+			else
+			{
+				if (src == inputStart)
+				{
+					break;
+				}
+
+				marker_current = --src;
+			}
+		}
+		else
+		{
+			if (src <= marker_valid)
+			{
+				marker_current = marker_start;
+				marker_valid = marker_start;
+				src = marker_start;
+			}
+			
 			if (++offset == 0)
 			{
 				break;
 			}
-		}
 
-		src--;
+			if (src == inputStart)
+			{
+				break;
+			}
+
+			src--;
+		}
 	}
 
 	return src;
