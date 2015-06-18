@@ -92,30 +92,33 @@ const char* seeking_forward(const char* src, const char* srcEnd, size_t srcLengt
 	return src;
 }
 
-const char* seeking_rewind(const char* srcStart, const char* src, size_t srcLength, off_t offset)
+const char* seeking_rewind(const char* inputStart, const char* input, size_t inputLength, off_t offset)
 {
-	if (srcStart >= src || offset >= 0 || srcLength == 0)
+	const char* src;
+
+	if (inputStart >= input ||  /* Swapped parameters */
+		offset >= 0 ||          /* Invalid offset */
+		inputLength == 0)       /* Nothing to do */
 	{
-		return src;
+		return input;
 	}
-	if (-offset >= (off_t)srcLength)
+	else if (
+		-offset >= (off_t)inputLength)  /* Out of bounds */
 	{
-		return srcStart;
+		return inputStart;
 	}
 
-	/* Ignore NUL codepoint */
-	src--;
+	/* Ignore NUL codepoint at end of input */
+	src = input - 1;
 
-	while (src != srcStart)
+	while (src != inputStart)
 	{
-		if (
-			(*src & 0x80) == 0 ||    /* ASCII */
-			(*src & 0xC0) != 0x80 || /* Malformed continuation byte */
-			(*src & 0xFE) == 0xFE    /* Illegal byte */
-		)
+		if ((*src & 0x80) == 0 ||   /* Basic Latin*/
+			(*src & 0xC0) == 0xC0)  /* Multi-byte sequence */
 		{
-			++offset;
-			if (offset == 0)
+			/* Move cursor by one */
+
+			if (++offset == 0)
 			{
 				break;
 			}
