@@ -41,4 +41,42 @@ namespace helpers {
 		}
 	}
 
+	::testing::AssertionResult CompareSeeking2(
+		const char* expressionExpected, const char* expressionActual,
+		const SeekingParameters& paramsExpected, const SeekingParameters& paramsActual)
+	{
+		if (!strcmp(paramsExpected.text, paramsActual.text))
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			const char* input = paramsActual.text - paramsActual.offset;
+
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << paramsActual.expression << std::endl;
+
+			result << "    Actual: " << hex(input) << std::endl;
+
+			result << "            ";
+			for (size_t i = 0; i < strlen(input); i++)
+			{
+				result << ((i == paramsActual.offset) ? "^^^^" : "----");
+			}
+			result << std::endl;
+
+			result << "  Expected: " << hex(input) << std::endl;
+
+			result << "            ";
+			for (size_t i = 0; i < strlen(input); i++)
+			{
+				result << ((i == paramsExpected.offset) ? "^^^^" : "----");
+			}
+			result << std::endl;
+
+			return result;
+		}
+	}
+
 };
