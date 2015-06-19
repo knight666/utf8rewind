@@ -65,6 +65,7 @@
 				'source/tests/helpers-errors.hpp',
 				'source/tests/helpers-normalization.cpp',
 				'source/tests/helpers-normalization.hpp',
+				'source/tests/helpers-seeking.cpp',
 				'source/tests/helpers-seeking.hpp',
 				'source/tests/helpers-streams.cpp',
 				'source/tests/helpers-streams.hpp',
