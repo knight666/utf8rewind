@@ -16,17 +16,25 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << "Offset mismatch" << std::endl;
-
-			result << std::endl;
-
 			result << paramsActual.expression << std::endl;
 
+			result << "    Actual: " << hex(paramsInput.text) << std::endl;
+
+			size_t marker_actual = paramsActual.text - paramsInput.text;
+			result << "            ";
+			for (size_t i = 0; i < strlen(paramsInput.text); i++)
+			{
+				result << ((i == marker_actual) ? "^^^^" : "----");
+			}
 			result << std::endl;
 
-			result << "    Actual: " << "\"" << printable(paramsActual.text) << "\" (offset " << (ptrdiff_t)(paramsActual.text - paramsInput.text) << ")" << std::endl;
-			result << "  Expected: " << "\"" << printable(paramsExpected.text) << "\" (offset " << paramsExpected.offset << ")" << std::endl;
+			result << "  Expected: " << hex(paramsInput.text) << std::endl;
 
+			result << "            ";
+			for (size_t i = 0; i < strlen(paramsInput.text); i++)
+			{
+				result << ((i == paramsExpected.offset) ? "^^^^" : "----");
+			}
 			result << std::endl;
 
 			return result;
