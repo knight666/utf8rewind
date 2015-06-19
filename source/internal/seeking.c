@@ -175,12 +175,8 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 		{
 			if (src > marker_valid)
 			{
-				if (++offset == 0)
-				{
-					break;
-				}
-
-				if (src == inputStart)
+				if (++offset == 0 ||
+					src == inputStart)
 				{
 					break;
 				}
@@ -189,17 +185,16 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 			}
 			else
 			{
-				if (++offset == 0)
+				src = marker_begin;
+
+				if (++offset == 0 ||
+					src == inputStart)
 				{
 					break;
 				}
 
-				if (marker_begin == inputStart)
-				{
-					break;
-				}
+				src--;
 
-				src = marker_begin - 1;
 				marker_begin = src;
 				marker_end = src;
 				marker_valid = src;
