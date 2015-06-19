@@ -28,6 +28,10 @@ namespace helpers {
 
 	std::vector<unicode_t> utf32(const std::string& text);
 
+	std::string hex(unicode_t codepoint);
+	std::string hex(unicode_t* codepoints, size_t codepointsSize);
+	std::string hex(const std::string& text);
+
 	std::string printable(unicode_t codepoint);
 	std::string printable(unicode_t* codepoints, size_t codepointsSize);
 	std::string printable(const std::string& text);
