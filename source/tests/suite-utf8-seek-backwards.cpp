@@ -827,7 +827,7 @@ TEST(Utf8SeekBackwards, SixBytesSingleInvalidContinuationFourthByteLower)
 {
 	const char* t = "\xFD\x98\x9A\x91\x72\x81";
 
-	EXPECT_SEEKEQ("x81", 5, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
+	EXPECT_SEEKEQ("\x81", 5, utf8seek(t + strlen(t), t, -1, SEEK_CUR));
 	EXPECT_SEEKEQ("\x72\x81", 4, utf8seek(t + strlen(t), t, -2, SEEK_CUR));
 	EXPECT_SEEKEQ("\xFD\x98\x9A\x91\x72\x81", 0, utf8seek(t + strlen(t), t, -3, SEEK_CUR));
 }
