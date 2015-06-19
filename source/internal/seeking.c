@@ -96,8 +96,8 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 {
 	const char* src;
 	size_t marker_length;
-	const char* marker_current;
-	const char* marker_start;
+	const char* marker_begin;
+	const char* marker_end;
 	const char* marker_valid;
 
 	if (inputStart >= input ||  /* Swapped parameters */
@@ -116,34 +116,50 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 	src = input - 1;
 
 	marker_length = 0;
-	marker_current = src;
-	marker_start = src;
+	marker_begin = src;
+	marker_end = src;
 	marker_valid = src;
 
 	while (1)
 	{
-		uint8_t current = (uint8_t)*src;
-
-		if (marker_start >= marker_valid)
+		if (marker_end == marker_valid)
 		{
 			uint8_t codepoint_length = codepoint_decoded_length[(uint8_t)*src];
 
 			if (codepoint_length > 1)
 			{
-				marker_valid = src + codepoint_length - 1;
-				src = marker_start;
-				marker_start = marker_current;
+				marker_valid = marker_begin + codepoint_length - 1;
+				if (marker_valid == marker_end)
+				{
+					if (++offset == 0)
+					{
+						break;
+					}
+
+					if (marker_begin == inputStart)
+					{
+						break;
+					}
+
+					src = marker_begin - 1;
+					marker_begin = src;
+					marker_end = src;
+					marker_valid = src;
+				}
+				else
+				{
+					src = marker_end;
+				}
 			}
 			else if (codepoint_length == 1)
 			{
-				src = marker_current;
-
-				if (++offset == 0)
+				if (src == inputStart)
 				{
 					break;
 				}
 
-				marker_start = marker_current;
+				src = marker_end;
+				marker_valid = marker_end + 1;
 			}
 			else
 			{
@@ -152,31 +168,42 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 					break;
 				}
 
-				marker_current = --src;
+				marker_begin = --src;
 			}
 		}
 		else
 		{
-			if (src <= marker_valid)
+			if (src > marker_valid)
 			{
-				marker_current = marker_start;
-				src = marker_start;
+				if (++offset == 0)
+				{
+					break;
+				}
 
-				marker_start = src - 1;
-				marker_valid = marker_start;
+				if (src == inputStart)
+				{
+					break;
+				}
+
+				src--;
 			}
-			
-			if (++offset == 0)
+			else
 			{
-				break;
-			}
+				if (++offset == 0)
+				{
+					break;
+				}
 
-			if (src == inputStart)
-			{
-				break;
-			}
+				if (marker_begin == inputStart)
+				{
+					break;
+				}
 
-			marker_current = --src;
+				src = marker_begin - 1;
+				marker_begin = src;
+				marker_end = src;
+				marker_valid = src;
+			}
 		}
 	}
 
