@@ -157,7 +157,7 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 		}
 		else
 		{
-			if (src == marker_valid)
+			if (src <= marker_valid)
 			{
 				marker_current = marker_start;
 				src = marker_start;
