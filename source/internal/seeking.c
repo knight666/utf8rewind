@@ -94,7 +94,9 @@ const char* seeking_forward(const char* src, const char* srcEnd, size_t srcLengt
 
 const char* seeking_rewind(const char* inputStart, const char* input, size_t inputLength, off_t offset)
 {
-	const char* src;
+	const char* marker_begin;
+	const char* marker_end;
+	const char* marker_valid;
 
 	if (inputStart >= input ||  /* Swapped parameters */
 		offset >= 0 ||          /* Invalid offset */
@@ -109,25 +111,23 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 	}
 
 	/* Ignore NUL codepoint at end of input */
-	src = input - 1;
+	input--;
+
+	marker_begin = input;
+	marker_end = input;
+	marker_valid = input;
 
 	while (1)
 	{
-		const char* marker_begin = src;
-		const char* marker_end = src;
-		const char* marker_valid = src;
-
-		do
+		while (marker_valid == marker_end)
 		{
 			uint8_t codepoint_length = codepoint_decoded_length[(uint8_t)*marker_begin];
 
 			if (codepoint_length > 1)
 			{
 				marker_valid = marker_begin + codepoint_length - 1;
-				if (marker_valid == marker_end)
-				{
-					break;
-				}
+
+				break;
 			}
 			else if (codepoint_length == 1)
 			{
@@ -138,15 +138,13 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 				else
 				{
 					marker_valid = marker_begin;
-					marker_begin = marker_end;
 				}
 			}
 			else
 			{
-				if (marker_begin == inputStart)
+				if (marker_begin < inputStart)
 				{
 					marker_valid = marker_begin;
-					marker_begin = marker_end;
 				}
 				else
 				{
@@ -154,21 +152,24 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 				}
 			}
 		}
-		while (marker_valid == marker_end);
 
-		if (src <= marker_valid)
+		if (input <= marker_valid)
 		{
-			src = marker_begin;
+			input = marker_begin;
+
+			marker_begin--;
+			marker_end = marker_begin;
+			marker_valid = marker_end;
 		}
 
 		if (++offset == 0 ||
-			src == inputStart)
+			input == inputStart)
 		{
 			break;
 		}
 
-		src--;
+		input--;
 	}
 
-	return src;
+	return input;
 }
