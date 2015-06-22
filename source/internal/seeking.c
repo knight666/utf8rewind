@@ -94,8 +94,7 @@ const char* seeking_forward(const char* src, const char* srcEnd, size_t srcLengt
 
 const char* seeking_rewind(const char* inputStart, const char* input, size_t inputLength, off_t offset)
 {
-	const char* marker_begin;
-	const char* marker_end;
+	const char* marker;
 	const char* marker_valid;
 
 	if (inputStart >= input ||  /* Swapped parameters */
@@ -113,63 +112,61 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 	/* Ignore NUL codepoint at end of input */
 	input--;
 
-	marker_begin = input;
-	marker_end = input;
+	marker = input;
 	marker_valid = input;
 
-	while (1)
+	do
 	{
-		while (marker_valid == marker_end)
+		while (marker_valid == input)
 		{
-			uint8_t codepoint_length = codepoint_decoded_length[(uint8_t)*marker_begin];
+			uint8_t codepoint_length = codepoint_decoded_length[(uint8_t)*marker];
 
 			if (codepoint_length > 1)
 			{
-				marker_valid = marker_begin + codepoint_length - 1;
+				marker_valid = marker + codepoint_length - 1;
 
 				break;
 			}
 			else if (codepoint_length == 1)
 			{
-				if (marker_begin == marker_end)
+				if (marker == input)
 				{
-					marker_valid = marker_end + 1;
+					marker_valid = input + 1;
 				}
 				else
 				{
-					marker_valid = marker_begin;
+					marker_valid = marker;
 				}
 			}
 			else
 			{
-				if (marker_begin < inputStart)
+				if (marker < inputStart)
 				{
-					marker_valid = marker_begin;
+					marker_valid = marker;
 				}
 				else
 				{
-					marker_begin--;
+					marker--;
 				}
 			}
 		}
 
 		if (input <= marker_valid)
 		{
-			input = marker_begin;
+			input = marker;
 
-			marker_begin--;
-			marker_end = marker_begin;
-			marker_valid = marker_end;
+			marker--;
+			marker_valid = marker;
 		}
-
-		if (++offset == 0 ||
-			input == inputStart)
+		
+		if (++offset == 0)
 		{
 			break;
 		}
 
 		input--;
 	}
+	while (input >= inputStart);
 
 	return input;
 }
