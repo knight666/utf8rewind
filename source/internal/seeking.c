@@ -173,10 +173,13 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 			{
 				if (src == inputStart)
 				{
-					break;
+					marker_valid = marker_begin;
+					src = marker_end;
 				}
-
-				marker_begin = --src;
+				else
+				{
+					marker_begin = --src;
+				}
 			}
 		}
 		else
