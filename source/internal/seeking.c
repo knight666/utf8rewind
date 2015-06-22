@@ -153,20 +153,15 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 			}
 			else if (codepoint_length == 1)
 			{
-				if (src == inputStart)
+				src = marker_end;
+
+				if (marker_begin == marker_end)
 				{
-					marker_valid = marker_begin;
-					src = marker_end;
-				}
-				else if (marker_begin == marker_end)
-				{
-					src = marker_end;
 					marker_valid = marker_end + 1;
 				}
 				else
 				{
-					marker_begin = marker_end;
-					marker_valid = marker_end + 1;
+					marker_valid = marker_begin;
 				}
 			}
 			else
