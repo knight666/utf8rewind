@@ -110,9 +110,11 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 	}
 
 	/* Ensure we read the first valid byte */
+
 	input--;
 
 	/* Set up the marker */
+
 	marker = input;
 	marker_valid = input;
 
@@ -124,7 +126,14 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 		{
 			uint8_t codepoint_length = codepoint_decoded_length[(uint8_t)*marker];
 
-			if (codepoint_length > 1)
+			if (codepoint_length == 1 ||  /* ASCII */
+				codepoint_length == 7)    /* Illegal byte */
+			{
+				marker_valid = marker;
+
+				break;
+			}
+			else if (codepoint_length > 1)
 			{
 				/* Multi-byte sequence */
 
@@ -132,10 +141,10 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 
 				break;
 			}
-			else if (
-				codepoint_length == 1 ||  /* ASCII */
-				marker <= inputStart)     /* Continuation bytes only */
+			else if (marker <= inputStart)
 			{
+				/* Continuation bytes only */
+
 				marker_valid = marker;
 
 				break;
