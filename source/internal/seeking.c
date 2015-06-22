@@ -95,10 +95,6 @@ const char* seeking_forward(const char* src, const char* srcEnd, size_t srcLengt
 const char* seeking_rewind(const char* inputStart, const char* input, size_t inputLength, off_t offset)
 {
 	const char* src;
-	size_t marker_length;
-	const char* marker_begin;
-	const char* marker_end;
-	const char* marker_valid;
 
 	if (inputStart >= input ||  /* Swapped parameters */
 		offset >= 0 ||          /* Invalid offset */
@@ -115,43 +111,26 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 	/* Ignore NUL codepoint at end of input */
 	src = input - 1;
 
-	marker_length = 0;
-	marker_begin = src;
-	marker_end = src;
-	marker_valid = src;
-
 	while (1)
 	{
-		if (marker_end == marker_valid)
+		const char* marker_begin = src;
+		const char* marker_end = src;
+		const char* marker_valid = src;
+
+		do
 		{
-			uint8_t codepoint_length = codepoint_decoded_length[(uint8_t)*src];
+			uint8_t codepoint_length = codepoint_decoded_length[(uint8_t)*marker_begin];
 
 			if (codepoint_length > 1)
 			{
 				marker_valid = marker_begin + codepoint_length - 1;
 				if (marker_valid == marker_end)
 				{
-					if (++offset == 0 ||
-						marker_begin == inputStart)
-					{
-						break;
-					}
-
-					marker_begin--;
-
-					marker_end = marker_begin;
-					marker_valid = marker_begin;
-					src = marker_begin;
-				}
-				else
-				{
-					src = marker_end;
+					break;
 				}
 			}
 			else if (codepoint_length == 1)
 			{
-				src = marker_end;
-
 				if (marker_begin == marker_end)
 				{
 					marker_valid = marker_end + 1;
@@ -159,40 +138,36 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 				else
 				{
 					marker_valid = marker_begin;
+					marker_begin = marker_end;
 				}
 			}
 			else
 			{
-				if (src == inputStart)
+				if (marker_begin == inputStart)
 				{
 					marker_valid = marker_begin;
-					src = marker_end;
+					marker_begin = marker_end;
 				}
 				else
 				{
-					marker_begin = --src;
+					marker_begin--;
 				}
 			}
 		}
-		else
+		while (marker_valid == marker_end);
+
+		if (src <= marker_valid)
 		{
-			if (src <= marker_valid)
-			{
-				src = marker_begin;
-
-				marker_begin--;
-				marker_end = marker_begin;
-				marker_valid = marker_begin;
-			}
-
-			if (++offset == 0 ||
-				src == inputStart)
-			{
-				break;
-			}
-
-			src--;
+			src = marker_begin;
 		}
+
+		if (++offset == 0 ||
+			src == inputStart)
+		{
+			break;
+		}
+
+		src--;
 	}
 
 	return src;
