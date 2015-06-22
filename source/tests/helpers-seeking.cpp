@@ -57,6 +57,15 @@ namespace helpers {
 
 			result << paramsActual.expression << std::endl;
 
+			result << std::endl;
+
+			result << "[Offset]" << std::endl;
+			result << "    Actual: " << paramsActual.offset << std::endl;
+			result << "  Expected: " << paramsExpected.offset << std::endl;
+
+			result << std::endl;
+
+			result << "[Text]" << std::endl;
 			result << "    Actual: " << hex(input) << std::endl;
 
 			result << "            ";
