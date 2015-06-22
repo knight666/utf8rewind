@@ -109,56 +109,61 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 		return inputStart;
 	}
 
-	/* Ignore NUL codepoint at end of input */
+	/* Ensure we read the first valid byte */
 	input--;
 
+	/* Set up the marker */
 	marker = input;
 	marker_valid = input;
 
 	do
 	{
+		/* Move the marker until we encounter a valid sequence */
+
 		while (marker_valid == input)
 		{
 			uint8_t codepoint_length = codepoint_decoded_length[(uint8_t)*marker];
 
 			if (codepoint_length > 1)
 			{
+				/* Multi-byte sequence */
+
 				marker_valid = marker + codepoint_length - 1;
 
 				break;
 			}
-			else if (codepoint_length == 1)
+			else if (
+				codepoint_length == 1 ||  /* ASCII */
+				marker <= inputStart)     /* Continuation bytes only */
 			{
-				if (marker == input)
-				{
-					marker_valid = input + 1;
-				}
-				else
-				{
-					marker_valid = marker;
-				}
+				marker_valid = marker;
+
+				break;
 			}
 			else
 			{
-				if (marker < inputStart)
-				{
-					marker_valid = marker;
-				}
-				else
-				{
-					marker--;
-				}
+				/* Move marker to next byte */
+
+				marker--;
 			}
 		}
 
+		/* Read the next part of a sequence */
+
 		if (input <= marker_valid)
 		{
+			/* Move the cursor to the start of the sequence */
+
 			input = marker;
+
+			/* Reset the marker on the next byte */
 
 			marker--;
 			marker_valid = marker;
 		}
-		
+
+		/* Move the cursor */
+
 		if (++offset == 0)
 		{
 			break;
