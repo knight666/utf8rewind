@@ -120,7 +120,7 @@ TEST(Utf8SeekBackwards, OneByteMultiple)
 	EXPECT_SEEKEQ2(t, 0, strlen(t), 0, -12, SEEK_CUR);
 }
 
-TEST(Utf8SeekBackwards, OneByteMultipleInvalid)
+TEST(Utf8SeekBackwards, OneByteMultipleContinuationBytes)
 {
 	const char* t = "\x98\x92\xB4\x81\xA5\x88\x93";
 
