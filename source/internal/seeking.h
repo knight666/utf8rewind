@@ -35,7 +35,7 @@
 
 #include "utf8rewind.h"
 
-const char* seeking_forward(const char* src, const char* srcEnd, size_t srcLength, off_t offset);
+const char* seeking_forward(const char* input, const char* inputEnd, size_t inputLength, off_t offset);
 
 const char* seeking_rewind(const char* inputStart, const char* input, size_t inputLength, off_t offset);
 

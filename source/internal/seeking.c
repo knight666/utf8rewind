@@ -27,69 +27,57 @@
 
 #include "codepoint.h"
 
-const char* seeking_forward(const char* src, const char* srcEnd, size_t srcLength, off_t offset)
+const char* seeking_forward(const char* input, const char* inputEnd, size_t inputLength, off_t offset)
 {
-	uint8_t current;
-	uint8_t codepoint_length;
-
-	if (srcEnd <= src ||
-		offset <= 0 ||
-		srcLength == 0)
+	if (inputEnd <= input ||  /* Swapped parameters */
+		offset <= 0 ||        /* Invalid offset */
+		inputLength == 0)     /* Nothing to do */
 	{
-		return src;
+		return input;
 	}
-
-	if (offset >= (off_t)srcLength)
+	else if (
+		offset >= (off_t)inputLength)  /* Out of bounds */
 	{
-		return srcEnd;
+		return inputEnd;
 	}
 
 	do
 	{
-		current = (uint8_t)*src;
+		/* Get decoded length of next sequence */
 
-		src++;
-		if (--srcLength == 0)
-		{
-			/* End of data, codepoint may be invalid */
-
-			break;
-		}
-
-		/* First byte determines encoded length */
-
-		codepoint_length = codepoint_decoded_length[current];
+		uint8_t codepoint_length = codepoint_decoded_length[(uint8_t)*input];
 
 		if (codepoint_length > 1 &&
 			codepoint_length < 7)
 		{
 			/* Check all bytes of multi-byte sequence */
 
-			size_t i;
-			for (i = 1; i < codepoint_length; ++i)
+			uint8_t i;
+
+			for (i = 0; i < codepoint_length; ++i)
 			{
-				current = (uint8_t)*src;
+				/* Next byte of sequence */
 
-				if (codepoint_decoded_length[current] != 0)
+				input++;
+
+				if (input == inputEnd ||                             /* End of data */
+					codepoint_decoded_length[(uint8_t)*input] != 0)  /* Not a continuation byte */
 				{
-					/* Not a continuation byte */
-
 					break;
-				}
-
-				src++;
-				if (--srcLength == 0)
-				{
-					/* End of data, codepoint may be invalid */
-
-					return src;
 				}
 			}
 		}
-	}
-	while (--offset > 0);
+		else
+		{
+			/* Skip to next sequence */
 
-	return src;
+			input++;
+		}
+	}
+	while (input < inputEnd &&
+		--offset > 0);
+
+	return input;
 }
 
 const char* seeking_rewind(const char* inputStart, const char* input, size_t inputLength, off_t offset)
