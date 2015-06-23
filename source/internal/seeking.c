@@ -97,17 +97,17 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 		return inputStart;
 	}
 
-	/* Ensure we read the first valid byte */
-
-	input--;
-
 	/* Set up the marker */
 
-	marker = input;
-	marker_valid = input;
+	marker = input - 1;
+	marker_valid = marker;
 
 	do
 	{
+		/* Move the cursor */
+
+		input--;
+
 		/* Move the marker until we encounter a valid sequence */
 
 		while (marker_valid == input)
@@ -158,17 +158,9 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 			marker--;
 			marker_valid = marker;
 		}
-
-		/* Move the cursor */
-
-		if (++offset == 0)
-		{
-			break;
-		}
-
-		input--;
 	}
-	while (input >= inputStart);
+	while (input >= inputStart &&
+		++offset < 0);
 
 	return input;
 }
