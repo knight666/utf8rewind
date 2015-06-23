@@ -102,20 +102,6 @@ TEST(Utf8SeekSet, OneByteSingleOverlongSixBytes)
 	EXPECT_SEEKEQ2(t, 7, 0, 0, 7, SEEK_SET);
 }
 
-TEST(Utf8SeekSet, OneByteSingleIllegalByteFirst)
-{
-	const char* t = "\xFE";
-
-	EXPECT_SEEKEQ2(t, 1, 0, 0, 1, SEEK_SET);
-}
-
-TEST(Utf8SeekSet, OneByteSingleIllegalByteLast)
-{
-	const char* t = "\xFF";
-
-	EXPECT_SEEKEQ2(t, 1, 0, 0, 1, SEEK_SET);
-}
-
 TEST(Utf8SeekSet, OneByteMultiple)
 {
 	const char* t = "Miner";
@@ -653,6 +639,113 @@ TEST(Utf8SeekSet, SixBytesMultipleInvalid)
 	const char* t = "\xFD\x88\x88\x15\xFD\x9A\x91\x88\xFD\xFC\x15";
 
 	EXPECT_SEEKEQ2(t, 10, 0, 0, 5, SEEK_CUR);
+}
+
+TEST(Utf8SeekSet, IllegalByteSingleFirst)
+{
+	const char* t = "\xFE";
+
+	EXPECT_SEEKEQ2(t, 1, 0, 0, 1, SEEK_SET);
+}
+
+TEST(Utf8SeekSet, IllegalByteSingleLast)
+{
+	const char* t = "\xFF";
+
+	EXPECT_SEEKEQ2(t, 1, 0, 0, 1, SEEK_SET);
+}
+
+TEST(Utf8SeekSet, IllegalByteSingleOverlongOneByte)
+{
+	const char* t = "\xFE\x92";
+
+	EXPECT_SEEKEQ2(t, 1, 0, 0, 1, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 2, 0, 0, 2, SEEK_SET);
+}
+
+TEST(Utf8SeekSet, IllegalByteSingleOverlongTwoBytes)
+{
+	const char* t = "\xFF\x9A\x87";
+
+	EXPECT_SEEKEQ2(t, 1, 0, 0, 1, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 2, 0, 0, 2, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 3, 0, 0, 3, SEEK_SET);
+}
+
+TEST(Utf8SeekSet, IllegalByteSingleOverlongThreeBytes)
+{
+	const char* t = "\xFE\x85\x92\xA9";
+
+	EXPECT_SEEKEQ2(t, 1, 0, 0, 1, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 2, 0, 0, 2, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 3, 0, 0, 3, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 4, 0, 0, 4, SEEK_SET);
+}
+
+TEST(Utf8SeekSet, IllegalByteSingleOverlongFourBytes)
+{
+	const char* t = "\xFF\x89\x8A\x99\x82";
+
+	EXPECT_SEEKEQ2(t, 1, 0, 0, 1, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 2, 0, 0, 2, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 3, 0, 0, 3, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 4, 0, 0, 4, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 5, 0, 0, 5, SEEK_SET);
+}
+
+TEST(Utf8SeekSet, IllegalByteSingleOverlongFiveBytes)
+{
+	const char* t = "\xFE\x92\xA8\xB1\x88\x8A";
+
+	EXPECT_SEEKEQ2(t, 1, 0, 0, 1, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 2, 0, 0, 2, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 3, 0, 0, 3, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 4, 0, 0, 4, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 5, 0, 0, 5, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 6, 0, 0, 6, SEEK_SET);
+}
+
+TEST(Utf8SeekSet, IllegalByteSingleOverlongSixBytes)
+{
+	const char* t = "\xFE\x82\x89\x9A\x9B\xB9\xB1";
+
+	EXPECT_SEEKEQ2(t, 1, 0, 0, 1, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 2, 0, 0, 2, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 3, 0, 0, 3, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 4, 0, 0, 4, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 5, 0, 0, 5, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 6, 0, 0, 6, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 7, 0, 0, 7, SEEK_SET);
+}
+
+TEST(Utf8SeekSet, IllegalByteMultiple)
+{
+	const char* t = "\xFE\xFF\xFE\xFE\xFF\xFE";
+
+	EXPECT_SEEKEQ2(t, 1, 0, 0, 1, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 2, 0, 0, 2, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 3, 0, 0, 3, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 4, 0, 0, 4, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 5, 0, 0, 5, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 6, 0, 0, 6, SEEK_SET);
+}
+
+TEST(Utf8SeekSet, IllegalByteMultipleOverlong)
+{
+	const char* t = "\xFE\x82\x92\x99"
+					"\xFF\xAB\x82"
+					"\xFE\x92\xA4";
+
+	EXPECT_SEEKEQ2(t, 1, 0, 0, 1, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 2, 0, 0, 2, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 3, 0, 0, 3, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 4, 0, 0, 4, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 5, 0, 0, 5, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 6, 0, 0, 6, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 7, 0, 0, 7, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 8, 0, 0, 8, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 9, 0, 0, 9, SEEK_SET);
+	EXPECT_SEEKEQ2(t, 10, 0, 0, 10, SEEK_SET);
 }
 
 TEST(Utf8SeekSet, StringPastEnd)
