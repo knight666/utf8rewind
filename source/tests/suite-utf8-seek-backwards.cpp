@@ -524,7 +524,7 @@ TEST(Utf8SeekBackwards, FourBytesSingleMissingOneByte)
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
 }
 
-TEST(Utf8SeekBackwards, FourBytesSingleMissingTwoByte)
+TEST(Utf8SeekBackwards, FourBytesSingleMissingTwoBytes)
 {
 	const char* t = "\xF2\x8A";
 
