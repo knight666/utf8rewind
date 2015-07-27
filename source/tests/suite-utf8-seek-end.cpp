@@ -1100,28 +1100,28 @@ TEST(Utf8SeekEnd, StringEndsInMiddle)
 	EXPECT_SEEKEQ(t, 0, 13, 0, 2, SEEK_END);
 }
 
-TEST(Utf8SeekEnd, SwappedParameters)
-{
-	const char* t = "\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F";
-
-	EXPECT_SEEKEQ(t, strlen(t), 0, strlen(t), 1, SEEK_END);
-}
-
-TEST(Utf8SeekEnd, ZeroOffset)
+TEST(Utf8SeekEnd, StringZeroOffset)
 {
 	const char* t = "\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F";
 
 	EXPECT_SEEKEQ(t, strlen(t), strlen(t), 0, 0, SEEK_END);
 }
 
-TEST(Utf8SeekEnd, NegativeOffset)
+TEST(Utf8SeekEnd, StringNegativeOffset)
 {
 	const char* t = "Alternative";
 
 	EXPECT_SEEKEQ(t, strlen(t), strlen(t), 0, -6, SEEK_END);
 }
 
-TEST(Utf8SeekEnd, Empty)
+TEST(Utf8SeekEnd, StringSwappedParameters)
+{
+	const char* t = "\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F";
+
+	EXPECT_SEEKEQ(t, strlen(t), 0, strlen(t), 1, SEEK_END);
+}
+
+TEST(Utf8SeekEnd, StringEmpty)
 {
 	const char* t = "";
 
