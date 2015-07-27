@@ -1062,132 +1062,68 @@ TEST(Utf8SeekEnd, IllegalByteMultipleOverlong)
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, 12, SEEK_END);
 }
 
-TEST(Utf8SeekEnd, Valid)
-{
-	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
-
-	const char* r = utf8seek(t, t, 4, SEEK_END);
-
-	EXPECT_EQ(t + 4, r);
-	EXPECT_STREQ("\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ(0x10480, o);
-}
-
-TEST(Utf8SeekEnd, Offset)
-{
-	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
-
-	const char* r = utf8seek(t + 12, t, 2, SEEK_END);
-
-	EXPECT_EQ(t + 12, r);
-	EXPECT_STREQ("\xF0\x90\x92\x80\xF0\x90\x92\x80", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ(0x10480, o);
-}
-
-TEST(Utf8SeekEnd, ZeroOffset)
-{
-	const char* t = "\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F";
-
-	const char* r = utf8seek(t, t, 0, SEEK_END);
-
-	EXPECT_EQ(t + 15, r);
-	EXPECT_STREQ("", r);
-
-	unicode_t o = 0;
-	int32_t errors = UTF8_ERR_NONE;
-	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
-}
-
-TEST(Utf8SeekEnd, NegativeOffset)
-{
-	const char* t = "Alternative";
-
-	const char* r = utf8seek(t, t, -2, SEEK_END);
-
-	EXPECT_EQ(t + 11, r);
-	EXPECT_STREQ("", r);
-
-	unicode_t o = 0;
-	int32_t errors = UTF8_ERR_NONE;
-	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
-}
-
-TEST(Utf8SeekEnd, PastStart)
+TEST(Utf8SeekEnd, StringPastStart)
 {
 	const char* t = "Moonshine";
 
-	const char* r = utf8seek(t, t, 16, SEEK_END);
-
-	EXPECT_EQ(t, r);
-	EXPECT_STREQ("Moonshine", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('M', o);
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, 16, SEEK_END);
 }
 
-TEST(Utf8SeekEnd, EndsInMiddle)
+TEST(Utf8SeekEnd, StringAtStart)
+{
+	const char* t = "\xE1\xB8\x8A\xCC\x9B\xCC\xA3";
+
+	EXPECT_SEEKEQ(t, 5, 0, 0, 1, SEEK_END);
+	EXPECT_SEEKEQ(t, 3, 0, 0, 2, SEEK_END);
+	EXPECT_SEEKEQ(t, 0, 0, 0, 3, SEEK_END);
+}
+
+TEST(Utf8SeekEnd, StringFromMiddle)
+{
+	const char* t = "Creature";
+
+	EXPECT_SEEKEQ(t, 7, 4, 0, 1, SEEK_END);
+	EXPECT_SEEKEQ(t, 6, 4, 0, 2, SEEK_END);
+	EXPECT_SEEKEQ(t, 5, 4, 0, 3, SEEK_END);
+	EXPECT_SEEKEQ(t, 4, 4, 0, 4, SEEK_END);
+	EXPECT_SEEKEQ(t, 3, 4, 0, 5, SEEK_END);
+	EXPECT_SEEKEQ(t, 2, 4, 0, 6, SEEK_END);
+	EXPECT_SEEKEQ(t, 1, 4, 0, 7, SEEK_END);
+	EXPECT_SEEKEQ(t, 0, 4, 0, 8, SEEK_END);
+}
+
+TEST(Utf8SeekEnd, StringEndsInMiddle)
 {
 	const char* t = "\xE0\xA4\x81\xE0\xA4\x8B\0\xE0\xA4\xB4\xE0\xA4\xBD";
 
-	const char* r = utf8seek(t, t, 5, SEEK_END);
-
-	EXPECT_EQ(t, r);
-	EXPECT_STREQ("\xE0\xA4\x81\xE0\xA4\x8B", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ(0x901, o);
-}
-
-TEST(Utf8SeekEnd, LonelyStartDouble)
-{
-	const char* t = "Dino\xE8\xD5magic";
-
-	const char* r = utf8seek(t, t, 8, SEEK_END);
-
-	EXPECT_EQ(t + 3, r);
-	EXPECT_STREQ("o\xE8\xD5magic", r);
-
-	unicode_t o = 0;
-	EXPECT_EQ(4, utf8toutf32(r, strlen(r), &o, sizeof(o), nullptr));
-	EXPECT_EQ('o', o);
+	EXPECT_SEEKEQ(t, 3, 13, 0, 1, SEEK_END);
+	EXPECT_SEEKEQ(t, 0, 13, 0, 2, SEEK_END);
 }
 
 TEST(Utf8SeekEnd, SwappedParameters)
 {
 	const char* t = "\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F";
 
-	const char* r = utf8seek(t, t + strlen(t), 3, SEEK_END);
+	EXPECT_SEEKEQ(t, strlen(t), 0, strlen(t), 1, SEEK_END);
+}
 
-	EXPECT_EQ(t + 15, r);
-	EXPECT_STREQ("", r);
+TEST(Utf8SeekEnd, ZeroOffset)
+{
+	const char* t = "\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F";
 
-	unicode_t o = 0;
-	int32_t errors = UTF8_ERR_NONE;
-	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_SEEKEQ(t, strlen(t), strlen(t), 0, 0, SEEK_END);
+}
+
+TEST(Utf8SeekEnd, NegativeOffset)
+{
+	const char* t = "Alternative";
+
+	EXPECT_SEEKEQ(t, strlen(t), strlen(t), 0, -6, SEEK_END);
 }
 
 TEST(Utf8SeekEnd, Empty)
 {
 	const char* t = "";
 
-	const char* r = utf8seek(t, t, -5, SEEK_END);
-
-	EXPECT_EQ(t, r);
-	EXPECT_STREQ("", r);
-
-	unicode_t o = 0;
-	int32_t errors = UTF8_ERR_NONE;
-	EXPECT_EQ(0, utf8toutf32(r, strlen(r), &o, sizeof(o), &errors));
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, 2, SEEK_END);
 }
