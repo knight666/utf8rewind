@@ -41,47 +41,78 @@
 	#define UTF8_UNUSED(_parameter) _parameter
 #endif
 
-#define UTF8_RETURN(_error, _result) \
-	if (errors != 0) { *errors = UTF8_ERR_ ## _error; } \
-	return (_result);
+#define UTF8_SET_ERROR(_error) \
+	if (errors != 0) { *errors = UTF8_ERR_ ## _error; }
 
 /* Validates input before transforming */
 /* Check for parameter overlap using the separating axis theorem */
 
 #define UTF8_VALIDATE_PARAMETERS_CHAR(_inputType, _result) \
-	if (input == 0) { UTF8_RETURN(INVALID_DATA, _result); } \
+	if (input == 0) { \
+		UTF8_SET_ERROR(INVALID_DATA); \
+		return _result; \
+	} \
 	else if (inputSize < sizeof(_inputType)) { \
 		if (target != 0) { \
-			if (targetSize < 3) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
+			if (targetSize < 3) { \
+				UTF8_SET_ERROR(NOT_ENOUGH_SPACE); \
+				return _result; \
+			} \
 			memcpy(target, REPLACEMENT_CHARACTER_STRING, REPLACEMENT_CHARACTER_STRING_LENGTH); \
 		} \
-		UTF8_RETURN(INVALID_DATA, _result + REPLACEMENT_CHARACTER_STRING_LENGTH); \
+		UTF8_SET_ERROR(INVALID_DATA); \
+		return _result + REPLACEMENT_CHARACTER_STRING_LENGTH; \
 	} \
-	if (target != 0 && targetSize == 0) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
-	if ((char*)input == target) { UTF8_RETURN(OVERLAPPING_PARAMETERS, _result); } \
+	if (target != 0 && targetSize == 0) { \
+		UTF8_SET_ERROR(NOT_ENOUGH_SPACE); \
+		return _result; \
+	} \
+	if ((char*)input == target) { \
+		UTF8_SET_ERROR(OVERLAPPING_PARAMETERS); \
+		return _result; \
+	} \
 	{ \
 		char* input_center = (char*)input + (inputSize / 2); \
 		char* target_center = target + (targetSize / 2); \
 		size_t delta = (size_t)((input_center > target_center) ? (input_center - target_center) : (target_center - input_center)); \
-		if (delta < (inputSize + targetSize) / 2) { UTF8_RETURN(OVERLAPPING_PARAMETERS, _result); } \
+		if (delta < (inputSize + targetSize) / 2) { \
+			UTF8_SET_ERROR(OVERLAPPING_PARAMETERS); \
+			return _result; \
+		} \
 	}
 
 #define UTF8_VALIDATE_PARAMETERS(_inputType, _outputType, _result) \
-	if (input == 0) { UTF8_RETURN(INVALID_DATA, _result); } \
+	if (input == 0) { \
+		UTF8_SET_ERROR(INVALID_DATA); \
+		return _result; \
+	} \
 	else if (inputSize < sizeof(_inputType)) { \
 		if (target != 0) { \
-			if (targetSize < sizeof(_outputType)) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
+			if (targetSize < sizeof(_outputType)) { \
+				UTF8_SET_ERROR(NOT_ENOUGH_SPACE); \
+				return _result; \
+			} \
 			*target = REPLACEMENT_CHARACTER; \
 		} \
-		UTF8_RETURN(INVALID_DATA, _result + sizeof(_outputType)); \
+		UTF8_SET_ERROR(INVALID_DATA); \
+		return _result + sizeof(_outputType); \
 	} \
-	if (target != 0 && targetSize < sizeof(_outputType)) { UTF8_RETURN(NOT_ENOUGH_SPACE, _result); } \
-	if ((char*)input == (char*)target) { UTF8_RETURN(OVERLAPPING_PARAMETERS, _result); } \
+	if (target != 0 && targetSize < sizeof(_outputType)) { \
+		UTF8_SET_ERROR(NOT_ENOUGH_SPACE); \
+		return _result; \
+	} \
+	if ((char*)input == (char*)target) { \
+		UTF8_SET_ERROR(OVERLAPPING_PARAMETERS); \
+		return _result; \
+	} \
 	{ \
 		char* input_center = (char*)input + (inputSize / 2); \
 		char* target_center = (char*)target + (targetSize / 2); \
 		size_t delta = (size_t)((input_center > target_center) ? (input_center - target_center) : (target_center - input_center)); \
-		if (delta < (inputSize + targetSize) / 2) { UTF8_RETURN(OVERLAPPING_PARAMETERS, _result); } \
+		if (delta < (inputSize + targetSize) / 2) { \
+			UTF8_SET_ERROR(OVERLAPPING_PARAMETERS); \
+			return _result; \
+		} \
 	}
 
 /*! \endcond */
