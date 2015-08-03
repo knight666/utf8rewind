@@ -1091,21 +1091,21 @@ TEST(Utf8SeekCurrentBackwards, IllegalByteMultipleOverlong)
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -11, SEEK_CUR);
 }
 
-TEST(Utf8SeekCurrentBackwards, StringPastStart)
+TEST(Utf8SeekCurrentBackwards, TextPastStart)
 {
 	const char* t = "\xE0\xA4\x81\xE0\xA4\x8B\xE0\xA4\xB4\xE0\xA4\xBD";
 
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -26, SEEK_CUR);
 }
 
-TEST(Utf8SeekCurrentBackwards, StringAtStart)
+TEST(Utf8SeekCurrentBackwards, TextAtStart)
 {
 	const char* t = "\xD7\x8A\x99" "Boo";
 
 	EXPECT_SEEKEQ(t, 0, 0, 0, -2, SEEK_CUR);
 }
 
-TEST(Utf8SeekCurrentBackwards, StringFromMiddle)
+TEST(Utf8SeekCurrentBackwards, TextFromMiddle)
 {
 	const char* t = "Banananana";
 
@@ -1117,17 +1117,10 @@ TEST(Utf8SeekCurrentBackwards, StringFromMiddle)
 	EXPECT_SEEKEQ(t, 0, 6, 0, -6, SEEK_CUR);
 }
 
-TEST(Utf8SeekCurrentBackwards, StringEndsInMiddle)
+TEST(Utf8SeekCurrentBackwards, TextEndsInMiddle)
 {
 	const char* t = "\xF8\x88\x80\x80\x80\xF8\x80\x80\x80\xAF\0\xFB\xBF\xBF\xBF\xBF";
 
 	EXPECT_SEEKEQ(t, 11, 16, 0, -1, SEEK_CUR);
 	EXPECT_SEEKEQ(t, 10, 16, 0, -2, SEEK_CUR);
-}
-
-TEST(Utf8SeekCurrentBackwards, StringSwappedParameters)
-{
-	const char* t = "\xFC\x84\x80\x80\x80\x80\xFC\x80\x80\x80\x80\x80\xFC\x84\x80\x80\x80\x80\xFD\xBF\xBF\xBF\xBF\xBF";
-
-	EXPECT_SEEKEQ(t, 0, 0, strlen(t), -2, SEEK_CUR);
 }
