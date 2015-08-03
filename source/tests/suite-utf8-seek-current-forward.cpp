@@ -1057,37 +1057,30 @@ TEST(Utf8SeekCurrentForward, IllegalByteMultipleOverlong)
 	EXPECT_SEEKEQ(t, 9, 0, 0, 9, SEEK_CUR);
 }
 
-TEST(Utf8SeekCurrentForward, StringPastEnd)
+TEST(Utf8SeekCurrentForward, TextPastEnd)
 {
 	const char* t = "\xCE\xBC\xCE\xB5\xCF\x84\xCF\x81\xE1\xBD\xB1\xCE\xB5\xCE\xB9";
 
 	EXPECT_SEEKEQ(t, 15, 0, 0, 18, SEEK_CUR);
 }
 
-TEST(Utf8SeekCurrentForward, StringAtEnd)
+TEST(Utf8SeekCurrentForward, TextAtEnd)
 {
 	const char* t = "\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80\xF0\x90\x92\x80";
 
 	EXPECT_SEEKEQ(t, strlen(t), strlen(t), 0, 2, SEEK_CUR);
 }
 
-TEST(Utf8SeekCurrentForward, StringFromMiddle)
+TEST(Utf8SeekCurrentForward, TextFromMiddle)
 {
 	const char* t = "Armageddon";
 
 	EXPECT_SEEKEQ(t, 6, 4, 0, 2, SEEK_CUR);
 }
 
-TEST(Utf8SeekCurrentForward, StringEndsInMiddle)
+TEST(Utf8SeekCurrentForward, TextEndsInMiddle)
 {
 	const char* t = "\xD0\xBE\xD0\xBA\0\xD0\xB0\xD0\xBB";
 
 	EXPECT_SEEKEQ(t, 4, 0, 0, 4, SEEK_CUR);
-}
-
-TEST(Utf8SeekCurrentForward, StringSwappedParameters)
-{
-	const char* t = "10-12 \xD0\xBC\xD0\xB0\xD1\x80\xD1\x82\xD0\xB0 1997";
-
-	EXPECT_SEEKEQ(t, 0, 0, strlen(t), 6, SEEK_CUR);
 }

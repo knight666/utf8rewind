@@ -1062,14 +1062,14 @@ TEST(Utf8SeekEnd, IllegalByteMultipleOverlong)
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, 12, SEEK_END);
 }
 
-TEST(Utf8SeekEnd, StringPastStart)
+TEST(Utf8SeekEnd, TextPastStart)
 {
 	const char* t = "Moonshine";
 
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, 16, SEEK_END);
 }
 
-TEST(Utf8SeekEnd, StringAtStart)
+TEST(Utf8SeekEnd, TextAtStart)
 {
 	const char* t = "\xE1\xB8\x8A\xCC\x9B\xCC\xA3";
 
@@ -1078,7 +1078,7 @@ TEST(Utf8SeekEnd, StringAtStart)
 	EXPECT_SEEKEQ(t, 0, 0, 0, 3, SEEK_END);
 }
 
-TEST(Utf8SeekEnd, StringFromMiddle)
+TEST(Utf8SeekEnd, TextFromMiddle)
 {
 	const char* t = "Creature";
 
@@ -1092,7 +1092,7 @@ TEST(Utf8SeekEnd, StringFromMiddle)
 	EXPECT_SEEKEQ(t, 0, 4, 0, 8, SEEK_END);
 }
 
-TEST(Utf8SeekEnd, StringEndsInMiddle)
+TEST(Utf8SeekEnd, TextEndsInMiddle)
 {
 	const char* t = "\xE0\xA4\x81\xE0\xA4\x8B\0\xE0\xA4\xB4\xE0\xA4\xBD";
 
@@ -1100,30 +1100,44 @@ TEST(Utf8SeekEnd, StringEndsInMiddle)
 	EXPECT_SEEKEQ(t, 0, 13, 0, 2, SEEK_END);
 }
 
-TEST(Utf8SeekEnd, StringZeroOffset)
+TEST(Utf8SeekEnd, TextZeroOffset)
 {
 	const char* t = "\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F";
 
 	EXPECT_SEEKEQ(t, strlen(t), strlen(t), 0, 0, SEEK_END);
 }
 
-TEST(Utf8SeekEnd, StringNegativeOffset)
+TEST(Utf8SeekEnd, TextNegativeOffset)
 {
 	const char* t = "Alternative";
 
 	EXPECT_SEEKEQ(t, strlen(t), strlen(t), 0, -6, SEEK_END);
 }
 
-TEST(Utf8SeekEnd, StringSwappedParameters)
+TEST(Utf8SeekEnd, TextSwappedParameters)
 {
 	const char* t = "\xE2\xB7\xB0\xE2\xB8\x97\xE2\xB8\xBA\xE2\xB8\xAF\xE2\xB9\x8F";
 
 	EXPECT_SEEKEQ(t, strlen(t), 0, strlen(t), 1, SEEK_END);
 }
 
-TEST(Utf8SeekEnd, StringEmpty)
+TEST(Utf8SeekEnd, TextEmpty)
 {
 	const char* t = "";
 
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, 2, SEEK_END);
+}
+
+TEST(Utf8SeekEnd, TextNull)
+{
+	const char* t = "Basilicum";
+
+	EXPECT_EQ(nullptr, utf8seek(nullptr, t, 33, SEEK_END));
+}
+
+TEST(Utf8SeekEnd, TextStartNull)
+{
+	const char* t = "two dozen eggs";
+
+	EXPECT_EQ(t, utf8seek(t, nullptr, 5, SEEK_END));
 }
