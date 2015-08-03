@@ -106,6 +106,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 	/* Validate parameters */
 
 	UTF8_VALIDATE_PARAMETERS_CHAR(utf16_t, bytes_written);
+	UTF8_SET_ERROR(NONE);
 
 	/* Setup cursors */
 
@@ -140,6 +141,8 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 				/* Missing high surrogate codepoint */
 
 				codepoint = REPLACEMENT_CHARACTER;
+
+				UTF8_SET_ERROR(INVALID_DATA);
 			}
 			else if (
 				src_size < 2 * sizeof(utf16_t))
@@ -158,6 +161,8 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 					/* Missing low surrogate codepoint */
 
 					codepoint = REPLACEMENT_CHARACTER;
+
+					UTF8_SET_ERROR(INVALID_DATA);
 				}
 				else
 				{
@@ -186,12 +191,12 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 		src_size -= sizeof(utf16_t);
 	}
 
-	UTF8_RETURN(NONE, bytes_written);
+	return bytes_written;
 
 invaliddata:
 	if (dst != 0)
 	{
-		if (dst_size < 3)
+		if (dst_size < REPLACEMENT_CHARACTER_STRING_LENGTH)
 		{
 			UTF8_RETURN(NOT_ENOUGH_SPACE, bytes_written);
 		}
@@ -201,7 +206,9 @@ invaliddata:
 		memcpy(dst, REPLACEMENT_CHARACTER_STRING, REPLACEMENT_CHARACTER_STRING_LENGTH);
 	}
 
-	UTF8_RETURN(INVALID_DATA, bytes_written + 3);
+	bytes_written += REPLACEMENT_CHARACTER_STRING_LENGTH;
+
+	UTF8_RETURN(INVALID_DATA, bytes_written);
 }
 
 size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)

@@ -41,8 +41,11 @@
 	#define UTF8_UNUSED(_parameter) _parameter
 #endif
 
-#define UTF8_RETURN(_error, _result) \
+#define UTF8_SET_ERROR(_error) \
 	if (errors != 0) { *errors = UTF8_ERR_ ## _error; } \
+
+#define UTF8_RETURN(_error, _result) \
+	UTF8_SET_ERROR(_error); \
 	return (_result);
 
 /* Validates input before transforming */
