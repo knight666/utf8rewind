@@ -114,7 +114,7 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 		{
 			uint8_t codepoint_length = codepoint_decoded_length[(uint8_t)*marker];
 
-			if (codepoint_length == 1 ||  /* ASCII */
+			if (codepoint_length == 1 ||  /* Basic Latin */
 				codepoint_length == 7)    /* Illegal byte */
 			{
 				marker_valid = marker;

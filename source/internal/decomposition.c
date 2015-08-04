@@ -141,7 +141,7 @@ uint8_t decompose_execute(DecomposeState* state)
 
 	while (state->input->index < state->input->current)
 	{
-		if (*src_codepoint < 0x80)
+		if (*src_codepoint <= MAX_BASIC_LATIN)
 		{
 			/* Basic Latin codepoints are already decomposed */
 
