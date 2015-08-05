@@ -8,6 +8,63 @@
 	`utf8rewind` is a cross-platform and open source C library designed to
 	extend the default string handling functions and add support for UTF-8
 	encoded text.
+
+	\section example Example
+
+	\code{.c}
+	#include "utf8rewind.h"
+
+	int main(int argc, char** argv)
+	{
+		const char* input = "Hello World!";
+
+		static const size_t output_size = 256;
+		char output[output_size];
+		wchar_t output_wide[output_size];
+		const char* input_seek;
+		size_t converted_size;
+		int32_t errors;
+
+		memset(output, 0, output_size * sizeof(char));
+		memset(output_wide, 0, output_size * sizeof(wchar_t));
+
+		// Convert input to uppercase:
+		//
+		// "Hello World!" -> "HELLO WORLD!"
+
+		converted_size = utf8toupper(
+			input, strlen(input),
+			output, output_size - 1,
+			&errors);
+		if (converted_size == 0 ||
+			errors != UTF8_ERR_NONE)
+		{
+			return -1;
+		}
+
+		// Convert UTF-8 input to wide (UTF-16 or UTF-32) encoded text:
+		//
+		// "HELLO WORLD!" -> L"HELLO WORLD!"
+
+		converted_size = utf8towide(
+			output, strlen(output),
+			output_wide, (output_size - 1) * sizeof(wchar_t),
+			&errors);
+		if (converted_size == 0 ||
+			errors != UTF8_ERR_NONE)
+		{
+			return -1;
+		}
+
+		// Seek in input:
+		//
+		// Hello World!" -> "World!"
+
+		input_seek = utf8seek(input, input, 6, SEEK_SET);
+
+		return 0;
+	}
+	\endcode
 	
 	\section features Features
 
@@ -20,7 +77,7 @@
 	[titlecase](\ref utf8totitle).
 
 	* **Normalization** - With #utf8normalize, you can normalize UTF-8 encoded
-	text without converting it to UTF-32 first.
+	text to NFC, NFD, NFKC or NFKD without converting it to UTF-32 first.
 
 	* **Seeking** - Using #utf8seek, you can seek forwards and backwards in
 	UTF-8 encoded text.
@@ -30,20 +87,20 @@
 	Linux and Mac versions are available.
 
 	* **Easy to integrate** - The library consists of only 13 public functions
-	and requires no initialization. Any C or C++ project can add utf8rewind
+	and requires no initialization. Any C or C++ project can add `utf8rewind`
 	without breaking existing code.
 
 	* **Simple bindings** - No structs are used in the public interface, only
 	pointers. Even if you don't use C, if the language of your choice allows
 	bindings to C functions (e.g. Python), you can benefit from integrating
-	utf8rewind into your project.
+	`utf8rewind` into your project.
 
-	* **No heap allocations** - All allocations in UTF-8 happen on the stack.
-	You provide the memory, without having to override `malloc`. This makes the
-	library perfectly tailored to game engines, integrated systems and other
-	performance-critical or memory-constrained projects.
+	* **No heap allocations** - All allocations in `utf8rewind` happen on the
+	stack. You provide the memory, without having to override `malloc`. This
+	makes the library perfectly tailored to game engines, integrated systems
+	and other performance-critical or memory-constrained projects.
 
-	* **Safety** - Over 1500 automated unit and integration tests guarantee the
+	* **Safety** - Over 2300 automated unit and integration tests guarantee the
 	safety and security of the library.
 
 	For a full summary of the interface, please refer to the

@@ -1066,58 +1066,85 @@ TEST(Utf8SeekSet, IllegalByteMultipleOverlong)
 	EXPECT_SEEKEQ(t, 10, 0, 0, 10, SEEK_SET);
 }
 
-TEST(Utf8SeekSet, StringPastEnd)
+TEST(Utf8SeekSet, TextPastEnd)
 {
 	const char* t = "\xD0\xBB\xD0\xBE\xD0\xBA\xD0\xB0\xD0\xBB\xD0\xB8\xD0\xB7\xD0\xB0\xD1\x86\xD0\xB8\xD0\xB8";
 
 	EXPECT_SEEKEQ(t, 22, 0, 0, 33, SEEK_SET);
 }
 
-TEST(Utf8SeekSet, StringAtEnd)
+TEST(Utf8SeekSet, TextAtEnd)
 {
 	const char* t = "\xE0\xA4\x81\xE0\xA4\x8B\xE0\xA4\xB4\xE0\xA4\xBD";
 
 	EXPECT_SEEKEQ(t, 6, 0, 0, 2, SEEK_SET);
 }
 
-TEST(Utf8SeekSet, StringFromMiddle)
+TEST(Utf8SeekSet, TextFromMiddle)
 {
 	const char* t = "The Doctor";
 
-	EXPECT_SEEKEQ(t, 4, 0, 0, 4, SEEK_SET);
+	EXPECT_SEEKEQ(t, 1, 4, 0, 1, SEEK_SET);
+	EXPECT_SEEKEQ(t, 2, 4, 0, 2, SEEK_SET);
+	EXPECT_SEEKEQ(t, 3, 4, 0, 3, SEEK_SET);
+	EXPECT_SEEKEQ(t, 4, 4, 0, 4, SEEK_SET);
+	EXPECT_SEEKEQ(t, 5, 4, 0, 5, SEEK_SET);
+	EXPECT_SEEKEQ(t, 6, 4, 0, 6, SEEK_SET);
+	EXPECT_SEEKEQ(t, 7, 4, 0, 7, SEEK_SET);
+	EXPECT_SEEKEQ(t, 8, 4, 0, 8, SEEK_SET);
+	EXPECT_SEEKEQ(t, 9, 4, 0, 9, SEEK_SET);
+	EXPECT_SEEKEQ(t, 10, 4, 0, 10, SEEK_SET);
 }
 
-TEST(Utf8SeekSet, StringEndsInMiddle)
+TEST(Utf8SeekSet, TextEndsInMiddle)
 {
 	const char* t = "\xE0\xA4\x81\xE0\xA4\x8B\0\xE0\xA4\xB4\xE0\xA4\xBD";
 
+	EXPECT_SEEKEQ(t, 3, 0, 0, 1, SEEK_SET);
+	EXPECT_SEEKEQ(t, 6, 0, 0, 2, SEEK_SET);
+	EXPECT_SEEKEQ(t, 6, 0, 0, 3, SEEK_SET);
+	EXPECT_SEEKEQ(t, 6, 0, 0, 4, SEEK_SET);
 	EXPECT_SEEKEQ(t, 6, 0, 0, 5, SEEK_SET);
 }
 
-TEST(Utf8SeekSet, StringZeroOffset)
+TEST(Utf8SeekSet, TextZeroOffset)
 {
 	const char* t = "Magic powered";
 
 	EXPECT_SEEKEQ(t, 0, 0, 0, 0, SEEK_SET);
 }
 
-TEST(Utf8SeekSet, StringNegativeOffset)
+TEST(Utf8SeekSet, TextNegativeOffset)
 {
 	const char* t = "Dreaming";
 
 	EXPECT_SEEKEQ(t, 0, 0, 0, -12, SEEK_SET);
 }
 
-TEST(Utf8SeekSet, StringSwappedParameters)
+TEST(Utf8SeekSet, TextSwappedParameters)
 {
 	const char* t = "\xD0\xBB\xD0\xBE\xD0\xBA\xD0\xB0\xD0\xBB\xD0\xB8\xD0\xB7\xD0\xB0\xD1\x86\xD0\xB8\xD0\xB8";
 
 	EXPECT_SEEKEQ(t, 0, 0, strlen(t), 3, SEEK_SET);
 }
 
-TEST(Utf8SeekSet, StringEmpty)
+TEST(Utf8SeekSet, TextEmpty)
 {
 	const char* t = "";
 
 	EXPECT_SEEKEQ(t, 0, 0, 0, 3, SEEK_SET);
+}
+
+TEST(Utf8SeekSet, TextNull)
+{
+	const char* t = "Lightcone";
+
+	EXPECT_EQ(nullptr, utf8seek(nullptr, t, 15, SEEK_SET));
+}
+
+TEST(Utf8SeekSet, TextStartNull)
+{
+	const char* t = "Roboto";
+
+	EXPECT_EQ(t, utf8seek(t, nullptr, 3, SEEK_SET));
 }

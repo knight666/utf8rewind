@@ -106,6 +106,7 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 	/* Validate parameters */
 
 	UTF8_VALIDATE_PARAMETERS_CHAR(utf16_t, bytes_written);
+	UTF8_SET_ERROR(NONE);
 
 	/* Setup cursors */
 
@@ -140,6 +141,8 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 				/* Missing high surrogate codepoint */
 
 				codepoint = REPLACEMENT_CHARACTER;
+
+				UTF8_SET_ERROR(INVALID_DATA);
 			}
 			else if (
 				src_size < 2 * sizeof(utf16_t))
@@ -158,6 +161,8 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 					/* Missing low surrogate codepoint */
 
 					codepoint = REPLACEMENT_CHARACTER;
+
+					UTF8_SET_ERROR(INVALID_DATA);
 				}
 				else
 				{
@@ -187,8 +192,6 @@ size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target, size_t 
 		src++;
 		src_size -= sizeof(utf16_t);
 	}
-
-	UTF8_SET_ERROR(NONE);
 
 	return bytes_written;
 
@@ -223,6 +226,7 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 	/* Validate parameters */
 
 	UTF8_VALIDATE_PARAMETERS_CHAR(unicode_t, bytes_written);
+	UTF8_SET_ERROR(NONE);
 
 	/* Setup cursors */
 
@@ -257,6 +261,8 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 				/* Missing high surrogate codepoint */
 
 				codepoint = REPLACEMENT_CHARACTER;
+
+				UTF8_SET_ERROR(INVALID_DATA);
 			}
 			else if (
 				src_size < 2 * sizeof(unicode_t))
@@ -275,6 +281,8 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 					/* Missing low surrogate codepoint */
 
 					codepoint = REPLACEMENT_CHARACTER;
+
+					UTF8_SET_ERROR(INVALID_DATA);
 				}
 				else
 				{
@@ -304,8 +312,6 @@ size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* target, size_
 		src++;
 		src_size -= sizeof(unicode_t);
 	}
-
-	UTF8_SET_ERROR(NONE);
 
 	return bytes_written;
 
@@ -395,7 +401,7 @@ size_t utf8toutf16(const char* input, size_t inputSize, utf16_t* target, size_t 
 			{
 				/* Write to output */
 
-				if (dst_size < sizeof(unicode_t))
+				if (dst_size < 2 * sizeof(utf16_t))
 				{
 					UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
 
@@ -488,8 +494,17 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 
 const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction)
 {
-	size_t textLength = strlen(textStart);
-	const char* textEnd = textStart + textLength;
+	size_t text_length;
+	const char* text_end;
+
+	if (text == 0 ||
+		textStart == 0)
+	{
+		return text;
+	}
+
+	text_length = strlen(textStart);
+	text_end = textStart + text_length;
 
 	switch (direction)
 	{
@@ -502,11 +517,11 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 			}
 			else if (offset > 0)
 			{
-				return seeking_forward(text, textEnd, textLength, offset);
+				return seeking_forward(text, text_end, text_length, offset);
 			}
 			else
 			{
-				return seeking_rewind(textStart, text, textLength, offset);
+				return seeking_rewind(textStart, text, text_length, offset);
 			}
 
 		} break;
@@ -518,12 +533,12 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 				return text;
 			}
 
-			return seeking_forward(textStart, textEnd, textLength, offset);
+			return seeking_forward(textStart, text_end, text_length, offset);
 
 		} break;
 
 	case SEEK_END:
-		return seeking_rewind(textStart, textEnd, textLength, -offset);
+		return seeking_rewind(textStart, text_end, text_length, -offset);
 
 	default:
 		return text;

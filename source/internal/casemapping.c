@@ -152,14 +152,13 @@ size_t casemapping_execute(CaseMappingState* state)
 			/* Write the codepoint to the output buffer */
 			/* This ensures that invalid codepoints in the input are always converted to U+FFFD in the output */
 
-			if (!codepoint_write(decoded, &state->dst, &state->dst_size))
+			uint8_t decoded_written = codepoint_write(decoded, &state->dst, &state->dst_size);
+			if (decoded_written == 0)
 			{
 				goto outofspace;
 			}
 
-			/* Reuse the decoded size unless the codepoint was replaced */
-
-			written += (decoded != REPLACEMENT_CHARACTER) ? decoded_size : 3;
+			written += decoded_written;
 		}
 	}
 

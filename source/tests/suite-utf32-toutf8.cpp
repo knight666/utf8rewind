@@ -1307,7 +1307,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingleUnmatchedHigh)
 
 	EXPECT_EQ(4, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\x17", o);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf32ToUtf8, SurrogatePairSingleUnmatchedLow)
@@ -1346,7 +1346,7 @@ TEST(Utf32ToUtf8, SurrogatePairSingleMissingHigh)
 
 	EXPECT_EQ(3, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf32ToUtf8, SurrogatePairSingleNotEnoughSpace)
@@ -1435,6 +1435,32 @@ TEST(Utf32ToUtf8, SurrogatePairMultiple)
 	EXPECT_EQ(12, utf32toutf8(i, is, o, os, &errors));
 	EXPECT_UTF8EQ("\xF0\x9F\x98\x92\xF0\x9F\x98\xA2\xF0\x9F\x98\xA4", o);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST(Utf32ToUtf8, SurrogatePairMultipleHighSurrogateAndRegular)
+{
+	unicode_t i[] = { 0xD801, 0x812, 0x145, 0x99A, 0x9A };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(13, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD\xE0\xA0\x92\xC5\x85\xE0\xA6\x9A\xC2\x9A", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST(Utf32ToUtf8, SurrogatePairMultipleLowSurrogateAndRegular)
+{
+	unicode_t i[] = { 0xDEAF, 0x871, 0x112, 0x8AB };
+	size_t is = sizeof(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(11, utf32toutf8(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD\xE0\xA1\xB1\xC4\x92\xE0\xA2\xAB", o);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
 TEST(Utf32ToUtf8, SurrogatePairMultipleAmountOfBytes)
