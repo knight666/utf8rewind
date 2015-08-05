@@ -10,8 +10,7 @@ int main(int argc, char** argv)
 	{
 		std::cout << "Press any key to continue.";
 
-		int wait = 0;
-		std::cin >> wait;
+		std::cin.get();
 	}
 
 	return result;

@@ -5,7 +5,7 @@
 namespace helpers {
 
 	::testing::AssertionResult CompareSeeking(
-		const char* expressionExpected, const char* expressionActual,
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const SeekingParameters& paramsExpected, const SeekingParameters& paramsActual)
 	{
 		if (!strcmp(paramsExpected.text, paramsActual.text))
