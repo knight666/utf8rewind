@@ -117,7 +117,7 @@ uint8_t codepoint_write(unicode_t encoded, char** target, size_t* targetSize)
 	if (encoded_length == 0)
 	{
 		encoded = REPLACEMENT_CHARACTER;
-		encoded_length = 3;
+		encoded_length = REPLACEMENT_CHARACTER_STRING_LENGTH;
 	}
 
 	if (*target != 0)
@@ -180,9 +180,9 @@ uint8_t codepoint_read(const char* input, size_t inputSize, unicode_t* decoded)
 		return 0;
 	}
 
-	if (*src < 0x80)
+	if (*src <= MAX_BASIC_LATIN)
 	{
-		/* ASCII */
+		/* Basic Latin */
 
 		*decoded = (unicode_t)*src;
 
