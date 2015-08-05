@@ -237,8 +237,6 @@ namespace helpers {
 	{
 		std::stringstream ss;
 
-		bool wrote_hex = false;
-
 		for (std::string::const_iterator it = text.begin(); it != text.end(); ++it)
 		{
 			ss << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(2) << ((unicode_t)*it & 0x000000FF);
@@ -512,7 +510,7 @@ namespace helpers {
 	}
 
 	::testing::AssertionResult CompareOffsets(
-		const char* expressionExpected, const char* expressionActual, const char* expressionCount,
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_, const char* expressionCount GTEST_ATTRIBUTE_UNUSED_,
 		const char* offsetExpected, const char* offsetActual, const char* offsetStart)
 	{
 		if (offsetExpected == offsetActual)

@@ -351,7 +351,7 @@ TEST(Utf8ToWide, AboveBasicMultilingualPlaneNotEnoughSpaceThreeBytes)
 	EXPECT_EQ(4 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
 	EXPECT_STREQ(L"\xD83D\xDEAB\xD83D\xDEBC", o);
 #elif UTF8_WCHAR_UTF32
-	EXPECT_EQ(3 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
+	EXPECT_EQ(2 * UTF8_WCHAR_SIZE, utf8towide(i, is, o, os, &errors));
 	EXPECT_STREQ(L"\x1F6AB\x1F6BC", o);
 #endif
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
