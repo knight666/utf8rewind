@@ -6,23 +6,7 @@ namespace helpers {
 
 	std::string uppercase(unicode_t codepoint)
 	{
-		int32_t errors;
-
-		char input_utf8[16] = { 0 };
-		utf32toutf8(&codepoint, sizeof(unicode_t), input_utf8, 16, &errors);
-		if (errors != UTF8_ERR_NONE)
-		{
-			return "";
-		}
-
-		char result_upper[256] = { 0 };
-		utf8toupper(input_utf8, strlen(input_utf8), result_upper, 256, &errors);
-		if (errors != UTF8_ERR_NONE)
-		{
-			return "";
-		}
-
-		return result_upper;
+		return uppercase(utf8(codepoint));
 	}
 
 	std::string uppercase(const std::string& text)
@@ -45,23 +29,7 @@ namespace helpers {
 
 	std::string lowercase(unicode_t codepoint)
 	{
-		int32_t errors;
-
-		char input_utf8[16] = { 0 };
-		utf32toutf8(&codepoint, sizeof(unicode_t), input_utf8, 16, &errors);
-		if (errors != UTF8_ERR_NONE)
-		{
-			return "";
-		}
-
-		char result_lower[256] = { 0 };
-		utf8tolower(input_utf8, strlen(input_utf8), result_lower, 256, &errors);
-		if (errors != UTF8_ERR_NONE)
-		{
-			return "";
-		}
-
-		return result_lower;
+		return lowercase(utf8(codepoint));
 	}
 
 	std::string lowercase(const std::string& text)
@@ -84,23 +52,7 @@ namespace helpers {
 
 	std::string titlecase(unicode_t codepoint)
 	{
-		int32_t errors;
-
-		char input_utf8[16] = { 0 };
-		utf32toutf8(&codepoint, sizeof(unicode_t), input_utf8, 16, &errors);
-		if (errors != UTF8_ERR_NONE)
-		{
-			return "";
-		}
-
-		char result_title[256] = { 0 };
-		utf8totitle(input_utf8, strlen(input_utf8), result_title, 256, &errors);
-		if (errors != UTF8_ERR_NONE)
-		{
-			return "";
-		}
-
-		return result_title;
+		return titlecase(utf8(codepoint));
 	}
 
 	std::string titlecase(const std::string& text)
