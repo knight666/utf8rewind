@@ -560,8 +560,7 @@ TEST(Utf8SeekSet, FourBytesMultipleInvalid)
 	EXPECT_SEEKEQ(t, 6, 0, 0, 3, SEEK_SET);
 	EXPECT_SEEKEQ(t, 7, 0, 0, 4, SEEK_SET);
 	EXPECT_SEEKEQ(t, 8, 0, 0, 5, SEEK_SET);
-	EXPECT_SEEKEQ(t, 10, 0, 0, 6, SEEK_SET);
-	EXPECT_SEEKEQ(t, 11, 0, 0, 7, SEEK_SET);
+	EXPECT_SEEKEQ(t, 9, 0, 0, 6, SEEK_SET);
 }
 
 TEST(Utf8SeekSet, FourBytesMultipleOverlong)

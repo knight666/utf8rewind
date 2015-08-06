@@ -8,7 +8,8 @@ namespace helpers {
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const SeekingParameters& paramsExpected, const SeekingParameters& paramsActual)
 	{
-		if (!strcmp(paramsExpected.text, paramsActual.text))
+		if (!strcmp(paramsExpected.text, paramsActual.text) &&
+			paramsExpected.offset == paramsActual.offset)
 		{
 			return ::testing::AssertionSuccess();
 		}
