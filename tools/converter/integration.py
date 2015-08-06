@@ -110,22 +110,25 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 		for r in records:
 			converted_codepoint = "0x%08X" % r.codepoint
 			
-			if r.uppercase:
-				converted_uppercase = libs.utf8.unicodeToUtf8(r.uppercase)
+			if r.codepoint == 0:
+				self.header.writeLine("CHECK_CASEMAPPING_NUL(" + converted_codepoint + ", \"" + r.name + "\");")
 			else:
-				converted_uppercase = libs.utf8.codepointToUtf8(r.codepoint)[0]
+				if r.uppercase:
+					converted_uppercase = libs.utf8.unicodeToUtf8(r.uppercase)
+				else:
+					converted_uppercase = libs.utf8.codepointToUtf8(r.codepoint)[0]
+					
+				if r.lowercase:
+					converted_lowercase = libs.utf8.unicodeToUtf8(r.lowercase)
+				else:
+					converted_lowercase = libs.utf8.codepointToUtf8(r.codepoint)[0]
 				
-			if r.lowercase:
-				converted_lowercase = libs.utf8.unicodeToUtf8(r.lowercase)
-			else:
-				converted_lowercase = libs.utf8.codepointToUtf8(r.codepoint)[0]
-			
-			if r.titlecase:
-				converted_titlecase = libs.utf8.unicodeToUtf8(r.titlecase)
-			else:
-				converted_titlecase = libs.utf8.codepointToUtf8(r.codepoint)[0]
-			
-			self.header.writeLine("CHECK_CASEMAPPING(" + converted_codepoint + ", \"" + converted_uppercase + "\", \"" + converted_lowercase + "\", \"" + converted_titlecase + "\", \"" + r.name + "\");")
+				if r.titlecase:
+					converted_titlecase = libs.utf8.unicodeToUtf8(r.titlecase)
+				else:
+					converted_titlecase = libs.utf8.codepointToUtf8(r.codepoint)[0]
+				
+				self.header.writeLine("CHECK_CASEMAPPING(" + converted_codepoint + ", \"" + converted_uppercase + "\", \"" + converted_lowercase + "\", \"" + converted_titlecase + "\", \"" + r.name + "\");")
 		
 		self.header.outdent()
 		self.header.write("}")

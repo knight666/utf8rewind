@@ -2,10 +2,10 @@
 	DO NOT MODIFY, AUTO-GENERATED
 
 	Generated on:
-		2015-03-12T09:50:32
+		2015-08-06T17:45:40
 
 	Command line:
-		E:\Projects\utf8rewind\tools\converter\integration.py --casemapping
+		D:\Projects\utf8rewind\tools\converter\integration.py --casemapping
 */
 
 #include "tests-base.hpp"
@@ -14,7 +14,7 @@
 
 TEST(CaseMapping, BasicLatin)
 {
-	CHECK_CASEMAPPING(0x00000000, "\0", "\0", "\0", "<control>");
+	CHECK_CASEMAPPING_NUL(0x00000000, "<control>");
 	CHECK_CASEMAPPING(0x00000001, "\x01", "\x01", "\x01", "<control>");
 	CHECK_CASEMAPPING(0x00000002, "\x02", "\x02", "\x02", "<control>");
 	CHECK_CASEMAPPING(0x00000003, "\x03", "\x03", "\x03", "<control>");
