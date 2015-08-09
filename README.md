@@ -2,37 +2,101 @@
 
 `utf8rewind` is a cross-platform and open source C library designed to extend the default string handling functions and add support for UTF-8 encoded text.
 
-## Features
+## Example ##
 
-* **Conversion to and from UTF-8** - `utf8rewind` provides functions for converting from and to [wide](\ref widetoutf8), [UTF-16](\ref utf16toutf8) and [UTF-32](\ref utf32toutf8) encoded text.
+```
+#!c
+	#include "utf8rewind.h"
 
-* **Case mapping** - The library also provides functionality for converting text to [uppercase](\ref utf8toupper), [lowercase](\ref utf8tolower) and [titlecase](\ref utf8totitle).
+	int main(int argc, char** argv)
+	{
+		const char* input = "Hello World!";
 
-* **Normalization** - With #utf8normalize, you can normalize UTF-8 encoded text without converting it to UTF-32 first.
+		static const size_t output_size = 256;
+		char output[output_size];
+		wchar_t output_wide[output_size];
+		const char* input_seek;
+		size_t converted_size;
+		int32_t errors;
 
-* **Seeking** - Using #utf8seek, you can seek forwards and backwards in UTF-8 encoded text.
+		memset(output, 0, output_size * sizeof(char));
+		memset(output_wide, 0, output_size * sizeof(wchar_t));
+
+		/*
+			Convert input to uppercase:
+			
+			"Hello World!" -> "HELLO WORLD!"
+		*/
+
+		converted_size = utf8toupper(
+			input, strlen(input),
+			output, output_size - 1,
+			&errors);
+		if (converted_size == 0 ||
+			errors != UTF8_ERR_NONE)
+		{
+			return -1;
+		}
+
+		/*
+			Convert UTF-8 input to wide (UTF-16 or UTF-32) encoded text:
+		
+			"HELLO WORLD!" -> L"HELLO WORLD!"
+		*/
+
+		converted_size = utf8towide(
+			output, strlen(output),
+			output_wide, (output_size - 1) * sizeof(wchar_t),
+			&errors);
+		if (converted_size == 0 ||
+			errors != UTF8_ERR_NONE)
+		{
+			return -1;
+		}
+
+		/*
+			Seek in input:
+		
+			Hello World!" -> "World!"
+		*/
+
+		input_seek = utf8seek(input, input, 6, SEEK_SET);
+
+		return 0;
+	}
+```
+
+## Features ##
+
+* **Conversion to and from UTF-8** - `utf8rewind` provides functions for converting from and to wide, UTF-16 and UTF-32 encoded text.
+
+* **Case mapping** - The library also provides functionality for converting text to uppercase, lowercase and titlecase.
+
+* **Normalization** - With `utf8normalize`, you can normalize UTF-8 encoded text to NFC, NFD, NFKC or NFKD without converting it to UTF-32 first.
+
+* **Seeking** - Using `utf8seek`, you can seek forwards and backwards in UTF-8 encoded text.
 
 * **Cross-platform** - `utf8rewind` is written in plain C, which means it can be used on any platform with a compliant C compiler. Currently, Windows, Linux and Mac versions are available.
 
-* **Easy to integrate** - The library consists of only 13 public functions and requires no initialization. Any C or C++ project can add utf8rewind without breaking existing code.
+* **Easy to integrate** - The library consists of only 13 public functions and requires no initialization. Any C or C++ project can add `utf8rewind` without breaking existing code.
 
-* **Simple bindings** - No structs are used in the public interface, only pointers. Even if you don't use C, if the language of your choice allows bindings to C functions (e.g. Python), you can benefit from integrating utf8rewind into your project.
+* **Simple bindings** - No structs are used in the public interface, only pointers. Even if you don't use C, if the language of your choice allows bindings to C functions (e.g. Python), you can benefit from integrating `utf8rewind` into your project.
 
-* **No heap allocations** - All allocations in UTF-8 happen on the stack. You provide the memory, without having to override `malloc`. This makes the library perfectly tailored to game engines, integrated systems and other performance-critical or memory-constrained projects.
+* **No heap allocations** - All allocations in `utf8rewind` happen on the stack. You provide the memory, without having to override `malloc`. This makes the library perfectly tailored to game engines, integrated systems and other performance-critical or memory-constrained projects.
 
-* **Safety** - Over 1500 automated unit and integration tests guarantee the safety and security of the library.
-
-## Download
-
-[utf8rewind-1.2.0.zip (3.15 MB)](https://bitbucket.org/knight666/utf8rewind/downloads/utf8rewind-1.2.0.zip)
-
-### Clone in Mercurial
-
-    hg clone https://bitbucket.org/knight666/utf8rewind utf8rewind
+* **Safety** - Over 2300 automated unit and integration tests guarantee the safety and security of the library.
 
 ## Licensing ##
 
 This project is licensed under the MIT license, a full copy of which should have been provided with the project.
+
+## Download ##
+
+[utf8rewind-1.2.1.zip (3.17 MB)](https://bitbucket.org/knight666/utf8rewind/downloads/utf8rewind-1.2.1.zip)
+
+### Clone in Mercurial ###
+ 
+	hg clone https://bitbucket.org/knight666/utf8rewind utf8rewind
 
 ## Building the project ##
 
@@ -40,7 +104,7 @@ All supported platforms use [GYP](http://code.google.com/p/gyp/) to generate a s
 
 ### Building on Windows with Visual Studio ###
 
-You will need to have Visual Studio 2010 or above installed.
+	You will need to have Visual Studio 2010 or above installed.
 
 Open a command window at the project's root.
 
@@ -74,11 +138,12 @@ For a release build, specify the build type:
 
 	make BUILDTYPE=Release
 
-The generated Makefile does not contain a "clean" target. In order to do a full rebuild, you must delete the files in the "output" directory manually.
+Note that the generated Makefile does not contain a "clean" target. In order to do a full rebuild, you must delete the files in the "output" directory manually.
 
 ### Building on Mac OS X with XCode ###
 
-Building on Mac OS X is currently untested. Please let us know if you can help us in this regard.
+\note Building on Mac OS X is currently untested. Please let us know if
+you can help us in this regard.
 
 Open a command window at the project's root.
 
