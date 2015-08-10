@@ -2,6 +2,10 @@
 
 #include "helpers-strings.hpp"
 
+extern "C" {
+	#include "../internal/casemapping.h"
+}
+
 namespace helpers {
 
 	std::string uppercase(unicode_t codepoint)
@@ -73,6 +77,30 @@ namespace helpers {
 		return converted;
 	}
 
+	std::string locale(uint32_t value)
+	{
+	#define LOCALE_CASE(_name) case CASEMAPPING_LOCALE_ ## _name: return "CASEMAPPING_LOCALE_" # _name;
+
+		switch (value)
+		{
+
+		LOCALE_CASE(DEFAULT);
+		LOCALE_CASE(LITHUANIAN);
+		LOCALE_CASE(TURKISH);
+		LOCALE_CASE(AZERI);
+		
+		default:
+			std::stringstream ss;
+			ss << "<invalid> (0x";
+			ss << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << error;
+			ss << ")";
+			return ss.str();
+
+		}
+
+	#undef ERROR_CASE
+	}
+
 	::testing::AssertionResult CompareCasemapping(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
@@ -127,6 +155,27 @@ namespace helpers {
 			{
 				result << "[Titlecase]  \"" << helpers::printable(entryExpected.titlecase) << "\" (" << helpers::identifiable(entryExpected.titlecase) << ")" << std::endl;
 			}
+
+			return result;
+		}
+	}
+
+	::testing::AssertionResult CompareLocale(
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual,
+		uint32_t localeExpected, uint32_t localeActual)
+	{
+		if (localeExpected == localeActual)
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << "Value of: " << expressionActual << std::endl;
+
+			result << "  Actual: " << locale(localeActual) << " (" << localeActual << ")" << std::endl;
+			result << "Expected: " << locale(localeExpected) << " (" << localeExpected << ")";
 
 			return result;
 		}

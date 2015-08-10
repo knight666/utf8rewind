@@ -7,22 +7,6 @@ extern "C" {
 
 #include "helpers-strings.hpp"
 
-TEST(CaseMappingExecute, Initialize)
-{
-	CaseMappingState state;
-	const char* i = "Greetings";
-	size_t is = strlen(i);
-	char o[256] = { 0 };
-	size_t os = 255;
-
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Titlecase));
-	EXPECT_EQ(i, state.src);
-	EXPECT_EQ(is, state.src_size);
-	EXPECT_EQ(o, state.dst);
-	EXPECT_EQ(os, state.dst_size);
-	EXPECT_EQ(UnicodeProperty_Titlecase, state.property);
-}
-
 TEST(CaseMappingExecute, BasicLatinSingleLowercase)
 {
 	CaseMappingState state;

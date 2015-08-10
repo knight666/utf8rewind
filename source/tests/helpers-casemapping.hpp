@@ -39,6 +39,9 @@
 	EXPECT_PRED_FORMAT2(::helpers::CompareCasemapping, e, a); \
 }
 
+#define EXPECT_LOCALE_EQ(_expected, _actual) \
+	EXPECT_PRED_FORMAT2(::helpers::CompareLocale, _expected, _actual); \
+
 namespace helpers {
 
 	std::string uppercase(unicode_t codepoint);
@@ -49,6 +52,8 @@ namespace helpers {
 
 	std::string titlecase(unicode_t codepoint);
 	std::string titlecase(const std::string& text);
+
+	std::string locale(uint32_t value);
 
 	struct CaseMappingEntry
 	{
@@ -67,6 +72,10 @@ namespace helpers {
 	::testing::AssertionResult CompareCasemapping(
 		const char* expressionExpected, const char* expressionActual,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual);
+
+	::testing::AssertionResult CompareLocale(
+		const char* expressionExpected, const char* expressionActual,
+		uint32_t localeExpected, uint32_t localeActual);
 
 };
 
