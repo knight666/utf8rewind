@@ -101,12 +101,12 @@ namespace helpers {
 	#undef ERROR_CASE
 	}
 
-	::testing::AssertionResult CompareCasemapping(
+	::testing::AssertionResult CompareCodepoint(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
 	{
-		if (entryExpected.uppercase == entryActual.uppercase &&
-			entryExpected.lowercase == entryActual.lowercase &&
+		if (entryExpected.lowercase == entryActual.lowercase &&
+			entryExpected.uppercase == entryActual.uppercase &&
 			entryExpected.titlecase == entryActual.titlecase)
 		{
 			return ::testing::AssertionSuccess();
@@ -115,32 +115,32 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result <<  entryExpected.name << " (" << helpers::identifiable(entryExpected.codepoint)  << ")" << std::endl;
-
-			result << std::endl;
-
-			if (entryExpected.uppercase != entryActual.uppercase)
-			{
-				result << "[Uppercase]" << std::endl;
-				result << "    Actual:  \"" << helpers::printable(entryActual.uppercase) << "\" (" << helpers::identifiable(entryActual.uppercase) << ")" << std::endl;
-				result << "  Expected:  \"" << helpers::printable(entryExpected.uppercase) << "\" (" << helpers::identifiable(entryExpected.uppercase) << ")" << std::endl;
-			}
-			else
-			{
-				result << "[Uppercase]  \"" << helpers::printable(entryActual.uppercase) << "\" (" << helpers::identifiable(entryActual.uppercase) << ")" << std::endl;
-			}
+			result << entryExpected.name << " (" << identifiable(entryExpected.codepoint)  << ")" << std::endl;
 
 			result << std::endl;
 
 			if (entryExpected.lowercase != entryActual.lowercase)
 			{
 				result << "[Lowercase]" << std::endl;
-				result << "    Actual:  \"" << helpers::printable(entryActual.lowercase) << "\" (" << helpers::identifiable(entryActual.lowercase) << ")" << std::endl;
-				result << "  Expected:  \"" << helpers::printable(entryExpected.lowercase) << "\" (" << helpers::identifiable(entryExpected.lowercase) << ")" << std::endl;
+				result << "    Actual:  \"" << printable(entryActual.lowercase) << "\" (" << identifiable(entryActual.lowercase) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.lowercase) << "\" (" << identifiable(entryExpected.lowercase) << ")" << std::endl;
 			}
 			else
 			{
-				result << "[Lowercase]  \"" << helpers::printable(entryExpected.lowercase) << "\" (" << helpers::identifiable(entryExpected.lowercase) << ")" << std::endl;
+				result << "[Lowercase]  \"" << printable(entryExpected.lowercase) << "\" (" << identifiable(entryExpected.lowercase) << ")" << std::endl;
+			}
+
+			result << std::endl;
+
+			if (entryExpected.uppercase != entryActual.uppercase)
+			{
+				result << "[Uppercase]" << std::endl;
+				result << "    Actual:  \"" << printable(entryActual.uppercase) << "\" (" << identifiable(entryActual.uppercase) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.uppercase) << "\" (" << identifiable(entryExpected.uppercase) << ")" << std::endl;
+			}
+			else
+			{
+				result << "[Uppercase]  \"" << printable(entryActual.uppercase) << "\" (" << identifiable(entryActual.uppercase) << ")" << std::endl;
 			}
 
 			result << std::endl;
@@ -148,12 +148,71 @@ namespace helpers {
 			if (entryExpected.titlecase != entryActual.titlecase)
 			{
 				result << "[Titlecase]" << std::endl;
-				result << "    Actual:  \"" << helpers::printable(entryActual.titlecase) << "\" (" << helpers::identifiable(entryActual.titlecase) << ")" << std::endl;
-				result << "  Expected:  \"" << helpers::printable(entryExpected.titlecase) << "\" (" << helpers::identifiable(entryExpected.titlecase) << ")" << std::endl;
+				result << "    Actual:  \"" << printable(entryActual.titlecase) << "\" (" << identifiable(entryActual.titlecase) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(entryExpected.titlecase) << ")" << std::endl;
 			}
 			else
 			{
-				result << "[Titlecase]  \"" << helpers::printable(entryExpected.titlecase) << "\" (" << helpers::identifiable(entryExpected.titlecase) << ")" << std::endl;
+				result << "[Titlecase]  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(entryExpected.titlecase) << ")" << std::endl;
+			}
+
+			return result;
+		}
+	}
+
+	::testing::AssertionResult CompareCaseMapping(
+		const char* expressionExpected, const char* expressionActual,
+		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
+	{
+		if (entryExpected.lowercase == entryActual.lowercase &&
+			entryExpected.uppercase == entryActual.uppercase &&
+			entryExpected.titlecase == entryActual.titlecase)
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << "Input: \"" << printable(entryActual.input) << "\"" << std::endl;
+
+			result << std::endl;
+
+			if (entryExpected.lowercase != entryActual.lowercase)
+			{
+				result << "[Lowercase]" << std::endl;
+				result << "    Actual:  \"" << printable(entryActual.lowercase) << "\" (" << identifiable(entryActual.lowercase) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.lowercase) << "\" (" << identifiable(entryExpected.lowercase) << ")" << std::endl;
+			}
+			else
+			{
+				result << "[Lowercase]  \"" << printable(entryExpected.lowercase) << "\" (" << identifiable(entryExpected.lowercase) << ")" << std::endl;
+			}
+
+			result << std::endl;
+
+			if (entryExpected.uppercase != entryActual.uppercase)
+			{
+				result << "[Uppercase]" << std::endl;
+				result << "    Actual:  \"" << printable(entryActual.uppercase) << "\" (" << identifiable(entryActual.uppercase) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.uppercase) << "\" (" << identifiable(entryExpected.uppercase) << ")" << std::endl;
+			}
+			else
+			{
+				result << "[Uppercase]  \"" << printable(entryActual.uppercase) << "\" (" << identifiable(entryActual.uppercase) << ")" << std::endl;
+			}
+
+			result << std::endl;
+
+			if (entryExpected.titlecase != entryActual.titlecase)
+			{
+				result << "[Titlecase]" << std::endl;
+				result << "    Actual:  \"" << printable(entryActual.titlecase) << "\" (" << identifiable(entryActual.titlecase) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(entryExpected.titlecase) << ")" << std::endl;
+			}
+			else
+			{
+				result << "[Titlecase]  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(entryExpected.titlecase) << ")" << std::endl;
 			}
 
 			return result;

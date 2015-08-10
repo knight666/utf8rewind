@@ -22,7 +22,7 @@
 	a.uppercase = ::helpers::uppercase(_codepoint); \
 	a.lowercase = ::helpers::lowercase(_codepoint); \
 	a.titlecase = ::helpers::titlecase(_codepoint); \
-	EXPECT_PRED_FORMAT2(::helpers::CompareCasemapping, e, a); \
+	EXPECT_PRED_FORMAT2(::helpers::CompareCodepoint, e, a); \
 }
 
 #define CHECK_CASEMAPPING(_codepoint, _uppercase, _lowercase, _titlecase, _name) { \
@@ -36,7 +36,20 @@
 	a.uppercase = ::helpers::uppercase(_codepoint); \
 	a.lowercase = ::helpers::lowercase(_codepoint); \
 	a.titlecase = ::helpers::titlecase(_codepoint); \
-	EXPECT_PRED_FORMAT2(::helpers::CompareCasemapping, e, a); \
+	EXPECT_PRED_FORMAT2(::helpers::CompareCodepoint, e, a); \
+}
+
+#define EXPECT_CASEMAPPING_EQ(_input, _lowercase, _uppercase, _titlecase) { \
+	::helpers::CaseMappingEntry e; \
+	e.lowercase = _lowercase; \
+	e.uppercase = _uppercase; \
+	e.titlecase = _titlecase; \
+	::helpers::CaseMappingEntry a; \
+	a.input = _input; \
+	a.lowercase = ::helpers::lowercase(_input); \
+	a.uppercase = ::helpers::uppercase(_input); \
+	a.titlecase = ::helpers::titlecase(_input); \
+	EXPECT_PRED_FORMAT2(::helpers::CompareCaseMapping, e, a); \
 }
 
 #define EXPECT_LOCALE_EQ(_expected, _actual) \
@@ -63,13 +76,18 @@ namespace helpers {
 		}
 
 		unicode_t codepoint;
-		std::string uppercase;
-		std::string lowercase;
-		std::string titlecase;
 		std::string name;
+		std::string input;
+		std::string lowercase;
+		std::string uppercase;
+		std::string titlecase;
 	};
 
-	::testing::AssertionResult CompareCasemapping(
+	::testing::AssertionResult CompareCodepoint(
+		const char* expressionExpected, const char* expressionActual,
+		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual);
+
+	::testing::AssertionResult CompareCaseMapping(
 		const char* expressionExpected, const char* expressionActual,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual);
 
