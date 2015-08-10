@@ -174,7 +174,7 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << "Input: \"" << printable(entryActual.input) << "\"" << std::endl;
+			result << "Input: \"" << printable(entryActual.input) << "\" (" << identifiable(entryActual.input) << ")" << std::endl;
 
 			result << std::endl;
 
