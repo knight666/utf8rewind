@@ -956,7 +956,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* commandStart;</div>
 <div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* commandEnd;</div>
 <div class="line"></div>
-<div class="line">memset(fixed, 0, 1024);</div>
+<div class="line">memset(fixed, 0, <span class="keyword">sizeof</span>(fixed));</div>
 <div class="line"></div>
 <div class="line">commandStart = strstr(text, <span class="stringliteral">&quot;\xE0\x80\x13&quot;</span>);</div>
 <div class="line"><span class="keywordflow">if</span> (commandStart == 0)</div>
@@ -1275,11 +1275,11 @@ or Lo according to the Unicode database".</p>
 <div class="line">    int32_t errors;</div>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a8c55b8635f998a2405aa0a5483289264">utf8totitle</a>(title, strlen(title), book-&gt;title, 255, &amp;errors);</div>
+<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a8c55b8635f998a2405aa0a5483289264">utf8totitle</a>(title, strlen(title), book-&gt;title, <span class="keyword">sizeof</span>(book-&gt;title) - 1, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
 <div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
-<div class="line">        memset(book-&gt;title, 0, 256);</div>
+<div class="line">        memset(book-&gt;title, 0, <span class="keyword">sizeof</span>(book-&gt;title));</div>
 <div class="line"></div>
 <div class="line">        <span class="keywordflow">return</span>;</div>
 <div class="line">    }</div>
