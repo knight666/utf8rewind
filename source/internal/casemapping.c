@@ -31,6 +31,8 @@
 
 uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property)
 {
+	const char* locale = setlocale(LC_ALL, "");
+
 	memset(state, 0, sizeof(CaseMappingState));
 
 	state->src = input;
@@ -38,6 +40,19 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 	state->dst = target;
 	state->dst_size = targetSize;
 	state->property = property;
+
+	if (!strcmp(locale, "lt-LT"))
+	{
+		state->locale = CASEMAPPING_LOCALE_LITHUANIAN;
+	}
+	else if (!strcmp(locale, "tr-TR"))
+	{
+		state->locale = CASEMAPPING_LOCALE_TURKISH;
+	}
+	else if (!strcmp(locale, "az-AZ"))
+	{
+		state->locale = CASEMAPPING_LOCALE_AZERI;
+	}
 
 	return 1;
 }
