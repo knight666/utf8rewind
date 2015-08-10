@@ -13,7 +13,7 @@ protected:
 		errors = UTF8_ERR_NONE;
 		output = nullptr;
 
-		memset(input, 0, 8192);
+		memset(input, 0, sizeof(input));
 
 		// load into file
 

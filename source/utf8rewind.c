@@ -935,7 +935,7 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 	/* Initialize decomposition */
 
-	memset(stream, 0, 4 * sizeof(StreamState));
+	memset(stream, 0, sizeof(stream));
 
 	if (!stream_initialize(&stream[0], input, inputSize) ||
 		!decompose_initialize(&decompose_state, &stream[0], &stream[1], compatibility))
