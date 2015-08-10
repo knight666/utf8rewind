@@ -556,7 +556,7 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 		const char* commandStart;
 		const char* commandEnd;
 
-		memset(fixed, 0, 1024);
+		memset(fixed, 0, sizeof(fixed));
 
 		commandStart = strstr(text, "\xE0\x80\x13");
 		if (commandStart == 0)
@@ -793,11 +793,11 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 			int32_t errors;
 			size_t i;
 
-			converted_size = utf8totitle(title, strlen(title), book->title, 255, &errors);
+			converted_size = utf8totitle(title, strlen(title), book->title, sizeof(book->title) - 1, &errors);
 			if (converted_size == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
-				memset(book->title, 0, 256);
+				memset(book->title, 0, sizeof(book->title));
 
 				return;
 			}

@@ -20,11 +20,11 @@
 			// For the purposes of brevity, ignore the fact
 			// that this is a terrible way to generate a salt,
 			// because it has insufficient entropy.
-			memset(verify_password, 0, 256);
+			memset(verify_password, 0, sizeof(verify_password));
 			strcpy(verify_password, md5(password));
 			strcat(verify_password, md5(username));
 
-			memset(hashed_verify_password, 256, 0);
+			memset(hashed_verify_password, 0, sizeof(hashed_verify_password));
 			strcpy(hashed_verify_password, md5(verify_password));
 
 			return Database_CheckLogin(username, hashed_verify_password);
