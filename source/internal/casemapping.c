@@ -29,9 +29,22 @@
 #include "codepoint.h"
 #include "database.h"
 
+#if WIN32 || _WINDOWS
+	#define LOCALE_TYPE                     _locale_t
+	#define GET_LOCALE()                    _get_current_locale()
+	#define CHECK_LOCALE(_name, _ansiCodepage, _oemCodepage) \
+		locale->locinfo->lc_codepage == _ansiCodepage || \
+		locale->locinfo->lc_codepage == _oemCodepage
+#else
+	#define LOCALE_TYPE                     const char*
+	#define GET_LOCALE()                    setlocale(LC_ALL, "")
+	#define CHECK_LOCALE(_name, _ansiCodepage, _oemCodepage) \
+		!strcmp(locale, _name)
+#endif
+
 uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property)
 {
-	const char* locale = setlocale(LC_ALL, "");
+	LOCALE_TYPE locale;
 
 	memset(state, 0, sizeof(CaseMappingState));
 
@@ -41,15 +54,17 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 	state->dst_size = targetSize;
 	state->property = property;
 
-	if (!strcmp(locale, "lt-LT"))
+	locale = GET_LOCALE();
+
+	if (CHECK_LOCALE("lt-LT", 1257, 775))
 	{
 		state->locale = CASEMAPPING_LOCALE_LITHUANIAN;
 	}
-	else if (!strcmp(locale, "tr-TR"))
+	else if (CHECK_LOCALE("tr-TR", 1254, 857))
 	{
 		state->locale = CASEMAPPING_LOCALE_TURKISH;
 	}
-	else if (!strcmp(locale, "az-AZ"))
+	else if (CHECK_LOCALE("az-AZ", 0xCDCDCDCD, 0xCDCDCDCD))
 	{
 		state->locale = CASEMAPPING_LOCALE_AZERI;
 	}
