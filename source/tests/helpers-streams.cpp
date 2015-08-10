@@ -7,7 +7,7 @@ namespace helpers {
 	StreamState createStream(const std::string& text)
 	{
 		StreamState stream;
-		memset(&stream, 0, sizeof(StreamState));
+		memset(&stream, 0, sizeof(stream));
 
 		std::vector<unicode_t> converted = helpers::utf32(text);
 

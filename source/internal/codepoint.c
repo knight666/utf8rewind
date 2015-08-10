@@ -172,10 +172,19 @@ uint8_t codepoint_read(const char* input, size_t inputSize, unicode_t* decoded)
 {
 	const uint8_t* src = (const uint8_t*)input;
 
-	if (input == 0 ||
+	if (decoded == 0)
+	{
+		/* Not allowed */
+
+		return 0;
+	}
+	else if (
+		input == 0 ||
 		inputSize == 0)
 	{
 		/* Invalid data */
+
+		*decoded = 0;
 
 		return 0;
 	}
