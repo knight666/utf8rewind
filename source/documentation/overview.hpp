@@ -25,8 +25,8 @@
 		size_t converted_size;
 		int32_t errors;
 
-		memset(output, 0, output_size * sizeof(char));
-		memset(output_wide, 0, output_size * sizeof(wchar_t));
+		memset(output, 0, sizeof(output));
+		memset(output_wide, 0, sizeof(output_wide));
 
 		// Convert input to uppercase:
 		//

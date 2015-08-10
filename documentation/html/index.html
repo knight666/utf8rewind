@@ -115,8 +115,8 @@ Example</h1>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
 <div class="line">    int32_t errors;</div>
 <div class="line"></div>
-<div class="line">    memset(output, 0, output_size * <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>));</div>
-<div class="line">    memset(output_wide, 0, output_size * <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>));</div>
+<div class="line">    memset(output, 0, <span class="keyword">sizeof</span>(output));</div>
+<div class="line">    memset(output_wide, 0, <span class="keyword">sizeof</span>(output_wide));</div>
 <div class="line"></div>
 <div class="line">    <span class="comment">// Convert input to uppercase:</span></div>
 <div class="line">    <span class="comment">//</span></div>
