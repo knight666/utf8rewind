@@ -31,6 +31,7 @@
 	\brief Public interface for UTF-8 functions.
 */
 
+#include <locale.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdint.h>
