@@ -5,9 +5,9 @@
 
 TEST(SpecialCasing, LithuanianRemoveDotAbove)
 {
-	EXPECT_STREQ("lt-LT", setlocale(LC_ALL, "lt-LT"));
-
 	// Remove DOT ABOVE after "i" with upper or titlecase
+
+	EXPECT_STREQ("lt-LT", setlocale(LC_ALL, "lt-LT"));
 
 	EXPECT_CASEMAPPING_EQ("i\xCC\x87", "i\xCC\x87", "I", "I"); // COMBINING DOT ABOVE
 
@@ -16,11 +16,11 @@ TEST(SpecialCasing, LithuanianRemoveDotAbove)
 
 TEST(SpecialCasing, LithuanianIntroduceExplicitDot)
 {
-	EXPECT_STREQ("lt-LT", setlocale(LC_ALL, "lt-LT"));
-
 	// Introduce an explicit dot above when lowercasing capital I's and J's
 	// whenever there are more accents above.
 	// (of the accents used in Lithuanian: grave, acute, tilde above, and ogonek)
+
+	EXPECT_STREQ("lt-LT", setlocale(LC_ALL, "lt-LT"));
 
 	// LATIN CAPITAL LETTER I
 	EXPECT_CASEMAPPING_EQ("I", "i", "I", "I");
@@ -43,6 +43,38 @@ TEST(SpecialCasing, LithuanianIntroduceExplicitDot)
 	// LATIN CAPITAL LETTER I WITH TILDE
 	EXPECT_CASEMAPPING_EQ("\xC4\xA8", "i\xCC\x87\xCC\x83", "\xC4\xA8", "\xC4\xA8");
 	EXPECT_CASEMAPPING_EQ("I\xCC\x83", "i\xCC\x87\xCC\x83", "I\xCC\x83", "I\xCC\x83");
+
+	setlocale(LC_ALL, "C");
+}
+
+TEST(SpecialCasing, TurkishDotlessI)
+{
+	EXPECT_STREQ("tr-TR", setlocale(LC_ALL, "tr-TR"));
+
+	// I and i-dotless; I-dot and i are case pairs in Turkish and Azeri
+	// The following rules handle those cases.
+
+	// LATIN CAPITAL LETTER I WITH DOT ABOVE
+	EXPECT_CASEMAPPING_EQ("\xC4\xB0", "i", "\xC4\xB0", "\xC4\xB0");
+
+	// When lowercasing, remove dot_above in the sequence I + dot_above, which will turn into i.
+	// This matches the behavior of the canonically equivalent I-dot_above
+
+	// COMBINING DOT ABOVE
+	EXPECT_CASEMAPPING_EQ("I\xCC\x87", "i", "I\xCC\x87", "I\xCC\x87");
+
+	// When lowercasing, unless an I is before a dot_above, it turns into a dotless i.
+
+	// LATIN CAPITAL LETTER I
+	EXPECT_CASEMAPPING_EQ("I", "\xC4\xB1", "I", "I");
+
+	// When uppercasing, i turns into a dotted capital I
+
+	// LATIN SMALL LETTER I
+	EXPECT_CASEMAPPING_EQ("i", "i", "\xC4\xB1", "\xC4\xB1");
+
+	// LATIN SMALL LETTER DOTLESS I
+	EXPECT_CASEMAPPING_EQ("\xC4\xB1", "\xC4\xB1", "I", "I");
 
 	setlocale(LC_ALL, "C");
 }
