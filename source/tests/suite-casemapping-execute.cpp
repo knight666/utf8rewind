@@ -5,9 +5,28 @@ extern "C" {
 	#include "../internal/database.h"
 }
 
+#include "helpers-locale.hpp"
 #include "helpers-strings.hpp"
 
-TEST(CaseMappingExecute, BasicLatinSingleLowercase)
+class CaseMappingExecute
+	: public ::testing::Test
+{
+
+protected:
+
+	void SetUp()
+	{
+		SET_LOCALE_ENGLISH();
+	}
+
+	void TearDown()
+	{
+		RESET_LOCALE();
+	}
+
+};
+
+TEST_F(CaseMappingExecute, BasicLatinSingleLowercase)
 {
 	CaseMappingState state;
 	const char* i = "R";
@@ -28,7 +47,7 @@ TEST(CaseMappingExecute, BasicLatinSingleLowercase)
 	EXPECT_UTF8EQ("r", o);
 }
 
-TEST(CaseMappingExecute, BasicLatinSingleUppercase)
+TEST_F(CaseMappingExecute, BasicLatinSingleUppercase)
 {
 	CaseMappingState state;
 	const char* i = "i";
@@ -49,7 +68,7 @@ TEST(CaseMappingExecute, BasicLatinSingleUppercase)
 	EXPECT_UTF8EQ("I", o);
 }
 
-TEST(CaseMappingExecute, BasicLatinSingleTitlecase)
+TEST_F(CaseMappingExecute, BasicLatinSingleTitlecase)
 {
 	CaseMappingState state;
 	const char* i = "v";
@@ -70,7 +89,7 @@ TEST(CaseMappingExecute, BasicLatinSingleTitlecase)
 	EXPECT_UTF8EQ("V", o);
 }
 
-TEST(CaseMappingExecute, BasicLatinSingleUnaffected)
+TEST_F(CaseMappingExecute, BasicLatinSingleUnaffected)
 {
 	CaseMappingState state;
 	const char* i = "`";
@@ -91,7 +110,7 @@ TEST(CaseMappingExecute, BasicLatinSingleUnaffected)
 	EXPECT_UTF8EQ("`", o);
 }
 
-TEST(CaseMappingExecute, BasicLatinSingleAmountOfBytes)
+TEST_F(CaseMappingExecute, BasicLatinSingleAmountOfBytes)
 {
 	CaseMappingState state;
 	const char* i = "!";
@@ -108,7 +127,7 @@ TEST(CaseMappingExecute, BasicLatinSingleAmountOfBytes)
 	EXPECT_EQ(0, casemapping_execute(&state));
 }
 
-TEST(CaseMappingExecute, BasicLatinSingleNotEnoughSpace)
+TEST_F(CaseMappingExecute, BasicLatinSingleNotEnoughSpace)
 {
 	CaseMappingState state;
 	const char* i = "^";
@@ -127,7 +146,7 @@ TEST(CaseMappingExecute, BasicLatinSingleNotEnoughSpace)
 	EXPECT_UTF8EQ("", o);
 }
 
-TEST(CaseMappingExecute, BasicLatinMultipleLowercase)
+TEST_F(CaseMappingExecute, BasicLatinMultipleLowercase)
 {
 	CaseMappingState state;
 	const char* i = "BUY";
@@ -160,7 +179,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleLowercase)
 	EXPECT_UTF8EQ("buy", o);
 }
 
-TEST(CaseMappingExecute, BasicLatinMultipleUppercase)
+TEST_F(CaseMappingExecute, BasicLatinMultipleUppercase)
 {
 	CaseMappingState state;
 	const char* i = "mouse";
@@ -205,7 +224,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleUppercase)
 	EXPECT_UTF8EQ("MOUSE", o);
 }
 
-TEST(CaseMappingExecute, BasicLatinMultipleTitlecase)
+TEST_F(CaseMappingExecute, BasicLatinMultipleTitlecase)
 {
 	CaseMappingState state;
 	const char* i = "Zing";
@@ -244,7 +263,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleTitlecase)
 	EXPECT_UTF8EQ("ZING", o);
 }
 
-TEST(CaseMappingExecute, BasicLatinMultipleUnaffected)
+TEST_F(CaseMappingExecute, BasicLatinMultipleUnaffected)
 {
 	CaseMappingState state;
 	const char* i = "$5.-";
@@ -283,7 +302,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleUnaffected)
 	EXPECT_UTF8EQ("$5.-", o);
 }
 
-TEST(CaseMappingExecute, BasicLatinMultipleAmountOfBytes)
+TEST_F(CaseMappingExecute, BasicLatinMultipleAmountOfBytes)
 {
 	CaseMappingState state;
 	const char* i = "bar";
@@ -312,7 +331,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleAmountOfBytes)
 	EXPECT_EQ(0, casemapping_execute(&state));
 }
 
-TEST(CaseMappingExecute, BasicLatinMultipleNotEnoughSpace)
+TEST_F(CaseMappingExecute, BasicLatinMultipleNotEnoughSpace)
 {
 	CaseMappingState state;
 	const char* i = "disconnect";
@@ -345,7 +364,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleNotEnoughSpace)
 	EXPECT_UTF8EQ("DIS", o);
 }
 
-TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleLowercase)
+TEST_F(CaseMappingExecute, GeneralCategoryCaseMappedSingleLowercase)
 {
 	// LATIN CAPITAL LETTER O WITH STROKE
 
@@ -368,7 +387,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleLowercase)
 	EXPECT_UTF8EQ("\xC3\xB8", o);
 }
 
-TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUppercase)
+TEST_F(CaseMappingExecute, GeneralCategoryCaseMappedSingleUppercase)
 {
 	// LATIN SMALL LETTER N PRECEDED BY APOSTROPHE
 
@@ -391,7 +410,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUppercase)
 	EXPECT_UTF8EQ("\xCA\xBCN", o);
 }
 
-TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleTitlecase)
+TEST_F(CaseMappingExecute, GeneralCategoryCaseMappedSingleTitlecase)
 {
 	// LATIN CAPITAL LETTER DZ WITH CARON
 
@@ -414,7 +433,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleTitlecase)
 	EXPECT_UTF8EQ("\xC7\x85", o);
 }
 
-TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUnaffected)
+TEST_F(CaseMappingExecute, GeneralCategoryCaseMappedSingleUnaffected)
 {
 	// OLD PERSONAL COMPUTER
 
@@ -437,7 +456,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUnaffected)
 	EXPECT_UTF8EQ("\xF0\x9F\x96\xB3", o);
 }
 
-TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleAmountOfBytes)
+TEST_F(CaseMappingExecute, GeneralCategoryCaseMappedSingleAmountOfBytes)
 {
 	// HARD DISK
 
@@ -456,7 +475,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleAmountOfBytes)
 	EXPECT_EQ(0, casemapping_execute(&state));
 }
 
-TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleNotEnoughSpace)
+TEST_F(CaseMappingExecute, GeneralCategoryCaseMappedSingleNotEnoughSpace)
 {
 	// SWASH AMPERSAND ORNAMENT
 
@@ -477,7 +496,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleNotEnoughSpace)
 	EXPECT_UTF8EQ("", o);
 }
 
-TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleLowercase)
+TEST_F(CaseMappingExecute, GeneralCategoryCaseMappedMultipleLowercase)
 {
 	// 01A4 017D 015E
 	// 01A5 017E 015F
@@ -513,7 +532,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleLowercase)
 	EXPECT_UTF8EQ("\xC6\xA5\xC5\xBE\xC5\x9F", o);
 }
 
-TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUppercase)
+TEST_F(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUppercase)
 {
 	// 0149 00DF
 	// 02BC 004E 0053 0053
@@ -543,7 +562,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUppercase)
 	EXPECT_UTF8EQ("\xCA\xBCNSS", o);
 }
 
-TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleTitlecase)
+TEST_F(CaseMappingExecute, GeneralCategoryCaseMappedMultipleTitlecase)
 {
 	// 01C7 01DC 01D0
 	// 01C8 01DB 01CF
@@ -579,7 +598,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleTitlecase)
 	EXPECT_UTF8EQ("\xC7\x88\xC7\x9B\xC7\x8F", o);
 }
 
-TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUnaffected)
+TEST_F(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUnaffected)
 {
 	// 1F5D8 1AA3 3010 1F64B
 	// 1F5D8 1AA3 3010 1F64B
@@ -621,7 +640,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUnaffected)
 	EXPECT_UTF8EQ("\xF0\x9F\x97\x98\xE1\xAA\xA3\xE3\x80\x90\xF0\x9F\x99\x8B", o);
 }
 
-TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleAmountOfBytes)
+TEST_F(CaseMappingExecute, GeneralCategoryCaseMappedMultipleAmountOfBytes)
 {
 	// 0130 0390 041A
 	// 0069 0307 0390 043A
@@ -653,7 +672,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleAmountOfBytes)
 	EXPECT_EQ(0, casemapping_execute(&state));
 }
 
-TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleNotEnoughSpace)
+TEST_F(CaseMappingExecute, GeneralCategoryCaseMappedMultipleNotEnoughSpace)
 {
 	// 03E4 03B0 0390
 	// 03E4 03A5 0308 0301 0399 0308 0301
@@ -687,7 +706,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleNotEnoughSpace)
 	EXPECT_UTF8EQ("\xCF\xA4\xCE\xA5\xCC\x88\xCC\x81", o);
 }
 
-TEST(CaseMappingExecute, InvalidCodepointSingle)
+TEST_F(CaseMappingExecute, InvalidCodepointSingle)
 {
 	CaseMappingState state;
 	const char* i = "\xDA";
@@ -708,7 +727,7 @@ TEST(CaseMappingExecute, InvalidCodepointSingle)
 	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
 }
 
-TEST(CaseMappingExecute, InvalidCodepointSingleAmountOfBytes)
+TEST_F(CaseMappingExecute, InvalidCodepointSingleAmountOfBytes)
 {
 	CaseMappingState state;
 	const char* i = "\xF4\x89";
@@ -725,7 +744,7 @@ TEST(CaseMappingExecute, InvalidCodepointSingleAmountOfBytes)
 	EXPECT_EQ(0, casemapping_execute(&state));
 }
 
-TEST(CaseMappingExecute, InvalidCodepointSingleNotEnoughSpace)
+TEST_F(CaseMappingExecute, InvalidCodepointSingleNotEnoughSpace)
 {
 	CaseMappingState state;
 	const char* i = "\xC4";
@@ -746,7 +765,7 @@ TEST(CaseMappingExecute, InvalidCodepointSingleNotEnoughSpace)
 	EXPECT_UTF8EQ("", o);
 }
 
-TEST(CaseMappingExecute, InvalidCodepointMultiple)
+TEST_F(CaseMappingExecute, InvalidCodepointMultiple)
 {
 	CaseMappingState state;
 	const char* i = "\xCC\xCD\xD9";
@@ -779,7 +798,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultiple)
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBD", o);
 }
 
-TEST(CaseMappingExecute, InvalidCodepointMultipleAmountOfBytes)
+TEST_F(CaseMappingExecute, InvalidCodepointMultipleAmountOfBytes)
 {
 	CaseMappingState state;
 	const char* i = "\xDA\xE0\x88\xDE\xCB";
@@ -814,7 +833,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultipleAmountOfBytes)
 	EXPECT_EQ(0, casemapping_execute(&state));
 }
 
-TEST(CaseMappingExecute, InvalidCodepointMultipleNotEnoughSpace)
+TEST_F(CaseMappingExecute, InvalidCodepointMultipleNotEnoughSpace)
 {
 	CaseMappingState state;
 	const char* i = "\xDE\xCD\xCA\xDB";

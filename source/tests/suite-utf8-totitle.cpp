@@ -2,9 +2,28 @@
 
 #include "utf8rewind.h"
 
+#include "helpers-locale.hpp"
 #include "helpers-strings.hpp"
 
-TEST(Utf8ToTitle, BasicLatinSingleUppercase)
+class Utf8ToTitle
+	: public ::testing::Test
+{
+
+protected:
+
+	void SetUp()
+	{
+		SET_LOCALE_ENGLISH();
+	}
+
+	void TearDown()
+	{
+		RESET_LOCALE();
+	}
+
+};
+
+TEST_F(Utf8ToTitle, BasicLatinSingleUppercase)
 {
 	const char* c = "J";
 	const size_t s = 256;
@@ -16,7 +35,7 @@ TEST(Utf8ToTitle, BasicLatinSingleUppercase)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, BasicLatinSingleLowercase)
+TEST_F(Utf8ToTitle, BasicLatinSingleLowercase)
 {
 	const char* c = "z";
 	const size_t s = 256;
@@ -28,7 +47,7 @@ TEST(Utf8ToTitle, BasicLatinSingleLowercase)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, BasicLatinSingleUnaffected)
+TEST_F(Utf8ToTitle, BasicLatinSingleUnaffected)
 {
 	const char* c = "$";
 	const size_t s = 256;
@@ -40,7 +59,7 @@ TEST(Utf8ToTitle, BasicLatinSingleUnaffected)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, BasicLatinMultipleUppercase)
+TEST_F(Utf8ToTitle, BasicLatinMultipleUppercase)
 {
 	const char* c = "BROWN";
 	const size_t s = 256;
@@ -52,7 +71,7 @@ TEST(Utf8ToTitle, BasicLatinMultipleUppercase)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, BasicLatinMultipleLowercase)
+TEST_F(Utf8ToTitle, BasicLatinMultipleLowercase)
 {
 	const char* c = "lady";
 	const size_t s = 256;
@@ -64,7 +83,7 @@ TEST(Utf8ToTitle, BasicLatinMultipleLowercase)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, BasicLatinMultipleUnaffected)
+TEST_F(Utf8ToTitle, BasicLatinMultipleUnaffected)
 {
 	const char* c = "9711";
 	const size_t s = 256;
@@ -76,7 +95,7 @@ TEST(Utf8ToTitle, BasicLatinMultipleUnaffected)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, BasicLatinWord)
+TEST_F(Utf8ToTitle, BasicLatinWord)
 {
 	const char* c = "ApplE";
 	const size_t s = 256;
@@ -88,7 +107,7 @@ TEST(Utf8ToTitle, BasicLatinWord)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, BasicLatinSentence)
+TEST_F(Utf8ToTitle, BasicLatinSentence)
 {
 	const char* c = "PRINTER INK";
 	const size_t s = 256;
@@ -100,7 +119,7 @@ TEST(Utf8ToTitle, BasicLatinSentence)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, BasicLatinSentencePunctuationInMiddle)
+TEST_F(Utf8ToTitle, BasicLatinSentencePunctuationInMiddle)
 {
 	const char* c = "RE/wind=cool";
 	const size_t s = 256;
@@ -112,7 +131,7 @@ TEST(Utf8ToTitle, BasicLatinSentencePunctuationInMiddle)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, BasicLatinSentencePunctuationAtStart)
+TEST_F(Utf8ToTitle, BasicLatinSentencePunctuationAtStart)
 {
 	const char* c = "/!\\alert imminent";
 	const size_t s = 256;
@@ -124,7 +143,7 @@ TEST(Utf8ToTitle, BasicLatinSentencePunctuationAtStart)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, BasicLatinSentencePunctuationAtEnd)
+TEST_F(Utf8ToTitle, BasicLatinSentencePunctuationAtEnd)
 {
 	const char* c = "you tell me ;)";
 	const size_t s = 256;
@@ -136,7 +155,7 @@ TEST(Utf8ToTitle, BasicLatinSentencePunctuationAtEnd)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, BasicLatinAmountOfBytes)
+TEST_F(Utf8ToTitle, BasicLatinAmountOfBytes)
 {
 	const char* c = "[Arrest]";
 	int32_t errors = UTF8_ERR_NONE;
@@ -145,7 +164,7 @@ TEST(Utf8ToTitle, BasicLatinAmountOfBytes)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, BasicLatinNotEnoughSpace)
+TEST_F(Utf8ToTitle, BasicLatinNotEnoughSpace)
 {
 	const char* c = "assassin";
 	const size_t s = 4;
@@ -157,7 +176,7 @@ TEST(Utf8ToTitle, BasicLatinNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(Utf8ToTitle, GeneralCategoryCaseMappedSingleUppercase)
+TEST_F(Utf8ToTitle, GeneralCategoryCaseMappedSingleUppercase)
 {
 	// LATIN CAPITAL LETTER DZ WITH CARON
 
@@ -171,7 +190,7 @@ TEST(Utf8ToTitle, GeneralCategoryCaseMappedSingleUppercase)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, GeneralCategoryCaseMappedSingleLowercase)
+TEST_F(Utf8ToTitle, GeneralCategoryCaseMappedSingleLowercase)
 {
 	// ARMENIAN SMALL LIGATURE MEN XEH
 
@@ -185,7 +204,7 @@ TEST(Utf8ToTitle, GeneralCategoryCaseMappedSingleLowercase)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, GeneralCategoryCaseMappedSingleTitlecase)
+TEST_F(Utf8ToTitle, GeneralCategoryCaseMappedSingleTitlecase)
 {
 	// LATIN SMALL LETTER DZ
 
@@ -199,7 +218,7 @@ TEST(Utf8ToTitle, GeneralCategoryCaseMappedSingleTitlecase)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, GeneralCategoryCaseMappedSingleUnaffected)
+TEST_F(Utf8ToTitle, GeneralCategoryCaseMappedSingleUnaffected)
 {
 	// ARABIC SMALL WAW
 
@@ -213,7 +232,7 @@ TEST(Utf8ToTitle, GeneralCategoryCaseMappedSingleUnaffected)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, GeneralCategoryCaseMappedMultipleUppercase)
+TEST_F(Utf8ToTitle, GeneralCategoryCaseMappedMultipleUppercase)
 {
 	// LATIN CAPITAL LETTER C WITH HOOK
 	// LATIN CAPITAL LETTER LJ
@@ -229,7 +248,7 @@ TEST(Utf8ToTitle, GeneralCategoryCaseMappedMultipleUppercase)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, GeneralCategoryCaseMappedMultipleLowercase)
+TEST_F(Utf8ToTitle, GeneralCategoryCaseMappedMultipleLowercase)
 {
 	// GREEK SMALL LETTER IOTA WITH DASIA AND OXIA
 	// GREEK SMALL LETTER ALPHA WITH DASIA AND PERISPOMENI AND YPOGEGRAMMENI
@@ -246,7 +265,7 @@ TEST(Utf8ToTitle, GeneralCategoryCaseMappedMultipleLowercase)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, GeneralCategoryCaseMappedMultipleTitlecase)
+TEST_F(Utf8ToTitle, GeneralCategoryCaseMappedMultipleTitlecase)
 {
 	// LATIN SMALL LETTER SHARP S
 	// LATIN SMALL LETTER DZ
@@ -262,7 +281,7 @@ TEST(Utf8ToTitle, GeneralCategoryCaseMappedMultipleTitlecase)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, GeneralCategoryCaseMappedMultipleUnaffected)
+TEST_F(Utf8ToTitle, GeneralCategoryCaseMappedMultipleUnaffected)
 {
 	// ARABIC PERCENT SIGN
 	// COMBINING DOT ABOVE RIGHT
@@ -278,7 +297,7 @@ TEST(Utf8ToTitle, GeneralCategoryCaseMappedMultipleUnaffected)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, GeneralCategoryCaseMappedWord)
+TEST_F(Utf8ToTitle, GeneralCategoryCaseMappedWord)
 {
 	const char* c = "\xCF\x84\xE1\xBD\xB4\xCE\xBD";
 	const size_t s = 256;
@@ -290,7 +309,7 @@ TEST(Utf8ToTitle, GeneralCategoryCaseMappedWord)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, GeneralCategoryCaseMappedSentence)
+TEST_F(Utf8ToTitle, GeneralCategoryCaseMappedSentence)
 {
 	const char* c = "\xC3\x81rv\xC3\xADzt\xC5\xB1r\xC5\x91 t\xC3\xBCk\xC3\xB6rf\xC3\xBAr\xC3\xB3g\xC3\xA9p";
 	const size_t s = 256;
@@ -302,7 +321,7 @@ TEST(Utf8ToTitle, GeneralCategoryCaseMappedSentence)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, GeneralCategoryCaseMappedAmountOfBytes)
+TEST_F(Utf8ToTitle, GeneralCategoryCaseMappedAmountOfBytes)
 {
 	// 00DF 0116 01D9 01F0
 	// 0053 0073 0117 01DA 01F0
@@ -314,7 +333,7 @@ TEST(Utf8ToTitle, GeneralCategoryCaseMappedAmountOfBytes)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, GeneralCategoryCaseMappedNotEnoughSpace)
+TEST_F(Utf8ToTitle, GeneralCategoryCaseMappedNotEnoughSpace)
 {
 	// 0149 00D8 03B0
 	// 02BC 004E 00F8 03B0
@@ -329,7 +348,7 @@ TEST(Utf8ToTitle, GeneralCategoryCaseMappedNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(Utf8ToTitle, InvalidCodepointSingle)
+TEST_F(Utf8ToTitle, InvalidCodepointSingle)
 {
 	const char* c = "\xF0\x92";
 	const size_t s = 256;
@@ -341,7 +360,7 @@ TEST(Utf8ToTitle, InvalidCodepointSingle)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, InvalidCodepointMultiple)
+TEST_F(Utf8ToTitle, InvalidCodepointMultiple)
 {
 	const char* c = "\xCB\xC0\xC0\xFA";
 	const size_t s = 256;
@@ -353,7 +372,7 @@ TEST(Utf8ToTitle, InvalidCodepointMultiple)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, InvalidCodepointAmountOfBytes)
+TEST_F(Utf8ToTitle, InvalidCodepointAmountOfBytes)
 {
 	const char* c = "\xAB\xAC\xCA";
 	int32_t errors = UTF8_ERR_NONE;
@@ -362,7 +381,7 @@ TEST(Utf8ToTitle, InvalidCodepointAmountOfBytes)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, InvalidCodepointNotEnoughSpace)
+TEST_F(Utf8ToTitle, InvalidCodepointNotEnoughSpace)
 {
 	const char* c = "\xDF\xDF\xDF";
 	const size_t s = 8;
@@ -374,7 +393,7 @@ TEST(Utf8ToTitle, InvalidCodepointNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
-TEST(Utf8ToTitle, ErrorsIsReset)
+TEST_F(Utf8ToTitle, ErrorsIsReset)
 {
 	const char* c = "cAPS lOCK";
 	const size_t s = 256;
@@ -386,7 +405,7 @@ TEST(Utf8ToTitle, ErrorsIsReset)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, InvalidData)
+TEST_F(Utf8ToTitle, InvalidData)
 {
 	int32_t errors = UTF8_ERR_NONE;
 
@@ -394,7 +413,7 @@ TEST(Utf8ToTitle, InvalidData)
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
-TEST(Utf8ToTitle, OverlappingParametersFits)
+TEST_F(Utf8ToTitle, OverlappingParametersFits)
 {
 	int32_t errors = UTF8_ERR_NONE;
 
@@ -411,7 +430,7 @@ TEST(Utf8ToTitle, OverlappingParametersFits)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST(Utf8ToTitle, OverlappingParametersStartsEqual)
+TEST_F(Utf8ToTitle, OverlappingParametersStartsEqual)
 {
 	int32_t errors = UTF8_ERR_NONE;
 
@@ -426,7 +445,7 @@ TEST(Utf8ToTitle, OverlappingParametersStartsEqual)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlappingParametersEndsEqual)
+TEST_F(Utf8ToTitle, OverlappingParametersEndsEqual)
 {
 	int32_t errors = UTF8_ERR_NONE;
 
@@ -441,7 +460,7 @@ TEST(Utf8ToTitle, OverlappingParametersEndsEqual)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlappingParametersInputStartsInTarget)
+TEST_F(Utf8ToTitle, OverlappingParametersInputStartsInTarget)
 {
 	int32_t errors = UTF8_ERR_NONE;
 
@@ -456,7 +475,7 @@ TEST(Utf8ToTitle, OverlappingParametersInputStartsInTarget)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlappingParametersInputEndsInTarget)
+TEST_F(Utf8ToTitle, OverlappingParametersInputEndsInTarget)
 {
 	int32_t errors = UTF8_ERR_NONE;
 
@@ -471,7 +490,7 @@ TEST(Utf8ToTitle, OverlappingParametersInputEndsInTarget)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlappingParametersInputInsideTarget)
+TEST_F(Utf8ToTitle, OverlappingParametersInputInsideTarget)
 {
 	int32_t errors = UTF8_ERR_NONE;
 
@@ -486,7 +505,7 @@ TEST(Utf8ToTitle, OverlappingParametersInputInsideTarget)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlappingParametersTargetStartsInInput)
+TEST_F(Utf8ToTitle, OverlappingParametersTargetStartsInInput)
 {
 	int32_t errors = UTF8_ERR_NONE;
 
@@ -501,7 +520,7 @@ TEST(Utf8ToTitle, OverlappingParametersTargetStartsInInput)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlappingParametersTargetEndsInInput)
+TEST_F(Utf8ToTitle, OverlappingParametersTargetEndsInInput)
 {
 	int32_t errors = UTF8_ERR_NONE;
 
@@ -516,7 +535,7 @@ TEST(Utf8ToTitle, OverlappingParametersTargetEndsInInput)
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
-TEST(Utf8ToTitle, OverlappingParametersTargetInsideInput)
+TEST_F(Utf8ToTitle, OverlappingParametersTargetInsideInput)
 {
 	int32_t errors = UTF8_ERR_NONE;
 
