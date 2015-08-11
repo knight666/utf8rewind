@@ -1,15 +1,12 @@
 #include "tests-base.hpp"
 
 #include "helpers-casemapping.hpp"
+#include "helpers-locale.hpp"
 #include "helpers-strings.hpp"
 
 TEST(SpecialCasing, Greek)
 {
-#if _WINDOWS
-	EXPECT_STREQ("greek", setlocale(LC_ALL, "greek"));
-#else
-	EXPECT_STREQ("el_GR", setlocale(LC_ALL, "el_GR"));
-#endif
+	SET_LOCALE_GREEK();
 
 	// Special case for final form of sigma
 
@@ -27,16 +24,13 @@ TEST(SpecialCasing, Greek)
 	// GREEK SMALL LETTER FINAL SIGMA
 	EXPECT_CASEMAPPING_EQ("\xCF\x82", "\xCF\x82", "\xCE\xA3", "\xCE\xA3");
 
-	setlocale(LC_ALL, "C");
+	RESET_LOCALE();
 }
 
 TEST(SpecialCasing, Lithuanian)
 {
-#if _WINDOWS
-	EXPECT_STREQ("lithuanian", setlocale(LC_ALL, "lithuanian"));
-#else
-	EXPECT_STREQ("lt_LT", setlocale(LC_ALL, "lt_LT"));
-#endif
+	SET_LOCALE_LITHUANIAN();
+
 	// Remove DOT ABOVE after "i" with upper or titlecase
 
 	// COMBINING DOT ABOVE
@@ -68,16 +62,12 @@ TEST(SpecialCasing, Lithuanian)
 	EXPECT_CASEMAPPING_EQ("\xC4\xA8", "i\xCC\x87\xCC\x83", "\xC4\xA8", "\xC4\xA8");
 	EXPECT_CASEMAPPING_EQ("I\xCC\x83", "i\xCC\x87\xCC\x83", "I\xCC\x83", "I\xCC\x83");
 
-	setlocale(LC_ALL, "C");
+	RESET_LOCALE();
 }
 
 TEST(SpecialCasing, Turkish)
 {
-#if _WINDOWS
-	EXPECT_STREQ("turkish", setlocale(LC_ALL, "turkish"));
-#else
-	EXPECT_STREQ("tr_TR", setlocale(LC_ALL, "tr_TR"));
-#endif
+	SET_LOCALE_TURKISH();
 
 	// I and i-dotless; I-dot and i are case pairs in Turkish and Azeri
 	// The following rules handle those cases.
@@ -106,16 +96,12 @@ TEST(SpecialCasing, Turkish)
 	// LATIN SMALL LETTER DOTLESS I
 	EXPECT_CASEMAPPING_EQ("\xC4\xB1", "\xC4\xB1", "I", "I");
 
-	setlocale(LC_ALL, "C");
+	RESET_LOCALE();
 }
 
 TEST(SpecialCasing, Azeri)
 {
-#if _WINDOWS
-	EXPECT_STREQ("azeri", setlocale(LC_ALL, "azeri"));
-#else
-	EXPECT_STREQ("az_AZ", setlocale(LC_ALL, "az_AZ"));
-#endif
+	SET_LOCALE_AZERI();
 
 	// I and i-dotless; I-dot and i are case pairs in Turkish and Azeri
 	// The following rules handle those cases.
@@ -144,5 +130,5 @@ TEST(SpecialCasing, Azeri)
 	// LATIN SMALL LETTER DOTLESS I
 	EXPECT_CASEMAPPING_EQ("\xC4\xB1", "\xC4\xB1", "I", "I");
 
-	setlocale(LC_ALL, "C");
+	RESET_LOCALE();
 }
