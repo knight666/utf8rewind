@@ -73,6 +73,42 @@ TEST(SpecialCasing, TurkishDotlessI)
 	// LATIN SMALL LETTER I
 	EXPECT_CASEMAPPING_EQ("i", "i", "\xC4\xB1", "\xC4\xB1");
 
+	// Note: the following case is already in the UnicodeData.txt file.
+
+	// LATIN SMALL LETTER DOTLESS I
+	EXPECT_CASEMAPPING_EQ("\xC4\xB1", "\xC4\xB1", "I", "I");
+
+	setlocale(LC_ALL, "C");
+}
+
+TEST(SpecialCasing, AzeriDotlessI)
+{
+	EXPECT_STREQ("az", setlocale(LC_ALL, "az"));
+
+	// I and i-dotless; I-dot and i are case pairs in Turkish and Azeri
+	// The following rules handle those cases.
+
+	// LATIN CAPITAL LETTER I WITH DOT ABOVE
+	EXPECT_CASEMAPPING_EQ("\xC4\xB0", "i", "\xC4\xB0", "\xC4\xB0");
+
+	// When lowercasing, remove dot_above in the sequence I + dot_above, which will turn into i.
+	// This matches the behavior of the canonically equivalent I-dot_above
+
+	// COMBINING DOT ABOVE
+	EXPECT_CASEMAPPING_EQ("I\xCC\x87", "i", "I\xCC\x87", "I\xCC\x87");
+
+	// When lowercasing, unless an I is before a dot_above, it turns into a dotless i.
+
+	// LATIN CAPITAL LETTER I
+	EXPECT_CASEMAPPING_EQ("I", "\xC4\xB1", "I", "I");
+
+	// When uppercasing, i turns into a dotted capital I
+
+	// LATIN SMALL LETTER I
+	EXPECT_CASEMAPPING_EQ("i", "i", "\xC4\xB1", "\xC4\xB1");
+
+	// Note: the following case is already in the UnicodeData.txt file.
+
 	// LATIN SMALL LETTER DOTLESS I
 	EXPECT_CASEMAPPING_EQ("\xC4\xB1", "\xC4\xB1", "I", "I");
 
