@@ -38,6 +38,50 @@ TEST(CaseMappingInitialize, LocaleEnglishUS)
 	setlocale(LC_ALL, "C");
 }
 
+TEST(CaseMappingInitialize, LocaleGreek)
+{
+	CaseMappingState state;
+	const char* i = "Shocking revelations";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+
+	EXPECT_STREQ("el", setlocale(LC_ALL, "el"));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
+	setlocale(LC_ALL, "C");
+
+	EXPECT_STREQ("el-GR", setlocale(LC_ALL, "el-GR"));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
+	setlocale(LC_ALL, "C");
+
+	EXPECT_STREQ("Greek_Greece.1253", setlocale(LC_ALL, "greek"));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
+	setlocale(LC_ALL, "C");
+
+	EXPECT_STREQ("Greek_Greece.1253", setlocale(LC_ALL, "Greek_Greece.1253"));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
+	setlocale(LC_ALL, "C");
+
+	EXPECT_STREQ("Greek_Greece.1253", setlocale(LC_ALL, "Greek_Greece.ACP"));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
+	setlocale(LC_ALL, "C");
+
+	EXPECT_STREQ("Greek_Greece.737", setlocale(LC_ALL, "Greek_Greece.OCP"));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
+	setlocale(LC_ALL, "C");
+
+	EXPECT_STREQ("Greek_Greece.737", setlocale(LC_ALL, "Greek_Greece.OCP"));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
+	setlocale(LC_ALL, "C");
+}
+
 TEST(CaseMappingInitialize, LocaleLithuanian)
 {
 	CaseMappingState state;
@@ -67,6 +111,11 @@ TEST(CaseMappingInitialize, LocaleLithuanian)
 	setlocale(LC_ALL, "C");
 
 	EXPECT_STREQ("Lithuanian_Lithuania.1257", setlocale(LC_ALL, "Lithuanian_Lithuania.ACP"));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_LITHUANIAN, state.locale);
+	setlocale(LC_ALL, "C");
+
+	EXPECT_STREQ("Lithuanian_Lithuania.775", setlocale(LC_ALL, "Lithuanian_Lithuania.775"));
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_LITHUANIAN, state.locale);
 	setlocale(LC_ALL, "C");
@@ -106,6 +155,11 @@ TEST(CaseMappingInitialize, LocaleTurkish)
 	setlocale(LC_ALL, "C");
 
 	EXPECT_STREQ("Turkish_Turkey.1254", setlocale(LC_ALL, "Turkish_Turkey.ACP"));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, state.locale);
+	setlocale(LC_ALL, "C");
+
+	EXPECT_STREQ("Turkish_Turkey.857", setlocale(LC_ALL, "Turkish_Turkey.857"));
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, state.locale);
 	setlocale(LC_ALL, "C");
