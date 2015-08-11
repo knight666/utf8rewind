@@ -44,6 +44,16 @@
 
 uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property)
 {
+	/*
+		Sources for locales and code pages
+
+		Windows
+		https://msdn.microsoft.com/en-US/goglobal/bb896001.aspx
+
+		POSIX
+		https://www-01.ibm.com/support/knowledgecenter/ssw_aix_61/com.ibm.aix.nlsgdrf/support_languages_locales.htm
+	*/
+
 	LOCALE_TYPE locale;
 
 	memset(state, 0, sizeof(CaseMappingState));
@@ -56,13 +66,18 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 
 	locale = GET_LOCALE();
 
-	if (CHECK_LOCALE("lt-lt", 1257, 775))
+	if (CHECK_LOCALE("el_gr", 1253, 737))
+	{
+		state->locale = CASEMAPPING_LOCALE_GREEK;
+	}
+	else if (
+		CHECK_LOCALE("lt_lt", 1257, 775))
 	{
 		state->locale = CASEMAPPING_LOCALE_LITHUANIAN;
 	}
 	else if (
-		CHECK_LOCALE("tr-tr", 1254, 857) ||
-		CHECK_LOCALE("az-az", 1254, 857))
+		CHECK_LOCALE("tr_tr", 1254, 857) ||
+		CHECK_LOCALE("az_az", 1254, 857))
 	{
 		state->locale = CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN;
 	}
