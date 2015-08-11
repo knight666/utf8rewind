@@ -39,7 +39,7 @@
 	#define LOCALE_TYPE                     const char*
 	#define GET_LOCALE()                    setlocale(LC_ALL, "")
 	#define CHECK_LOCALE(_name, _ansiCodepage, _oemCodepage) \
-		!strnicmp(locale, _name, 5)
+		!strncasecmp(locale, _name, 5)
 #endif
 
 uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property)

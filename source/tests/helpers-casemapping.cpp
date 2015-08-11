@@ -92,7 +92,7 @@ namespace helpers {
 		default:
 			std::stringstream ss;
 			ss << "<invalid> (0x";
-			ss << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << error;
+			ss << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << value;
 			ss << ")";
 			return ss.str();
 
@@ -161,7 +161,7 @@ namespace helpers {
 	}
 
 	::testing::AssertionResult CompareCaseMapping(
-		const char* expressionExpected, const char* expressionActual,
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
 	{
 		if (entryExpected.lowercase == entryActual.lowercase &&
