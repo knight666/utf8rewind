@@ -3,9 +3,13 @@
 #include "helpers-casemapping.hpp"
 #include "helpers-strings.hpp"
 
-TEST(SpecialCasing, GreekFinalSigma)
+TEST(SpecialCasing, Greek)
 {
-	EXPECT_STREQ("lt-LT", setlocale(LC_ALL, "lt-LT"));
+#if _WINDOWS
+	EXPECT_STREQ("greek", setlocale(LC_ALL, "greek"));
+#else
+	EXPECT_STREQ("el_GR", setlocale(LC_ALL, "el_GR"));
+#endif
 
 	// Special case for final form of sigma
 
@@ -26,21 +30,17 @@ TEST(SpecialCasing, GreekFinalSigma)
 	setlocale(LC_ALL, "C");
 }
 
-TEST(SpecialCasing, LithuanianRemoveDotAbove)
+TEST(SpecialCasing, Lithuanian)
 {
-	EXPECT_STREQ("lt-LT", setlocale(LC_ALL, "lt-LT"));
-
+#if _WINDOWS
+	EXPECT_STREQ("lithuanian", setlocale(LC_ALL, "lithuanian"));
+#else
+	EXPECT_STREQ("lt_LT", setlocale(LC_ALL, "lt_LT"));
+#endif
 	// Remove DOT ABOVE after "i" with upper or titlecase
 
 	// COMBINING DOT ABOVE
 	EXPECT_CASEMAPPING_EQ("i\xCC\x87", "i\xCC\x87", "I", "I");
-
-	setlocale(LC_ALL, "C");
-}
-
-TEST(SpecialCasing, LithuanianIntroduceExplicitDot)
-{
-	EXPECT_STREQ("lt-LT", setlocale(LC_ALL, "lt-LT"));
 
 	// Introduce an explicit dot above when lowercasing capital I's and J's
 	// whenever there are more accents above.
@@ -71,9 +71,13 @@ TEST(SpecialCasing, LithuanianIntroduceExplicitDot)
 	setlocale(LC_ALL, "C");
 }
 
-TEST(SpecialCasing, TurkishDotlessI)
+TEST(SpecialCasing, Turkish)
 {
-	EXPECT_STREQ("tr-TR", setlocale(LC_ALL, "tr-TR"));
+#if _WINDOWS
+	EXPECT_STREQ("turkish", setlocale(LC_ALL, "turkish"));
+#else
+	EXPECT_STREQ("tr_TR", setlocale(LC_ALL, "tr_TR"));
+#endif
 
 	// I and i-dotless; I-dot and i are case pairs in Turkish and Azeri
 	// The following rules handle those cases.
@@ -105,9 +109,13 @@ TEST(SpecialCasing, TurkishDotlessI)
 	setlocale(LC_ALL, "C");
 }
 
-TEST(SpecialCasing, AzeriDotlessI)
+TEST(SpecialCasing, Azeri)
 {
-	EXPECT_STREQ("az", setlocale(LC_ALL, "az"));
+#if _WINDOWS
+	EXPECT_STREQ("azeri", setlocale(LC_ALL, "azeri"));
+#else
+	EXPECT_STREQ("az_AZ", setlocale(LC_ALL, "az_AZ"));
+#endif
 
 	// I and i-dotless; I-dot and i are case pairs in Turkish and Azeri
 	// The following rules handle those cases.
