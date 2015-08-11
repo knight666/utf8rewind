@@ -37,7 +37,7 @@
 		locale->locinfo->lc_codepage == _oemCodepage
 #else
 	#define LOCALE_TYPE                     const char*
-	#define GET_LOCALE()                    setlocale(LC_ALL, "")
+	#define GET_LOCALE()                    setlocale(LC_ALL, 0)
 	#define CHECK_LOCALE(_name, _ansiCodepage, _oemCodepage) \
 		!strncasecmp(locale, _name, 5)
 #endif
