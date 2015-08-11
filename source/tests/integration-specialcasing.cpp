@@ -3,24 +3,48 @@
 #include "helpers-casemapping.hpp"
 #include "helpers-strings.hpp"
 
-TEST(SpecialCasing, LithuanianRemoveDotAbove)
+TEST(SpecialCasing, GreekFinalSigma)
 {
-	// Remove DOT ABOVE after "i" with upper or titlecase
-
 	EXPECT_STREQ("lt-LT", setlocale(LC_ALL, "lt-LT"));
 
-	EXPECT_CASEMAPPING_EQ("i\xCC\x87", "i\xCC\x87", "I", "I"); // COMBINING DOT ABOVE
+	// Special case for final form of sigma
+
+	// GREEK CAPITAL LETTER SIGMA
+	EXPECT_CASEMAPPING_EQ("\xE1\xBE\xB7\xCE\xA3", "\xE1\xBE\xB7\xCF\x82", "\xCE\x91\xCD\x82\xCE\x99\xCE\xA3", "\xCE\x91\xCD\x82\xCD\x85\xCE\xA3");
+
+	// Note: the following cases for non-final are already in the UnicodeData.txt file.
+
+	// GREEK CAPITAL LETTER SIGMA
+	EXPECT_CASEMAPPING_EQ("\xCE\xA3", "\xCF\x83", "\xCE\xA3", "\xCE\xA3");
+
+	// GREEK SMALL LETTER SIGMA
+	EXPECT_CASEMAPPING_EQ("\xCF\x83", "\xCF\x83", "\xCE\xA3", "\xCE\xA3");
+
+	// GREEK SMALL LETTER FINAL SIGMA
+	EXPECT_CASEMAPPING_EQ("\xCF\x82", "\xCF\x82", "\xCE\xA3", "\xCE\xA3");
+
+	setlocale(LC_ALL, "C");
+}
+
+TEST(SpecialCasing, LithuanianRemoveDotAbove)
+{
+	EXPECT_STREQ("lt-LT", setlocale(LC_ALL, "lt-LT"));
+
+	// Remove DOT ABOVE after "i" with upper or titlecase
+
+	// COMBINING DOT ABOVE
+	EXPECT_CASEMAPPING_EQ("i\xCC\x87", "i\xCC\x87", "I", "I");
 
 	setlocale(LC_ALL, "C");
 }
 
 TEST(SpecialCasing, LithuanianIntroduceExplicitDot)
 {
+	EXPECT_STREQ("lt-LT", setlocale(LC_ALL, "lt-LT"));
+
 	// Introduce an explicit dot above when lowercasing capital I's and J's
 	// whenever there are more accents above.
 	// (of the accents used in Lithuanian: grave, acute, tilde above, and ogonek)
-
-	EXPECT_STREQ("lt-LT", setlocale(LC_ALL, "lt-LT"));
 
 	// LATIN CAPITAL LETTER I
 	EXPECT_CASEMAPPING_EQ("I", "i", "I", "I");
