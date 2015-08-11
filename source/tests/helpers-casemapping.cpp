@@ -77,30 +77,6 @@ namespace helpers {
 		return converted;
 	}
 
-	std::string locale(uint32_t value)
-	{
-	#define LOCALE_CASE(_name) case CASEMAPPING_LOCALE_ ## _name: return "CASEMAPPING_LOCALE_" # _name;
-
-		switch (value)
-		{
-
-		LOCALE_CASE(DEFAULT);
-		LOCALE_CASE(GREEK);
-		LOCALE_CASE(LITHUANIAN);
-		LOCALE_CASE(TURKISH_OR_AZERI_LATIN);
-		
-		default:
-			std::stringstream ss;
-			ss << "<invalid> (0x";
-			ss << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << value;
-			ss << ")";
-			return ss.str();
-
-		}
-
-	#undef ERROR_CASE
-	}
-
 	::testing::AssertionResult CompareCodepoint(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
@@ -214,27 +190,6 @@ namespace helpers {
 			{
 				result << "[Titlecase]  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(entryExpected.titlecase) << ")" << std::endl;
 			}
-
-			return result;
-		}
-	}
-
-	::testing::AssertionResult CompareLocale(
-		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual,
-		uint32_t localeExpected, uint32_t localeActual)
-	{
-		if (localeExpected == localeActual)
-		{
-			return ::testing::AssertionSuccess();
-		}
-		else
-		{
-			::testing::AssertionResult result = ::testing::AssertionFailure();
-
-			result << "Value of: " << expressionActual << std::endl;
-
-			result << "  Actual: " << locale(localeActual) << " (" << localeActual << ")" << std::endl;
-			result << "Expected: " << locale(localeExpected) << " (" << localeExpected << ")";
 
 			return result;
 		}
