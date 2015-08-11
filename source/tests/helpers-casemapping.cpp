@@ -86,8 +86,7 @@ namespace helpers {
 
 		LOCALE_CASE(DEFAULT);
 		LOCALE_CASE(LITHUANIAN);
-		LOCALE_CASE(TURKISH);
-		LOCALE_CASE(AZERI);
+		LOCALE_CASE(TURKISH_OR_AZERI_LATIN);
 		
 		default:
 			std::stringstream ss;

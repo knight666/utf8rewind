@@ -39,7 +39,7 @@
 	#define LOCALE_TYPE                     const char*
 	#define GET_LOCALE()                    setlocale(LC_ALL, "")
 	#define CHECK_LOCALE(_name, _ansiCodepage, _oemCodepage) \
-		!strcmp(locale, _name)
+		!strnicmp(locale, _name, 5)
 #endif
 
 uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property)
@@ -56,17 +56,15 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 
 	locale = GET_LOCALE();
 
-	if (CHECK_LOCALE("lt-LT", 1257, 775))
+	if (CHECK_LOCALE("lt-lt", 1257, 775))
 	{
 		state->locale = CASEMAPPING_LOCALE_LITHUANIAN;
 	}
-	else if (CHECK_LOCALE("tr-TR", 1254, 857))
+	else if (
+		CHECK_LOCALE("tr-tr", 1254, 857) ||
+		CHECK_LOCALE("az-az", 1254, 857))
 	{
-		state->locale = CASEMAPPING_LOCALE_TURKISH;
-	}
-	else if (CHECK_LOCALE("az-AZ", 0xCDCDCDCD, 0xCDCDCDCD))
-	{
-		state->locale = CASEMAPPING_LOCALE_AZERI;
+		state->locale = CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN;
 	}
 
 	return 1;
