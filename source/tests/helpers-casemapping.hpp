@@ -11,30 +11,30 @@
 
 #include "utf8rewind.h"
 
-#define CHECK_CASEMAPPING_NUL(_codepoint, _name) { \
+#define EXPECT_CASEMAPPING_CODEPOINT_NUL_EQ(_codepoint, _name) { \
 	::helpers::CaseMappingEntry e; \
 	e.codepoint = _codepoint; \
-	e.uppercase = std::string(1, '\0'); \
 	e.lowercase = std::string(1, '\0'); \
+	e.uppercase = std::string(1, '\0'); \
 	e.titlecase = std::string(1, '\0'); \
 	e.name = _name; \
 	::helpers::CaseMappingEntry a; \
-	a.uppercase = ::helpers::uppercase(_codepoint); \
 	a.lowercase = ::helpers::lowercase(_codepoint); \
+	a.uppercase = ::helpers::uppercase(_codepoint); \
 	a.titlecase = ::helpers::titlecase(_codepoint); \
 	EXPECT_PRED_FORMAT2(::helpers::CompareCodepoint, e, a); \
 }
 
-#define CHECK_CASEMAPPING(_codepoint, _uppercase, _lowercase, _titlecase, _name) { \
+#define EXPECT_CASEMAPPING_CODEPOINT_EQ(_codepoint, _lowercase, _uppercase, _titlecase, _name) { \
 	::helpers::CaseMappingEntry e; \
 	e.codepoint = _codepoint; \
-	e.uppercase = _uppercase; \
 	e.lowercase = _lowercase; \
+	e.uppercase = _uppercase; \
 	e.titlecase = _titlecase; \
 	e.name = _name; \
 	::helpers::CaseMappingEntry a; \
-	a.uppercase = ::helpers::uppercase(_codepoint); \
 	a.lowercase = ::helpers::lowercase(_codepoint); \
+	a.uppercase = ::helpers::uppercase(_codepoint); \
 	a.titlecase = ::helpers::titlecase(_codepoint); \
 	EXPECT_PRED_FORMAT2(::helpers::CompareCodepoint, e, a); \
 }
