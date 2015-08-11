@@ -71,7 +71,26 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 		
 		self.open('/../../source/tests/integration-casemapping.cpp')
 		
-		self.header.write("#include \"helpers-casemapping.hpp\"")
+		self.header.writeLine("#include \"helpers-casemapping.hpp\"")
+		self.header.writeLine("#include \"helpers-locale.hpp\"")
+		self.header.newLine()
+		self.header.writeLine("class CaseMapping")
+		self.header.writeLine("\t: public ::testing::Test")
+		self.header.writeLine("{")
+		self.header.newLine()
+		self.header.writeLine("protected:")
+		self.header.newLine()
+		self.header.writeLine("\tvoid SetUp()")
+		self.header.writeLine("\t{")
+		self.header.writeLine("\t\tSET_LOCALE_ENGLISH();")
+		self.header.writeLine("\t}")
+		self.header.newLine()
+		self.header.writeLine("\tvoid TearDown()")
+		self.header.writeLine("\t{")
+		self.header.writeLine("\t\tRESET_LOCALE();")
+		self.header.writeLine("\t}")
+		self.header.newLine()
+		self.header.write("};")
 		
 		for b in valid_blocks:
 			self.writeTest(range(b.start, b.end + 1), b.name)
@@ -103,7 +122,7 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 		self.header.newLine()
 		
 		self.header.newLine()
-		self.header.writeLine("TEST(CaseMapping, " + name + ")")
+		self.header.writeLine("TEST_F(CaseMapping, " + name + ")")
 		self.header.writeLine("{")
 		self.header.indent()
 		
@@ -111,24 +130,24 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 			converted_codepoint = "0x%08X" % r.codepoint
 			
 			if r.codepoint == 0:
-				self.header.writeLine("CHECK_CASEMAPPING_NUL(" + converted_codepoint + ", \"" + r.name + "\");")
+				self.header.writeLine("EXPECT_CASEMAPPING_CODEPOINT_NUL_EQ(" + converted_codepoint + ", \"" + r.name + "\");")
 			else:
-				if r.uppercase:
-					converted_uppercase = libs.utf8.unicodeToUtf8(r.uppercase)
-				else:
-					converted_uppercase = libs.utf8.codepointToUtf8(r.codepoint)[0]
-					
 				if r.lowercase:
 					converted_lowercase = libs.utf8.unicodeToUtf8(r.lowercase)
 				else:
 					converted_lowercase = libs.utf8.codepointToUtf8(r.codepoint)[0]
+				
+				if r.uppercase:
+					converted_uppercase = libs.utf8.unicodeToUtf8(r.uppercase)
+				else:
+					converted_uppercase = libs.utf8.codepointToUtf8(r.codepoint)[0]
 				
 				if r.titlecase:
 					converted_titlecase = libs.utf8.unicodeToUtf8(r.titlecase)
 				else:
 					converted_titlecase = libs.utf8.codepointToUtf8(r.codepoint)[0]
 				
-				self.header.writeLine("CHECK_CASEMAPPING(" + converted_codepoint + ", \"" + converted_uppercase + "\", \"" + converted_lowercase + "\", \"" + converted_titlecase + "\", \"" + r.name + "\");")
+				self.header.writeLine("EXPECT_CASEMAPPING_CODEPOINT_EQ(" + converted_codepoint + ", \"" + converted_lowercase + "\", \"" + converted_uppercase + "\", \"" + converted_titlecase + "\", \"" + r.name + "\");")
 		
 		self.header.outdent()
 		self.header.write("}")
