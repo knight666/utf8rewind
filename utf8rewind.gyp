@@ -110,6 +110,7 @@
 				'source/tests/suite-utf8-seek-set.cpp',
 				'source/tests/suite-utf8-seek.cpp',
 				'source/tests/suite-utf8-tolower.cpp',
+				'source/tests/suite-utf8-tolower-greek.cpp',
 				'source/tests/suite-utf8-totitle.cpp',
 				'source/tests/suite-utf8-toupper.cpp',
 				'source/tests/suite-utf8-toupper-greek.cpp',
