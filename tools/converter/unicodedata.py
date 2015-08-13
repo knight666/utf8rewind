@@ -30,9 +30,13 @@ class UnicodeMapping:
 		self.compositionPairs = dict()
 		self.compositionExcluded = False
 		self.offsetNFC = 0
+		self.lengthNFC = 0
 		self.offsetNFD = 0
+		self.lengthNFD = 0
 		self.offsetNFKC = 0
+		self.lengthNFKC = 0
 		self.offsetNFKD = 0
+		self.lengthNFKD = 0
 		self.numericType = "NumericType_None"
 		self.numericValue = 0
 		self.bidiMirrored = False
@@ -40,8 +44,11 @@ class UnicodeMapping:
 		self.lowercase = []
 		self.titlecase = []
 		self.offsetUppercase = 0
+		self.lengthUppercase = 0
 		self.offsetLowercase = 0
+		self.lengthLowercase = 0
 		self.offsetTitlecase = 0
+		self.lengthTitlecase = 0
 		self.block = None
 	
 	def decomposedToString(self):
@@ -298,12 +305,15 @@ class UnicodeMapping:
 		if self.uppercase:
 			converted = libs.utf8.unicodeToUtf8Hex(self.uppercase)
 			self.offsetUppercase = self.db.addTranslation(converted + "\\x00")
+			self.lengthUppercase = len(converted)
 		if self.lowercase:
 			converted = libs.utf8.unicodeToUtf8Hex(self.lowercase)
 			self.offsetLowercase = self.db.addTranslation(converted + "\\x00")
+			self.lengthLowercase = len(converted)
 		if self.titlecase:
 			converted = libs.utf8.unicodeToUtf8Hex(self.titlecase)
 			self.offsetTitlecase = self.db.addTranslation(converted + "\\x00")
+			self.lengthTitlecase = len(converted)
 	
 	def codepointsToString(self, values):
 		result = ""
@@ -577,17 +587,22 @@ class Database(libs.unicode.UnicodeVisitor):
 			convertedCodepoint = libs.utf8.codepointToUtf8Hex(r.codepoint)
 			
 			r.offsetNFD = 0
-			r.offsetNFKD = 0
+			r.lengthNFD = 0
 			
 			if r.decomposedNFD:
 				convertedNFD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFD)
 				if convertedNFD <> convertedCodepoint:
 					r.offsetNFD = self.addTranslation(convertedNFD + "\\x00")
+					r.lengthNFD = len(convertedNFD)
+			
+			r.offsetNFKD = 0
+			r.lengthNFKD = 0
 			
 			if r.decomposedNFKD:
 				convertedNFKD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFKD)
 				if convertedNFKD <> convertedCodepoint:
 					r.offsetNFKD = self.addTranslation(convertedNFKD + "\\x00")
+					r.lengthNFKD = len(convertedNFKD)
 	
 	def resolveComposition(self):
 		print "Resolving composition..."
@@ -729,7 +744,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		return result
 	
-	def writeDecompositionRecords(self, header, records, name, field):
+	def writeDecompositionRecords(self, header, records, name, fieldOffset, fieldLength):
 		header.writeLine("const size_t Unicode" + name + "RecordCount = " + str(len(records)) + ";")
 		header.writeLine("const DecompositionRecord Unicode" + name + "Record[" + str(len(records)) + "] = {")
 		header.indent()
@@ -740,7 +755,8 @@ class Database(libs.unicode.UnicodeVisitor):
 			if (count % 4) == 0:
 				header.writeIndentation()
 			
-			header.write("{ " + hex(r.codepoint) + ", " + hex(r.__dict__[field]) + " },")
+			length_and_offset = (r.__dict__[fieldLength] << 24) + r.__dict__[fieldOffset]
+			header.write("{ " + hex(r.codepoint) + ", " + hex(length_and_offset) + " },")
 			
 			count += 1
 			if count <> len(records):
@@ -910,8 +926,8 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# decomposition records
 		
-		self.writeDecompositionRecords(header, nfd_records, "NFD", "offsetNFD")
-		self.writeDecompositionRecords(header, nfkd_records, "NFKD", "offsetNFKD")
+		self.writeDecompositionRecords(header, nfd_records, "NFD", "offsetNFD", "lengthNFD")
+		self.writeDecompositionRecords(header, nfkd_records, "NFKD", "offsetNFKD", "lengthNFKD")
 		
 		# composition records
 		
@@ -919,9 +935,9 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# case mapping records
 		
-		self.writeDecompositionRecords(header, uppercase_records, "Uppercase", "offsetUppercase")
-		self.writeDecompositionRecords(header, lowercase_records, "Lowercase", "offsetLowercase")
-		self.writeDecompositionRecords(header, titlecase_records, "Titlecase", "offsetTitlecase")
+		self.writeDecompositionRecords(header, uppercase_records, "Uppercase", "offsetUppercase", "lengthUppercase")
+		self.writeDecompositionRecords(header, lowercase_records, "Lowercase", "offsetLowercase", "lengthLowercase")
+		self.writeDecompositionRecords(header, titlecase_records, "Titlecase", "offsetTitlecase", "lengthTitlecase")
 		
 		# decomposition data
 		

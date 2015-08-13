@@ -43,7 +43,7 @@ typedef struct {
 
 typedef struct {
 	unicode_t codepoint;
-	size_t offset;
+	uint32_t length_and_offset;
 } DecompositionRecord;
 
 typedef struct {

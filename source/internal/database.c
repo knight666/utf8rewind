@@ -153,6 +153,8 @@ const char* database_querydecomposition(unicode_t codepoint, uint8_t property)
 	size_t offset_start;
 	size_t offset_end;
 	size_t offset_pivot;
+	size_t found_offset;
+	size_t found_length;
 	size_t i;
 
 	switch (property)
@@ -242,13 +244,15 @@ const char* database_querydecomposition(unicode_t codepoint, uint8_t property)
 	return 0;
 
 found:
-	if (record_found->offset == 0 ||
-		record_found->offset >= DecompositionDataLength)
+	found_offset = (record_found->length_and_offset & 0x00FFFFFF);
+
+	if (found_offset == 0 ||
+		found_offset >= DecompositionDataLength)
 	{
 		return 0;
 	}
 
-	return DecompositionData + record_found->offset;
+	return DecompositionData + found_offset;
 }
 
 unicode_t database_querycomposition(unicode_t left, unicode_t right)
