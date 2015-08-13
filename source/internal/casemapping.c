@@ -214,6 +214,7 @@ size_t casemapping_execute(CaseMappingState* state)
 	else
 	{
 		unicode_t decoded;
+		const char* resolved;
 		size_t resolved_size = 0;
 
 		/* Decode current codepoint */
@@ -227,11 +228,9 @@ size_t casemapping_execute(CaseMappingState* state)
 		{
 			/* Resolve the codepoint's decomposition */
 
-			const char* resolved = database_querydecomposition(decoded, state->property);
+			resolved = database_querydecomposition(decoded, state->property, &resolved_size);
 			if (resolved != 0)
 			{
-				resolved_size = strlen(resolved);
-
 				/* Copy the decomposition to the output buffer */
 
 				if (state->dst != 0 &&

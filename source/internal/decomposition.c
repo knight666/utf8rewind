@@ -220,13 +220,12 @@ uint8_t decompose_execute(DecomposeState* state)
 			{
 				/* Check database for decomposition */
 
-				const char* decomposition = database_querydecomposition(decoded_codepoint, state->property);
-				if (decomposition != 0)
+				size_t src_size = 0;
+				const char* src = database_querydecomposition(decoded_codepoint, state->property, &src_size);
+
+				if (src != 0)
 				{
 					/* Write sequence to output */
-
-					const char* src = decomposition;
-					size_t src_size = strlen(decomposition);
 
 					while (src_size > 0)
 					{

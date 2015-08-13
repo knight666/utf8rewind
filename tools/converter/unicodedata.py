@@ -305,15 +305,15 @@ class UnicodeMapping:
 		if self.uppercase:
 			converted = libs.utf8.unicodeToUtf8Hex(self.uppercase)
 			self.offsetUppercase = self.db.addTranslation(converted + "\\x00")
-			self.lengthUppercase = len(converted)
+			self.lengthUppercase = self.db.translationLength(converted)
 		if self.lowercase:
 			converted = libs.utf8.unicodeToUtf8Hex(self.lowercase)
 			self.offsetLowercase = self.db.addTranslation(converted + "\\x00")
-			self.lengthLowercase = len(converted)
+			self.lengthLowercase = self.db.translationLength(converted)
 		if self.titlecase:
 			converted = libs.utf8.unicodeToUtf8Hex(self.titlecase)
 			self.offsetTitlecase = self.db.addTranslation(converted + "\\x00")
-			self.lengthTitlecase = len(converted)
+			self.lengthTitlecase = self.db.translationLength(converted)
 	
 	def codepointsToString(self, values):
 		result = ""
@@ -593,7 +593,7 @@ class Database(libs.unicode.UnicodeVisitor):
 				convertedNFD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFD)
 				if convertedNFD <> convertedCodepoint:
 					r.offsetNFD = self.addTranslation(convertedNFD + "\\x00")
-					r.lengthNFD = len(convertedNFD)
+					r.lengthNFD = self.translationLength(convertedNFD)
 			
 			r.offsetNFKD = 0
 			r.lengthNFKD = 0
@@ -602,7 +602,7 @@ class Database(libs.unicode.UnicodeVisitor):
 				convertedNFKD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFKD)
 				if convertedNFKD <> convertedCodepoint:
 					r.offsetNFKD = self.addTranslation(convertedNFKD + "\\x00")
-					r.lengthNFKD = len(convertedNFKD)
+					r.lengthNFKD = self.translationLength(convertedNFKD)
 	
 	def resolveComposition(self):
 		print "Resolving composition..."
@@ -716,20 +716,23 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		return leftCodepoint.compositionPairs[right]
 	
+	def translationLength(self, translation):
+		character_matches = re.findall('\\\\x?[^\\\\]+', translation)
+		if character_matches:
+			return len(character_matches)
+		else:
+			return 0
+	
 	def addTranslation(self, translation):
 		result = 0
 		
 		if translation not in self.hashed:
 			result = self.offset
 			
-			character_matches = re.findall('\\\\x?[^\\\\]+', translation)
-			if character_matches:
-				offset = len(character_matches)
-			else:
-				offset = 0
+			offset = self.translationLength(translation)
 			
 			if self.verbose:
-				print "hashing " + translation + " offset " + str(self.offset)
+				print "hashing " + translation + " offset " + str(self.offset) + " length " + str(offset)
 			
 			self.hashed[translation] = result
 			self.offset += offset
