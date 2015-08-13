@@ -145,17 +145,21 @@ found:
 	}
 }
 
-const char* database_querydecomposition(unicode_t codepoint, uint8_t property)
+const char* database_querydecomposition(unicode_t codepoint, uint8_t property, size_t* length)
 {
 	const DecompositionRecord* record;
 	size_t record_count;
-	const DecompositionRecord* record_found = 0;
+	const DecompositionRecord* record_found;
 	size_t offset_start;
 	size_t offset_end;
 	size_t offset_pivot;
 	size_t found_offset;
-	size_t found_length;
 	size_t i;
+
+	if (length == 0)
+	{
+		return 0;
+	}
 
 	switch (property)
 	{
@@ -186,7 +190,7 @@ const char* database_querydecomposition(unicode_t codepoint, uint8_t property)
 		break;
 
 	default:
-		return 0;
+		goto missing;
 
 	}
 
@@ -196,8 +200,10 @@ const char* database_querydecomposition(unicode_t codepoint, uint8_t property)
 	if (codepoint < record[offset_start].codepoint ||
 		codepoint > record[offset_end].codepoint)
 	{
-		return 0;
+		goto missing;
 	}
+
+	record_found = 0;
 
 	do
 	{
@@ -241,6 +247,9 @@ const char* database_querydecomposition(unicode_t codepoint, uint8_t property)
 		}
 	}
 
+missing:
+	*length = 0;
+
 	return 0;
 
 found:
@@ -249,8 +258,12 @@ found:
 	if (found_offset == 0 ||
 		found_offset >= DecompositionDataLength)
 	{
+		*length = 0;
+
 		return 0;
 	}
+
+	*length = (record_found->length_and_offset & 0xFF000000) >> 24;
 
 	return DecompositionData + found_offset;
 }
