@@ -29,6 +29,73 @@
 #include "codepoint.h"
 #include "database.h"
 
+#define GC_LE  GeneralCategory_Letter
+#define GC_CA  GeneralCategory_CaseMapped
+#define GC_LC  GeneralCategory_Letter | GeneralCategory_CaseMapped
+#define GC_MA  GeneralCategory_Mark
+#define GC_NU  GeneralCategory_Number
+#define GC_PU  GeneralCategory_Punctuation
+#define GC_SY  GeneralCategory_Symbol
+#define GC_SE  GeneralCategory_Separator
+#define GC_OT  GeneralCategory_Other
+
+static const uint8_t basic_latin_general_category_table[128] = {
+	GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT,
+	GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT,
+	GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT,
+	GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT,
+	GC_SE, GC_PU, GC_PU, GC_PU, GC_SY, GC_PU, GC_PU, GC_PU,
+	GC_PU, GC_PU, GC_PU, GC_SY, GC_PU, GC_PU, GC_PU, GC_PU,
+	GC_NU, GC_NU, GC_NU, GC_NU, GC_NU, GC_NU, GC_NU, GC_NU,
+	GC_NU, GC_NU, GC_PU, GC_PU, GC_SY, GC_SY, GC_SY, GC_PU,
+	GC_PU, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
+	GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
+	GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
+	GC_LC, GC_LC, GC_LC, GC_PU, GC_PU, GC_PU, GC_SY, GC_PU,
+	GC_SY, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
+	GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
+	GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
+	GC_LC, GC_LC, GC_LC, GC_PU, GC_SY, GC_PU, GC_SY, GC_OT
+};
+
+static const char basic_latin_lowercase_table[58] = {
+	/* LATIN CAPITAL LETTER A - LATIN CAPITAL LETTER Z */
+	0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C,
+	0x6D, 0x6E, 0x6F, 0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78,
+	0x79, 0x7A,
+
+	0x5B, /* LEFT SQUARE BRACKET */
+	0x5C, /* REVERSE SOLIDUS */
+	0x5D, /* RIGHT SQUARE BRACKET */
+	0x5E, /* CIRCUMFLEX ACCENT */
+	0x5F, /* LOW LINE */
+	0x60, /* GRAVE ACCENT */
+
+	/* LATIN SMALL LETTER A - LATIN SMALL LETTER Z */
+	0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C,
+	0x6D, 0x6E, 0x6F, 0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78,
+	0x79, 0x7A
+};
+
+static const char basic_latin_uppercase_table[58] = {
+	/* LATIN CAPITAL LETTER A - LATIN CAPITAL LETTER Z */
+	0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C,
+	0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
+	0x59, 0x5A,
+
+	0x5B, /* LEFT SQUARE BRACKET */
+	0x5C, /* REVERSE SOLIDUS */
+	0x5D, /* RIGHT SQUARE BRACKET */
+	0x5E, /* CIRCUMFLEX ACCENT */
+	0x5F, /* LOW LINE */
+	0x60, /* GRAVE ACCENT */
+
+	/* LATIN SMALL LETTER A - LATIN SMALL LETTER Z */
+	0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C,
+	0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
+	0x59, 0x5A
+};
+
 #if WIN32 || _WINDOWS
 	#define LOCALE_TYPE                     _locale_t
 	#define GET_LOCALE()                    _get_current_locale()
@@ -99,6 +166,7 @@ size_t casemapping_execute(CaseMappingState* state)
 	{
 		/* Basic Latin does not have to be converted to UTF-32 */
 
+		uint8_t decoded = (uint8_t)*state->src;
 		decoded_size = 1;
 
 		if (state->dst != 0)
@@ -108,23 +176,29 @@ size_t casemapping_execute(CaseMappingState* state)
 				goto outofspace;
 			}
 
-			/* Lowercase letters are U+0061 ('a') to U+007A ('z') */
-			/* Uppercase letters are U+0041 ('A') to U+005A ('Z') */
-			/* All other codepoints in Basic Latin are unaffected by case mapping */
-
-			if (state->property == UnicodeProperty_Lowercase)
+			if (decoded >= 0x41 &&
+				decoded <= 0x7A)
 			{
-				*state->dst =
-					(*state->src >= 0x41 && *state->src <= 0x5A)
-					? *state->src + 0x20
-					: *state->src;
+				/* Uppercase letters are U+0041 ('A') to U+005A ('Z') */
+				/* Lowercase letters are U+0061 ('a') to U+007A ('z') */
+
+				if (state->property == UnicodeProperty_Lowercase)
+				{
+					*state->dst = basic_latin_lowercase_table[decoded - 0x41];
+				}
+				else
+				{
+					*state->dst = basic_latin_uppercase_table[decoded - 0x41];
+				}
 			}
 			else
 			{
-				*state->dst =
-					(*state->src >= 0x61 && *state->src <= 0x7A)
-					? *state->src - 0x20
-					: *state->src;
+				/*
+					All other codepoints in Basic Latin are unaffected by case
+					mapping
+				*/
+
+				*state->dst = *state->src;
 			}
 
 			state->dst++;
@@ -133,17 +207,7 @@ size_t casemapping_execute(CaseMappingState* state)
 
 		/* Store codepoint's general category */
 
-		if ((*state->src >= 0x41 && *state->src <= 0x5A) ||
-			(*state->src >= 0x61 && *state->src <= 0x7A))
-		{
-			state->last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
-		}
-		else
-		{
-			/* Don't care about non-letter codepoints */
-
-			state->last_general_category = GeneralCategory_Other;
-		}
+		state->last_general_category = basic_latin_general_category_table[decoded];
 
 		written++;
 	}
