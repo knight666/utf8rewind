@@ -10,11 +10,6 @@ class PropertyConvertUtf16
 
 	bool holdsFor(const utf16_t& input)
 	{
-		if (input == 0)
-		{
-			return true;
-		}
-
 		int32_t errors;
 		size_t converted_size;
 
@@ -43,6 +38,11 @@ class PropertyConvertUtf16
 		}
 
 		return output == input;
+	}
+
+	bool accepts(const utf16_t& input)
+	{
+		return input != 0;
 	}
 
 };
