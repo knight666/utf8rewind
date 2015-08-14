@@ -37,7 +37,7 @@
 		},
 		{
 			'target_name': 'quickcheck',
-			'type': 'static_library',
+			'type': 'none',
 			'variables': {
 				'project_dir': 'dependencies/quickcheck_0.0.3',
 			},
@@ -52,7 +52,7 @@
 			],
 			'direct_dependent_settings': {
 				'include_dirs': [
-					'<(project_dir)/include',
+					'<(project_dir)',
 				],
 			},
 			'conditions': [
