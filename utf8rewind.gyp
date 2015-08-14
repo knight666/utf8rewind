@@ -53,6 +53,7 @@
 			'type': 'executable',
 			'dependencies': [
 				'dependencies.gyp:gtest',
+				'dependencies.gyp:quickcheck',
 				'utf8rewind',
 			],
 			'defines': [

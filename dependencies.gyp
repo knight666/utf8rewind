@@ -35,5 +35,31 @@
 				}],
 			],
 		},
+		{
+			'target_name': 'quickcheck',
+			'type': 'static_library',
+			'variables': {
+				'project_dir': 'dependencies/quickcheck_0.0.3',
+			},
+			'include_dirs': [
+				'<(project_dir)',
+			],
+			'sources': [
+				'<(project_dir)/quickcheck/generate.hh',
+				'<(project_dir)/quickcheck/ostream.hh',
+				'<(project_dir)/quickcheck/Property.hh',
+				'<(project_dir)/quickcheck/quickcheck.hh',
+			],
+			'direct_dependent_settings': {
+				'include_dirs': [
+					'<(project_dir)/include',
+				],
+			},
+			'conditions': [
+				['OS!="win"', {
+					'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
+				}],
+			],
+		},
 	],
 }
