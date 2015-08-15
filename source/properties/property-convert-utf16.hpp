@@ -1,8 +1,7 @@
 #pragma once
 
 #include "property-base.hpp"
-
-#include "utf8rewind.h"
+#include "property-generators.hpp"
 
 class PropertyConvertUtf16
 	: public quickcheck::Property<utf16_t>
@@ -42,7 +41,15 @@ class PropertyConvertUtf16
 
 	bool accepts(const utf16_t& input)
 	{
-		return input != 0;
+		return
+			input != 0 &&
+			(input < SURROGATE_HIGH_START ||
+			input > SURROGATE_LOW_END);
+	}
+
+	void generateInput(size_t size, utf16_t& output)
+	{
+		generateCodepoint(size, output);
 	}
 
 };

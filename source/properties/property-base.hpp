@@ -7,3 +7,7 @@
 // QuickCheck++
 
 #include "quickcheck/quickcheck.hh"
+
+// utf8rewind
+
+#include "utf8rewind.h"
