@@ -8,8 +8,7 @@ extern "C" {
 
 int main(int argc, char** argv)
 {
-	PropertyConvertUtf16 convertUtf16;
-	convertUtf16.check(10000, MAX_LEGAL_UNICODE, false);
+	quickcheck::check<PropertyConvertUtf16>("Convert UTF-16 to UTF-8 and back.", 10000);
 
 	return 0;
 }
