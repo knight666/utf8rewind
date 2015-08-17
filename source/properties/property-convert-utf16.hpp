@@ -49,7 +49,7 @@ class PropertyConvertUtf16
 
 	void generateInput(size_t size, utf16_t& output)
 	{
-		generateCodepoint(size, output);
+		quickcheck::generateCodepoint(size, output);
 	}
 
 };
