@@ -5,7 +5,7 @@ extern "C" {
 	#include "../internal/database.h"
 }
 
-#include "helpers-strings.hpp"
+#include "../helpers/helpers-strings.hpp"
 
 TEST(CaseMappingExecute, Initialize)
 {

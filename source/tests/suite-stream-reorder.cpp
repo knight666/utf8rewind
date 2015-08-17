@@ -1,6 +1,6 @@
 #include "tests-base.hpp"
 
-#include "helpers-streams.hpp"
+#include "../helpers/helpers-streams.hpp"
 
 TEST(StreamReorder, SingleStarter)
 {

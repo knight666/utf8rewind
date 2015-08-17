@@ -5,8 +5,8 @@ extern "C" {
 	#include "../internal/decomposition.h"
 }
 
-#include "helpers-streams.hpp"
-#include "helpers-strings.hpp"
+#include "../helpers/helpers-streams.hpp"
+#include "../helpers/helpers-strings.hpp"
 
 TEST(DecomposeExecute, Initialize)
 {
