@@ -783,10 +783,10 @@ template<class Prop>
 bool check(const char *msg, size_t n = 100, size_t max = 0,
            bool isVerbose = false, std::ostream& out = std::cout)
 {
-   std::cout << "* Checking that " << msg << "..." << std::endl;
+   out << "[Property] " << msg << std::endl;
    Prop theProperty;
    bool status = theProperty.check(n, max, isVerbose, out);
-   std::cout << std::endl;
+   out << std::endl;
    return status;
 }
 
