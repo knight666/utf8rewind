@@ -98,10 +98,21 @@ A generateInteger(size_t n)
    // clips [-n, n] interval if necessary
    A max = std::numeric_limits<A>::max();
    A min = std::numeric_limits<A>::min();
-   A high = (n > size_t(max)) ? max : A(n);
-   A low = (n > size_t(-min)) ? min : A(-n);
+   A high = (ptrdiff_t(n) > ptrdiff_t(max)) ? max : A(n);
+   A low = (ptrdiff_t(n) < -ptrdiff_t(min)) ? -min : -A(n);
    // generates integer in clipped interval
    return generateInRange(low, high);
+}
+
+template<class A>
+A generateUnsignedInteger(size_t n)
+{
+   // not appropriate for floats as it chooses only integers
+   assert(std::numeric_limits<A>::is_integer);
+   // clips [0, n] interval if necessary
+   A high = std::min<A>(A(n), std::numeric_limits<A>::max());
+   // generates integer in clipped interval
+   return generateInRange(A(0), high);
 }
 
 /**
@@ -169,7 +180,7 @@ static inline void generate(size_t n, short& out)
  */
 static inline void generate(size_t n, unsigned short& out)
 {
-   out = generateInteger<unsigned short>(n);
+   out = generateUnsignedInteger<unsigned short>(n);
 }
 
 /**
@@ -191,7 +202,7 @@ static inline void generate(size_t n, int& out)
  */
 static inline void generate(size_t n, unsigned int& out)
 {
-   out = generateInteger<unsigned int>(n);
+   out = generateUnsignedInteger<unsigned int>(n);
 }
 
 /**
@@ -213,7 +224,7 @@ static inline void generate(size_t n, long& out)
  */
 static inline void generate(size_t n, unsigned long& out)
 {
-   out = generateInteger<unsigned long>(n);
+   out = generateUnsignedInteger<unsigned long>(n);
 }
 
 /**
