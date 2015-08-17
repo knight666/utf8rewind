@@ -2,15 +2,15 @@
 	DO NOT MODIFY, AUTO-GENERATED
 
 	Generated on:
-		2015-08-06T17:45:40
+		2015-08-17T08:14:17
 
 	Command line:
-		D:\Projects\utf8rewind\tools\converter\integration.py --casemapping
+		D:\Projects\utf8rewind\tools\converter\integration.py
 */
 
 #include "tests-base.hpp"
 
-#include "helpers-casemapping.hpp"
+#include "../helpers/helpers-casemapping.hpp"
 
 TEST(CaseMapping, BasicLatin)
 {

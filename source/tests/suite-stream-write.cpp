@@ -1,11 +1,11 @@
 #include "tests-base.hpp"
 
 extern "C" {
-#include "../internal/streaming.h"
+	#include "../internal/streaming.h"
 }
 
-#include "helpers-streams.hpp"
-#include "helpers-strings.hpp"
+#include "../helpers/helpers-streams.hpp"
+#include "../helpers/helpers-strings.hpp"
 
 TEST(StreamWrite, SingleCodepoint)
 {

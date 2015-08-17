@@ -1,7 +1,5 @@
 #include "tests-base.hpp"
 
-#include "utf8rewind.h"
-
 TEST(Utf8Len, OneByteSingle)
 {
 	EXPECT_EQ(1, utf8len("\x30"));

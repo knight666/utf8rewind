@@ -1,7 +1,5 @@
 #include "tests-base.hpp"
 
-#include "utf8rewind.h"
-
 class QuickbrownWide
 	: public ::testing::Test
 {

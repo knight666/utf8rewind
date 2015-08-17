@@ -1,8 +1,6 @@
 #include "tests-base.hpp"
 
-#include "utf8rewind.h"
-
-#include "helpers-seeking.hpp"
+#include "../helpers/helpers-seeking.hpp"
 
 TEST(Utf8SeekCurrentForward, OneByteSingle)
 {
