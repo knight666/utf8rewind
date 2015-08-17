@@ -2,15 +2,15 @@
 	DO NOT MODIFY, AUTO-GENERATED
 
 	Generated on:
-		2015-03-12T09:46:55
+		2015-08-17T08:14:25
 
 	Command line:
-		E:\Projects\utf8rewind\tools\converter\integration.py --is-normalized
+		D:\Projects\utf8rewind\tools\converter\integration.py
 */
 
 #include "tests-base.hpp"
 
-#include "helpers-normalization.hpp"
+#include "../helpers/helpers-normalization.hpp"
 
 TEST(IsNormalized, Latin1Supplement)
 {

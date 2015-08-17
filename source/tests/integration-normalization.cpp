@@ -2,7 +2,7 @@
 	DO NOT MODIFY, AUTO-GENERATED
 
 	Generated on:
-		2015-02-05T09:47:48
+		2015-08-17T08:14:23
 
 	Command line:
 		D:\Projects\utf8rewind\tools\converter\integration.py
@@ -10,8 +10,8 @@
 
 #include "tests-base.hpp"
 
-#include "helpers-normalization.hpp"
-#include "helpers-strings.hpp"
+#include "../helpers/helpers-normalization.hpp"
+#include "../helpers/helpers-strings.hpp"
 
 TEST(Normalization, SpecificCasesCodepoints)
 {

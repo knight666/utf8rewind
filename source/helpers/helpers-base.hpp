@@ -2,7 +2,7 @@
 
 /*!
 	\file
-	\brief Base includes for tests.
+	\brief Base includes for helper methods.
 
 	\cond INTERNAL
 */
@@ -29,9 +29,5 @@
 // utf8rewind
 
 #include "utf8rewind.h"
-
-// Helpers
-
-#include "../helpers/helpers-errors.hpp"
 
 /*! \endcond */

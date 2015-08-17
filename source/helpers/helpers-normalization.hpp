@@ -7,9 +7,7 @@
 	\cond INTERNAL
 */
 
-#include "tests-base.hpp"
-
-#include "utf8rewind.h"
+#include "helpers-base.hpp"
 
 #define CHECK_IS_NORMALIZED(_codepoint, _nfd, _nfc, _nfkd, _nfkc, _name) { \
 	::helpers::CheckEntry e; \
