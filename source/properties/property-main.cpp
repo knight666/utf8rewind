@@ -6,6 +6,7 @@
 
 #include "property-convert-utf16.hpp"
 #include "property-convert-utf32.hpp"
+#include "property-sequence-utf16.hpp"
 #include "property-sequence-utf32.hpp"
 
 extern "C" {
@@ -64,6 +65,7 @@ int main(int argc, char** argv)
 
 	quickcheck::check<PropertyConvertUtf16>("Convert UTF-16 to UTF-8 and back.", 10000, 0, false, logging);
 	quickcheck::check<PropertyConvertUtf32>("Convert UTF-32 to UTF-8 and back.", 10000, 0, false, logging);
+	quickcheck::check<PropertySequenceUtf16>("UTF-8 sequence to UTF-16 and back.", 10000, 0, false, logging);
 	quickcheck::check<PropertySequenceUtf32>("UTF-8 sequence to UTF-32 and back.", 10000, 0, false, logging);
 
 	return 0;
