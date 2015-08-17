@@ -81,7 +81,6 @@
 			'type': 'executable',
 			'dependencies': [
 				'dependencies.gyp:gtest',
-				'dependencies.gyp:quickcheck',
 				'utf8rewind',
 				'helpers',
 			],
@@ -140,6 +139,7 @@
 			'target_name': 'properties-rewind',
 			'type': 'executable',
 			'dependencies': [
+				'dependencies.gyp:gtest',
 				'dependencies.gyp:quickcheck',
 				'utf8rewind',
 				'helpers',
@@ -150,6 +150,7 @@
 				'source/properties/property-convert-utf32.hpp',
 				'source/properties/property-generators.hpp',
 				'source/properties/property-main.cpp',
+				'source/properties/property-sequence-utf32.hpp',
 			],
 			'conditions': [
 				['OS!="win"', {
