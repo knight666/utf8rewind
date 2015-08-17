@@ -7,9 +7,7 @@
 	\cond INTERNAL
 */
 
-#include "tests-base.hpp"
-
-#include "utf8rewind.h"
+#include "helpers-base.hpp"
 
 #define EXPECT_SEEKEQ(_input, _expectedOffset, _currentOffset, _startOffset, _offset, _direction) { \
 	::helpers::SeekingParameters e; \

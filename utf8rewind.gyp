@@ -49,29 +49,43 @@
 			],
 		},
 		{
+			'target_name': 'helpers',
+			'type': 'static_library',
+			'dependencies': [
+				'dependencies.gyp:gtest',
+				'utf8rewind',
+			],
+			'sources': [
+				'source/helpers/helpers-base.hpp',
+				'source/helpers/helpers-casemapping.cpp',
+				'source/helpers/helpers-casemapping.hpp',
+				'source/helpers/helpers-errors.cpp',
+				'source/helpers/helpers-errors.hpp',
+				'source/helpers/helpers-normalization.cpp',
+				'source/helpers/helpers-normalization.hpp',
+				'source/helpers/helpers-seeking.cpp',
+				'source/helpers/helpers-seeking.hpp',
+				'source/helpers/helpers-streams.cpp',
+				'source/helpers/helpers-streams.hpp',
+				'source/helpers/helpers-strings.cpp',
+				'source/helpers/helpers-strings.hpp',
+			],
+			'conditions': [
+				['OS!="win"', {
+					'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
+				}],
+			],
+		},
+		{
 			'target_name': 'tests-rewind',
 			'type': 'executable',
 			'dependencies': [
 				'dependencies.gyp:gtest',
 				'dependencies.gyp:quickcheck',
 				'utf8rewind',
-			],
-			'defines': [
-				'GTEST_HAS_PTHREAD=0',
+				'helpers',
 			],
 			'sources': [
-				'source/tests/helpers-casemapping.cpp',
-				'source/tests/helpers-casemapping.hpp',
-				'source/tests/helpers-errors.cpp',
-				'source/tests/helpers-errors.hpp',
-				'source/tests/helpers-normalization.cpp',
-				'source/tests/helpers-normalization.hpp',
-				'source/tests/helpers-seeking.cpp',
-				'source/tests/helpers-seeking.hpp',
-				'source/tests/helpers-streams.cpp',
-				'source/tests/helpers-streams.hpp',
-				'source/tests/helpers-strings.cpp',
-				'source/tests/helpers-strings.hpp',
 				'source/tests/integration-casemapping.cpp',
 				'source/tests/integration-conformance.cpp',
 				'source/tests/integration-isnormalized.cpp',
@@ -119,11 +133,6 @@
 			'conditions': [
 				['OS!="win"', {
 					'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
-				}],
-				['OS=="win"', {
-					'defines': [
-						'GTEST_HAS_TR1_TUPLE=0'
-					],
 				}],
 			],
 		},

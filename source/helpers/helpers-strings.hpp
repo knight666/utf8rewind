@@ -7,9 +7,7 @@
 	\cond INTERNAL
 */
 
-#include "tests-base.hpp"
-
-#include "utf8rewind.h"
+#include "helpers-base.hpp"
 
 #define EXPECT_UTF8EQ(_expected, _actual)            EXPECT_PRED_FORMAT2(::helpers::CompareUtf8Strings, _expected, _actual)
 #define EXPECT_OFFSETEQ(_expected, _actual, _start)  EXPECT_PRED_FORMAT3(::helpers::CompareOffsets, _expected, _actual, _start)

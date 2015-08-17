@@ -5,8 +5,8 @@ extern "C" {
 	#include "../internal/composition.h"
 }
 
-#include "helpers-strings.hpp"
-#include "helpers-streams.hpp"
+#include "../helpers/helpers-strings.hpp"
+#include "../helpers/helpers-streams.hpp"
 
 TEST(ComposeExecute, Initialize)
 {
