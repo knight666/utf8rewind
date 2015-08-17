@@ -8,25 +8,37 @@ extern "C" {
 
 namespace quickcheck {
 
-	static inline void generateCodepoint(size_t size, unicode_t& output)
+	static inline void generateCodepoint(size_t sizeHint, unicode_t& output)
 	{
 		output = generateInRange<unicode_t>(0x0000, MAX_LEGAL_UNICODE);
 	}
 
-	static inline void generateCodepoint(size_t size, utf16_t& output)
+	static inline void generateCodepoint(size_t sizeHint, utf16_t& output)
 	{
 		output = generateInRange<utf16_t>(0x0000, MAX_BASIC_MULTILINGUAL_PLANE);
 	}
 
-	static inline void generate(size_t size, std::string& output)
+	static inline void generate(size_t sizeHint, std::string& output)
 	{
-		uint8_t first_byte = 0x80;
+		uint8_t first_byte;
 
-		while (
-			first_byte >= 0x80 &&
-			first_byte <= 0xBF)
+		if (sizeHint < 30)
 		{
-			first_byte = generateInRange<uint8_t>(0x00, 0xFD);
+			// Basic Latin only
+
+			first_byte = generateInRange<uint8_t>(0x00, 0x7F);
+		}
+		else if (sizeHint < 80)
+		{
+			// Multi-byte sequence
+
+			first_byte = generateInRange<uint8_t>(0xC0, 0xFD);
+		}
+		else
+		{
+			// Random
+
+			first_byte = generateInRange<uint8_t>(0x00, 0xFF);
 		}
 
 		output.push_back((char)first_byte);
