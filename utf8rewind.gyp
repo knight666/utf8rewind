@@ -142,10 +142,10 @@
 			'dependencies': [
 				'dependencies.gyp:quickcheck',
 				'utf8rewind',
+				'helpers',
 			],
 			'sources': [
 				'source/properties/property-base.hpp',
-				'source/properties/property-convert-utf16.cpp',
 				'source/properties/property-convert-utf16.hpp',
 				'source/properties/property-generators.hpp',
 				'source/properties/property-main.cpp',
