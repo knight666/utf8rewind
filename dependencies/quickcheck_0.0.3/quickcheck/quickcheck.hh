@@ -780,14 +780,21 @@ namespace quickcheck {
  * \return \c true if verification succeeded and \c false otherwise
  */
 template<class Prop>
-bool check(const char *msg, size_t n = 100, size_t max = 0,
+bool check(Prop &property, const char *msg, size_t n = 100, size_t max = 0,
            bool isVerbose = false, std::ostream& out = std::cout)
 {
    out << "[Property] " << msg << std::endl;
-   Prop theProperty;
-   bool status = theProperty.check(n, max, isVerbose, out);
+   bool status = property.check(n, max, isVerbose, out);
    out << std::endl;
    return status;
+}
+
+template<class Prop>
+bool check(const char *msg, size_t n = 100, size_t max = 0,
+           bool isVerbose = false, std::ostream& out = std::cout)
+{
+   Prop theProperty;
+   return check(theProperty, msg, n, max, isVerbose, out);
 }
 
 }
