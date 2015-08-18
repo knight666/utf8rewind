@@ -88,6 +88,7 @@
 				'source/tests/integration-casemapping.cpp',
 				'source/tests/integration-conformance.cpp',
 				'source/tests/integration-isnormalized.cpp',
+				'source/tests/integration-naughty-strings.cpp',
 				'source/tests/integration-normalization.cpp',
 				'source/tests/integration-quickbrown-casemapping.cpp',
 				'source/tests/integration-quickbrown.cpp',

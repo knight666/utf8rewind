@@ -23,8 +23,13 @@ namespace helpers {
 	std::string utf8(unicode_t codepoint);
 	std::string utf8(unicode_t* codepoints, size_t codepointsSize);
 	std::string utf8(const std::vector<unicode_t>& codepoints);
+	std::string utf8(const std::wstring& text);
+
+	std::vector<utf16_t> utf16(const std::string& text);
 
 	std::vector<unicode_t> utf32(const std::string& text);
+
+	std::wstring wide(const std::string& text);
 
 	std::string hex(unicode_t codepoint);
 	std::string hex(unicode_t* codepoints, size_t codepointsSize);
