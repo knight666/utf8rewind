@@ -136,3 +136,14 @@ TEST_F(NaughtyStrings, UnicodeSubscriptSuperscript)
 	EXPECT_STREQ(L"\x2080\x2081\x2082", helpers::wide(ReadSection(1391, 9)).c_str());
 	EXPECT_STREQ(L"\x2070\x2074\x2075\x2080\x2081\x2082", helpers::wide(ReadSection(1401, 18)).c_str());
 }
+
+TEST_F(NaughtyStrings, QuotationMarks)
+{
+	EXPECT_STREQ(L"'", helpers::wide(ReadSection(1519, 1)).c_str());
+	EXPECT_STREQ(L"\"", helpers::wide(ReadSection(1521, 1)).c_str());
+	EXPECT_STREQ(L"''", helpers::wide(ReadSection(1523, 2)).c_str());
+	EXPECT_STREQ(L"\"\"", helpers::wide(ReadSection(1526, 2)).c_str());
+	EXPECT_STREQ(L"'\"'", helpers::wide(ReadSection(1529, 3)).c_str());
+	EXPECT_STREQ(L"\"''''\"'\"", helpers::wide(ReadSection(1533, 8)).c_str());
+	EXPECT_STREQ(L"\"'\"'\"''''\"", helpers::wide(ReadSection(1542, 10)).c_str());
+}
