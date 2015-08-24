@@ -137,13 +137,15 @@ TEST_F(NaughtyStrings, UnicodeSubscriptSuperscript)
 	EXPECT_STREQ(L"\x2070\x2074\x2075\x2080\x2081\x2082", helpers::wide(ReadSection(1401, 18)).c_str());
 }
 
-TEST_F(NaughtyStrings, QuotationMarks)
+TEST_F(NaughtyStrings, TwoByteCharacters)
 {
-	EXPECT_STREQ(L"'", helpers::wide(ReadSection(1519, 1)).c_str());
-	EXPECT_STREQ(L"\"", helpers::wide(ReadSection(1521, 1)).c_str());
-	EXPECT_STREQ(L"''", helpers::wide(ReadSection(1523, 2)).c_str());
-	EXPECT_STREQ(L"\"\"", helpers::wide(ReadSection(1526, 2)).c_str());
-	EXPECT_STREQ(L"'\"'", helpers::wide(ReadSection(1529, 3)).c_str());
-	EXPECT_STREQ(L"\"''''\"'\"", helpers::wide(ReadSection(1533, 8)).c_str());
-	EXPECT_STREQ(L"\"'\"'\"''''\"", helpers::wide(ReadSection(1542, 10)).c_str());
+	EXPECT_STREQ(L"\x7530\x4E2D\x3055\x3093\x306B\x3042\x3052\x3066\x4E0B\x3055\x3044", helpers::wide(ReadSection(1678, 33)).c_str());
+	EXPECT_STREQ(L"\x30D1\x30FC\x30C6\x30A3\x30FC\x3078\x884C\x304B\x306A\x3044\x304B", helpers::wide(ReadSection(1712, 33)).c_str());
+	EXPECT_STREQ(L"\x548C\x88FD\x6F22\x8A9E", helpers::wide(ReadSection(1746, 12)).c_str());
+	EXPECT_STREQ(L"\x90E8\x843D\x683C", helpers::wide(ReadSection(1759, 9)).c_str());
+	EXPECT_STREQ(L"\xC0AC\xD68C\xACFC\xD559\xC6D0\x0020\xC5B4\xD559\xC5F0\xAD6C\xC18C", helpers::wide(ReadSection(1769, 31)).c_str());
+	EXPECT_STREQ(L"\xCC26\xCC28\xB97C \xD0C0\xACE0 \xC628 \xD3B2\xC2DC\xB9E8\xACFC \xC45B\xB2E4\xB9AC \xB620\xBC29\xAC01\xD558", helpers::wide(ReadSection(1801, 56)).c_str());
+	EXPECT_STREQ(L"\x793E\x6703\x79D1\x5B78\x9662\x8A9E\x5B78\x7814\x7A76\x6240", helpers::wide(ReadSection(1858, 30)).c_str());
+	EXPECT_STREQ(L"\xC6B8\xB780\xBC14\xD1A0\xB974", helpers::wide(ReadSection(1889, 15)).c_str());
+	EXPECT_STREQ(L"\xD841\xDF0E\xD841\xDF31\xD841\xDF79\xD843\xDC53\xD843\xDC78\xD843\xDC96\xD843\xDCCF", helpers::wide(ReadSection(1905, 28)).c_str());
 }
