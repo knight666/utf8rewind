@@ -107,3 +107,10 @@ TEST_F(NaughtyStrings, NumericStrings)
 	EXPECT_STREQ(L"0xabad1dea", helpers::wide(ReadSection(562, 10)).c_str());
 	EXPECT_STREQ(L"123456789012345678901234567890123456789", helpers::wide(ReadSection(573, 39)).c_str());
 }
+
+TEST_F(NaughtyStrings, SpecialCharacters)
+{
+	EXPECT_STREQ(L",./;'[]\\-=", helpers::wide(ReadSection(719, 10)).c_str());
+	EXPECT_STREQ(L"<>?:\"{}|_+", helpers::wide(ReadSection(730, 10)).c_str());
+	EXPECT_STREQ(L"!@#$%^&*()`~", helpers::wide(ReadSection(741, 12)).c_str());
+}
