@@ -143,9 +143,22 @@ TEST_F(NaughtyStrings, TwoByteCharacters)
 	EXPECT_STREQ(L"\x30D1\x30FC\x30C6\x30A3\x30FC\x3078\x884C\x304B\x306A\x3044\x304B", helpers::wide(ReadSection(1712, 33)).c_str());
 	EXPECT_STREQ(L"\x548C\x88FD\x6F22\x8A9E", helpers::wide(ReadSection(1746, 12)).c_str());
 	EXPECT_STREQ(L"\x90E8\x843D\x683C", helpers::wide(ReadSection(1759, 9)).c_str());
-	EXPECT_STREQ(L"\xC0AC\xD68C\xACFC\xD559\xC6D0\x0020\xC5B4\xD559\xC5F0\xAD6C\xC18C", helpers::wide(ReadSection(1769, 31)).c_str());
+	EXPECT_STREQ(L"\xC0AC\xD68C\xACFC\xD559\xC6D0 \xC5B4\xD559\xC5F0\xAD6C\xC18C", helpers::wide(ReadSection(1769, 31)).c_str());
 	EXPECT_STREQ(L"\xCC26\xCC28\xB97C \xD0C0\xACE0 \xC628 \xD3B2\xC2DC\xB9E8\xACFC \xC45B\xB2E4\xB9AC \xB620\xBC29\xAC01\xD558", helpers::wide(ReadSection(1801, 56)).c_str());
 	EXPECT_STREQ(L"\x793E\x6703\x79D1\x5B78\x9662\x8A9E\x5B78\x7814\x7A76\x6240", helpers::wide(ReadSection(1858, 30)).c_str());
 	EXPECT_STREQ(L"\xC6B8\xB780\xBC14\xD1A0\xB974", helpers::wide(ReadSection(1889, 15)).c_str());
 	EXPECT_STREQ(L"\xD841\xDF0E\xD841\xDF31\xD841\xDF79\xD843\xDC53\xD843\xDC78\xD843\xDC96\xD843\xDCCF", helpers::wide(ReadSection(1905, 28)).c_str());
+}
+
+TEST_F(NaughtyStrings, JapaneseEmoticons)
+{
+	EXPECT_STREQ(L"\x30FD\x0F3C\x0E88\x0644\x035C\x0E88\x0F3D\xFF89 \x30FD\x0F3C\x0E88\x0644\x035C\x0E88\x0F3D\xFF89 ", helpers::wide(ReadSection(2041, 46)).c_str());
+	EXPECT_STREQ(L"(\xFF61\x25D5 \x2200 \x25D5\xFF61)", helpers::wide(ReadSection(2088, 19)).c_str());
+	EXPECT_STREQ(L"\xFF40\xFF68(\x00B4\x2200\xFF40\x2229", helpers::wide(ReadSection(2108, 18)).c_str());
+	EXPECT_STREQ(L"__\xFF9B(,_,*)", helpers::wide(ReadSection(2127, 11)).c_str());
+	EXPECT_STREQ(L"\x30FB(\xFFE3\x2200\xFFE3)\x30FB:*:", helpers::wide(ReadSection(2139, 20)).c_str());
+	EXPECT_STREQ(L"\xFF9F\xFF65\x273F\x30FE\x2572(\xFF61\x25D5\x203F\x25D5\xFF61)\x2571\x273F\xFF65\xFF9F", helpers::wide(ReadSection(2160, 44)).c_str());
+	EXPECT_STREQ(L",\x3002\x30FB:*:\x30FB\x309C\x2019( \x263B \x03C9 \x263B )\x3002\x30FB:*:\x30FB\x309C\x2019", helpers::wide(ReadSection(2205, 51)).c_str());
+	EXPECT_STREQ(L"(\x256F\x00B0\x25A1\x00B0\xFF09\x256F\xFE35 \x253B\x2501\x253B)  ", helpers::wide(ReadSection(2257, 33)).c_str());
+	EXPECT_STREQ(L"(\xFF89\x0CA5\x76CA\x0CA5\xFF09\xFF89\xFEFF \x253B\x2501\x253B", helpers::wide(ReadSection(2291, 32)).c_str());
 }
