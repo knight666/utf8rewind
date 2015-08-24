@@ -185,3 +185,9 @@ TEST_F(NaughtyStrings, Emoji)
 	EXPECT_STREQ(L"\x30\x0FE0F\x020E3 \x31\x0FE0F\x020E3 \x32\x0FE0F\x020E3 \x33\x0FE0F\x020E3 \x34\x0FE0F\x020E3 \x35\x0FE0F\x020E3 \x36\x0FE0F\x020E3 \x37\x0FE0F\x020E3 \x38\x0FE0F\x020E3 \x39\x0FE0F\x020E3 \x1F51F", helpers::wide(ReadSection(2679, 84)).c_str());
 #endif
 }
+
+TEST_F(NaughtyStrings, UnicodeNumbers)
+{
+	EXPECT_STREQ(L"\xFF11\xFF12\xFF13", helpers::wide(ReadSection(2888, 9)).c_str());
+	EXPECT_STREQ(L"\x661\x662\x663", helpers::wide(ReadSection(2898, 6)).c_str());
+}
