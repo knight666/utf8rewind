@@ -210,3 +210,12 @@ TEST_F(NaughtyStrings, UnicodeSpaces)
 	EXPECT_STREQ(L"\x2422", helpers::wide(ReadSection(3694, 3)).c_str());
 	EXPECT_STREQ(L"\x2421", helpers::wide(ReadSection(3698, 3)).c_str());
 }
+
+TEST_F(NaughtyStrings, TrickUnicode)
+{
+	EXPECT_STREQ(L"\x202A\x202Atest\x202A", helpers::wide(ReadSection(3859, 13)).c_str());
+	EXPECT_STREQ(L"\x202Btest\x202B", helpers::wide(ReadSection(3873, 10)).c_str());
+	EXPECT_STREQ(L"\x2029test\x2029", helpers::wide(ReadSection(3884, 10)).c_str());
+	EXPECT_STREQ(L"test\x2060test\x202B", helpers::wide(ReadSection(3895, 14)).c_str());
+	EXPECT_STREQ(L"\x2066test\x2067", helpers::wide(ReadSection(3910, 10)).c_str());
+}
