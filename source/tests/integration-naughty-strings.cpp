@@ -198,3 +198,15 @@ TEST_F(NaughtyStrings, RightToLeftStrings)
 	EXPECT_STREQ(L"\x5D1\x5BC\x5B0\x5E8\x5B5\x5D0\x5E9\x5C1\x5B4\x5D9\x5EA, \x5D1\x5BC\x5B8\x5E8\x5B8\x5D0 \x5D0\x5B1\x5DC\x5B9\x5D4\x5B4\x5D9\x5DD, \x5D0\x5B5\x5EA \x5D4\x5B7\x5E9\x5BC\x5C1\x5B8\x5DE\x5B7\x5D9\x5B4\x5DD, \x5D5\x5B0\x5D0\x5B5\x5EA \x5D4\x5B8\x5D0\x5B8\x5E8\x5B6\x5E5", helpers::wide(ReadSection(3359, 111)).c_str());
 	EXPECT_STREQ(L"\x5D4\x5B8\x5D9\x5B0\x5EA\x5B8\x5D4\x74\x65\x73\x74\x627\x644\x635\x641\x62D\x627\x62A \x627\x644\x62A\x651\x62D\x648\x644", helpers::wide(ReadSection(3471, 47)).c_str());
 }
+
+TEST_F(NaughtyStrings, UnicodeSpaces)
+{
+	EXPECT_STREQ(L"\x200B", helpers::wide(ReadSection(3670, 3)).c_str());
+	EXPECT_STREQ(L"\x1680", helpers::wide(ReadSection(3674, 3)).c_str());
+	EXPECT_STREQ(L"\x180E", helpers::wide(ReadSection(3678, 3)).c_str());
+	EXPECT_STREQ(L"\x3000", helpers::wide(ReadSection(3682, 3)).c_str());
+	EXPECT_STREQ(L"\xFEFF", helpers::wide(ReadSection(3686, 3)).c_str());
+	EXPECT_STREQ(L"\x2423", helpers::wide(ReadSection(3690, 3)).c_str());
+	EXPECT_STREQ(L"\x2422", helpers::wide(ReadSection(3694, 3)).c_str());
+	EXPECT_STREQ(L"\x2421", helpers::wide(ReadSection(3698, 3)).c_str());
+}
