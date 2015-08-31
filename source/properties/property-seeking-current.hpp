@@ -20,13 +20,6 @@ class PropertySeekingCurrent
 		return seek_start == input.c_str();
 	}
 
-	const std::string classify(const std::string& text, const off_t& offset)
-	{
-		std::stringstream ss;
-		ss << "in sequence of length " << utf8len(text.c_str()) << " offset by " << offset;
-		return ss.str();
-	}
-
 	void generateInput(size_t sizeHint, std::string& text, off_t& offset)
 	{
 		size_t generated_length;

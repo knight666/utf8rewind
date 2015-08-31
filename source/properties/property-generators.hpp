@@ -43,7 +43,13 @@ namespace quickcheck {
 
 		output.push_back((char)first_byte);
 
-		for (uint8_t i = 1; i < codepoint_decoded_length[first_byte]; ++i)
+		uint8_t sequence_length = codepoint_decoded_length[first_byte];
+		if (sizeHint > 90)
+		{
+			sequence_length = generateInRange<uint8_t>(0, sequence_length);
+		}
+
+		for (uint8_t i = 1; i < sequence_length; ++i)
 		{
 			output.push_back((char)generateInRange<uint8_t>(0x80, 0xBF));
 		}

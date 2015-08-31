@@ -77,7 +77,6 @@ int main(int argc, char** argv)
 	quickcheck::check(sequenceUtf32, "UTF-8 sequence to UTF-32 and back.", 10000, 0, false, logging);
 
 	PropertySeekingCurrent seekingCurent;
-	seekingCurent.addFixed("\xFA\xAA\xBF\x98\x82\bhX\xC9\xB9\xEE\xA4\x9C\xCA\xB0\xF3\x8E\x81\x82" "0\xFF\x8D\x84\xBE\x9B\x92\x94" "A\xFD\xB2\xBD\x9A\x82\x82g\xE1\x9C\xB7\x19q\xF3\xB6\xB0\xA6O\x1F\0\xE2\xAE\xB1z\x81\x82>\xCC\x8A\xD9\x9C^e9\xC9\xB4\xD3\x92" "c\xE3\xB3\x98\xAD>\xDC\xAD", 37);
 	quickcheck::check(seekingCurent, "Seeking is reversible.", 10000, 0, false, logging);
 
 	std::cout << "Press any key to continue.";
