@@ -246,3 +246,16 @@ TEST_F(NaughtyStrings, UnicodeFont)
 	EXPECT_STREQ(L"\xD835\xDE83\xD835\xDE91\xD835\xDE8E \xD835\xDE9A\xD835\xDE9E\xD835\xDE92\xD835\xDE8C\xD835\xDE94 \xD835\xDE8B\xD835\xDE9B\xD835\xDE98\xD835\xDEA0\xD835\xDE97 \xD835\xDE8F\xD835\xDE98\xD835\xDEA1 \xD835\xDE93\xD835\xDE9E\xD835\xDE96\xD835\xDE99\xD835\xDE9C \xD835\xDE98\xD835\xDE9F\xD835\xDE8E\xD835\xDE9B \xD835\xDE9D\xD835\xDE91\xD835\xDE8E \xD835\xDE95\xD835\xDE8A\xD835\xDEA3\xD835\xDEA2 \xD835\xDE8D\xD835\xDE98\xD835\xDE90", helpers::wide(ReadSection(6708, 148)).c_str());
 	EXPECT_STREQ(L"\x24AF\x24A3\x24A0 \x24AC\x24B0\x24A4\x249E\x24A6 \x249D\x24AD\x24AA\x24B2\x24A9 \x24A1\x24AA\x24B3 \x24A5\x24B0\x24A8\x24AB\x24AE \x24AA\x24B1\x24A0\x24AD \x24AF\x24A3\x24A0 \x24A7\x249C\x24B5\x24B4 \x249F\x24AA\x24A2", helpers::wide(ReadSection(6857, 113)).c_str());
 }
+
+TEST_F(NaughtyStrings, ScriptInjection)
+{
+	EXPECT_STREQ(L"<script>alert(123)</script>", helpers::wide(ReadSection(7082, 27)).c_str());
+	EXPECT_STREQ(L"<img src=x onerror=alert(123) />", helpers::wide(ReadSection(7110, 32)).c_str());
+	EXPECT_STREQ(L"<svg><script>123<1>alert(123)</script> ", helpers::wide(ReadSection(7143, 39)).c_str());
+	EXPECT_STREQ(L"\"><script>alert(123)</script>", helpers::wide(ReadSection(7183, 29)).c_str());
+	EXPECT_STREQ(L"'><script>alert(123)</script>", helpers::wide(ReadSection(7213, 29)).c_str());
+	EXPECT_STREQ(L"><script>alert(123)</script>", helpers::wide(ReadSection(7243, 28)).c_str());
+	EXPECT_STREQ(L"</script><script>alert(123)</script>", helpers::wide(ReadSection(7272, 36)).c_str());
+	EXPECT_STREQ(L"< / script >< script >alert(123)< / script >", helpers::wide(ReadSection(7309, 44)).c_str());
+	EXPECT_STREQ(L" onfocus=JaVaSCript:alert(123) autofocus ", helpers::wide(ReadSection(7354, 41)).c_str());
+}
