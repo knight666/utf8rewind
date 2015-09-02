@@ -2,13 +2,25 @@ import os.path
 import re
 import sys
 
+class Section:
+	def __init__(self, name):
+		self.name = re.sub('[^A-Za-z0-9_]', '', name)
+		self.tests = []
+	
+	def Render(self, header):
+		print(self.name)
+		for t in self.tests:
+			print(str(t, encoding='utf-8').encode('utf-8'))
+
 class Processor:
 	def __init__(self):
-		self.sectionName = ''
+		self.current = None
+		self.sections = []
 		self.state_map = {
 			'section': self.ProcessSection,
 			'comments': self.ProcessComments,
-			'test': self.ProcessTest
+			'test': self.ProcessTest,
+			'exit': self.ProcessExit
 		}
 		self.state = 'section'
 	
@@ -24,36 +36,47 @@ class Processor:
 				
 				if current == b'\n':
 					line = str(bytes_read, encoding='utf-8')
-					self.state = self.state_map[self.state](line)
+					self.state = self.state_map[self.state](line, bytes_read)
 					
 					bytes_read = bytearray()
 				else:
 					bytes_read.append(ord(current))
+	
+	def Render(self, header):
+		for s in self.sections:
+			s.Render(None)
 
-	def ProcessSection(self, line):
-		match = re.match('#\t(.+)', line)
+	def ProcessSection(self, line, bytes):
+		match = re.match('#[\t ]+(.+)', line)
 		if not match:
-			exit(1)
+			print(line)
+			return 'exit'
 		
-		self.sectionName = match.group(1)
-		print(self.sectionName)
+		self.current = Section(match.group(1))
+		self.sections.append(self.current)
+		
 		return 'comments'
 
-	def ProcessComments(self, line):
+	def ProcessComments(self, line, bytes):
 		if len(line) > 0 and not re.match('#.*', line):
 			return 'test'
 		
 		return 'comments'
 
-	def ProcessTest(self, line):
+	def ProcessTest(self, line, bytes):
 		if len(line) == 0:
 			return 'section'
 		
-		print(line.encode('utf-8'))
+		self.current.tests.append(bytes)
 		
 		return 'test'
+	
+	def ProcessExit(self, line, bytes):
+		print('Error parsing file.')
+		exit(1)
 
 if __name__ == '__main__':
 	current_directory = os.path.dirname(os.path.realpath(sys.argv[0]))
 	processor = Processor()
 	processor.Parse(current_directory + '/../../testdata/big-list-of-naughty-strings-master/blns.txt')
+	processor.Render(None)
