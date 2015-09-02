@@ -1,6 +1,8 @@
+import datetime
 import os.path
 import re
 import sys
+import libs.header
 
 def codepointToUtf16(codepoint, wroteHex = False):
 	result = ''
@@ -50,13 +52,23 @@ def codepointToUtf16(codepoint, wroteHex = False):
 		
 		return result, True
 
+class Test:
+	def __init__(self):
+		pass
+
 class Section:
 	def __init__(self, name):
 		self.name = re.sub('[^A-Za-z0-9_]', '', name)
 		self.tests = []
 	
 	def Render(self, header):
-		print(self.name)
+		print('Writing tests for "' + self.name + '"...')
+		
+		header.newLine()
+		header.writeLine("TEST_F(NaughtyStrings, " + self.name + ")")
+		header.writeLine("{")
+		header.indent()
+		
 		for t in self.tests:
 			wrote_hex = False
 			converted = ''
@@ -64,7 +76,10 @@ class Section:
 				codepoint = (c[1] << 8) | c[0]
 				result, wrote_hex = codepointToUtf16(codepoint, wrote_hex)
 				converted += result
-			print('"' + converted + '"')
+			header.writeLine('EXPECT_STREQ(L"' + converted + '", helpers::wide(ReadSection(0, 0)).c_str());')
+		
+		header.outdent()
+		header.writeLine("}")
 
 class Processor:
 	def __init__(self):
@@ -97,13 +112,76 @@ class Processor:
 					bytes_read.append(ord(current))
 	
 	def Render(self, header):
+		command_line = sys.argv[0]
+		arguments = sys.argv[1:]
+		for a in arguments:
+			command_line += ' ' + a
+		
+		header.writeLine('/*')
+		header.indent()
+		header.writeLine('DO NOT MODIFY, AUTO-GENERATED')
+		header.newLine()
+		header.writeLine('Generated on:')
+		header.indent()
+		header.writeLine(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S'))
+		header.outdent()
+		header.newLine()
+		header.writeLine('Command line:')
+		header.indent()
+		header.writeLine(command_line)
+		header.outdent()
+		header.outdent()
+		header.writeLine('*/')
+		header.newLine()
+		header.writeLine('#include "tests-base.hpp"')
+		header.newLine()
+		header.writeLine('#include "../helpers/helpers-strings.hpp"')
+		header.newLine()
+		header.writeLine('#define NAUGHTY_STRINGS_LENGTH 10370')
+		header.newLine()
+		header.writeLine('class NaughtyStrings')
+		header.writeLine('	: public ::testing::Test')
+		header.writeLine('{')
+		header.newLine()
+		header.writeLine('protected:')
+		header.newLine()
+		header.writeLine('	void SetUp()')
+		header.writeLine('	{')
+		header.writeLine('		file.open("testdata/big-list-of-naughty-strings-master/blns.txt", std::ios_base::in);')
+		header.writeLine('		ASSERT_TRUE(file.is_open());')
+		header.writeLine('	}')
+		header.newLine()
+		header.writeLine('	void TearDown()')
+		header.writeLine('	{')
+		header.writeLine('		file.close();')
+		header.writeLine('	}')
+		header.newLine()
+		header.writeLine('	std::string ReadSection(size_t position, size_t length)')
+		header.writeLine('	{')
+		header.writeLine('		std::string result;')
+		header.newLine()
+		header.writeLine('		file.seekg(position, std::ios::beg);')
+		header.writeLine('		if (file.eof())')
+		header.writeLine('		{')
+		header.writeLine('			return result;')
+		header.writeLine('		}')
+		header.newLine()
+		header.writeLine('		result.resize(length + 1);')
+		header.writeLine('		file.read(&result[0], length);')
+		header.newLine()
+		header.writeLine('		return result;')
+		header.writeLine('	}')
+		header.newLine()
+		header.writeLine('	std::fstream file;')
+		header.newLine()
+		header.writeLine('};')
+		
 		for s in self.sections:
-			s.Render(None)
+			s.Render(header)
 
 	def ProcessSection(self, line, bytes):
 		match = re.match('#[\t ]+(.+)', line)
 		if not match:
-			print(line)
 			return 'exit'
 		
 		self.current = Section(match.group(1))
@@ -133,4 +211,6 @@ if __name__ == '__main__':
 	current_directory = os.path.dirname(os.path.realpath(sys.argv[0]))
 	processor = Processor()
 	processor.Parse(current_directory + '/../../testdata/big-list-of-naughty-strings-master/blns.txt')
-	processor.Render(None)
+	
+	header = libs.header.Header(current_directory + '/integration-naughty-strings.cpp')
+	processor.Render(header)
