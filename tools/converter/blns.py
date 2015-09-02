@@ -59,7 +59,7 @@ class Processor:
 
 	def ProcessComments(self, line, bytes):
 		if len(line) > 0 and not re.match('#.*', line):
-			return 'test'
+			return self.ProcessTest(line, bytes)
 		
 		return 'comments'
 
