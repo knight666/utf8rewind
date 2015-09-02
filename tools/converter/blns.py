@@ -60,8 +60,9 @@ class Section:
 		for t in self.tests:
 			wrote_hex = False
 			converted = ''
-			for c in t:
-				result, wrote_hex = codepointToUtf16(c, wrote_hex)
+			for c in (t[pos:pos + 2] for pos in range(0, len(t), 2)):
+				codepoint = (c[1] << 8) | c[0]
+				result, wrote_hex = codepointToUtf16(codepoint, wrote_hex)
 				converted += result
 			print('"' + converted + '"')
 
