@@ -2,6 +2,54 @@ import os.path
 import re
 import sys
 
+def codepointToUtf16(codepoint, wroteHex = False):
+	result = ''
+	
+	if codepoint <= 0x7F:
+		conversion = {
+			0x00: "\\0",
+			0x07: "\\a",
+			0x08: "\\b",
+			0x09: "\\t",
+			0x0A: "\\n",
+			0x0B: "\\v",
+			0x0C: "\\f",
+			0x0D: "\\r",
+			
+			# must be escaped
+			0x22: "\\\"",
+			0x5C: "\\\\",
+		}
+		if codepoint in conversion:
+			result += conversion[codepoint]
+			
+			return result, False
+		elif codepoint < 0x20:
+			result += '\\x' + format(codepoint, 'X')
+			
+			return result, True
+		else:
+			isHex = (codepoint >= 0x41 and codepoint <= 0x46) or (codepoint >= 0x61 and codepoint <= 0x76) or (codepoint >= 0x30 and codepoint <= 0x39)
+			
+			if wroteHex and isHex:
+				result += "\" \""
+			result += "%c" % codepoint
+			
+			return result, False
+	elif codepoint <= 0xFFFF:
+		result += '\\x' + format(codepoint, 'X')
+		
+		return result, True
+	else:
+		decoded = codepoint - 0x10000
+		surrogate_high = 0xD800 + (decoded >> 10)
+		surrogate_low = 0xDC00 + (decoded & 0x03FF)
+		
+		result += '\\x' + format(surrogate_high, '4X')
+		result += '\\x' + format(surrogate_low, '4X')
+		
+		return result, True
+
 class Section:
 	def __init__(self, name):
 		self.name = re.sub('[^A-Za-z0-9_]', '', name)
@@ -10,7 +58,12 @@ class Section:
 	def Render(self, header):
 		print(self.name)
 		for t in self.tests:
-			print(str(t, encoding='utf-8').encode('utf-8'))
+			wrote_hex = False
+			converted = ''
+			for c in t:
+				result, wrote_hex = codepointToUtf16(c, wrote_hex)
+				converted += result
+			print('"' + converted + '"')
 
 class Processor:
 	def __init__(self):
