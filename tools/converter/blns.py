@@ -120,7 +120,7 @@ class Processor:
 		if len(line) == 0:
 			return 'section'
 		
-		self.current.tests.append(bytes)
+		self.current.tests.append(line.encode('utf-16le'))
 		
 		return 'test'
 	
