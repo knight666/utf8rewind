@@ -37,14 +37,14 @@ class Header:
 		self.tab_length -= 1
 	
 	def write(self, line):
-		self.file.write(line)
+		self.file.write(line.encode('utf8'))
 	
 	def newLine(self):
-		self.file.write('\r\n')
+		self.file.write(b'\r\n')
 	
 	def writeIndentation(self):
 		for i in range(0, self.tab_length):
-			self.file.write('\t')
+			self.file.write(b'\t')
 	
 	def writeLine(self, line):
 		self.writeIndentation()

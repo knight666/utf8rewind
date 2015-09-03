@@ -23,6 +23,16 @@
 				'include_dirs': [
 					'<(project_dir)/include',
 				],
+				'defines': [
+					'GTEST_HAS_PTHREAD=0',
+				],
+				'conditions': [
+					['OS=="win"', {
+						'defines': [
+							'GTEST_HAS_TR1_TUPLE=0',
+						],
+					}],
+				],
 			},
 			'conditions': [
 				['OS!="win"', {

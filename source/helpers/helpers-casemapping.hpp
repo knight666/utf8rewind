@@ -7,9 +7,7 @@
 	\cond INTERNAL
 */
 
-#include "tests-base.hpp"
-
-#include "utf8rewind.h"
+#include "helpers-base.hpp"
 
 #define EXPECT_CASEMAPPING_CODEPOINT_NUL_EQ(_codepoint, _name) { \
 	::helpers::CaseMappingEntry e; \
