@@ -119,11 +119,11 @@ if __name__ == '__main__':
 		for m in match:
 			codepoints.append(int(m, 16))
 	else:
-		print "Input is not hexadecimal."
+		print("Input is not hexadecimal.")
 		exit(-1)
 	
 	input = "U+" + format(codepoints[0], '04X')
 	for c in codepoints[1:]:
 		input += " U+" + format(c, '04X')
-	print input
-	print "\"" + unicodeToUtf8(codepoints) + "\""
+	print(input)
+	print("\"" + unicodeToUtf8(codepoints) + "\"")

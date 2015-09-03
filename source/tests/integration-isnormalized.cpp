@@ -2,10 +2,10 @@
 	DO NOT MODIFY, AUTO-GENERATED
 
 	Generated on:
-		2015-08-17T08:14:25
+		2015-09-03T14:46:22
 
 	Command line:
-		D:\Projects\utf8rewind\tools\converter\integration.py
+		tools\converter\integration.py
 */
 
 #include "tests-base.hpp"
