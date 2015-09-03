@@ -7,7 +7,7 @@
 	\cond INTERNAL
 */
 
-#include "tests-base.hpp"
+#include "helpers-base.hpp"
 
 #define EXPECT_LOCALE_EQ(_expected, _actual) \
 	EXPECT_PRED_FORMAT2(::helpers::CompareLocale, _expected, _actual); \
