@@ -53,8 +53,19 @@ def codepointToUtf16(codepoint, wroteHex = False):
 		return result, True
 
 class Test:
-	def __init__(self):
-		pass
+	def __init__(self, line, bytes, offset):
+		self.line = line
+		self.bytes = bytes
+		self.offset = offset
+
+	def Render(self, header):
+		wrote_hex = False
+		converted = ''
+		for c in (self.line[pos:pos + 2] for pos in range(0, len(self.line), 2)):
+			codepoint = (c[1] << 8) | c[0]
+			result, wrote_hex = codepointToUtf16(codepoint, wrote_hex)
+			converted += result
+		header.writeLine('EXPECT_STREQ(L"' + converted + '", helpers::wide(ReadSection(' + str(self.offset) + ', ' + str(len(self.bytes)) + ')).c_str());')
 
 class Section:
 	def __init__(self, name):
@@ -70,13 +81,7 @@ class Section:
 		header.indent()
 		
 		for t in self.tests:
-			wrote_hex = False
-			converted = ''
-			for c in (t[pos:pos + 2] for pos in range(0, len(t), 2)):
-				codepoint = (c[1] << 8) | c[0]
-				result, wrote_hex = codepointToUtf16(codepoint, wrote_hex)
-				converted += result
-			header.writeLine('EXPECT_STREQ(L"' + converted + '", helpers::wide(ReadSection(0, 0)).c_str());')
+			t.Render(header)
 		
 		header.outdent()
 		header.writeLine("}")
@@ -98,14 +103,18 @@ class Processor:
 			self.state = 'section'
 			
 			bytes_read = bytearray()
+			offset = 0
+
 			while True:
 				current = f.read(1)
+				offset += 1
+
 				if not current:
 					break
 				
 				if current == b'\n':
 					line = str(bytes_read, encoding='utf-8')
-					self.state = self.state_map[self.state](line, bytes_read)
+					self.state = self.state_map[self.state](line, bytes_read, offset)
 					
 					bytes_read = bytearray()
 				else:
@@ -179,7 +188,7 @@ class Processor:
 		for s in self.sections:
 			s.Render(header)
 
-	def ProcessSection(self, line, bytes):
+	def ProcessSection(self, line, bytes, offset):
 		match = re.match('#[\t ]+(.+)', line)
 		if not match:
 			return 'exit'
@@ -189,21 +198,22 @@ class Processor:
 		
 		return 'comments'
 
-	def ProcessComments(self, line, bytes):
+	def ProcessComments(self, line, bytes, offset):
 		if len(line) > 0 and not re.match('#.*', line):
-			return self.ProcessTest(line, bytes)
+			return self.ProcessTest(line, bytes, offset)
 		
 		return 'comments'
 
-	def ProcessTest(self, line, bytes):
+	def ProcessTest(self, line, bytes, offset):
 		if len(line) == 0:
 			return 'section'
 		
-		self.current.tests.append(line.encode('utf-16le'))
+		test = Test(line.encode('utf-16le'), bytes, offset)
+		self.current.tests.append(test)
 		
 		return 'test'
 	
-	def ProcessExit(self, line, bytes):
+	def ProcessExit(self, line, bytes, offset):
 		print('Error parsing file.')
 		exit(1)
 
