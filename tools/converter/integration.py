@@ -16,31 +16,10 @@ class IntegrationSuite:
 		self.db = db
 	
 	def open(self, filepath):
-		command_line = sys.argv[0]
-		arguments = sys.argv[1:]
-		for a in arguments:
-			command_line += " " + a
-		
-		d = datetime.datetime.now()
-		
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 		
 		self.header = libs.header.Header(script_path + filepath)
-		self.header.writeLine("/*")
-		self.header.indent()
-		self.header.writeLine("DO NOT MODIFY, AUTO-GENERATED")
-		self.header.newLine()
-		self.header.writeLine("Generated on:")
-		self.header.indent()
-		self.header.writeLine(d.strftime("%Y-%m-%dT%H:%M:%S"))
-		self.header.outdent()
-		self.header.newLine()
-		self.header.writeLine("Command line:")
-		self.header.indent()
-		self.header.writeLine(command_line)
-		self.header.outdent()
-		self.header.outdent()
-		self.header.writeLine("*/")
+		self.header.generatedNotice()
 		self.header.newLine()
 		self.header.writeLine("#include \"tests-base.hpp\"")
 		self.header.newLine()
@@ -53,11 +32,11 @@ class IntegrationSuite:
 
 class CaseMappingIntegrationSuite(IntegrationSuite):
 	def execute(self):
-		print "Executing case mapping tests..."
+		print('Executing case mapping tests...')
 		
 		valid_blocks = []
 		
-		print "Checking for valid blocks..."
+		print('Checking for valid blocks...')
 		
 		for b in db.blocks:
 			for u in range(b.start, b.end + 1):
@@ -67,7 +46,7 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 						valid_blocks.append(b)
 						break
 		
-		print "Writing case mapping tests..."
+		print('Writing case mapping tests...')
 		
 		self.open('/../../source/tests/integration-casemapping.cpp')
 		
@@ -82,7 +61,7 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 		name = re.sub('[ \-]', '', name)
 		
 		if len(codepointRange) > 4000:
-			for i in xrange(0, len(codepointRange), 4000):
+			for i in range(0, len(codepointRange), 4000):
 				chunk = codepointRange[i:i + 4000]
 				self.writeTest(chunk, name + "Part" + str((i / 4000) + 1))
 			return
@@ -98,7 +77,7 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 		if len(records) == 0:
 			return
 		
-		print "Writing tests " + codepointToUnicode(codepointRange[0]) + " - " + codepointToUnicode(codepointRange[len(codepointRange) - 1]) + " \"" + name + "\""
+		print("Writing tests " + codepointToUnicode(codepointRange[0]) + " - " + codepointToUnicode(codepointRange[len(codepointRange) - 1]) + " \"" + name + "\"")
 		
 		self.header.newLine()
 		
@@ -182,7 +161,7 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		self.exclusions = CompositionExclusionIntegrationSuite(db)
 	
 	def execute(self):
-		print "Executing normalization tests..."
+		print('Executing normalization tests...')
 		
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 		
@@ -192,7 +171,7 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		
 		self.exclusions.execute()
 		
-		print "Writing normalization tests..."
+		print('Writing normalization tests...')
 		
 		self.open('/../../source/tests/integration-normalization.cpp')
 		
@@ -206,7 +185,7 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 			'Part3': self.writeDefaultSection,
 		}
 		for s in self.sections:
-			print s.title + " (" + s.identifier + "):"
+			print(s.title + " (" + s.identifier + "):")
 			section_mapping[s.identifier](s)
 		
 		self.writeNormalizationTest(self.exclusions.entries, "Composition exclusions", 100)
@@ -247,7 +226,7 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 				groups[e.block.name] = group
 			group.entries.append(u)
 		
-		block_groups = sorted(groups.iteritems(), key = lambda item: item[1].block.start)
+		block_groups = sorted(groups.items(), key = lambda item: item[1].block.start)
 		
 		for g in block_groups:
 			if g[1].block.start == 0xAC00 and g[1].block.end == 0xD7AF:
@@ -258,14 +237,14 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 	
 	def writeNormalizationTest(self, entries, title, limit = 2000):
 		if len(entries) > limit:
-			for i in xrange(0, len(entries), limit):
+			for i in range(0, len(entries), limit):
 				chunk = entries[i:i + limit]
-				self.writeNormalizationTest(chunk, title + " Part" + str((i / limit) + 1), limit)
+				self.writeNormalizationTest(chunk, title + " Part" + str(int(i / limit) + 1), limit)
 			return
 		
 		title = re.sub('[^\w ]', '', title.title()).replace(' ', '')
 		
-		print "Writing tests \"" + title + "\""
+		print("Writing tests \"" + title + "\"")
 		
 		self.header.newLine()
 		
@@ -290,7 +269,7 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		self.header.write("}")
 	
 	def visitDocument(self, document):
-		print "Parsing normalization tests..."
+		print('Parsing normalization tests...')
 		return True
 	
 	def visitSection(self, section):
@@ -312,7 +291,7 @@ class CompositionExclusionIntegrationSuite(IntegrationSuite):
 		self.entries = []
 	
 	def execute(self):
-		print "Executing composition exclusion tests..."
+		print('Executing composition exclusion tests...')
 		
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 		
@@ -362,7 +341,7 @@ class IsNormalizedIntegrationSuite(IntegrationSuite):
 		self.groups = dict()
 	
 	def execute(self):
-		print "Parsing quickcheck records..."
+		print('Parsing quickcheck records...')
 		
 		records_list = [
 			{
@@ -400,7 +379,7 @@ class IsNormalizedIntegrationSuite(IntegrationSuite):
 						self.entries[c] = e
 					e.__dict__[i["target"]] = str_value
 		
-		for e in self.entries.itervalues():
+		for e in self.entries.values():
 			block = self.db.getBlockByCodepoint(e.codepoint)
 			if block in self.groups:
 				group = self.groups[block]
@@ -410,13 +389,13 @@ class IsNormalizedIntegrationSuite(IntegrationSuite):
 			
 			group.entries.append(e)
 		
-		print "Writing is-normalized tests..."
+		print('Writing is-normalized tests...')
 		
 		self.open('/../../source/tests/integration-isnormalized.cpp')
 		
 		self.header.write("#include \"../helpers/helpers-normalization.hpp\"")
 		
-		for key, value in sorted(self.groups.iteritems(), key = lambda block: block[0].start):
+		for key, value in sorted(self.groups.items(), key = lambda block: block[0].start):
 			if key.start == 0xAC00 and key.end == 0xD7AF:
 				# ignore hangul syllables
 				continue
@@ -425,14 +404,14 @@ class IsNormalizedIntegrationSuite(IntegrationSuite):
 	
 	def writeBlockSection(self, entries, title, limit = 2000):
 		if len(entries) > limit:
-			for i in xrange(0, len(entries), limit):
+			for i in range(0, len(entries), limit):
 				chunk = entries[i:i + limit]
 				self.writeBlockSection(chunk, title + " Part" + str((i / limit) + 1), limit)
 			return
 		
 		title = re.sub('[^\w ]', '', title.title()).replace(' ', '')
 		
-		print "Writing tests \"" + title + "\""
+		print("Writing tests \"" + title + "\"")
 		
 		self.header.newLine()
 		
@@ -450,7 +429,7 @@ class IsNormalizedIntegrationSuite(IntegrationSuite):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Parse Unicode codepoint database and write integration tests.')
 	parser.add_argument(
-		'-v', '--verbove',
+		'-v', '--verbose',
 		dest = 'verbose',
 		action = 'store_true',
 		help = 'verbose output'
