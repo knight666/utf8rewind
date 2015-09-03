@@ -4,7 +4,7 @@ import re
 import sys
 import libs.header
 
-def codepointToUtf16(codepoint, wroteHex = False):
+def codepointToHexadecimalUtf16(codepoint, wroteHex = False):
 	result = ''
 	
 	if codepoint <= 0x7F:
@@ -42,7 +42,7 @@ def codepointToUtf16(codepoint, wroteHex = False):
 		result += '\\x' + format(codepoint, 'X')
 		
 		return result, True
-	else:
+	elif codepoint <= 0x10FFFF:
 		decoded = codepoint - 0x10000
 		surrogate_high = 0xD800 + (decoded >> 10)
 		surrogate_low = 0xDC00 + (decoded & 0x03FF)
@@ -51,39 +51,131 @@ def codepointToUtf16(codepoint, wroteHex = False):
 		result += '\\x' + format(surrogate_low, '4X')
 		
 		return result, True
+	else:
+		result += '\\xFFFD'
+
+		return result, True
+
+def codepointToHexadecimalUtf32(codepoint, wroteHex = False):
+	result = ''
+	
+	if codepoint <= 0x7F:
+		conversion = {
+			0x00: "\\0",
+			0x07: "\\a",
+			0x08: "\\b",
+			0x09: "\\t",
+			0x0A: "\\n",
+			0x0B: "\\v",
+			0x0C: "\\f",
+			0x0D: "\\r",
+			
+			# must be escaped
+			0x22: "\\\"",
+			0x5C: "\\\\",
+		}
+		if codepoint in conversion:
+			result += conversion[codepoint]
+			
+			return result, False
+		elif codepoint < 0x20:
+			result += '\\x' + format(codepoint, 'X')
+			
+			return result, True
+		else:
+			isHex = (codepoint >= 0x41 and codepoint <= 0x46) or (codepoint >= 0x61 and codepoint <= 0x76) or (codepoint >= 0x30 and codepoint <= 0x39)
+			
+			if wroteHex and isHex:
+				result += "\" \""
+			result += "%c" % codepoint
+			
+			return result, False
+	elif codepoint <= 0x10FFFF:
+		result += '\\x' + format(codepoint, 'X')
+		
+		return result, True
+	else:
+		result += '\\xFFFD'
+
+		return result, True
 
 class Test:
 	def __init__(self, line, bytes, offset):
-		self.line = line
+		self.line_utf16 = line.encode('utf-16le')
+		self.line_utf32 = line.encode('utf-32le')
 		self.bytes = bytes
 		self.offset = offset
+		self.converted_utf16 = ''
+		self.converted_utf32 = ''
 
-	def Render(self, header):
-		wrote_hex = False
-		converted = ''
-		for c in (self.line[pos:pos + 2] for pos in range(0, len(self.line), 2)):
+	def Convert(self):
+		hex_utf16 = False
+		self.converted_utf16 = ''
+		hex_utf32 = False
+		self.converted_utf32 = ''
+
+		for c in (self.line_utf16[pos:pos + 2] for pos in range(0, len(self.line_utf16), 2)):
 			codepoint = (c[1] << 8) | c[0]
-			result, wrote_hex = codepointToUtf16(codepoint, wrote_hex)
-			converted += result
-		header.writeLine('EXPECT_STREQ(L"' + converted + '", helpers::wide(ReadSection(' + str(self.offset) + ', ' + str(len(self.bytes)) + ')).c_str());')
+
+			result_utf16, hex_utf16 = codepointToHexadecimalUtf16(codepoint, hex_utf16)
+			self.converted_utf16 += result_utf16
+
+		for c in (self.line_utf32[pos:pos + 4] for pos in range(0, len(self.line_utf32), 4)):
+			codepoint = (c[3] << 8) | (c[2] << 16) | (c[1] << 8) | c[0]
+
+			result_utf32, hex_utf32 = codepointToHexadecimalUtf32(codepoint, hex_utf32)
+			self.converted_utf32 += result_utf32
+
+		return self.converted_utf16 == self.converted_utf32
+
+	def Render(self, header, type='utf16'):
+		header.writeLine('EXPECT_STREQ(L"' + self.__dict__['converted_' + type] + '", helpers::wide(ReadSection(' + str(self.offset) + ', ' + str(len(self.bytes)) + ')).c_str());')
 
 class Section:
 	def __init__(self, name):
 		self.name = re.sub('[^A-Za-z0-9_]', '', name.title())
 		self.tests = []
+		self.differs = False
+
+	def Process(self):
+		self.differs = False
+		for t in self.tests:
+			if not t.Convert():
+				self.differs = True
 	
 	def Render(self, header):
 		print('Writing tests for "' + self.name + '"...')
+		if self.differs:
+			print('\tUTF-16 differs from UTF-32, writing both.')
 		
 		header.newLine()
-		header.writeLine("TEST_F(NaughtyStrings, " + self.name + ")")
-		header.writeLine("{")
-		header.indent()
+		header.writeLine('TEST_F(NaughtyStrings, ' + self.name + ')')
+		header.writeLine('{')
 		
-		for t in self.tests:
-			t.Render(header)
+		if self.differs:
+			header.writeLine('#if UTF8_WCHAR_UTF16')
+			header.indent()
+
+			for t in self.tests:
+				t.Render(header, 'utf16')
+
+			header.outdent()
+			header.writeLine('#elif UTF8_WCHAR_UTF32')
+			header.indent()
+
+			for t in self.tests:
+				t.Render(header, 'utf32')
+
+			header.outdent()
+			header.writeLine('#endif')
+		else:
+			header.indent()
+
+			for t in self.tests:
+				t.Render(header)
+
+			header.outdent()
 		
-		header.outdent()
 		header.writeLine("}")
 
 class Processor:
@@ -99,6 +191,8 @@ class Processor:
 		self.state = 'section'
 	
 	def Parse(self, filepath):
+		print('Parsing "' + os.path.realpath(filepath) + '"...')
+
 		with open(filepath, 'rb') as f:
 			self.state = 'section'
 			
@@ -121,13 +215,21 @@ class Processor:
 					offset_start = offset
 				else:
 					bytes_read.append(ord(current))
+
+		print('Processing sections...')
+
+		for s in self.sections:
+			s.Process()
 	
-	def Render(self, header):
+	def Render(self, filepath):
+		print('Rendering tests to "' + os.path.realpath(filepath) + '"...')
+
 		command_line = sys.argv[0]
 		arguments = sys.argv[1:]
 		for a in arguments:
 			command_line += ' ' + a
 		
+		header = libs.header.Header(filepath)
 		header.writeLine('/*')
 		header.indent()
 		header.writeLine('DO NOT MODIFY, AUTO-GENERATED')
@@ -210,7 +312,7 @@ class Processor:
 		if len(line) == 0:
 			return 'section'
 		
-		test = Test(line.encode('utf-16le'), bytes, offset)
+		test = Test(line, bytes, offset)
 		self.current.tests.append(test)
 		
 		return 'test'
@@ -220,9 +322,10 @@ class Processor:
 		exit(1)
 
 if __name__ == '__main__':
-	current_directory = os.path.dirname(os.path.realpath(sys.argv[0]))
+	current_directory = os.path.dirname(os.path.realpath(sys.argv[0])) + '/'
+
 	processor = Processor()
-	processor.Parse(current_directory + '/../../testdata/big-list-of-naughty-strings-master/blns.txt')
-	
-	header = libs.header.Header(current_directory + '/integration-naughty-strings.cpp')
-	processor.Render(header)
+	processor.Parse(current_directory + '../../testdata/big-list-of-naughty-strings-master/blns.txt')
+	processor.Render(current_directory + '../../source/tests/integration-naughty-strings.cpp')
+
+	print('Done.')
