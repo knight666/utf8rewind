@@ -5,9 +5,9 @@ extern "C" {
 	#include "../internal/database.h"
 }
 
-#include "helpers-casemapping.hpp"
-#include "helpers-locale.hpp"
-#include "helpers-strings.hpp"
+#include "../helpers/helpers-casemapping.hpp"
+#include "../helpers/helpers-locale.hpp"
+#include "../helpers/helpers-strings.hpp"
 
 TEST(CaseMappingInitialize, Initialize)
 {

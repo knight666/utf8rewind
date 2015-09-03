@@ -1,8 +1,8 @@
 #include "tests-base.hpp"
 
-#include "helpers-casemapping.hpp"
-#include "helpers-locale.hpp"
-#include "helpers-strings.hpp"
+#include "../helpers/helpers-casemapping.hpp"
+#include "../helpers/helpers-locale.hpp"
+#include "../helpers/helpers-strings.hpp"
 
 class Utf8ToUpperGreek
 	: public ::testing::Test

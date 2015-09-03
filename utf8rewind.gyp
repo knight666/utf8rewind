@@ -61,6 +61,8 @@
 				'source/helpers/helpers-casemapping.hpp',
 				'source/helpers/helpers-errors.cpp',
 				'source/helpers/helpers-errors.hpp',
+				'source/helpers/helpers-locale.cpp',
+				'source/helpers/helpers-locale.hpp',
 				'source/helpers/helpers-normalization.cpp',
 				'source/helpers/helpers-normalization.hpp',
 				'source/helpers/helpers-seeking.cpp',
