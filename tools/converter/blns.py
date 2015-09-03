@@ -4,7 +4,7 @@ import re
 import sys
 import libs.header
 
-def codepointToHexadecimalUtf16(codepoint, wroteHex = False):
+def codepointToHexadecimalWideUtf16(codepoint, wroteHex = False):
 	result = ''
 	
 	if codepoint <= 0x7F:
@@ -34,7 +34,7 @@ def codepointToHexadecimalUtf16(codepoint, wroteHex = False):
 			isHex = (codepoint >= 0x41 and codepoint <= 0x46) or (codepoint >= 0x61 and codepoint <= 0x76) or (codepoint >= 0x30 and codepoint <= 0x39)
 			
 			if wroteHex and isHex:
-				result += "\" \""
+				result += "\" L\""
 			result += "%c" % codepoint
 			
 			return result, False
@@ -56,7 +56,7 @@ def codepointToHexadecimalUtf16(codepoint, wroteHex = False):
 
 		return result, True
 
-def codepointToHexadecimalUtf32(codepoint, wroteHex = False):
+def codepointToHexadecimalWideUtf32(codepoint, wroteHex = False):
 	result = ''
 	
 	if codepoint <= 0x7F:
@@ -86,7 +86,7 @@ def codepointToHexadecimalUtf32(codepoint, wroteHex = False):
 			isHex = (codepoint >= 0x41 and codepoint <= 0x46) or (codepoint >= 0x61 and codepoint <= 0x76) or (codepoint >= 0x30 and codepoint <= 0x39)
 			
 			if wroteHex and isHex:
-				result += "\" \""
+				result += "\" L\""
 			result += "%c" % codepoint
 			
 			return result, False
@@ -117,13 +117,13 @@ class Test:
 		for c in (self.line_utf16[pos:pos + 2] for pos in range(0, len(self.line_utf16), 2)):
 			codepoint = (c[1] << 8) | c[0]
 
-			result_utf16, hex_utf16 = codepointToHexadecimalUtf16(codepoint, hex_utf16)
+			result_utf16, hex_utf16 = codepointToHexadecimalWideUtf16(codepoint, hex_utf16)
 			self.converted_utf16 += result_utf16
 
 		for c in (self.line_utf32[pos:pos + 4] for pos in range(0, len(self.line_utf32), 4)):
 			codepoint = (c[3] << 8) | (c[2] << 16) | (c[1] << 8) | c[0]
 
-			result_utf32, hex_utf32 = codepointToHexadecimalUtf32(codepoint, hex_utf32)
+			result_utf32, hex_utf32 = codepointToHexadecimalWideUtf32(codepoint, hex_utf32)
 			self.converted_utf32 += result_utf32
 
 		return self.converted_utf16 == self.converted_utf32
@@ -148,6 +148,7 @@ class Section:
 		if self.differs:
 			print('\tUTF-16 differs from UTF-32, writing both.')
 		
+		header.newLine()
 		header.newLine()
 		header.writeLine('TEST_F(NaughtyStrings, ' + self.name + ')')
 		header.writeLine('{')
@@ -176,7 +177,7 @@ class Section:
 
 			header.outdent()
 		
-		header.writeLine("}")
+		header.write("}")
 
 class Processor:
 	def __init__(self):
@@ -287,7 +288,7 @@ class Processor:
 		header.newLine()
 		header.writeLine('	std::fstream file;')
 		header.newLine()
-		header.writeLine('};')
+		header.write('};')
 		
 		for s in self.sections:
 			s.Render(header)
