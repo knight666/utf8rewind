@@ -71,8 +71,8 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 		
 		self.open('/../../source/tests/integration-casemapping.cpp')
 		
-		self.header.writeLine("#include \"helpers-casemapping.hpp\"")
-		self.header.writeLine("#include \"helpers-locale.hpp\"")
+		self.header.writeLine("#include \"../helpers/helpers-casemapping.hpp\"")
+		self.header.writeLine("#include \"../helpers/helpers-locale.hpp\"")
 		self.header.newLine()
 		self.header.writeLine("class CaseMapping")
 		self.header.writeLine("\t: public ::testing::Test")
@@ -215,8 +215,8 @@ class NormalizationIntegrationSuite(IntegrationSuite):
 		
 		self.open('/../../source/tests/integration-normalization.cpp')
 		
-		self.header.writeLine("#include \"helpers-normalization.hpp\"")
-		self.header.write("#include \"helpers-strings.hpp\"")
+		self.header.writeLine("#include \"../helpers/helpers-normalization.hpp\"")
+		self.header.write("#include \"../helpers/helpers-strings.hpp\"")
 		
 		section_mapping = {
 			'Part0': self.writeSpecificCasesSection,
@@ -433,7 +433,7 @@ class IsNormalizedIntegrationSuite(IntegrationSuite):
 		
 		self.open('/../../source/tests/integration-isnormalized.cpp')
 		
-		self.header.write("#include \"helpers-normalization.hpp\"")
+		self.header.write("#include \"../helpers/helpers-normalization.hpp\"")
 		
 		for key, value in sorted(self.groups.iteritems(), key = lambda block: block[0].start):
 			if key.start == 0xAC00 and key.end == 0xD7AF:

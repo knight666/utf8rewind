@@ -2,8 +2,8 @@
 
 #include "utf8rewind.h"
 
-#include "helpers-locale.hpp"
-#include "helpers-strings.hpp"
+#include "../helpers/helpers-locale.hpp"
+#include "../helpers/helpers-strings.hpp"
 
 class Utf8ToLower
 	: public ::testing::Test

@@ -1,8 +1,6 @@
 #include "tests-base.hpp"
 
-#include "utf8rewind.h"
-
-#include "helpers-strings.hpp"
+#include "../helpers/helpers-strings.hpp"
 
 class QuickbrownCaseMapping
 	: public ::testing::Test

@@ -1,10 +1,10 @@
 #include "tests-base.hpp"
 
 extern "C" {
-#include "../internal/codepoint.h"
+	#include "../internal/codepoint.h"
 };
 
-#include "helpers-strings.hpp"
+#include "../helpers/helpers-strings.hpp"
 
 TEST(CodepointWrite, OneByte)
 {

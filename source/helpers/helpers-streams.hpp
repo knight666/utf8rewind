@@ -7,9 +7,7 @@
 	\cond INTERNAL
 */
 
-#include "tests-base.hpp"
-
-#include "utf8rewind.h"
+#include "helpers-base.hpp"
 
 extern "C" {
 	#include "../internal/database.h"
