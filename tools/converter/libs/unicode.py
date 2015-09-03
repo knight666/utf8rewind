@@ -27,7 +27,7 @@ class UnicodeDocument:
 		self.sections = []
 	
 	def parse(self, filename):
-		print "Parsing \"" + filename + "\"..."
+		print("Parsing \"" + filename + "\"...")
 		
 		self.filename = filename
 		
@@ -42,7 +42,7 @@ class UnicodeDocument:
 		
 		line_count = 0
 		
-		with open(filename, 'r') as f:
+		with open(filename, 'r', encoding='utf-8') as f:
 			lines = f.readlines()
 			lines_total = float(len(lines))
 			for line in lines:
@@ -69,7 +69,7 @@ class UnicodeDocument:
 					# entry
 					
 					comment_start = stripped.find('#')
-					if comment_start <> -1:
+					if comment_start != -1:
 						entry_sliced = stripped[:comment_start]
 					else:
 						entry_sliced = stripped
@@ -99,7 +99,7 @@ class UnicodeDocument:
 					
 					section_current.entries.append(entry)
 					
-					if self.lineLimit <> None:
+					if self.lineLimit != None:
 						self.lineLimit -= 1
 						if self.lineLimit == 0:
 							break
