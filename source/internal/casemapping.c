@@ -194,7 +194,7 @@ size_t casemapping_execute(CaseMappingState* state)
 			else
 			{
 				/*
-					All other codepoints in Basic Latin are unaffected by case
+					All other code points in Basic Latin are unaffected by case
 					mapping
 				*/
 
@@ -205,7 +205,7 @@ size_t casemapping_execute(CaseMappingState* state)
 			state->dst_size--;
 		}
 
-		/* Store codepoint's general category */
+		/* Store code point's general category */
 
 		state->last_general_category = basic_latin_general_category_table[decoded];
 
@@ -217,16 +217,16 @@ size_t casemapping_execute(CaseMappingState* state)
 		const char* resolved;
 		size_t resolved_size = 0;
 
-		/* Decode current codepoint */
+		/* Decode current code point */
 
 		decoded_size = codepoint_read(state->src, state->src_size, &decoded);
 
-		/* Check if the codepoint's general category property indicates case mapping */
+		/* Check if the code point's general category indicates case mapping */
 
 		state->last_general_category = database_queryproperty(decoded, UnicodeProperty_GeneralCategory);
 		if ((state->last_general_category & GeneralCategory_CaseMapped) != 0)
 		{
-			/* Resolve the codepoint's decomposition */
+			/* Resolve the code point's decomposition */
 
 			resolved = database_querydecomposition(decoded, state->property, &resolved_size);
 			if (resolved != 0)
@@ -255,8 +255,11 @@ size_t casemapping_execute(CaseMappingState* state)
 
 		if (resolved_size == 0)
 		{
-			/* Write the codepoint to the output buffer */
-			/* This ensures that invalid codepoints in the input are always converted to U+FFFD in the output */
+			/*
+				Write the codepoint to the output buffer
+				This ensures that invalid code points in the input are always
+				converted to U+FFFD in the output
+			*/
 
 			uint8_t decoded_written = codepoint_write(decoded, &state->dst, &state->dst_size);
 			if (decoded_written == 0)
@@ -268,7 +271,7 @@ size_t casemapping_execute(CaseMappingState* state)
 		}
 	}
 
-	/* Invalid codepoints can be longer than the source length indicates */
+	/* Invalid code points can be longer than the source length indicates */
 
 	if (state->src_size >= decoded_size)
 	{
