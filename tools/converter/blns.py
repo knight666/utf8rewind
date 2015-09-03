@@ -69,7 +69,7 @@ class Test:
 
 class Section:
 	def __init__(self, name):
-		self.name = re.sub('[^A-Za-z0-9_]', '', name)
+		self.name = re.sub('[^A-Za-z0-9_]', '', name.title())
 		self.tests = []
 	
 	def Render(self, header):
@@ -104,6 +104,7 @@ class Processor:
 			
 			bytes_read = bytearray()
 			offset = 0
+			offset_start = offset
 
 			while True:
 				current = f.read(1)
@@ -114,9 +115,10 @@ class Processor:
 				
 				if current == b'\n':
 					line = str(bytes_read, encoding='utf-8')
-					self.state = self.state_map[self.state](line, bytes_read, offset)
+					self.state = self.state_map[self.state](line, bytes_read, offset_start)
 					
 					bytes_read = bytearray()
+					offset_start = offset
 				else:
 					bytes_read.append(ord(current))
 	
