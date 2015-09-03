@@ -1,3 +1,7 @@
+import datetime
+import os.path
+import sys
+
 class Header:
 	def __init__(self, filename):
 		self.file = open(filename, 'wb+')
@@ -6,6 +10,28 @@ class Header:
 	def close(self):
 		self.file.close()
 	
+	def generatedNotice(self):
+		command_line = os.path.relpath(os.path.realpath(sys.argv[0]), os.getcwd())
+
+		for a in sys.argv[1:]:
+			command_line += " " + a
+
+		self.writeLine("/*")
+		self.indent()
+		self.writeLine("DO NOT MODIFY, AUTO-GENERATED")
+		self.newLine()
+		self.writeLine("Generated on:")
+		self.indent()
+		self.writeLine(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+		self.outdent()
+		self.newLine()
+		self.writeLine("Command line:")
+		self.indent()
+		self.writeLine(command_line)
+		self.outdent()
+		self.outdent()
+		self.writeLine("*/")
+
 	def copyrightNotice(self):
 		self.writeLine("Copyright (C) 2014-2015 Quinten Lansu")
 		self.newLine()

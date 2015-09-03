@@ -280,7 +280,7 @@ class UnicodeMapping:
 					if resolved:
 						result += resolved
 				else:
-					print "missing " + hex(c) + " in database"
+					print('missing ' + hex(c) + ' in database')
 					result.append(c)
 		else:
 			result.append(self.codepoint)
@@ -299,7 +299,7 @@ class UnicodeMapping:
 				if len(self.decompositionCodepoints) == 2:
 					target.compositionPairs[self.decompositionCodepoints[1]] = self.codepoint
 			else:
-				print "compose failed, missing " + hex(c) + " in database."
+				print('compose failed, missing ' + hex(c) + ' in database.')
 	
 	def caseMapping(self):
 		if self.uppercase:
@@ -442,7 +442,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.resolveProperties()
 	
 	def visitDocument(self, document):
-		print "Parsing document to codepoint database..."
+		print('Parsing document to codepoint database...')
 		return True
 	
 	def visitEntry(self, entry):
@@ -454,9 +454,9 @@ class Database(libs.unicode.UnicodeVisitor):
 			if not u.parse(entry.matches):
 				return False
 		except KeyError as e:
-			print "Failed to parse entry - error: \"" + e + "\" line: " + str(entry.lineNumber)
+			print('Failed to parse entry - error: "' + e + '" line: ' + str(entry.lineNumber))
 			for m in entry.matches:
-				print m
+				print(m)
 			return False
 		
 		self.recordsOrdered.append(u)
@@ -477,7 +477,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		return None
 	
 	def resolveMissing(self):
-		print "Adding missing codepoints to database..."
+		print('Adding missing codepoints to database...')
 		
 		missing = [
 			self.getBlockByName("General Punctuation"), # 2000..206F
@@ -506,7 +506,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.recordsOrdered = sorted(self.recordsOrdered, key=lambda record: record.codepoint)
 	
 	def resolveBlocks(self):
-		print "Resolving blocks for entries..."
+		print('Resolving blocks for entries...')
 		
 		block_index = 0
 		block_current = self.blocks[block_index]
@@ -532,7 +532,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.blocks.append(block_reserved2)
 	
 	def resolveQuickCheck(self):
-		print "Resolving quick check entries..."
+		print('Resolving quick check entries...')
 		
 		# NFC
 		
@@ -579,7 +579,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			self.qcNFKDRecords[i].end = self.qcNFKDRecords[i + 1].start - 1
 		
 	def resolveDecomposition(self):
-		print "Resolving decomposition..."
+		print('Resolving decomposition...')
 		
 		for r in self.recordsOrdered:
 			r.decompose()
@@ -591,7 +591,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			
 			if r.decomposedNFD:
 				convertedNFD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFD)
-				if convertedNFD <> convertedCodepoint:
+				if convertedNFD != convertedCodepoint:
 					r.offsetNFD = self.addTranslation(convertedNFD + "\\x00")
 					r.lengthNFD = self.translationLength(convertedNFD)
 			
@@ -600,31 +600,31 @@ class Database(libs.unicode.UnicodeVisitor):
 			
 			if r.decomposedNFKD:
 				convertedNFKD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFKD)
-				if convertedNFKD <> convertedCodepoint:
+				if convertedNFKD != convertedCodepoint:
 					r.offsetNFKD = self.addTranslation(convertedNFKD + "\\x00")
 					r.lengthNFKD = self.translationLength(convertedNFKD)
 	
 	def resolveComposition(self):
-		print "Resolving composition..."
+		print('Resolving composition...')
 		
 		for r in self.recordsOrdered:
 			r.compose()
 	
 	def resolveCaseMapping(self):
-		print "Resolving case mappings..."
+		print('Resolving case mappings...')
 		
 		for r in self.recordsOrdered:
 			r.caseMapping()
 	
 	def resolveProperties(self):
-		print "Resolving codepoint properties..."
+		print('Resolving codepoint properties...')
 		
 		group_category = None
 		group_ccc = None
 		
 		for r in self.recordsOrdered:
 			if r.generalCategoryCombined:
-				if not group_category or r.codepoint <> (group_category.start + group_category.count + 1) or r.generalCategoryCombined <> group_category.value:
+				if not group_category or r.codepoint != (group_category.start + group_category.count + 1) or r.generalCategoryCombined != group_category.value:
 					if group_category:
 						group_category.end = r.codepoint - 1
 					group_category = QuickCheckRecord(self)
@@ -636,7 +636,7 @@ class Database(libs.unicode.UnicodeVisitor):
 					group_category.count += 1
 			
 			if r.canonicalCombiningClass:
-				if not group_ccc or r.codepoint <> (group_ccc.start + group_ccc.count + 1) or r.canonicalCombiningClass <> group_ccc.value:
+				if not group_ccc or r.codepoint != (group_ccc.start + group_ccc.count + 1) or r.canonicalCombiningClass != group_ccc.value:
 					if group_ccc:
 						group_ccc.end = r.codepoint - 1
 					group_ccc = QuickCheckRecord(self)
@@ -665,7 +665,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		else:
 			type = "None"
 		
-		print found.name + " " + hex(found.codepoint) + " " + type + " \"" + found.decomposedToString() + "\""
+		print(found.name + " " + hex(found.codepoint) + " " + type + " \"" + found.decomposedToString() + "\"")
 		
 		if found.decompositionCodepoints and (compatibility or found.decompositionType == "DecompositionType_Canonical"):
 			result = ""
@@ -682,11 +682,11 @@ class Database(libs.unicode.UnicodeVisitor):
 		queryCodepoint = int(query, 16)
 		found = self.records[queryCodepoint]
 		if found:
-			print found
-			print "Canonical:"
-			print self.resolveCodepoint(queryCodepoint, False)
-			print "Compatibility:"
-			print self.resolveCodepoint(queryCodepoint, True)
+			print(found)
+			print("Canonical:")
+			print(self.resolveCodepoint(queryCodepoint, False))
+			print("Compatibility:")
+			print(self.resolveCodepoint(queryCodepoint, True))
 
 	def matchToString(self, match):
 		if match == None:
@@ -695,7 +695,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		codepoints = []
 		
 		for group in match:
-			if group <> None:
+			if group != None:
 				codepoints.append(int(group, 16))
 		
 		result = libs.utf8.unicodeToUtf8Hex(codepoints)
@@ -732,7 +732,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			offset = self.translationLength(translation)
 			
 			if self.verbose:
-				print "hashing " + translation + " offset " + str(self.offset) + " length " + str(offset)
+				print("hashing " + translation + " offset " + str(self.offset) + " length " + str(offset))
 			
 			self.hashed[translation] = result
 			self.offset += offset
@@ -741,7 +741,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			result = self.hashed[translation]
 		
 		if self.verbose:
-			print "translated", translation, "offset", result
+			print("translated", translation, "offset", result)
 		
 		self.total += 1
 		
@@ -762,7 +762,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			header.write("{ " + hex(r.codepoint) + ", " + hex(length_and_offset) + " },")
 			
 			count += 1
-			if count <> len(records):
+			if count != len(records):
 				if (count % 4) == 0:
 					header.newLine()
 				else:
@@ -783,7 +783,7 @@ class Database(libs.unicode.UnicodeVisitor):
 				for p in r.compositionPairs.items():
 					key = (r.codepoint << 32) + p[0]
 					if key in composed:
-						print "collision " + hex(key)
+						print('"collision " + hex(key)')
 					else:
 						pair = {
 							"key": key,
@@ -806,7 +806,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			header.write("{ " + hex(c["key"]) + ", " + hex(c["value"]) + " },")
 			
 			count += 1
-			if count <> len(composed_ordered):
+			if count != len(composed_ordered):
 				if (count % 4) == 0:
 					header.newLine()
 				else:
@@ -834,7 +834,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			header.write("{ " + hex(r.start) + ", " + hex(r.end) + ", " + hex(value) + " },")
 			
 			count += 1
-			if count <> len(records):
+			if count != len(records):
 				if (count % 4) == 0:
 					header.newLine()
 				else:
@@ -848,7 +848,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.newLine()
 	
 	def writeSource(self, filepath):
-		print "Writing database to " + filepath + "..."
+		print("Writing database to " + filepath + "...")
 		
 		command_line = sys.argv[0]
 		arguments = sys.argv[1:]
@@ -864,19 +864,19 @@ class Database(libs.unicode.UnicodeVisitor):
 		titlecase_records = []
 		
 		for r in self.recordsOrdered:
-			if r.offsetNFD <> 0:
+			if r.offsetNFD != 0:
 				nfd_records.append(r)
 			
-			if r.offsetNFKD <> 0:
+			if r.offsetNFKD != 0:
 				nfkd_records.append(r)
 			
-			if r.offsetUppercase <> 0:
+			if r.offsetUppercase != 0:
 				uppercase_records.append(r)
 			
-			if r.offsetLowercase <> 0:
+			if r.offsetLowercase != 0:
 				lowercase_records.append(r)
 			
-			if r.offsetTitlecase <> 0:
+			if r.offsetTitlecase != 0:
 				titlecase_records.append(r)
 		
 		sliced = libs.blobsplitter.BlobSplitter()
@@ -960,7 +960,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.write("const size_t DecompositionDataLength = " + str(self.offset) + ";")
 	
 	def writeCaseMapping(self, filepath):
-		print "Writing case mapping to " + filepath + "..."
+		print("Writing case mapping to " + filepath + "...")
 		
 		command_line = sys.argv[0]
 		arguments = sys.argv[1:]
@@ -1027,7 +1027,7 @@ class SpecialCasing(libs.unicode.UnicodeVisitor):
 		self.db = db
 	
 	def visitDocument(self, document):
-		print "Parsing special case mappings..."
+		print("Parsing special case mappings...")
 		return True
 	
 	def visitEntry(self, entry):
@@ -1064,7 +1064,7 @@ class Blocks(libs.unicode.UnicodeVisitor):
 		self.db = db
 	
 	def visitDocument(self, document):
-		print "Parsing block mappings..."
+		print("Parsing block mappings...")
 		return True
 	
 	def visitEntry(self, entry):
@@ -1092,7 +1092,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 					record = self.db.records[i]
 					record.compositionExcluded = True
 				else:
-					print "missing " + hex(start) + " in database (\"" + self.db.getBlockByCodepoint(start).name + "\")"
+					print("missing " + hex(start) + " in database (\"" + self.db.getBlockByCodepoint(start).name + "\")")
 		
 		def quick_check(property):
 			nf_member = {
@@ -1134,7 +1134,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 	
 	def visitDocument(self, document):
-		print "Parsing derived normalization properties..."
+		print("Parsing derived normalization properties...")
 		return True
 	
 	def visitEntry(self, entry):
