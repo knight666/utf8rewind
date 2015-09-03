@@ -68,6 +68,21 @@ TEST_F(Utf8ToUpperGreek, SingleSmallLetterFinalSigma)
 
 TEST_F(Utf8ToUpperGreek, WordCapitalLetterSigma)
 {
+	// 0399 03A3 03B7 03A6
+	// 0399 03A3 0397 03A6
+
+	const char* c = "\xCE\x99\xCE\xA3\xCE\xB7\xCE\xA6";
+	const size_t s = 256;
+	char b[s] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toupper(c, strlen(c), b, s - 1, &errors));
+	EXPECT_UTF8EQ("\xCE\x99\xCE\xA3\xCE\x97\xCE\xA6", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToUpperGreek, WordCapitalLetterSigmaAtEnd)
+{
 	// 0396 03A0 03A4 03A3
 	// 0396 03A0 03A4 03A3
 
