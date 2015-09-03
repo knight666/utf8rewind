@@ -137,6 +137,31 @@
 			],
 		},
 		{
+			'target_name': 'properties-rewind',
+			'type': 'executable',
+			'dependencies': [
+				'dependencies.gyp:gtest',
+				'dependencies.gyp:quickcheck',
+				'utf8rewind',
+				'helpers',
+			],
+			'sources': [
+				'source/properties/property-base.hpp',
+				'source/properties/property-convert-utf16.hpp',
+				'source/properties/property-convert-utf32.hpp',
+				'source/properties/property-generators.hpp',
+				'source/properties/property-main.cpp',
+				'source/properties/property-seeking-current.hpp',
+				'source/properties/property-sequence-utf16.hpp',
+				'source/properties/property-sequence-utf32.hpp',
+			],
+			'conditions': [
+				['OS!="win"', {
+					'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
+				}],
+			],
+		},
+		{
 			'target_name': 'documentation',
 			'type': 'none',
 			'rules': [

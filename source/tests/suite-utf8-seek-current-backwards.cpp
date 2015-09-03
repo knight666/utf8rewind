@@ -7,6 +7,7 @@ TEST(Utf8SeekCurrentBackwards, OneByteSingle)
 	const char* t = "*";
 
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -2, SEEK_CUR);
 }
 
 TEST(Utf8SeekCurrentBackwards, OneByteSingleFirst)
@@ -21,6 +22,14 @@ TEST(Utf8SeekCurrentBackwards, OneByteSingleLast)
 	const char* t = "\x7F";
 
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+}
+
+TEST(Utf8SeekCurrentBackwards, OneByteSinglePastStart)
+{
+	const char* t = "\x21";
+
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -2, SEEK_CUR);
 }
 
 TEST(Utf8SeekCurrentBackwards, OneByteSingleInvalidContinuationByteFirst)
@@ -160,6 +169,7 @@ TEST(Utf8SeekCurrentBackwards, TwoBytesSingle)
 	const char* t = "\xC4\x82";
 
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -2, SEEK_CUR);
 }
 
 TEST(Utf8SeekCurrentBackwards, TwoBytesSingleFirst)
@@ -174,6 +184,14 @@ TEST(Utf8SeekCurrentBackwards, TwoBytesSingleLast)
 	const char* t = "\xDF\xBF";
 
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+}
+
+TEST(Utf8SeekCurrentBackwards, TwoBytesSinglePastStart)
+{
+	const char* t = "\xC9\x8A";
+
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -2, SEEK_CUR);
 }
 
 TEST(Utf8SeekCurrentBackwards, TwoBytesSingleInvalidContinuationFirstByteLower)
@@ -305,6 +323,14 @@ TEST(Utf8SeekCurrentBackwards, ThreeBytesSingleLast)
 	const char* t = "\xEF\xBF\xBF";
 
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+}
+
+TEST(Utf8SeekCurrentBackwards, ThreeBytesSinglePastStart)
+{
+	const char* t = "\xE4\x9A\x88";
+
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -2, SEEK_CUR);
 }
 
 TEST(Utf8SeekCurrentBackwards, ThreeBytesSingleInvalidContinuationFirstByteLower)
@@ -461,6 +487,14 @@ TEST(Utf8SeekCurrentBackwards, FourBytesSingleLast)
 	const char* t = "\xF4\xBF\xBF\xBF";
 
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+}
+
+TEST(Utf8SeekCurrentBackwards, FourBytesSinglePastStart)
+{
+	const char* t = "\xF2\x97\x9A\x9B";
+
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -2, SEEK_CUR);
 }
 
 TEST(Utf8SeekCurrentBackwards, FourBytesSingleInvalidContinuationFirstByteLower)
@@ -632,6 +666,14 @@ TEST(Utf8SeekCurrentBackwards, FiveBytesSingleLast)
 	const char* t = "\xFB\xBF\xBF\xBF\xBF";
 
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+}
+
+TEST(Utf8SeekCurrentBackwards, FiveBytesSinglePastStart)
+{
+	const char* t = "\xFA\xAA\xBF\x98\x82";
+
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -2, SEEK_CUR);
 }
 
 TEST(Utf8SeekCurrentBackwards, FiveBytesSingleInvalidContinuationFirstByteLower)
@@ -806,6 +848,14 @@ TEST(Utf8SeekCurrentBackwards, SixBytesSingleLast)
 	const char* t = "\xFD\xBF\xBF\xBF\xBF\xBF";
 
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+}
+
+TEST(Utf8SeekCurrentBackwards, SixBytesSinglePastStart)
+{
+	const char* t = "\xFC\x9A\x8B\xB2\x8B\x92";
+
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -2, SEEK_CUR);
 }
 
 TEST(Utf8SeekCurrentBackwards, SixBytesSingleInvalidContinuationFirstByteLower)
@@ -993,6 +1043,14 @@ TEST(Utf8SeekCurrentBackwards, IllegalByteSingleLast)
 	const char* t = "\xFF";
 
 	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+}
+
+TEST(Utf8SeekCurrentBackwards, IllegalByteSinglePastStart)
+{
+	const char* t = "\xFE";
+
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -1, SEEK_CUR);
+	EXPECT_SEEKEQ(t, 0, strlen(t), 0, -2, SEEK_CUR);
 }
 
 TEST(Utf8SeekCurrentBackwards, IllegalByteSingleOverlongOneByte)

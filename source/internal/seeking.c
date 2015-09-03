@@ -121,15 +121,28 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 
 				break;
 			}
-			else if (codepoint_length > 1)
+			else if (
+				codepoint_length > 1)
 			{
-				/* Multi-byte sequence */
+				if (marker == inputStart &&
+					/* Not overlong */
+					marker_valid - inputStart == codepoint_length - 1)
+				{
+					/* Last sequence */
 
-				marker_valid = marker + codepoint_length - 1;
+					return marker;
+				}
+				else
+				{
+					/* Multi-byte sequence */
 
-				break;
+					marker_valid = marker + codepoint_length - 1;
+
+					break;
+				}
 			}
-			else if (marker <= inputStart)
+			else if (
+				marker <= inputStart)
 			{
 				/* Continuation bytes only */
 
@@ -149,14 +162,23 @@ const char* seeking_rewind(const char* inputStart, const char* input, size_t inp
 
 		if (input <= marker_valid)
 		{
-			/* Move the cursor to the start of the sequence */
+			if (marker == inputStart)
+			{
+				/* Last sequence */
 
-			input = marker;
+				return marker;
+			}
+			else
+			{
+				/* Move the cursor to the start of the sequence */
 
-			/* Reset the marker on the next byte */
+				input = marker;
 
-			marker--;
-			marker_valid = marker;
+				/* Reset the marker on the next byte */
+
+				marker--;
+				marker_valid = marker;
+			}
 		}
 	}
 	while (input >= inputStart &&
