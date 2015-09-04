@@ -46,6 +46,7 @@ typedef struct {
 	char* dst;
 	size_t dst_size;
 	uint8_t property;
+	unicode_t last_code_point;
 	uint8_t last_general_category;
 	uint32_t locale;
 } CaseMappingState;
