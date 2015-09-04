@@ -568,15 +568,25 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 	while (state.src_size > 0)
 	{
-		size_t result = casemapping_execute(&state);
-		if (!result)
+		size_t converted;
+
+		if (!casemapping_readcodepoint(&state))
+		{
+			UTF8_SET_ERROR(INVALID_DATA);
+
+			return bytes_written;
+		}
+
+		converted = casemapping_execute2(&state);
+
+		if (!converted)
 		{
 			UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
 
 			return bytes_written;
 		}
 
-		bytes_written += result;
+		bytes_written += converted;
 	}
 
 	UTF8_SET_ERROR(NONE);
@@ -606,7 +616,7 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 	while (state.src_size > 0)
 	{
-		size_t result;
+		size_t converted;
 
 		if (!casemapping_readcodepoint(&state))
 		{
@@ -636,24 +646,24 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 					(state.last_general_category & GeneralCategory_Letter) == 0;
 			}
 
-			result = codepoint_write(
+			converted = codepoint_write(
 				should_convert ? 0x03C2 : 0x03C3,
 				&state.dst,
 				&state.dst_size);
 		}
 		else
 		{
-			result = casemapping_execute2(&state);
+			converted = casemapping_execute2(&state);
 		}
 		
-		if (!result)
+		if (!converted)
 		{
 			UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
 
 			return bytes_written;
 		}
 
-		bytes_written += result;
+		bytes_written += converted;
 	}
 
 	UTF8_SET_ERROR(NONE);
@@ -683,7 +693,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 
 	while (state.src_size > 0)
 	{
-		size_t result;
+		size_t converted;
 
 		if (!casemapping_readcodepoint(&state))
 		{
@@ -714,17 +724,17 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 					(state.last_general_category & GeneralCategory_Letter) == 0;
 			}
 
-			result = codepoint_write(
+			converted = codepoint_write(
 				should_convert ? 0x03C2 : 0x03C3,
 				&state.dst,
 				&state.dst_size);
 		}
 		else
 		{
-			result = casemapping_execute2(&state);
+			converted = casemapping_execute2(&state);
 		}
 
-		if (!result)
+		if (!converted)
 		{
 			UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
 
@@ -745,7 +755,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 			state.property = UnicodeProperty_Titlecase;
 		}
 
-		bytes_written += result;
+		bytes_written += converted;
 	}
 
 	UTF8_SET_ERROR(NONE);
