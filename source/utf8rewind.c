@@ -606,7 +606,16 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 	while (state.src_size > 0)
 	{
-		size_t result = casemapping_execute(&state);
+		size_t result;
+
+		if (!casemapping_readcodepoint(&state))
+		{
+			UTF8_SET_ERROR(INVALID_DATA);
+
+			return bytes_written;
+		}
+
+		result = casemapping_execute2(&state);
 		if (!result)
 		{
 			UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
