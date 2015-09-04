@@ -47,13 +47,18 @@ typedef struct {
 	size_t dst_size;
 	uint8_t property;
 	unicode_t last_code_point;
+	uint8_t last_code_point_size;
 	uint8_t last_general_category;
 	uint32_t locale;
 } CaseMappingState;
 
 uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property);
 
+uint8_t casemapping_readcodepoint(CaseMappingState* state);
+
 size_t casemapping_execute(CaseMappingState* state);
+
+size_t casemapping_execute2(CaseMappingState* state);
 
 /*! \endcond */
 

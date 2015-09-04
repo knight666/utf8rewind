@@ -152,6 +152,48 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 	return 1;
 }
 
+uint8_t casemapping_readcodepoint(CaseMappingState* state)
+{
+	if ((*state->src & 0x80) == 0)
+	{
+		/*
+			Basic Latin can be converted to UTF-32 by padding the
+			value to 32 bits with 0.
+		*/
+
+		state->last_code_point = (unicode_t)*state->src;
+		state->last_code_point_size = 1;
+
+		state->last_general_category =
+			basic_latin_general_category_table[state->last_code_point];
+	}
+	else
+	{
+		/* Decode current code point */
+
+		state->last_code_point_size = codepoint_read(
+			state->src,
+			state->src_size,
+			&state->last_code_point);
+
+		state->last_general_category = database_queryproperty(
+			state->last_code_point,
+			UnicodeProperty_GeneralCategory);
+	}
+
+	if (state->src_size >= state->last_code_point_size)
+	{
+		state->src += state->last_code_point_size;
+		state->src_size -= state->last_code_point_size;
+	}
+	else
+	{
+		state->src_size = 0;
+	}
+
+	return state->last_code_point_size;
+}
+
 size_t casemapping_execute(CaseMappingState* state)
 {
 	uint8_t decoded_size;
@@ -306,6 +348,122 @@ size_t casemapping_execute(CaseMappingState* state)
 	}
 
 	return written;
+
+outofspace:
+	state->src_size = 0;
+
+	return 0;
+}
+
+size_t casemapping_execute2(CaseMappingState* state)
+{
+	size_t bytes_written = 0;
+
+	if (state->last_code_point == REPLACEMENT_CHARACTER)
+	{
+		if (state->dst != 0)
+		{
+			if (state->dst_size < REPLACEMENT_CHARACTER_STRING_LENGTH)
+			{
+				goto outofspace;
+			}
+
+			memcpy(
+				state->dst,
+				REPLACEMENT_CHARACTER_STRING,
+				REPLACEMENT_CHARACTER_STRING_LENGTH);
+
+			state->dst += REPLACEMENT_CHARACTER_STRING_LENGTH;
+			state->dst_size -= REPLACEMENT_CHARACTER_STRING_LENGTH;
+		}
+
+		bytes_written = REPLACEMENT_CHARACTER_STRING_LENGTH;
+	}
+	else if (
+		state->last_code_point_size == 1)
+	{
+		if (state->dst != 0)
+		{
+			if (state->dst_size < 1)
+			{
+				goto outofspace;
+			}
+
+			if (state->last_code_point >= 0x41 &&
+				state->last_code_point <= 0x7A)
+			{
+				if (state->property == UnicodeProperty_Lowercase)
+				{
+					*state->dst =
+						basic_latin_lowercase_table[
+							state->last_code_point - 0x41];
+				}
+				else
+				{
+					*state->dst = 
+						basic_latin_uppercase_table[
+							state->last_code_point - 0x41];
+				}
+			}
+			else
+			{
+				*state->dst = (char)state->last_code_point;
+			}
+
+			state->dst++;
+			state->dst_size--;
+		}
+
+		bytes_written = 1;
+	}
+	else
+	{
+		size_t resolved_size = 0;
+
+		if ((state->last_general_category & GeneralCategory_CaseMapped) != 0)
+		{
+			const char* resolved = database_querydecomposition(
+				state->last_code_point,
+				state->property,
+				&resolved_size);
+
+			if (resolved != 0)
+			{
+				if (state->dst != 0 &&
+					resolved_size > 0)
+				{
+					if (state->dst_size < resolved_size)
+					{
+						goto outofspace;
+					}
+
+					memcpy(state->dst, resolved, resolved_size);
+
+					state->dst += resolved_size;
+					state->dst_size -= resolved_size;
+				}
+
+				bytes_written = resolved_size;
+			}
+		}
+
+		if (resolved_size == 0)
+		{
+			uint8_t decoded_written = codepoint_write(
+				state->last_code_point,
+				&state->dst,
+				&state->dst_size);
+
+			if (decoded_written == 0)
+			{
+				goto outofspace;
+			}
+
+			bytes_written = decoded_written;
+		}
+	}
+
+	return bytes_written;
 
 outofspace:
 	state->src_size = 0;
