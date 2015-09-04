@@ -615,7 +615,37 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 			return bytes_written;
 		}
 
-		result = casemapping_execute2(&state);
+		if (state.last_code_point == 0x03A3)
+		{
+			uint8_t should_convert;
+
+			state.last_code_point_size = codepoint_read(
+				state.src,
+				state.src_size,
+				&state.last_code_point);
+
+			should_convert = state.last_code_point_size == 0;
+
+			if (!should_convert)
+			{
+				state.last_general_category = database_queryproperty(
+					state.last_code_point,
+					UnicodeProperty_GeneralCategory);
+
+				should_convert =
+					(state.last_general_category & GeneralCategory_Letter) == 0;
+			}
+
+			result = codepoint_write(
+				should_convert ? 0x03C2 : 0x03C3,
+				&state.dst,
+				&state.dst_size);
+		}
+		else
+		{
+			result = casemapping_execute2(&state);
+		}
+		
 		if (!result)
 		{
 			UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
