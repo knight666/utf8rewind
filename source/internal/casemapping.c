@@ -154,7 +154,12 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 
 uint8_t casemapping_readcodepoint(CaseMappingState* state)
 {
-	if ((*state->src & 0x80) == 0)
+	if (state->src_size == 0)
+	{
+		return 0;
+	}
+	else if (
+		(*state->src & 0x80) == 0)
 	{
 		/*
 			Basic Latin can be converted to UTF-32 by padding the
