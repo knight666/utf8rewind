@@ -546,7 +546,10 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	}
 }
 
-size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8toupper(
+	const char* input, size_t inputSize,
+	char* target, size_t targetSize,
+	int32_t* errors)
 {
 	CaseMappingState state;
 
@@ -597,7 +600,10 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 	return state.total_bytes_needed;
 }
 
-size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8tolower(
+	const char* input, size_t inputSize,
+	char* target, size_t targetSize,
+	int32_t* errors)
 {
 	CaseMappingState state;
 
@@ -607,7 +613,11 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Lowercase))
+	if (!casemapping_initialize(
+		&state,
+		input, inputSize,
+		target, targetSize,
+		UnicodeProperty_Lowercase))
 	{
 		UTF8_SET_ERROR(NONE);
 
@@ -643,7 +653,10 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 	return state.total_bytes_needed;
 }
 
-size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8totitle(
+	const char* input, size_t inputSize,
+	char* target, size_t targetSize,
+	int32_t* errors)
 {
 	CaseMappingState state;
 
@@ -653,7 +666,11 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Titlecase))
+	if (!casemapping_initialize(
+		&state,
+		input, inputSize,
+		target, targetSize,
+		UnicodeProperty_Titlecase))
 	{
 		UTF8_SET_ERROR(NONE);
 
@@ -682,8 +699,8 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 		}
 
 		/*
-			The first letter of every word should be titlecase, all others
-			lowercase
+			The first letter of every word should be titlecase, the rest should
+			be converted to lowercase.
 
 			Note that the result is not guaranteed to be grammatically correct.
 		*/
@@ -695,7 +712,8 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 				state.property = UnicodeProperty_Lowercase;
 			}
 		}
-		else if ((state.last_general_category & GeneralCategory_Letter) == 0)
+		else if (
+			(state.last_general_category & GeneralCategory_Letter) == 0)
 		{
 			state.property = UnicodeProperty_Titlecase;
 		}

@@ -235,9 +235,7 @@ size_t casemapping_write(CaseMappingState* state)
 		/* GREEK CAPITAL LETTER SIGMA */
 		state->last_code_point == 0x03A3 &&
 		/* Converting to lowercase */
-		state->property == UnicodeProperty_Lowercase &&
-		/* Read at least one code point */
-		state->total_bytes_needed > 0)
+		state->property == UnicodeProperty_Lowercase)
 	{
 		/*
 			If the final letter of a word (defined as "a collection of code
@@ -247,8 +245,11 @@ size_t casemapping_write(CaseMappingState* state)
 			instead of U+03C3 GREEK SMALL LETTER SIGMA.
 		*/
 
-		uint8_t should_convert = (state->src_size == 0);
-		if (!should_convert)
+		/* At least one code point should have been read */
+
+		uint8_t should_convert = state->total_bytes_needed > 0;
+
+		if (state->src_size > 0)
 		{
 			/* Read the next code point without moving the cursor */
 
