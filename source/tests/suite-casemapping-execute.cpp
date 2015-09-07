@@ -37,7 +37,7 @@ TEST(CaseMappingExecute, BasicLatinSingleLowercase)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
@@ -60,7 +60,7 @@ TEST(CaseMappingExecute, BasicLatinSingleUppercase)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
@@ -83,7 +83,7 @@ TEST(CaseMappingExecute, BasicLatinSingleTitlecase)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
@@ -106,7 +106,7 @@ TEST(CaseMappingExecute, BasicLatinSingleUnaffected)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
@@ -127,7 +127,7 @@ TEST(CaseMappingExecute, BasicLatinSingleAmountOfBytes)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
@@ -148,7 +148,7 @@ TEST(CaseMappingExecute, BasicLatinSingleNotEnoughSpace)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_write(&state));
 	EXPECT_EQ(o, state.dst);
 	EXPECT_EQ(os, state.dst_size);
 
@@ -169,7 +169,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleLowercase)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
@@ -177,7 +177,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleLowercase)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
@@ -185,7 +185,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleLowercase)
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
@@ -208,7 +208,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleUppercase)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
@@ -216,7 +216,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleUppercase)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
@@ -224,7 +224,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleUppercase)
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
@@ -232,7 +232,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleUppercase)
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
@@ -240,7 +240,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleUppercase)
 	EXPECT_EQ(i + 5, state.src);
 	EXPECT_EQ(is - 5, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 5, state.dst);
 	EXPECT_EQ(os - 5, state.dst_size);
 
@@ -263,7 +263,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleTitlecase)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
@@ -271,7 +271,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleTitlecase)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
@@ -279,7 +279,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleTitlecase)
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
@@ -287,7 +287,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleTitlecase)
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
@@ -310,7 +310,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleUnaffected)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
@@ -318,7 +318,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleUnaffected)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
@@ -326,7 +326,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleUnaffected)
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
@@ -334,7 +334,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleUnaffected)
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
@@ -355,7 +355,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleAmountOfBytes)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
@@ -363,7 +363,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleAmountOfBytes)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
@@ -371,7 +371,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleAmountOfBytes)
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
@@ -392,7 +392,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleNotEnoughSpace)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 1, state.dst);
 	EXPECT_EQ(os - 1, state.dst_size);
 
@@ -400,7 +400,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleNotEnoughSpace)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
@@ -408,7 +408,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleNotEnoughSpace)
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 
-	EXPECT_EQ(1, casemapping_execute2(&state));
+	EXPECT_EQ(1, casemapping_write(&state));
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
@@ -416,7 +416,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleNotEnoughSpace)
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_write(&state));
 
 	EXPECT_UTF8EQ("DIS", o);
 }
@@ -437,7 +437,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleLowercase)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_write(&state));
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
@@ -462,7 +462,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUppercase)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
@@ -487,7 +487,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleTitlecase)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_write(&state));
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
@@ -512,7 +512,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUnaffected)
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 
-	EXPECT_EQ(4, casemapping_execute2(&state));
+	EXPECT_EQ(4, casemapping_write(&state));
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
@@ -535,7 +535,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleAmountOfBytes)
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 
-	EXPECT_EQ(4, casemapping_execute2(&state));
+	EXPECT_EQ(4, casemapping_write(&state));
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
@@ -582,7 +582,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleLowercase)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_write(&state));
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
@@ -590,7 +590,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleLowercase)
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_write(&state));
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
@@ -598,7 +598,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleLowercase)
 	EXPECT_EQ(i + 6, state.src);
 	EXPECT_EQ(is - 6, state.src_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_write(&state));
 	EXPECT_EQ(o + 6, state.dst);
 	EXPECT_EQ(os - 6, state.dst_size);
 
@@ -624,7 +624,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUppercase)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
@@ -632,7 +632,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUppercase)
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_write(&state));
 	EXPECT_EQ(o + 5, state.dst);
 	EXPECT_EQ(os - 5, state.dst_size);
 
@@ -658,7 +658,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleTitlecase)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_write(&state));
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
@@ -666,7 +666,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleTitlecase)
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_write(&state));
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
@@ -674,7 +674,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleTitlecase)
 	EXPECT_EQ(i + 6, state.src);
 	EXPECT_EQ(is - 6, state.src_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_write(&state));
 	EXPECT_EQ(o + 6, state.dst);
 	EXPECT_EQ(os - 6, state.dst_size);
 
@@ -700,7 +700,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUnaffected)
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 
-	EXPECT_EQ(4, casemapping_execute2(&state));
+	EXPECT_EQ(4, casemapping_write(&state));
 	EXPECT_EQ(o + 4, state.dst);
 	EXPECT_EQ(os - 4, state.dst_size);
 
@@ -708,7 +708,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUnaffected)
 	EXPECT_EQ(i + 7, state.src);
 	EXPECT_EQ(is - 7, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 7, state.dst);
 	EXPECT_EQ(os - 7, state.dst_size);
 
@@ -716,7 +716,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUnaffected)
 	EXPECT_EQ(i + 10, state.src);
 	EXPECT_EQ(is - 10, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 10, state.dst);
 	EXPECT_EQ(os - 10, state.dst_size);
 
@@ -724,7 +724,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUnaffected)
 	EXPECT_EQ(i + 14, state.src);
 	EXPECT_EQ(is - 14, state.src_size);
 
-	EXPECT_EQ(4, casemapping_execute2(&state));
+	EXPECT_EQ(4, casemapping_write(&state));
 	EXPECT_EQ(o + 14, state.dst);
 	EXPECT_EQ(os - 14, state.dst_size);
 
@@ -748,7 +748,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleAmountOfBytes)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
@@ -756,7 +756,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleAmountOfBytes)
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_write(&state));
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
@@ -764,7 +764,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleAmountOfBytes)
 	EXPECT_EQ(i + 6, state.src);
 	EXPECT_EQ(is - 6, state.src_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_write(&state));
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
@@ -788,7 +788,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleNotEnoughSpace)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(2, casemapping_execute2(&state));
+	EXPECT_EQ(2, casemapping_write(&state));
 	EXPECT_EQ(o + 2, state.dst);
 	EXPECT_EQ(os - 2, state.dst_size);
 
@@ -796,7 +796,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleNotEnoughSpace)
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 
-	EXPECT_EQ(6, casemapping_execute2(&state));
+	EXPECT_EQ(6, casemapping_write(&state));
 	EXPECT_EQ(o + 8, state.dst);
 	EXPECT_EQ(os - 8, state.dst_size);
 
@@ -823,7 +823,7 @@ TEST(CaseMappingExecute, InvalidCodepointSingle)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
@@ -844,7 +844,7 @@ TEST(CaseMappingExecute, InvalidCodepointSingleAmountOfBytes)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
@@ -865,7 +865,7 @@ TEST(CaseMappingExecute, InvalidCodepointSingleNotEnoughSpace)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_write(&state));
 	EXPECT_EQ(o, state.dst);
 	EXPECT_EQ(os, state.dst_size);
 
@@ -888,7 +888,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultiple)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
@@ -896,7 +896,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultiple)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 6, state.dst);
 	EXPECT_EQ(os - 6, state.dst_size);
 
@@ -904,7 +904,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultiple)
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 9, state.dst);
 	EXPECT_EQ(os - 9, state.dst_size);
 
@@ -925,7 +925,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultipleAmountOfBytes)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
@@ -933,7 +933,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultipleAmountOfBytes)
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
@@ -941,7 +941,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultipleAmountOfBytes)
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
@@ -949,7 +949,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultipleAmountOfBytes)
 	EXPECT_EQ(i + 5, state.src);
 	EXPECT_EQ(is - 5, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(nullptr, state.dst);
 	EXPECT_EQ(0, state.dst_size);
 
@@ -970,7 +970,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultipleNotEnoughSpace)
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
 
@@ -978,7 +978,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultipleNotEnoughSpace)
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
 
-	EXPECT_EQ(3, casemapping_execute2(&state));
+	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 6, state.dst);
 	EXPECT_EQ(os - 6, state.dst_size);
 
@@ -986,5 +986,5 @@ TEST(CaseMappingExecute, InvalidCodepointMultipleNotEnoughSpace)
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
 
-	EXPECT_EQ(0, casemapping_execute2(&state));
+	EXPECT_EQ(0, casemapping_write(&state));
 }

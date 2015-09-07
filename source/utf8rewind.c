@@ -557,7 +557,11 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Uppercase))
+	if (!casemapping_initialize(
+		&state,
+		input, inputSize,
+		target, targetSize,
+		UnicodeProperty_Uppercase))
 	{
 		UTF8_SET_ERROR(NONE);
 
@@ -577,7 +581,7 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 			return bytes_written;
 		}
 
-		converted = casemapping_execute2(&state);
+		converted = casemapping_write(&state);
 
 		if (!converted)
 		{
@@ -677,7 +681,7 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 		{
 			/* Default conversion */
 
-			converted = casemapping_execute2(&state);
+			converted = casemapping_write(&state);
 		}
 		
 		if (!converted)
@@ -777,7 +781,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 		{
 			/* Default conversion */
 
-			converted = casemapping_execute2(&state);
+			converted = casemapping_write(&state);
 		}
 
 		if (!converted)

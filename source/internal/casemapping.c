@@ -109,7 +109,11 @@ static const char basic_latin_uppercase_table[58] = {
 		!strncasecmp(locale, _name, 5)
 #endif
 
-uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property)
+uint8_t casemapping_initialize(
+	CaseMappingState* state,
+	const char* input, size_t inputSize,
+	char* target, size_t targetSize,
+	uint8_t property)
 {
 	/*
 		Sources for locales and code pages
@@ -201,168 +205,7 @@ uint8_t casemapping_readcodepoint(CaseMappingState* state)
 	return state->last_code_point_size;
 }
 
-size_t casemapping_execute(CaseMappingState* state)
-{
-	uint8_t decoded_size;
-	size_t written = 0;
-
-	if (state->src_size == 0)
-	{
-		return 0;
-	}
-
-	if ((*state->src & 0x80) == 0)
-	{
-		/*
-			Basic Latin can be converted to UTF-32 by padding the
-			value to 32 bits with 0.
-		*/
-
-		state->last_code_point = (unicode_t)*state->src;
-		decoded_size = 1;
-
-		if (state->dst != 0)
-		{
-			if (state->dst_size < 1)
-			{
-				goto outofspace;
-			}
-
-			if (state->last_code_point >= 0x41 &&
-				state->last_code_point <= 0x7A)
-			{
-				/* Uppercase letters are U+0041 ('A') to U+005A ('Z') */
-				/* Lowercase letters are U+0061 ('a') to U+007A ('z') */
-
-				if (state->property == UnicodeProperty_Lowercase)
-				{
-					*state->dst =
-						basic_latin_lowercase_table[
-							state->last_code_point - 0x41];
-				}
-				else
-				{
-					*state->dst = 
-						basic_latin_uppercase_table[
-							state->last_code_point - 0x41];
-				}
-			}
-			else
-			{
-				/*
-					All other code points in Basic Latin are unaffected by case
-					mapping
-				*/
-
-				*state->dst = *state->src;
-			}
-
-			state->dst++;
-			state->dst_size--;
-		}
-
-		/* Store code point's general category */
-
-		state->last_general_category =
-			basic_latin_general_category_table[state->last_code_point];
-
-		written++;
-	}
-	else
-	{
-		const char* resolved;
-		size_t resolved_size = 0;
-
-		/* Decode current code point */
-
-		decoded_size = codepoint_read(
-			state->src,
-			state->src_size,
-			&state->last_code_point);
-
-		/* Check if the code point's general category indicates case mapping */
-
-		state->last_general_category = database_queryproperty(
-			state->last_code_point,
-			UnicodeProperty_GeneralCategory);
-
-		if ((state->last_general_category & GeneralCategory_CaseMapped) != 0)
-		{
-			/* Resolve the code point's decomposition */
-
-			resolved = database_querydecomposition(
-				state->last_code_point,
-				state->property,
-				&resolved_size);
-
-			if (resolved != 0)
-			{
-				/* Copy the decomposition to the output buffer */
-
-				if (state->dst != 0 &&
-					resolved_size > 0)
-				{
-					if (state->dst_size < resolved_size)
-					{
-						goto outofspace;
-					}
-
-					memcpy(state->dst, resolved, resolved_size);
-
-					state->dst += resolved_size;
-					state->dst_size -= resolved_size;
-				}
-
-				written += resolved_size;
-			}
-		}
-
-		/* Check if codepoint was unaffected */
-
-		if (resolved_size == 0)
-		{
-			/*
-				Write the codepoint to the output buffer
-
-				This ensures that invalid code points in the input are always
-				converted to U+FFFD in the output
-			*/
-
-			uint8_t decoded_written = codepoint_write(
-				state->last_code_point,
-				&state->dst,
-				&state->dst_size);
-
-			if (decoded_written == 0)
-			{
-				goto outofspace;
-			}
-
-			written += decoded_written;
-		}
-	}
-
-	/* Invalid code points can be longer than the source length indicates */
-
-	if (state->src_size >= decoded_size)
-	{
-		state->src += decoded_size;
-		state->src_size -= decoded_size;
-	}
-	else
-	{
-		state->src_size = 0;
-	}
-
-	return written;
-
-outofspace:
-	state->src_size = 0;
-
-	return 0;
-}
-
-size_t casemapping_execute2(CaseMappingState* state)
+size_t casemapping_write(CaseMappingState* state)
 {
 	size_t bytes_written = 0;
 
