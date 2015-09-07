@@ -27,6 +27,7 @@ protected:
 TEST_F(Utf8ToUpperGreek, SingleCapitalLetterSigma)
 {
 	// 03A3
+	// 03A3
 
 	const char* c = "\xCE\xA3";
 	const size_t s = 256;
@@ -41,6 +42,7 @@ TEST_F(Utf8ToUpperGreek, SingleCapitalLetterSigma)
 TEST_F(Utf8ToUpperGreek, SingleSmallLetterSigma)
 {
 	// 03C3
+	// 03A3
 
 	const char* c = "\xCF\x83";
 	const size_t s = 256;
@@ -55,6 +57,7 @@ TEST_F(Utf8ToUpperGreek, SingleSmallLetterSigma)
 TEST_F(Utf8ToUpperGreek, SingleSmallLetterFinalSigma)
 {
 	// 03C2
+	// 03A3
 
 	const char* c = "\xCF\x82";
 	const size_t s = 256;
