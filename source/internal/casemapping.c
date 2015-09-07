@@ -186,6 +186,8 @@ uint8_t casemapping_readcodepoint(CaseMappingState* state)
 			UnicodeProperty_GeneralCategory);
 	}
 
+	/* Move source cursor */
+
 	if (state->src_size >= state->last_code_point_size)
 	{
 		state->src += state->last_code_point_size;
@@ -387,12 +389,19 @@ size_t casemapping_execute2(CaseMappingState* state)
 	else if (
 		state->last_code_point_size == 1)
 	{
+		/* Basic Latin */
+
 		if (state->dst != 0)
 		{
 			if (state->dst_size < 1)
 			{
 				goto outofspace;
 			}
+
+			/*
+				Uppercase letters are U+0041 ('A') to U+005A ('Z')
+				Lowercase letters are U+0061 ('a') to U+007A ('z')
+			*/
 
 			if (state->last_code_point >= 0x41 &&
 				state->last_code_point <= 0x7A)
@@ -412,6 +421,11 @@ size_t casemapping_execute2(CaseMappingState* state)
 			}
 			else
 			{
+				/*
+					All other code points in Basic Latin are unaffected by case
+					mapping
+				*/
+
 				*state->dst = (char)state->last_code_point;
 			}
 
@@ -425,8 +439,12 @@ size_t casemapping_execute2(CaseMappingState* state)
 	{
 		size_t resolved_size = 0;
 
+		/* Check if the code point is case mapped */
+
 		if ((state->last_general_category & GeneralCategory_CaseMapped) != 0)
 		{
+			/* Attempt to resolve the case mapping */
+
 			const char* resolved = database_querydecomposition(
 				state->last_code_point,
 				state->property,

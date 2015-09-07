@@ -26,7 +26,7 @@ protected:
 TEST_F(Utf8ToLowerGreek, SingleCapitalLetterSigma)
 {
 	// 03A3
-	// 03C2
+	// 03C3
 
 	const char* c = "\xCE\xA3";
 	const size_t s = 256;
@@ -34,7 +34,7 @@ TEST_F(Utf8ToLowerGreek, SingleCapitalLetterSigma)
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s - 1, &errors));
-	EXPECT_UTF8EQ("\xCF\x82", b);
+	EXPECT_UTF8EQ("\xCF\x83", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 

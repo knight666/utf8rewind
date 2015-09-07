@@ -625,26 +625,48 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 			return bytes_written;
 		}
 
-		if (state.last_code_point == 0x03A3)
+		/* Check for GREEK CAPITAL LETTER SIGMA */
+
+		if (bytes_written > 0 &&
+			state.last_code_point == 0x03A3)
 		{
+			/*
+				If the final letter of a word (defined as "a collection of code
+				points with the General Category 'Letter'") is a GREEK CAPITAL
+				LETTER SIGMA and more than one code point was processed, the
+				lowercase version is U+03C2 GREEK SMALL LETTER FINAL SIGMA
+				instead of U+03C3 GREEK SMALL LETTER SIGMA.
+			*/
+
 			uint8_t should_convert;
+
+			/* Peek ahead for the next code point */
 
 			state.last_code_point_size = codepoint_read(
 				state.src,
 				state.src_size,
 				&state.last_code_point);
 
+			/* Convert if current code point was the last input */
+
 			should_convert = state.last_code_point_size == 0;
 
 			if (!should_convert)
 			{
+				/* Retrieve the General Category of the next code point */
+
 				state.last_general_category = database_queryproperty(
 					state.last_code_point,
 					UnicodeProperty_GeneralCategory);
 
+				/* Convert if the "word" has ended */
+
 				should_convert =
-					(state.last_general_category & GeneralCategory_Letter) == 0;
+					(state.last_general_category &
+					GeneralCategory_Letter) == 0;
 			}
+
+			/* Write the converted code point to the output buffer */
 
 			converted = codepoint_write(
 				should_convert ? 0x03C2 : 0x03C3,
@@ -653,6 +675,8 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 		}
 		else
 		{
+			/* Default conversion */
+
 			converted = casemapping_execute2(&state);
 		}
 		
@@ -702,27 +726,47 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 			return bytes_written;
 		}
 
+		/* Check for GREEK CAPITAL LETTER SIGMA */
+
 		if (state.property == UnicodeProperty_Lowercase &&
 			state.last_code_point == 0x03A3)
 		{
+			/*
+				If the final letter of a word (defined as "a collection of code
+				points with the General Category 'Letter'") is a GREEK CAPITAL
+				LETTER SIGMA and more than one code point was processed, the
+				lowercase version is U+03C2 GREEK SMALL LETTER FINAL SIGMA
+				instead of U+03C3 GREEK SMALL LETTER SIGMA.
+			*/
+
 			uint8_t should_convert;
+
+			/* Peek ahead for the next code point */
 
 			state.last_code_point_size = codepoint_read(
 				state.src,
 				state.src_size,
 				&state.last_code_point);
 
+			/* Convert if current code point was the last input */
+
 			should_convert = state.last_code_point_size == 0;
 
 			if (!should_convert)
 			{
+				/* Retrieve the General Category of the next code point */
+
 				state.last_general_category = database_queryproperty(
 					state.last_code_point,
 					UnicodeProperty_GeneralCategory);
 
+				/* Convert if the "word" has ended */
+
 				should_convert =
 					(state.last_general_category & GeneralCategory_Letter) == 0;
 			}
+
+			/* Write the converted code point to the output buffer */
 
 			converted = codepoint_write(
 				should_convert ? 0x03C2 : 0x03C3,
@@ -731,6 +775,8 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 		}
 		else
 		{
+			/* Default conversion */
+
 			converted = casemapping_execute2(&state);
 		}
 
