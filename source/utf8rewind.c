@@ -642,21 +642,16 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 				instead of U+03C3 GREEK SMALL LETTER SIGMA.
 			*/
 
-			uint8_t should_convert;
-
-			/* Peek ahead for the next code point */
-
-			state.last_code_point_size = codepoint_read(
-				state.src,
-				state.src_size,
-				&state.last_code_point);
-
-			/* Convert if current code point was the last input */
-
-			should_convert = state.last_code_point_size == 0;
-
+			uint8_t should_convert = (state.src_size == 0);
 			if (!should_convert)
 			{
+				/* Read the next code point without moving the cursor */
+
+				state.last_code_point_size = codepoint_read(
+					state.src,
+					state.src_size,
+					&state.last_code_point);
+
 				/* Retrieve the General Category of the next code point */
 
 				state.last_general_category = database_queryproperty(
@@ -672,10 +667,25 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 			/* Write the converted code point to the output buffer */
 
-			converted = codepoint_write(
-				should_convert ? 0x03C2 : 0x03C3,
-				&state.dst,
-				&state.dst_size);
+			converted = 2;
+
+			if (state.dst != 0)
+			{
+				if (state.dst_size >= 2)
+				{
+					memcpy(
+						state.dst,
+						should_convert ? "\xCF\x82" : "\xCF\x83",
+						converted);
+
+					state.dst += converted;
+					state.dst_size -= converted;
+				}
+				else
+				{
+					converted = 0;
+				}
+			}
 		}
 		else
 		{
@@ -743,21 +753,16 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 				instead of U+03C3 GREEK SMALL LETTER SIGMA.
 			*/
 
-			uint8_t should_convert;
-
-			/* Peek ahead for the next code point */
-
-			state.last_code_point_size = codepoint_read(
-				state.src,
-				state.src_size,
-				&state.last_code_point);
-
-			/* Convert if current code point was the last input */
-
-			should_convert = state.last_code_point_size == 0;
-
+			uint8_t should_convert = (state.src_size == 0);
 			if (!should_convert)
 			{
+				/* Read the next code point without moving the cursor */
+
+				state.last_code_point_size = codepoint_read(
+					state.src,
+					state.src_size,
+					&state.last_code_point);
+
 				/* Retrieve the General Category of the next code point */
 
 				state.last_general_category = database_queryproperty(
@@ -767,15 +772,31 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 				/* Convert if the "word" has ended */
 
 				should_convert =
-					(state.last_general_category & GeneralCategory_Letter) == 0;
+					(state.last_general_category &
+					GeneralCategory_Letter) == 0;
 			}
 
 			/* Write the converted code point to the output buffer */
 
-			converted = codepoint_write(
-				should_convert ? 0x03C2 : 0x03C3,
-				&state.dst,
-				&state.dst_size);
+			converted = 2;
+
+			if (state.dst != 0)
+			{
+				if (state.dst_size >= 2)
+				{
+					memcpy(
+						state.dst,
+						should_convert ? "\xCF\x82" : "\xCF\x83",
+						converted);
+
+					state.dst += converted;
+					state.dst_size -= converted;
+				}
+				else
+				{
+					converted = 0;
+				}
+			}
 		}
 		else
 		{
@@ -791,7 +812,12 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 			return bytes_written;
 		}
 
-		/* The first letter of every word should be titlecase, the rest lowercase */
+		/*
+			The first letter of every word is be titlecase, all others
+			lowercase
+
+			Note that the result is not guaranteed to be grammatically correct.
+		*/
 
 		if (state.property == UnicodeProperty_Titlecase)
 		{
