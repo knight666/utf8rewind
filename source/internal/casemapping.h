@@ -42,14 +42,15 @@
 
 typedef struct {
 	const char* src;
-	size_t src_size;
 	char* dst;
+	size_t src_size;
 	size_t dst_size;
-	uint8_t property;
+	size_t total_bytes_needed;
 	unicode_t last_code_point;
+	uint32_t locale;
+	uint8_t property;
 	uint8_t last_code_point_size;
 	uint8_t last_general_category;
-	uint32_t locale;
 } CaseMappingState;
 
 uint8_t casemapping_initialize(

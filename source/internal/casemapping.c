@@ -207,10 +207,12 @@ uint8_t casemapping_readcodepoint(CaseMappingState* state)
 
 size_t casemapping_write(CaseMappingState* state)
 {
-	size_t bytes_written = 0;
+	size_t bytes_needed = 0;
 
 	if (state->last_code_point == REPLACEMENT_CHARACTER)
 	{
+		/* Write replacement character to output */
+
 		if (state->dst != 0)
 		{
 			if (state->dst_size < REPLACEMENT_CHARACTER_STRING_LENGTH)
@@ -227,7 +229,66 @@ size_t casemapping_write(CaseMappingState* state)
 			state->dst_size -= REPLACEMENT_CHARACTER_STRING_LENGTH;
 		}
 
-		bytes_written = REPLACEMENT_CHARACTER_STRING_LENGTH;
+		bytes_needed = REPLACEMENT_CHARACTER_STRING_LENGTH;
+	}
+	else if (
+		/* GREEK CAPITAL LETTER SIGMA */
+		state->last_code_point == 0x03A3 &&
+		/* Converting to lowercase */
+		state->property == UnicodeProperty_Lowercase &&
+		/* Read at least one code point */
+		state->total_bytes_needed > 0)
+	{
+		/*
+			If the final letter of a word (defined as "a collection of code
+			points with the General Category 'Letter'") is a GREEK CAPITAL
+			LETTER SIGMA and more than one code point was processed, the
+			lowercase version is U+03C2 GREEK SMALL LETTER FINAL SIGMA
+			instead of U+03C3 GREEK SMALL LETTER SIGMA.
+		*/
+
+		uint8_t should_convert = (state->src_size == 0);
+		if (!should_convert)
+		{
+			/* Read the next code point without moving the cursor */
+
+			state->last_code_point_size = codepoint_read(
+				state->src,
+				state->src_size,
+				&state->last_code_point);
+
+			/* Retrieve the General Category of the next code point */
+
+			state->last_general_category = database_queryproperty(
+				state->last_code_point,
+				UnicodeProperty_GeneralCategory);
+
+			/* Convert if the "word" has ended */
+
+			should_convert =
+				(state->last_general_category &
+				GeneralCategory_Letter) == 0;
+		}
+
+		/* Write the converted code point to the output buffer */
+
+		bytes_needed = 2;
+
+		if (state->dst != 0)
+		{
+			if (state->dst_size < bytes_needed)
+			{
+				goto outofspace;
+			}
+
+			memcpy(
+				state->dst,
+				should_convert ? "\xCF\x82" : "\xCF\x83",
+				bytes_needed);
+
+			state->dst += bytes_needed;
+			state->dst_size -= bytes_needed;
+		}
 	}
 	else if (
 		state->last_code_point_size == 1)
@@ -276,7 +337,7 @@ size_t casemapping_write(CaseMappingState* state)
 			state->dst_size--;
 		}
 
-		bytes_written = 1;
+		bytes_needed = 1;
 	}
 	else
 	{
@@ -309,7 +370,7 @@ size_t casemapping_write(CaseMappingState* state)
 					state->dst_size -= resolved_size;
 				}
 
-				bytes_written = resolved_size;
+				bytes_needed = resolved_size;
 			}
 		}
 
@@ -325,11 +386,11 @@ size_t casemapping_write(CaseMappingState* state)
 				goto outofspace;
 			}
 
-			bytes_written = decoded_written;
+			bytes_needed = decoded_written;
 		}
 	}
 
-	return bytes_written;
+	return bytes_needed;
 
 outofspace:
 	state->src_size = 0;

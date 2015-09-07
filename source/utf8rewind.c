@@ -549,11 +549,10 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 	CaseMappingState state;
-	size_t bytes_written = 0;
 
 	/* Validate parameters */
 
-	UTF8_VALIDATE_PARAMETERS_CHAR(char, bytes_written);
+	UTF8_VALIDATE_PARAMETERS_CHAR(char, 0);
 
 	/* Initialize case mapping */
 
@@ -565,7 +564,7 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 	{
 		UTF8_SET_ERROR(NONE);
 
-		return bytes_written;
+		return state.total_bytes_needed;
 	}
 
 	/* Execute case mapping as long as input remains */
@@ -578,7 +577,7 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 		{
 			UTF8_SET_ERROR(INVALID_DATA);
 
-			return bytes_written;
+			return state.total_bytes_needed;
 		}
 
 		converted = casemapping_write(&state);
@@ -587,25 +586,24 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 		{
 			UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
 
-			return bytes_written;
+			return state.total_bytes_needed;
 		}
 
-		bytes_written += converted;
+		state.total_bytes_needed += converted;
 	}
 
 	UTF8_SET_ERROR(NONE);
 
-	return bytes_written;
+	return state.total_bytes_needed;
 }
 
 size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 	CaseMappingState state;
-	size_t bytes_written = 0;
 
 	/* Validate parameters */
 
-	UTF8_VALIDATE_PARAMETERS_CHAR(char, bytes_written);
+	UTF8_VALIDATE_PARAMETERS_CHAR(char, 0);
 
 	/* Initialize case mapping */
 
@@ -613,7 +611,7 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 	{
 		UTF8_SET_ERROR(NONE);
 
-		return bytes_written;
+		return state.total_bytes_needed;
 	}
 
 	/* Execute case mapping as long as input remains */
@@ -626,97 +624,32 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 		{
 			UTF8_SET_ERROR(INVALID_DATA);
 
-			return bytes_written;
+			return state.total_bytes_needed;
 		}
 
-		/* Check for GREEK CAPITAL LETTER SIGMA */
-
-		if (bytes_written > 0 &&
-			state.last_code_point == 0x03A3)
-		{
-			/*
-				If the final letter of a word (defined as "a collection of code
-				points with the General Category 'Letter'") is a GREEK CAPITAL
-				LETTER SIGMA and more than one code point was processed, the
-				lowercase version is U+03C2 GREEK SMALL LETTER FINAL SIGMA
-				instead of U+03C3 GREEK SMALL LETTER SIGMA.
-			*/
-
-			uint8_t should_convert = (state.src_size == 0);
-			if (!should_convert)
-			{
-				/* Read the next code point without moving the cursor */
-
-				state.last_code_point_size = codepoint_read(
-					state.src,
-					state.src_size,
-					&state.last_code_point);
-
-				/* Retrieve the General Category of the next code point */
-
-				state.last_general_category = database_queryproperty(
-					state.last_code_point,
-					UnicodeProperty_GeneralCategory);
-
-				/* Convert if the "word" has ended */
-
-				should_convert =
-					(state.last_general_category &
-					GeneralCategory_Letter) == 0;
-			}
-
-			/* Write the converted code point to the output buffer */
-
-			converted = 2;
-
-			if (state.dst != 0)
-			{
-				if (state.dst_size >= 2)
-				{
-					memcpy(
-						state.dst,
-						should_convert ? "\xCF\x82" : "\xCF\x83",
-						converted);
-
-					state.dst += converted;
-					state.dst_size -= converted;
-				}
-				else
-				{
-					converted = 0;
-				}
-			}
-		}
-		else
-		{
-			/* Default conversion */
-
-			converted = casemapping_write(&state);
-		}
-		
+		converted = casemapping_write(&state);
 		if (!converted)
 		{
 			UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
 
-			return bytes_written;
+			return state.total_bytes_needed;
 		}
 
-		bytes_written += converted;
+		state.total_bytes_needed += converted;
 	}
 
 	UTF8_SET_ERROR(NONE);
 
-	return bytes_written;
+	return state.total_bytes_needed;
 }
 
 size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 	CaseMappingState state;
-	size_t bytes_written = 0;
 
 	/* Validate parameters */
 
-	UTF8_VALIDATE_PARAMETERS_CHAR(char, bytes_written);
+	UTF8_VALIDATE_PARAMETERS_CHAR(char, 0);
 
 	/* Initialize case mapping */
 
@@ -724,7 +657,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 	{
 		UTF8_SET_ERROR(NONE);
 
-		return bytes_written;
+		return state.total_bytes_needed;
 	}
 
 	/* Execute case mapping as long as input remains */
@@ -737,83 +670,19 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 		{
 			UTF8_SET_ERROR(INVALID_DATA);
 
-			return bytes_written;
+			return state.total_bytes_needed;
 		}
 
-		/* Check for GREEK CAPITAL LETTER SIGMA */
-
-		if (state.property == UnicodeProperty_Lowercase &&
-			state.last_code_point == 0x03A3)
-		{
-			/*
-				If the final letter of a word (defined as "a collection of code
-				points with the General Category 'Letter'") is a GREEK CAPITAL
-				LETTER SIGMA and more than one code point was processed, the
-				lowercase version is U+03C2 GREEK SMALL LETTER FINAL SIGMA
-				instead of U+03C3 GREEK SMALL LETTER SIGMA.
-			*/
-
-			uint8_t should_convert = (state.src_size == 0);
-			if (!should_convert)
-			{
-				/* Read the next code point without moving the cursor */
-
-				state.last_code_point_size = codepoint_read(
-					state.src,
-					state.src_size,
-					&state.last_code_point);
-
-				/* Retrieve the General Category of the next code point */
-
-				state.last_general_category = database_queryproperty(
-					state.last_code_point,
-					UnicodeProperty_GeneralCategory);
-
-				/* Convert if the "word" has ended */
-
-				should_convert =
-					(state.last_general_category &
-					GeneralCategory_Letter) == 0;
-			}
-
-			/* Write the converted code point to the output buffer */
-
-			converted = 2;
-
-			if (state.dst != 0)
-			{
-				if (state.dst_size >= 2)
-				{
-					memcpy(
-						state.dst,
-						should_convert ? "\xCF\x82" : "\xCF\x83",
-						converted);
-
-					state.dst += converted;
-					state.dst_size -= converted;
-				}
-				else
-				{
-					converted = 0;
-				}
-			}
-		}
-		else
-		{
-			/* Default conversion */
-
-			converted = casemapping_write(&state);
-		}
-
+		converted = casemapping_write(&state);
 		if (!converted)
 		{
 			UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
 
-			return bytes_written;
+			return state.total_bytes_needed;
 		}
 
 		/*
-			The first letter of every word is be titlecase, all others
+			The first letter of every word should be titlecase, all others
 			lowercase
 
 			Note that the result is not guaranteed to be grammatically correct.
@@ -831,12 +700,12 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 			state.property = UnicodeProperty_Titlecase;
 		}
 
-		bytes_written += converted;
+		state.total_bytes_needed += converted;
 	}
 
 	UTF8_SET_ERROR(NONE);
 
-	return bytes_written;
+	return state.total_bytes_needed;
 }
 
 uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size_t* offset)
