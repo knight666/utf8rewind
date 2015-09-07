@@ -52,13 +52,15 @@ typedef struct {
 	uint32_t locale;
 } CaseMappingState;
 
-uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property);
+uint8_t casemapping_initialize(
+	CaseMappingState* state,
+	const char* input, size_t inputSize,
+	char* target, size_t targetSize,
+	uint8_t property);
 
 uint8_t casemapping_readcodepoint(CaseMappingState* state);
 
-size_t casemapping_execute(CaseMappingState* state);
-
-size_t casemapping_execute2(CaseMappingState* state);
+size_t casemapping_write(CaseMappingState* state);
 
 /*! \endcond */
 
