@@ -162,6 +162,24 @@
 			],
 		},
 		{
+			'target_name': 'performance-rewind',
+			'type': 'executable',
+			'dependencies': [
+				'dependencies.gyp:gtest',
+				'utf8rewind',
+				'helpers',
+			],
+			'sources': [
+				'source/performance/performance-base.hpp',
+				'source/performance/performance-main.cpp',
+			],
+			'conditions': [
+				['OS!="win"', {
+					'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
+				}],
+			],
+		},
+		{
 			'target_name': 'documentation',
 			'type': 'none',
 			'rules': [
