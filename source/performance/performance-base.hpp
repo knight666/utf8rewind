@@ -186,7 +186,7 @@ namespace performance {
 					<< "--" GTEST_FLAG_PREFIX_ "repeat_count=[COUNT]" << std::endl
 					<< "    How many times to repeat the performance tests. The default is " << std::endl
 					<< "    100 times." << std::endl
-					<< "--" GTEST_FLAG_PREFIX_ "display_invidual" << std::endl
+					<< "--" GTEST_FLAG_PREFIX_ "display_individual" << std::endl
 					<< "    Display individual timings, instead of just the total time, worst," << std::endl
 					<< "    best and average case." << std::endl
 					<< "--" GTEST_FLAG_PREFIX_ "filter=POSITIVE_PATTERNS[-NEGATIVE_PATTERNS]" << std::endl
