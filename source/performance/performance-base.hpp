@@ -13,6 +13,10 @@
 #include <string>
 #include <vector>
 
+// utf8rewind
+
+#include "utf8rewind.h"
+
 namespace performance {
 
 	class Suite
@@ -61,7 +65,7 @@ namespace performance {
 			const std::string& name,
 			BaseSuiteFactory* factory)
 		{
-			m_factories[name] = factory;
+			m_factories.push_back(std::make_pair(name, factory));
 		}
 
 		int run(size_t repeatCount)
@@ -76,7 +80,7 @@ namespace performance {
 			clock::time_point time_start = clock::now();
 
 			typedef
-				std::map<std::string, BaseSuiteFactory*>::iterator
+				std::vector<std::pair<std::string, BaseSuiteFactory*>>::iterator
 				factory_it;
 
 			for (factory_it it = m_factories.begin();
@@ -148,7 +152,7 @@ namespace performance {
 
 				std::cout
 					<< " Best case: "
-					<< std::setw(8) << worst_case << " ms"
+					<< std::setw(8) << best_case << " ms"
 					<< std::endl;
 
 				std::cout
@@ -164,11 +168,11 @@ namespace performance {
 
 	private:
 
-		std::map<std::string, BaseSuiteFactory*> m_factories;
+		std::vector<std::pair<std::string, BaseSuiteFactory*>> m_factories;
 
 	};
 
-	bool registerTest(
+	inline bool registerTest(
 		const char* caseName,
 		const char* testName,
 		BaseSuiteFactory* factory)
@@ -190,9 +194,9 @@ namespace performance {
 #define PERF_TEST_CLASS_NAME(_caseName, _testName) \
 	_caseName ## _ ## _testName ## _Test
 
-#define PERF_TEST(_caseName, _testName) \
+#define PERF_TEST_IMPL(_caseName, _testName, _parentClass) \
 	class PERF_TEST_CLASS_NAME(_caseName, _testName) \
-		: public performance::Suite { \
+		: public _parentClass { \
 	private: \
 		virtual void body() override; \
 		static bool m_registered; \
@@ -200,5 +204,12 @@ namespace performance {
 	bool PERF_TEST_CLASS_NAME(_caseName, _testName)::m_registered = \
 		performance::registerTest( \
 			#_caseName, #_testName, \
-			new performance::SuiteFactory<PERF_TEST_CLASS_NAME(_caseName, _testName)>); \
+			new performance::SuiteFactory< \
+				PERF_TEST_CLASS_NAME(_caseName, _testName)>); \
 	void PERF_TEST_CLASS_NAME(_caseName, _testName)::body()
+
+#define PERF_TEST(_caseName, _testName) \
+	PERF_TEST_IMPL(_caseName, _testName, performance::Suite)
+
+#define PERF_TEST_F(_caseName, _testName) \
+	PERF_TEST_IMPL(_caseName, _testName, _caseName)
