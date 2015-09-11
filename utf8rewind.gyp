@@ -171,7 +171,8 @@
 			],
 			'sources': [
 				'source/performance/performance-base.hpp',
-				'source/performance/performance-lowercase.cpp', 
+				'source/performance/performance-big-casemapping.cpp',
+				'source/performance/performance-lowercase.cpp',
 				'source/performance/performance-main.cpp',
 			],
 			'conditions': [
