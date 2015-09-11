@@ -40,6 +40,54 @@ namespace internal {
 		const char* flag,
 		std::string* value);
 
+	static bool PatternMatchesString(
+		const char* pattern,
+		const char* text)
+	{
+		switch (*pattern)
+		{
+			case '\0':
+			case ':':  // Either ':' or '\0' marks the end of the pattern.
+				return *text == '\0';
+			case '?':  // Matches any single character.
+				return
+					*text != '\0'
+					&& PatternMatchesString(pattern + 1, text + 1);
+			case '*':  // Matches any string (possibly empty) of characters.
+				return (
+					*text != '\0' &&
+					PatternMatchesString(pattern, text + 1)) ||
+					PatternMatchesString(pattern + 1, text);
+			default:  // Non-special character.  Matches itself.
+				return
+					*pattern == *text &&
+					PatternMatchesString(pattern + 1, text + 1);
+		}
+	}
+
+	static bool MatchesFilter(
+		const std::string& name,
+		const std::string& filter)
+	{
+		const char *cur_pattern = filter.c_str();
+		while (1)
+		{
+			if (PatternMatchesString(cur_pattern, name.c_str()))
+			{
+				return true;
+			}
+
+			cur_pattern = strchr(cur_pattern, ':');
+			if (cur_pattern == NULL)
+			{
+				return false;
+			}
+
+			// Skip the pattern separator (the ':' character).
+			cur_pattern++;
+		}
+	}
+
 };
 };
 
@@ -101,7 +149,7 @@ namespace performance {
 			using testing::internal::ParseInt32Flag;
 			using testing::internal::ParseStringFlag;
 
-			testing::internal::Int32 repeat_count = 100;
+			testing::internal::Int32 repeat_count = 10;
 			bool display_individual = false;
 			std::string filter = "*";
 			bool show_help = false;
@@ -147,6 +195,30 @@ namespace performance {
 				return 0;
 			}
 
+			if (filter != "*")
+			{
+				std::cout
+					<< "NOTE: Filter is \"" << filter << "\""
+					<< std::endl;
+			}
+
+			std::string positive_filter;
+			std::string negative_filter;
+			const char* dash = strchr(filter.c_str(), '-');
+			if (dash != nullptr)
+			{
+				positive_filter = std::string(filter.c_str(), dash);
+				if (positive_filter.empty())
+				{
+					positive_filter = "*";
+				}
+				negative_filter = std::string(dash + 1);
+			}
+			else
+			{
+				positive_filter = filter;
+			}
+
 			std::cout
 				<< "Running " << repeat_count << " iterations."
 				<< std::endl;
@@ -164,7 +236,15 @@ namespace performance {
 				it != m_factories.end();
 				++it)
 			{
+				using testing::internal::MatchesFilter;
+
 				Suite* suite = it->second->create();
+
+				if (!MatchesFilter(it->first, positive_filter) ||
+					MatchesFilter(it->first, negative_filter))
+				{
+					continue;
+				}
 
 				std::cout
 					<< "[" << it->first << "]"
