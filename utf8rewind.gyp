@@ -174,6 +174,8 @@
 				'source/performance/performance-big-casemapping.cpp',
 				'source/performance/performance-big-seeking.cpp',
 				'source/performance/performance-casemapping.cpp',
+				'source/performance/performance-greek-casemapping.cpp',
+				'source/performance/performance-greek-seeking.cpp',
 				'source/performance/performance-main.cpp',
 			],
 			'conditions': [
