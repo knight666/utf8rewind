@@ -17,6 +17,33 @@
 
 #include "utf8rewind.h"
 
+// Google Test
+
+#include "gtest/internal/gtest-port.h"
+#include "gtest/gtest.h"
+
+namespace testing {
+namespace internal {
+
+	extern bool ParseBoolFlag(
+		const char* str,
+		const char* flag,
+		bool* value);
+
+	extern bool ParseInt32Flag(
+		const char* str,
+		const char* flag,
+		Int32* value);
+
+	extern bool ParseStringFlag(
+		const char* str,
+		const char* flag,
+		std::string* value);
+
+};
+};
+
+
 namespace performance {
 
 	class Suite
@@ -68,10 +95,60 @@ namespace performance {
 			m_factories.push_back(std::make_pair(name, factory));
 		}
 
-		int run(size_t repeatCount)
+		int run(int argc, char** argv)
 		{
+			using testing::internal::ParseBoolFlag;
+			using testing::internal::ParseInt32Flag;
+			using testing::internal::ParseStringFlag;
+
+			testing::internal::Int32 repeat_count = 100;
+			bool display_individual = false;
+			std::string filter = "*";
+			bool show_help = false;
+
+			for (int i = 1; i < argc; ++i)
+			{
+				std::string arg_help = argv[i];
+
+				if (arg_help == "--help" ||
+					arg_help == "-h" ||
+					arg_help == "-?" ||
+					arg_help == "/?")
+				{
+					show_help = true;
+
+					break;
+				}
+
+				if (!ParseInt32Flag(argv[i], "repeat_count", &repeat_count) &&
+					!ParseBoolFlag(argv[i], "display_individual", &display_individual) &&
+					!ParseStringFlag(argv[i], "filter", &filter))
+				{
+					show_help = true;
+
+					break;
+				}
+			}
+
+			if (show_help)
+			{
+				std::cout
+					<< "--" GTEST_FLAG_PREFIX_ "repeat_count=[COUNT]" << std::endl
+					<< "    How many times to repeat the performance tests. The default is " << std::endl
+					<< "    100 times." << std::endl
+					<< "--" GTEST_FLAG_PREFIX_ "display_invidual" << std::endl
+					<< "    Display individual timings, instead of just the total time, worst," << std::endl
+					<< "    best and average case." << std::endl
+					<< "--" GTEST_FLAG_PREFIX_ "filter=POSITIVE_PATTERNS[-NEGATIVE_PATTERNS]" << std::endl
+					<< "    Run only the tests whose name matches one of the positive patterns but" << std::endl
+					<< "    none of the negative patterns. '?' matches any single character; '*'" << std::endl
+					<< "    matches any substring; ':' separates two patterns." << std::endl;
+
+				return 0;
+			}
+
 			std::cout
-				<< "Running " << repeatCount << " iterations."
+				<< "Running " << repeat_count << " iterations."
 				<< std::endl;
 
 			typedef std::chrono::steady_clock clock;
@@ -99,7 +176,7 @@ namespace performance {
 
 				suite->setup();
 
-				for (size_t i = 0; i < repeatCount; ++i)
+				for (size_t i = 0; i < repeat_count; ++i)
 				{
 					clock::time_point test_start = clock::now();
 
@@ -110,10 +187,13 @@ namespace performance {
 							clock::now() - test_start
 						)).count() / 1000;
 
-					std::cout
-						<< std::setw(10) << i << ": "
-						<< std::setw(8) << test_duration << " ms"
-						<< std::endl;
+					if (display_individual)
+					{
+						std::cout
+							<< std::setw(10) << i << ": "
+							<< std::setw(8) << test_duration << " ms"
+							<< std::endl;
+					}
 
 					timings.push_back(test_duration);
 				}
@@ -146,13 +226,13 @@ namespace performance {
 					<< std::endl;
 
 				std::cout
-					<< "Worst case: "
-					<< std::setw(8) << worst_case << " ms"
+					<< " Best case: "
+					<< std::setw(8) << best_case << " ms"
 					<< std::endl;
 
 				std::cout
-					<< " Best case: "
-					<< std::setw(8) << best_case << " ms"
+					<< "Worst case: "
+					<< std::setw(8) << worst_case << " ms"
 					<< std::endl;
 
 				std::cout
@@ -188,8 +268,8 @@ namespace performance {
 
 }
 
-#define PERF_RUN_ALL(_repeatCount) \
-	performance::Collection::get().run(_repeatCount)
+#define PERF_RUN_ALL(_argc, _argv) \
+	performance::Collection::get().run(_argc, _argv)
 
 #define PERF_TEST_CLASS_NAME(_caseName, _testName) \
 	_caseName ## _ ## _testName ## _Test

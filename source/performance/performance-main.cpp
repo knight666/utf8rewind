@@ -2,7 +2,7 @@
 
 int main(int argc, char** argv)
 {
-	int result = PERF_RUN_ALL(10);
+	int result = PERF_RUN_ALL(argc, argv);
 
 	std::cout << "Press any key to continue.";
 
