@@ -27,14 +27,16 @@ PERF_TEST_F(BigSeeking, Begin)
 {
 	const char* s = m_contents.c_str();
 
-	utf8seek(s, s, (off_t)utf8len(s) - 1, SEEK_SET);
+	const char* n = utf8seek(s, s, (off_t)utf8len(s) - 1, SEEK_SET);
+	ASSERT_EQ(s + m_contents.length() - 1, n);
 }
 
 PERF_TEST_F(BigSeeking, CurrentForwards)
 {
 	const char* s = m_contents.c_str();
 
-	utf8seek(s, s, (off_t)utf8len(s) - 1, SEEK_CUR);
+	const char* n = utf8seek(s, s, (off_t)utf8len(s) - 1, SEEK_CUR);
+	ASSERT_EQ(s + m_contents.length() - 1, n);
 }
 
 PERF_TEST_F(BigSeeking, CurrentBackwards)
@@ -42,7 +44,8 @@ PERF_TEST_F(BigSeeking, CurrentBackwards)
 	const char* s = m_contents.c_str();
 	const char* e = s + m_contents.length();
 
-	utf8seek(e, s, -(off_t)utf8len(s) + 1, SEEK_CUR);
+	const char* n = utf8seek(e, s, -(off_t)utf8len(s) + 1, SEEK_CUR);
+	ASSERT_EQ(s + 1, n);
 }
 
 PERF_TEST_F(BigSeeking, End)
@@ -50,7 +53,8 @@ PERF_TEST_F(BigSeeking, End)
 	const char* s = m_contents.c_str();
 	const char* e = s + m_contents.length();
 
-	utf8seek(e, s, (off_t)utf8len(s) - 1, SEEK_END);
+	const char* n = utf8seek(e, s, (off_t)utf8len(s) - 1, SEEK_END);
+	ASSERT_EQ(s + 1, n);
 }
 
 PERF_TEST_F(BigSeeking, IncrementalForwards)
@@ -66,6 +70,8 @@ PERF_TEST_F(BigSeeking, IncrementalForwards)
 		n = utf8seek(c, s, 1, SEEK_CUR);
 	}
 	while (n != c && n != e);
+
+	ASSERT_EQ(e, n);
 }
 
 PERF_TEST_F(BigSeeking, IncrementalBackwards)
@@ -81,4 +87,6 @@ PERF_TEST_F(BigSeeking, IncrementalBackwards)
 		n = utf8seek(c, s, -1, SEEK_CUR);
 	}
 	while (n != c && n != s);
+
+	ASSERT_EQ(s, n);
 }

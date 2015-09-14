@@ -88,6 +88,8 @@ namespace internal {
 			// Skip the pattern separator (the ':' character).
 			cur_pattern++;
 		}
+
+		return true;
 	}
 
 };
@@ -258,7 +260,7 @@ namespace performance {
 
 				suite->setup();
 
-				for (size_t i = 0; i < repeat_count; ++i)
+				for (testing::internal::Int32 i = 0; i < repeat_count; ++i)
 				{
 					clock::time_point test_start = clock::now();
 

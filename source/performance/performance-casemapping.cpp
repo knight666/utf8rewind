@@ -1,5 +1,6 @@
 #include "performance-base.hpp"
 
+#include "../helpers/helpers-errors.hpp"
 #include "../helpers/helpers-strings.hpp"
 #include "../internal/codepoint.h"
 
@@ -31,7 +32,10 @@ PERF_TEST_F(CaseMappingBasicLatin, LowercaseStatic)
 	size_t ol = 1023;
 	int32_t e;
 
-	utf8tolower(m_input.c_str(), m_input.length(), o, ol, &e);
+	size_t l = utf8tolower(m_input.c_str(), m_input.length(), o, ol, &e);
+
+	ASSERT_TRUE(l > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
 }
 
 PERF_TEST_F(CaseMappingBasicLatin, LowercaseDynamic)
@@ -39,6 +43,10 @@ PERF_TEST_F(CaseMappingBasicLatin, LowercaseDynamic)
 	int32_t e;
 
 	size_t ol = utf8tolower(m_input.c_str(), m_input.length(), nullptr, 0, &e);
+
+	ASSERT_TRUE(ol > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
 	{
@@ -57,7 +65,10 @@ PERF_TEST_F(CaseMappingBasicLatin, UppercaseStatic)
 	size_t ol = 1023;
 	int32_t e;
 
-	utf8toupper(m_input.c_str(), m_input.length(), o, ol, &e);
+	size_t l = utf8toupper(m_input.c_str(), m_input.length(), o, ol, &e);
+
+	ASSERT_TRUE(l > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
 }
 
 PERF_TEST_F(CaseMappingBasicLatin, UppercaseDynamic)
@@ -65,6 +76,10 @@ PERF_TEST_F(CaseMappingBasicLatin, UppercaseDynamic)
 	int32_t e;
 
 	size_t ol = utf8toupper(m_input.c_str(), m_input.length(), nullptr, 0, &e);
+
+	ASSERT_TRUE(ol > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
 	{
@@ -83,7 +98,10 @@ PERF_TEST_F(CaseMappingBasicLatin, TitlecaseStatic)
 	size_t ol = 1023;
 	int32_t e;
 
-	utf8totitle(m_input.c_str(), m_input.length(), o, ol, &e);
+	size_t l = utf8totitle(m_input.c_str(), m_input.length(), o, ol, &e);
+
+	ASSERT_TRUE(l > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
 }
 
 PERF_TEST_F(CaseMappingBasicLatin, TitlecaseDynamic)
@@ -91,6 +109,10 @@ PERF_TEST_F(CaseMappingBasicLatin, TitlecaseDynamic)
 	int32_t e;
 
 	size_t ol = utf8totitle(m_input.c_str(), m_input.length(), nullptr, 0, &e);
+
+	ASSERT_TRUE(ol > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
 	{
@@ -127,8 +149,8 @@ public:
 
 PERF_TEST_F(CaseMappingLatin1, LowercaseStatic)
 {
-	char o[1024] = { 0 };
-	size_t ol = 1023;
+	char o[MAX_LATIN_1 * 4] = { 0 };
+	size_t ol = MAX_LATIN_1 * 4 - 1;
 	int32_t e;
 
 	utf8tolower(m_input.c_str(), m_input.length(), o, ol, &e);
@@ -153,8 +175,8 @@ PERF_TEST_F(CaseMappingLatin1, LowercaseDynamic)
 
 PERF_TEST_F(CaseMappingLatin1, UppercaseStatic)
 {
-	char o[1024] = { 0 };
-	size_t ol = 1023;
+	char o[MAX_LATIN_1 * 4] = { 0 };
+	size_t ol = MAX_LATIN_1 * 4 - 1;
 	int32_t e;
 
 	utf8toupper(m_input.c_str(), m_input.length(), o, ol, &e);
@@ -179,11 +201,14 @@ PERF_TEST_F(CaseMappingLatin1, UppercaseDynamic)
 
 PERF_TEST_F(CaseMappingLatin1, TitlecaseStatic)
 {
-	char o[1024] = { 0 };
-	size_t ol = 1023;
+	char o[MAX_LATIN_1 * 4] = { 0 };
+	size_t ol = MAX_LATIN_1 * 4 - 1;
 	int32_t e;
 
-	utf8totitle(m_input.c_str(), m_input.length(), o, ol, &e);
+	size_t l = utf8totitle(m_input.c_str(), m_input.length(), o, ol, &e);
+
+	ASSERT_TRUE(l > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
 }
 
 PERF_TEST_F(CaseMappingLatin1, TitlecaseDynamic)
@@ -191,6 +216,10 @@ PERF_TEST_F(CaseMappingLatin1, TitlecaseDynamic)
 	int32_t e;
 
 	size_t ol = utf8totitle(m_input.c_str(), m_input.length(), nullptr, 0, &e);
+
+	ASSERT_TRUE(ol > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
 	{
@@ -231,11 +260,14 @@ public:
 
 PERF_TEST_F(CaseMappingBasicMultilingualPlane, LowercaseStatic)
 {
-	char o[1024] = { 0 };
-	size_t ol = 1023;
+	char o[MAX_BASIC_MULTILINGUAL_PLANE * 4] = { 0 };
+	size_t ol = MAX_BASIC_MULTILINGUAL_PLANE * 4 - 1;
 	int32_t e;
 
-	utf8tolower(m_input.c_str(), m_input.length(), o, ol, &e);
+	size_t l = utf8tolower(m_input.c_str(), m_input.length(), o, ol, &e);
+
+	ASSERT_TRUE(l > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
 }
 
 PERF_TEST_F(CaseMappingBasicMultilingualPlane, LowercaseDynamic)
@@ -243,6 +275,10 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, LowercaseDynamic)
 	int32_t e;
 
 	size_t ol = utf8tolower(m_input.c_str(), m_input.length(), nullptr, 0, &e);
+
+	ASSERT_TRUE(ol > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
 	{
@@ -257,11 +293,14 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, LowercaseDynamic)
 
 PERF_TEST_F(CaseMappingBasicMultilingualPlane, UppercaseStatic)
 {
-	char o[1024] = { 0 };
-	size_t ol = 1023;
+	char o[MAX_BASIC_MULTILINGUAL_PLANE * 4] = { 0 };
+	size_t ol = MAX_BASIC_MULTILINGUAL_PLANE * 4 - 1;
 	int32_t e;
 
-	utf8toupper(m_input.c_str(), m_input.length(), o, ol, &e);
+	size_t l = utf8toupper(m_input.c_str(), m_input.length(), o, ol, &e);
+
+	ASSERT_TRUE(l > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
 }
 
 PERF_TEST_F(CaseMappingBasicMultilingualPlane, UppercaseDynamic)
@@ -269,6 +308,10 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, UppercaseDynamic)
 	int32_t e;
 
 	size_t ol = utf8toupper(m_input.c_str(), m_input.length(), nullptr, 0, &e);
+
+	ASSERT_TRUE(ol > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
 	{
@@ -283,11 +326,14 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, UppercaseDynamic)
 
 PERF_TEST_F(CaseMappingBasicMultilingualPlane, TitlecaseStatic)
 {
-	char o[1024] = { 0 };
-	size_t ol = 1023;
+	char o[MAX_BASIC_MULTILINGUAL_PLANE * 4] = { 0 };
+	size_t ol = MAX_BASIC_MULTILINGUAL_PLANE * 4 - 1;
 	int32_t e;
 
-	utf8totitle(m_input.c_str(), m_input.length(), o, ol, &e);
+	size_t l = utf8totitle(m_input.c_str(), m_input.length(), o, ol, &e);
+
+	ASSERT_TRUE(l > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
 }
 
 PERF_TEST_F(CaseMappingBasicMultilingualPlane, TitlecaseDynamic)
@@ -295,13 +341,17 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, TitlecaseDynamic)
 	int32_t e;
 
 	size_t ol = utf8totitle(m_input.c_str(), m_input.length(), nullptr, 0, &e);
+
+	ASSERT_TRUE(ol > 0);
+	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
 	{
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8totitle(m_input.c_str(), m_input.length(), o, ol, nullptr);
+		size_t l = utf8totitle(m_input.c_str(), m_input.length(), o, ol, nullptr);
 
 		delete [] o;
 	}
