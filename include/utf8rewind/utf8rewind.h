@@ -936,16 +936,16 @@ UTF8_API uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t fl
 	Normalization Form KD (NFKD) | Compatibility decomposition
 	Normalization Form KC (NFKC) | Compatibility decomposition, followed by canonical composition
 
-	This function can be used to transform text into one of these forms. You
+	`utf8normalize` can be used to transform text into one of these forms. You
 	must specify the desired Unicode Normalization Form by using a combination
 	of flags:
 
 	Form                          | Flags
 	----------------------------  | ---------------------------------------------------------
-	Normalization Form D (NFD)    | #UTF8_NORMALIZE_COMPOSE
-	Normalization Form C (NFC)    | #UTF8_NORMALIZE_COMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
-	Normalization Form KD (NFKD)  | #UTF8_NORMALIZE_DECOMPOSE
-	Normalization Form KC (NFKC)  | #UTF8_NORMALIZE_DECOMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
+	Normalization Form D (NFD)    | #UTF8_NORMALIZE_DECOMPOSE
+	Normalization Form C (NFC)    | #UTF8_NORMALIZE_COMPOSE
+	Normalization Form KD (NFKD)  | #UTF8_NORMALIZE_DECOMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
+	Normalization Form KC (NFKC)  | #UTF8_NORMALIZE_COMPOSE + #UTF8_NORMALIZE_COMPATIBILITY
 
 	For more information, please review [Unicode Standard Annex #15 - Unicode
 	Normalization Forms](http://www.unicode.org/reports/tr15/).
