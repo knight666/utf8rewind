@@ -1,6 +1,5 @@
 #include "performance-base.hpp"
 
-#include "../helpers/helpers-errors.hpp"
 #include "../helpers/helpers-strings.hpp"
 #include "../internal/codepoint.h"
 
@@ -34,8 +33,8 @@ PERF_TEST_F(CaseMappingBasicLatin, LowercaseStatic)
 
 	size_t l = utf8tolower(m_input.c_str(), m_input.length(), o, ol, &e);
 
-	ASSERT_TRUE(l > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(l > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 }
 
 PERF_TEST_F(CaseMappingBasicLatin, LowercaseDynamic)
@@ -44,8 +43,8 @@ PERF_TEST_F(CaseMappingBasicLatin, LowercaseDynamic)
 
 	size_t ol = utf8tolower(m_input.c_str(), m_input.length(), nullptr, 0, &e);
 
-	ASSERT_TRUE(ol > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
@@ -67,8 +66,8 @@ PERF_TEST_F(CaseMappingBasicLatin, UppercaseStatic)
 
 	size_t l = utf8toupper(m_input.c_str(), m_input.length(), o, ol, &e);
 
-	ASSERT_TRUE(l > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(l > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 }
 
 PERF_TEST_F(CaseMappingBasicLatin, UppercaseDynamic)
@@ -77,8 +76,8 @@ PERF_TEST_F(CaseMappingBasicLatin, UppercaseDynamic)
 
 	size_t ol = utf8toupper(m_input.c_str(), m_input.length(), nullptr, 0, &e);
 
-	ASSERT_TRUE(ol > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
@@ -100,8 +99,8 @@ PERF_TEST_F(CaseMappingBasicLatin, TitlecaseStatic)
 
 	size_t l = utf8totitle(m_input.c_str(), m_input.length(), o, ol, &e);
 
-	ASSERT_TRUE(l > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(l > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 }
 
 PERF_TEST_F(CaseMappingBasicLatin, TitlecaseDynamic)
@@ -110,8 +109,8 @@ PERF_TEST_F(CaseMappingBasicLatin, TitlecaseDynamic)
 
 	size_t ol = utf8totitle(m_input.c_str(), m_input.length(), nullptr, 0, &e);
 
-	ASSERT_TRUE(ol > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
@@ -207,8 +206,8 @@ PERF_TEST_F(CaseMappingLatin1, TitlecaseStatic)
 
 	size_t l = utf8totitle(m_input.c_str(), m_input.length(), o, ol, &e);
 
-	ASSERT_TRUE(l > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(l > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 }
 
 PERF_TEST_F(CaseMappingLatin1, TitlecaseDynamic)
@@ -217,8 +216,8 @@ PERF_TEST_F(CaseMappingLatin1, TitlecaseDynamic)
 
 	size_t ol = utf8totitle(m_input.c_str(), m_input.length(), nullptr, 0, &e);
 
-	ASSERT_TRUE(ol > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
@@ -266,8 +265,8 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, LowercaseStatic)
 
 	size_t l = utf8tolower(m_input.c_str(), m_input.length(), o, ol, &e);
 
-	ASSERT_TRUE(l > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(l > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 }
 
 PERF_TEST_F(CaseMappingBasicMultilingualPlane, LowercaseDynamic)
@@ -276,8 +275,8 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, LowercaseDynamic)
 
 	size_t ol = utf8tolower(m_input.c_str(), m_input.length(), nullptr, 0, &e);
 
-	ASSERT_TRUE(ol > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
@@ -299,8 +298,8 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, UppercaseStatic)
 
 	size_t l = utf8toupper(m_input.c_str(), m_input.length(), o, ol, &e);
 
-	ASSERT_TRUE(l > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(l > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 }
 
 PERF_TEST_F(CaseMappingBasicMultilingualPlane, UppercaseDynamic)
@@ -309,8 +308,8 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, UppercaseDynamic)
 
 	size_t ol = utf8toupper(m_input.c_str(), m_input.length(), nullptr, 0, &e);
 
-	ASSERT_TRUE(ol > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
@@ -332,8 +331,8 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, TitlecaseStatic)
 
 	size_t l = utf8totitle(m_input.c_str(), m_input.length(), o, ol, &e);
 
-	ASSERT_TRUE(l > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(l > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 }
 
 PERF_TEST_F(CaseMappingBasicMultilingualPlane, TitlecaseDynamic)
@@ -342,8 +341,8 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, TitlecaseDynamic)
 
 	size_t ol = utf8totitle(m_input.c_str(), m_input.length(), nullptr, 0, &e);
 
-	ASSERT_TRUE(ol > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)

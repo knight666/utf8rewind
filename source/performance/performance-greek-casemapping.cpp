@@ -1,7 +1,5 @@
 #include "performance-base.hpp"
 
-#include "../helpers/helpers-errors.hpp"
-
 class GreekCaseMapping
 	: public performance::Suite
 {
@@ -31,8 +29,8 @@ PERF_TEST_F(GreekCaseMapping, Uppercase)
 
 	size_t ol = utf8toupper(m_contents.c_str(), m_contents.length(), nullptr, 0, &e);
 
-	ASSERT_TRUE(ol > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
@@ -52,8 +50,8 @@ PERF_TEST_F(GreekCaseMapping, Lowercase)
 
 	size_t ol = utf8tolower(m_contents.c_str(), m_contents.length(), nullptr, 0, &e);
 
-	ASSERT_TRUE(ol > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)
@@ -73,8 +71,8 @@ PERF_TEST_F(GreekCaseMapping, Titlecase)
 
 	size_t ol = utf8totitle(m_contents.c_str(), m_contents.length(), nullptr, 0, &e);
 
-	ASSERT_TRUE(ol > 0);
-	ASSERT_ERROREQ(UTF8_ERR_NONE, e);
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
 
 	if (ol > 0 &&
 		e == UTF8_ERR_NONE)

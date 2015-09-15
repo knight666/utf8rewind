@@ -15,6 +15,16 @@
 #include <string>
 #include <vector>
 
+// Windows
+
+#if defined(WIN32) || defined(_WINDOWS)
+	#define WIN32_LEAN_AND_MEAN
+	#define VC_EXTRALEAN
+	#define NOMINMAX
+
+	#include <Windows.h>
+#endif
+
 // utf8rewind
 
 #include "utf8rewind.h"
@@ -95,6 +105,40 @@ namespace internal {
 };
 };
 
+#if defined(WIN32) || defined(_WINDOWS)
+	#define PERF_BREAK() \
+		::DebugBreak()
+
+	#define PERF_PRINT(_text) \
+		::OutputDebugStringA(_text "\n"); \
+		fprintf(stderr, _text "\n");
+#else
+	#define PERF_BREAK() { \
+		size_t* c = nullptr; \
+		*c = 0xFFFDFFFD; \
+		::exit(-1); \
+	}
+
+	#define PERF_PRINT(_text) \
+		fprintf(stderr, _text "\n");
+#endif
+
+#ifndef PERF_ASSERT_ENABLED
+	#if defined(_DEBUG)
+		#define PERF_ASSERT_ENABLED (1)
+	#else
+		#define PERF_ASSERT_ENABLED (0)
+	#endif
+#endif
+
+#if PERF_ASSERT_ENABLED
+	#define PERF_ASSERT(_check) if (!(_check)) { \
+		PERF_PRINT("Assert failed: \"" # _check "\""); \
+		PERF_BREAK(); \
+	}
+#else
+	#define PERF_ASSERT(_check)
+#endif
 
 namespace performance {
 
