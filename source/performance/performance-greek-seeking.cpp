@@ -27,7 +27,7 @@ PERF_TEST_F(GreekSeeking, Begin)
 {
 	const char* s = m_contents.c_str();
 
-	const char* n = utf8seek(s, s, (off_t)utf8len(s) - 1, SEEK_SET);
+	const char* n = utf8seekfast(s, m_contents.length(), s, (off_t)utf8len(s) - 1, SEEK_SET);
 	PERF_ASSERT(n == s + m_contents.length() - 1);
 }
 
@@ -35,7 +35,7 @@ PERF_TEST_F(GreekSeeking, CurrentForwards)
 {
 	const char* s = m_contents.c_str();
 
-	const char* n = utf8seek(s, s, (off_t)utf8len(s) - 1, SEEK_CUR);
+	const char* n = utf8seekfast(s, m_contents.length(), s, (off_t)utf8len(s) - 1, SEEK_CUR);
 	PERF_ASSERT(n == s + m_contents.length() - 1);
 }
 
@@ -44,7 +44,7 @@ PERF_TEST_F(GreekSeeking, CurrentBackwards)
 	const char* s = m_contents.c_str();
 	const char* e = s + m_contents.length();
 
-	const char* n = utf8seek(e, s, -(off_t)utf8len(s) + 1, SEEK_CUR);
+	const char* n = utf8seekfast(e, m_contents.length(), s, -(off_t)utf8len(s) + 1, SEEK_CUR);
 	PERF_ASSERT(n == s + 1);
 }
 
@@ -53,7 +53,7 @@ PERF_TEST_F(GreekSeeking, End)
 	const char* s = m_contents.c_str();
 	const char* e = s + m_contents.length();
 
-	const char* n = utf8seek(e, s, (off_t)utf8len(s) - 1, SEEK_END);
+	const char* n = utf8seekfast(e, m_contents.length(), s, (off_t)utf8len(s) - 1, SEEK_END);
 	PERF_ASSERT(n == s + 1);
 }
 
@@ -67,7 +67,7 @@ PERF_TEST_F(GreekSeeking, IncrementalForwards)
 	do
 	{
 		c = n;
-		n = utf8seek(c, s, 1, SEEK_CUR);
+		n = utf8seekfast(c, m_contents.length(), s, 1, SEEK_CUR);
 	}
 	while (n != c && n != e);
 
@@ -84,7 +84,7 @@ PERF_TEST_F(GreekSeeking, IncrementalBackwards)
 	do
 	{
 		c = n;
-		n = utf8seek(c, s, -1, SEEK_CUR);
+		n = utf8seekfast(c, m_contents.length(), s, -1, SEEK_CUR);
 	}
 	while (n != c && n != s);
 

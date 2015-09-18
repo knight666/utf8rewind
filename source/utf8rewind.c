@@ -546,6 +546,58 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 	}
 }
 
+const char* utf8seekfast(const char* text, size_t textSize, const char* textStart, off_t offset, int direction)
+{
+	const char* text_end;
+
+	if (text == 0 ||
+		textStart == 0)
+	{
+		return text;
+	}
+
+	text_end = textStart + textSize;
+
+	switch (direction)
+	{
+
+	case SEEK_CUR:
+		{
+			if (offset == 0)
+			{
+				return text;
+			}
+			else if (offset > 0)
+			{
+				return seeking_forward(text, text_end, textSize, offset);
+			}
+			else
+			{
+				return seeking_rewind(textStart, text, textSize, offset);
+			}
+
+		} break;
+
+	case SEEK_SET:
+		{
+			if (text < textStart)
+			{
+				return text;
+			}
+
+			return seeking_forward(textStart, text_end, textSize, offset);
+
+		} break;
+
+	case SEEK_END:
+		return seeking_rewind(textStart, text_end, textSize, -offset);
+
+	default:
+		return text;
+
+	}
+}
+
 size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 	CaseMappingState state;
