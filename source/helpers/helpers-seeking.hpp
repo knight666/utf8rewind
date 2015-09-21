@@ -9,15 +9,15 @@
 
 #include "helpers-base.hpp"
 
-#define EXPECT_SEEKEQ(_input, _expectedOffset, _currentOffset, _startOffset, _offset, _direction) { \
+#define EXPECT_SEEKEQ(_input, _expectedOffset, _currentOffset, _length, _startOffset, _offset, _direction) { \
 	::helpers::SeekingParameters e; \
 	e.text = _input + _expectedOffset; \
 	e.offset = _expectedOffset; \
 	e.expression = ""; \
 	::helpers::SeekingParameters a; \
-	a.text = utf8seek(_input + _currentOffset, _input + _startOffset, _offset, _direction); \
+	a.text = utf8seek(_input + _currentOffset, _length, _input + _startOffset, _offset, _direction); \
 	a.offset = a.text - _input; \
-	a.expression = "utf8seek(" #_input " + " #_currentOffset ", " #_input " + " #_startOffset ", " #_offset ", " #_direction ")"; \
+	a.expression = "utf8seek(" #_input " + " #_currentOffset ", " #_length ", " #_input " + " #_startOffset ", " #_offset ", " #_direction ")"; \
 	EXPECT_PRED_FORMAT2(::helpers::CompareSeeking, e, a); \
 }
 

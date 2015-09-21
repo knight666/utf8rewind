@@ -10,11 +10,11 @@ class PropertySeekingCurrent
 	bool holdsFor(const std::string& input, const off_t& offset)
 	{
 		const char* seek_next = utf8seek(
-			input.c_str(), input.c_str(),
+			input.c_str(), input.length(), input.c_str(),
 			offset, SEEK_CUR);
 
 		const char* seek_start = utf8seek(
-			seek_next, input.c_str(),
+			seek_next, strlen(seek_next), input.c_str(),
 			-offset, SEEK_CUR);
 
 		return seek_start == input.c_str();
@@ -45,7 +45,7 @@ class PropertySeekingCurrent
 			text += grapheme;
 		}
 
-		offset = (ptrdiff_t)generated_length;
+		offset = (off_t)generated_length;
 	}
 
 };
