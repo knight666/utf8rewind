@@ -567,7 +567,7 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 		strncpy(fixed, text, commandStart - text);
 		strcat(fixed, "ENTER");
 
-		commandEnd = utf8seek(commandStart, text, 1, SEEK_CUR);
+		commandEnd = utf8seek(commandStart, strlen(commandStart), text, 1, SEEK_CUR);
 		if (commandEnd != commandStart)
 		{
 			strcat(fixed, commandEnd);
@@ -575,6 +575,7 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 	\endcode
 
 	\param[in]  text       Input string.
+	\param[in]  textSize   Size of input string in bytes.
 	\param[in]  textStart  Start of input string.
 	\param[in]  offset     Requested offset in codepoints.
 	\param[in]  direction  Direction to seek in.
@@ -584,9 +585,7 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 
 	\return Changed string or no change on error.
 */
-UTF8_API const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction);
-
-UTF8_API const char* utf8seekfast(const char* text, size_t textSize, const char* textStart, off_t offset, int direction);
+UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* textStart, off_t offset, int direction);
 
 /*!
 	\brief Convert UTF-8 encoded text to uppercase.
