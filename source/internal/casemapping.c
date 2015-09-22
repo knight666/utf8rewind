@@ -39,23 +39,25 @@
 #define GC_SE  GeneralCategory_Separator
 #define GC_OT  GeneralCategory_Other
 
-static const uint8_t basic_latin_general_category_table[128] = {
-	GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT,
-	GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT,
-	GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT,
+#define GC_BLOCK_SHIFT (3)
+static const char GC_INDEX_MASK = (1 << GC_BLOCK_SHIFT) - 1;
+
+static const uint32_t general_category_index[16] = {
+	0, 0, 0, 0,
+	8, 13, 21, 27,
+	34, 36, 35, 42,
+	50, 35, 35, 55
+};
+
+static const uint8_t general_category_data[63] = {
 	GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT,
 	GC_SE, GC_PU, GC_PU, GC_PU, GC_SY, GC_PU, GC_PU, GC_PU,
-	GC_PU, GC_PU, GC_PU, GC_SY, GC_PU, GC_PU, GC_PU, GC_PU,
-	GC_NU, GC_NU, GC_NU, GC_NU, GC_NU, GC_NU, GC_NU, GC_NU,
-	GC_NU, GC_NU, GC_PU, GC_PU, GC_SY, GC_SY, GC_SY, GC_PU,
-	GC_PU, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
-	GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
-	GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
-	GC_LC, GC_LC, GC_LC, GC_PU, GC_PU, GC_PU, GC_SY, GC_PU,
-	GC_SY, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
-	GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
-	GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
-	GC_LC, GC_LC, GC_LC, GC_PU, GC_SY, GC_PU, GC_SY, GC_OT
+	GC_SY, GC_PU, GC_PU, GC_PU, GC_PU, GC_NU, GC_NU, GC_NU,
+	GC_NU, GC_NU, GC_NU, GC_NU, GC_NU, GC_PU, GC_PU, GC_SY,
+	GC_SY, GC_SY, GC_PU, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
+	GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_PU, GC_PU, GC_PU,
+	GC_SY, GC_PU, GC_SY, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
+	GC_LC, GC_LC, GC_PU, GC_SY, GC_PU, GC_SY, GC_OT
 };
 
 static const char basic_latin_lowercase_table[58] = {
@@ -174,7 +176,9 @@ uint8_t casemapping_readcodepoint(CaseMappingState* state)
 		state->last_code_point_size = 1;
 
 		state->last_general_category =
-			basic_latin_general_category_table[state->last_code_point];
+			general_category_data[
+				general_category_index[*state->src >> GC_BLOCK_SHIFT] +
+				(*state->src & GC_INDEX_MASK)];
 	}
 	else
 	{
