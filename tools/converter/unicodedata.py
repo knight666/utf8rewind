@@ -1134,6 +1134,109 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		return True
 
+class Compression:
+	def __init__(self, database):
+		self.database = database
+		self.chunk_size = 0
+		self.uncompressed_size = 0
+		self.table_index = []
+		self.table_data = []
+
+	def process(self, chunkSize):
+		print('Compressing property with a chunk size of ' + str(chunkSize) + '...')
+
+		self.chunk_size = chunkSize
+		self.uncompressed_size = 0
+		self.table_index = []
+		self.table_data = []
+		index = 0
+
+		for i in range(0, len(self.database.recordsOrdered), chunkSize):
+			chunk = []
+			for r in self.database.recordsOrdered[i:i + chunkSize]:
+				chunk.append(r.generalCategoryCombined)
+
+			# print('chunk ' + str(chunk))
+
+			offset = 0
+			if index >= chunkSize:
+				for j in range(0, len(chunk)):
+					if self.table_data[index - 1 - j] != chunk[j]:
+						break
+					offset += 1
+
+			self.table_data.extend(chunk[offset:])
+			self.table_index.append(index - offset)
+
+			# print('index ' + str(index) + ' offset ' + str(offset))
+
+			index += len(chunk) - offset
+
+			# print('table ' + str(table_data))
+
+			self.uncompressed_size += len(chunk)
+
+		compressed_size = len(self.table_index) + len(self.table_data)
+		ratio = (1.0 - (compressed_size / self.uncompressed_size)) * 100.0
+		print('uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(compressed_size) + ' savings ' + ('%.2f%%' % ratio))
+
+	def render(self, filepath):
+		print('Rendering compressed data to "' + os.path.realpath(filepath) + '"...')
+
+		header = libs.header.Header(filepath)
+		header.generatedNotice()
+		header.newLine()
+
+		header.writeLine("const size_t GeneralCategoryIndexCount = " + str(len(self.table_index)) + ";")
+		header.writeLine("const size_t GeneralCategoryIndex[" + str(len(self.table_index)) + "] = {")
+		header.indent()
+
+		index_chunk_size = 16
+
+		count = 0
+		for c in self.table_index:
+			if (count % index_chunk_size) == 0:
+				header.writeIndentation()
+			
+			header.write('%d,' % c)
+			
+			count += 1
+			if count != len(self.table_index):
+				if (count % index_chunk_size) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+
+		header.newLine()
+
+		header.writeLine("const size_t GeneralCategoryDataCount = " + str(len(self.table_data)) + ";")
+		header.writeLine("const uint8_t GeneralCategoryData[" + str(len(self.table_data)) + "] = {")
+		header.indent()
+
+		data_chunk_size = 16
+
+		count = 0
+		for c in self.table_data:
+			if (count % data_chunk_size) == 0:
+				header.writeIndentation()
+			
+			header.write('0x%02X,' % c)
+			
+			count += 1
+			if count != len(self.table_data):
+				if (count % data_chunk_size) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
 	parser.add_argument(
@@ -1181,7 +1284,11 @@ if __name__ == '__main__':
 	db = Database()
 	db.loadFromFiles(args)
 	
-	db.executeQuery(args.query)
+	compress = Compression(db)
+	compress.process(32)
+	compress.render('compression.c')
+
+	#db.executeQuery(args.query)
 	
-	db.writeSource(script_path + '/../../source/unicodedatabase.c')
-	db.writeCaseMapping(script_path + '/../../testdata/CaseMapping.txt')
+	#db.writeSource(script_path + '/../../source/unicodedatabase.c')
+	#db.writeCaseMapping(script_path + '/../../testdata/CaseMapping.txt')
