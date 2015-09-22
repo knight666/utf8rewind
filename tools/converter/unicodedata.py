@@ -404,22 +404,20 @@ class Compression:
 				index = 0
 
 				if len(self.table_data) > 0:
-					for t in range(len(self.table_data)):
-						ti = len(self.table_data) - t - 1
-						if self.table_data[ti] != chunk[offset]:
+					for t in range(len(self.table_data) - 1, 0):
+						if self.table_data[t] != chunk[offset] or offset + 1 == len(chunk):
 							break
 						offset += 1
-						if offset == len(chunk):
-							break
 					index = len(self.table_data) - offset
 
-			"""if len(self.table_index) == 27:
+			"""if len(self.table_index) == 396:
 				print('chunk ' + str(chunk))
 				print('overlapping ' + str(overlapping))
 				print('data_size ' + str(len(self.table_data)) + ' index_size ' + str(len(self.table_index)) + ' offset ' + str(offset) + ' index ' + str(index))
 				print('chunk_after ' + str(chunk[offset:]))
+				print('table_chunk ' + str(self.table_data[index:index+32]))
 				print('table_before ' + str(self.table_data))
-				exit(0)"""
+				#exit(0)"""
 
 			self.table_index.append(index)
 			self.table_data.extend(chunk[offset:])
@@ -759,6 +757,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			self.getBlockByName("Ancient Greek Numbers"), # 10140..1018F
 			self.getBlockByName("Ancient Symbols"), # 10190..101CF
 			self.getBlockByName("Phaistos Disc"), # 101D0..101FF
+			self.getBlockByName("<reserved-10200>..<reserved-1027F>"),
 			self.getBlockByName("Lycian"), # 10280..1029F
 			self.getBlockByName("Carian"), # 102A0..102DF
 			self.getBlockByName("Coptic Epact Numbers"), # 102E0..102FF
@@ -767,30 +766,40 @@ class Database(libs.unicode.UnicodeVisitor):
 			self.getBlockByName("Old Permic"), # 10350..1037F
 			self.getBlockByName("Ugaritic"), # 10380..1039F
 			self.getBlockByName("Old Persian"), # 103A0..103DF
+			self.getBlockByName("<reserved-103E0>..<reserved-103FF>"),
 			self.getBlockByName("Deseret"), # 10400..1044F
 			self.getBlockByName("Shavian"), # 10450..1047F
 			self.getBlockByName("Osmanya"), # 10480..104AF
+			self.getBlockByName("<reserved-104B0>..<reserved-104FF>"),
 			self.getBlockByName("Elbasan"), # 10500..1052F
 			self.getBlockByName("Caucasian Albanian"), # 10530..1056F
+			self.getBlockByName("<reserved-10570>..<reserved-105FF>"),
 			self.getBlockByName("Linear A"), # 10600..1077F
+			self.getBlockByName("<reserved-10780>..<reserved-107FF>"),
 			self.getBlockByName("Cypriot Syllabary"), # 10800..1083F
 			self.getBlockByName("Imperial Aramaic"), # 10840..1085F
 			self.getBlockByName("Palmyrene"), # 10860..1087F
 			self.getBlockByName("Nabataean"), # 10880..108AF
+			self.getBlockByName("<reserved-108B0>..<reserved-108FF>"),
 			self.getBlockByName("Phoenician"), # 10900..1091F
 			self.getBlockByName("Lydian"), # 10920..1093F
+			self.getBlockByName("<reserved-10940>..<reserved-1097F>"),
 			self.getBlockByName("Meroitic Hieroglyphs"), # 10980..1099F
 			self.getBlockByName("Meroitic Cursive"), # 109A0..109FF
 			self.getBlockByName("Kharoshthi"), # 10A00..10A5F
 			self.getBlockByName("Old South Arabian"), # 10A60..10A7F
 			self.getBlockByName("Old North Arabian"), # 10A80..10A9F
+			self.getBlockByName("<reserved-10AA0>..<reserved-10ABF>"),
 			self.getBlockByName("Manichaean"), # 10AC0..10AFF
 			self.getBlockByName("Avestan"), # 10B00..10B3F
 			self.getBlockByName("Inscriptional Parthian"), # 10B40..10B5F
 			self.getBlockByName("Inscriptional Pahlavi"), # 10B60..10B7F
 			self.getBlockByName("Psalter Pahlavi"), # 10B80..10BAF
+			self.getBlockByName("<reserved-10BB0>..<reserved-10BFF>"),
 			self.getBlockByName("Old Turkic"), # 10C00..10C4F
+			self.getBlockByName("<reserved-10C50>..<reserved-10E5F>"),
 			self.getBlockByName("Rumi Numeral Symbols"), # 10E60..10E7F
+			self.getBlockByName("<reserved-10E80>..<reserved-10FFF>"),
 			self.getBlockByName("Brahmi"), # 11000..1107F
 			self.getBlockByName("Kaithi"), # 11080..110CF
 			self.getBlockByName("Sora Sompeng"), # 110D0..110FF
@@ -910,7 +919,73 @@ class Database(libs.unicode.UnicodeVisitor):
 		block_reserved6.end = 0xABBF
 		block_reserved6.name = "<reserved-AB70>..<reserved-ABBF>"
 		self.blocks.append(block_reserved6)
-	
+		
+		block_reserved7 = UnicodeBlock(self)
+		block_reserved7.start = 0x10200
+		block_reserved7.end = 0x1027F
+		block_reserved7.name = "<reserved-10200>..<reserved-1027F>"
+		self.blocks.append(block_reserved7)
+		
+		block_reserved8 = UnicodeBlock(self)
+		block_reserved8.start = 0x103E0
+		block_reserved8.end = 0x103FF
+		block_reserved8.name = "<reserved-103E0>..<reserved-103FF>"
+		self.blocks.append(block_reserved8)
+		
+		block_reserved9 = UnicodeBlock(self)
+		block_reserved9.start = 0x10570
+		block_reserved9.end = 0x105FF
+		block_reserved9.name = "<reserved-10570>..<reserved-105FF>"
+		self.blocks.append(block_reserved9)
+		
+		block_reserved10 = UnicodeBlock(self)
+		block_reserved10.start = 0x10780
+		block_reserved10.end = 0x107FF
+		block_reserved10.name = "<reserved-10780>..<reserved-107FF>"
+		self.blocks.append(block_reserved10)
+		
+		block_reserved11 = UnicodeBlock(self)
+		block_reserved11.start = 0x108B0
+		block_reserved11.end = 0x108FF
+		block_reserved11.name = "<reserved-108B0>..<reserved-108FF>"
+		self.blocks.append(block_reserved11)
+		
+		block_reserved12 = UnicodeBlock(self)
+		block_reserved12.start = 0x10940
+		block_reserved12.end = 0x1097F
+		block_reserved12.name = "<reserved-10940>..<reserved-1097F>"
+		self.blocks.append(block_reserved12)
+		
+		block_reserved13 = UnicodeBlock(self)
+		block_reserved13.start = 0x10AA0
+		block_reserved13.end = 0x10ABF
+		block_reserved13.name = "<reserved-10AA0>..<reserved-10ABF>"
+		self.blocks.append(block_reserved13)
+		
+		block_reserved14 = UnicodeBlock(self)
+		block_reserved14.start = 0x104B0
+		block_reserved14.end = 0x104FF
+		block_reserved14.name = "<reserved-104B0>..<reserved-104FF>"
+		self.blocks.append(block_reserved14)
+		
+		block_reserved15 = UnicodeBlock(self)
+		block_reserved15.start = 0x10BB0
+		block_reserved15.end = 0x10BFF
+		block_reserved15.name = "<reserved-10BB0>..<reserved-10BFF>"
+		self.blocks.append(block_reserved15)
+		
+		block_reserved16 = UnicodeBlock(self)
+		block_reserved16.start = 0x10C50
+		block_reserved16.end = 0x10E5F
+		block_reserved16.name = "<reserved-10C50>..<reserved-10E5F>"
+		self.blocks.append(block_reserved16)
+		
+		block_reserved17 = UnicodeBlock(self)
+		block_reserved17.start = 0x10E80
+		block_reserved17.end = 0x10FFF
+		block_reserved17.name = "<reserved-10E80>..<reserved-10FFF>"
+		self.blocks.append(block_reserved17)
+		
 	def resolveQuickCheck(self):
 		print('Resolving quick check entries...')
 		
