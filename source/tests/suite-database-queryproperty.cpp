@@ -1,7 +1,23 @@
 #include "tests-base.hpp"
 
 extern "C" {
+	#include "../internal/codepoint.h"
 	#include "../internal/database.h"
+	#include "../internal/compressedproperties.h"
+}
+
+TEST(QueryProperty, AllGeneralCategory)
+{
+	for (unicode_t i = 0; i < MAX_LEGAL_UNICODE; ++i)
+	{
+		uint8_t value1 = database_queryproperty(i, UnicodeProperty_GeneralCategory);
+		uint8_t value2 = PROPERTY_GET_GC(i);
+		EXPECT_EQ(database_queryproperty(i, UnicodeProperty_GeneralCategory), PROPERTY_GET_GC(i));
+		if (value1 != value2)
+		{
+			int bleh = 0;
+		}
+	}
 }
 
 TEST(QueryProperty, InvalidProperty)

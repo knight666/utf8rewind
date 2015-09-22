@@ -385,35 +385,55 @@ class Compression:
 			for r in self.database.recordsOrdered[i:i + chunkSize]:
 				chunk.append(r.__dict__[field])
 
-			# print('chunk ' + str(chunk))
+			#print('chunk ' + str(chunk))
 
 			ci = 0
-			ci_best = 0
+			ci_best = -1
 			match = 0
-			match_best = 0
+			match_best = len(self.table_data)
 
 			for t in range(len(self.table_data)):
-				if self.table_data[t] != chunk[ci]:
+				ti = len(self.table_data) - t - 1
+				#print('ti ' + str(ti) + ' entry ' + str(self.table_data[ti]))
+				if self.table_data[ti] == chunk[ci]:
 					if ci > ci_best:
 						ci_best = ci
-						match_best = t
-					match = t
+						match_best = ti
+						#print('match_best ' + str(match_best) + ' ci_best ' + str(ci_best))
+					match = ti
+					if ci + 1 == len(chunk):
+						match_best = match
+						#print('>>> match_best ' + str(match_best))
+						break
+					else:
+						ci += 1
+				else:
 					ci = 0
-				elif ci + 1 == len(chunk):
-					ci_best = len(chunk) - 1
-					match_best = match
-					break
-				ci += 1
 
-			# print('ci_best ' + str(ci_best) + ' match_best ' + str(match_best))
+			#if ci_best == -1:
+			#	ci_best = 0
 
-			if ci_best == len(chunk) - 1:
+			#index = len(self.table_data) + (len(self.table_data) - match_best) + 1
+			data_size = len(self.table_data)
+			#print('table before ' + str(self.table_data))
+
+			if len(self.table_data) == 0:
+				index = 0
+				self.table_index.append(0)
+				self.table_data.extend(chunk)
+			elif ci_best == len(chunk) - 1:
+				index = match_best
 				self.table_index.append(match_best)
 			else:
-				self.table_index.append(len(self.table_data))
-				self.table_data.extend(chunk[ci_best:])
+				index = match_best
+				self.table_index.append(index)
+				self.table_data.extend(chunk[(len(self.table_data) - match_best):])
 
-			# print('table ' + str(self.table_data))
+			#print('ci_best ' + str(ci_best) + ' match_best ' + str(match_best) + ' data_size ' + str(data_size) + ' index ' + str(index))
+			#print('table after ' + str(self.table_data))
+
+			#if i > 0xE0:
+			#	exit(1)
 
 			self.uncompressed_size += len(chunk)
 
