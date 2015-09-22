@@ -385,55 +385,44 @@ class Compression:
 			for r in self.database.recordsOrdered[i:i + chunkSize]:
 				chunk.append(r.__dict__[field])
 
-			#print('chunk ' + str(chunk))
-
-			ci = 0
-			ci_best = -1
-			match = 0
-			match_best = len(self.table_data)
+			offset = 0
+			index = 0
+			overlapping = False
 
 			for t in range(len(self.table_data)):
-				ti = len(self.table_data) - t - 1
-				#print('ti ' + str(ti) + ' entry ' + str(self.table_data[ti]))
-				if self.table_data[ti] == chunk[ci]:
-					if ci > ci_best:
-						ci_best = ci
-						match_best = ti
-						#print('match_best ' + str(match_best) + ' ci_best ' + str(ci_best))
-					match = ti
-					if ci + 1 == len(chunk):
-						match_best = match
-						#print('>>> match_best ' + str(match_best))
+				if self.table_data[t] == chunk[offset]:
+					offset += 1
+					if offset == len(chunk):
+						overlapping = True
 						break
-					else:
-						ci += 1
 				else:
-					ci = 0
+					index = t + 1
+					offset = 0
 
-			#if ci_best == -1:
-			#	ci_best = 0
-
-			#index = len(self.table_data) + (len(self.table_data) - match_best) + 1
-			data_size = len(self.table_data)
-			#print('table before ' + str(self.table_data))
-
-			if len(self.table_data) == 0:
+			if not overlapping:
+				offset = 0
 				index = 0
-				self.table_index.append(0)
-				self.table_data.extend(chunk)
-			elif ci_best == len(chunk) - 1:
-				index = match_best
-				self.table_index.append(match_best)
-			else:
-				index = match_best
-				self.table_index.append(index)
-				self.table_data.extend(chunk[(len(self.table_data) - match_best):])
 
-			#print('ci_best ' + str(ci_best) + ' match_best ' + str(match_best) + ' data_size ' + str(data_size) + ' index ' + str(index))
-			#print('table after ' + str(self.table_data))
+				if len(self.table_data) > 0:
+					for t in range(len(self.table_data)):
+						ti = len(self.table_data) - t - 1
+						if self.table_data[ti] != chunk[offset]:
+							break
+						offset += 1
+						if offset == len(chunk):
+							break
+					index = len(self.table_data) - offset
 
-			#if i > 0xE0:
-			#	exit(1)
+			"""if len(self.table_index) == 27:
+				print('chunk ' + str(chunk))
+				print('overlapping ' + str(overlapping))
+				print('data_size ' + str(len(self.table_data)) + ' index_size ' + str(len(self.table_index)) + ' offset ' + str(offset) + ' index ' + str(index))
+				print('chunk_after ' + str(chunk[offset:]))
+				print('table_before ' + str(self.table_data))
+				exit(0)"""
+
+			self.table_index.append(index)
+			self.table_data.extend(chunk[offset:])
 
 			self.uncompressed_size += len(chunk)
 
@@ -601,18 +590,264 @@ class Database(libs.unicode.UnicodeVisitor):
 		print('Adding missing codepoints to database...')
 		
 		missing = [
+			self.getBlockByName("Basic Latin"), # 0000..007F
+			self.getBlockByName("Latin-1 Supplement"), # 0080..00FF
+			self.getBlockByName("Latin Extended-A"), # 0100..017F
+			self.getBlockByName("Latin Extended-B"), # 0180..024F
+			self.getBlockByName("IPA Extensions"), # 0250..02AF
+			self.getBlockByName("Spacing Modifier Letters"), # 02B0..02FF
+			self.getBlockByName("Combining Diacritical Marks"), # 0300..036F
+			self.getBlockByName("Greek and Coptic"), # 0370..03FF
+			self.getBlockByName("Cyrillic"), # 0400..04FF
+			self.getBlockByName("Cyrillic Supplement"), # 0500..052F
+			self.getBlockByName("Armenian"), # 0530..058F
+			self.getBlockByName("Hebrew"), # 0590..05FF
+			self.getBlockByName("Arabic"), # 0600..06FF
+			self.getBlockByName("Syriac"), # 0700..074F
+			self.getBlockByName("Arabic Supplement"), # 0750..077F
+			self.getBlockByName("Thaana"), # 0780..07BF
+			self.getBlockByName("NKo"), # 07C0..07FF
+			self.getBlockByName("Samaritan"), # 0800..083F
+			self.getBlockByName("Mandaic"), # 0840..085F
+			self.getBlockByName("<reserved-0860>..<reserved-089F>"),
+			self.getBlockByName("Arabic Extended-A"), # 08A0..08FF
+			self.getBlockByName("Devanagari"), # 0900..097F
+			self.getBlockByName("Bengali"), # 0980..09FF
+			self.getBlockByName("Gurmukhi"), # 0A00..0A7F
+			self.getBlockByName("Gujarati"), # 0A80..0AFF
+			self.getBlockByName("Oriya"), # 0B00..0B7F
+			self.getBlockByName("Tamil"), # 0B80..0BFF
+			self.getBlockByName("Telugu"), # 0C00..0C7F
+			self.getBlockByName("Kannada"), # 0C80..0CFF
+			self.getBlockByName("Malayalam"), # 0D00..0D7F
+			self.getBlockByName("Sinhala"), # 0D80..0DFF
+			self.getBlockByName("Thai"), # 0E00..0E7F
+			self.getBlockByName("Lao"), # 0E80..0EFF
+			self.getBlockByName("Tibetan"), # 0F00..0FFF
+			self.getBlockByName("Myanmar"), # 1000..109F
+			self.getBlockByName("Georgian"), # 10A0..10FF
+			self.getBlockByName("Hangul Jamo"), # 1100..11FF
+			self.getBlockByName("Ethiopic"), # 1200..137F
+			self.getBlockByName("Ethiopic Supplement"), # 1380..139F
+			self.getBlockByName("Cherokee"), # 13A0..13FF
+			self.getBlockByName("Unified Canadian Aboriginal Syllabics"), # 1400..167F
+			self.getBlockByName("Ogham"), # 1680..169F
+			self.getBlockByName("Runic"), # 16A0..16FF
+			self.getBlockByName("Tagalog"), # 1700..171F
+			self.getBlockByName("Hanunoo"), # 1720..173F
+			self.getBlockByName("Buhid"), # 1740..175F
+			self.getBlockByName("Tagbanwa"), # 1760..177F
+			self.getBlockByName("Khmer"), # 1780..17FF
+			self.getBlockByName("Mongolian"), # 1800..18AF
+			self.getBlockByName("Unified Canadian Aboriginal Syllabics Extended"), # 18B0..18FF
+			self.getBlockByName("Limbu"), # 1900..194F
+			self.getBlockByName("Tai Le"), # 1950..197F
+			self.getBlockByName("New Tai Lue"), # 1980..19DF
+			self.getBlockByName("Khmer Symbols"), # 19E0..19FF
+			self.getBlockByName("Buginese"), # 1A00..1A1F
+			self.getBlockByName("Tai Tham"), # 1A20..1AAF
+			self.getBlockByName("Combining Diacritical Marks Extended"), # 1AB0..1AFF
+			self.getBlockByName("Balinese"), # 1B00..1B7F
+			self.getBlockByName("Sundanese"), # 1B80..1BBF
+			self.getBlockByName("Batak"), # 1BC0..1BFF
+			self.getBlockByName("Lepcha"), # 1C00..1C4F
+			self.getBlockByName("Ol Chiki"), # 1C50..1C7F
+			self.getBlockByName("<reserved-1C80>..<reserved-1CBF>"),
+			self.getBlockByName("Sundanese Supplement"), # 1CC0..1CCF
+			self.getBlockByName("Vedic Extensions"), # 1CD0..1CFF
+			self.getBlockByName("Phonetic Extensions"), # 1D00..1D7F
+			self.getBlockByName("Phonetic Extensions Supplement"), # 1D80..1DBF
+			self.getBlockByName("Combining Diacritical Marks Supplement"), # 1DC0..1DFF
+			self.getBlockByName("Latin Extended Additional"), # 1E00..1EFF
+			self.getBlockByName("Greek Extended"), # 1F00..1FFF
 			self.getBlockByName("General Punctuation"), # 2000..206F
+			self.getBlockByName("Superscripts and Subscripts"), # 2070..209F
+			self.getBlockByName("Currency Symbols"), # 20A0..20CF
+			self.getBlockByName("Combining Diacritical Marks for Symbols"), # 20D0..20FF
+			self.getBlockByName("Letterlike Symbols"), # 2100..214F
+			self.getBlockByName("Number Forms"), # 2150..218F
+			self.getBlockByName("Arrows"), # 2190..21FF
+			self.getBlockByName("Mathematical Operators"), # 2200..22FF
+			self.getBlockByName("Miscellaneous Technical"), # 2300..23FF
+			self.getBlockByName("Control Pictures"), # 2400..243F
+			self.getBlockByName("Optical Character Recognition"), # 2440..245F
+			self.getBlockByName("Enclosed Alphanumerics"), # 2460..24FF
+			self.getBlockByName("Box Drawing"), # 2500..257F
+			self.getBlockByName("Block Elements"), # 2580..259F
+			self.getBlockByName("Geometric Shapes"), # 25A0..25FF
+			self.getBlockByName("Miscellaneous Symbols"), # 2600..26FF
+			self.getBlockByName("Dingbats"), # 2700..27BF
+			self.getBlockByName("Miscellaneous Mathematical Symbols-A"), # 27C0..27EF
+			self.getBlockByName("Supplemental Arrows-A"), # 27F0..27FF
+			self.getBlockByName("Braille Patterns"), # 2800..28FF
+			self.getBlockByName("Supplemental Arrows-B"), # 2900..297F
+			self.getBlockByName("Miscellaneous Mathematical Symbols-B"), # 2980..29FF
+			self.getBlockByName("Supplemental Mathematical Operators"), # 2A00..2AFF
+			self.getBlockByName("Miscellaneous Symbols and Arrows"), # 2B00..2BFF
+			self.getBlockByName("Glagolitic"), # 2C00..2C5F
+			self.getBlockByName("Latin Extended-C"), # 2C60..2C7F
+			self.getBlockByName("Coptic"), # 2C80..2CFF
+			self.getBlockByName("Georgian Supplement"), # 2D00..2D2F
+			self.getBlockByName("Tifinagh"), # 2D30..2D7F
+			self.getBlockByName("Ethiopic Extended"), # 2D80..2DDF
+			self.getBlockByName("Cyrillic Extended-A"), # 2DE0..2DFF
+			self.getBlockByName("Supplemental Punctuation"), # 2E00..2E7F
+			self.getBlockByName("CJK Radicals Supplement"), # 2E80..2EFF
+			self.getBlockByName("Kangxi Radicals"), # 2F00..2FDF
+			self.getBlockByName("<reserved-2FE0>..<reserved-2FEF>"),
+			self.getBlockByName("Ideographic Description Characters"), # 2FF0..2FFF
+			self.getBlockByName("CJK Symbols and Punctuation"), # 3000..303F
+			self.getBlockByName("Hiragana"), # 3040..309F
+			self.getBlockByName("Katakana"), # 30A0..30FF
+			self.getBlockByName("Bopomofo"), # 3100..312F
+			self.getBlockByName("Hangul Compatibility Jamo"), # 3130..318F
+			self.getBlockByName("Kanbun"), # 3190..319F
+			self.getBlockByName("Bopomofo Extended"), # 31A0..31BF
+			self.getBlockByName("CJK Strokes"), # 31C0..31EF
+			self.getBlockByName("Katakana Phonetic Extensions"), # 31F0..31FF
+			self.getBlockByName("Enclosed CJK Letters and Months"), # 3200..32FF
+			self.getBlockByName("CJK Compatibility"), # 3300..33FF
 			self.getBlockByName("CJK Unified Ideographs Extension A"), # 3400..4DBF
+			self.getBlockByName("Yijing Hexagram Symbols"), # 4DC0..4DFF
 			self.getBlockByName("CJK Unified Ideographs"), # 4E00..9FFF
+			self.getBlockByName("Yi Syllables"), # A000..A48F
+			self.getBlockByName("Yi Radicals"), # A490..A4CF
+			self.getBlockByName("Lisu"), # A4D0..A4FF
+			self.getBlockByName("Vai"), # A500..A63F
+			self.getBlockByName("Cyrillic Extended-B"), # A640..A69F
+			self.getBlockByName("Bamum"), # A6A0..A6FF
+			self.getBlockByName("Modifier Tone Letters"), # A700..A71F
+			self.getBlockByName("Latin Extended-D"), # A720..A7FF
+			self.getBlockByName("Syloti Nagri"), # A800..A82F
+			self.getBlockByName("Common Indic Number Forms"), # A830..A83F
+			self.getBlockByName("Phags-pa"), # A840..A87F
+			self.getBlockByName("Saurashtra"), # A880..A8DF
+			self.getBlockByName("Devanagari Extended"), # A8E0..A8FF
+			self.getBlockByName("Kayah Li"), # A900..A92F
+			self.getBlockByName("Rejang"), # A930..A95F
+			self.getBlockByName("Hangul Jamo Extended-A"), # A960..A97F
+			self.getBlockByName("Javanese"), # A980..A9DF
+			self.getBlockByName("Myanmar Extended-B"), # A9E0..A9FF
+			self.getBlockByName("Cham"), # AA00..AA5F
+			self.getBlockByName("Myanmar Extended-A"), # AA60..AA7F
+			self.getBlockByName("Tai Viet"), # AA80..AADF
+			self.getBlockByName("Meetei Mayek Extensions"), # AAE0..AAFF
+			self.getBlockByName("Ethiopic Extended-A"), # AB00..AB2F
+			self.getBlockByName("Latin Extended-E"), # AB30..AB6F
+			self.getBlockByName("<reserved-AB70>..<reserved-ABBF>"),
+			self.getBlockByName("Meetei Mayek"), # ABC0..ABFF
 			self.getBlockByName("Hangul Syllables"), # AC00..D7AF
+			self.getBlockByName("Hangul Jamo Extended-B"), # D7B0..D7FF
+			self.getBlockByName("High Surrogates"), # D800..DB7F
+			self.getBlockByName("High Private Use Surrogates"), # DB80..DBFF
+			self.getBlockByName("Low Surrogates"), # DC00..DFFF
+			self.getBlockByName("Private Use Area"), # E000..F8FF
+			self.getBlockByName("CJK Compatibility Ideographs"), # F900..FAFF
+			self.getBlockByName("Alphabetic Presentation Forms"), # FB00..FB4F
+			self.getBlockByName("Arabic Presentation Forms-A"), # FB50..FDFF
+			self.getBlockByName("Variation Selectors"), # FE00..FE0F
+			self.getBlockByName("Vertical Forms"), # FE10..FE1F
+			self.getBlockByName("Combining Half Marks"), # FE20..FE2F
+			self.getBlockByName("CJK Compatibility Forms"), # FE30..FE4F
+			self.getBlockByName("Small Form Variants"), # FE50..FE6F
+			self.getBlockByName("Arabic Presentation Forms-B"), # FE70..FEFF
+			self.getBlockByName("Halfwidth and Fullwidth Forms"), # FF00..FFEF
 			self.getBlockByName("Specials"), # FFF0..FFFF
+			self.getBlockByName("Linear B Syllabary"), # 10000..1007F
+			self.getBlockByName("Linear B Ideograms"), # 10080..100FF
+			self.getBlockByName("Aegean Numbers"), # 10100..1013F
+			self.getBlockByName("Ancient Greek Numbers"), # 10140..1018F
+			self.getBlockByName("Ancient Symbols"), # 10190..101CF
+			self.getBlockByName("Phaistos Disc"), # 101D0..101FF
+			self.getBlockByName("Lycian"), # 10280..1029F
+			self.getBlockByName("Carian"), # 102A0..102DF
+			self.getBlockByName("Coptic Epact Numbers"), # 102E0..102FF
+			self.getBlockByName("Old Italic"), # 10300..1032F
+			self.getBlockByName("Gothic"), # 10330..1034F
+			self.getBlockByName("Old Permic"), # 10350..1037F
+			self.getBlockByName("Ugaritic"), # 10380..1039F
+			self.getBlockByName("Old Persian"), # 103A0..103DF
+			self.getBlockByName("Deseret"), # 10400..1044F
+			self.getBlockByName("Shavian"), # 10450..1047F
+			self.getBlockByName("Osmanya"), # 10480..104AF
+			self.getBlockByName("Elbasan"), # 10500..1052F
+			self.getBlockByName("Caucasian Albanian"), # 10530..1056F
+			self.getBlockByName("Linear A"), # 10600..1077F
+			self.getBlockByName("Cypriot Syllabary"), # 10800..1083F
+			self.getBlockByName("Imperial Aramaic"), # 10840..1085F
+			self.getBlockByName("Palmyrene"), # 10860..1087F
+			self.getBlockByName("Nabataean"), # 10880..108AF
+			self.getBlockByName("Phoenician"), # 10900..1091F
+			self.getBlockByName("Lydian"), # 10920..1093F
+			self.getBlockByName("Meroitic Hieroglyphs"), # 10980..1099F
+			self.getBlockByName("Meroitic Cursive"), # 109A0..109FF
+			self.getBlockByName("Kharoshthi"), # 10A00..10A5F
+			self.getBlockByName("Old South Arabian"), # 10A60..10A7F
+			self.getBlockByName("Old North Arabian"), # 10A80..10A9F
+			self.getBlockByName("Manichaean"), # 10AC0..10AFF
+			self.getBlockByName("Avestan"), # 10B00..10B3F
+			self.getBlockByName("Inscriptional Parthian"), # 10B40..10B5F
+			self.getBlockByName("Inscriptional Pahlavi"), # 10B60..10B7F
+			self.getBlockByName("Psalter Pahlavi"), # 10B80..10BAF
+			self.getBlockByName("Old Turkic"), # 10C00..10C4F
+			self.getBlockByName("Rumi Numeral Symbols"), # 10E60..10E7F
+			self.getBlockByName("Brahmi"), # 11000..1107F
+			self.getBlockByName("Kaithi"), # 11080..110CF
+			self.getBlockByName("Sora Sompeng"), # 110D0..110FF
+			self.getBlockByName("Chakma"), # 11100..1114F
+			self.getBlockByName("Mahajani"), # 11150..1117F
+			self.getBlockByName("Sharada"), # 11180..111DF
+			self.getBlockByName("Sinhala Archaic Numbers"), # 111E0..111FF
+			self.getBlockByName("Khojki"), # 11200..1124F
+			self.getBlockByName("Khudawadi"), # 112B0..112FF
+			self.getBlockByName("Grantha"), # 11300..1137F
+			self.getBlockByName("Tirhuta"), # 11480..114DF
+			self.getBlockByName("Siddham"), # 11580..115FF
+			self.getBlockByName("Modi"), # 11600..1165F
+			self.getBlockByName("Takri"), # 11680..116CF
+			self.getBlockByName("Warang Citi"), # 118A0..118FF
+			self.getBlockByName("Pau Cin Hau"), # 11AC0..11AFF
+			self.getBlockByName("Cuneiform"), # 12000..123FF
+			self.getBlockByName("Cuneiform Numbers and Punctuation"), # 12400..1247F
+			self.getBlockByName("Egyptian Hieroglyphs"), # 13000..1342F
+			self.getBlockByName("Bamum Supplement"), # 16800..16A3F
+			self.getBlockByName("Mro"), # 16A40..16A6F
+			self.getBlockByName("Bassa Vah"), # 16AD0..16AFF
+			self.getBlockByName("Pahawh Hmong"), # 16B00..16B8F
+			self.getBlockByName("Miao"), # 16F00..16F9F
+			self.getBlockByName("Kana Supplement"), # 1B000..1B0FF
+			self.getBlockByName("Duployan"), # 1BC00..1BC9F
+			self.getBlockByName("Shorthand Format Controls"), # 1BCA0..1BCAF
+			self.getBlockByName("Byzantine Musical Symbols"), # 1D000..1D0FF
+			self.getBlockByName("Musical Symbols"), # 1D100..1D1FF
+			self.getBlockByName("Ancient Greek Musical Notation"), # 1D200..1D24F
+			self.getBlockByName("Tai Xuan Jing Symbols"), # 1D300..1D35F
+			self.getBlockByName("Counting Rod Numerals"), # 1D360..1D37F
+			self.getBlockByName("Mathematical Alphanumeric Symbols"), # 1D400..1D7FF
+			self.getBlockByName("Mende Kikakui"), # 1E800..1E8DF
+			self.getBlockByName("Arabic Mathematical Alphabetic Symbols"), # 1EE00..1EEFF
+			self.getBlockByName("Mahjong Tiles"), # 1F000..1F02F
+			self.getBlockByName("Domino Tiles"), # 1F030..1F09F
+			self.getBlockByName("Playing Cards"), # 1F0A0..1F0FF
+			self.getBlockByName("Enclosed Alphanumeric Supplement"), # 1F100..1F1FF
+			self.getBlockByName("Enclosed Ideographic Supplement"), # 1F200..1F2FF
+			self.getBlockByName("Miscellaneous Symbols and Pictographs"), # 1F300..1F5FF
+			self.getBlockByName("Emoticons"), # 1F600..1F64F
+			self.getBlockByName("Ornamental Dingbats"), # 1F650..1F67F
+			self.getBlockByName("Transport and Map Symbols"), # 1F680..1F6FF
+			self.getBlockByName("Alchemical Symbols"), # 1F700..1F77F
+			self.getBlockByName("Geometric Shapes Extended"), # 1F780..1F7FF
+			self.getBlockByName("Supplemental Arrows-C"), # 1F800..1F8FF
 			self.getBlockByName("CJK Unified Ideographs Extension B"), # 20000..2A6DF
 			self.getBlockByName("CJK Unified Ideographs Extension C"), # 2A700..2B73F
 			self.getBlockByName("CJK Unified Ideographs Extension D"), # 2B740..2B81F
+			self.getBlockByName("CJK Compatibility Ideographs Supplement"), # 2F800..2FA1F
 			self.getBlockByName("Tags"), # E0000..E007F
-			self.getBlockByName("Variation Selectors Supplement"), # E0100..E01EF
 			self.getBlockByName("<reserved-E0080>..<reserved-E00FF>"), # E0080..E00FF
+			self.getBlockByName("Variation Selectors Supplement"), # E0100..E01EF
 			self.getBlockByName("<reserved-E01F0>..<reserved-E0FFF>"), # E01F0..E0FFF
+			self.getBlockByName("Supplementary Private Use Area-A"), # F0000..FFFFF
+			self.getBlockByName("Supplementary Private Use Area-B"), # 100000..10FFFF
 		]
 		
 		for b in missing:
@@ -651,6 +886,30 @@ class Database(libs.unicode.UnicodeVisitor):
 		block_reserved2.end = 0xE0FFF
 		block_reserved2.name = "<reserved-E01F0>..<reserved-E0FFF>"
 		self.blocks.append(block_reserved2)
+
+		block_reserved3 = UnicodeBlock(self)
+		block_reserved3.start = 0x0860
+		block_reserved3.end = 0x089F
+		block_reserved3.name = "<reserved-0860>..<reserved-089F>"
+		self.blocks.append(block_reserved3)
+
+		block_reserved4 = UnicodeBlock(self)
+		block_reserved4.start = 0x1C80
+		block_reserved4.end = 0x1CBF
+		block_reserved4.name = "<reserved-1C80>..<reserved-1CBF>"
+		self.blocks.append(block_reserved4)
+
+		block_reserved5 = UnicodeBlock(self)
+		block_reserved5.start = 0x2FE0
+		block_reserved5.end = 0x2FEF
+		block_reserved5.name = "<reserved-2FE0>..<reserved-2FEF>"
+		self.blocks.append(block_reserved5)
+
+		block_reserved6 = UnicodeBlock(self)
+		block_reserved6.start = 0xAB70
+		block_reserved6.end = 0xABBF
+		block_reserved6.name = "<reserved-AB70>..<reserved-ABBF>"
+		self.blocks.append(block_reserved6)
 	
 	def resolveQuickCheck(self):
 		print('Resolving quick check entries...')
