@@ -1169,7 +1169,6 @@ class Compression:
 		self.uncompressed_size = 0
 		self.table_index = []
 		self.table_data = []
-		index = 0
 
 		for i in range(0, len(self.database.recordsOrdered), chunkSize):
 			chunk = []
@@ -1178,21 +1177,33 @@ class Compression:
 
 			# print('chunk ' + str(chunk))
 
-			offset = 0
-			if index >= chunkSize:
-				for j in range(0, len(chunk)):
-					if self.table_data[index - 1 - j] != chunk[j]:
-						break
-					offset += 1
+			ci = 0
+			ci_best = 0
+			match = 0
+			match_best = 0
 
-			self.table_data.extend(chunk[offset:])
-			self.table_index.append(index - offset)
+			for t in range(len(self.table_data)):
+				if self.table_data[t] != chunk[ci]:
+					if ci > ci_best:
+						ci_best = ci
+						match_best = t
+					match = t
+					ci = 0
+				elif ci + 1 == len(chunk):
+					ci_best = len(chunk) - 1
+					match_best = match
+					break
+				ci += 1
 
-			# print('index ' + str(index) + ' offset ' + str(offset))
+			# print('ci_best ' + str(ci_best) + ' match_best ' + str(match_best))
 
-			index += len(chunk) - offset
+			if ci_best == len(chunk) - 1:
+				self.table_index.append(match_best)
+			else:
+				self.table_index.append(len(self.table_data))
+				self.table_data.extend(chunk[ci_best:])
 
-			# print('table ' + str(table_data))
+			# print('table ' + str(self.table_data))
 
 			self.uncompressed_size += len(chunk)
 
@@ -1203,22 +1214,21 @@ class Compression:
 	def render(self, header, name):
 		print('Rendering compressed data for "' + name + '"...')
 
+		header.newLine()
 		header.writeLine("const size_t " + name + "IndexCount = " + str(len(self.table_index)) + ";")
 		header.writeLine("const size_t " + name + "Index[" + str(len(self.table_index)) + "] = {")
 		header.indent()
 
-		index_chunk_size = 16
-
 		count = 0
 		for c in self.table_index:
-			if (count % index_chunk_size) == 0:
+			if (count % self.chunk_size) == 0:
 				header.writeIndentation()
 			
 			header.write('%d,' % c)
 			
 			count += 1
 			if count != len(self.table_index):
-				if (count % index_chunk_size) == 0:
+				if (count % self.chunk_size) == 0:
 					header.newLine()
 				else:
 					header.write(' ')
@@ -1233,18 +1243,16 @@ class Compression:
 		header.writeLine("const uint8_t " + name + "Data[" + str(len(self.table_data)) + "] = {")
 		header.indent()
 
-		data_chunk_size = 16
-
 		count = 0
 		for c in self.table_data:
-			if (count % data_chunk_size) == 0:
+			if (count % self.chunk_size) == 0:
 				header.writeIndentation()
 			
 			header.write('0x%02X,' % c)
 			
 			count += 1
 			if count != len(self.table_data):
-				if (count % data_chunk_size) == 0:
+				if (count % self.chunk_size) == 0:
 					header.newLine()
 				else:
 					header.write(' ')
@@ -1302,7 +1310,6 @@ if __name__ == '__main__':
 
 	header_compress = libs.header.Header(os.path.realpath('compression.c'))
 	header_compress.generatedNotice()
-	header_compress.newLine()
 
 	compress_gc = Compression(db)
 	compress_gc.process('generalCategoryCombined', 32)
@@ -1316,22 +1323,22 @@ if __name__ == '__main__':
 
 	compress_nfc = Compression(db)
 	compress_nfc.process('quickNFC', 32)
-	compress_nfc.render(header_compress, 'NFC')
+	compress_nfc.render(header_compress, 'QuickCheckNFC')
 	header_compress.newLine()
 
 	compress_nfd = Compression(db)
 	compress_nfd.process('quickNFD', 32)
-	compress_nfd.render(header_compress, 'NFD')
+	compress_nfd.render(header_compress, 'QuickCheckNFD')
 	header_compress.newLine()
 
 	compress_nfkc = Compression(db)
 	compress_nfkc.process('quickNFKC', 32)
-	compress_nfkc.render(header_compress, 'NFKC')
+	compress_nfkc.render(header_compress, 'QuickCheckNFKC')
 	header_compress.newLine()
 
 	compress_nfkd = Compression(db)
 	compress_nfkd.process('quickNFKD', 32)
-	compress_nfkd.render(header_compress, 'NFKD')
+	compress_nfkd.render(header_compress, 'QuickCheckNFKD')
 
 	#db.executeQuery(args.query)
 	
