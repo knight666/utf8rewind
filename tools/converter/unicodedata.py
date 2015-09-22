@@ -30,9 +30,13 @@ class UnicodeMapping:
 		self.compositionPairs = dict()
 		self.compositionExcluded = False
 		self.offsetNFC = 0
+		self.quickNFC = 0
 		self.offsetNFD = 0
+		self.quickNFD = 0
 		self.offsetNFKC = 0
+		self.quickNFKC = 0
 		self.offsetNFKD = 0
+		self.quickNFKD = 0
 		self.numericType = "NumericType_None"
 		self.numericValue = 0
 		self.bidiMirrored = False
@@ -534,6 +538,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		for i in range(0, nfc_length - 1):
 			current = self.qcNFCRecords[i]
 			self.qcNFCRecords[i].end = self.qcNFCRecords[i + 1].start - 1
+
+		for n in self.qcNFCRecords:
+			for r in self.recordsOrdered[n.start:n.start + n.count]:
+				r.quickNFC = n.value
 		
 		# NFD
 		
@@ -545,6 +553,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		for i in range(0, nfd_length - 1):
 			current = self.qcNFDRecords[i]
 			self.qcNFDRecords[i].end = self.qcNFDRecords[i + 1].start - 1
+
+		for n in self.qcNFDRecords:
+			for r in self.recordsOrdered[n.start:n.start + n.count]:
+				r.quickNFD = n.value
 		
 		# NFKC
 		
@@ -556,6 +568,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		for i in range(0, nfkc_length - 1):
 			current = self.qcNFKCRecords[i]
 			self.qcNFKCRecords[i].end = self.qcNFKCRecords[i + 1].start - 1
+
+		for n in self.qcNFKCRecords:
+			for r in self.recordsOrdered[n.start:n.start + n.count]:
+				r.quickNFKC = n.value
 		
 		# NFKD
 		
@@ -567,6 +583,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		for i in range(0, nfkd_length - 1):
 			current = self.qcNFKDRecords[i]
 			self.qcNFKDRecords[i].end = self.qcNFKDRecords[i + 1].start - 1
+
+		for n in self.qcNFKDRecords:
+			for r in self.recordsOrdered[n.start:n.start + n.count]:
+				r.quickNFKD = n.value
 		
 	def resolveDecomposition(self):
 		print('Resolving decomposition...')
@@ -1142,8 +1162,8 @@ class Compression:
 		self.table_index = []
 		self.table_data = []
 
-	def process(self, chunkSize):
-		print('Compressing property with a chunk size of ' + str(chunkSize) + '...')
+	def process(self, field, chunkSize):
+		print('Compressing property "' + field + '" with a chunk size of ' + str(chunkSize) + '...')
 
 		self.chunk_size = chunkSize
 		self.uncompressed_size = 0
@@ -1154,7 +1174,7 @@ class Compression:
 		for i in range(0, len(self.database.recordsOrdered), chunkSize):
 			chunk = []
 			for r in self.database.recordsOrdered[i:i + chunkSize]:
-				chunk.append(r.generalCategoryCombined)
+				chunk.append(r.__dict__[field])
 
 			# print('chunk ' + str(chunk))
 
@@ -1178,17 +1198,13 @@ class Compression:
 
 		compressed_size = len(self.table_index) + len(self.table_data)
 		ratio = (1.0 - (compressed_size / self.uncompressed_size)) * 100.0
-		print('uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(compressed_size) + ' savings ' + ('%.2f%%' % ratio))
+		print(field + ': uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(compressed_size) + ' savings ' + ('%.2f%%' % ratio))
 
-	def render(self, filepath):
-		print('Rendering compressed data to "' + os.path.realpath(filepath) + '"...')
+	def render(self, header, name):
+		print('Rendering compressed data for "' + name + '"...')
 
-		header = libs.header.Header(filepath)
-		header.generatedNotice()
-		header.newLine()
-
-		header.writeLine("const size_t GeneralCategoryIndexCount = " + str(len(self.table_index)) + ";")
-		header.writeLine("const size_t GeneralCategoryIndex[" + str(len(self.table_index)) + "] = {")
+		header.writeLine("const size_t " + name + "IndexCount = " + str(len(self.table_index)) + ";")
+		header.writeLine("const size_t " + name + "Index[" + str(len(self.table_index)) + "] = {")
 		header.indent()
 
 		index_chunk_size = 16
@@ -1213,8 +1229,8 @@ class Compression:
 
 		header.newLine()
 
-		header.writeLine("const size_t GeneralCategoryDataCount = " + str(len(self.table_data)) + ";")
-		header.writeLine("const uint8_t GeneralCategoryData[" + str(len(self.table_data)) + "] = {")
+		header.writeLine("const size_t " + name + "DataCount = " + str(len(self.table_data)) + ";")
+		header.writeLine("const uint8_t " + name + "Data[" + str(len(self.table_data)) + "] = {")
 		header.indent()
 
 		data_chunk_size = 16
@@ -1235,7 +1251,7 @@ class Compression:
 
 		header.newLine()
 		header.outdent()
-		header.writeLine("};")
+		header.write("};")
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
@@ -1283,10 +1299,39 @@ if __name__ == '__main__':
 	
 	db = Database()
 	db.loadFromFiles(args)
-	
-	compress = Compression(db)
-	compress.process(32)
-	compress.render('compression.c')
+
+	header_compress = libs.header.Header(os.path.realpath('compression.c'))
+	header_compress.generatedNotice()
+	header_compress.newLine()
+
+	compress_gc = Compression(db)
+	compress_gc.process('generalCategoryCombined', 32)
+	compress_gc.render(header_compress, 'GeneralCategory')
+	header_compress.newLine()
+
+	compress_ccc = Compression(db)
+	compress_ccc.process('canonicalCombiningClass', 32)
+	compress_ccc.render(header_compress, 'CanonicalCombiningClass')
+	header_compress.newLine()
+
+	compress_nfc = Compression(db)
+	compress_nfc.process('quickNFC', 32)
+	compress_nfc.render(header_compress, 'NFC')
+	header_compress.newLine()
+
+	compress_nfd = Compression(db)
+	compress_nfd.process('quickNFD', 32)
+	compress_nfd.render(header_compress, 'NFD')
+	header_compress.newLine()
+
+	compress_nfkc = Compression(db)
+	compress_nfkc.process('quickNFKC', 32)
+	compress_nfkc.render(header_compress, 'NFKC')
+	header_compress.newLine()
+
+	compress_nfkd = Compression(db)
+	compress_nfkd.process('quickNFKD', 32)
+	compress_nfkd.render(header_compress, 'NFKD')
 
 	#db.executeQuery(args.query)
 	
