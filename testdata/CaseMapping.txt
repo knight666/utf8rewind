@@ -1,10 +1,10 @@
 # DO NOT MODIFY, AUTO-GENERATED
 #
 # Generated on:
-# 2014-12-29T08:01:30
+# 2015-09-22T11:28:37
 #
 # Command line:
-# D:\Projects\utf8rewind\tools\converter\unicodedata.py
+# tools\converter\unicodedata.py
 #
 # Data format:
 #

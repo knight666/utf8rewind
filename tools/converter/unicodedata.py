@@ -364,6 +364,113 @@ class QuickCheckRecord:
 		self.end = 0
 		self.value = 0
 
+class Compression:
+	def __init__(self, database):
+		self.database = database
+		self.chunk_size = 0
+		self.uncompressed_size = 0
+		self.table_index = []
+		self.table_data = []
+
+	def process(self, field, chunkSize):
+		print('Compressing property "' + field + '" with a chunk size of ' + str(chunkSize) + '...')
+
+		self.chunk_size = chunkSize
+		self.uncompressed_size = 0
+		self.table_index = []
+		self.table_data = []
+
+		for i in range(0, len(self.database.recordsOrdered), chunkSize):
+			chunk = []
+			for r in self.database.recordsOrdered[i:i + chunkSize]:
+				chunk.append(r.__dict__[field])
+
+			# print('chunk ' + str(chunk))
+
+			ci = 0
+			ci_best = 0
+			match = 0
+			match_best = 0
+
+			for t in range(len(self.table_data)):
+				if self.table_data[t] != chunk[ci]:
+					if ci > ci_best:
+						ci_best = ci
+						match_best = t
+					match = t
+					ci = 0
+				elif ci + 1 == len(chunk):
+					ci_best = len(chunk) - 1
+					match_best = match
+					break
+				ci += 1
+
+			# print('ci_best ' + str(ci_best) + ' match_best ' + str(match_best))
+
+			if ci_best == len(chunk) - 1:
+				self.table_index.append(match_best)
+			else:
+				self.table_index.append(len(self.table_data))
+				self.table_data.extend(chunk[ci_best:])
+
+			# print('table ' + str(self.table_data))
+
+			self.uncompressed_size += len(chunk)
+
+		compressed_size = len(self.table_index) + len(self.table_data)
+		ratio = (1.0 - (compressed_size / self.uncompressed_size)) * 100.0
+		print(field + ': uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(compressed_size) + ' savings ' + ('%.2f%%' % ratio))
+
+	def render(self, header, name):
+		print('Rendering compressed data for "' + name + '"...')
+
+		header.newLine()
+		header.writeLine("const size_t " + name + "IndexCount = " + str(len(self.table_index)) + ";")
+		header.writeLine("const size_t " + name + "Index[" + str(len(self.table_index)) + "] = {")
+		header.indent()
+
+		count = 0
+		for c in self.table_index:
+			if (count % self.chunk_size) == 0:
+				header.writeIndentation()
+			
+			header.write('%d,' % c)
+			
+			count += 1
+			if count != len(self.table_index):
+				if (count % self.chunk_size) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+
+		header.newLine()
+
+		header.writeLine("const size_t " + name + "DataCount = " + str(len(self.table_data)) + ";")
+		header.writeLine("const uint8_t " + name + "Data[" + str(len(self.table_data)) + "] = {")
+		header.indent()
+
+		count = 0
+		for c in self.table_data:
+			if (count % self.chunk_size) == 0:
+				header.writeIndentation()
+			
+			header.write('0x%02X,' % c)
+			
+			count += 1
+			if count != len(self.table_data):
+				if (count % self.chunk_size) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+
+		header.newLine()
+		header.outdent()
+		header.write("};")
+
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
 		self.verbose = False
@@ -849,14 +956,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.newLine()
 	
 	def writeSource(self, filepath):
-		print("Writing database to " + filepath + "...")
-		
-		command_line = sys.argv[0]
-		arguments = sys.argv[1:]
-		for a in arguments:
-			command_line += " " + a
-		
-		d = datetime.datetime.now()
+		print('Writing database to "' + os.path.realpath(filepath) + '"...')
 		
 		nfd_records = []
 		nfkd_records = []
@@ -885,32 +985,16 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# comment header
 		
-		header = libs.header.Header(filepath)
+		header = libs.header.Header(os.path.realpath(filepath))
 		
 		header.writeLine("/*")
 		header.indent()
 		header.copyrightNotice()
 		header.outdent()
 		header.writeLine("*/")
-		
 		header.newLine()
 		
-		header.writeLine("/*")
-		header.indent()
-		header.writeLine("DO NOT MODIFY, AUTO-GENERATED")
-		header.newLine()
-		header.writeLine("Generated on:")
-		header.indent()
-		header.writeLine(d.strftime("%Y-%m-%dT%H:%M:%S"))
-		header.outdent()
-		header.newLine()
-		header.writeLine("Command line:")
-		header.indent()
-		header.writeLine(command_line)
-		header.outdent()
-		header.outdent()
-		header.writeLine("*/")
-		
+		header.generatedNotice()
 		header.newLine()
 		
 		# includes
@@ -961,16 +1045,16 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.write("const size_t DecompositionDataLength = " + str(self.offset) + ";")
 	
 	def writeCaseMapping(self, filepath):
-		print("Writing case mapping to " + filepath + "...")
+		print('Writing case mapping to "' + os.path.realpath(filepath) + '"...')
 		
-		command_line = sys.argv[0]
-		arguments = sys.argv[1:]
-		for a in arguments:
+		command_line = os.path.relpath(os.path.realpath(sys.argv[0]), os.getcwd())
+
+		for a in sys.argv[1:]:
 			command_line += " " + a
 		
 		d = datetime.datetime.now()
 		
-		output = libs.header.Header(filepath)
+		output = libs.header.Header(os.path.realpath(filepath))
 		
 		# comment header
 		
@@ -1022,6 +1106,49 @@ class Database(libs.unicode.UnicodeVisitor):
 				
 				output.write("# " + r.name)
 				output.newLine()
+
+	def writeCompressed(self, filepath):
+		print('Compressing code point properties...')
+
+		compress_gc = Compression(db)
+		compress_gc.process('generalCategoryCombined', 32)
+		
+		compress_ccc = Compression(db)
+		compress_ccc.process('canonicalCombiningClass', 32)
+
+		compress_nfc = Compression(db)
+		compress_nfc.process('quickNFC', 32)
+
+		compress_nfd = Compression(db)
+		compress_nfd.process('quickNFD', 32)
+
+		compress_nfkc = Compression(db)
+		compress_nfkc.process('quickNFKC', 32)
+
+		compress_nfkd = Compression(db)
+		compress_nfkd.process('quickNFKD', 32)
+
+		print('Writing compresed data to "' + os.path.realpath(filepath) + '"...')
+
+		header = libs.header.Header(os.path.realpath(filepath))
+		header.generatedNotice()
+
+		compress_gc.render(header, 'GeneralCategory')
+		header.newLine()
+		
+		compress_ccc.render(header, 'CanonicalCombiningClass')
+		header.newLine()
+
+		compress_nfc.render(header, 'QuickCheckNFC')
+		header.newLine()
+
+		compress_nfd.render(header, 'QuickCheckNFD')
+		header.newLine()
+
+		compress_nfkc.render(header, 'QuickCheckNFKC')
+		header.newLine()
+
+		compress_nfkd.render(header, 'QuickCheckNFKD')
 
 class SpecialCasing(libs.unicode.UnicodeVisitor):
 	def __init__(self, db):
@@ -1154,113 +1281,6 @@ class Normalization(libs.unicode.UnicodeVisitor):
 		
 		return True
 
-class Compression:
-	def __init__(self, database):
-		self.database = database
-		self.chunk_size = 0
-		self.uncompressed_size = 0
-		self.table_index = []
-		self.table_data = []
-
-	def process(self, field, chunkSize):
-		print('Compressing property "' + field + '" with a chunk size of ' + str(chunkSize) + '...')
-
-		self.chunk_size = chunkSize
-		self.uncompressed_size = 0
-		self.table_index = []
-		self.table_data = []
-
-		for i in range(0, len(self.database.recordsOrdered), chunkSize):
-			chunk = []
-			for r in self.database.recordsOrdered[i:i + chunkSize]:
-				chunk.append(r.__dict__[field])
-
-			# print('chunk ' + str(chunk))
-
-			ci = 0
-			ci_best = 0
-			match = 0
-			match_best = 0
-
-			for t in range(len(self.table_data)):
-				if self.table_data[t] != chunk[ci]:
-					if ci > ci_best:
-						ci_best = ci
-						match_best = t
-					match = t
-					ci = 0
-				elif ci + 1 == len(chunk):
-					ci_best = len(chunk) - 1
-					match_best = match
-					break
-				ci += 1
-
-			# print('ci_best ' + str(ci_best) + ' match_best ' + str(match_best))
-
-			if ci_best == len(chunk) - 1:
-				self.table_index.append(match_best)
-			else:
-				self.table_index.append(len(self.table_data))
-				self.table_data.extend(chunk[ci_best:])
-
-			# print('table ' + str(self.table_data))
-
-			self.uncompressed_size += len(chunk)
-
-		compressed_size = len(self.table_index) + len(self.table_data)
-		ratio = (1.0 - (compressed_size / self.uncompressed_size)) * 100.0
-		print(field + ': uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(compressed_size) + ' savings ' + ('%.2f%%' % ratio))
-
-	def render(self, header, name):
-		print('Rendering compressed data for "' + name + '"...')
-
-		header.newLine()
-		header.writeLine("const size_t " + name + "IndexCount = " + str(len(self.table_index)) + ";")
-		header.writeLine("const size_t " + name + "Index[" + str(len(self.table_index)) + "] = {")
-		header.indent()
-
-		count = 0
-		for c in self.table_index:
-			if (count % self.chunk_size) == 0:
-				header.writeIndentation()
-			
-			header.write('%d,' % c)
-			
-			count += 1
-			if count != len(self.table_index):
-				if (count % self.chunk_size) == 0:
-					header.newLine()
-				else:
-					header.write(' ')
-
-		header.newLine()
-		header.outdent()
-		header.writeLine("};")
-
-		header.newLine()
-
-		header.writeLine("const size_t " + name + "DataCount = " + str(len(self.table_data)) + ";")
-		header.writeLine("const uint8_t " + name + "Data[" + str(len(self.table_data)) + "] = {")
-		header.indent()
-
-		count = 0
-		for c in self.table_data:
-			if (count % self.chunk_size) == 0:
-				header.writeIndentation()
-			
-			header.write('0x%02X,' % c)
-			
-			count += 1
-			if count != len(self.table_data):
-				if (count % self.chunk_size) == 0:
-					header.newLine()
-				else:
-					header.write(' ')
-
-		header.newLine()
-		header.outdent()
-		header.write("};")
-
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Converts Unicode data files.')
 	parser.add_argument(
@@ -1308,39 +1328,8 @@ if __name__ == '__main__':
 	db = Database()
 	db.loadFromFiles(args)
 
-	header_compress = libs.header.Header(os.path.realpath('compression.c'))
-	header_compress.generatedNotice()
-
-	compress_gc = Compression(db)
-	compress_gc.process('generalCategoryCombined', 32)
-	compress_gc.render(header_compress, 'GeneralCategory')
-	header_compress.newLine()
-
-	compress_ccc = Compression(db)
-	compress_ccc.process('canonicalCombiningClass', 32)
-	compress_ccc.render(header_compress, 'CanonicalCombiningClass')
-	header_compress.newLine()
-
-	compress_nfc = Compression(db)
-	compress_nfc.process('quickNFC', 32)
-	compress_nfc.render(header_compress, 'QuickCheckNFC')
-	header_compress.newLine()
-
-	compress_nfd = Compression(db)
-	compress_nfd.process('quickNFD', 32)
-	compress_nfd.render(header_compress, 'QuickCheckNFD')
-	header_compress.newLine()
-
-	compress_nfkc = Compression(db)
-	compress_nfkc.process('quickNFKC', 32)
-	compress_nfkc.render(header_compress, 'QuickCheckNFKC')
-	header_compress.newLine()
-
-	compress_nfkd = Compression(db)
-	compress_nfkd.process('quickNFKD', 32)
-	compress_nfkd.render(header_compress, 'QuickCheckNFKD')
-
-	#db.executeQuery(args.query)
+	db.executeQuery(args.query)
 	
-	#db.writeSource(script_path + '/../../source/unicodedatabase.c')
-	#db.writeCaseMapping(script_path + '/../../testdata/CaseMapping.txt')
+	db.writeSource(script_path + '/../../source/unicodedatabase.c')
+	db.writeCompressed(script_path + '/../../source/internal/compressedproperties.c')
+	db.writeCaseMapping(script_path + '/../../testdata/CaseMapping.txt')
