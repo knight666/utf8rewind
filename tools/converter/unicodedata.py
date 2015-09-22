@@ -425,7 +425,6 @@ class Compression:
 		print('Rendering compressed data for "' + name + '"...')
 
 		header.newLine()
-		header.writeLine("const size_t " + name + "IndexCount = " + str(len(self.table_index)) + ";")
 		header.writeLine("const size_t " + name + "Index[" + str(len(self.table_index)) + "] = {")
 		header.indent()
 
@@ -446,10 +445,10 @@ class Compression:
 		header.newLine()
 		header.outdent()
 		header.writeLine("};")
+		header.writeLine("const size_t* " + name + "IndexPtr = " + name + "Index;")
 
 		header.newLine()
 
-		header.writeLine("const size_t " + name + "DataCount = " + str(len(self.table_data)) + ";")
 		header.writeLine("const uint8_t " + name + "Data[" + str(len(self.table_data)) + "] = {")
 		header.indent()
 
@@ -469,7 +468,8 @@ class Compression:
 
 		header.newLine()
 		header.outdent()
-		header.write("};")
+		header.writeLine("};")
+		header.write("const uint8_t* " + name + "DataPtr = " + name + "Data;")
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
@@ -1132,6 +1132,9 @@ class Database(libs.unicode.UnicodeVisitor):
 
 		header = libs.header.Header(os.path.realpath(filepath))
 		header.generatedNotice()
+
+		header.newLine()
+		header.writeLine("#include \"compressedproperties.h\"")
 
 		compress_gc.render(header, 'GeneralCategory')
 		header.newLine()
