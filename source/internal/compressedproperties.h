@@ -35,7 +35,7 @@
 
 #include "utf8rewind.h"
 
-#define PROPERTY_BLOCK_SHIFT (4)
+#define PROPERTY_BLOCK_SHIFT (5)
 static const unicode_t PROPERTY_INDEX_MASK = (1 << PROPERTY_BLOCK_SHIFT) - 1;
 
 #define PROPERTY_GET_GC(_cp) \
