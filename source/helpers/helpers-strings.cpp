@@ -1,6 +1,7 @@
 #include "helpers-strings.hpp"
 
 extern "C" {
+	#include "../internal/compressedproperties.h"
 	#include "../internal/database.h"
 };
 
@@ -466,7 +467,7 @@ namespace helpers {
 
 	void canonicalCombiningClass(std::stringstream& target, unicode_t codepoint)
 	{
-		target << (int)database_queryproperty(codepoint, UnicodeProperty_CanonicalCombiningClass);
+		target << (int)PROPERTY_GET_CCC(codepoint);
 	}
 
 	std::string canonicalCombiningClass(unicode_t codepoint)
@@ -515,7 +516,32 @@ namespace helpers {
 
 	void quickCheck(std::stringstream& target, unicode_t codepoint, uint8_t type)
 	{
-		uint8_t qc = database_queryproperty(codepoint, type);
+		uint8_t qc;
+
+		switch (type)
+		{
+
+		case UnicodeProperty_Normalization_Compose:
+			qc = PROPERTY_GET_NFC(codepoint);
+			break;
+
+		case UnicodeProperty_Normalization_Decompose:
+			qc = PROPERTY_GET_NFD(codepoint);
+			break;
+
+		case UnicodeProperty_Normalization_Compatibility_Compose:
+			qc = PROPERTY_GET_NFKC(codepoint);
+			break;
+
+		case UnicodeProperty_Normalization_Compatibility_Decompose:
+			qc = PROPERTY_GET_NFKD(codepoint);
+			break;
+
+		default:
+			qc = QuickCheckResult_Yes;
+			break;
+
+		}
 
 		switch (qc)
 		{
