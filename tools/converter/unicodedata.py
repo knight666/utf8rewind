@@ -808,33 +808,52 @@ class Database(libs.unicode.UnicodeVisitor):
 			self.getBlockByName("Sharada"), # 11180..111DF
 			self.getBlockByName("Sinhala Archaic Numbers"), # 111E0..111FF
 			self.getBlockByName("Khojki"), # 11200..1124F
+			self.getBlockByName("<reserved-11250>..<reserved-112AF>"),
 			self.getBlockByName("Khudawadi"), # 112B0..112FF
 			self.getBlockByName("Grantha"), # 11300..1137F
+			self.getBlockByName("<reserved-11380>..<reserved-1147F>"),
 			self.getBlockByName("Tirhuta"), # 11480..114DF
+			self.getBlockByName("<reserved-114E0>..<reserved-1157F>"),
 			self.getBlockByName("Siddham"), # 11580..115FF
 			self.getBlockByName("Modi"), # 11600..1165F
+			self.getBlockByName("<reserved-11660>..<reserved-1167F>"),
 			self.getBlockByName("Takri"), # 11680..116CF
+			self.getBlockByName("<reserved-116D0>..<reserved-1189F>"),
 			self.getBlockByName("Warang Citi"), # 118A0..118FF
+			self.getBlockByName("<reserved-11900>..<reserved-11ABF>"),
 			self.getBlockByName("Pau Cin Hau"), # 11AC0..11AFF
+			self.getBlockByName("<reserved-11B00>..<reserved-11FFF>"),
 			self.getBlockByName("Cuneiform"), # 12000..123FF
 			self.getBlockByName("Cuneiform Numbers and Punctuation"), # 12400..1247F
+			self.getBlockByName("<reserved-12480>..<reserved-12FFF>"),
 			self.getBlockByName("Egyptian Hieroglyphs"), # 13000..1342F
+			self.getBlockByName("<reserved-13430>..<reserved-167FF>"),
 			self.getBlockByName("Bamum Supplement"), # 16800..16A3F
 			self.getBlockByName("Mro"), # 16A40..16A6F
+			self.getBlockByName("<reserved-16A70>..<reserved-16ACF>"),
 			self.getBlockByName("Bassa Vah"), # 16AD0..16AFF
 			self.getBlockByName("Pahawh Hmong"), # 16B00..16B8F
+			self.getBlockByName("<reserved-16B90>..<reserved-16EFF>"),
 			self.getBlockByName("Miao"), # 16F00..16F9F
+			self.getBlockByName("<reserved-16FA0>..<reserved-1AFFF>"),
 			self.getBlockByName("Kana Supplement"), # 1B000..1B0FF
+			self.getBlockByName("<reserved-1B100>..<reserved-1BBFF>"),
 			self.getBlockByName("Duployan"), # 1BC00..1BC9F
 			self.getBlockByName("Shorthand Format Controls"), # 1BCA0..1BCAF
+			self.getBlockByName("<reserved-1BCB0>..<reserved-1CFFF>"),
 			self.getBlockByName("Byzantine Musical Symbols"), # 1D000..1D0FF
 			self.getBlockByName("Musical Symbols"), # 1D100..1D1FF
 			self.getBlockByName("Ancient Greek Musical Notation"), # 1D200..1D24F
+			self.getBlockByName("<reserved-1D250>..<reserved-1D2FF>"),
 			self.getBlockByName("Tai Xuan Jing Symbols"), # 1D300..1D35F
+			self.getBlockByName("<reserved-1D380>..<reserved-1D3FF>"),
 			self.getBlockByName("Counting Rod Numerals"), # 1D360..1D37F
 			self.getBlockByName("Mathematical Alphanumeric Symbols"), # 1D400..1D7FF
+			self.getBlockByName("<reserved-1D800>..<reserved-1E7FF>"),
 			self.getBlockByName("Mende Kikakui"), # 1E800..1E8DF
+			self.getBlockByName("<reserved-1E8E0>..<reserved-1EDFF>"),
 			self.getBlockByName("Arabic Mathematical Alphabetic Symbols"), # 1EE00..1EEFF
+			self.getBlockByName("<reserved-1EF00>..<reserved-1EFFF>"),
 			self.getBlockByName("Mahjong Tiles"), # 1F000..1F02F
 			self.getBlockByName("Domino Tiles"), # 1F030..1F09F
 			self.getBlockByName("Playing Cards"), # 1F0A0..1F0FF
@@ -847,14 +866,18 @@ class Database(libs.unicode.UnicodeVisitor):
 			self.getBlockByName("Alchemical Symbols"), # 1F700..1F77F
 			self.getBlockByName("Geometric Shapes Extended"), # 1F780..1F7FF
 			self.getBlockByName("Supplemental Arrows-C"), # 1F800..1F8FF
+			self.getBlockByName("<reserved-1F900>..<reserved-1FFFF>"),
 			self.getBlockByName("CJK Unified Ideographs Extension B"), # 20000..2A6DF
+			self.getBlockByName("<reserved-2A6E0>..<reserved-2A6FF>"),
 			self.getBlockByName("CJK Unified Ideographs Extension C"), # 2A700..2B73F
 			self.getBlockByName("CJK Unified Ideographs Extension D"), # 2B740..2B81F
+			self.getBlockByName("<reserved-2B820>..<reserved-2F7FF>"),
 			self.getBlockByName("CJK Compatibility Ideographs Supplement"), # 2F800..2FA1F
+			self.getBlockByName("<reserved-2FA20>..<reserved-DFFFF>"),
 			self.getBlockByName("Tags"), # E0000..E007F
 			self.getBlockByName("<reserved-E0080>..<reserved-E00FF>"), # E0080..E00FF
 			self.getBlockByName("Variation Selectors Supplement"), # E0100..E01EF
-			self.getBlockByName("<reserved-E01F0>..<reserved-E0FFF>"), # E01F0..E0FFF
+			self.getBlockByName("<reserved-E01F0>..<reserved-EFFFF>"), # E01F0..EFFFF
 			self.getBlockByName("Supplementary Private Use Area-A"), # F0000..FFFFF
 			self.getBlockByName("Supplementary Private Use Area-B"), # 100000..10FFFF
 		]
@@ -892,8 +915,8 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		block_reserved2 = UnicodeBlock(self)
 		block_reserved2.start = 0xE01F0
-		block_reserved2.end = 0xE0FFF
-		block_reserved2.name = "<reserved-E01F0>..<reserved-E0FFF>"
+		block_reserved2.end = 0xEFFFF
+		block_reserved2.name = "<reserved-E01F0>..<reserved-EFFFF>"
 		self.blocks.append(block_reserved2)
 
 		block_reserved3 = UnicodeBlock(self)
@@ -985,6 +1008,144 @@ class Database(libs.unicode.UnicodeVisitor):
 		block_reserved17.end = 0x10FFF
 		block_reserved17.name = "<reserved-10E80>..<reserved-10FFF>"
 		self.blocks.append(block_reserved17)
+		
+		block_reserved18 = UnicodeBlock(self)
+		block_reserved18.start = 0x11250
+		block_reserved18.end = 0x112AF
+		block_reserved18.name = "<reserved-11250>..<reserved-112AF>"
+		self.blocks.append(block_reserved18)
+		
+		block_reserved19 = UnicodeBlock(self)
+		block_reserved19.start = 0x11380
+		block_reserved19.end = 0x1147F
+		block_reserved19.name = "<reserved-11380>..<reserved-1147F>"
+		self.blocks.append(block_reserved19)
+		
+		block_reserved20 = UnicodeBlock(self)
+		block_reserved20.start = 0x114E0
+		block_reserved20.end = 0x1157F
+		block_reserved20.name = "<reserved-114E0>..<reserved-1157F>"
+		self.blocks.append(block_reserved20)
+		
+		block_reserved21 = UnicodeBlock(self)
+		block_reserved21.start = 0x11660
+		block_reserved21.end = 0x1167F
+		block_reserved21.name = "<reserved-11660>..<reserved-1167F>"
+		self.blocks.append(block_reserved21)
+		
+		block_reserved22 = UnicodeBlock(self)
+		block_reserved22.start = 0x116D0
+		block_reserved22.end = 0x1189F
+		block_reserved22.name = "<reserved-116D0>..<reserved-1189F>"
+		self.blocks.append(block_reserved22)
+		
+		block_reserved23 = UnicodeBlock(self)
+		block_reserved23.start = 0x11900
+		block_reserved23.end = 0x11ABF
+		block_reserved23.name = "<reserved-11900>..<reserved-11ABF>"
+		self.blocks.append(block_reserved23)
+		
+		block_reserved24 = UnicodeBlock(self)
+		block_reserved24.start = 0x11B00
+		block_reserved24.end = 0x11FFF
+		block_reserved24.name = "<reserved-11B00>..<reserved-11FFF>"
+		self.blocks.append(block_reserved24)
+		
+		block_reserved25 = UnicodeBlock(self)
+		block_reserved25.start = 0x12480
+		block_reserved25.end = 0x12FFF
+		block_reserved25.name = "<reserved-12480>..<reserved-12FFF>"
+		self.blocks.append(block_reserved25)
+		
+		block_reserved26 = UnicodeBlock(self)
+		block_reserved26.start = 0x13430
+		block_reserved26.end = 0x167FF
+		block_reserved26.name = "<reserved-13430>..<reserved-167FF>"
+		self.blocks.append(block_reserved26)
+		
+		block_reserved27 = UnicodeBlock(self)
+		block_reserved27.start = 0x16A70
+		block_reserved27.end = 0x16ACF
+		block_reserved27.name = "<reserved-16A70>..<reserved-16ACF>"
+		self.blocks.append(block_reserved27)
+		
+		block_reserved28 = UnicodeBlock(self)
+		block_reserved28.start = 0x16B90
+		block_reserved28.end = 0x16EFF
+		block_reserved28.name = "<reserved-16B90>..<reserved-16EFF>"
+		self.blocks.append(block_reserved28)
+		
+		block_reserved29 = UnicodeBlock(self)
+		block_reserved29.start = 0x16FA0
+		block_reserved29.end = 0x1AFFF
+		block_reserved29.name = "<reserved-16FA0>..<reserved-1AFFF>"
+		self.blocks.append(block_reserved29)
+		
+		block_reserved30 = UnicodeBlock(self)
+		block_reserved30.start = 0x1B100
+		block_reserved30.end = 0x1BBFF
+		block_reserved30.name = "<reserved-1B100>..<reserved-1BBFF>"
+		self.blocks.append(block_reserved30)
+		
+		block_reserved31 = UnicodeBlock(self)
+		block_reserved31.start = 0x1BCB0
+		block_reserved31.end = 0x1CFFF
+		block_reserved31.name = "<reserved-1BCB0>..<reserved-1CFFF>"
+		self.blocks.append(block_reserved31)
+		
+		block_reserved32 = UnicodeBlock(self)
+		block_reserved32.start = 0x1D250
+		block_reserved32.end = 0x1D2FF
+		block_reserved32.name = "<reserved-1D250>..<reserved-1D2FF>"
+		self.blocks.append(block_reserved32)
+		
+		block_reserved33 = UnicodeBlock(self)
+		block_reserved33.start = 0x1D380
+		block_reserved33.end = 0x1D3FF
+		block_reserved33.name = "<reserved-1D380>..<reserved-1D3FF>"
+		self.blocks.append(block_reserved33)
+		
+		block_reserved34 = UnicodeBlock(self)
+		block_reserved34.start = 0x1E8E0
+		block_reserved34.end = 0x1EDFF
+		block_reserved34.name = "<reserved-1E8E0>..<reserved-1EDFF>"
+		self.blocks.append(block_reserved34)
+		
+		block_reserved35 = UnicodeBlock(self)
+		block_reserved35.start = 0x1F900
+		block_reserved35.end = 0x1FFFF
+		block_reserved35.name = "<reserved-1F900>..<reserved-1FFFF>"
+		self.blocks.append(block_reserved35)
+		
+		block_reserved36 = UnicodeBlock(self)
+		block_reserved36.start = 0x2A6E0
+		block_reserved36.end = 0x2A6FF
+		block_reserved36.name = "<reserved-2A6E0>..<reserved-2A6FF>"
+		self.blocks.append(block_reserved36)
+		
+		block_reserved37 = UnicodeBlock(self)
+		block_reserved37.start = 0x2B820
+		block_reserved37.end = 0x2F7FF
+		block_reserved37.name = "<reserved-2B820>..<reserved-2F7FF>"
+		self.blocks.append(block_reserved37)
+		
+		block_reserved38 = UnicodeBlock(self)
+		block_reserved38.start = 0x2FA20
+		block_reserved38.end = 0xDFFFF
+		block_reserved38.name = "<reserved-2FA20>..<reserved-DFFFF>"
+		self.blocks.append(block_reserved38)
+		
+		block_reserved39 = UnicodeBlock(self)
+		block_reserved39.start = 0x1D800
+		block_reserved39.end = 0x1E7FF
+		block_reserved39.name = "<reserved-1D800>..<reserved-1E7FF>"
+		self.blocks.append(block_reserved39)
+		
+		block_reserved40 = UnicodeBlock(self)
+		block_reserved40.start = 0x1EF00
+		block_reserved40.end = 0x1EFFF
+		block_reserved40.name = "<reserved-1EF00>..<reserved-1EFFF>"
+		self.blocks.append(block_reserved40)
 		
 	def resolveQuickCheck(self):
 		print('Resolving quick check entries...')
