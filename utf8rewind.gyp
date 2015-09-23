@@ -164,6 +164,35 @@
 			],
 		},
 		{
+			'target_name': 'performance-rewind',
+			'type': 'executable',
+			'dependencies': [
+				'dependencies.gyp:gtest',
+				'utf8rewind',
+				'helpers',
+			],
+			'sources': [
+				'source/performance/performance-base.hpp',
+				'source/performance/performance-big-casemapping.cpp',
+				'source/performance/performance-big-conversion.cpp',
+				'source/performance/performance-big-normalization.cpp',
+				'source/performance/performance-big-seeking.cpp',
+				'source/performance/performance-casemapping.cpp',
+				'source/performance/performance-conversion.cpp',
+				'source/performance/performance-greek-casemapping.cpp',
+				'source/performance/performance-greek-conversion.cpp',
+				'source/performance/performance-greek-normalization.cpp',
+				'source/performance/performance-greek-seeking.cpp',
+				'source/performance/performance-main.cpp',
+				'source/performance/performance-normalization.cpp',
+			],
+			'conditions': [
+				['OS!="win"', {
+					'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
+				}],
+			],
+		},
+		{
 			'target_name': 'documentation',
 			'type': 'none',
 			'rules': [

@@ -492,9 +492,8 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 #endif
 }
 
-const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction)
+const char* utf8seek(const char* text, size_t textSize, const char* textStart, off_t offset, int direction)
 {
-	size_t text_length;
 	const char* text_end;
 
 	if (text == 0 ||
@@ -503,8 +502,7 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 		return text;
 	}
 
-	text_length = strlen(textStart);
-	text_end = textStart + text_length;
+	text_end = textStart + textSize;
 
 	switch (direction)
 	{
@@ -517,11 +515,11 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 			}
 			else if (offset > 0)
 			{
-				return seeking_forward(text, text_end, text_length, offset);
+				return seeking_forward(text, text_end, textSize, offset);
 			}
 			else
 			{
-				return seeking_rewind(textStart, text, text_length, offset);
+				return seeking_rewind(textStart, text, textSize, offset);
 			}
 
 		} break;
@@ -533,12 +531,12 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 				return text;
 			}
 
-			return seeking_forward(textStart, text_end, text_length, offset);
+			return seeking_forward(textStart, text_end, textSize, offset);
 
 		} break;
 
 	case SEEK_END:
-		return seeking_rewind(textStart, text_end, text_length, -offset);
+		return seeking_rewind(textStart, text_end, textSize, -offset);
 
 	default:
 		return text;
