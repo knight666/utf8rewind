@@ -86,6 +86,11 @@ extern const uint8_t* QuickCheckNFKCDataPtr;
 extern const size_t* QuickCheckNFKDIndexPtr;
 extern const uint8_t* QuickCheckNFKDDataPtr;
 
+#define STATE_GET_PROPERTY(_cp) \
+	state->property_data[ \
+		state->property_index[(_cp) >> PROPERTY_BLOCK_SHIFT] + \
+		((_cp) & PROPERTY_INDEX_MASK)]
+
 /*! \endcond */
 
 #endif
