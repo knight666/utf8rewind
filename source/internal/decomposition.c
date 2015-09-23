@@ -227,7 +227,7 @@ uint8_t decompose_execute(DecomposeState* state)
 			/* Use quick check to skip stable codepoints */
 
 			unicode_t decoded_codepoint = *src_codepoint;
-			uint8_t decoded_quick_check = STATE_GET_PROPERTY(decoded_codepoint);
+			uint8_t decoded_quick_check = PROPERTY_GET(state->property_index, state->property_data, decoded_codepoint);
 			uint8_t decoded_canonical_combining_class;
 			uint8_t decoded_size;
 
@@ -253,8 +253,7 @@ uint8_t decompose_execute(DecomposeState* state)
 							break;
 						}
 
-						decoded_canonical_combining_class =
-							PROPERTY_GET_CCC(decoded_codepoint);
+						decoded_canonical_combining_class = PROPERTY_GET_CCC(decoded_codepoint);
 
 						/* Check for end of sequence */
 
@@ -292,8 +291,7 @@ uint8_t decompose_execute(DecomposeState* state)
 			}
 			else
 			{
-				decoded_canonical_combining_class =
-					PROPERTY_GET_CCC(decoded_codepoint);
+				decoded_canonical_combining_class = PROPERTY_GET_CCC(decoded_codepoint);
 
 				if (uncached)
 				{

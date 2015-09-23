@@ -217,13 +217,9 @@ uint8_t compose_execute(ComposeState* state)
 
 					/* Add composition to output */
 
-					state->output->codepoint[cursor_current] = composed;
-
-					state->output->quick_check[cursor_current] = \
-						STATE_GET_PROPERTY(composed);
-
-					state->output->canonical_combining_class[cursor_current] = \
-						PROPERTY_GET_CCC(composed);
+					state->output->codepoint[cursor_current]                  = composed;
+					state->output->quick_check[cursor_current]                = PROPERTY_GET(state->property_index, state->property_data, composed);
+					state->output->canonical_combining_class[cursor_current]  = PROPERTY_GET_CCC(composed);
 
 					/* Clear next codepoint from output */
 
