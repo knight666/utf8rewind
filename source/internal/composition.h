@@ -39,6 +39,8 @@
 typedef struct {
 	StreamState* input;
 	StreamState* output;
+	const size_t* property_index;
+	const uint8_t* property_data;
 	uint8_t property;
 } ComposeState;
 
