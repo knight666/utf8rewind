@@ -29,11 +29,6 @@
 #include "compressedproperties.h"
 #include "database.h"
 
-#define STATE_GET_PROPERTY() \
-	state->property_data[ \
-		state->property_index[composed >> PROPERTY_BLOCK_SHIFT] + \
-		(composed & PROPERTY_INDEX_MASK)];
-
 uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState* output, uint8_t compatibility)
 {
 	memset(state, 0, sizeof(ComposeState));
@@ -229,7 +224,7 @@ uint8_t compose_execute(ComposeState* state)
 					state->output->codepoint[cursor_current] = composed;
 
 					state->output->quick_check[cursor_current] = \
-						STATE_GET_PROPERTY();
+						STATE_GET_PROPERTY(composed);
 
 					state->output->canonical_combining_class[cursor_current] = \
 						PROPERTY_GET_CCC(composed);
