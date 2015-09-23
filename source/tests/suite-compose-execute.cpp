@@ -1,8 +1,9 @@
 #include "tests-base.hpp"
 
 extern "C" {
-	#include "../internal/database.h"
+	#include "../internal/compressedproperties.h"
 	#include "../internal/composition.h"
+	#include "../internal/database.h"
 }
 
 #include "../helpers/helpers-strings.hpp"
@@ -33,7 +34,8 @@ TEST(ComposeExecute, Initialize)
 	EXPECT_EQ(&output, state.output);
 	EXPECT_EQ(0, (int)state.output->current);
 	EXPECT_EQ(0, (int)state.output->filled);
-	EXPECT_EQ(UnicodeProperty_Normalization_Compose, state.property);
+	EXPECT_EQ(QuickCheckNFCIndexPtr, state.property_index);
+	EXPECT_EQ(QuickCheckNFCDataPtr, state.property_data);
 }
 
 TEST(ComposeExecute, InitializeInvalidInput)

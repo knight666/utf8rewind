@@ -26,6 +26,7 @@
 #include "streaming.h"
 
 #include "codepoint.h"
+#include "compressedproperties.h"
 #include "database.h"
 
 uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSize)
@@ -46,11 +47,13 @@ uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSiz
 	return 1;
 }
 
-uint8_t stream_read(StreamState* state, uint8_t property)
+uint8_t stream_read(StreamState* state, const size_t* propertyIndex, const uint8_t* propertyData)
 {
 	/* Ensure input is available */
 
-	if (state->src_size == 0)
+	if (state->src_size == 0 ||
+		propertyIndex == 0 ||
+		propertyData == 0)
 	{
 		return 0;
 	}
@@ -109,10 +112,18 @@ uint8_t stream_read(StreamState* state, uint8_t property)
 
 		/* Peek the next codepoint */
 
-		state->last_length = codepoint_read(state->src, state->src_size, &state->codepoint[state->filled]);
+		state->last_length = codepoint_read(
+			state->src,
+			state->src_size,
+			&state->codepoint[state->filled]);
 
-		state->quick_check[state->filled]                = (property != 0) ? database_queryproperty(state->codepoint[state->filled], property) : QuickCheckResult_Yes;
-		state->canonical_combining_class[state->filled]  = database_queryproperty(state->codepoint[state->filled], UnicodeProperty_CanonicalCombiningClass);
+		state->quick_check[state->filled] =
+			propertyData[
+				propertyIndex[state->codepoint[state->filled] >> PROPERTY_BLOCK_SHIFT] +
+				(state->codepoint[state->filled] & PROPERTY_INDEX_MASK)];
+
+		state->canonical_combining_class[state->filled] =
+			PROPERTY_GET_CCC(state->codepoint[state->filled]);
 
 		state->filled++;
 

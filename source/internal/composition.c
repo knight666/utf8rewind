@@ -52,15 +52,11 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 
 	if (compatibility == 1)
 	{
-		state->property = UnicodeProperty_Normalization_Compatibility_Compose;
-
 		state->property_index = QuickCheckNFKCIndexPtr;
 		state->property_data = QuickCheckNFKCDataPtr;
 	}
 	else
 	{
-		state->property = UnicodeProperty_Normalization_Compose;
-
 		state->property_index = QuickCheckNFCIndexPtr;
 		state->property_data = QuickCheckNFCDataPtr;
 	}
@@ -71,7 +67,7 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 uint8_t compose_readcodepoint(ComposeState* state, uint8_t index)
 {
 	if (state->input->index == state->input->current &&
-		!stream_read(state->input, state->property))
+		!stream_read(state->input, state->property_index, state->property_data))
 	{
 		/* End of data */
 

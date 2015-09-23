@@ -73,7 +73,7 @@ typedef struct {
 
 uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSize);
 
-uint8_t stream_read(StreamState* state, uint8_t property);
+uint8_t stream_read(StreamState* state, const size_t* propertyIndex, const uint8_t* propertyData);
 
 uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_t* bytesWritten);
 
