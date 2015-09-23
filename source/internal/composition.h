@@ -41,7 +41,6 @@ typedef struct {
 	StreamState* output;
 	const size_t* property_index;
 	const uint8_t* property_data;
-	uint8_t property;
 } ComposeState;
 
 uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);

@@ -141,7 +141,7 @@ uint8_t decompose_execute(DecomposeState* state)
 	/* Read next sequence from input */
 
 	if (state->input->index == state->input->current &&
-		!stream_read(state->input, state->property))
+		!stream_read(state->input, state->property_index, state->property_data))
 	{
 		/* End of data */
 
@@ -253,7 +253,7 @@ uint8_t decompose_execute(DecomposeState* state)
 							break;
 						}
 
-						decoded_canonical_combining_class = \
+						decoded_canonical_combining_class =
 							PROPERTY_GET_CCC(decoded_codepoint);
 
 						/* Check for end of sequence */
@@ -292,7 +292,7 @@ uint8_t decompose_execute(DecomposeState* state)
 			}
 			else
 			{
-				decoded_canonical_combining_class = \
+				decoded_canonical_combining_class =
 					PROPERTY_GET_CCC(decoded_codepoint);
 
 				if (uncached)
