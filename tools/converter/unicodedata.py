@@ -614,7 +614,7 @@ class Database(libs.unicode.UnicodeVisitor):
 					self.records[u.codepoint] = u
 		
 		self.recordsOrdered = sorted(self.recordsOrdered, key=lambda record: record.codepoint)
-		
+
 		print('Resolving blocks for entries...')
 		
 		block_index = 0
@@ -641,7 +641,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			self.qcNFCRecords[i].end = self.qcNFCRecords[i + 1].start - 1
 
 		for n in self.qcNFCRecords:
-			for r in self.recordsOrdered[n.start:n.start + n.count]:
+			for r in self.recordsOrdered[n.start:n.start + n.count + 1]:
 				r.quickNFC = n.value
 		
 		# NFD
@@ -656,7 +656,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			self.qcNFDRecords[i].end = self.qcNFDRecords[i + 1].start - 1
 
 		for n in self.qcNFDRecords:
-			for r in self.recordsOrdered[n.start:n.start + n.count]:
+			for r in self.recordsOrdered[n.start:n.start + n.count + 1]:
 				r.quickNFD = n.value
 		
 		# NFKC
@@ -671,7 +671,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			self.qcNFKCRecords[i].end = self.qcNFKCRecords[i + 1].start - 1
 
 		for n in self.qcNFKCRecords:
-			for r in self.recordsOrdered[n.start:n.start + n.count]:
+			for r in self.recordsOrdered[n.start:n.start + n.count + 1]:
 				r.quickNFKC = n.value
 		
 		# NFKD
@@ -686,7 +686,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			self.qcNFKDRecords[i].end = self.qcNFKDRecords[i + 1].start - 1
 
 		for n in self.qcNFKDRecords:
-			for r in self.recordsOrdered[n.start:n.start + n.count]:
+			for r in self.recordsOrdered[n.start:n.start + n.count + 1]:
 				r.quickNFKD = n.value
 		
 	def resolveDecomposition(self):

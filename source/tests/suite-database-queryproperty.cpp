@@ -8,12 +8,82 @@ extern "C" {
 
 TEST(QueryProperty, AllGeneralCategory)
 {
-	for (unicode_t i = 0; i < MAX_LEGAL_UNICODE; ++i)
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		uint8_t value1 = database_queryproperty(i, UnicodeProperty_GeneralCategory);
-		uint8_t value2 = PROPERTY_GET_GC(i);
+		uint8_t ve = database_queryproperty(i, UnicodeProperty_GeneralCategory);
+		uint8_t va = PROPERTY_GET_GC(i);
 		EXPECT_EQ(database_queryproperty(i, UnicodeProperty_GeneralCategory), PROPERTY_GET_GC(i));
-		if (value1 != value2)
+		if (ve != va)
+		{
+			int bleh = 0;
+		}
+	}
+}
+
+TEST(QueryProperty, AllCanonicalCombiningClass)
+{
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
+	{
+		uint8_t ve = database_queryproperty(i, UnicodeProperty_CanonicalCombiningClass);
+		uint8_t va = PROPERTY_GET_CCC(i);
+		EXPECT_EQ(database_queryproperty(i, UnicodeProperty_CanonicalCombiningClass), PROPERTY_GET_CCC(i));
+		if (ve != va)
+		{
+			int bleh = 0;
+		}
+	}
+}
+
+TEST(QueryProperty, AllQuickCheckNFC)
+{
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
+	{
+		uint8_t ve = database_queryproperty(i, UnicodeProperty_Normalization_Compose);
+		uint8_t va = PROPERTY_GET_NFC(i);
+		EXPECT_EQ(database_queryproperty(i, UnicodeProperty_Normalization_Compose), PROPERTY_GET_NFC(i));
+		if (ve != va)
+		{
+			int bleh = 0;
+		}
+	}
+}
+
+TEST(QueryProperty, AllQuickCheckNFD)
+{
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
+	{
+		uint8_t ve = database_queryproperty(i, UnicodeProperty_Normalization_Decompose);
+		uint8_t va = PROPERTY_GET_NFD(i);
+		EXPECT_EQ(database_queryproperty(i, UnicodeProperty_Normalization_Decompose), PROPERTY_GET_NFD(i));
+		if (ve != va)
+		{
+			int bleh = 0;
+		}
+	}
+}
+
+TEST(QueryProperty, AllQuickCheckNFKC)
+{
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
+	{
+		uint8_t ve = database_queryproperty(i, UnicodeProperty_Normalization_Compatibility_Compose);
+		uint8_t va = PROPERTY_GET_NFKC(i);
+		EXPECT_EQ(database_queryproperty(i, UnicodeProperty_Normalization_Compatibility_Compose), PROPERTY_GET_NFKC(i));
+		if (ve != va)
+		{
+			int bleh = 0;
+		}
+	}
+}
+
+TEST(QueryProperty, AllQuickCheckNFKD)
+{
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
+	{
+		uint8_t ve = database_queryproperty(i, UnicodeProperty_Normalization_Compatibility_Decompose);
+		uint8_t va = PROPERTY_GET_NFKD(i);
+		EXPECT_EQ(database_queryproperty(i, UnicodeProperty_Normalization_Compatibility_Decompose), PROPERTY_GET_NFKD(i));
+		if (ve != va)
 		{
 			int bleh = 0;
 		}
