@@ -887,7 +887,7 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 				for (i = 0; i < stream[1].current; ++i)
 				{
-					*dst_qc++ = database_queryproperty(*src_codepoint, compose_state.property);
+					*dst_qc++ = compose_state.property_data[compose_state.property_index[(*src_codepoint) >> PROPERTY_BLOCK_SHIFT] + ((*src_codepoint) & PROPERTY_INDEX_MASK)];
 					*dst_ccc++ = *src_ccc++;
 					*dst_codepoint++ = *src_codepoint++;
 				}
