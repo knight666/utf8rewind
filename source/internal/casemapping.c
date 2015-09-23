@@ -27,6 +27,7 @@
 
 #include "base.h"
 #include "codepoint.h"
+#include "compressedproperties.h"
 #include "database.h"
 
 uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property)
@@ -44,6 +45,7 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 
 size_t casemapping_execute(CaseMappingState* state)
 {
+	unicode_t decoded;
 	uint8_t decoded_size;
 	size_t written = 0;
 
@@ -56,7 +58,14 @@ size_t casemapping_execute(CaseMappingState* state)
 	{
 		/* Basic Latin does not have to be converted to UTF-32 */
 
+		decoded = (unicode_t)*state->src;
 		decoded_size = 1;
+
+		/* Store codepoint's general category */
+
+		state->last_general_category = PROPERTY_GET_GC(decoded);
+
+		/* Write decomposition */
 
 		if (state->dst != 0)
 		{
@@ -88,25 +97,10 @@ size_t casemapping_execute(CaseMappingState* state)
 			state->dst_size--;
 		}
 
-		/* Store codepoint's general category */
-
-		if ((*state->src >= 0x41 && *state->src <= 0x5A) ||
-			(*state->src >= 0x61 && *state->src <= 0x7A))
-		{
-			state->last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
-		}
-		else
-		{
-			/* Don't care about non-letter codepoints */
-
-			state->last_general_category = GeneralCategory_Other;
-		}
-
 		written++;
 	}
 	else
 	{
-		unicode_t decoded;
 		size_t resolved_size = 0;
 
 		/* Decode current codepoint */
@@ -115,7 +109,7 @@ size_t casemapping_execute(CaseMappingState* state)
 
 		/* Check if the codepoint's general category property indicates case mapping */
 
-		state->last_general_category = database_queryproperty(decoded, UnicodeProperty_GeneralCategory);
+		state->last_general_category = PROPERTY_GET_GC(decoded);
 		if ((state->last_general_category & GeneralCategory_CaseMapped) != 0)
 		{
 			/* Resolve the codepoint's decomposition */
