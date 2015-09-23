@@ -112,18 +112,9 @@ uint8_t stream_read(StreamState* state, const size_t* propertyIndex, const uint8
 
 		/* Peek the next codepoint */
 
-		state->last_length = codepoint_read(
-			state->src,
-			state->src_size,
-			&state->codepoint[state->filled]);
-
-		state->quick_check[state->filled] =
-			propertyData[
-				propertyIndex[state->codepoint[state->filled] >> PROPERTY_BLOCK_SHIFT] +
-				(state->codepoint[state->filled] & PROPERTY_INDEX_MASK)];
-
-		state->canonical_combining_class[state->filled] =
-			PROPERTY_GET_CCC(state->codepoint[state->filled]);
+		state->last_length = codepoint_read(state->src, state->src_size, &state->codepoint[state->filled]);
+		state->quick_check[state->filled] = PROPERTY_GET(propertyIndex, propertyData, state->codepoint[state->filled]);
+		state->canonical_combining_class[state->filled] = PROPERTY_GET_CCC(state->codepoint[state->filled]);
 
 		state->filled++;
 

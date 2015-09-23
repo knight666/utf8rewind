@@ -38,58 +38,46 @@
 #define PROPERTY_BLOCK_SHIFT (5)
 static const unicode_t PROPERTY_INDEX_MASK = (1 << PROPERTY_BLOCK_SHIFT) - 1;
 
-#define PROPERTY_GET_GC(_cp) \
-	GeneralCategoryDataPtr[ \
-		GeneralCategoryIndexPtr[(_cp) >> PROPERTY_BLOCK_SHIFT] + \
+#define PROPERTY_GET(_indexArray, _dataArray, _cp) \
+	(_dataArray)[ \
+		(_indexArray)[(_cp) >> PROPERTY_BLOCK_SHIFT] + \
 		((_cp) & PROPERTY_INDEX_MASK)]
+
+#define PROPERTY_GET_GC(_cp) \
+	PROPERTY_GET(GeneralCategoryIndexPtr, GeneralCategoryDataPtr, _cp)
 
 extern const size_t* GeneralCategoryIndexPtr;
 extern const uint8_t* GeneralCategoryDataPtr;
 
 #define PROPERTY_GET_CCC(_cp) \
-	CanonicalCombiningClassDataPtr[ \
-		CanonicalCombiningClassIndexPtr[(_cp) >> PROPERTY_BLOCK_SHIFT] + \
-		((_cp) & PROPERTY_INDEX_MASK)]
+	PROPERTY_GET(CanonicalCombiningClassIndexPtr, CanonicalCombiningClassDataPtr, _cp)
 
 extern const size_t* CanonicalCombiningClassIndexPtr;
 extern const uint8_t* CanonicalCombiningClassDataPtr;
 
 #define PROPERTY_GET_NFC(_cp) \
-	QuickCheckNFCDataPtr[ \
-		QuickCheckNFCIndexPtr[(_cp) >> PROPERTY_BLOCK_SHIFT] + \
-		((_cp) & PROPERTY_INDEX_MASK)]
+	PROPERTY_GET(QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr, _cp)
 
 extern const size_t* QuickCheckNFCIndexPtr;
 extern const uint8_t* QuickCheckNFCDataPtr;
 
 #define PROPERTY_GET_NFD(_cp) \
-	QuickCheckNFDDataPtr[ \
-		QuickCheckNFDIndexPtr[(_cp) >> PROPERTY_BLOCK_SHIFT] + \
-		((_cp) & PROPERTY_INDEX_MASK)]
+	PROPERTY_GET(QuickCheckNFDIndexPtr, QuickCheckNFDDataPtr, _cp)
 
 extern const size_t* QuickCheckNFDIndexPtr;
 extern const uint8_t* QuickCheckNFDDataPtr;
 
 #define PROPERTY_GET_NFKC(_cp) \
-	QuickCheckNFKCDataPtr[ \
-		QuickCheckNFKCIndexPtr[(_cp) >> PROPERTY_BLOCK_SHIFT] + \
-		((_cp) & PROPERTY_INDEX_MASK)]
+	PROPERTY_GET(QuickCheckNFKCIndexPtr, QuickCheckNFKCDataPtr, _cp)
 
 extern const size_t* QuickCheckNFKCIndexPtr;
 extern const uint8_t* QuickCheckNFKCDataPtr;
 
 #define PROPERTY_GET_NFKD(_cp) \
-	QuickCheckNFKDDataPtr[ \
-		QuickCheckNFKDIndexPtr[(_cp) >> PROPERTY_BLOCK_SHIFT] + \
-		((_cp) & PROPERTY_INDEX_MASK)]
+	PROPERTY_GET(QuickCheckNFKDIndexPtr, QuickCheckNFKDDataPtr, _cp)
 
 extern const size_t* QuickCheckNFKDIndexPtr;
 extern const uint8_t* QuickCheckNFKDDataPtr;
-
-#define STATE_GET_PROPERTY(_cp) \
-	state->property_data[ \
-		state->property_index[(_cp) >> PROPERTY_BLOCK_SHIFT] + \
-		((_cp) & PROPERTY_INDEX_MASK)]
 
 /*! \endcond */
 
