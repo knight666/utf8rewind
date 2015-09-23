@@ -29,7 +29,6 @@
 #include "internal/casemapping.h"
 #include "internal/codepoint.h"
 #include "internal/composition.h"
-#include "internal/compressedproperties.h"
 #include "internal/decomposition.h"
 #include "internal/database.h"
 #include "internal/seeking.h"

@@ -26,7 +26,6 @@
 #include "streaming.h"
 
 #include "codepoint.h"
-#include "compressedproperties.h"
 #include "database.h"
 
 uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSize)

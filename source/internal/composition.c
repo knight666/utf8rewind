@@ -26,7 +26,6 @@
 #include "composition.h"
 
 #include "codepoint.h"
-#include "compressedproperties.h"
 #include "database.h"
 
 uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState* output, uint8_t compatibility)

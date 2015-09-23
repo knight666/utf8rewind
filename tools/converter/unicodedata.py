@@ -950,6 +950,26 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.newLine()
 	
 	def writeSource(self, filepath):
+		print('Compressing code point properties...')
+
+		compress_gc = Compression(db)
+		compress_gc.process('generalCategoryCombined', 32)
+		
+		compress_ccc = Compression(db)
+		compress_ccc.process('canonicalCombiningClass', 32)
+
+		compress_nfc = Compression(db)
+		compress_nfc.process('quickNFC', 32)
+
+		compress_nfd = Compression(db)
+		compress_nfd.process('quickNFD', 32)
+
+		compress_nfkc = Compression(db)
+		compress_nfkc.process('quickNFKC', 32)
+
+		compress_nfkd = Compression(db)
+		compress_nfkd.process('quickNFKD', 32)
+		
 		print('Writing database to "' + os.path.realpath(filepath) + '"...')
 		
 		nfd_records = []
@@ -994,17 +1014,27 @@ class Database(libs.unicode.UnicodeVisitor):
 		# includes
 		
 		header.writeLine("#include \"unicodedatabase.h\"")
-		
 		header.newLine()
 		
 		# quick check records
+
+		compress_gc.render(header, 'GeneralCategory')
+		header.newLine()
 		
-		self.writeQuickCheck(header, self.qcGeneralCategory, "GeneralCategory")
-		self.writeQuickCheck(header, self.qcCanonicalCombiningClass, "CanonicalCombiningClass")
-		self.writeQuickCheck(header, self.qcNFCRecords, "NFC")
-		self.writeQuickCheck(header, self.qcNFDRecords, "NFD")
-		self.writeQuickCheck(header, self.qcNFKCRecords, "NFKC")
-		self.writeQuickCheck(header, self.qcNFKDRecords, "NFKD")
+		compress_ccc.render(header, 'CanonicalCombiningClass')
+		header.newLine()
+
+		compress_nfc.render(header, 'QuickCheckNFC')
+		header.newLine()
+
+		compress_nfd.render(header, 'QuickCheckNFD')
+		header.newLine()
+
+		compress_nfkc.render(header, 'QuickCheckNFKC')
+		header.newLine()
+
+		compress_nfkd.render(header, 'QuickCheckNFKD')
+		header.newLine()
 		
 		# decomposition records
 		
@@ -1100,52 +1130,6 @@ class Database(libs.unicode.UnicodeVisitor):
 				
 				output.write("# " + r.name)
 				output.newLine()
-
-	def writeCompressed(self, filepath):
-		print('Compressing code point properties...')
-
-		compress_gc = Compression(db)
-		compress_gc.process('generalCategoryCombined', 32)
-		
-		compress_ccc = Compression(db)
-		compress_ccc.process('canonicalCombiningClass', 32)
-
-		compress_nfc = Compression(db)
-		compress_nfc.process('quickNFC', 32)
-
-		compress_nfd = Compression(db)
-		compress_nfd.process('quickNFD', 32)
-
-		compress_nfkc = Compression(db)
-		compress_nfkc.process('quickNFKC', 32)
-
-		compress_nfkd = Compression(db)
-		compress_nfkd.process('quickNFKD', 32)
-
-		print('Writing compresed data to "' + os.path.realpath(filepath) + '"...')
-
-		header = libs.header.Header(os.path.realpath(filepath))
-		header.generatedNotice()
-
-		header.newLine()
-		header.writeLine("#include \"compressedproperties.h\"")
-
-		compress_gc.render(header, 'GeneralCategory')
-		header.newLine()
-		
-		compress_ccc.render(header, 'CanonicalCombiningClass')
-		header.newLine()
-
-		compress_nfc.render(header, 'QuickCheckNFC')
-		header.newLine()
-
-		compress_nfd.render(header, 'QuickCheckNFD')
-		header.newLine()
-
-		compress_nfkc.render(header, 'QuickCheckNFKC')
-		header.newLine()
-
-		compress_nfkd.render(header, 'QuickCheckNFKD')
 
 class SpecialCasing(libs.unicode.UnicodeVisitor):
 	def __init__(self, db):
@@ -1328,5 +1312,4 @@ if __name__ == '__main__':
 	db.executeQuery(args.query)
 	
 	db.writeSource(script_path + '/../../source/unicodedatabase.c')
-	db.writeCompressed(script_path + '/../../source/internal/compressedproperties.c')
 	db.writeCaseMapping(script_path + '/../../testdata/CaseMapping.txt')
