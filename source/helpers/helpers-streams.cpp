@@ -1,5 +1,9 @@
 #include "helpers-streams.hpp"
 
+extern "C" {
+	#include "../internal/compressedproperties.h"
+};
+
 #include "helpers-strings.hpp"
 
 namespace helpers {
@@ -15,7 +19,7 @@ namespace helpers {
 		{
 			stream.codepoint[stream.current] = *it;
 			stream.quick_check[stream.current] = QuickCheckResult_Yes;
-			stream.canonical_combining_class[stream.current] = database_queryproperty(*it, UnicodeProperty_CanonicalCombiningClass);
+			stream.canonical_combining_class[stream.current] = PROPERTY_GET_CCC(*it);
 			stream.current++;
 		}
 

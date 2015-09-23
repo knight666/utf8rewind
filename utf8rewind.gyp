@@ -102,7 +102,6 @@
 				'source/tests/suite-compose-execute.cpp',
 				'source/tests/suite-database-querycomposition.cpp',
 				'source/tests/suite-database-querydecomposition.cpp',
-				'source/tests/suite-database-queryproperty.cpp',
 				'source/tests/suite-decompose-execute.cpp',
 				'source/tests/suite-stream-read.cpp',
 				'source/tests/suite-stream-reorder.cpp',
