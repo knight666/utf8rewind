@@ -179,12 +179,14 @@
 				'source/performance/performance-big-seeking.cpp',
 				'source/performance/performance-casemapping.cpp',
 				'source/performance/performance-conversion.cpp',
+				'source/performance/performance-database.cpp',
 				'source/performance/performance-greek-casemapping.cpp',
 				'source/performance/performance-greek-conversion.cpp',
 				'source/performance/performance-greek-normalization.cpp',
 				'source/performance/performance-greek-seeking.cpp',
 				'source/performance/performance-main.cpp',
 				'source/performance/performance-normalization.cpp',
+				'source/performance/performance-properties.cpp',
 			],
 			'conditions': [
 				['OS!="win"', {
