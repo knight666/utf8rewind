@@ -26,7 +26,13 @@
 #include "composition.h"
 
 #include "codepoint.h"
+#include "compressedproperties.h"
 #include "database.h"
+
+#define STATE_GET_PROPERTY() \
+	state->property_data[ \
+		state->property_index[composed >> PROPERTY_BLOCK_SHIFT] + \
+		(composed & PROPERTY_INDEX_MASK)];
 
 uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState* output, uint8_t compatibility)
 {
@@ -49,9 +55,20 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 
 	/* Set up codepoint quickcheck property */
 
-	state->property = (compatibility == 1)
-		? UnicodeProperty_Normalization_Compatibility_Compose
-		: UnicodeProperty_Normalization_Compose;
+	if (compatibility == 1)
+	{
+		state->property = UnicodeProperty_Normalization_Compatibility_Compose;
+
+		state->property_index = QuickCheckNFKCIndexPtr;
+		state->property_data = QuickCheckNFKCDataPtr;
+	}
+	else
+	{
+		state->property = UnicodeProperty_Normalization_Compose;
+
+		state->property_index = QuickCheckNFCIndexPtr;
+		state->property_data = QuickCheckNFCDataPtr;
+	}
 
 	return 1;
 }
@@ -209,9 +226,13 @@ uint8_t compose_execute(ComposeState* state)
 
 					/* Add composition to output */
 
-					state->output->codepoint[cursor_current]                  = composed;
-					state->output->quick_check[cursor_current]                = database_queryproperty(composed, state->property);
-					state->output->canonical_combining_class[cursor_current]  = database_queryproperty(composed, UnicodeProperty_CanonicalCombiningClass);
+					state->output->codepoint[cursor_current] = composed;
+
+					state->output->quick_check[cursor_current] = \
+						STATE_GET_PROPERTY();
+
+					state->output->canonical_combining_class[cursor_current] = \
+						PROPERTY_GET_CCC(composed);
 
 					/* Clear next codepoint from output */
 
