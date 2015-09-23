@@ -27,7 +27,6 @@
 
 #include "base.h"
 #include "codepoint.h"
-#include "compressedproperties.h"
 #include "database.h"
 
 uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property)

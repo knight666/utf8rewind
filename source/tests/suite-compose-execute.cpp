@@ -1,7 +1,6 @@
 #include "tests-base.hpp"
 
 extern "C" {
-	#include "../internal/compressedproperties.h"
 	#include "../internal/composition.h"
 	#include "../internal/database.h"
 }

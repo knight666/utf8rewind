@@ -1,7 +1,6 @@
 #include "helpers-strings.hpp"
 
 extern "C" {
-	#include "../internal/compressedproperties.h"
 	#include "../internal/database.h"
 };
 

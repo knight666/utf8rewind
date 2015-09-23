@@ -1,9 +1,5 @@
 #include "helpers-streams.hpp"
 
-extern "C" {
-	#include "../internal/compressedproperties.h"
-};
-
 #include "helpers-strings.hpp"
 
 namespace helpers {

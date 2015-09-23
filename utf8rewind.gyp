@@ -18,8 +18,6 @@
 				'source/internal/codepoint.h',
 				'source/internal/composition.c',
 				'source/internal/composition.h',
-				'source/internal/compressedproperties.c',
-				'source/internal/compressedproperties.h',
 				'source/internal/database.c',
 				'source/internal/database.h',
 				'source/internal/decomposition.c',

@@ -26,7 +26,6 @@
 #include "decomposition.h"
 
 #include "codepoint.h"
-#include "compressedproperties.h"
 #include "database.h"
 
 uint8_t decompose_initialize(
