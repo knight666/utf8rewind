@@ -497,8 +497,8 @@ class CompressionString:
 		self.table_index2 = []
 		self.table_index1 = []
 		self.table_index1_data = []
-		self.table_data = ""
-		self.table_data_length = 0
+		self.database.compressed = ""
+		self.database.compressed_length = 0
 		
 		for r in self.database.recordsOrdered:
 			chunk = r.__dict__[field]
@@ -509,8 +509,8 @@ class CompressionString:
 				index = 0
 				overlapping = False
 				
-				for t in range(len(self.table_data)):
-					if self.table_data[t] == converted[offset]:
+				for t in range(len(self.database.compressed)):
+					if self.database.compressed[t] == converted[offset]:
 						offset += 1
 						if offset == len(converted):
 							overlapping = True
@@ -523,27 +523,27 @@ class CompressionString:
 					offset = 0
 					index = 0
 				
-					if len(self.table_data) > 0:
-						for t in range(len(self.table_data) - 1, 0):
-							if self.table_data1[t] != converted[offset] or offset + 1 == len(converted):
+					if len(self.database.compressed) > 0:
+						for t in range(len(self.database.compressed) - 1, 0):
+							if self.database.compressed1[t] != converted[offset] or offset + 1 == len(converted):
 								break
 							offset += 1
-						index = len(self.table_data) - offset
+						index = len(self.database.compressed) - offset
 				
 				"""if overlapping:
 					print('codepoint ' + 'U+%X' % (r.codepoint))
 					print('converted ' + str(converted))
-					print('data_size ' + str(len(self.table_data)) + ' index_size ' + str(len(self.table_index)) + ' offset ' + str(offset) + ' index ' + str(index))
+					print('data_size ' + str(len(self.database.compressed)) + ' index_size ' + str(len(self.table_index)) + ' offset ' + str(offset) + ' index ' + str(index))
 					print('uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(self.compressed_size))
 					print('chunk_after ' + str(converted[offset:]))
-					print('table_data ' + str(self.table_data))"""
+					print('table_data ' + str(self.database.compressed))"""
 
 				chunk_length = len(re.findall('\\\\x?[^\\\\]+', converted))
 
 				self.table_index1.append((chunk_length << 24) + (index + 1))
 
-				self.table_data += converted[offset:]
-				self.table_data_length += len(re.findall('\\\\x?[^\\\\]+', converted[offset:]))
+				self.database.compressed += converted[offset:]
+				self.database.compressed_length += len(re.findall('\\\\x?[^\\\\]+', converted[offset:]))
 			else:
 				self.table_index1.append(0)
 
@@ -580,15 +580,12 @@ class CompressionString:
 			self.table_index2.append(index)
 			self.table_index1_data.extend(chunk[offset:])
 
-		self.compressed_size = len(self.table_index1) + len(self.table_index2) + len(self.table_data)
+		self.compressed_size = len(self.table_index1) + len(self.table_index2) + len(self.database.compressed)
 		self.compression_ratio = (1.0 - (self.compressed_size / self.uncompressed_size)) * 100.0
 		print(field + ': uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(self.compressed_size) + ' savings ' + ('%.2f%%' % self.compression_ratio))
 
 	def render(self, header, name):
 		print('Rendering compressed data for "' + name + '"...')
-		
-		sliced = libs.blobsplitter.BlobSplitter()
-		sliced.split(self.table_data, self.table_data_length)
 		
 		header.newLine()
 		header.writeLine("const size_t " + name + "Index2[" + str(len(self.table_index2)) + "] = {")
@@ -637,28 +634,12 @@ class CompressionString:
 		header.writeLine("};")
 		header.writeLine("const size_t* " + name + "Index1Ptr = " + name + "Index1;")
 
-		header.newLine()
-
-		header.writeLine("const char* " + name + "Data =")
-		header.indent()
-		
-		for p in sliced.pages:
-			p.start()
-			while not p.atEnd:
-				p.nextLine()
-				header.writeIndentation()
-				header.write(p.line)
-				header.newLine()
-		
-		header.outdent()
-		header.writeLine(";")
-
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
 		self.verbose = False
 		self.blob = ""
 		self.compressed = ""
-		self.compressed_size = 0
+		self.compressed_length = 0
 		self.pageSize = 32767
 		self.total = 0
 		self.offset = 1
@@ -1201,10 +1182,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# quick check records
 
-		compress_nfd.render(header, 'NFD')
-		header.newLine()
-		
-		"""compress_gc.render(header, 'GeneralCategory')
+		compress_gc.render(header, 'GeneralCategory')
 		header.newLine()
 		
 		compress_ccc.render(header, 'CanonicalCombiningClass')
@@ -1226,7 +1204,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.newLine()
 		
 		compress_nfkd.render(header, 'NFKD')
-		header.newLine()"""
+		header.newLine()
 		
 		# decomposition records
 		
@@ -1244,7 +1222,26 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.writeDecompositionRecords(header, titlecase_records, "Titlecase", "offsetTitlecase")
 		
 		# decomposition data
+
+		sliced_compressed = libs.blobsplitter.BlobSplitter()
+		sliced_compressed.split(self.compressed, self.compressed_length)
 		
+		header.writeLine("const char* CompressedStringData = ")
+		header.indent()
+		
+		for p in sliced_compressed.pages:
+			p.start()
+			while not p.atEnd:
+				p.nextLine()
+				header.writeIndentation()
+				header.write(p.line)
+				header.newLine()
+
+		header.outdent()
+		header.writeLine(";")
+		header.writeLine("const size_t CompressedStringDataLength = " + str(self.compressed_length) + ";")
+		header.newLine()
+
 		header.writeLine("const char* DecompositionData = ")
 		header.indent()
 		
