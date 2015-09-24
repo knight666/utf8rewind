@@ -28,7 +28,10 @@
 #include "codepoint.h"
 #include "database.h"
 
-uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamState* output, uint8_t compatibility)
+uint8_t decompose_initialize(
+	DecomposeState* state,
+	StreamState* input, StreamState* output,
+	uint8_t compatibility)
 {
 	memset(state, 0, sizeof(DecomposeState));
 
@@ -49,9 +52,20 @@ uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamSt
 
 	/* Set up codepoint quickcheck property */
 
-	state->property = (compatibility == 1)
-		? UnicodeProperty_Normalization_Compatibility_Decompose
-		: UnicodeProperty_Normalization_Decompose;
+	if (compatibility == 1)
+	{
+		state->property = UnicodeProperty_Normalization_Compatibility_Decompose;
+
+		state->property_index = QuickCheckNFKDIndexPtr;
+		state->property_data = QuickCheckNFKDDataPtr;
+	}
+	else
+	{
+		state->property = UnicodeProperty_Normalization_Decompose;
+
+		state->property_index = QuickCheckNFDIndexPtr;
+		state->property_data = QuickCheckNFDDataPtr;
+	}
 
 	return 1;
 }
@@ -126,7 +140,7 @@ uint8_t decompose_execute(DecomposeState* state)
 	/* Read next sequence from input */
 
 	if (state->input->index == state->input->current &&
-		!stream_read(state->input, state->property))
+		!stream_read(state->input, state->property_index, state->property_data))
 	{
 		/* End of data */
 
@@ -212,7 +226,7 @@ uint8_t decompose_execute(DecomposeState* state)
 			/* Use quick check to skip stable codepoints */
 
 			unicode_t decoded_codepoint = *src_codepoint;
-			uint8_t decoded_quick_check = database_queryproperty(decoded_codepoint, state->property);
+			uint8_t decoded_quick_check = PROPERTY_GET(state->property_index, state->property_data, decoded_codepoint);
 			uint8_t decoded_canonical_combining_class;
 			uint8_t decoded_size;
 
@@ -230,8 +244,6 @@ uint8_t decompose_execute(DecomposeState* state)
 
 					while (src_size > 0)
 					{
-						decoded_canonical_combining_class = database_queryproperty(decoded_codepoint, state->property);
-
 						/* Decode current codepoint */
 
 						decoded_size = codepoint_read(src, src_size, &decoded_codepoint);
@@ -240,7 +252,7 @@ uint8_t decompose_execute(DecomposeState* state)
 							break;
 						}
 
-						decoded_canonical_combining_class = database_queryproperty(decoded_codepoint, UnicodeProperty_CanonicalCombiningClass);
+						decoded_canonical_combining_class = PROPERTY_GET_CCC(decoded_codepoint);
 
 						/* Check for end of sequence */
 
@@ -278,7 +290,7 @@ uint8_t decompose_execute(DecomposeState* state)
 			}
 			else
 			{
-				decoded_canonical_combining_class = database_queryproperty(decoded_codepoint, UnicodeProperty_CanonicalCombiningClass);
+				decoded_canonical_combining_class = PROPERTY_GET_CCC(decoded_codepoint);
 
 				if (uncached)
 				{

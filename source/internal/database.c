@@ -26,124 +26,13 @@
 #include "database.h"
 
 #include "../unicodedatabase.h"
+#include "codepoint.h"
 
-uint8_t database_queryproperty(unicode_t codepoint, uint8_t checkType)
-{
-	const QuickCheckRecord* record;
-	size_t record_count;
-	const QuickCheckRecord* record_found = 0;
-	size_t offset_start;
-	size_t offset_end;
-	size_t offset_pivot;
-	size_t i;
+#define DECOMPOSE_INDEX1_SHIFT (12)
+#define DECOMPOSE_INDEX2_SHIFT (5)
 
-	switch (checkType)
-	{
-
-	case UnicodeProperty_GeneralCategory:
-		record = UnicodeQuickCheckGeneralCategoryRecordPtr;
-		record_count = UnicodeQuickCheckGeneralCategoryRecordCount;
-		break;
-
-	case UnicodeProperty_CanonicalCombiningClass:
-		record = UnicodeQuickCheckCanonicalCombiningClassRecordPtr;
-		record_count = UnicodeQuickCheckCanonicalCombiningClassRecordCount;
-		break;
-
-	case UnicodeProperty_Normalization_Compose:
-		record = UnicodeQuickCheckNFCRecordPtr;
-		record_count = UnicodeQuickCheckNFCRecordCount;
-		break;
-
-	case UnicodeProperty_Normalization_Decompose:
-		record = UnicodeQuickCheckNFDRecordPtr;
-		record_count = UnicodeQuickCheckNFDRecordCount;
-		break;
-
-	case UnicodeProperty_Normalization_Compatibility_Compose:
-		record = UnicodeQuickCheckNFKCRecordPtr;
-		record_count = UnicodeQuickCheckNFKCRecordCount;
-		break;
-
-	case UnicodeProperty_Normalization_Compatibility_Decompose:
-		record = UnicodeQuickCheckNFKDRecordPtr;
-		record_count = UnicodeQuickCheckNFKDRecordCount;
-		break;
-
-	default:
-		return UTF8_INVALID_PROPERTY;
-
-	}
-
-	offset_start = 0;
-	offset_end = record_count - 1;
-
-	if (codepoint < record[offset_start].start ||
-		codepoint > record[offset_end].end)
-	{
-		return 0;
-	}
-
-	do
-	{
-		offset_pivot = offset_start + ((offset_end - offset_start) / 2);
-
-		if (codepoint >= record[offset_start].start &&
-			codepoint <= record[offset_start].end)
-		{
-			record_found = &record[offset_start]; 
-			goto found;
-		}
-		else if (
-			codepoint >= record[offset_end].start &&
-			codepoint <= record[offset_end].end)
-		{
-			record_found = &record[offset_end]; 
-			goto found;
-		}
-		else if (
-			codepoint >= record[offset_pivot].start &&
-			codepoint <= record[offset_pivot].end)
-		{
-			record_found = &record[offset_pivot]; 
-			goto found;
-		}
-		else
-		{
-			if (codepoint > record[offset_pivot].end)
-			{
-				offset_start = offset_pivot;
-			}
-			else
-			{
-				offset_end = offset_pivot;
-			}
-		}
-	}
-	while (offset_end - offset_start > 8);
-
-	for (i = offset_start; i <= offset_end; ++i)
-	{
-		if (codepoint >= record[i].start &&
-			codepoint <= record[i].end)
-		{
-			record_found = &record[i];
-			goto found;
-		}
-	}
-
-	return 0;
-
-found:
-	if (codepoint <= (record_found->start + (record_found->count_and_value & 0x00FFFFFF)))
-	{
-		return ((record_found->count_and_value & 0xFF000000) >> 24);
-	}
-	else
-	{
-		return 0;
-	}
-}
+static const unicode_t DECOMPOSE_INDEX2_MASK = (1 << DECOMPOSE_INDEX1_SHIFT) - 1;
+static const unicode_t DECOMPOSE_DATA_MASK = (1 << DECOMPOSE_INDEX2_SHIFT) - 1;
 
 const char* database_querydecomposition(unicode_t codepoint, uint8_t property)
 {
@@ -249,6 +138,41 @@ found:
 	}
 
 	return DecompositionData + record_found->offset;
+}
+
+uint8_t database_querydecomposition2(
+	char** target, size_t* targetSize,
+	unicode_t codepoint,
+	const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray)
+{
+	size_t length;
+	size_t index = index2Array[
+		index1Array[codepoint >> DECOMPOSE_INDEX1_SHIFT] +
+		((codepoint & DECOMPOSE_INDEX2_MASK) >> DECOMPOSE_INDEX2_SHIFT)] +
+			(codepoint & DECOMPOSE_DATA_MASK);
+
+	if (index == 0 ||
+		dataArray[index] == 0)
+	{
+		return codepoint_write(codepoint, target, targetSize);
+	}
+
+	length = (dataArray[index] & 0xFF000000) >> 24;
+
+	if (*target != 0)
+	{
+		if (length > *targetSize)
+		{
+			return 0;
+		}
+
+		memcpy(*target, CompressedStringData + (dataArray[index] & 0x00FFFFFF), length);
+
+		*target += length;
+		*targetSize -= length;
+	}
+
+	return (uint8_t)length;
 }
 
 unicode_t database_querycomposition(unicode_t left, unicode_t right)

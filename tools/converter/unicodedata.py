@@ -363,12 +363,16 @@ class QuickCheckRecord:
 		self.count = 0
 		self.end = 0
 		self.value = 0
+		self.compressed_size = 0
+		self.uncompressed_size = 0
 
 class Compression:
 	def __init__(self, database):
 		self.database = database
 		self.chunk_size = 0
+		self.compressed_size = 0
 		self.uncompressed_size = 0
+		self.compression_ratio = 0.0
 		self.table_index = []
 		self.table_data = []
 
@@ -376,6 +380,7 @@ class Compression:
 		print('Compressing property "' + field + '" with a chunk size of ' + str(chunkSize) + '...')
 
 		self.chunk_size = chunkSize
+		self.compressed_size = 0
 		self.uncompressed_size = 0
 		self.table_index = []
 		self.table_data = []
@@ -424,9 +429,9 @@ class Compression:
 
 			self.uncompressed_size += len(chunk)
 
-		compressed_size = len(self.table_index) + len(self.table_data)
-		ratio = (1.0 - (compressed_size / self.uncompressed_size)) * 100.0
-		print(field + ': uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(compressed_size) + ' savings ' + ('%.2f%%' % ratio))
+		self.compressed_size = len(self.table_index) + len(self.table_data)
+		self.compression_ratio = (1.0 - (self.compressed_size / self.uncompressed_size)) * 100.0
+		print(field + ': uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(self.compressed_size) + ' savings ' + ('%.2f%%' % self.compression_ratio))
 
 	def render(self, header, name):
 		print('Rendering compressed data for "' + name + '"...')
@@ -478,10 +483,208 @@ class Compression:
 		header.writeLine("};")
 		header.write("const uint8_t* " + name + "DataPtr = " + name + "Data;")
 
+class CompressionString:
+	def __init__(self, database):
+		self.database = database
+
+	def process(self, field, chunk1Size, chunk2Size):
+		print('Compressing property "' + field + '" with chunk sizes of ' + str(chunk1Size) + ' and ' + str(chunk2Size) + '...')
+
+		self.compressed_size = 0
+		self.uncompressed_size = 0
+		self.compression_ratio = 0.0
+		self.table_index2 = []
+		self.table_index1 = []
+		self.table_index1_compressed = []
+		self.table_data = []
+		self.table_data_compressed = []
+		
+		for r in self.database.recordsOrdered:
+			chunk = r.__dict__[field]
+			converted = libs.utf8.unicodeToUtf8Hex(chunk)
+			
+			if len(chunk) > 1 or (len(chunk) == 1 and chunk[0] != r.codepoint):
+				offset = 0
+				index = 0
+				overlapping = False
+				
+				for t in range(len(self.database.compressed)):
+					if self.database.compressed[t] == converted[offset]:
+						offset += 1
+						if offset == len(converted):
+							overlapping = True
+							break
+					else:
+						index = t + 1
+						offset = 0
+				
+				if not overlapping:
+					offset = 0
+					index = 0
+				
+					if len(self.database.compressed) > 0:
+						for t in range(len(self.database.compressed) - 1, 0):
+							if self.database.compressed1[t] != converted[offset] or offset + 1 == len(converted):
+								break
+							offset += 1
+						index = len(self.database.compressed) - offset
+				
+				chunk_length = len(re.findall('\\\\x?[^\\\\]+', converted))
+
+				self.table_data.append((chunk_length << 24) + (index / 4))
+
+				self.database.compressed += converted[offset:]
+				self.database.compressed_length += len(re.findall('\\\\x?[^\\\\]+', converted[offset:]))
+			else:
+				self.table_data.append(0)
+
+		for i in range(0, len(self.table_data), chunk1Size):
+			chunk = self.table_data[i:i + chunk1Size]
+
+			offset = 0
+			index = 0
+			overlapping = False
+
+			for t in range(len(self.table_data_compressed)):
+				if self.table_data_compressed[t] == chunk[offset]:
+					offset += 1
+					if offset == len(chunk):
+						overlapping = True
+						break
+				else:
+					index = t + 1
+					offset = 0
+
+			if not overlapping:
+				offset = 0
+				index = 0
+
+				if len(self.table_data_compressed) > 0:
+					for t in range(len(self.table_data_compressed) - 1, 0):
+						if self.table_data_compressed[t] != chunk[offset] or offset + 1 == len(chunk):
+							break
+						offset += 1
+					index = len(self.table_data_compressed) - offset
+
+			self.table_index1.append(index)
+			self.table_data_compressed.extend(chunk[offset:])
+
+		for i in range(0, len(self.table_index1), chunk2Size):
+			chunk = self.table_index1[i:i + chunk2Size]
+
+			offset = 0
+			index = 0
+			overlapping = False
+
+			for t in range(len(self.table_index1_compressed)):
+				if self.table_index1_compressed[t] == chunk[offset]:
+					offset += 1
+					if offset == len(chunk):
+						overlapping = True
+						break
+				else:
+					index = t + 1
+					offset = 0
+
+			if not overlapping:
+				offset = 0
+				index = 0
+
+				if len(self.table_index1_compressed) > 0:
+					for t in range(len(self.table_index1_compressed) - 1, 0):
+						if self.table_index1_compressed[t] != chunk[offset] or offset + 1 == len(chunk):
+							break
+						offset += 1
+					index = len(self.table_index1_compressed) - offset
+
+			self.table_index2.append(index)
+			self.table_index1_compressed.extend(chunk[offset:])
+
+		self.uncompressed_size = len(self.table_data)
+		self.compressed_size = len(self.table_index2) + len(self.table_index1_compressed) + len(self.table_data_compressed)
+		self.compression_ratio = (1.0 - (self.compressed_size / self.uncompressed_size)) * 100.0
+		print(field + ': uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(self.compressed_size) + ' savings ' + ('%.2f%%' % self.compression_ratio))
+
+	def render(self, header, name):
+		print('Rendering compressed data for "' + name + '"...')
+		
+		header.newLine()
+		header.writeLine("const uint32_t " + name + "Index1[" + str(len(self.table_index2)) + "] = {")
+		header.indent()
+		
+		count = 0
+		for c in self.table_index2:
+			if (count % 16) == 0:
+				header.writeIndentation()
+			
+			header.write('%d,' % c)
+			
+			count += 1
+			if count != len(self.table_index2):
+				if (count % 16) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.writeLine("const uint32_t* " + name + "Index1Ptr = " + name + "Index1;")
+
+		header.newLine()
+
+		header.writeLine("const uint32_t " + name + "Index2[" + str(len(self.table_index1_compressed)) + "] = {")
+		header.indent()
+		
+		count = 0
+		for c in self.table_index1_compressed:
+			if (count % 16) == 0:
+				header.writeIndentation()
+			
+			header.write('0x%X,' % c)
+			
+			count += 1
+			if count != len(self.table_index1_compressed):
+				if (count % 16) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+		
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.writeLine("const uint32_t* " + name + "Index2Ptr = " + name + "Index2;")
+
+		header.newLine()
+
+		header.writeLine("const uint32_t " + name + "Data[" + str(len(self.table_data_compressed)) + "] = {")
+		header.indent()
+		
+		count = 0
+		for c in self.table_data_compressed:
+			if (count % 16) == 0:
+				header.writeIndentation()
+			
+			header.write('0x%X,' % c)
+			
+			count += 1
+			if count != len(self.table_data_compressed):
+				if (count % 16) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+		
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.write("const uint32_t* " + name + "DataPtr = " + name + "Data;")
+
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
 		self.verbose = False
 		self.blob = ""
+		self.compressed = ""
+		self.compressed_length = 0
 		self.pageSize = 32767
 		self.total = 0
 		self.offset = 1
@@ -950,6 +1153,35 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.newLine()
 	
 	def writeSource(self, filepath):
+		print('Compressing code point properties...')
+		
+		compress_gc = Compression(db)
+		compress_gc.process('generalCategoryCombined', 32)
+		
+		compress_ccc = Compression(db)
+		compress_ccc.process('canonicalCombiningClass', 32)
+
+		compress_qc_nfc = Compression(db)
+		compress_qc_nfc.process('quickNFC', 32)
+
+		compress_qc_nfd = Compression(db)
+		compress_qc_nfd.process('quickNFD', 32)
+
+		compress_qc_nfkc = Compression(db)
+		compress_qc_nfkc.process('quickNFKC', 32)
+
+		compress_qc_nfkd = Compression(db)
+		compress_qc_nfkd.process('quickNFKD', 32)
+
+		self.compressed = ""
+		self.compressed_length = 0
+
+		compress_nfd = CompressionString(db)
+		compress_nfd.process('decomposedNFD', 32, 128)
+		
+		compress_nfkd = CompressionString(db)
+		compress_nfkd.process('decomposedNFKD', 32, 128)
+		
 		print('Writing database to "' + os.path.realpath(filepath) + '"...')
 		
 		nfd_records = []
@@ -994,20 +1226,36 @@ class Database(libs.unicode.UnicodeVisitor):
 		# includes
 		
 		header.writeLine("#include \"unicodedatabase.h\"")
-		
 		header.newLine()
 		
 		# quick check records
+
+		compress_gc.render(header, 'GeneralCategory')
+		header.newLine()
 		
-		self.writeQuickCheck(header, self.qcGeneralCategory, "GeneralCategory")
-		self.writeQuickCheck(header, self.qcCanonicalCombiningClass, "CanonicalCombiningClass")
-		self.writeQuickCheck(header, self.qcNFCRecords, "NFC")
-		self.writeQuickCheck(header, self.qcNFDRecords, "NFD")
-		self.writeQuickCheck(header, self.qcNFKCRecords, "NFKC")
-		self.writeQuickCheck(header, self.qcNFKDRecords, "NFKD")
+		compress_ccc.render(header, 'CanonicalCombiningClass')
+		header.newLine()
+
+		compress_qc_nfc.render(header, 'QuickCheckNFC')
+		header.newLine()
+
+		compress_qc_nfd.render(header, 'QuickCheckNFD')
+		header.newLine()
+
+		compress_qc_nfkc.render(header, 'QuickCheckNFKC')
+		header.newLine()
+
+		compress_qc_nfkd.render(header, 'QuickCheckNFKD')
+		header.newLine()
 		
 		# decomposition records
+
+		compress_nfd.render(header, 'NFD')
+		header.newLine()
 		
+		compress_nfkd.render(header, 'NFKD')
+		header.newLine()
+
 		self.writeDecompositionRecords(header, nfd_records, "NFD", "offsetNFD")
 		self.writeDecompositionRecords(header, nfkd_records, "NFKD", "offsetNFKD")
 		
@@ -1022,7 +1270,27 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.writeDecompositionRecords(header, titlecase_records, "Titlecase", "offsetTitlecase")
 		
 		# decomposition data
+
+		sliced_compressed = libs.blobsplitter.BlobSplitter()
+		sliced_compressed.split(self.compressed, self.compressed_length)
 		
+		header.writeLine("const char* CompressedStringData = ")
+		header.indent()
+		
+		for p in sliced_compressed.pages:
+			p.start()
+			p.firstLine = False
+			while not p.atEnd:
+				p.nextLine()
+				header.writeIndentation()
+				header.write(p.line)
+				header.newLine()
+
+		header.outdent()
+		header.writeLine(";")
+		header.writeLine("const size_t CompressedStringDataLength = " + str(self.compressed_length) + ";")
+		header.newLine()
+
 		header.writeLine("const char* DecompositionData = ")
 		header.indent()
 		
@@ -1100,52 +1368,6 @@ class Database(libs.unicode.UnicodeVisitor):
 				
 				output.write("# " + r.name)
 				output.newLine()
-
-	def writeCompressed(self, filepath):
-		print('Compressing code point properties...')
-
-		compress_gc = Compression(db)
-		compress_gc.process('generalCategoryCombined', 32)
-		
-		compress_ccc = Compression(db)
-		compress_ccc.process('canonicalCombiningClass', 32)
-
-		compress_nfc = Compression(db)
-		compress_nfc.process('quickNFC', 32)
-
-		compress_nfd = Compression(db)
-		compress_nfd.process('quickNFD', 32)
-
-		compress_nfkc = Compression(db)
-		compress_nfkc.process('quickNFKC', 32)
-
-		compress_nfkd = Compression(db)
-		compress_nfkd.process('quickNFKD', 32)
-
-		print('Writing compresed data to "' + os.path.realpath(filepath) + '"...')
-
-		header = libs.header.Header(os.path.realpath(filepath))
-		header.generatedNotice()
-
-		header.newLine()
-		header.writeLine("#include \"compressedproperties.h\"")
-
-		compress_gc.render(header, 'GeneralCategory')
-		header.newLine()
-		
-		compress_ccc.render(header, 'CanonicalCombiningClass')
-		header.newLine()
-
-		compress_nfc.render(header, 'QuickCheckNFC')
-		header.newLine()
-
-		compress_nfd.render(header, 'QuickCheckNFD')
-		header.newLine()
-
-		compress_nfkc.render(header, 'QuickCheckNFKC')
-		header.newLine()
-
-		compress_nfkd.render(header, 'QuickCheckNFKD')
 
 class SpecialCasing(libs.unicode.UnicodeVisitor):
 	def __init__(self, db):
@@ -1328,5 +1550,4 @@ if __name__ == '__main__':
 	db.executeQuery(args.query)
 	
 	db.writeSource(script_path + '/../../source/unicodedatabase.c')
-	db.writeCompressed(script_path + '/../../source/internal/compressedproperties.c')
 	db.writeCaseMapping(script_path + '/../../testdata/CaseMapping.txt')
