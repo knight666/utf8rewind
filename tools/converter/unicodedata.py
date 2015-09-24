@@ -487,16 +487,17 @@ class CompressionString:
 	def __init__(self, database):
 		self.database = database
 
-	def process(self, field, chunkSize):
-		print('Compressing property "' + field + '" with a chunk size of ' + str(chunkSize) + '...')
+	def process(self, field, chunk1Size, chunk2Size):
+		print('Compressing property "' + field + '" with chunk sizes of ' + str(chunk1Size) + ' and ' + str(chunk2Size) + '...')
 
-		self.chunk_size = chunkSize
 		self.compressed_size = 0
 		self.uncompressed_size = 0
 		self.compression_ratio = 0.0
 		self.table_index2 = []
 		self.table_index1 = []
-		self.table_index1_data = []
+		self.table_index1_compressed = []
+		self.table_data = []
+		self.table_data_compressed = []
 		self.database.compressed = ""
 		self.database.compressed_length = 0
 		
@@ -530,34 +531,24 @@ class CompressionString:
 							offset += 1
 						index = len(self.database.compressed) - offset
 				
-				"""if overlapping:
-					print('codepoint ' + 'U+%X' % (r.codepoint))
-					print('converted ' + str(converted))
-					print('data_size ' + str(len(self.database.compressed)) + ' index_size ' + str(len(self.table_index)) + ' offset ' + str(offset) + ' index ' + str(index))
-					print('uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(self.compressed_size))
-					print('chunk_after ' + str(converted[offset:]))
-					print('table_data ' + str(self.database.compressed))"""
-
 				chunk_length = len(re.findall('\\\\x?[^\\\\]+', converted))
 
-				self.table_index1.append((chunk_length << 24) + (index + 1))
+				self.table_data.append((chunk_length << 24) + (index + 1))
 
 				self.database.compressed += converted[offset:]
 				self.database.compressed_length += len(re.findall('\\\\x?[^\\\\]+', converted[offset:]))
 			else:
-				self.table_index1.append(0)
+				self.table_data.append(0)
 
-			self.uncompressed_size += len(converted)
-		
-		for i in range(0, len(self.table_index1), chunkSize):
-			chunk = self.table_index1[i:i + chunkSize]
+		for i in range(0, len(self.table_data), chunk1Size):
+			chunk = self.table_data[i:i + chunk1Size]
 
 			offset = 0
 			index = 0
 			overlapping = False
 
-			for t in range(len(self.table_index1_data)):
-				if self.table_index1_data[t] == chunk[offset]:
+			for t in range(len(self.table_data_compressed)):
+				if self.table_data_compressed[t] == chunk[offset]:
 					offset += 1
 					if offset == len(chunk):
 						overlapping = True
@@ -570,17 +561,49 @@ class CompressionString:
 				offset = 0
 				index = 0
 
-				if len(self.table_index1_data) > 0:
-					for t in range(len(self.table_index1_data) - 1, 0):
-						if self.table_index1_data[t] != chunk[offset] or offset + 1 == len(chunk):
+				if len(self.table_data_compressed) > 0:
+					for t in range(len(self.table_data_compressed) - 1, 0):
+						if self.table_data_compressed[t] != chunk[offset] or offset + 1 == len(chunk):
 							break
 						offset += 1
-					index = len(self.table_index1_data) - offset
+					index = len(self.table_data_compressed) - offset
+
+			self.table_index1.append(index)
+			self.table_data_compressed.extend(chunk[offset:])
+
+		for i in range(0, len(self.table_index1), chunk2Size):
+			chunk = self.table_index1[i:i + chunk2Size]
+
+			offset = 0
+			index = 0
+			overlapping = False
+
+			for t in range(len(self.table_index1_compressed)):
+				if self.table_index1_compressed[t] == chunk[offset]:
+					offset += 1
+					if offset == len(chunk):
+						overlapping = True
+						break
+				else:
+					index = t + 1
+					offset = 0
+
+			if not overlapping:
+				offset = 0
+				index = 0
+
+				if len(self.table_index1_compressed) > 0:
+					for t in range(len(self.table_index1_compressed) - 1, 0):
+						if self.table_index1_compressed[t] != chunk[offset] or offset + 1 == len(chunk):
+							break
+						offset += 1
+					index = len(self.table_index1_compressed) - offset
 
 			self.table_index2.append(index)
-			self.table_index1_data.extend(chunk[offset:])
+			self.table_index1_compressed.extend(chunk[offset:])
 
-		self.compressed_size = len(self.table_index1) + len(self.table_index2) + len(self.database.compressed)
+		self.uncompressed_size = len(self.table_data)
+		self.compressed_size = len(self.table_index2) + len(self.table_index1_compressed) + len(self.table_data_compressed)
 		self.compression_ratio = (1.0 - (self.compressed_size / self.uncompressed_size)) * 100.0
 		print(field + ': uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(self.compressed_size) + ' savings ' + ('%.2f%%' % self.compression_ratio))
 
@@ -588,7 +611,7 @@ class CompressionString:
 		print('Rendering compressed data for "' + name + '"...')
 		
 		header.newLine()
-		header.writeLine("const size_t " + name + "Index2[" + str(len(self.table_index2)) + "] = {")
+		header.writeLine("const uint32_t " + name + "Index2[" + str(len(self.table_index2)) + "] = {")
 		header.indent()
 		
 		count = 0
@@ -608,22 +631,22 @@ class CompressionString:
 		header.newLine()
 		header.outdent()
 		header.writeLine("};")
-		header.writeLine("const size_t* " + name + "Index2Ptr = " + name + "Index2;")
-		
+		header.writeLine("const uint32_t* " + name + "Index2Ptr = " + name + "Index2;")
+
 		header.newLine()
 
-		header.writeLine("const size_t " + name + "Index1[" + str(len(self.table_index1_data)) + "] = {")
+		header.writeLine("const uint32_t " + name + "Index1[" + str(len(self.table_index1_compressed)) + "] = {")
 		header.indent()
 		
 		count = 0
-		for c in self.table_index1_data:
+		for c in self.table_index1_compressed:
 			if (count % 16) == 0:
 				header.writeIndentation()
 			
 			header.write('0x%X,' % c)
 			
 			count += 1
-			if count != len(self.table_index1_data):
+			if count != len(self.table_index1_compressed):
 				if (count % 16) == 0:
 					header.newLine()
 				else:
@@ -632,7 +655,31 @@ class CompressionString:
 		header.newLine()
 		header.outdent()
 		header.writeLine("};")
-		header.writeLine("const size_t* " + name + "Index1Ptr = " + name + "Index1;")
+		header.writeLine("const uint32_t* " + name + "Index1Ptr = " + name + "Index1;")
+
+		header.newLine()
+
+		header.writeLine("const uint32_t " + name + "Data[" + str(len(self.table_data_compressed)) + "] = {")
+		header.indent()
+		
+		count = 0
+		for c in self.table_data_compressed:
+			if (count % 16) == 0:
+				header.writeIndentation()
+			
+			header.write('0x%X,' % c)
+			
+			count += 1
+			if count != len(self.table_data_compressed):
+				if (count % 16) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+		
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.write("const uint32_t* " + name + "DataPtr = " + name + "Data;")
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
@@ -1129,10 +1176,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		compress_qc_nfkd.process('quickNFKD', 32)
 
 		compress_nfd = CompressionString(db)
-		compress_nfd.process('decomposedNFD', 128)
+		compress_nfd.process('decomposedNFD', 32, 128)
 		
 		compress_nfkd = CompressionString(db)
-		compress_nfkd.process('decomposedNFKD', 128)
+		compress_nfkd.process('decomposedNFKD', 32, 128)
 		
 		print('Writing database to "' + os.path.realpath(filepath) + '"...')
 		

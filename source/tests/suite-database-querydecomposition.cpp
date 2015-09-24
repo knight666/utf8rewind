@@ -1,10 +1,37 @@
 #include "tests-base.hpp"
 
 extern "C" {
+	#include "../internal/codepoint.h"
 	#include "../internal/database.h"
 }
 
 #include "../helpers/helpers-strings.hpp"
+
+TEST(QueryDecomposition, AllDecompose)
+{
+	char scratch[128] = { 0 };
+	char* dst_scratch = scratch;
+	size_t scratch_size = 127;
+
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
+	{
+		uint8_t length = database_querydecomposition2(&dst_scratch, &scratch_size, i, NFKDIndex2Ptr, NFDIndex1Ptr, NFDDataPtr);
+
+		const char* value1 = scratch;
+		const char* value2 = database_querydecomposition(i, UnicodeProperty_Normalization_Decompose);
+		if (value2 != nullptr &&
+			strcmp(value1, value2))
+		{
+			int bleh = 0;
+		}
+
+		memset(scratch, 0, sizeof(scratch));
+		dst_scratch = scratch;
+		scratch_size = 127;
+	}
+
+	EXPECT_EQ(nullptr, database_querydecomposition(0x0000011A, UnicodeProperty_Normalization_Compose));
+}
 
 TEST(QueryDecomposition, ComposeProperty)
 {
