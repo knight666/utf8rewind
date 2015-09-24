@@ -56,15 +56,23 @@ uint8_t decompose_initialize(
 	{
 		state->property = UnicodeProperty_Normalization_Compatibility_Decompose;
 
-		state->property_index = QuickCheckNFKDIndexPtr;
-		state->property_data = QuickCheckNFKDDataPtr;
+		state->property_index1 = NFKDIndex1Ptr;
+		state->property_index2 = NFKDIndex2Ptr;
+		state->property_data = NFKDDataPtr;
+
+		state->qc_index = QuickCheckNFKDIndexPtr;
+		state->qc_data = QuickCheckNFKDDataPtr;
 	}
 	else
 	{
 		state->property = UnicodeProperty_Normalization_Decompose;
 
-		state->property_index = QuickCheckNFDIndexPtr;
-		state->property_data = QuickCheckNFDDataPtr;
+		state->property_index1 = NFDIndex1Ptr;
+		state->property_index2 = NFDIndex2Ptr;
+		state->property_data = NFDDataPtr;
+
+		state->qc_index = QuickCheckNFDIndexPtr;
+		state->qc_data = QuickCheckNFDDataPtr;
 	}
 
 	return 1;
@@ -72,6 +80,7 @@ uint8_t decompose_initialize(
 
 uint8_t decompose_execute(DecomposeState* state)
 {
+	char decomposition[128];
 	unicode_t* src_codepoint;
 	unicode_t* dst_codepoint;
 	uint8_t* dst_canonical_combining_class;
@@ -140,7 +149,7 @@ uint8_t decompose_execute(DecomposeState* state)
 	/* Read next sequence from input */
 
 	if (state->input->index == state->input->current &&
-		!stream_read(state->input, state->property_index, state->property_data))
+		!stream_read(state->input, state->qc_index, state->qc_data))
 	{
 		/* End of data */
 
@@ -226,7 +235,7 @@ uint8_t decompose_execute(DecomposeState* state)
 			/* Use quick check to skip stable codepoints */
 
 			unicode_t decoded_codepoint = *src_codepoint;
-			uint8_t decoded_quick_check = PROPERTY_GET(state->property_index, state->property_data, decoded_codepoint);
+			uint8_t decoded_quick_check = PROPERTY_GET(state->qc_index, state->qc_data, decoded_codepoint);
 			uint8_t decoded_canonical_combining_class;
 			uint8_t decoded_size;
 
@@ -234,58 +243,61 @@ uint8_t decompose_execute(DecomposeState* state)
 			{
 				/* Check database for decomposition */
 
-				const char* decomposition = database_querydecomposition(decoded_codepoint, state->property);
-				if (decomposition != 0)
+				char* src = decomposition;
+				uint8_t src_size;
+				size_t src_length = 127;
+				
+				memset(decomposition, 0, sizeof(decomposition));
+
+				src_size = database_querydecomposition2(
+					&src, &src_length,
+					decoded_codepoint,
+					state->property_index1, state->property_index2, state->property_data);
+				src = decomposition;
+
+				while (src_size > 0)
 				{
-					/* Write sequence to output */
+					/* Decode current codepoint */
 
-					const char* src = decomposition;
-					size_t src_size = strlen(decomposition);
-
-					while (src_size > 0)
+					decoded_size = codepoint_read(src, src_size, &decoded_codepoint);
+					if (decoded_size == 0)
 					{
-						/* Decode current codepoint */
-
-						decoded_size = codepoint_read(src, src_size, &decoded_codepoint);
-						if (decoded_size == 0)
-						{
-							break;
-						}
-
-						decoded_canonical_combining_class = PROPERTY_GET_CCC(decoded_codepoint);
-
-						/* Check for end of sequence */
-
-						if (uncached &&
-							state->output->current > 0 &&
-							decoded_canonical_combining_class == 0)
-						{
-							uncached = 0;
-						}
-
-						if (uncached)
-						{
-							/* Write codepoint to output */
-
-							*dst_codepoint++ = decoded_codepoint;
-							*dst_canonical_combining_class++ = decoded_canonical_combining_class;
-							*dst_quick_check++ = QuickCheckResult_Yes;
-
-							state->output->current++;
-						}
-						else
-						{
-							/* Store in cache */
-
-							state->cache_codepoint[state->cache_filled] = decoded_codepoint;
-							state->cache_canonical_combining_class[state->cache_filled] = decoded_canonical_combining_class;
-
-							state->cache_filled++;
-						}
-
-						src += decoded_size;
-						src_size -= decoded_size;
+						break;
 					}
+
+					decoded_canonical_combining_class = PROPERTY_GET_CCC(decoded_codepoint);
+
+					/* Check for end of sequence */
+
+					if (uncached &&
+						state->output->current > 0 &&
+						decoded_canonical_combining_class == 0)
+					{
+						uncached = 0;
+					}
+
+					if (uncached)
+					{
+						/* Write codepoint to output */
+
+						*dst_codepoint++ = decoded_codepoint;
+						*dst_canonical_combining_class++ = decoded_canonical_combining_class;
+						*dst_quick_check++ = QuickCheckResult_Yes;
+
+						state->output->current++;
+					}
+					else
+					{
+						/* Store in cache */
+
+						state->cache_codepoint[state->cache_filled] = decoded_codepoint;
+						state->cache_canonical_combining_class[state->cache_filled] = decoded_canonical_combining_class;
+
+						state->cache_filled++;
+					}
+
+					src += decoded_size;
+					src_size -= decoded_size;
 				}
 			}
 			else

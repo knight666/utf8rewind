@@ -34,8 +34,8 @@ TEST(DecomposeExecute, Initialize)
 	EXPECT_EQ(0, (int)state.output->current);
 	EXPECT_EQ(0, (int)state.output->filled);
 	EXPECT_EQ(UnicodeProperty_Normalization_Decompose, (int)state.property);
-	EXPECT_EQ(QuickCheckNFDIndexPtr, state.property_index);
-	EXPECT_EQ(QuickCheckNFDDataPtr, state.property_data);
+	EXPECT_EQ(QuickCheckNFDIndexPtr, state.qc_index);
+	EXPECT_EQ(QuickCheckNFDDataPtr, state.qc_data);
 }
 
 TEST(DecomposeExecute, InitializeInvalidInput)

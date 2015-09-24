@@ -886,7 +886,7 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 				for (i = 0; i < stream[1].current; ++i)
 				{
-					*dst_qc++ = PROPERTY_GET(compose_state.property_index, compose_state.property_data, *src_codepoint);
+					*dst_qc++ = PROPERTY_GET(compose_state.qc_index, compose_state.qc_data, *src_codepoint);
 					*dst_ccc++ = *src_ccc++;
 					*dst_codepoint++ = *src_codepoint++;
 				}
