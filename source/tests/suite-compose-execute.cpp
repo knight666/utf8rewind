@@ -33,8 +33,8 @@ TEST(ComposeExecute, Initialize)
 	EXPECT_EQ(&output, state.output);
 	EXPECT_EQ(0, (int)state.output->current);
 	EXPECT_EQ(0, (int)state.output->filled);
-	EXPECT_EQ(QuickCheckNFCIndexPtr, state.property_index);
-	EXPECT_EQ(QuickCheckNFCDataPtr, state.property_data);
+	EXPECT_EQ(QuickCheckNFCIndexPtr, state.qc_index);
+	EXPECT_EQ(QuickCheckNFCDataPtr, state.qc_data);
 }
 
 TEST(ComposeExecute, InitializeInvalidInput)

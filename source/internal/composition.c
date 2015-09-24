@@ -51,13 +51,13 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 
 	if (compatibility == 1)
 	{
-		state->property_index = QuickCheckNFKCIndexPtr;
-		state->property_data = QuickCheckNFKCDataPtr;
+		state->qc_index = QuickCheckNFKCIndexPtr;
+		state->qc_data = QuickCheckNFKCDataPtr;
 	}
 	else
 	{
-		state->property_index = QuickCheckNFCIndexPtr;
-		state->property_data = QuickCheckNFCDataPtr;
+		state->qc_index = QuickCheckNFCIndexPtr;
+		state->qc_data = QuickCheckNFCDataPtr;
 	}
 
 	return 1;
@@ -66,7 +66,7 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 uint8_t compose_readcodepoint(ComposeState* state, uint8_t index)
 {
 	if (state->input->index == state->input->current &&
-		!stream_read(state->input, state->property_index, state->property_data))
+		!stream_read(state->input, state->qc_index, state->qc_data))
 	{
 		/* End of data */
 
@@ -217,7 +217,7 @@ uint8_t compose_execute(ComposeState* state)
 					/* Add composition to output */
 
 					state->output->codepoint[cursor_current]                  = composed;
-					state->output->quick_check[cursor_current]                = PROPERTY_GET(state->property_index, state->property_data, composed);
+					state->output->quick_check[cursor_current]                = PROPERTY_GET(state->qc_index, state->qc_data, composed);
 					state->output->canonical_combining_class[cursor_current]  = PROPERTY_GET_CCC(composed);
 
 					/* Clear next codepoint from output */
