@@ -137,44 +137,46 @@ found:
 uint8_t database_querydecomposition2(
 	char** target, size_t* targetSize,
 	unicode_t codepoint,
-	const uint32_t* index2Array, const uint32_t* index1Array, const uint32_t* dataArray)
+	const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray)
 {
 	// result = data[index2[index1[c >> INDEX1_SHIFT] + (c & INDEX2_MASK) >> INDEX2_SHIFT] + (c & DATA_MASK)];
 
 	size_t index;
 	size_t length;
+	size_t index1;
+	size_t index1_offset;
 	size_t index2;
 	size_t index2_offset;
-	size_t index1;
+	size_t offset;
 
-	index2 = index2Array[codepoint >> DECOMPOSE_BLOCK_SHIFT2];
-	index2_offset = index2 + ((codepoint & DECOMPOSE_INDEX1_MASK) >> DECOMPOSE_BLOCK_SHIFT1);
-	index1 = index1Array[index2_offset];
-	index = index1 + (codepoint & DECOMPOSE_DATA_MASK);
+	index1 = index1Array[codepoint >> 12];
+	index1_offset = index1 + ((codepoint & 0xFFF) >> 5);
+	index2 = index2Array[index1_offset];
+	index2_offset = index2 + (codepoint & 0x1F);
+	index = index2_offset;
+	offset = dataArray[index];
 
-	if (index == 0)
+	if (index == 0 ||
+		offset == 0)
 	{
 		return codepoint_write(codepoint, target, targetSize);
 	}
 
-	/*index = index1Array[index + ((codepoint & DECOMPOSE_INDEX1_MASK) >> DECOMPOSE_BLOCK_SHIFT1)] + (codepoint & DECOMPOSE_DATA_MASK);
+	length = (offset & 0xFF000000) >> 24;
+	offset &= 0x00FFFFFF;
 
-	if (index == 0)
+	if (*target != 0)
 	{
-		return codepoint_write(codepoint, target, targetSize);
-	}*/
+		if (length > *targetSize)
+		{
+			return 0;
+		}
 
-	length = (index & 0xFF000000) >> 24;
-	if (length > *targetSize)
-	{
-		return 0;
+		memcpy(*target, CompressedStringData + offset, length);
+
+		*target += length;
+		*targetSize -= length;
 	}
-
-	index &= 0x00FFFFFF;
-
-	memcpy(*target, CompressedStringData + index, length);
-	*target += length;
-	*targetSize -= length;
 
 	return (uint8_t)length;
 }

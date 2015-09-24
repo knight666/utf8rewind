@@ -498,14 +498,12 @@ class CompressionString:
 		self.table_index1_compressed = []
 		self.table_data = []
 		self.table_data_compressed = []
-		self.database.compressed = ""
-		self.database.compressed_length = 0
 		
 		for r in self.database.recordsOrdered:
 			chunk = r.__dict__[field]
 			converted = libs.utf8.unicodeToUtf8Hex(chunk)
 			
-			if len(chunk) > 1:
+			if len(chunk) > 1 or (len(chunk) == 1 and chunk[0] != r.codepoint):
 				offset = 0
 				index = 0
 				overlapping = False
@@ -533,10 +531,16 @@ class CompressionString:
 				
 				chunk_length = len(re.findall('\\\\x?[^\\\\]+', converted))
 
-				self.table_data.append((chunk_length << 24) + (index + 1))
+				self.table_data.append((chunk_length << 24) + (index / 4))
 
 				self.database.compressed += converted[offset:]
 				self.database.compressed_length += len(re.findall('\\\\x?[^\\\\]+', converted[offset:]))
+
+				#if r.codepoint == 0x0340:
+				#	print('chunk_length ' + str(chunk_length))
+				#	print('index ' + str(index))
+				#	print('compressed ' + str(self.database.compressed))
+				#	print('compressed_length ' + str(self.database.compressed_length))
 			else:
 				self.table_data.append(0)
 
@@ -611,7 +615,7 @@ class CompressionString:
 		print('Rendering compressed data for "' + name + '"...')
 		
 		header.newLine()
-		header.writeLine("const uint32_t " + name + "Index2[" + str(len(self.table_index2)) + "] = {")
+		header.writeLine("const uint32_t " + name + "Index1[" + str(len(self.table_index2)) + "] = {")
 		header.indent()
 		
 		count = 0
@@ -631,11 +635,11 @@ class CompressionString:
 		header.newLine()
 		header.outdent()
 		header.writeLine("};")
-		header.writeLine("const uint32_t* " + name + "Index2Ptr = " + name + "Index2;")
+		header.writeLine("const uint32_t* " + name + "Index1Ptr = " + name + "Index1;")
 
 		header.newLine()
 
-		header.writeLine("const uint32_t " + name + "Index1[" + str(len(self.table_index1_compressed)) + "] = {")
+		header.writeLine("const uint32_t " + name + "Index2[" + str(len(self.table_index1_compressed)) + "] = {")
 		header.indent()
 		
 		count = 0
@@ -655,7 +659,7 @@ class CompressionString:
 		header.newLine()
 		header.outdent()
 		header.writeLine("};")
-		header.writeLine("const uint32_t* " + name + "Index1Ptr = " + name + "Index1;")
+		header.writeLine("const uint32_t* " + name + "Index2Ptr = " + name + "Index2;")
 
 		header.newLine()
 
@@ -1175,6 +1179,9 @@ class Database(libs.unicode.UnicodeVisitor):
 		compress_qc_nfkd = Compression(db)
 		compress_qc_nfkd.process('quickNFKD', 32)
 
+		self.compressed = ""
+		self.compressed_length = 0
+
 		compress_nfd = CompressionString(db)
 		compress_nfd.process('decomposedNFD', 32, 128)
 		
@@ -1247,14 +1254,14 @@ class Database(libs.unicode.UnicodeVisitor):
 		compress_qc_nfkd.render(header, 'QuickCheckNFKD')
 		header.newLine()
 		
+		# decomposition records
+
 		compress_nfd.render(header, 'NFD')
 		header.newLine()
 		
 		compress_nfkd.render(header, 'NFKD')
 		header.newLine()
-		
-		# decomposition records
-		
+
 		self.writeDecompositionRecords(header, nfd_records, "NFD", "offsetNFD")
 		self.writeDecompositionRecords(header, nfkd_records, "NFKD", "offsetNFKD")
 		
@@ -1278,6 +1285,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		for p in sliced_compressed.pages:
 			p.start()
+			p.firstLine = False
 			while not p.atEnd:
 				p.nextLine()
 				header.writeIndentation()

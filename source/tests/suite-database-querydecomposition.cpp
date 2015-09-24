@@ -15,7 +15,7 @@ TEST(QueryDecomposition, AllDecompose)
 
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		uint8_t length = database_querydecomposition2(&dst_scratch, &scratch_size, i, NFKDIndex2Ptr, NFDIndex1Ptr, NFDDataPtr);
+		uint8_t length = database_querydecomposition2(&dst_scratch, &scratch_size, i, NFKDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr);
 
 		const char* value1 = scratch;
 		const char* value2 = database_querydecomposition(i, UnicodeProperty_Normalization_Decompose);
