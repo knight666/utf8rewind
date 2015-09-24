@@ -49,9 +49,16 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 
 	/* Set up codepoint quickcheck property */
 
-	state->property = (compatibility == 1)
-		? UnicodeProperty_Normalization_Compatibility_Compose
-		: UnicodeProperty_Normalization_Compose;
+	if (compatibility == 1)
+	{
+		state->property_index = QuickCheckNFKCIndexPtr;
+		state->property_data = QuickCheckNFKCDataPtr;
+	}
+	else
+	{
+		state->property_index = QuickCheckNFCIndexPtr;
+		state->property_data = QuickCheckNFCDataPtr;
+	}
 
 	return 1;
 }
@@ -59,7 +66,7 @@ uint8_t compose_initialize(ComposeState* state, StreamState* input, StreamState*
 uint8_t compose_readcodepoint(ComposeState* state, uint8_t index)
 {
 	if (state->input->index == state->input->current &&
-		!stream_read(state->input, state->property))
+		!stream_read(state->input, state->property_index, state->property_data))
 	{
 		/* End of data */
 
@@ -210,8 +217,8 @@ uint8_t compose_execute(ComposeState* state)
 					/* Add composition to output */
 
 					state->output->codepoint[cursor_current]                  = composed;
-					state->output->quick_check[cursor_current]                = database_queryproperty(composed, state->property);
-					state->output->canonical_combining_class[cursor_current]  = database_queryproperty(composed, UnicodeProperty_CanonicalCombiningClass);
+					state->output->quick_check[cursor_current]                = PROPERTY_GET(state->property_index, state->property_data, composed);
+					state->output->canonical_combining_class[cursor_current]  = PROPERTY_GET_CCC(composed);
 
 					/* Clear next codepoint from output */
 

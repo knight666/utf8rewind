@@ -35,6 +35,8 @@
 
 #include "utf8rewind.h"
 
+#include "../unicodedatabase.h"
+
 #define UTF8_INVALID_PROPERTY (uint8_t)-1
 
 enum UnicodeProperty
@@ -69,9 +71,39 @@ enum QuickCheckResult
 	QuickCheckResult_No,
 };
 
-uint8_t database_queryproperty(unicode_t codepoint, uint8_t property);
+#define PROPERTY_INDEX_SHIFT (5)
+
+static const unicode_t PROPERTY_DATA_MASK = (1 << PROPERTY_INDEX_SHIFT) - 1;
+
+#define PROPERTY_GET(_indexArray, _dataArray, _cp) \
+	(_dataArray)[ \
+		(_indexArray)[(_cp) >> PROPERTY_INDEX_SHIFT] + \
+		((_cp) & PROPERTY_DATA_MASK)]
+
+#define PROPERTY_GET_GC(_cp) \
+	PROPERTY_GET(GeneralCategoryIndexPtr, GeneralCategoryDataPtr, _cp)
+
+#define PROPERTY_GET_CCC(_cp) \
+	PROPERTY_GET(CanonicalCombiningClassIndexPtr, CanonicalCombiningClassDataPtr, _cp)
+
+#define PROPERTY_GET_NFC(_cp) \
+	PROPERTY_GET(QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr, _cp)
+
+#define PROPERTY_GET_NFD(_cp) \
+	PROPERTY_GET(QuickCheckNFDIndexPtr, QuickCheckNFDDataPtr, _cp)
+
+#define PROPERTY_GET_NFKC(_cp) \
+	PROPERTY_GET(QuickCheckNFKCIndexPtr, QuickCheckNFKCDataPtr, _cp)
+
+#define PROPERTY_GET_NFKD(_cp) \
+	PROPERTY_GET(QuickCheckNFKDIndexPtr, QuickCheckNFKDDataPtr, _cp)
 
 const char* database_querydecomposition(unicode_t codepoint, uint8_t property);
+
+uint8_t database_querydecomposition2(
+	char** target, size_t* targetSize,
+	unicode_t codepoint,
+	const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray);
 
 unicode_t database_querycomposition(unicode_t left, unicode_t right);
 
