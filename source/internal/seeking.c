@@ -27,16 +27,16 @@
 
 #include "codepoint.h"
 
-const char* seeking_forward(const char* input, const char* inputEnd, size_t inputLength, off_t offset)
+const char* seeking_forward(const char* input, const char* inputEnd, size_t inputSize, off_t offset)
 {
 	if (inputEnd <= input ||  /* Swapped parameters */
 		offset <= 0 ||        /* Invalid offset */
-		inputLength == 0)     /* Nothing to do */
+		inputSize == 0)       /* Nothing to do */
 	{
 		return input;
 	}
 	else if (
-		offset >= (off_t)inputLength)  /* Out of bounds */
+		offset >= (off_t)inputSize)  /* Out of bounds */
 	{
 		return inputEnd;
 	}
@@ -80,19 +80,18 @@ const char* seeking_forward(const char* input, const char* inputEnd, size_t inpu
 	return input;
 }
 
-const char* seeking_rewind(const char* inputStart, const char* input, size_t inputLength, off_t offset)
+const char* seeking_rewind(const char* inputStart, const char* input, size_t inputSize, off_t offset)
 {
 	const char* marker;
 	const char* marker_valid;
 
 	if (inputStart >= input ||  /* Swapped parameters */
-		offset >= 0 ||          /* Invalid offset */
-		inputLength == 0)       /* Nothing to do */
+		offset >= 0)            /* Invalid offset */
 	{
 		return input;
 	}
 	else if (
-		-offset >= (off_t)inputLength)  /* Out of bounds */
+		-offset >= (off_t)inputSize)  /* Out of bounds */
 	{
 		return inputStart;
 	}
