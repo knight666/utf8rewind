@@ -535,12 +535,6 @@ class CompressionString:
 
 				self.database.compressed += converted[offset:]
 				self.database.compressed_length += len(re.findall('\\\\x?[^\\\\]+', converted[offset:]))
-
-				#if r.codepoint == 0x0340:
-				#	print('chunk_length ' + str(chunk_length))
-				#	print('index ' + str(index))
-				#	print('compressed ' + str(self.database.compressed))
-				#	print('compressed_length ' + str(self.database.compressed_length))
 			else:
 				self.table_data.append(0)
 
