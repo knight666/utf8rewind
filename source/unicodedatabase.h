@@ -81,11 +81,13 @@ extern const DecompositionRecord* UnicodeTitlecaseRecordPtr;
 extern const size_t UnicodeCompositionRecordCount;
 extern const CompositionRecord* UnicodeCompositionRecordPtr;
 
-extern const size_t* NFDIndex2Ptr;
-extern const size_t* NFDIndex1Ptr;
+extern const uint32_t* NFDIndex2Ptr;
+extern const uint32_t* NFDIndex1Ptr;
+extern const uint32_t* NFDDataPtr;
 
-extern const size_t* NFKDIndex2Ptr;
-extern const size_t* NFKDIndex1Ptr;
+extern const uint32_t* NFKDIndex2Ptr;
+extern const uint32_t* NFKDIndex1Ptr;
+extern const uint32_t* NFKDDataPtr;
 
 extern const char* CompressedStringData;
 extern const size_t CompressedStringDataLength;

@@ -26,6 +26,7 @@
 #include "database.h"
 
 #include "../unicodedatabase.h"
+#include "codepoint.h"
 
 const char* database_querydecomposition(unicode_t codepoint, uint8_t property)
 {
@@ -131,6 +132,51 @@ found:
 	}
 
 	return DecompositionData + record_found->offset;
+}
+
+uint8_t database_querydecomposition2(
+	char** target, size_t* targetSize,
+	unicode_t codepoint,
+	const uint32_t* index2Array, const uint32_t* index1Array, const uint32_t* dataArray)
+{
+	// result = data[index2[index1[c >> INDEX1_SHIFT] + (c & INDEX2_MASK) >> INDEX2_SHIFT] + (c & DATA_MASK)];
+
+	size_t index;
+	size_t length;
+	size_t index2;
+	size_t index2_offset;
+	size_t index1;
+
+	index2 = index2Array[codepoint >> DECOMPOSE_BLOCK_SHIFT2];
+	index2_offset = index2 + ((codepoint & DECOMPOSE_INDEX1_MASK) >> DECOMPOSE_BLOCK_SHIFT1);
+	index1 = index1Array[index2_offset];
+	index = index1 + (codepoint & DECOMPOSE_DATA_MASK);
+
+	if (index == 0)
+	{
+		return codepoint_write(codepoint, target, targetSize);
+	}
+
+	/*index = index1Array[index + ((codepoint & DECOMPOSE_INDEX1_MASK) >> DECOMPOSE_BLOCK_SHIFT1)] + (codepoint & DECOMPOSE_DATA_MASK);
+
+	if (index == 0)
+	{
+		return codepoint_write(codepoint, target, targetSize);
+	}*/
+
+	length = (index & 0xFF000000) >> 24;
+	if (length > *targetSize)
+	{
+		return 0;
+	}
+
+	index &= 0x00FFFFFF;
+
+	memcpy(*target, CompressedStringData + index, length);
+	*target += length;
+	*targetSize -= length;
+
+	return (uint8_t)length;
 }
 
 unicode_t database_querycomposition(unicode_t left, unicode_t right)

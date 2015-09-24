@@ -99,6 +99,19 @@ static const unicode_t PROPERTY_INDEX_MASK = (1 << PROPERTY_BLOCK_SHIFT) - 1;
 
 const char* database_querydecomposition(unicode_t codepoint, uint8_t property);
 
+#define DECOMPOSE_BLOCK_SHIFT2 (12)
+static const unicode_t DECOMPOSE_INDEX2_MASK = (1 << DECOMPOSE_BLOCK_SHIFT2) - 1;
+
+#define DECOMPOSE_BLOCK_SHIFT1 (7)
+static const unicode_t DECOMPOSE_INDEX1_MASK = (1 << DECOMPOSE_BLOCK_SHIFT1) - 1;
+
+static const unicode_t DECOMPOSE_DATA_MASK = ~((1 << DECOMPOSE_BLOCK_SHIFT1) | (1 << DECOMPOSE_BLOCK_SHIFT2));
+
+uint8_t database_querydecomposition2(
+	char** target, size_t* targetSize,
+	unicode_t codepoint,
+	const uint32_t* index2Array, const uint32_t* index1Array, const uint32_t* dataArray);
+
 unicode_t database_querycomposition(unicode_t left, unicode_t right);
 
 /*! \endcond */
