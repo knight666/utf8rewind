@@ -17,30 +17,42 @@ public:
 
 };
 
-PERF_TEST_F(Database, Decompose)
+PERF_TEST_F(Database, QueryDecomposeNFD)
 {
-	char scratch[128] = { 0 };
-
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		const char* decomposition = database_querydecomposition(i, UnicodeProperty_Normalization_Decompose);
-		if (decomposition != nullptr)
-		{
-			memcpy(scratch, decomposition, strlen(decomposition));
-		}
+		m_output[i] = database_querydecomposition(i, UnicodeProperty_Normalization_Decompose);
 	}
 }
 
-PERF_TEST_F(Database, DecomposeCompatibility)
+PERF_TEST_F(Database, QueryDecomposeNFKD)
 {
-	char scratch[128] = { 0 };
-
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		const char* decomposition = database_querydecomposition(i, UnicodeProperty_Normalization_Compatibility_Decompose);
-		if (decomposition != nullptr)
-		{
-			memcpy(scratch, decomposition, strlen(decomposition));
-		}
+		m_output[i] = database_querydecomposition(i, UnicodeProperty_Normalization_Compatibility_Decompose);
+	}
+}
+
+PERF_TEST_F(Database, QueryDecomposeUppercase)
+{
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
+	{
+		m_output[i] = database_querydecomposition(i, UnicodeProperty_Uppercase);
+	}
+}
+
+PERF_TEST_F(Database, QueryDecomposeLowercase)
+{
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
+	{
+		m_output[i] = database_querydecomposition(i, UnicodeProperty_Lowercase);
+	}
+}
+
+PERF_TEST_F(Database, QueryDecomposeTitlecase)
+{
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
+	{
+		m_output[i] = database_querydecomposition(i, UnicodeProperty_Titlecase);
 	}
 }
