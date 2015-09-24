@@ -13,54 +13,34 @@ class Database
 
 public:
 
-	uint8_t m_output[MAX_LEGAL_UNICODE];
+	const char* m_output[MAX_LEGAL_UNICODE];
 
 };
 
-PERF_TEST_F(Database, QueryGeneralCategory)
+PERF_TEST_F(Database, Decompose)
 {
+	char scratch[128] = { 0 };
+
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		m_output[i] = database_queryproperty(i, UnicodeProperty_GeneralCategory);
+		const char* decomposition = database_querydecomposition(i, UnicodeProperty_Normalization_Decompose);
+		if (decomposition != nullptr)
+		{
+			memcpy(scratch, decomposition, strlen(decomposition));
+		}
 	}
 }
 
-PERF_TEST_F(Database, QueryCanonicalCombiningClass)
+PERF_TEST_F(Database, DecomposeCompatibility)
 {
-	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
-	{
-		m_output[i] = database_queryproperty(i, UnicodeProperty_CanonicalCombiningClass);
-	}
-}
+	char scratch[128] = { 0 };
 
-PERF_TEST_F(Database, QueryNFC)
-{
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		m_output[i] = database_queryproperty(i, UnicodeProperty_Normalization_Compose);
-	}
-}
-
-PERF_TEST_F(Database, QueryNFD)
-{
-	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
-	{
-		m_output[i] = database_queryproperty(i, UnicodeProperty_Normalization_Decompose);
-	}
-}
-
-PERF_TEST_F(Database, QueryNFKC)
-{
-	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
-	{
-		m_output[i] = database_queryproperty(i, UnicodeProperty_Normalization_Compatibility_Compose);
-	}
-}
-
-PERF_TEST_F(Database, QueryNFKD)
-{
-	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
-	{
-		m_output[i] = database_queryproperty(i, UnicodeProperty_Normalization_Compatibility_Decompose);
+		const char* decomposition = database_querydecomposition(i, UnicodeProperty_Normalization_Compatibility_Decompose);
+		if (decomposition != nullptr)
+		{
+			memcpy(scratch, decomposition, strlen(decomposition));
+		}
 	}
 }
