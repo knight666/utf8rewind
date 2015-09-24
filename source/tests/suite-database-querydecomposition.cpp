@@ -55,6 +55,78 @@ TEST(QueryDecomposition, AllCompatibilityDecompose)
 	}
 }
 
+TEST(QueryDecomposition, AllUppercase)
+{
+	char scratch[128] = { 0 };
+	char* dst_scratch = scratch;
+	size_t scratch_size = 127;
+
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
+	{
+		uint8_t length = database_querydecomposition2(&dst_scratch, &scratch_size, i, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr);
+
+		const char* value1 = scratch;
+		const char* value2 = database_querydecomposition(i, UnicodeProperty_Uppercase);
+		if (value2 != nullptr &&
+			strcmp(value1, value2))
+		{
+			int bleh = 0;
+		}
+
+		memset(scratch, 0, sizeof(scratch));
+		dst_scratch = scratch;
+		scratch_size = 127;
+	}
+}
+
+TEST(QueryDecomposition, AllLowercase)
+{
+	char scratch[128] = { 0 };
+	char* dst_scratch = scratch;
+	size_t scratch_size = 127;
+
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
+	{
+		uint8_t length = database_querydecomposition2(&dst_scratch, &scratch_size, i, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr);
+
+		const char* value1 = scratch;
+		const char* value2 = database_querydecomposition(i, UnicodeProperty_Lowercase);
+		if (value2 != nullptr &&
+			strcmp(value1, value2))
+		{
+			int bleh = 0;
+		}
+
+		memset(scratch, 0, sizeof(scratch));
+		dst_scratch = scratch;
+		scratch_size = 127;
+	}
+}
+
+TEST(QueryDecomposition, AllTitlecase)
+{
+	char scratch[128] = { 0 };
+	char* dst_scratch = scratch;
+	size_t scratch_size = 127;
+
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
+	{
+		uint8_t length = database_querydecomposition2(&dst_scratch, &scratch_size, i, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr);
+
+		const char* value1 = scratch;
+		const char* value2 = database_querydecomposition(i, UnicodeProperty_Titlecase);
+		if (value2 != nullptr &&
+			strcmp(value1, value2))
+		{
+			int bleh = 0;
+		}
+
+		memset(scratch, 0, sizeof(scratch));
+		dst_scratch = scratch;
+		scratch_size = 127;
+	}
+}
+
 TEST(QueryDecomposition, ComposeProperty)
 {
 	EXPECT_EQ(nullptr, database_querydecomposition(0x0000011A, UnicodeProperty_Normalization_Compose));
