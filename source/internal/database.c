@@ -28,6 +28,12 @@
 #include "../unicodedatabase.h"
 #include "codepoint.h"
 
+#define DECOMPOSE_INDEX1_SHIFT (12)
+#define DECOMPOSE_INDEX2_SHIFT (5)
+
+static const unicode_t DECOMPOSE_INDEX2_MASK = (1 << DECOMPOSE_INDEX1_SHIFT) - 1;
+static const unicode_t DECOMPOSE_DATA_MASK = (1 << DECOMPOSE_INDEX2_SHIFT) - 1;
+
 const char* database_querydecomposition(unicode_t codepoint, uint8_t property)
 {
 	const DecompositionRecord* record;
@@ -139,31 +145,19 @@ uint8_t database_querydecomposition2(
 	unicode_t codepoint,
 	const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray)
 {
-	// result = data[index2[index1[c >> INDEX1_SHIFT] + (c & INDEX2_MASK) >> INDEX2_SHIFT] + (c & DATA_MASK)];
-
-	size_t index;
 	size_t length;
-	size_t index1;
-	size_t index1_offset;
-	size_t index2;
-	size_t index2_offset;
-	size_t offset;
-
-	index1 = index1Array[codepoint >> 12];
-	index1_offset = index1 + ((codepoint & 0xFFF) >> 5);
-	index2 = index2Array[index1_offset];
-	index2_offset = index2 + (codepoint & 0x1F);
-	index = index2_offset;
-	offset = dataArray[index];
+	size_t index = index2Array[
+		index1Array[codepoint >> DECOMPOSE_INDEX1_SHIFT] +
+		((codepoint & DECOMPOSE_INDEX2_MASK) >> DECOMPOSE_INDEX2_SHIFT)] +
+			(codepoint & DECOMPOSE_DATA_MASK);
 
 	if (index == 0 ||
-		offset == 0)
+		dataArray[index] == 0)
 	{
 		return codepoint_write(codepoint, target, targetSize);
 	}
 
-	length = (offset & 0xFF000000) >> 24;
-	offset &= 0x00FFFFFF;
+	length = (dataArray[index] & 0xFF000000) >> 24;
 
 	if (*target != 0)
 	{
@@ -172,7 +166,7 @@ uint8_t database_querydecomposition2(
 			return 0;
 		}
 
-		memcpy(*target, CompressedStringData + offset, length);
+		memcpy(*target, CompressedStringData + (dataArray[index] & 0x00FFFFFF), length);
 
 		*target += length;
 		*targetSize -= length;

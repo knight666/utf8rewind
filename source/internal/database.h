@@ -71,13 +71,14 @@ enum QuickCheckResult
 	QuickCheckResult_No,
 };
 
-#define PROPERTY_BLOCK_SHIFT (5)
-static const unicode_t PROPERTY_INDEX_MASK = (1 << PROPERTY_BLOCK_SHIFT) - 1;
+#define PROPERTY_INDEX_SHIFT (5)
+
+static const unicode_t PROPERTY_DATA_MASK = (1 << PROPERTY_INDEX_SHIFT) - 1;
 
 #define PROPERTY_GET(_indexArray, _dataArray, _cp) \
 	(_dataArray)[ \
-		(_indexArray)[(_cp) >> PROPERTY_BLOCK_SHIFT] + \
-		((_cp) & PROPERTY_INDEX_MASK)]
+		(_indexArray)[(_cp) >> PROPERTY_INDEX_SHIFT] + \
+		((_cp) & PROPERTY_DATA_MASK)]
 
 #define PROPERTY_GET_GC(_cp) \
 	PROPERTY_GET(GeneralCategoryIndexPtr, GeneralCategoryDataPtr, _cp)
@@ -98,13 +99,6 @@ static const unicode_t PROPERTY_INDEX_MASK = (1 << PROPERTY_BLOCK_SHIFT) - 1;
 	PROPERTY_GET(QuickCheckNFKDIndexPtr, QuickCheckNFKDDataPtr, _cp)
 
 const char* database_querydecomposition(unicode_t codepoint, uint8_t property);
-
-#define DECOMPOSE_INDEX1_SHIFT (12)
-#define DECOMPOSE_INDEX2_SHIFT (7)
-
-static const unicode_t DECOMPOSE_INDEX1_MASK = (1 << DECOMPOSE_INDEX1_SHIFT) - 1;
-static const unicode_t DECOMPOSE_INDEX2_MASK = (1 << DECOMPOSE_INDEX2_SHIFT) - 1;
-static const unicode_t DECOMPOSE_DATA_MASK = 0;
 
 uint8_t database_querydecomposition2(
 	char** target, size_t* targetSize,
