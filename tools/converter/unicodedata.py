@@ -486,12 +486,6 @@ class Compression:
 class CompressionString:
 	def __init__(self, database):
 		self.database = database
-		self.chunk_size = 0
-		self.compressed_size = 0
-		self.uncompressed_size = 0
-		self.compression_ratio = 0.0
-		self.table_index = []
-		self.table_data = []
 
 	def process(self, field, chunkSize):
 		print('Compressing property "' + field + '" with a chunk size of ' + str(chunkSize) + '...')
@@ -499,27 +493,26 @@ class CompressionString:
 		self.chunk_size = chunkSize
 		self.compressed_size = 0
 		self.uncompressed_size = 0
-		self.table_index = []
-		self.table_data = [ 0 ]
-		
-		#for i in range(0, len(self.database.recordsOrdered), chunkSize):
-		#	chunk = []
-		#	for r in self.database.recordsOrdered[i:i + chunkSize]:
-		#		chunk.extend(r.__dict__[field])
-		#	convertedNFD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFD)
+		self.compression_ratio = 0.0
+		self.table_index2 = []
+		self.table_index1 = []
+		self.table_index1_data = []
+		self.table_data = ""
+		self.table_data_length = 0
 		
 		for r in self.database.recordsOrdered:
 			chunk = r.__dict__[field]
+			converted = libs.utf8.unicodeToUtf8Hex(chunk)
 			
-			if len(chunk) > 0:
+			if len(chunk) > 1:
 				offset = 0
 				index = 0
 				overlapping = False
 				
 				for t in range(len(self.table_data)):
-					if self.table_data[t] == chunk[offset]:
+					if self.table_data[t] == converted[offset]:
 						offset += 1
-						if offset == len(chunk):
+						if offset == len(converted):
 							overlapping = True
 							break
 					else:
@@ -532,53 +525,109 @@ class CompressionString:
 				
 					if len(self.table_data) > 0:
 						for t in range(len(self.table_data) - 1, 0):
-							if self.table_data[t] != chunk[offset] or offset + 1 == len(chunk):
+							if self.table_data1[t] != converted[offset] or offset + 1 == len(converted):
 								break
 							offset += 1
 						index = len(self.table_data) - offset
 				
-				print('codepoint ' + 'U+%X' % (r.codepoint))
-				print('chunk ' + str(chunk))
-				print('data_size ' + str(len(self.table_data)) + ' index_size ' + str(len(self.table_index)) + ' offset ' + str(offset) + ' index ' + str(index))
-				print('chunk_after ' + str(chunk[offset:]))
-				print('table_data ' + str(self.table_data))
-				#exit(1)
-				
-				self.table_index.append(index + 1)
-				self.table_data.extend(chunk[offset:])
-				
-				self.uncompressed_size += len(chunk)
+				"""if overlapping:
+					print('codepoint ' + 'U+%X' % (r.codepoint))
+					print('converted ' + str(converted))
+					print('data_size ' + str(len(self.table_data)) + ' index_size ' + str(len(self.table_index)) + ' offset ' + str(offset) + ' index ' + str(index))
+					print('uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(self.compressed_size))
+					print('chunk_after ' + str(converted[offset:]))
+					print('table_data ' + str(self.table_data))"""
+
+				chunk_length = len(re.findall('\\\\x?[^\\\\]+', converted))
+
+				self.table_index1.append((chunk_length << 24) + (index + 1))
+
+				self.table_data += converted[offset:]
+				self.table_data_length += len(re.findall('\\\\x?[^\\\\]+', converted[offset:]))
 			else:
-				self.table_index.append(0)
+				self.table_index1.append(0)
+
+			self.uncompressed_size += len(converted)
 		
-		self.compressed_size = len(self.table_index) + len(self.table_data)
+		for i in range(0, len(self.table_index1), chunkSize):
+			chunk = self.table_index1[i:i + chunkSize]
+
+			offset = 0
+			index = 0
+			overlapping = False
+
+			for t in range(len(self.table_index1_data)):
+				if self.table_index1_data[t] == chunk[offset]:
+					offset += 1
+					if offset == len(chunk):
+						overlapping = True
+						break
+				else:
+					index = t + 1
+					offset = 0
+
+			if not overlapping:
+				offset = 0
+				index = 0
+
+				if len(self.table_index1_data) > 0:
+					for t in range(len(self.table_index1_data) - 1, 0):
+						if self.table_index1_data[t] != chunk[offset] or offset + 1 == len(chunk):
+							break
+						offset += 1
+					index = len(self.table_index1_data) - offset
+
+			self.table_index2.append(index)
+			self.table_index1_data.extend(chunk[offset:])
+
+		self.compressed_size = len(self.table_index1) + len(self.table_index2) + len(self.table_data)
 		self.compression_ratio = (1.0 - (self.compressed_size / self.uncompressed_size)) * 100.0
 		print(field + ': uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(self.compressed_size) + ' savings ' + ('%.2f%%' % self.compression_ratio))
 
 	def render(self, header, name):
 		print('Rendering compressed data for "' + name + '"...')
 		
-		compressed_string = ""
-		for t in self.table_data:
-			compressed_string += libs.utf8.unicodeToUtf8Hex(t)
-		
 		sliced = libs.blobsplitter.BlobSplitter()
-		sliced.split(compressed_string, len(compressed_string))
+		sliced.split(self.table_data, self.table_data_length)
 		
 		header.newLine()
-		header.writeLine("const size_t " + name + "Index[" + str(len(self.table_index)) + "] = {")
+		header.writeLine("const size_t " + name + "Index2[" + str(len(self.table_index2)) + "] = {")
 		header.indent()
 		
 		count = 0
-		for c in self.table_index:
-			if (count % self.chunk_size) == 0:
+		for c in self.table_index2:
+			if (count % 16) == 0:
 				header.writeIndentation()
 			
 			header.write('%d,' % c)
 			
 			count += 1
-			if count != len(self.table_index):
-				if (count % self.chunk_size) == 0:
+			if count != len(self.table_index2):
+				if (count % 16) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.writeLine("const size_t* " + name + "Index2Ptr = " + name + "Index2;")
+		
+		header.newLine()
+
+		header.writeLine("const size_t " + name + "Index1[" + str(len(self.table_index1_data)) + "] = {")
+		header.indent()
+		
+		count = 0
+		for c in self.table_index1_data:
+			if (count % 16) == 0:
+				header.writeIndentation()
+			
+			header.write('0x%X,' % c)
+			
+			count += 1
+			if count != len(self.table_index1_data):
+				if (count % 16) == 0:
 					header.newLine()
 				else:
 					header.write(' ')
@@ -586,7 +635,7 @@ class CompressionString:
 		header.newLine()
 		header.outdent()
 		header.writeLine("};")
-		header.writeLine("const size_t* " + name + "IndexPtr = " + name + "Index;")
+		header.writeLine("const size_t* " + name + "Index1Ptr = " + name + "Index1;")
 
 		header.newLine()
 
@@ -608,6 +657,8 @@ class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
 		self.verbose = False
 		self.blob = ""
+		self.compressed = ""
+		self.compressed_size = 0
 		self.pageSize = 32767
 		self.total = 0
 		self.offset = 1
@@ -1078,13 +1129,6 @@ class Database(libs.unicode.UnicodeVisitor):
 	def writeSource(self, filepath):
 		print('Compressing code point properties...')
 		
-		compress_nfd = CompressionString(db)
-		compress_nfd.process('decomposedNFD', 32)
-		
-		"""
-		compress_nfkd = CompressionString(db)
-		compress_nfkd.process('decomposedNFKD', 32)
-		
 		compress_gc = Compression(db)
 		compress_gc.process('generalCategoryCombined', 32)
 		
@@ -1102,7 +1146,12 @@ class Database(libs.unicode.UnicodeVisitor):
 
 		compress_qc_nfkd = Compression(db)
 		compress_qc_nfkd.process('quickNFKD', 32)
-		"""
+
+		compress_nfd = CompressionString(db)
+		compress_nfd.process('decomposedNFD', 128)
+		
+		compress_nfkd = CompressionString(db)
+		compress_nfkd.process('decomposedNFKD', 128)
 		
 		print('Writing database to "' + os.path.realpath(filepath) + '"...')
 		
