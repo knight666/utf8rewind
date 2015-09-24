@@ -140,12 +140,11 @@ found:
 	return DecompositionData + record_found->offset;
 }
 
-uint8_t database_querydecomposition2(
-	char** target, size_t* targetSize,
+const char* database_querydecomposition2(
 	unicode_t codepoint,
-	const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray)
+	const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray,
+	uint8_t* length)
 {
-	size_t length;
 	size_t index = index2Array[
 		index1Array[codepoint >> DECOMPOSE_INDEX1_SHIFT] +
 		((codepoint & DECOMPOSE_INDEX2_MASK) >> DECOMPOSE_INDEX2_SHIFT)] +
@@ -154,25 +153,20 @@ uint8_t database_querydecomposition2(
 	if (index == 0 ||
 		dataArray[index] == 0)
 	{
-		return codepoint_write(codepoint, target, targetSize);
-	}
-
-	length = (dataArray[index] & 0xFF000000) >> 24;
-
-	if (*target != 0)
-	{
-		if (length > *targetSize)
+		if (length != 0)
 		{
-			return 0;
+			*length = 0;
 		}
 
-		memcpy(*target, CompressedStringData + (dataArray[index] & 0x00FFFFFF), length);
-
-		*target += length;
-		*targetSize -= length;
+		return 0;
 	}
 
-	return (uint8_t)length;
+	if (length != 0)
+	{
+		*length = (uint8_t)((dataArray[index] & 0xFF000000) >> 24);
+	}
+
+	return CompressedStringData + (dataArray[index] & 0x00FFFFFF);
 }
 
 unicode_t database_querycomposition(unicode_t left, unicode_t right)

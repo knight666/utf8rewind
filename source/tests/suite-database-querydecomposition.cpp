@@ -9,121 +9,81 @@ extern "C" {
 
 TEST(QueryDecomposition, AllDecompose)
 {
-	char scratch[128] = { 0 };
-	char* dst_scratch = scratch;
-	size_t scratch_size = 127;
-
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		uint8_t length = database_querydecomposition2(&dst_scratch, &scratch_size, i, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr);
-
-		const char* value1 = scratch;
+		uint8_t length = 0;
+		const char* value1 = database_querydecomposition2(i, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length);
 		const char* value2 = database_querydecomposition(i, UnicodeProperty_Normalization_Decompose);
-		if (value2 != nullptr &&
-			strcmp(value1, value2))
+
+		if (!(value1 == nullptr && value2 == nullptr) &&
+			strncmp(value1, value2, length))
 		{
 			int bleh = 0;
 		}
-
-		memset(scratch, 0, sizeof(scratch));
-		dst_scratch = scratch;
-		scratch_size = 127;
 	}
 }
 
 TEST(QueryDecomposition, AllCompatibilityDecompose)
 {
-	char scratch[128] = { 0 };
-	char* dst_scratch = scratch;
-	size_t scratch_size = 127;
-
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		uint8_t length = database_querydecomposition2(&dst_scratch, &scratch_size, i, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr);
-
-		const char* value1 = scratch;
+		uint8_t length = 0;
+		const char* value1 = database_querydecomposition2(i, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length);
 		const char* value2 = database_querydecomposition(i, UnicodeProperty_Normalization_Compatibility_Decompose);
-		if (value2 != nullptr &&
-			strcmp(value1, value2))
+
+		if (!(value1 == nullptr && value2 == nullptr) &&
+			strncmp(value1, value2, length))
 		{
 			int bleh = 0;
 		}
-
-		memset(scratch, 0, sizeof(scratch));
-		dst_scratch = scratch;
-		scratch_size = 127;
 	}
 }
 
 TEST(QueryDecomposition, AllUppercase)
 {
-	char scratch[128] = { 0 };
-	char* dst_scratch = scratch;
-	size_t scratch_size = 127;
-
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		uint8_t length = database_querydecomposition2(&dst_scratch, &scratch_size, i, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr);
-
-		const char* value1 = scratch;
+		uint8_t length = 0;
+		const char* value1 = database_querydecomposition2(i, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length);
 		const char* value2 = database_querydecomposition(i, UnicodeProperty_Uppercase);
-		if (value2 != nullptr &&
-			strcmp(value1, value2))
+
+		if (!(value1 == nullptr && value2 == nullptr) &&
+			strncmp(value1, value2, length))
 		{
 			int bleh = 0;
 		}
-
-		memset(scratch, 0, sizeof(scratch));
-		dst_scratch = scratch;
-		scratch_size = 127;
 	}
 }
 
 TEST(QueryDecomposition, AllLowercase)
 {
-	char scratch[128] = { 0 };
-	char* dst_scratch = scratch;
-	size_t scratch_size = 127;
-
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		uint8_t length = database_querydecomposition2(&dst_scratch, &scratch_size, i, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr);
-
-		const char* value1 = scratch;
+		uint8_t length = 0;
+		const char* value1 = database_querydecomposition2(i, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length);
 		const char* value2 = database_querydecomposition(i, UnicodeProperty_Lowercase);
-		if (value2 != nullptr &&
-			strcmp(value1, value2))
+
+		if (!(value1 == nullptr && value2 == nullptr) &&
+			strncmp(value1, value2, length))
 		{
 			int bleh = 0;
 		}
-
-		memset(scratch, 0, sizeof(scratch));
-		dst_scratch = scratch;
-		scratch_size = 127;
 	}
 }
 
 TEST(QueryDecomposition, AllTitlecase)
 {
-	char scratch[128] = { 0 };
-	char* dst_scratch = scratch;
-	size_t scratch_size = 127;
-
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		uint8_t length = database_querydecomposition2(&dst_scratch, &scratch_size, i, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr);
-
-		const char* value1 = scratch;
+		uint8_t length = 0;
+		const char* value1 = database_querydecomposition2(i, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length);
 		const char* value2 = database_querydecomposition(i, UnicodeProperty_Titlecase);
-		if (value2 != nullptr &&
-			strcmp(value1, value2))
+
+		if (!(value1 == nullptr && value2 == nullptr) &&
+			strncmp(value1, value2, length))
 		{
 			int bleh = 0;
 		}
-
-		memset(scratch, 0, sizeof(scratch));
-		dst_scratch = scratch;
-		scratch_size = 127;
 	}
 }
 

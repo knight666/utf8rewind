@@ -80,7 +80,6 @@ uint8_t decompose_initialize(
 
 uint8_t decompose_execute(DecomposeState* state)
 {
-	char decomposition[128];
 	unicode_t* src_codepoint;
 	unicode_t* dst_codepoint;
 	uint8_t* dst_canonical_combining_class;
@@ -243,17 +242,11 @@ uint8_t decompose_execute(DecomposeState* state)
 			{
 				/* Check database for decomposition */
 
-				char* src = decomposition;
 				uint8_t src_size;
-				size_t src_length = 127;
-				
-				memset(decomposition, 0, sizeof(decomposition));
-
-				src_size = database_querydecomposition2(
-					&src, &src_length,
+				const char* src = database_querydecomposition2(
 					decoded_codepoint,
-					state->property_index1, state->property_index2, state->property_data);
-				src = decomposition;
+					state->property_index1, state->property_index2, state->property_data,
+					&src_size);
 
 				while (src_size > 0)
 				{
