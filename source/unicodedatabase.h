@@ -89,6 +89,18 @@ extern const uint32_t* NFKDIndex1Ptr;
 extern const uint32_t* NFKDIndex2Ptr;
 extern const uint32_t* NFKDDataPtr;
 
+extern const uint32_t* UppercaseIndex1Ptr;
+extern const uint32_t* UppercaseIndex2Ptr;
+extern const uint32_t* UppercaseDataPtr;
+
+extern const uint32_t* LowercaseIndex1Ptr;
+extern const uint32_t* LowercaseIndex2Ptr;
+extern const uint32_t* LowercaseDataPtr;
+
+extern const uint32_t* TitlecaseIndex1Ptr;
+extern const uint32_t* TitlecaseIndex2Ptr;
+extern const uint32_t* TitlecaseDataPtr;
+
 extern const char* CompressedStringData;
 extern const size_t CompressedStringDataLength;
 

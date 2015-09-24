@@ -1181,6 +1181,15 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		compress_nfkd = CompressionString(db)
 		compress_nfkd.process('decomposedNFKD', 32, 128)
+
+		compress_uppercase = CompressionString(db)
+		compress_uppercase.process('uppercase', 32, 128)
+		
+		compress_lowercase = CompressionString(db)
+		compress_lowercase.process('lowercase', 32, 128)
+
+		compress_titlecase = CompressionString(db)
+		compress_titlecase.process('titlecase', 32, 128)
 		
 		print('Writing database to "' + os.path.realpath(filepath) + '"...')
 		
@@ -1228,7 +1237,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.writeLine("#include \"unicodedatabase.h\"")
 		header.newLine()
 		
-		# quick check records
+		# quick check
 
 		compress_gc.render(header, 'GeneralCategory')
 		header.newLine()
@@ -1248,7 +1257,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		compress_qc_nfkd.render(header, 'QuickCheckNFKD')
 		header.newLine()
 		
-		# decomposition records
+		# decomposition
 
 		compress_nfd.render(header, 'NFD')
 		header.newLine()
@@ -1256,14 +1265,27 @@ class Database(libs.unicode.UnicodeVisitor):
 		compress_nfkd.render(header, 'NFKD')
 		header.newLine()
 
+		# case mapping
+
+		compress_uppercase.render(header, 'Uppercase')
+		header.newLine()
+		
+		compress_lowercase.render(header, 'Lowercase')
+		header.newLine()
+
+		compress_titlecase.render(header, 'Titlecase')
+		header.newLine()
+
+		# decomposition
+
 		self.writeDecompositionRecords(header, nfd_records, "NFD", "offsetNFD")
 		self.writeDecompositionRecords(header, nfkd_records, "NFKD", "offsetNFKD")
 		
-		# composition records
+		# composition
 		
 		self.writeCompositionRecords(header)
 		
-		# case mapping records
+		# case mapping
 		
 		self.writeDecompositionRecords(header, uppercase_records, "Uppercase", "offsetUppercase")
 		self.writeDecompositionRecords(header, lowercase_records, "Lowercase", "offsetLowercase")
