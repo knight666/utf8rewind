@@ -40,11 +40,17 @@ typedef struct {
 	size_t src_size;
 	char* dst;
 	size_t dst_size;
-	uint8_t property;
 	uint8_t last_general_category;
+	const uint32_t* property_index1;
+	const uint32_t* property_index2;
+	const uint32_t* property_data;
 } CaseMappingState;
 
-uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property);
+uint8_t casemapping_initialize(
+	CaseMappingState* state,
+	const char* input, size_t inputSize,
+	char* target, size_t targetSize,
+	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData);
 
 size_t casemapping_execute(CaseMappingState* state);
 

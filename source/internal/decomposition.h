@@ -44,7 +44,6 @@ typedef struct {
 	const uint32_t* property_index1;
 	const uint32_t* property_index2;
 	const uint32_t* property_data;
-	uint8_t property;
 	unicode_t cache_codepoint[STREAM_BUFFER_MAX];
 	uint8_t cache_canonical_combining_class[STREAM_BUFFER_MAX];
 	uint8_t cache_current;
