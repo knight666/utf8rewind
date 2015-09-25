@@ -54,8 +54,6 @@ uint8_t decompose_initialize(
 
 	if (compatibility == 1)
 	{
-		state->property = UnicodeProperty_Normalization_Compatibility_Decompose;
-
 		state->property_index1 = NFKDIndex1Ptr;
 		state->property_index2 = NFKDIndex2Ptr;
 		state->property_data = NFKDDataPtr;
@@ -65,8 +63,6 @@ uint8_t decompose_initialize(
 	}
 	else
 	{
-		state->property = UnicodeProperty_Normalization_Decompose;
-
 		state->property_index1 = NFDIndex1Ptr;
 		state->property_index2 = NFDIndex2Ptr;
 		state->property_data = NFDDataPtr;

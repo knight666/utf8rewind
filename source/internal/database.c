@@ -26,7 +26,6 @@
 #include "database.h"
 
 #include "../unicodedatabase.h"
-#include "codepoint.h"
 
 #define DECOMPOSE_INDEX1_SHIFT (12)
 #define DECOMPOSE_INDEX2_SHIFT (5)
