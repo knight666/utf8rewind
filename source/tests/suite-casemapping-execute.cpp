@@ -15,12 +15,14 @@ TEST(CaseMappingExecute, Initialize)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Titlecase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
 	EXPECT_EQ(i, state.src);
 	EXPECT_EQ(is, state.src_size);
 	EXPECT_EQ(o, state.dst);
 	EXPECT_EQ(os, state.dst_size);
-	EXPECT_EQ(UnicodeProperty_Titlecase, state.property);
+	EXPECT_EQ(TitlecaseIndex1Ptr, state.property_index1);
+	EXPECT_EQ(TitlecaseIndex2Ptr, state.property_index2);
+	EXPECT_EQ(TitlecaseDataPtr, state.property_data);
 }
 
 TEST(CaseMappingExecute, BasicLatinSingleLowercase)
@@ -31,7 +33,7 @@ TEST(CaseMappingExecute, BasicLatinSingleLowercase)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -54,7 +56,7 @@ TEST(CaseMappingExecute, BasicLatinSingleUppercase)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -77,7 +79,7 @@ TEST(CaseMappingExecute, BasicLatinSingleTitlecase)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Titlecase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -100,7 +102,7 @@ TEST(CaseMappingExecute, BasicLatinSingleUnaffected)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -121,7 +123,7 @@ TEST(CaseMappingExecute, BasicLatinSingleAmountOfBytes)
 	const char* i = "!";
 	size_t is = strlen(i);
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UnicodeProperty_Uppercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -142,7 +144,7 @@ TEST(CaseMappingExecute, BasicLatinSingleNotEnoughSpace)
 	char o[256] = { 0 };
 	size_t os = 0;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -163,7 +165,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleLowercase)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -202,7 +204,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleUppercase)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -257,7 +259,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleTitlecase)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Titlecase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -304,7 +306,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleUnaffected)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Titlecase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -349,7 +351,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleAmountOfBytes)
 	const char* i = "bar";
 	size_t is = strlen(i);
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UnicodeProperty_Lowercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -386,7 +388,7 @@ TEST(CaseMappingExecute, BasicLatinMultipleNotEnoughSpace)
 	char o[256] = { 0 };
 	size_t os = 3;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -431,7 +433,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleLowercase)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
 	EXPECT_EQ(2, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 2, state.src);
@@ -456,7 +458,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUppercase)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
 
 	EXPECT_EQ(2, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 2, state.src);
@@ -481,7 +483,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleTitlecase)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Titlecase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
 
 	EXPECT_EQ(2, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 2, state.src);
@@ -506,7 +508,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUnaffected)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
 	EXPECT_EQ(4, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 4, state.src);
@@ -529,7 +531,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleAmountOfBytes)
 	const char* i = "\xF0\x9F\x96\xB4";
 	size_t is = strlen(i);
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UnicodeProperty_Lowercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
 	EXPECT_EQ(4, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 4, state.src);
@@ -552,7 +554,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleNotEnoughSpace)
 	char o[256] = { 0 };
 	size_t os = 3;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
 
 	EXPECT_EQ(4, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 4, state.src);
@@ -576,7 +578,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleLowercase)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
 	EXPECT_EQ(2, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 2, state.src);
@@ -618,7 +620,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUppercase)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
 
 	EXPECT_EQ(2, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 2, state.src);
@@ -652,7 +654,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleTitlecase)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Titlecase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
 
 	EXPECT_EQ(2, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 2, state.src);
@@ -694,7 +696,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUnaffected)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
 
 	EXPECT_EQ(4, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 4, state.src);
@@ -742,7 +744,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleAmountOfBytes)
 	const char* i = "\xC4\xB0\xCE\x90\xD0\x9A";
 	size_t is = strlen(i);
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UnicodeProperty_Lowercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
 	EXPECT_EQ(2, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 2, state.src);
@@ -782,7 +784,7 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleNotEnoughSpace)
 	char o[256] = { 0 };
 	size_t os = 9;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
 
 	EXPECT_EQ(2, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 2, state.src);
@@ -817,7 +819,7 @@ TEST(CaseMappingExecute, InvalidCodepointSingle)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -838,7 +840,7 @@ TEST(CaseMappingExecute, InvalidCodepointSingleAmountOfBytes)
 	const char* i = "\xF4\x89";
 	size_t is = strlen(i);
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UnicodeProperty_Titlecase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
 
 	EXPECT_EQ(2, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 2, state.src);
@@ -859,7 +861,7 @@ TEST(CaseMappingExecute, InvalidCodepointSingleNotEnoughSpace)
 	char o[256] = { 0 };
 	size_t os = 2;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Uppercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -882,7 +884,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultiple)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -919,7 +921,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultipleAmountOfBytes)
 	const char* i = "\xDA\xE0\x88\xDE\xCB";
 	size_t is = strlen(i);
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UnicodeProperty_Lowercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);
@@ -964,7 +966,7 @@ TEST(CaseMappingExecute, InvalidCodepointMultipleNotEnoughSpace)
 	char o[256] = { 0 };
 	size_t os = 7;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UnicodeProperty_Lowercase));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
 	EXPECT_EQ(1, casemapping_readcodepoint(&state));
 	EXPECT_EQ(i + 1, state.src);

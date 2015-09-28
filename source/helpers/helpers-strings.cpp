@@ -466,7 +466,7 @@ namespace helpers {
 
 	void canonicalCombiningClass(std::stringstream& target, unicode_t codepoint)
 	{
-		target << (int)database_queryproperty(codepoint, UnicodeProperty_CanonicalCombiningClass);
+		target << (int)PROPERTY_GET_CCC(codepoint);
 	}
 
 	std::string canonicalCombiningClass(unicode_t codepoint)
@@ -515,7 +515,32 @@ namespace helpers {
 
 	void quickCheck(std::stringstream& target, unicode_t codepoint, uint8_t type)
 	{
-		uint8_t qc = database_queryproperty(codepoint, type);
+		uint8_t qc;
+
+		switch (type)
+		{
+
+		case UnicodeProperty_Normalization_Compose:
+			qc = PROPERTY_GET_NFC(codepoint);
+			break;
+
+		case UnicodeProperty_Normalization_Decompose:
+			qc = PROPERTY_GET_NFD(codepoint);
+			break;
+
+		case UnicodeProperty_Normalization_Compatibility_Compose:
+			qc = PROPERTY_GET_NFKC(codepoint);
+			break;
+
+		case UnicodeProperty_Normalization_Compatibility_Decompose:
+			qc = PROPERTY_GET_NFKD(codepoint);
+			break;
+
+		default:
+			qc = QuickCheckResult_Yes;
+			break;
+
+		}
 
 		switch (qc)
 		{
@@ -609,6 +634,36 @@ namespace helpers {
 
 			result << "[Codepoints]" << std::endl;
 			result << "    Actual: " << "\"" << identifiable(textActual) << "\"" << std::endl;
+			result << "  Expected: " << "\"" << identifiable(textExpected) << "\"" << std::endl;
+
+			return result;
+		}
+	}
+
+	::testing::AssertionResult CompareUtf8LengthStrings(
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_, const char* expressionLength GTEST_ATTRIBUTE_UNUSED_,
+		const char* textExpected, const char* textActual, size_t length)
+	{
+		if (!strncmp(textActual, textExpected, length))
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << "String mismatch" << std::endl;
+
+			result << std::endl;
+
+			result << "[UTF-8]" << std::endl;
+			result << "    Actual: " << "\"" << printable(std::string(textActual, length)) << "\"" << std::endl;
+			result << "  Expected: " << "\"" << printable(textExpected) << "\"" << std::endl;
+
+			result << std::endl;
+
+			result << "[Codepoints]" << std::endl;
+			result << "    Actual: " << "\"" << identifiable(std::string(textActual, length)) << "\"" << std::endl;
 			result << "  Expected: " << "\"" << identifiable(textExpected) << "\"" << std::endl;
 
 			return result;

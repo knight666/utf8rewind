@@ -492,9 +492,8 @@ size_t utf8towide(const char* input, size_t inputSize, wchar_t* target, size_t t
 #endif
 }
 
-const char* utf8seek(const char* text, const char* textStart, off_t offset, int direction)
+const char* utf8seek(const char* text, size_t textSize, const char* textStart, off_t offset, int direction)
 {
-	size_t text_length;
 	const char* text_end;
 
 	if (text == 0 ||
@@ -503,8 +502,7 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 		return text;
 	}
 
-	text_length = strlen(textStart);
-	text_end = textStart + text_length;
+	text_end = textStart + textSize;
 
 	switch (direction)
 	{
@@ -517,11 +515,11 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 			}
 			else if (offset > 0)
 			{
-				return seeking_forward(text, text_end, text_length, offset);
+				return seeking_forward(text, text_end, textSize, offset);
 			}
 			else
 			{
-				return seeking_rewind(textStart, text, text_length, offset);
+				return seeking_rewind(textStart, text, textSize, offset);
 			}
 
 		} break;
@@ -533,12 +531,12 @@ const char* utf8seek(const char* text, const char* textStart, off_t offset, int 
 				return text;
 			}
 
-			return seeking_forward(textStart, text_end, text_length, offset);
+			return seeking_forward(textStart, text_end, textSize, offset);
 
 		} break;
 
 	case SEEK_END:
-		return seeking_rewind(textStart, text_end, text_length, -offset);
+		return seeking_rewind(textStart, text_end, textSize, -offset);
 
 	default:
 		return text;
@@ -563,7 +561,7 @@ size_t utf8toupper(
 		&state,
 		input, inputSize,
 		target, targetSize,
-		UnicodeProperty_Uppercase))
+		UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr))
 	{
 		UTF8_SET_ERROR(NONE);
 
@@ -617,7 +615,7 @@ size_t utf8tolower(
 		&state,
 		input, inputSize,
 		target, targetSize,
-		UnicodeProperty_Lowercase))
+		LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr))
 	{
 		UTF8_SET_ERROR(NONE);
 
@@ -670,7 +668,7 @@ size_t utf8totitle(
 		&state,
 		input, inputSize,
 		target, targetSize,
-		UnicodeProperty_Titlecase))
+		TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr))
 	{
 		UTF8_SET_ERROR(NONE);
 
@@ -702,20 +700,21 @@ size_t utf8totitle(
 			The first letter of every word should be titlecase, the rest should
 			be converted to lowercase.
 
-			Note that the result is not guaranteed to be grammatically correct.
-		*/
-
-		if (state.property == UnicodeProperty_Titlecase)
+		if (state.property_data == TitlecaseDataPtr)
 		{
 			if ((state.last_general_category & GeneralCategory_Letter) != 0)
 			{
-				state.property = UnicodeProperty_Lowercase;
+				state.property_index1 = LowercaseIndex1Ptr;
+				state.property_index2 = LowercaseIndex2Ptr;
+				state.property_data = LowercaseDataPtr;
 			}
 		}
 		else if (
 			(state.last_general_category & GeneralCategory_Letter) == 0)
 		{
-			state.property = UnicodeProperty_Titlecase;
+			state.property_index1 = TitlecaseIndex1Ptr;
+			state.property_index2 = TitlecaseIndex2Ptr;
+			state.property_data = TitlecaseDataPtr;
 		}
 
 		state.total_bytes_needed += converted;
@@ -736,6 +735,8 @@ uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size
 	unicode_t decoded;
 	uint8_t canonical_class;
 	uint8_t quick_check;
+	const size_t* property_index;
+	const uint8_t* property_data;
 
 	/* Validate input and flags */
 
@@ -746,187 +747,87 @@ uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size
 		goto end;
 	}
 
-	/* Process input */
+	/* Get properties */
 
 	if ((flags & UTF8_NORMALIZE_COMPOSE) != 0)
 	{
-		uint8_t property =
-			((flags & UTF8_NORMALIZE_COMPATIBILITY) != 0)
-			? UnicodeProperty_Normalization_Compatibility_Compose
-			: UnicodeProperty_Normalization_Compose;
-
-		while (src_size > 0)
+		if ((flags & UTF8_NORMALIZE_COMPATIBILITY) != 0)
 		{
-			/* Read codepoint at cursor */
-
-			uint8_t read = codepoint_read(src, src_size, &decoded);
-			if (read == 0)
-			{
-				break;
-			}
-
-			/* Get canonical combining class and quick check value */
-
-			if ((decoded <= MAX_LATIN_1 && (flags & UTF8_NORMALIZE_COMPATIBILITY) == 0) ||
-				decoded <= MAX_BASIC_LATIN)
-			{
-				/* Basic Latin and Latin-1 are already composed, except in compatibility mode */
-
-				canonical_class = 0;
-				quick_check = QuickCheckResult_Yes;
-			}
-			else if (
-				decoded >= HANGUL_S_FIRST &&
-				decoded <= HANGUL_S_LAST)
-			{
-				/* Hangul syllables are already composed */
-
-				canonical_class = 0;
-				quick_check = QuickCheckResult_Yes;
-			}
-			else if (
-				decoded >= HANGUL_JAMO_FIRST &&
-				decoded <= HANGUL_JAMO_LAST)
-			{
-				/* Hangul Jamo */
-
-				canonical_class = 0;
-
-				/* Check for Hangul V or T */
-
-				if ((decoded >= HANGUL_V_FIRST && decoded <= HANGUL_V_LAST) ||
-					(decoded >= HANGUL_T_FIRST && decoded <= HANGUL_T_LAST))
-				{
-					quick_check = QuickCheckResult_Maybe;
-				}
-				else
-				{
-					quick_check = QuickCheckResult_Yes;
-				}
-			}
-			else
-			{
-				/* Get codepoint properties from database */
-
-				canonical_class = database_queryproperty(decoded, UnicodeProperty_CanonicalCombiningClass);
-				quick_check = database_queryproperty(decoded, property);
-			}
-
-			/* Compare CCC to previous CCC */
-
-			if (last_canonical_class > canonical_class &&
-				canonical_class > 0)
-			{
-				result = UTF8_NORMALIZATION_RESULT_NO;
-
-				break;
-			}
-
-			/* Compare quick check value */
-
-			if (quick_check == QuickCheckResult_No)
-			{
-				result = UTF8_NORMALIZATION_RESULT_NO;
-
-				break;
-			}
-			else if (quick_check == QuickCheckResult_Maybe)
-			{
-				result = UTF8_NORMALIZATION_RESULT_MAYBE;
-			}
-
-			/* Append to offset */
-
-			if (result != UTF8_NORMALIZATION_RESULT_MAYBE)
-			{
-				found_offset += read;
-			}
-
-			last_canonical_class = canonical_class;
-
-			src += read;
-			src_size -= read;
+			property_index = QuickCheckNFKCIndexPtr;
+			property_data = QuickCheckNFKCDataPtr;
+		}
+		else
+		{
+			property_index = QuickCheckNFCIndexPtr;
+			property_data = QuickCheckNFCDataPtr;
 		}
 	}
 	else
 	{
-		uint8_t property =
-			((flags & UTF8_NORMALIZE_COMPATIBILITY) != 0)
-			? UnicodeProperty_Normalization_Compatibility_Decompose
-			: UnicodeProperty_Normalization_Decompose;
-
-		while (src_size > 0)
+		if ((flags & UTF8_NORMALIZE_COMPATIBILITY) != 0)
 		{
-			/* Read codepoint at cursor */
-
-			uint8_t read = codepoint_read(src, src_size, &decoded);
-			if (read == 0)
-			{
-				break;
-			}
-
-			/* Get canonical combining class and quick check value */
-
-			if (decoded <= MAX_BASIC_LATIN ||
-				(decoded >= HANGUL_JAMO_FIRST && decoded <= HANGUL_JAMO_LAST))
-			{
-				/* Basic Latin and Hangul Jamo are already decomposed */
-
-				canonical_class = 0;
-				quick_check = QuickCheckResult_Yes;
-			}
-			else if (
-				decoded >= HANGUL_S_FIRST &&
-				decoded <= HANGUL_S_LAST)
-			{
-				/* Hangul syllables must be decomposed */
-
-				canonical_class = 0;
-				quick_check = QuickCheckResult_No;
-			}
-			else
-			{
-				/* Get codepoint properties from database */
-
-				canonical_class = database_queryproperty(decoded, UnicodeProperty_CanonicalCombiningClass);
-				quick_check = database_queryproperty(decoded, property);
-			}
-
-			/* Compare CCC to previous CCC */
-
-			if (last_canonical_class > canonical_class &&
-				canonical_class > 0)
-			{
-				result = UTF8_NORMALIZATION_RESULT_NO;
-
-				break;
-			}
-
-			/* Compare quick check value */
-
-			if (quick_check == QuickCheckResult_No)
-			{
-				result = UTF8_NORMALIZATION_RESULT_NO;
-
-				break;
-			}
-			else if (quick_check == QuickCheckResult_Maybe)
-			{
-				result = UTF8_NORMALIZATION_RESULT_MAYBE;
-			}
-
-			/* Append to offset */
-
-			if (result != UTF8_NORMALIZATION_RESULT_MAYBE)
-			{
-				found_offset += read;
-			}
-
-			last_canonical_class = canonical_class;
-
-			src += read;
-			src_size -= read;
+			property_index = QuickCheckNFKDIndexPtr;
+			property_data = QuickCheckNFKDDataPtr;
 		}
+		else
+		{
+			property_index = QuickCheckNFDIndexPtr;
+			property_data = QuickCheckNFDDataPtr;
+		}
+	}
+
+	/* Process input */
+
+	while (src_size > 0)
+	{
+		/* Read codepoint at cursor */
+
+		uint8_t read = codepoint_read(src, src_size, &decoded);
+		if (read == 0)
+		{
+			break;
+		}
+
+		/* Get canonical combining class and quick check value */
+
+		canonical_class = PROPERTY_GET_CCC(decoded);
+		quick_check = PROPERTY_GET(property_index, property_data, decoded);
+
+		/* Compare CCC to previous CCC */
+
+		if (last_canonical_class > canonical_class &&
+			canonical_class > 0)
+		{
+			result = UTF8_NORMALIZATION_RESULT_NO;
+
+			break;
+		}
+
+		/* Compare quick check value */
+
+		if (quick_check == QuickCheckResult_No)
+		{
+			result = UTF8_NORMALIZATION_RESULT_NO;
+
+			break;
+		}
+		else if (
+			quick_check == QuickCheckResult_Maybe)
+		{
+			result = UTF8_NORMALIZATION_RESULT_MAYBE;
+		}
+
+		/* Append to offset */
+
+		if (result != UTF8_NORMALIZATION_RESULT_MAYBE)
+		{
+			found_offset += read;
+		}
+
+		last_canonical_class = canonical_class;
+
+		src += read;
+		src_size -= read;
 	}
 
 end:
@@ -1036,7 +937,7 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 				for (i = 0; i < stream[1].current; ++i)
 				{
-					*dst_qc++ = database_queryproperty(*src_codepoint, compose_state.property);
+					*dst_qc++ = PROPERTY_GET(compose_state.qc_index, compose_state.qc_data, *src_codepoint);
 					*dst_ccc++ = *src_ccc++;
 					*dst_codepoint++ = *src_codepoint++;
 				}
