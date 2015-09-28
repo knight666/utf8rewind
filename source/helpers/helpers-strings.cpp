@@ -640,6 +640,36 @@ namespace helpers {
 		}
 	}
 
+	::testing::AssertionResult CompareUtf8LengthStrings(
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_, const char* expressionLength GTEST_ATTRIBUTE_UNUSED_,
+		const char* textExpected, const char* textActual, size_t length)
+	{
+		if (!strncmp(textActual, textExpected, length))
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << "String mismatch" << std::endl;
+
+			result << std::endl;
+
+			result << "[UTF-8]" << std::endl;
+			result << "    Actual: " << "\"" << printable(std::string(textActual, length)) << "\"" << std::endl;
+			result << "  Expected: " << "\"" << printable(textExpected) << "\"" << std::endl;
+
+			result << std::endl;
+
+			result << "[Codepoints]" << std::endl;
+			result << "    Actual: " << "\"" << identifiable(std::string(textActual, length)) << "\"" << std::endl;
+			result << "  Expected: " << "\"" << identifiable(textExpected) << "\"" << std::endl;
+
+			return result;
+		}
+	}
+
 	::testing::AssertionResult CompareOffsets(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_, const char* expressionCount GTEST_ATTRIBUTE_UNUSED_,
 		const char* offsetExpected, const char* offsetActual, const char* offsetStart)
