@@ -29,26 +29,16 @@ class UnicodeMapping:
 		self.decomposedNFKD = []
 		self.compositionPairs = dict()
 		self.compositionExcluded = False
-		self.offsetNFC = 0
-		self.lengthNFC = 0
-		self.offsetNFD = 0
-		self.lengthNFD = 0
-		self.offsetNFKC = 0
-		self.lengthNFKC = 0
-		self.offsetNFKD = 0
-		self.lengthNFKD = 0
+		self.quickNFC = 0
+		self.quickNFD = 0
+		self.quickNFKC = 0
+		self.quickNFKD = 0
 		self.numericType = "NumericType_None"
 		self.numericValue = 0
 		self.bidiMirrored = False
 		self.uppercase = []
 		self.lowercase = []
 		self.titlecase = []
-		self.offsetUppercase = 0
-		self.lengthUppercase = 0
-		self.offsetLowercase = 0
-		self.lengthLowercase = 0
-		self.offsetTitlecase = 0
-		self.lengthTitlecase = 0
 		self.block = None
 	
 	def decomposedToString(self):
@@ -301,20 +291,6 @@ class UnicodeMapping:
 			else:
 				print('compose failed, missing ' + hex(c) + ' in database.')
 	
-	def caseMapping(self):
-		if self.uppercase:
-			converted = libs.utf8.unicodeToUtf8Hex(self.uppercase)
-			self.offsetUppercase = self.db.addTranslation(converted + "\\x00")
-			self.lengthUppercase = self.db.translationLength(converted)
-		if self.lowercase:
-			converted = libs.utf8.unicodeToUtf8Hex(self.lowercase)
-			self.offsetLowercase = self.db.addTranslation(converted + "\\x00")
-			self.lengthLowercase = self.db.translationLength(converted)
-		if self.titlecase:
-			converted = libs.utf8.unicodeToUtf8Hex(self.titlecase)
-			self.offsetTitlecase = self.db.addTranslation(converted + "\\x00")
-			self.lengthTitlecase = self.db.translationLength(converted)
-	
 	def codepointsToString(self, values):
 		result = ""
 		
@@ -369,11 +345,328 @@ class QuickCheckRecord:
 		self.count = 0
 		self.end = 0
 		self.value = 0
+		self.compressed_size = 0
+		self.uncompressed_size = 0
+
+class Compression:
+	def __init__(self, database):
+		self.database = database
+		self.chunk_size = 0
+		self.compressed_size = 0
+		self.uncompressed_size = 0
+		self.compression_ratio = 0.0
+		self.table_index = []
+		self.table_data = []
+
+	def process(self, field, chunkSize):
+		print('Compressing property "' + field + '" with a chunk size of ' + str(chunkSize) + '...')
+
+		self.chunk_size = chunkSize
+		self.compressed_size = 0
+		self.uncompressed_size = 0
+		self.table_index = []
+		self.table_data = []
+
+		for i in range(0, len(self.database.recordsOrdered), chunkSize):
+			chunk = []
+			for r in self.database.recordsOrdered[i:i + chunkSize]:
+				chunk.append(r.__dict__[field])
+
+			offset = 0
+			index = 0
+			overlapping = False
+
+			for t in range(len(self.table_data)):
+				if self.table_data[t] == chunk[offset]:
+					offset += 1
+					if offset == len(chunk):
+						overlapping = True
+						break
+				else:
+					index = t + 1
+					offset = 0
+
+			if not overlapping:
+				offset = 0
+				index = 0
+
+				if len(self.table_data) > 0:
+					for t in range(len(self.table_data) - 1, 0):
+						if self.table_data[t] != chunk[offset] or offset + 1 == len(chunk):
+							break
+						offset += 1
+					index = len(self.table_data) - offset
+
+			"""if len(self.table_index) == 396:
+				print('chunk ' + str(chunk))
+				print('overlapping ' + str(overlapping))
+				print('data_size ' + str(len(self.table_data)) + ' index_size ' + str(len(self.table_index)) + ' offset ' + str(offset) + ' index ' + str(index))
+				print('chunk_after ' + str(chunk[offset:]))
+				print('table_chunk ' + str(self.table_data[index:index+32]))
+				print('table_before ' + str(self.table_data))
+				#exit(0)"""
+
+			self.table_index.append(index)
+			self.table_data.extend(chunk[offset:])
+
+			self.uncompressed_size += len(chunk)
+
+		self.compressed_size = len(self.table_index) + len(self.table_data)
+		self.compression_ratio = (1.0 - (self.compressed_size / self.uncompressed_size)) * 100.0
+		print(field + ': uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(self.compressed_size) + ' savings ' + ('%.2f%%' % self.compression_ratio))
+
+	def render(self, header, name):
+		print('Rendering compressed data for "' + name + '"...')
+
+		header.newLine()
+		header.writeLine("const size_t " + name + "Index[" + str(len(self.table_index)) + "] = {")
+		header.indent()
+
+		count = 0
+		for c in self.table_index:
+			if (count % self.chunk_size) == 0:
+				header.writeIndentation()
+			
+			header.write('%d,' % c)
+			
+			count += 1
+			if count != len(self.table_index):
+				if (count % self.chunk_size) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.writeLine("const size_t* " + name + "IndexPtr = " + name + "Index;")
+
+		header.newLine()
+
+		header.writeLine("const uint8_t " + name + "Data[" + str(len(self.table_data)) + "] = {")
+		header.indent()
+
+		count = 0
+		for c in self.table_data:
+			if (count % self.chunk_size) == 0:
+				header.writeIndentation()
+			
+			header.write('0x%02X,' % c)
+			
+			count += 1
+			if count != len(self.table_data):
+				if (count % self.chunk_size) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.write("const uint8_t* " + name + "DataPtr = " + name + "Data;")
+
+class CompressionString:
+	def __init__(self, database):
+		self.database = database
+
+	def process(self, field, chunk1Size, chunk2Size):
+		print('Compressing property "' + field + '" with chunk sizes of ' + str(chunk1Size) + ' and ' + str(chunk2Size) + '...')
+
+		self.compressed_size = 0
+		self.uncompressed_size = 0
+		self.compression_ratio = 0.0
+		self.table_index2 = []
+		self.table_index1 = []
+		self.table_index1_compressed = []
+		self.table_data = []
+		self.table_data_compressed = []
+		
+		for r in self.database.recordsOrdered:
+			chunk = r.__dict__[field]
+			converted = libs.utf8.unicodeToUtf8Hex(chunk)
+			
+			if len(chunk) > 1 or (len(chunk) == 1 and chunk[0] != r.codepoint):
+				offset = 0
+				index = 0
+				overlapping = False
+				
+				for t in range(len(self.database.compressed)):
+					if self.database.compressed[t] == converted[offset]:
+						offset += 1
+						if offset == len(converted):
+							overlapping = True
+							break
+					else:
+						index = t + 1
+						offset = 0
+				
+				if not overlapping:
+					offset = 0
+					index = 0
+				
+					if len(self.database.compressed) > 0:
+						for t in range(len(self.database.compressed) - 1, 0):
+							if self.database.compressed1[t] != converted[offset] or offset + 1 == len(converted):
+								break
+							offset += 1
+						index = len(self.database.compressed) - offset
+				
+				chunk_length = len(re.findall('\\\\x?[^\\\\]+', converted))
+
+				self.table_data.append((chunk_length << 24) + (index / 4))
+
+				self.database.compressed += converted[offset:]
+				self.database.compressed_length += len(re.findall('\\\\x?[^\\\\]+', converted[offset:]))
+			else:
+				self.table_data.append(0)
+
+		for i in range(0, len(self.table_data), chunk1Size):
+			chunk = self.table_data[i:i + chunk1Size]
+
+			offset = 0
+			index = 0
+			overlapping = False
+
+			for t in range(len(self.table_data_compressed)):
+				if self.table_data_compressed[t] == chunk[offset]:
+					offset += 1
+					if offset == len(chunk):
+						overlapping = True
+						break
+				else:
+					index = t + 1
+					offset = 0
+
+			if not overlapping:
+				offset = 0
+				index = 0
+
+				if len(self.table_data_compressed) > 0:
+					for t in range(len(self.table_data_compressed) - 1, 0):
+						if self.table_data_compressed[t] != chunk[offset] or offset + 1 == len(chunk):
+							break
+						offset += 1
+					index = len(self.table_data_compressed) - offset
+
+			self.table_index1.append(index)
+			self.table_data_compressed.extend(chunk[offset:])
+
+		for i in range(0, len(self.table_index1), chunk2Size):
+			chunk = self.table_index1[i:i + chunk2Size]
+
+			offset = 0
+			index = 0
+			overlapping = False
+
+			for t in range(len(self.table_index1_compressed)):
+				if self.table_index1_compressed[t] == chunk[offset]:
+					offset += 1
+					if offset == len(chunk):
+						overlapping = True
+						break
+				else:
+					index = t + 1
+					offset = 0
+
+			if not overlapping:
+				offset = 0
+				index = 0
+
+				if len(self.table_index1_compressed) > 0:
+					for t in range(len(self.table_index1_compressed) - 1, 0):
+						if self.table_index1_compressed[t] != chunk[offset] or offset + 1 == len(chunk):
+							break
+						offset += 1
+					index = len(self.table_index1_compressed) - offset
+
+			self.table_index2.append(index)
+			self.table_index1_compressed.extend(chunk[offset:])
+
+		self.uncompressed_size = len(self.table_data)
+		self.compressed_size = len(self.table_index2) + len(self.table_index1_compressed) + len(self.table_data_compressed)
+		self.compression_ratio = (1.0 - (self.compressed_size / self.uncompressed_size)) * 100.0
+		print(field + ': uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(self.compressed_size) + ' savings ' + ('%.2f%%' % self.compression_ratio))
+
+	def render(self, header, name):
+		print('Rendering compressed data for "' + name + '"...')
+		
+		header.newLine()
+		header.writeLine("const uint32_t " + name + "Index1[" + str(len(self.table_index2)) + "] = {")
+		header.indent()
+		
+		count = 0
+		for c in self.table_index2:
+			if (count % 16) == 0:
+				header.writeIndentation()
+			
+			header.write('%d,' % c)
+			
+			count += 1
+			if count != len(self.table_index2):
+				if (count % 16) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.writeLine("const uint32_t* " + name + "Index1Ptr = " + name + "Index1;")
+
+		header.newLine()
+
+		header.writeLine("const uint32_t " + name + "Index2[" + str(len(self.table_index1_compressed)) + "] = {")
+		header.indent()
+		
+		count = 0
+		for c in self.table_index1_compressed:
+			if (count % 16) == 0:
+				header.writeIndentation()
+			
+			header.write('0x%X,' % c)
+			
+			count += 1
+			if count != len(self.table_index1_compressed):
+				if (count % 16) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+		
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.writeLine("const uint32_t* " + name + "Index2Ptr = " + name + "Index2;")
+
+		header.newLine()
+
+		header.writeLine("const uint32_t " + name + "Data[" + str(len(self.table_data_compressed)) + "] = {")
+		header.indent()
+		
+		count = 0
+		for c in self.table_data_compressed:
+			if (count % 16) == 0:
+				header.writeIndentation()
+			
+			header.write('0x%X,' % c)
+			
+			count += 1
+			if count != len(self.table_data_compressed):
+				if (count % 16) == 0:
+					header.newLine()
+				else:
+					header.write(' ')
+		
+		header.newLine()
+		header.outdent()
+		header.writeLine("};")
+		header.write("const uint32_t* " + name + "DataPtr = " + name + "Data;")
 
 class Database(libs.unicode.UnicodeVisitor):
 	def __init__(self):
 		self.verbose = False
 		self.blob = ""
+		self.compressed = ""
+		self.compressed_length = 0
 		self.pageSize = 32767
 		self.total = 0
 		self.offset = 1
@@ -407,11 +700,9 @@ class Database(libs.unicode.UnicodeVisitor):
 		document_blocks.parse(script_path + '/data/Blocks.txt')
 		document_blocks.accept(blocks)
 		
-		self.resolveBlocks()
+		# missing blocks and codepoints
 		
-		# missing codepoints
-		
-		self.resolveMissing()
+		self.resolveCodepoints()
 		
 		# derived normalization properties
 		
@@ -434,8 +725,6 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		special_casing = SpecialCasing(self)
 		document_special_casing.accept(special_casing)
-		
-		self.resolveCaseMapping()
 		
 		# properties
 		
@@ -476,25 +765,29 @@ class Database(libs.unicode.UnicodeVisitor):
 				return b
 		return None
 	
-	def resolveMissing(self):
+	def resolveCodepoints(self):
+		print('Explicitly adding implied reserved blocks...')
+		
+		blocks_reserved = []
+
+		for i in range(len(self.blocks) - 1):
+			block_current = self.blocks[i]
+			block_next = self.blocks[i + 1]
+
+			if block_current.end + 1 != block_next.start:
+				reserved = UnicodeBlock(self)
+				reserved.start = block_current.end + 1
+				reserved.end = block_next.start - 1
+				reserved.name = '<reserved-%X>..<reserved-%X>' % (reserved.start, reserved.end)
+				print('Added block "' + reserved.name + '".')
+				blocks_reserved.append(reserved)
+
+		self.blocks.extend(blocks_reserved)
+		self.blocks = sorted(self.blocks, key=lambda block: block.start)
+
 		print('Adding missing codepoints to database...')
-		
-		missing = [
-			self.getBlockByName("General Punctuation"), # 2000..206F
-			self.getBlockByName("CJK Unified Ideographs Extension A"), # 3400..4DBF
-			self.getBlockByName("CJK Unified Ideographs"), # 4E00..9FFF
-			self.getBlockByName("Hangul Syllables"), # AC00..D7AF
-			self.getBlockByName("Specials"), # FFF0..FFFF
-			self.getBlockByName("CJK Unified Ideographs Extension B"), # 20000..2A6DF
-			self.getBlockByName("CJK Unified Ideographs Extension C"), # 2A700..2B73F
-			self.getBlockByName("CJK Unified Ideographs Extension D"), # 2B740..2B81F
-			self.getBlockByName("Tags"), # E0000..E007F
-			self.getBlockByName("Variation Selectors Supplement"), # E0100..E01EF
-			self.getBlockByName("<reserved-E0080>..<reserved-E00FF>"), # E0080..E00FF
-			self.getBlockByName("<reserved-E01F0>..<reserved-E0FFF>"), # E01F0..E0FFF
-		]
-		
-		for b in missing:
+
+		for b in self.blocks:
 			for c in range(b.start, b.end + 1):
 				if c not in self.records:
 					u = UnicodeMapping(self)
@@ -504,33 +797,18 @@ class Database(libs.unicode.UnicodeVisitor):
 					self.records[u.codepoint] = u
 		
 		self.recordsOrdered = sorted(self.recordsOrdered, key=lambda record: record.codepoint)
-	
-	def resolveBlocks(self):
+
 		print('Resolving blocks for entries...')
 		
 		block_index = 0
 		block_current = self.blocks[block_index]
-		
+
 		for r in self.recordsOrdered:
 			if r.codepoint > block_current.end:
 				block_index += 1
 				block_current = self.blocks[block_index]
 			r.block = block_current
 		
-		# missing from blocks data file
-		
-		block_reserved1 = UnicodeBlock(self)
-		block_reserved1.start = 0xE0080
-		block_reserved1.end = 0xE00FF
-		block_reserved1.name = "<reserved-E0080>..<reserved-E00FF>"
-		self.blocks.append(block_reserved1)
-		
-		block_reserved2 = UnicodeBlock(self)
-		block_reserved2.start = 0xE01F0
-		block_reserved2.end = 0xE0FFF
-		block_reserved2.name = "<reserved-E01F0>..<reserved-E0FFF>"
-		self.blocks.append(block_reserved2)
-	
 	def resolveQuickCheck(self):
 		print('Resolving quick check entries...')
 		
@@ -544,6 +822,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		for i in range(0, nfc_length - 1):
 			current = self.qcNFCRecords[i]
 			self.qcNFCRecords[i].end = self.qcNFCRecords[i + 1].start - 1
+
+		for n in self.qcNFCRecords:
+			for r in self.recordsOrdered[n.start:n.start + n.count + 1]:
+				r.quickNFC = n.value
 		
 		# NFD
 		
@@ -555,6 +837,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		for i in range(0, nfd_length - 1):
 			current = self.qcNFDRecords[i]
 			self.qcNFDRecords[i].end = self.qcNFDRecords[i + 1].start - 1
+
+		for n in self.qcNFDRecords:
+			for r in self.recordsOrdered[n.start:n.start + n.count + 1]:
+				r.quickNFD = n.value
 		
 		# NFKC
 		
@@ -566,6 +852,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		for i in range(0, nfkc_length - 1):
 			current = self.qcNFKCRecords[i]
 			self.qcNFKCRecords[i].end = self.qcNFKCRecords[i + 1].start - 1
+
+		for n in self.qcNFKCRecords:
+			for r in self.recordsOrdered[n.start:n.start + n.count + 1]:
+				r.quickNFKC = n.value
 		
 		# NFKD
 		
@@ -577,44 +867,22 @@ class Database(libs.unicode.UnicodeVisitor):
 		for i in range(0, nfkd_length - 1):
 			current = self.qcNFKDRecords[i]
 			self.qcNFKDRecords[i].end = self.qcNFKDRecords[i + 1].start - 1
+
+		for n in self.qcNFKDRecords:
+			for r in self.recordsOrdered[n.start:n.start + n.count + 1]:
+				r.quickNFKD = n.value
 		
 	def resolveDecomposition(self):
 		print('Resolving decomposition...')
 		
 		for r in self.recordsOrdered:
 			r.decompose()
-			
-			convertedCodepoint = libs.utf8.codepointToUtf8Hex(r.codepoint)
-			
-			r.offsetNFD = 0
-			r.lengthNFD = 0
-			
-			if r.decomposedNFD:
-				convertedNFD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFD)
-				if convertedNFD != convertedCodepoint:
-					r.offsetNFD = self.addTranslation(convertedNFD + "\\x00")
-					r.lengthNFD = self.translationLength(convertedNFD)
-			
-			r.offsetNFKD = 0
-			r.lengthNFKD = 0
-			
-			if r.decomposedNFKD:
-				convertedNFKD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFKD)
-				if convertedNFKD != convertedCodepoint:
-					r.offsetNFKD = self.addTranslation(convertedNFKD + "\\x00")
-					r.lengthNFKD = self.translationLength(convertedNFKD)
 	
 	def resolveComposition(self):
 		print('Resolving composition...')
 		
 		for r in self.recordsOrdered:
 			r.compose()
-	
-	def resolveCaseMapping(self):
-		print('Resolving case mappings...')
-		
-		for r in self.recordsOrdered:
-			r.caseMapping()
 	
 	def resolveProperties(self):
 		print('Resolving codepoint properties...')
@@ -716,65 +984,6 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		return leftCodepoint.compositionPairs[right]
 	
-	def translationLength(self, translation):
-		character_matches = re.findall('\\\\x?[^\\\\]+', translation)
-		if character_matches:
-			return len(character_matches)
-		else:
-			return 0
-	
-	def addTranslation(self, translation):
-		result = 0
-		
-		if translation not in self.hashed:
-			result = self.offset
-			
-			offset = self.translationLength(translation)
-			
-			if self.verbose:
-				print("hashing " + translation + " offset " + str(self.offset) + " length " + str(offset))
-			
-			self.hashed[translation] = result
-			self.offset += offset
-			self.blob += translation
-		else:
-			result = self.hashed[translation]
-		
-		if self.verbose:
-			print("translated", translation, "offset", result)
-		
-		self.total += 1
-		
-		return result
-	
-	def writeDecompositionRecords(self, header, records, name, fieldOffset, fieldLength):
-		header.writeLine("const size_t Unicode" + name + "RecordCount = " + str(len(records)) + ";")
-		header.writeLine("const DecompositionRecord Unicode" + name + "Record[" + str(len(records)) + "] = {")
-		header.indent()
-		
-		count = 0
-		
-		for r in records:
-			if (count % 4) == 0:
-				header.writeIndentation()
-			
-			length_and_offset = (r.__dict__[fieldLength] << 24) + r.__dict__[fieldOffset]
-			header.write("{ " + hex(r.codepoint) + ", " + hex(length_and_offset) + " },")
-			
-			count += 1
-			if count != len(records):
-				if (count % 4) == 0:
-					header.newLine()
-				else:
-					header.write(" ")
-		
-		header.newLine()
-		header.outdent()
-		header.writeLine("};")
-		header.writeLine("const DecompositionRecord* Unicode" + name + "RecordPtr = Unicode" + name + "Record;")
-		
-		header.newLine()
-	
 	def writeCompositionRecords(self, header):
 		composed = []
 		
@@ -848,128 +1057,141 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.newLine()
 	
 	def writeSource(self, filepath):
-		print("Writing database to " + filepath + "...")
+		print('Compressing code point properties...')
 		
-		command_line = sys.argv[0]
-		arguments = sys.argv[1:]
-		for a in arguments:
-			command_line += " " + a
+		compress_gc = Compression(db)
+		compress_gc.process('generalCategoryCombined', 32)
 		
-		d = datetime.datetime.now()
+		compress_ccc = Compression(db)
+		compress_ccc.process('canonicalCombiningClass', 32)
+
+		compress_qc_nfc = Compression(db)
+		compress_qc_nfc.process('quickNFC', 32)
+
+		compress_qc_nfd = Compression(db)
+		compress_qc_nfd.process('quickNFD', 32)
+
+		compress_qc_nfkc = Compression(db)
+		compress_qc_nfkc.process('quickNFKC', 32)
+
+		compress_qc_nfkd = Compression(db)
+		compress_qc_nfkd.process('quickNFKD', 32)
+
+		self.compressed = ""
+		self.compressed_length = 0
+
+		compress_nfd = CompressionString(db)
+		compress_nfd.process('decomposedNFD', 32, 128)
 		
-		nfd_records = []
-		nfkd_records = []
-		uppercase_records = []
-		lowercase_records = []
-		titlecase_records = []
+		compress_nfkd = CompressionString(db)
+		compress_nfkd.process('decomposedNFKD', 32, 128)
+
+		compress_uppercase = CompressionString(db)
+		compress_uppercase.process('uppercase', 32, 128)
 		
-		for r in self.recordsOrdered:
-			if r.offsetNFD != 0:
-				nfd_records.append(r)
-			
-			if r.offsetNFKD != 0:
-				nfkd_records.append(r)
-			
-			if r.offsetUppercase != 0:
-				uppercase_records.append(r)
-			
-			if r.offsetLowercase != 0:
-				lowercase_records.append(r)
-			
-			if r.offsetTitlecase != 0:
-				titlecase_records.append(r)
+		compress_lowercase = CompressionString(db)
+		compress_lowercase.process('lowercase', 32, 128)
+
+		compress_titlecase = CompressionString(db)
+		compress_titlecase.process('titlecase', 32, 128)
 		
-		sliced = libs.blobsplitter.BlobSplitter()
-		sliced.split(self.blob, self.offset)
+		print('Writing database to "' + os.path.realpath(filepath) + '"...')
 		
 		# comment header
 		
-		header = libs.header.Header(filepath)
+		header = libs.header.Header(os.path.realpath(filepath))
 		
 		header.writeLine("/*")
 		header.indent()
 		header.copyrightNotice()
 		header.outdent()
 		header.writeLine("*/")
-		
 		header.newLine()
 		
-		header.writeLine("/*")
-		header.indent()
-		header.writeLine("DO NOT MODIFY, AUTO-GENERATED")
-		header.newLine()
-		header.writeLine("Generated on:")
-		header.indent()
-		header.writeLine(d.strftime("%Y-%m-%dT%H:%M:%S"))
-		header.outdent()
-		header.newLine()
-		header.writeLine("Command line:")
-		header.indent()
-		header.writeLine(command_line)
-		header.outdent()
-		header.outdent()
-		header.writeLine("*/")
-		
+		header.generatedNotice()
 		header.newLine()
 		
 		# includes
 		
 		header.writeLine("#include \"unicodedatabase.h\"")
-		
 		header.newLine()
 		
-		# quick check records
+		# quick check
+
+		compress_gc.render(header, 'GeneralCategory')
+		header.newLine()
 		
-		self.writeQuickCheck(header, self.qcGeneralCategory, "GeneralCategory")
-		self.writeQuickCheck(header, self.qcCanonicalCombiningClass, "CanonicalCombiningClass")
-		self.writeQuickCheck(header, self.qcNFCRecords, "NFC")
-		self.writeQuickCheck(header, self.qcNFDRecords, "NFD")
-		self.writeQuickCheck(header, self.qcNFKCRecords, "NFKC")
-		self.writeQuickCheck(header, self.qcNFKDRecords, "NFKD")
+		compress_ccc.render(header, 'CanonicalCombiningClass')
+		header.newLine()
+
+		compress_qc_nfc.render(header, 'QuickCheckNFC')
+		header.newLine()
+
+		compress_qc_nfd.render(header, 'QuickCheckNFD')
+		header.newLine()
+
+		compress_qc_nfkc.render(header, 'QuickCheckNFKC')
+		header.newLine()
+
+		compress_qc_nfkd.render(header, 'QuickCheckNFKD')
+		header.newLine()
 		
-		# decomposition records
+		# decomposition
+
+		compress_nfd.render(header, 'NFD')
+		header.newLine()
 		
-		self.writeDecompositionRecords(header, nfd_records, "NFD", "offsetNFD", "lengthNFD")
-		self.writeDecompositionRecords(header, nfkd_records, "NFKD", "offsetNFKD", "lengthNFKD")
+		compress_nfkd.render(header, 'NFKD')
+		header.newLine()
+
+		# case mapping
+
+		compress_uppercase.render(header, 'Uppercase')
+		header.newLine()
 		
-		# composition records
+		compress_lowercase.render(header, 'Lowercase')
+		header.newLine()
+
+		compress_titlecase.render(header, 'Titlecase')
+		header.newLine()
+		
+		# composition
 		
 		self.writeCompositionRecords(header)
 		
-		# case mapping records
-		
-		self.writeDecompositionRecords(header, uppercase_records, "Uppercase", "offsetUppercase", "lengthUppercase")
-		self.writeDecompositionRecords(header, lowercase_records, "Lowercase", "offsetLowercase", "lengthLowercase")
-		self.writeDecompositionRecords(header, titlecase_records, "Titlecase", "offsetTitlecase", "lengthTitlecase")
-		
 		# decomposition data
+
+		sliced_compressed = libs.blobsplitter.BlobSplitter()
+		sliced_compressed.split(self.compressed, self.compressed_length)
 		
-		header.writeLine("const char* DecompositionData = ")
+		header.writeLine("const char* CompressedStringData = ")
 		header.indent()
 		
-		for p in sliced.pages:
+		for p in sliced_compressed.pages:
 			p.start()
+			p.firstLine = False
 			while not p.atEnd:
 				p.nextLine()
 				header.writeIndentation()
 				header.write(p.line)
 				header.newLine()
-		
+
 		header.outdent()
 		header.writeLine(";")
-		header.write("const size_t DecompositionDataLength = " + str(self.offset) + ";")
+		header.writeLine("const size_t CompressedStringDataLength = " + str(self.compressed_length) + ";")
+		header.newLine()
 	
 	def writeCaseMapping(self, filepath):
-		print("Writing case mapping to " + filepath + "...")
+		print('Writing case mapping to "' + os.path.realpath(filepath) + '"...')
 		
-		command_line = sys.argv[0]
-		arguments = sys.argv[1:]
-		for a in arguments:
+		command_line = os.path.relpath(os.path.realpath(sys.argv[0]), os.getcwd())
+
+		for a in sys.argv[1:]:
 			command_line += " " + a
 		
 		d = datetime.datetime.now()
 		
-		output = libs.header.Header(filepath)
+		output = libs.header.Header(os.path.realpath(filepath))
 		
 		# comment header
 		
@@ -1199,7 +1421,7 @@ if __name__ == '__main__':
 	
 	db = Database()
 	db.loadFromFiles(args)
-	
+
 	db.executeQuery(args.query)
 	
 	db.writeSource(script_path + '/../../source/unicodedatabase.c')

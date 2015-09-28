@@ -39,7 +39,11 @@
 typedef struct {
 	StreamState* input;
 	StreamState* output;
-	uint8_t property;
+	const size_t* qc_index;
+	const uint8_t* qc_data;
+	const uint32_t* property_index1;
+	const uint32_t* property_index2;
+	const uint32_t* property_data;
 	unicode_t cache_codepoint[STREAM_BUFFER_MAX];
 	uint8_t cache_canonical_combining_class[STREAM_BUFFER_MAX];
 	uint8_t cache_current;

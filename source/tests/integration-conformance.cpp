@@ -81,7 +81,7 @@ TEST_F(ConformanceSuite, ReadTheEnd)
 TEST_F(ConformanceSuite, EveryLineIs79Codepoints)
 {
 #define CHECK_LINE(_start, _endCharacter) \
-	const char* line_at_ ## _start = utf8seek(input + _start, input + _start, 78, SEEK_CUR); \
+	const char* line_at_ ## _start = utf8seek(input + _start, strlen(input + _start), input + _start, 78, SEEK_CUR); \
 	EXPECT_EQ(_endCharacter, line_at_ ## _start[0]); \
 
 	// Start

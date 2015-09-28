@@ -36,12 +36,6 @@
 #include "utf8rewind.h"
 
 typedef struct {
-	unicode_t start;
-	unicode_t end;
-	unicode_t count_and_value;
-} QuickCheckRecord;
-
-typedef struct {
 	unicode_t codepoint;
 	uint32_t length_and_offset;
 } DecompositionRecord;
@@ -51,23 +45,23 @@ typedef struct {
 	unicode_t value;
 } CompositionRecord;
 
-extern const size_t UnicodeQuickCheckGeneralCategoryRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckGeneralCategoryRecordPtr;
+extern const size_t* GeneralCategoryIndexPtr;
+extern const uint8_t* GeneralCategoryDataPtr;
 
-extern const size_t UnicodeQuickCheckCanonicalCombiningClassRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckCanonicalCombiningClassRecordPtr;
+extern const size_t* CanonicalCombiningClassIndexPtr;
+extern const uint8_t* CanonicalCombiningClassDataPtr;
 
-extern const size_t UnicodeQuickCheckNFCRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckNFCRecordPtr;
+extern const size_t* QuickCheckNFCIndexPtr;
+extern const uint8_t* QuickCheckNFCDataPtr;
 
-extern const size_t UnicodeQuickCheckNFDRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckNFDRecordPtr;
+extern const size_t* QuickCheckNFDIndexPtr;
+extern const uint8_t* QuickCheckNFDDataPtr;
 
-extern const size_t UnicodeQuickCheckNFKCRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckNFKCRecordPtr;
+extern const size_t* QuickCheckNFKCIndexPtr;
+extern const uint8_t* QuickCheckNFKCDataPtr;
 
-extern const size_t UnicodeQuickCheckNFKDRecordCount;
-extern const QuickCheckRecord* UnicodeQuickCheckNFKDRecordPtr;
+extern const size_t* QuickCheckNFKDIndexPtr;
+extern const uint8_t* QuickCheckNFKDDataPtr;
 
 extern const size_t UnicodeNFDRecordCount;
 extern const DecompositionRecord* UnicodeNFDRecordPtr;
@@ -86,6 +80,29 @@ extern const DecompositionRecord* UnicodeTitlecaseRecordPtr;
 
 extern const size_t UnicodeCompositionRecordCount;
 extern const CompositionRecord* UnicodeCompositionRecordPtr;
+
+extern const uint32_t* NFDIndex1Ptr;
+extern const uint32_t* NFDIndex2Ptr;
+extern const uint32_t* NFDDataPtr;
+
+extern const uint32_t* NFKDIndex1Ptr;
+extern const uint32_t* NFKDIndex2Ptr;
+extern const uint32_t* NFKDDataPtr;
+
+extern const uint32_t* UppercaseIndex1Ptr;
+extern const uint32_t* UppercaseIndex2Ptr;
+extern const uint32_t* UppercaseDataPtr;
+
+extern const uint32_t* LowercaseIndex1Ptr;
+extern const uint32_t* LowercaseIndex2Ptr;
+extern const uint32_t* LowercaseDataPtr;
+
+extern const uint32_t* TitlecaseIndex1Ptr;
+extern const uint32_t* TitlecaseIndex2Ptr;
+extern const uint32_t* TitlecaseDataPtr;
+
+extern const char* CompressedStringData;
+extern const size_t CompressedStringDataLength;
 
 extern const char* DecompositionData;
 extern const size_t DecompositionDataLength;

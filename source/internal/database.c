@@ -27,245 +27,39 @@
 
 #include "../unicodedatabase.h"
 
-uint8_t database_queryproperty(unicode_t codepoint, uint8_t checkType)
+#define DECOMPOSE_INDEX1_SHIFT (12)
+#define DECOMPOSE_INDEX2_SHIFT (5)
+
+static const unicode_t DECOMPOSE_INDEX2_MASK = (1 << DECOMPOSE_INDEX1_SHIFT) - 1;
+static const unicode_t DECOMPOSE_DATA_MASK = (1 << DECOMPOSE_INDEX2_SHIFT) - 1;
+
+const char* database_querydecomposition(
+	unicode_t codepoint,
+	const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray,
+	uint8_t* length)
 {
-	const QuickCheckRecord* record;
-	size_t record_count;
-	const QuickCheckRecord* record_found = 0;
-	size_t offset_start;
-	size_t offset_end;
-	size_t offset_pivot;
-	size_t i;
+	size_t index = index2Array[
+		index1Array[codepoint >> DECOMPOSE_INDEX1_SHIFT] +
+		((codepoint & DECOMPOSE_INDEX2_MASK) >> DECOMPOSE_INDEX2_SHIFT)] +
+			(codepoint & DECOMPOSE_DATA_MASK);
 
-	switch (checkType)
+	if (index == 0 ||
+		dataArray[index] == 0)
 	{
-
-	case UnicodeProperty_GeneralCategory:
-		record = UnicodeQuickCheckGeneralCategoryRecordPtr;
-		record_count = UnicodeQuickCheckGeneralCategoryRecordCount;
-		break;
-
-	case UnicodeProperty_CanonicalCombiningClass:
-		record = UnicodeQuickCheckCanonicalCombiningClassRecordPtr;
-		record_count = UnicodeQuickCheckCanonicalCombiningClassRecordCount;
-		break;
-
-	case UnicodeProperty_Normalization_Compose:
-		record = UnicodeQuickCheckNFCRecordPtr;
-		record_count = UnicodeQuickCheckNFCRecordCount;
-		break;
-
-	case UnicodeProperty_Normalization_Decompose:
-		record = UnicodeQuickCheckNFDRecordPtr;
-		record_count = UnicodeQuickCheckNFDRecordCount;
-		break;
-
-	case UnicodeProperty_Normalization_Compatibility_Compose:
-		record = UnicodeQuickCheckNFKCRecordPtr;
-		record_count = UnicodeQuickCheckNFKCRecordCount;
-		break;
-
-	case UnicodeProperty_Normalization_Compatibility_Decompose:
-		record = UnicodeQuickCheckNFKDRecordPtr;
-		record_count = UnicodeQuickCheckNFKDRecordCount;
-		break;
-
-	default:
-		return UTF8_INVALID_PROPERTY;
-
-	}
-
-	offset_start = 0;
-	offset_end = record_count - 1;
-
-	if (codepoint < record[offset_start].start ||
-		codepoint > record[offset_end].end)
-	{
-		return 0;
-	}
-
-	do
-	{
-		offset_pivot = offset_start + ((offset_end - offset_start) / 2);
-
-		if (codepoint >= record[offset_start].start &&
-			codepoint <= record[offset_start].end)
+		if (length != 0)
 		{
-			record_found = &record[offset_start]; 
-			goto found;
+			*length = 0;
 		}
-		else if (
-			codepoint >= record[offset_end].start &&
-			codepoint <= record[offset_end].end)
-		{
-			record_found = &record[offset_end]; 
-			goto found;
-		}
-		else if (
-			codepoint >= record[offset_pivot].start &&
-			codepoint <= record[offset_pivot].end)
-		{
-			record_found = &record[offset_pivot]; 
-			goto found;
-		}
-		else
-		{
-			if (codepoint > record[offset_pivot].end)
-			{
-				offset_start = offset_pivot;
-			}
-			else
-			{
-				offset_end = offset_pivot;
-			}
-		}
-	}
-	while (offset_end - offset_start > 8);
-
-	for (i = offset_start; i <= offset_end; ++i)
-	{
-		if (codepoint >= record[i].start &&
-			codepoint <= record[i].end)
-		{
-			record_found = &record[i];
-			goto found;
-		}
-	}
-
-	return 0;
-
-found:
-	if (codepoint <= (record_found->start + (record_found->count_and_value & 0x00FFFFFF)))
-	{
-		return ((record_found->count_and_value & 0xFF000000) >> 24);
-	}
-	else
-	{
-		return 0;
-	}
-}
-
-const char* database_querydecomposition(unicode_t codepoint, uint8_t property, size_t* length)
-{
-	const DecompositionRecord* record;
-	size_t record_count;
-	const DecompositionRecord* record_found;
-	size_t offset_start;
-	size_t offset_end;
-	size_t offset_pivot;
-	size_t found_offset;
-	size_t i;
-
-	if (length == 0)
-	{
-		return 0;
-	}
-
-	switch (property)
-	{
-
-	case UnicodeProperty_Normalization_Decompose:
-		record = UnicodeNFDRecordPtr;
-		record_count = UnicodeNFDRecordCount;
-		break;
-
-	case UnicodeProperty_Normalization_Compatibility_Decompose:
-		record = UnicodeNFKDRecordPtr;
-		record_count = UnicodeNFKDRecordCount;
-		break;
-
-	case UnicodeProperty_Uppercase:
-		record = UnicodeUppercaseRecordPtr;
-		record_count = UnicodeUppercaseRecordCount;
-		break;
-
-	case UnicodeProperty_Lowercase:
-		record = UnicodeLowercaseRecordPtr;
-		record_count = UnicodeLowercaseRecordCount;
-		break;
-
-	case UnicodeProperty_Titlecase:
-		record = UnicodeTitlecaseRecordPtr;
-		record_count = UnicodeTitlecaseRecordCount;
-		break;
-
-	default:
-		goto missing;
-
-	}
-
-	offset_start = 0;
-	offset_end = record_count - 1;
-
-	if (codepoint < record[offset_start].codepoint ||
-		codepoint > record[offset_end].codepoint)
-	{
-		goto missing;
-	}
-
-	record_found = 0;
-
-	do
-	{
-		offset_pivot = offset_start + ((offset_end - offset_start) / 2);
-
-		if (codepoint == record[offset_start].codepoint)
-		{
-			record_found = &record[offset_start];
-			goto found;
-		}
-		else if (codepoint == record[offset_end].codepoint)
-		{
-			record_found = &record[offset_end];
-			goto found;
-		}
-		else if (codepoint == record[offset_pivot].codepoint)
-		{
-			record_found = &record[offset_pivot];
-			goto found;
-		}
-		else
-		{
-			if (codepoint > record[offset_pivot].codepoint)
-			{
-				offset_start = offset_pivot;
-			}
-			else
-			{
-				offset_end = offset_pivot;
-			}
-		}
-	}
-	while (offset_end - offset_start > 32);
-
-	for (i = offset_start; i <= offset_end; ++i)
-	{
-		if (codepoint == record[i].codepoint)
-		{
-			record_found = &record[i];
-			goto found;
-		}
-	}
-
-missing:
-	*length = 0;
-
-	return 0;
-
-found:
-	found_offset = (record_found->length_and_offset & 0x00FFFFFF);
-
-	if (found_offset == 0 ||
-		found_offset >= DecompositionDataLength)
-	{
-		*length = 0;
 
 		return 0;
 	}
 
-	*length = (record_found->length_and_offset & 0xFF000000) >> 24;
+	if (length != 0)
+	{
+		*length = (uint8_t)((dataArray[index] & 0xFF000000) >> 24);
+	}
 
-	return DecompositionData + found_offset;
+	return CompressedStringData + (dataArray[index] & 0x00FFFFFF);
 }
 
 unicode_t database_querycomposition(unicode_t left, unicode_t right)
