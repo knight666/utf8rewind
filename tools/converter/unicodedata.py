@@ -29,13 +29,9 @@ class UnicodeMapping:
 		self.decomposedNFKD = []
 		self.compositionPairs = dict()
 		self.compositionExcluded = False
-		self.offsetNFC = 0
 		self.quickNFC = 0
-		self.offsetNFD = 0
 		self.quickNFD = 0
-		self.offsetNFKC = 0
 		self.quickNFKC = 0
-		self.offsetNFKD = 0
 		self.quickNFKD = 0
 		self.numericType = "NumericType_None"
 		self.numericValue = 0
@@ -43,9 +39,6 @@ class UnicodeMapping:
 		self.uppercase = []
 		self.lowercase = []
 		self.titlecase = []
-		self.offsetUppercase = 0
-		self.offsetLowercase = 0
-		self.offsetTitlecase = 0
 		self.block = None
 	
 	def decomposedToString(self):
@@ -297,17 +290,6 @@ class UnicodeMapping:
 					target.compositionPairs[self.decompositionCodepoints[1]] = self.codepoint
 			else:
 				print('compose failed, missing ' + hex(c) + ' in database.')
-	
-	def caseMapping(self):
-		if self.uppercase:
-			converted = libs.utf8.unicodeToUtf8Hex(self.uppercase)
-			self.offsetUppercase = self.db.addTranslation(converted + "\\x00")
-		if self.lowercase:
-			converted = libs.utf8.unicodeToUtf8Hex(self.lowercase)
-			self.offsetLowercase = self.db.addTranslation(converted + "\\x00")
-		if self.titlecase:
-			converted = libs.utf8.unicodeToUtf8Hex(self.titlecase)
-			self.offsetTitlecase = self.db.addTranslation(converted + "\\x00")
 	
 	def codepointsToString(self, values):
 		result = ""
@@ -744,8 +726,6 @@ class Database(libs.unicode.UnicodeVisitor):
 		special_casing = SpecialCasing(self)
 		document_special_casing.accept(special_casing)
 		
-		self.resolveCaseMapping()
-		
 		# properties
 		
 		self.resolveProperties()
@@ -799,7 +779,7 @@ class Database(libs.unicode.UnicodeVisitor):
 				reserved.start = block_current.end + 1
 				reserved.end = block_next.start - 1
 				reserved.name = '<reserved-%X>..<reserved-%X>' % (reserved.start, reserved.end)
-				print('Adding reserved block "' + reserved.name + '".')
+				print('Added block "' + reserved.name + '".')
 				blocks_reserved.append(reserved)
 
 		self.blocks.extend(blocks_reserved)
@@ -897,33 +877,12 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		for r in self.recordsOrdered:
 			r.decompose()
-			
-			convertedCodepoint = libs.utf8.codepointToUtf8Hex(r.codepoint)
-			
-			r.offsetNFD = 0
-			r.offsetNFKD = 0
-			
-			if r.decomposedNFD:
-				convertedNFD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFD)
-				if convertedNFD != convertedCodepoint:
-					r.offsetNFD = self.addTranslation(convertedNFD + "\\x00")
-			
-			if r.decomposedNFKD:
-				convertedNFKD = libs.utf8.unicodeToUtf8Hex(r.decomposedNFKD)
-				if convertedNFKD != convertedCodepoint:
-					r.offsetNFKD = self.addTranslation(convertedNFKD + "\\x00")
 	
 	def resolveComposition(self):
 		print('Resolving composition...')
 		
 		for r in self.recordsOrdered:
 			r.compose()
-	
-	def resolveCaseMapping(self):
-		print('Resolving case mappings...')
-		
-		for r in self.recordsOrdered:
-			r.caseMapping()
 	
 	def resolveProperties(self):
 		print('Resolving codepoint properties...')
@@ -1024,61 +983,6 @@ class Database(libs.unicode.UnicodeVisitor):
 			return None
 		
 		return leftCodepoint.compositionPairs[right]
-	
-	def addTranslation(self, translation):
-		result = 0
-		
-		if translation not in self.hashed:
-			result = self.offset
-			
-			character_matches = re.findall('\\\\x?[^\\\\]+', translation)
-			if character_matches:
-				offset = len(character_matches)
-			else:
-				offset = 0
-			
-			if self.verbose:
-				print("hashing " + translation + " offset " + str(self.offset))
-			
-			self.hashed[translation] = result
-			self.offset += offset
-			self.blob += translation
-		else:
-			result = self.hashed[translation]
-		
-		if self.verbose:
-			print("translated", translation, "offset", result)
-		
-		self.total += 1
-		
-		return result
-	
-	def writeDecompositionRecords(self, header, records, name, field):
-		header.writeLine("const size_t Unicode" + name + "RecordCount = " + str(len(records)) + ";")
-		header.writeLine("const DecompositionRecord Unicode" + name + "Record[" + str(len(records)) + "] = {")
-		header.indent()
-		
-		count = 0
-		
-		for r in records:
-			if (count % 4) == 0:
-				header.writeIndentation()
-			
-			header.write("{ " + hex(r.codepoint) + ", " + hex(r.__dict__[field]) + " },")
-			
-			count += 1
-			if count != len(records):
-				if (count % 4) == 0:
-					header.newLine()
-				else:
-					header.write(" ")
-		
-		header.newLine()
-		header.outdent()
-		header.writeLine("};")
-		header.writeLine("const DecompositionRecord* Unicode" + name + "RecordPtr = Unicode" + name + "Record;")
-		
-		header.newLine()
 	
 	def writeCompositionRecords(self, header):
 		composed = []
@@ -1193,31 +1097,6 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		print('Writing database to "' + os.path.realpath(filepath) + '"...')
 		
-		nfd_records = []
-		nfkd_records = []
-		uppercase_records = []
-		lowercase_records = []
-		titlecase_records = []
-		
-		for r in self.recordsOrdered:
-			if r.offsetNFD != 0:
-				nfd_records.append(r)
-			
-			if r.offsetNFKD != 0:
-				nfkd_records.append(r)
-			
-			if r.offsetUppercase != 0:
-				uppercase_records.append(r)
-			
-			if r.offsetLowercase != 0:
-				lowercase_records.append(r)
-			
-			if r.offsetTitlecase != 0:
-				titlecase_records.append(r)
-		
-		sliced = libs.blobsplitter.BlobSplitter()
-		sliced.split(self.blob, self.offset)
-		
 		# comment header
 		
 		header = libs.header.Header(os.path.realpath(filepath))
@@ -1275,21 +1154,10 @@ class Database(libs.unicode.UnicodeVisitor):
 
 		compress_titlecase.render(header, 'Titlecase')
 		header.newLine()
-
-		# decomposition
-
-		self.writeDecompositionRecords(header, nfd_records, "NFD", "offsetNFD")
-		self.writeDecompositionRecords(header, nfkd_records, "NFKD", "offsetNFKD")
 		
 		# composition
 		
 		self.writeCompositionRecords(header)
-		
-		# case mapping
-		
-		self.writeDecompositionRecords(header, uppercase_records, "Uppercase", "offsetUppercase")
-		self.writeDecompositionRecords(header, lowercase_records, "Lowercase", "offsetLowercase")
-		self.writeDecompositionRecords(header, titlecase_records, "Titlecase", "offsetTitlecase")
 		
 		# decomposition data
 
@@ -1312,21 +1180,6 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.writeLine(";")
 		header.writeLine("const size_t CompressedStringDataLength = " + str(self.compressed_length) + ";")
 		header.newLine()
-
-		header.writeLine("const char* DecompositionData = ")
-		header.indent()
-		
-		for p in sliced.pages:
-			p.start()
-			while not p.atEnd:
-				p.nextLine()
-				header.writeIndentation()
-				header.write(p.line)
-				header.newLine()
-		
-		header.outdent()
-		header.writeLine(";")
-		header.write("const size_t DecompositionDataLength = " + str(self.offset) + ";")
 	
 	def writeCaseMapping(self, filepath):
 		print('Writing case mapping to "' + os.path.realpath(filepath) + '"...')

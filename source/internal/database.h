@@ -98,9 +98,7 @@ static const unicode_t PROPERTY_DATA_MASK = (1 << PROPERTY_INDEX_SHIFT) - 1;
 #define PROPERTY_GET_NFKD(_cp) \
 	PROPERTY_GET(QuickCheckNFKDIndexPtr, QuickCheckNFKDDataPtr, _cp)
 
-const char* database_querydecomposition(unicode_t codepoint, uint8_t property);
-
-const char* database_querydecomposition2(
+const char* database_querydecomposition(
 	unicode_t codepoint,
 	const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray,
 	uint8_t* length);

@@ -555,7 +555,11 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Uppercase))
+	if (!casemapping_initialize(
+		&state,
+		input, inputSize,
+		target, targetSize,
+		UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr))
 	{
 		UTF8_SET_ERROR(NONE);
 
@@ -593,7 +597,11 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Lowercase))
+	if (!casemapping_initialize(
+		&state,
+		input, inputSize,
+		target, targetSize,
+		LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr))
 	{
 		UTF8_SET_ERROR(NONE);
 
@@ -631,7 +639,11 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UnicodeProperty_Titlecase))
+	if (!casemapping_initialize(
+		&state,
+		input, inputSize,
+		target, targetSize,
+		TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr))
 	{
 		UTF8_SET_ERROR(NONE);
 
@@ -652,16 +664,21 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 
 		/* The first letter of every word should be titlecase, the rest lowercase */
 
-		if (state.property == UnicodeProperty_Titlecase)
+		if (state.property_data == TitlecaseDataPtr)
 		{
 			if ((state.last_general_category & GeneralCategory_Letter) != 0)
 			{
-				state.property = UnicodeProperty_Lowercase;
+				state.property_index1 = LowercaseIndex1Ptr;
+				state.property_index2 = LowercaseIndex2Ptr;
+				state.property_data = LowercaseDataPtr;
 			}
 		}
-		else if ((state.last_general_category & GeneralCategory_Letter) == 0)
+		else if (
+			(state.last_general_category & GeneralCategory_Letter) == 0)
 		{
-			state.property = UnicodeProperty_Titlecase;
+			state.property_index1 = TitlecaseIndex1Ptr;
+			state.property_index2 = TitlecaseIndex2Ptr;
+			state.property_data = TitlecaseDataPtr;
 		}
 
 		bytes_written += result;

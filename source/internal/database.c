@@ -26,7 +26,6 @@
 #include "database.h"
 
 #include "../unicodedatabase.h"
-#include "codepoint.h"
 
 #define DECOMPOSE_INDEX1_SHIFT (12)
 #define DECOMPOSE_INDEX2_SHIFT (5)
@@ -34,113 +33,7 @@
 static const unicode_t DECOMPOSE_INDEX2_MASK = (1 << DECOMPOSE_INDEX1_SHIFT) - 1;
 static const unicode_t DECOMPOSE_DATA_MASK = (1 << DECOMPOSE_INDEX2_SHIFT) - 1;
 
-const char* database_querydecomposition(unicode_t codepoint, uint8_t property)
-{
-	const DecompositionRecord* record;
-	size_t record_count;
-	const DecompositionRecord* record_found = 0;
-	size_t offset_start;
-	size_t offset_end;
-	size_t offset_pivot;
-	size_t i;
-
-	switch (property)
-	{
-
-	case UnicodeProperty_Normalization_Decompose:
-		record = UnicodeNFDRecordPtr;
-		record_count = UnicodeNFDRecordCount;
-		break;
-
-	case UnicodeProperty_Normalization_Compatibility_Decompose:
-		record = UnicodeNFKDRecordPtr;
-		record_count = UnicodeNFKDRecordCount;
-		break;
-
-	case UnicodeProperty_Uppercase:
-		record = UnicodeUppercaseRecordPtr;
-		record_count = UnicodeUppercaseRecordCount;
-		break;
-
-	case UnicodeProperty_Lowercase:
-		record = UnicodeLowercaseRecordPtr;
-		record_count = UnicodeLowercaseRecordCount;
-		break;
-
-	case UnicodeProperty_Titlecase:
-		record = UnicodeTitlecaseRecordPtr;
-		record_count = UnicodeTitlecaseRecordCount;
-		break;
-
-	default:
-		return 0;
-
-	}
-
-	offset_start = 0;
-	offset_end = record_count - 1;
-
-	if (codepoint < record[offset_start].codepoint ||
-		codepoint > record[offset_end].codepoint)
-	{
-		return 0;
-	}
-
-	do
-	{
-		offset_pivot = offset_start + ((offset_end - offset_start) / 2);
-
-		if (codepoint == record[offset_start].codepoint)
-		{
-			record_found = &record[offset_start];
-			goto found;
-		}
-		else if (codepoint == record[offset_end].codepoint)
-		{
-			record_found = &record[offset_end];
-			goto found;
-		}
-		else if (codepoint == record[offset_pivot].codepoint)
-		{
-			record_found = &record[offset_pivot];
-			goto found;
-		}
-		else
-		{
-			if (codepoint > record[offset_pivot].codepoint)
-			{
-				offset_start = offset_pivot;
-			}
-			else
-			{
-				offset_end = offset_pivot;
-			}
-		}
-	}
-	while (offset_end - offset_start > 32);
-
-	for (i = offset_start; i <= offset_end; ++i)
-	{
-		if (codepoint == record[i].codepoint)
-		{
-			record_found = &record[i];
-			goto found;
-		}
-	}
-
-	return 0;
-
-found:
-	if (record_found->offset == 0 ||
-		record_found->offset >= DecompositionDataLength)
-	{
-		return 0;
-	}
-
-	return DecompositionData + record_found->offset;
-}
-
-const char* database_querydecomposition2(
+const char* database_querydecomposition(
 	unicode_t codepoint,
 	const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray,
 	uint8_t* length)
