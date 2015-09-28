@@ -29,7 +29,11 @@
 #include "codepoint.h"
 #include "database.h"
 
-uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, uint8_t property)
+uint8_t casemapping_initialize(
+	CaseMappingState* state,
+	const char* input, size_t inputSize,
+	char* target, size_t targetSize,
+	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData)
 {
 	memset(state, 0, sizeof(CaseMappingState));
 
@@ -37,7 +41,9 @@ uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_
 	state->src_size = inputSize;
 	state->dst = target;
 	state->dst_size = targetSize;
-	state->property = property;
+	state->property_index1 = propertyIndex1;
+	state->property_index2 = propertyIndex2;
+	state->property_data = propertyData;
 
 	return 1;
 }
@@ -77,7 +83,7 @@ size_t casemapping_execute(CaseMappingState* state)
 			/* Uppercase letters are U+0041 ('A') to U+005A ('Z') */
 			/* All other codepoints in Basic Latin are unaffected by case mapping */
 
-			if (state->property == UnicodeProperty_Lowercase)
+			if (state->property_data == LowercaseDataPtr)
 			{
 				*state->dst =
 					(*state->src >= 0x41 && *state->src <= 0x5A)
@@ -100,7 +106,7 @@ size_t casemapping_execute(CaseMappingState* state)
 	}
 	else
 	{
-		size_t resolved_size = 0;
+		uint8_t resolved_size = 0;
 
 		/* Decode current codepoint */
 
@@ -113,11 +119,13 @@ size_t casemapping_execute(CaseMappingState* state)
 		{
 			/* Resolve the codepoint's decomposition */
 
-			const char* resolved = database_querydecomposition(decoded, state->property);
+			const char* resolved = database_querydecomposition(
+				decoded,
+				state->property_index1, state->property_index2, state->property_data,
+				&resolved_size);
+
 			if (resolved != 0)
 			{
-				resolved_size = strlen(resolved);
-
 				/* Copy the decomposition to the output buffer */
 
 				if (state->dst != 0 &&
