@@ -239,7 +239,7 @@ uint8_t decompose_execute(DecomposeState* state)
 				/* Check database for decomposition */
 
 				uint8_t src_size;
-				const char* src = database_querydecomposition2(
+				const char* src = database_querydecomposition(
 					decoded_codepoint,
 					state->property_index1, state->property_index2, state->property_data,
 					&src_size);

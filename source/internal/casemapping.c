@@ -119,7 +119,7 @@ size_t casemapping_execute(CaseMappingState* state)
 		{
 			/* Resolve the codepoint's decomposition */
 
-			const char* resolved = database_querydecomposition2(
+			const char* resolved = database_querydecomposition(
 				decoded,
 				state->property_index1, state->property_index2, state->property_data,
 				&resolved_size);

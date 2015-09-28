@@ -9,10 +9,11 @@
 
 #include "helpers-base.hpp"
 
-#define EXPECT_UTF8EQ(_expected, _actual)            EXPECT_PRED_FORMAT2(::helpers::CompareUtf8Strings, _expected, _actual)
-#define EXPECT_OFFSETEQ(_expected, _actual, _start)  EXPECT_PRED_FORMAT3(::helpers::CompareOffsets, _expected, _actual, _start)
-#define EXPECT_MEMEQ(_expected, _actual, _size)      EXPECT_PRED_FORMAT3(::helpers::CompareMemory, _expected, _actual, _size)
-#define EXPECT_CPEQ(_expected, _actual)              EXPECT_PRED_FORMAT2(::helpers::CompareCodepoints, _expected, _actual)
+#define EXPECT_UTF8EQ(_expected, _actual)                 EXPECT_PRED_FORMAT2(::helpers::CompareUtf8Strings, _expected, _actual)
+#define EXPECT_UTF8LENGTHEQ(_expected, _actual, _length)  EXPECT_PRED_FORMAT3(::helpers::CompareUtf8LengthStrings, _expected, _actual, _length)
+#define EXPECT_OFFSETEQ(_expected, _actual, _start)       EXPECT_PRED_FORMAT3(::helpers::CompareOffsets, _expected, _actual, _start)
+#define EXPECT_MEMEQ(_expected, _actual, _size)           EXPECT_PRED_FORMAT3(::helpers::CompareMemory, _expected, _actual, _size)
+#define EXPECT_CPEQ(_expected, _actual)                   EXPECT_PRED_FORMAT2(::helpers::CompareCodepoints, _expected, _actual)
 
 namespace helpers {
 
@@ -54,6 +55,10 @@ namespace helpers {
 	::testing::AssertionResult CompareUtf8Strings(
 		const char* expressionExpected, const char* expressionActual,
 		const char* textExpected, const char* textActual);
+
+	::testing::AssertionResult CompareUtf8LengthStrings(
+		const char* expressionExpected, const char* expressionActual, const char* expressionLength,
+		const char* textExpected, const char* textActual, size_t length);
 
 	::testing::AssertionResult CompareOffsets(
 		const char* expressionExpected, const char* expressionActual, const char* expressionCount,

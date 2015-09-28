@@ -7,382 +7,342 @@ extern "C" {
 
 #include "../helpers/helpers-strings.hpp"
 
-TEST(QueryDecomposition, AllDecompose)
-{
-	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
-	{
-		uint8_t length = 0;
-		const char* value1 = database_querydecomposition2(i, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length);
-		const char* value2 = database_querydecomposition(i, UnicodeProperty_Normalization_Decompose);
-
-		if (!(value1 == nullptr && value2 == nullptr) &&
-			strncmp(value1, value2, length))
-		{
-			int bleh = 0;
-		}
-	}
-}
-
-TEST(QueryDecomposition, AllCompatibilityDecompose)
-{
-	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
-	{
-		uint8_t length = 0;
-		const char* value1 = database_querydecomposition2(i, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length);
-		const char* value2 = database_querydecomposition(i, UnicodeProperty_Normalization_Compatibility_Decompose);
-
-		if (!(value1 == nullptr && value2 == nullptr) &&
-			strncmp(value1, value2, length))
-		{
-			int bleh = 0;
-		}
-	}
-}
-
-TEST(QueryDecomposition, AllUppercase)
-{
-	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
-	{
-		uint8_t length = 0;
-		const char* value1 = database_querydecomposition2(i, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length);
-		const char* value2 = database_querydecomposition(i, UnicodeProperty_Uppercase);
-
-		if (!(value1 == nullptr && value2 == nullptr) &&
-			strncmp(value1, value2, length))
-		{
-			int bleh = 0;
-		}
-	}
-}
-
-TEST(QueryDecomposition, AllLowercase)
-{
-	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
-	{
-		uint8_t length = 0;
-		const char* value1 = database_querydecomposition2(i, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length);
-		const char* value2 = database_querydecomposition(i, UnicodeProperty_Lowercase);
-
-		if (!(value1 == nullptr && value2 == nullptr) &&
-			strncmp(value1, value2, length))
-		{
-			int bleh = 0;
-		}
-	}
-}
-
-TEST(QueryDecomposition, AllTitlecase)
-{
-	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
-	{
-		uint8_t length = 0;
-		const char* value1 = database_querydecomposition2(i, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length);
-		const char* value2 = database_querydecomposition(i, UnicodeProperty_Titlecase);
-
-		if (!(value1 == nullptr && value2 == nullptr) &&
-			strncmp(value1, value2, length))
-		{
-			int bleh = 0;
-		}
-	}
-}
-
-TEST(QueryDecomposition, ComposeProperty)
-{
-	EXPECT_EQ(nullptr, database_querydecomposition(0x0000011A, UnicodeProperty_Normalization_Compose));
-}
-
-TEST(QueryDecomposition, CompatibilityComposeProperty)
-{
-	EXPECT_EQ(nullptr, database_querydecomposition(0x0000009B, UnicodeProperty_Normalization_Compatibility_Compose));
-}
-
-TEST(QueryDecomposition, InvalidProperty)
-{
-	EXPECT_EQ(nullptr, database_querydecomposition(0x0002F974, 33));
-}
-
 // Decomposed
 
 TEST(QueryDecompositionDecomposed, Found)
 {
-	EXPECT_UTF8EQ("\xD0\x98\xCC\x88", database_querydecomposition(0x000004E4, UnicodeProperty_Normalization_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xD0\x98\xCC\x88", database_querydecomposition(0x000004E4, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionDecomposed, FoundFirst)
 {
-	EXPECT_UTF8EQ("A\xCC\x80", database_querydecomposition(0x000000C0, UnicodeProperty_Normalization_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("A\xCC\x80", database_querydecomposition(0x000000C0, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionDecomposed, FoundLast)
 {
-	EXPECT_UTF8EQ("\xF0\xAA\x98\x80", database_querydecomposition(0x0002FA1D, UnicodeProperty_Normalization_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xF0\xAA\x98\x80", database_querydecomposition(0x0002FA1D, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionDecomposed, FoundPivot)
 {
-	EXPECT_UTF8EQ("\xE7\x88\x9B", database_querydecomposition(0x0000F91E, UnicodeProperty_Normalization_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE7\x88\x9B", database_querydecomposition(0x0000F91E, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionDecomposed, FoundPivotUp)
 {
-	EXPECT_UTF8EQ("s\xCC\xA3", database_querydecomposition(0x00001E63, UnicodeProperty_Normalization_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("s\xCC\xA3", database_querydecomposition(0x00001E63, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionDecomposed, FoundPivotDown)
 {
-	EXPECT_UTF8EQ("\xE5\x86\xAC", database_querydecomposition(0x0002F81A, UnicodeProperty_Normalization_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE5\x86\xAC", database_querydecomposition(0x0002F81A, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionDecomposed, FoundPivotDownDown)
 {
-	EXPECT_UTF8EQ(";", database_querydecomposition(0x0000037E, UnicodeProperty_Normalization_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ(";", database_querydecomposition(0x0000037E, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionDecomposed, FoundMaxDepth)
 {
-	EXPECT_UTF8EQ("\xE8\xBC\xB8", database_querydecomposition(0x0002F9DF, UnicodeProperty_Normalization_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE8\xBC\xB8", database_querydecomposition(0x0002F9DF, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionDecomposed, Missing)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x0001FFFF, UnicodeProperty_Normalization_Decompose));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x0001FFFF, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length));
 }
 
 TEST(QueryDecompositionDecomposed, MissingOutOfLowerBounds)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x00000067, UnicodeProperty_Normalization_Decompose));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x00000067, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length));
 }
 
 TEST(QueryDecompositionDecomposed, MissingOutOfUpperBounds)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x0011A26D, UnicodeProperty_Normalization_Decompose));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x0011A26D, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length));
 }
 
 // Compatibility decomposed
 
 TEST(QueryDecompositionCompatibilityDecomposed, Found)
 {
-	EXPECT_UTF8EQ("\xD0\x98\xCC\x88", database_querydecomposition(0x000004E4, UnicodeProperty_Normalization_Compatibility_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xD0\x98\xCC\x88", database_querydecomposition(0x000004E4, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionCompatibilityDecomposed, FoundFirst)
 {
-	EXPECT_UTF8EQ(" ", database_querydecomposition(0x000000A0, UnicodeProperty_Normalization_Compatibility_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ(" ", database_querydecomposition(0x000000A0, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionCompatibilityDecomposed, FoundLast)
 {
-	EXPECT_UTF8EQ("\xF0\xAA\x98\x80", database_querydecomposition(0x0002FA1D, UnicodeProperty_Normalization_Compatibility_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xF0\xAA\x98\x80", database_querydecomposition(0x0002FA1D, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionCompatibilityDecomposed, FoundPivot)
 {
-	EXPECT_UTF8EQ("\xD7\x90\xD7\x9C", database_querydecomposition(0x0000FB4F, UnicodeProperty_Normalization_Compatibility_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xD7\x90\xD7\x9C", database_querydecomposition(0x0000FB4F, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionCompatibilityDecomposed, FoundPivotUp)
 {
-	EXPECT_UTF8EQ("w", database_querydecomposition(0x000024E6, UnicodeProperty_Normalization_Compatibility_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("w", database_querydecomposition(0x000024E6, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionCompatibilityDecomposed, FoundPivotDown)
 {
-	EXPECT_UTF8EQ("q", database_querydecomposition(0x0001D596, UnicodeProperty_Normalization_Compatibility_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("q", database_querydecomposition(0x0001D596, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionCompatibilityDecomposed, FoundPivotDownUp)
 {
-	EXPECT_UTF8EQ("\xE3\x83\x9B\xE3\x83\xBC\xE3\x83\xB3", database_querydecomposition(0x00003342, UnicodeProperty_Normalization_Compatibility_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE3\x83\x9B\xE3\x83\xBC\xE3\x83\xB3", database_querydecomposition(0x00003342, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionCompatibilityDecomposed, FoundMaxDepth)
 {
-	EXPECT_UTF8EQ("u", database_querydecomposition(0x0001D4CA, UnicodeProperty_Normalization_Compatibility_Decompose));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("u", database_querydecomposition(0x0001D4CA, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionCompatibilityDecomposed, Missing)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x0001A2AF, UnicodeProperty_Normalization_Compatibility_Decompose));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x0001A2AF, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length));
 }
 
 TEST(QueryDecompositionCompatibilityDecomposed, MissingOutOfLowerBounds)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x00000023, UnicodeProperty_Normalization_Compatibility_Decompose));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x00000023, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length));
 }
 
 TEST(QueryDecompositionCompatibilityDecomposed, MissingOutOfUpperBounds)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x00DD2A5D, UnicodeProperty_Normalization_Compatibility_Decompose));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x00DD2A5D, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length));
 }
 
 // Uppercase
 
 TEST(QueryDecompositionUppercase, Found)
 {
-	EXPECT_UTF8EQ("\xE1\xB8\x8A", database_querydecomposition(0x00001E0B, UnicodeProperty_Uppercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE1\xB8\x8A", database_querydecomposition(0x00001E0B, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionUppercase, FoundFirst)
 {
-	EXPECT_UTF8EQ("\xCE\x9C", database_querydecomposition(0x000000B5, UnicodeProperty_Uppercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xCE\x9C", database_querydecomposition(0x000000B5, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionUppercase, FoundLast)
 {
-	EXPECT_UTF8EQ("\xF0\x91\xA2\xBF", database_querydecomposition(0x000118DF, UnicodeProperty_Uppercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xF0\x91\xA2\xBF", database_querydecomposition(0x000118DF, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionUppercase, FoundPivot)
 {
-	EXPECT_UTF8EQ("\xE1\xBB\x84", database_querydecomposition(0x00001EC5, UnicodeProperty_Uppercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE1\xBB\x84", database_querydecomposition(0x00001EC5, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionUppercase, FoundPivotUp)
 {
-	EXPECT_UTF8EQ("\xD0\x91", database_querydecomposition(0x00000431, UnicodeProperty_Uppercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xD0\x91", database_querydecomposition(0x00000431, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionUppercase, FoundPivotDown)
 {
-	EXPECT_UTF8EQ("\xE1\xBD\xAF\xCE\x99", database_querydecomposition(0x00001FAF, UnicodeProperty_Uppercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE1\xBD\xAF\xCE\x99", database_querydecomposition(0x00001FAF, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionUppercase, FoundPivotDownUp)
 {
-	EXPECT_UTF8EQ("\xE2\x93\x88", database_querydecomposition(0x000024E2, UnicodeProperty_Uppercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE2\x93\x88", database_querydecomposition(0x000024E2, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionUppercase, FoundMaxDepth)
 {
-	EXPECT_UTF8EQ("\xE2\x92\xBD", database_querydecomposition(0x000024D7, UnicodeProperty_Uppercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE2\x92\xBD", database_querydecomposition(0x000024D7, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionUppercase, Missing)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x00002BAD, UnicodeProperty_Uppercase));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x00002BAD, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length));
 }
 
 TEST(QueryDecompositionUppercase, MissingOutOfLowerBounds)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x00000020, UnicodeProperty_Uppercase));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x00000020, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length));
 }
 
 TEST(QueryDecompositionUppercase, MissingOutOfUpperBounds)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x00101111, UnicodeProperty_Uppercase));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x00101111, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length));
 }
 
 // Lowercase
 
 TEST(QueryDecompositionLowercase, Found)
 {
-	EXPECT_UTF8EQ("\xCE\xB3", database_querydecomposition(0x00000393, UnicodeProperty_Lowercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xCE\xB3", database_querydecomposition(0x00000393, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionLowercase, FoundFirst)
 {
-	EXPECT_UTF8EQ("\xC3\xA0", database_querydecomposition(0x000000C0, UnicodeProperty_Lowercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xC3\xA0", database_querydecomposition(0x000000C0, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionLowercase, FoundLast)
 {
-	EXPECT_UTF8EQ("\xF0\x91\xA3\x9F", database_querydecomposition(0x000118BF, UnicodeProperty_Lowercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xF0\x91\xA3\x9F", database_querydecomposition(0x000118BF, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionLowercase, FoundPivot)
 {
-	EXPECT_UTF8EQ("\xE1\xBA\xA1", database_querydecomposition(0x00001EA0, UnicodeProperty_Lowercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE1\xBA\xA1", database_querydecomposition(0x00001EA0, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionLowercase, FoundPivotUp)
 {
-	EXPECT_UTF8EQ("\xD0\xB7", database_querydecomposition(0x00000417, UnicodeProperty_Lowercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xD0\xB7", database_querydecomposition(0x00000417, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionLowercase, FoundPivotDown)
 {
-	EXPECT_UTF8EQ("\xE2\xB1\x9A", database_querydecomposition(0x00002C2A, UnicodeProperty_Lowercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE2\xB1\x9A", database_querydecomposition(0x00002C2A, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionLowercase, FoundPivotDownUp)
 {
-	EXPECT_UTF8EQ("\xE1\xBE\xA2", database_querydecomposition(0x00001FAA, UnicodeProperty_Lowercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE1\xBE\xA2", database_querydecomposition(0x00001FAA, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionLowercase, FoundMaxDepth)
 {
-	EXPECT_UTF8EQ("\xEA\x9C\xA9", database_querydecomposition(0x0000A728, UnicodeProperty_Lowercase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xEA\x9C\xA9", database_querydecomposition(0x0000A728, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionLowercase, Missing)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x0000F3AA, UnicodeProperty_Lowercase));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x0000F3AA, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length));
 }
 
 TEST(QueryDecompositionLowercase, MissingOutOfLowerBounds)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x00000021, UnicodeProperty_Lowercase));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x00000021, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length));
 }
 
 TEST(QueryDecompositionLowercase, MissingOutOfUpperBounds)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x00012000, UnicodeProperty_Lowercase));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x00012000, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length));
 }
 
 // Titlecase
 
 TEST(QueryDecompositionTitlecase, Found)
 {
-	EXPECT_UTF8EQ("\xD0\x80", database_querydecomposition(0x00000450, UnicodeProperty_Titlecase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xD0\x80", database_querydecomposition(0x00000450, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionTitlecase, FoundFirst)
 {
-	EXPECT_UTF8EQ("\xCE\x9C", database_querydecomposition(0x000000B5, UnicodeProperty_Titlecase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xCE\x9C", database_querydecomposition(0x000000B5, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionTitlecase, FoundLast)
 {
-	EXPECT_UTF8EQ("\xF0\x91\xA2\xBF", database_querydecomposition(0x000118DF, UnicodeProperty_Titlecase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xF0\x91\xA2\xBF", database_querydecomposition(0x000118DF, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionTitlecase, FoundPivot)
 {
-	EXPECT_UTF8EQ("\xE1\xBB\x80", database_querydecomposition(0x00001EC1, UnicodeProperty_Titlecase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE1\xBB\x80", database_querydecomposition(0x00001EC1, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionTitlecase, FoundPivotUp)
 {
-	EXPECT_UTF8EQ("\xCF\xB7", database_querydecomposition(0x000003F8, UnicodeProperty_Titlecase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xCF\xB7", database_querydecomposition(0x000003F8, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionTitlecase, FoundPivotDown)
 {
-	EXPECT_UTF8EQ("\xE2\xB2\x90", database_querydecomposition(0x00002C91, UnicodeProperty_Titlecase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE2\xB2\x90", database_querydecomposition(0x00002C91, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionTitlecase, FoundPivotDownUp)
 {
-	EXPECT_UTF8EQ("\xE1\xBE\xAE", database_querydecomposition(0x00001FAE, UnicodeProperty_Titlecase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE1\xBE\xAE", database_querydecomposition(0x00001FAE, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionTitlecase, FoundMaxDepth)
 {
-	EXPECT_UTF8EQ("\xE1\xBE\x9F", database_querydecomposition(0x00001F9F, UnicodeProperty_Titlecase));
+	uint8_t length = 0;
+	EXPECT_UTF8LENGTHEQ("\xE1\xBE\x9F", database_querydecomposition(0x00001F9F, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length), length);
 }
 
 TEST(QueryDecompositionTitlecase, Missing)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x0000ABED, UnicodeProperty_Titlecase));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x0000ABED, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length));
 }
 
 TEST(QueryDecompositionTitlecase, MissingOutOfLowerBounds)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x0000001A, UnicodeProperty_Titlecase));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x0000001A, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length));
 }
 
 TEST(QueryDecompositionTitlecase, MissingOutOfUpperBounds)
 {
-	EXPECT_EQ(nullptr, database_querydecomposition(0x0002112A, UnicodeProperty_Titlecase));
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0x0002112A, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length));
 }
