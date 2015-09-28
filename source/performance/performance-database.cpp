@@ -19,40 +19,50 @@ public:
 
 PERF_TEST_F(Database, QueryDecomposeNFD)
 {
+	uint8_t length = 0;
+
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		m_output[i] = database_querydecomposition(i, UnicodeProperty_Normalization_Decompose);
+		m_output[i] = database_querydecomposition(i, NFDDataPtr, NFDIndex1Ptr, NFDIndex2Ptr, &length);
 	}
 }
 
 PERF_TEST_F(Database, QueryDecomposeNFKD)
 {
+	uint8_t length = 0;
+
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		m_output[i] = database_querydecomposition(i, UnicodeProperty_Normalization_Compatibility_Decompose);
+		m_output[i] = database_querydecomposition(i, NFKDDataPtr, NFKDIndex1Ptr, NFKDIndex2Ptr, &length);
 	}
 }
 
 PERF_TEST_F(Database, QueryDecomposeUppercase)
 {
+	uint8_t length = 0;
+
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		m_output[i] = database_querydecomposition(i, UnicodeProperty_Uppercase);
+		m_output[i] = database_querydecomposition(i, UppercaseDataPtr, UppercaseIndex1Ptr, UppercaseIndex2Ptr, &length);
 	}
 }
 
 PERF_TEST_F(Database, QueryDecomposeLowercase)
 {
+	uint8_t length = 0;
+
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		m_output[i] = database_querydecomposition(i, UnicodeProperty_Lowercase);
+		m_output[i] = database_querydecomposition(i, LowercaseDataPtr, LowercaseIndex1Ptr, LowercaseIndex2Ptr, &length);
 	}
 }
 
 PERF_TEST_F(Database, QueryDecomposeTitlecase)
 {
+	uint8_t length = 0;
+
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
-		m_output[i] = database_querydecomposition(i, UnicodeProperty_Titlecase);
+		m_output[i] = database_querydecomposition(i, TitlecaseDataPtr, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, &length);
 	}
 }
