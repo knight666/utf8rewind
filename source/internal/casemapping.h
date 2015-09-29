@@ -48,7 +48,9 @@ typedef struct {
 	size_t total_bytes_needed;
 	unicode_t last_code_point;
 	uint32_t locale;
-	uint8_t property;
+	const uint32_t* property_index1;
+	const uint32_t* property_index2;
+	const uint32_t* property_data;
 	uint8_t last_code_point_size;
 	uint8_t last_general_category;
 } CaseMappingState;
@@ -57,7 +59,7 @@ uint8_t casemapping_initialize(
 	CaseMappingState* state,
 	const char* input, size_t inputSize,
 	char* target, size_t targetSize,
-	uint8_t property);
+	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData);
 
 uint8_t casemapping_readcodepoint(CaseMappingState* state);
 
