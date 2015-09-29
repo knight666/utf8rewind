@@ -29,37 +29,6 @@
 #include "codepoint.h"
 #include "database.h"
 
-#define GC_LE  GeneralCategory_Letter
-#define GC_CA  GeneralCategory_CaseMapped
-#define GC_LC  GeneralCategory_Letter | GeneralCategory_CaseMapped
-#define GC_MA  GeneralCategory_Mark
-#define GC_NU  GeneralCategory_Number
-#define GC_PU  GeneralCategory_Punctuation
-#define GC_SY  GeneralCategory_Symbol
-#define GC_SE  GeneralCategory_Separator
-#define GC_OT  GeneralCategory_Other
-
-#define GC_BLOCK_SHIFT (3)
-static const char GC_INDEX_MASK = (1 << GC_BLOCK_SHIFT) - 1;
-
-static const uint32_t general_category_index[16] = {
-	0, 0, 0, 0,
-	8, 13, 21, 27,
-	34, 36, 35, 42,
-	50, 35, 35, 55
-};
-
-static const uint8_t general_category_data[63] = {
-	GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT, GC_OT,
-	GC_SE, GC_PU, GC_PU, GC_PU, GC_SY, GC_PU, GC_PU, GC_PU,
-	GC_SY, GC_PU, GC_PU, GC_PU, GC_PU, GC_NU, GC_NU, GC_NU,
-	GC_NU, GC_NU, GC_NU, GC_NU, GC_NU, GC_PU, GC_PU, GC_SY,
-	GC_SY, GC_SY, GC_PU, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
-	GC_LC, GC_LC, GC_LC, GC_LC, GC_LC, GC_PU, GC_PU, GC_PU,
-	GC_SY, GC_PU, GC_SY, GC_LC, GC_LC, GC_LC, GC_LC, GC_LC,
-	GC_LC, GC_LC, GC_PU, GC_SY, GC_PU, GC_SY, GC_OT
-};
-
 static const char basic_latin_lowercase_table[58] = {
 	/* LATIN CAPITAL LETTER A - LATIN CAPITAL LETTER Z */
 	0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C,
@@ -202,7 +171,7 @@ uint8_t casemapping_readcodepoint(CaseMappingState* state)
 
 size_t casemapping_write(CaseMappingState* state)
 {
-	size_t bytes_needed = 0;
+	uint8_t bytes_needed = 0;
 
 	if (state->last_code_point == REPLACEMENT_CHARACTER)
 	{
@@ -248,10 +217,7 @@ size_t casemapping_write(CaseMappingState* state)
 		{
 			/* Read the next code point without moving the cursor */
 
-			state->last_code_point_size = codepoint_read(
-				state->src,
-				state->src_size,
-				&state->last_code_point);
+			state->last_code_point_size = codepoint_read(state->src, state->src_size, &state->last_code_point);
 
 			/* Retrieve the General Category of the next code point */
 
@@ -273,10 +239,7 @@ size_t casemapping_write(CaseMappingState* state)
 				goto outofspace;
 			}
 
-			memcpy(
-				state->dst,
-				should_convert ? "\xCF\x82" : "\xCF\x83",
-				bytes_needed);
+			memcpy(state->dst, should_convert ? "\xCF\x82" : "\xCF\x83", bytes_needed);
 
 			state->dst += bytes_needed;
 			state->dst_size -= bytes_needed;
@@ -317,10 +280,7 @@ size_t casemapping_write(CaseMappingState* state)
 			}
 			else
 			{
-				/*
-					All other code points in Basic Latin are unaffected by case
-					mapping
-				*/
+				/* All other code points in Basic Latin are unaffected by case mapping */
 
 				*state->dst = (char)state->last_code_point;
 			}
@@ -333,8 +293,6 @@ size_t casemapping_write(CaseMappingState* state)
 	}
 	else
 	{
-		uint8_t resolved_size = 0;
-
 		/* Check if the code point is case mapped */
 
 		if ((state->last_general_category & GeneralCategory_CaseMapped) != 0)
@@ -346,45 +304,34 @@ size_t casemapping_write(CaseMappingState* state)
 				state->property_index1,
 				state->property_index2,
 				state->property_data,
-				&resolved_size);
+				&bytes_needed);
 
 			if (resolved != 0 &&
-				resolved_size > 0)
+				state->dst != 0)
 			{
-				if (state->dst != 0)
+				if (state->dst_size < bytes_needed)
 				{
-					if (state->dst_size < resolved_size)
-					{
-						goto outofspace;
-					}
-
-					memcpy(state->dst, resolved, resolved_size);
-
-					state->dst += resolved_size;
-					state->dst_size -= resolved_size;
+					goto outofspace;
 				}
 
-				bytes_needed = resolved_size;
+				memcpy(state->dst, resolved, bytes_needed);
+
+				state->dst += bytes_needed;
+				state->dst_size -= bytes_needed;
 			}
 		}
 
-		if (resolved_size == 0)
+		if (bytes_needed == 0)
 		{
-			uint8_t decoded_written = codepoint_write(
-				state->last_code_point,
-				&state->dst,
-				&state->dst_size);
-
-			if (decoded_written == 0)
+			bytes_needed = codepoint_write(state->last_code_point, &state->dst, &state->dst_size);
+			if (bytes_needed == 0)
 			{
 				goto outofspace;
 			}
-
-			bytes_needed = decoded_written;
 		}
 	}
 
-	return bytes_needed;
+	return (size_t)bytes_needed;
 
 outofspace:
 	state->src_size = 0;
