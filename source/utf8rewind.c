@@ -699,6 +699,7 @@ size_t utf8totitle(
 		/*
 			The first letter of every word should be titlecase, the rest should
 			be converted to lowercase.
+		*/
 
 		if (state.property_data == TitlecaseDataPtr)
 		{

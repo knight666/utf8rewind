@@ -115,7 +115,7 @@ uint8_t casemapping_initialize(
 	CaseMappingState* state,
 	const char* input, size_t inputSize,
 	char* target, size_t targetSize,
-	uint8_t property)
+	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData)
 {
 	/*
 		Sources for locales and code pages
@@ -135,7 +135,9 @@ uint8_t casemapping_initialize(
 	state->src_size = inputSize;
 	state->dst = target;
 	state->dst_size = targetSize;
-	state->property = property;
+	state->property_index1 = propertyIndex1;
+	state->property_index2 = propertyIndex2;
+	state->property_data = propertyData;
 
 	locale = GET_LOCALE();
 
@@ -167,32 +169,21 @@ uint8_t casemapping_readcodepoint(CaseMappingState* state)
 	else if (
 		(*state->src & 0x80) == 0)
 	{
-		/*
-			Basic Latin can be converted to UTF-32 by padding the
-			value to 32 bits with 0.
-		*/
+		/* Basic Latin can be converted to UTF-32 by padding the value to 32 bits with 0. */
 
 		state->last_code_point = (unicode_t)*state->src;
 		state->last_code_point_size = 1;
-
-		state->last_general_category =
-			general_category_data[
-				general_category_index[*state->src >> GC_BLOCK_SHIFT] +
-				(*state->src & GC_INDEX_MASK)];
 	}
 	else
 	{
 		/* Decode current code point */
 
-		state->last_code_point_size = codepoint_read(
-			state->src,
-			state->src_size,
-			&state->last_code_point);
-
-		state->last_general_category = database_queryproperty(
-			state->last_code_point,
-			UnicodeProperty_GeneralCategory);
+		state->last_code_point_size = codepoint_read(state->src, state->src_size, &state->last_code_point);
 	}
+
+	/* Get general category */
+
+	state->last_general_category = PROPERTY_GET_GC(state->last_code_point);
 
 	/* Move source cursor */
 
@@ -239,7 +230,7 @@ size_t casemapping_write(CaseMappingState* state)
 		/* GREEK CAPITAL LETTER SIGMA */
 		state->last_code_point == 0x03A3 &&
 		/* Converting to lowercase */
-		state->property == UnicodeProperty_Lowercase)
+		state->property_data == LowercaseDataPtr)
 	{
 		/*
 			If the final letter of a word (defined as "a collection of code
@@ -264,15 +255,11 @@ size_t casemapping_write(CaseMappingState* state)
 
 			/* Retrieve the General Category of the next code point */
 
-			state->last_general_category = database_queryproperty(
-				state->last_code_point,
-				UnicodeProperty_GeneralCategory);
+			state->last_general_category = PROPERTY_GET_GC(state->last_code_point);
 
 			/* Convert if the "word" has ended */
 
-			should_convert =
-				(state->last_general_category &
-				GeneralCategory_Letter) == 0;
+			should_convert = (state->last_general_category & GeneralCategory_Letter) == 0;
 		}
 
 		/* Write the converted code point to the output buffer */
@@ -315,7 +302,7 @@ size_t casemapping_write(CaseMappingState* state)
 			if (state->last_code_point >= 0x41 &&
 				state->last_code_point <= 0x7A)
 			{
-				if (state->property == UnicodeProperty_Lowercase)
+				if (state->property_data == LowercaseDataPtr)
 				{
 					*state->dst =
 						basic_latin_lowercase_table[
@@ -346,7 +333,7 @@ size_t casemapping_write(CaseMappingState* state)
 	}
 	else
 	{
-		size_t resolved_size = 0;
+		uint8_t resolved_size = 0;
 
 		/* Check if the code point is case mapped */
 
@@ -356,13 +343,15 @@ size_t casemapping_write(CaseMappingState* state)
 
 			const char* resolved = database_querydecomposition(
 				state->last_code_point,
-				state->property,
+				state->property_index1,
+				state->property_index2,
+				state->property_data,
 				&resolved_size);
 
-			if (resolved != 0)
+			if (resolved != 0 &&
+				resolved_size > 0)
 			{
-				if (state->dst != 0 &&
-					resolved_size > 0)
+				if (state->dst != 0)
 				{
 					if (state->dst_size < resolved_size)
 					{
