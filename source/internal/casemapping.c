@@ -175,30 +175,127 @@ size_t casemapping_write(CaseMappingState* state)
 
 	if (state->last_code_point == REPLACEMENT_CHARACTER)
 	{
-		/* Write replacement character to output */
-
 		if (state->dst != 0)
 		{
+			/* Write replacement character to output */
+
 			if (state->dst_size < REPLACEMENT_CHARACTER_STRING_LENGTH)
 			{
 				goto outofspace;
 			}
 
-			memcpy(
-				state->dst,
-				REPLACEMENT_CHARACTER_STRING,
-				REPLACEMENT_CHARACTER_STRING_LENGTH);
+			memcpy(state->dst, REPLACEMENT_CHARACTER_STRING, REPLACEMENT_CHARACTER_STRING_LENGTH);
 
 			state->dst += REPLACEMENT_CHARACTER_STRING_LENGTH;
 			state->dst_size -= REPLACEMENT_CHARACTER_STRING_LENGTH;
 		}
 
-		bytes_needed = REPLACEMENT_CHARACTER_STRING_LENGTH;
+		return REPLACEMENT_CHARACTER_STRING_LENGTH;
 	}
-	else if (
-		/* GREEK CAPITAL LETTER SIGMA */
-		state->last_code_point == 0x03A3 &&
-		/* Converting to lowercase */
+
+	if (state->locale == CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN)
+	{
+		const char* resolved = 0;
+
+		if (state->property_data == LowercaseDataPtr)
+		{
+			/* LATIN CAPITAL LETTER I WITH DOT ABOVE */
+
+			if (state->last_code_point == 0x0130)
+			{
+				/* LATIN SMALL LETTER I */
+
+				state->last_code_point = 0x0069;
+				resolved = "i";
+				state->last_code_point_size = 1;
+			}
+
+			/* LATIN CAPITAL LETTER I */
+
+			else if (
+				state->last_code_point == 0x0049)
+			{
+				/* COMBINING DOT ABOVE */
+
+				if (state->src_size > 0 &&
+					(state->last_code_point_size = codepoint_read(state->src, state->src_size, &state->last_code_point)) > 0 &&
+					state->last_code_point == 0x0307)
+				{
+					if (state->src_size >= state->last_code_point_size)
+					{
+						state->src += state->last_code_point_size;
+						state->src_size -= state->last_code_point_size;
+					}
+					else
+					{
+						state->src_size = 0;
+					}
+
+					/* LATIN SMALL LETTER I */
+
+					state->last_code_point = 0x0069;
+					resolved = "i";
+					state->last_code_point_size = 1;
+				}
+				else
+				{
+					/* LATIN SMALL LETTER DOTLESS I */
+
+					state->last_code_point = 0x0131;
+					resolved = "\xC4\xB1";
+					state->last_code_point_size = 2;
+				}
+			}
+		}
+		else
+		{
+			/* LATIN SMALL LETTER I */
+
+			if (state->last_code_point == 0x0069)
+			{
+				/* LATIN CAPITAL LETTER I WITH DOT ABOVE */
+
+				
+				state->last_code_point = 0x0130;
+				resolved = "\xC4\xB0";
+				state->last_code_point_size = 2;
+			}
+			
+			/* LATIN SMALL LETTER DOTLESS I */
+
+			else if (
+				state->last_code_point == 0x0131)
+			{
+				/* LATIN CAPITAL LETTER I */
+
+				state->last_code_point = 0x0049;
+				resolved = "I";
+				state->last_code_point_size = 1;
+			}
+		}
+
+		if (resolved != 0)
+		{
+			if (state->dst != 0)
+			{
+				if (state->dst_size < state->last_code_point_size)
+				{
+					goto outofspace;
+				}
+
+				memcpy(state->dst, resolved, state->last_code_point_size);
+
+				state->dst += state->last_code_point_size;
+				state->dst_size -= state->last_code_point_size;
+			}
+
+			return state->last_code_point_size;
+		}
+	}
+
+	/* GREEK CAPITAL LETTER SIGMA */
+
+	if (state->last_code_point == 0x03A3 &&
 		state->property_data == LowercaseDataPtr)
 	{
 		/*
@@ -244,9 +341,11 @@ size_t casemapping_write(CaseMappingState* state)
 			state->dst += bytes_needed;
 			state->dst_size -= bytes_needed;
 		}
+
+		return bytes_needed;
 	}
-	else if (
-		state->last_code_point_size == 1)
+
+	if (state->last_code_point_size == 1)
 	{
 		/* Basic Latin */
 
