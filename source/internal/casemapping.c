@@ -197,8 +197,30 @@ size_t casemapping_write(CaseMappingState* state)
 	{
 		const char* resolved = 0;
 
+		/*
+			Code point General Category does not need to be modified,
+			because all mappings result in the same General Category
+		*/
+
 		if (state->property_data == LowercaseDataPtr)
 		{
+			/*
+				For performance reasons, strings are assumed to be in
+				NFC or NFD. While this string
+
+					U+0049 U+0307
+					0      230
+
+				will map to U+0069, this (equally valid) string
+
+					U+0049 U+031D U+0307
+					0      220    230
+
+				won't, because it would require looking ahead further
+				than a single code point and reordering the result by
+				General Category.
+			*/
+
 			/* LATIN CAPITAL LETTER I WITH DOT ABOVE */
 
 			if (state->last_code_point == 0x0130)
@@ -255,7 +277,6 @@ size_t casemapping_write(CaseMappingState* state)
 			{
 				/* LATIN CAPITAL LETTER I WITH DOT ABOVE */
 
-				
 				state->last_code_point = 0x0130;
 				resolved = "\xC4\xB0";
 				state->last_code_point_size = 2;
@@ -274,10 +295,14 @@ size_t casemapping_write(CaseMappingState* state)
 			}
 		}
 
+		/* Check if mapping succeeded */
+
 		if (resolved != 0)
 		{
 			if (state->dst != 0)
 			{
+				/* Write resolved string to output */
+
 				if (state->dst_size < state->last_code_point_size)
 				{
 					goto outofspace;
