@@ -198,15 +198,15 @@ size_t casemapping_write(CaseMappingState* state)
 		const char* resolved = 0;
 
 		/*
-			Code point General Category does not need to be modified,
-			because all mappings result in the same General Category
+			Code point General Category does not need to be modified, because
+			all mappings result in the same General Category
 		*/
 
 		if (state->property_data == LowercaseDataPtr)
 		{
 			/*
-				For performance reasons, strings are assumed to be in
-				NFC or NFD. While this string
+				For performance reasons, strings are assumed to be in NFC or
+				NFD. While this string
 
 					U+0049 U+0307
 					0      230
@@ -216,8 +216,8 @@ size_t casemapping_write(CaseMappingState* state)
 					U+0049 U+031D U+0307
 					0      220    230
 
-				won't, because it would require looking ahead further
-				than a single code point and reordering the result by
+				won't, because it would require looking ahead further than a
+				single code point and reordering the result by
 				General Category.
 			*/
 
