@@ -27,12 +27,33 @@ TEST_F(Utf8ToLowerTurkish, SingleCapitalLetterI)
 	// 0131
 
 	const char* c = "I";
-	const size_t s = 256;
-	char b[s] = { 0 };
+	const size_t s = 255;
+	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, &errors));
 	EXPECT_UTF8EQ("\xC4\xB1", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleCapitalLetterINotEnoughSpace)
+{
+	const char* c = "I";
+	const size_t s = 1;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleCapitalLetterIAmountOfBytes)
+{
+	const char* c = "I";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -42,12 +63,33 @@ TEST_F(Utf8ToLowerTurkish, SingleCapitalLetterIAndDotAbove)
 	// 0069
 
 	const char* c = "I\xCC\x87";
-	const size_t s = 256;
-	char b[s] = { 0 };
+	const size_t s = 255;
+	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_EQ(1, utf8tolower(c, strlen(c), b, s, &errors));
 	EXPECT_UTF8EQ("i", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleCapitalLetterIAndDotAboveNotEnoughSpace)
+{
+	const char* c = "I\xCC\x87";
+	const size_t s = 0;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleCapitalLetterIAndDotAboveAmountOfBytes)
+{
+	const char* c = "I\xCC\x87";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(1, utf8tolower(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -57,12 +99,33 @@ TEST_F(Utf8ToLowerTurkish, SingleCapitalLetterIWithDotAbove)
 	// 0069
 
 	const char* c = "\xC4\xB0";
-	const size_t s = 256;
-	char b[s] = { 0 };
+	const size_t s = 255;
+	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_EQ(1, utf8tolower(c, strlen(c), b, s, &errors));
 	EXPECT_UTF8EQ("i", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleCapitalLetterIWithDotAboveNotEnoughSpace)
+{
+	const char* c = "\xC4\xB0";
+	const size_t s = 0;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleCapitalLetterIWithDotAboveAmountOfBytes)
+{
+	const char* c = "\xC4\xB0";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(1, utf8tolower(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -72,12 +135,33 @@ TEST_F(Utf8ToLowerTurkish, SingleCapitalLetterIWithDotAboveAndDotAbove)
 	// 0069 0307
 
 	const char* c = "\xC4\xB0\xCC\x87";
-	const size_t s = 256;
-	char b[s] = { 0 };
+	const size_t s = 255;
+	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s, &errors));
 	EXPECT_UTF8EQ("i\xCC\x87", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleCapitalLetterIWithDotAboveAndDotAboveNotEnoughSpace)
+{
+	const char* c = "\xC4\xB0\xCC\x87";
+	const size_t s = 2;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(1, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("i", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleCapitalLetterIWithDotAboveAndDotAboveAmountOfBytes)
+{
+	const char* c = "\xC4\xB0\xCC\x87";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf8tolower(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -87,12 +171,33 @@ TEST_F(Utf8ToLowerTurkish, SingleSmallLetterI)
 	// 0069
 
 	const char* c = "i";
-	const size_t s = 256;
-	char b[s] = { 0 };
+	const size_t s = 255;
+	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_EQ(1, utf8tolower(c, strlen(c), b, s, &errors));
 	EXPECT_UTF8EQ("i", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleSmallLetterINotEnoughSpace)
+{
+	const char* c = "i";
+	const size_t s = 0;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleSmallLetterIAmountOfBytes)
+{
+	const char* c = "i";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(1, utf8tolower(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -102,12 +207,33 @@ TEST_F(Utf8ToLowerTurkish, SingleSmallLetterIWithDotAbove)
 	// 0069 0307
 
 	const char* c = "i\xCC\x87";
-	const size_t s = 256;
-	char b[s] = { 0 };
+	const size_t s = 255;
+	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s, &errors));
 	EXPECT_UTF8EQ("i\xCC\x87", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleSmallLetterIWithDotAboveNotEnoughSpace)
+{
+	const char* c = "i\xCC\x87";
+	const size_t s = 1;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(1, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("i", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleSmallLetterIWithDotAboveAmountOfBytes)
+{
+	const char* c = "i\xCC\x87";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf8tolower(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -117,12 +243,33 @@ TEST_F(Utf8ToLowerTurkish, SingleSmallLetterDotlessI)
 	// 0131
 
 	const char* c = "\xC4\xB1";
-	const size_t s = 256;
-	char b[s] = { 0 };
+	const size_t s = 255;
+	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, &errors));
 	EXPECT_UTF8EQ("\xC4\xB1", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleSmallLetterDotlessINotEnoughSpace)
+{
+	const char* c = "\xC4\xB1";
+	const size_t s = 1;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleSmallLetterDotlessIAmountOfBytes)
+{
+	const char* c = "\xC4\xB1";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -132,11 +279,32 @@ TEST_F(Utf8ToLowerTurkish, SingleSmallLetterDotlessIWithDotAbove)
 	// 0131 0307
 
 	const char* c = "\xC4\xB1\xCC\x87";
-	const size_t s = 256;
-	char b[s] = { 0 };
+	const size_t s = 255;
+	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s - 1, &errors));
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, &errors));
 	EXPECT_UTF8EQ("\xC4\xB1\xCC\x87", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleSmallLetterDotlessIWithDotAboveNotEnoughSpace)
+{
+	const char* c = "\xC4\xB1\xCC\x87";
+	const size_t s = 1;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToLowerTurkish, SingleSmallLetterDotlessIWithDotAboveAmountOfBytes)
+{
+	const char* c = "\xC4\xB1\xCC\x87";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
