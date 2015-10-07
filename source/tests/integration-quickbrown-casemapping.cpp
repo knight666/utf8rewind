@@ -1789,8 +1789,8 @@ TEST_F(QuickbrownCaseMapping, TurkishUppercase)
 	std::string i = ReadRegular(4508, 54);
 	EXPECT_UTF8EQ("  Pijamal\xC4\xB1 hasta, ya\xC4\x9F\xC4\xB1z \xC5\x9Fof\xC3\xB6re \xC3\xA7" "abucak g\xC3\xBCvendi.", i.c_str());
 
-	std::string eu = ReadUppercase(4509, 52);
-	EXPECT_UTF8EQ("  PIJAMALI HASTA, YA\xC4\x9EIZ \xC5\x9EOF\xC3\x96RE \xC3\x87" "ABUCAK G\xC3\x9CVENDI.", eu.c_str());
+	std::string eu = ReadUppercase(4509, 54);
+	EXPECT_UTF8EQ("  P\xC4\xB0JAMALI HASTA, YA\xC4\x9EIZ \xC5\x9EOF\xC3\x96RE \xC3\x87" "ABUCAK G\xC3\x9CVEND\xC4\xB0.", eu.c_str());
 
 	SET_LOCALE_TURKISH();
 
@@ -1802,7 +1802,7 @@ TEST_F(QuickbrownCaseMapping, TurkishUppercase)
 	utf8toupper(i.c_str(), i.size() - 1, au, l, &errors);
 	au[l] = 0;
 
-	EXPECT_UTF8EQ("  PIJAMALI HASTA, YA\xC4\x9EIZ \xC5\x9EOF\xC3\x96RE \xC3\x87" "ABUCAK G\xC3\x9CVENDI.", au);
+	EXPECT_UTF8EQ("  P\xC4\xB0JAMALI HASTA, YA\xC4\x9EIZ \xC5\x9EOF\xC3\x96RE \xC3\x87" "ABUCAK G\xC3\x9CVEND\xC4\xB0.", au);
 
 	delete au;
 }
