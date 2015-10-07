@@ -41,67 +41,6 @@ TEST(CaseMappingInitialize, LocaleEnglishUS)
 	RESET_LOCALE();
 }
 
-TEST(CaseMappingInitialize, LocaleGreek)
-{
-	CaseMappingState state;
-	const char* i = "Shocking revelations";
-	size_t is = strlen(i);
-	char o[256] = { 0 };
-	size_t os = 255;
-
-#if _WINDOWS
-	EXPECT_STREQ("el", setlocale(LC_ALL, "el"));
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
-	RESET_LOCALE();
-
-	EXPECT_STREQ("el-GR", setlocale(LC_ALL, "el-GR"));
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
-	RESET_LOCALE();
-
-	EXPECT_STREQ("Greek_Greece.1253", setlocale(LC_ALL, "greek"));
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
-	RESET_LOCALE();
-
-	EXPECT_STREQ("Greek_Greece.1253", setlocale(LC_ALL, "Greek_Greece.1253"));
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
-	RESET_LOCALE();
-
-	EXPECT_STREQ("Greek_Greece.1253", setlocale(LC_ALL, "Greek_Greece.ACP"));
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
-	RESET_LOCALE();
-
-	EXPECT_STREQ("Greek_Greece.737", setlocale(LC_ALL, "Greek_Greece.OCP"));
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
-	RESET_LOCALE();
-
-	EXPECT_STREQ("Greek_Greece.737", setlocale(LC_ALL, "Greek_Greece.OCP"));
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
-	RESET_LOCALE();
-#else
-	EXPECT_STREQ("el_GR", setlocale(LC_ALL, "el_GR"));
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
-	RESET_LOCALE();
-
-	EXPECT_STREQ("el_GR.iso88597", setlocale(LC_ALL, "el_GR.iso88597"));
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
-	RESET_LOCALE();
-
-	EXPECT_STREQ("el_GR.utf8", setlocale(LC_ALL, "el_GR.utf8"));
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_GREEK, state.locale);
-	RESET_LOCALE();
-#endif
-}
-
 TEST(CaseMappingInitialize, LocaleLithuanian)
 {
 	CaseMappingState state;
