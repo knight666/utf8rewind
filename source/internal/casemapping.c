@@ -70,14 +70,14 @@ static const char basic_latin_uppercase_table[58] = {
 #if WIN32 || _WINDOWS
 	#define LOCALE_TYPE                     _locale_t
 	#define GET_LOCALE()                    _get_current_locale()
-	#define CHECK_LOCALE(_name, _ansiCodepage, _oemCodepage) \
-		locale->locinfo->lc_codepage == _ansiCodepage || \
-		locale->locinfo->lc_codepage == _oemCodepage
+	#define CHECK_LOCALE(_target, _name, _ansiCodepage, _oemCodepage) \
+		(_target)->locinfo->lc_codepage == _ansiCodepage || \
+		(_target)->locinfo->lc_codepage == _oemCodepage
 #else
 	#define LOCALE_TYPE                     const char*
 	#define GET_LOCALE()                    setlocale(LC_ALL, 0)
-	#define CHECK_LOCALE(_name, _ansiCodepage, _oemCodepage) \
-		!strncasecmp(locale, _name, 5)
+	#define CHECK_LOCALE(_target, _name, _ansiCodepage, _oemCodepage) \
+		!strncasecmp((_target), _name, 5)
 #endif
 
 uint8_t casemapping_initialize(
@@ -110,18 +110,13 @@ uint8_t casemapping_initialize(
 
 	locale = GET_LOCALE();
 
-	if (CHECK_LOCALE("el_gr", 1253, 737))
-	{
-		state->locale = CASEMAPPING_LOCALE_GREEK;
-	}
-	else if (
-		CHECK_LOCALE("lt_lt", 1257, 775))
+	if (CHECK_LOCALE(locale, "lt_lt", 1257, 775))
 	{
 		state->locale = CASEMAPPING_LOCALE_LITHUANIAN;
 	}
 	else if (
-		CHECK_LOCALE("tr_tr", 1254, 857) ||
-		CHECK_LOCALE("az_az", 1254, 857))
+		CHECK_LOCALE(locale, "tr_tr", 1254, 857) ||
+		CHECK_LOCALE(locale, "az_az", 1254, 857))
 	{
 		state->locale = CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN;
 	}
