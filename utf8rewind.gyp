@@ -131,6 +131,7 @@
 				'source/tests/suite-utf8-totitle-turkish.cpp',
 				'source/tests/suite-utf8-toupper.cpp',
 				'source/tests/suite-utf8-toupper-greek.cpp',
+				'source/tests/suite-utf8-toupper-lithuanian.cpp',
 				'source/tests/suite-utf8-toupper-turkish.cpp',
 				'source/tests/suite-utf8-toutf16.cpp',
 				'source/tests/suite-utf8-toutf32.cpp',
