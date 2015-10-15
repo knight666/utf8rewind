@@ -249,6 +249,81 @@ TEST_F(Utf8ToLowerLithuanian, SingleLatinSmallLetterIWithOgonek)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
+TEST_F(Utf8ToLowerLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningDotAbove)
+{
+	// 012F 0307
+	// 012F 0307
+
+	const char* c = "\xC4\xAF\xCC\x87";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAF\xCC\x87", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningGraveAccent)
+{
+	// 012F 0300
+	// 012F 0300
+
+	const char* c = "\xC4\xAF\xCC\x80";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAF\xCC\x80", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningAcuteAccent)
+{
+	// 012F 0301
+	// 012F 0301
+
+	const char* c = "\xC4\xAF\xCC\x81";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAF\xCC\x81", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningTildeAccent)
+{
+	// 012F 0303
+	// 012F 0303
+
+	const char* c = "\xC4\xAF\xCC\x83";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAF\xCC\x83", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningOgonekAccent)
+{
+	// 012F 0328
+	// 012F 0328
+
+	const char* c = "\xC4\xAF\xCC\xA8";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAF\xCC\xA8", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
 TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterI)
 {
 	// 0049
@@ -477,7 +552,22 @@ TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonek)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonekAndMoreAbove)
+TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningDotAbove)
+{
+	// 012E 0307
+	// 012F 0307
+
+	const char* c = "\xC4\xAE\xCC\x87";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAE\xCC\x87", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningGraveAccent)
 {
 	// 012E 0300
 	// 012F 0307 0300
@@ -489,5 +579,68 @@ TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonekAndMoreAbove)
 
 	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s, &errors));
 	EXPECT_UTF8EQ("\xC4\xAF\xCC\x87\xCC\x80", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningAcuteAccent)
+{
+	// 012E 0301
+	// 012F 0307 0301
+
+	const char* c = "\xC4\xAE\xCC\x81";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAF\xCC\x87\xCC\x81", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningTildeAccent)
+{
+	// 012E 0303
+	// 012F 0307 0303
+
+	const char* c = "\xC4\xAF\xCC\x83";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAF\xCC\x87\xCC\x83", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningOgonekAccent)
+{
+	// 012E 0328
+	// 012F 0328
+
+	const char* c = "\xC4\xAE\xCC\xA8";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAF\xCC\xA8", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonekMoreAboveOutOfOrder)
+{
+	// 012E 0327 1DCE 0335 0346
+	//    0  202  214    1  230
+
+	// 012F 0327 1DCE 0335 0346
+	//    0  202  214    1  230
+
+	const char* c = "\xC4\xAE\xCC\xA7\xE1\xB7\x8E\xCC\xB5\xCD\x86";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(11, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAF\xCC\xA7\xE1\xB7\x8E\xCC\xB5\xCD\x86", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
