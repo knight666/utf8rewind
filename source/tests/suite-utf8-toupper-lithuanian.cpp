@@ -66,7 +66,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithGrave)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningGraveAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningGrave)
 {
 	// 0069 0300
 	// 0049 0300
@@ -81,7 +81,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningGraveAccent)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningGraveAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningGrave)
 {
 	// 0069 0307 0300
 	// 0049 0300
@@ -111,7 +111,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithAcute)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningAcuteAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningAcute)
 {
 	// 0069 0301
 	// 0049 0301
@@ -126,7 +126,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningAcuteAccent)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningAcuteAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningAcute)
 {
 	// 0069 0307 0301
 	// 0049 0301
@@ -156,7 +156,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithTilde)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningTildeAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningTilde)
 {
 	// 0069 0303
 	// 0049 0303
@@ -171,7 +171,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningTildeAccent)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningTildeAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningTilde)
 {
 	// 0069 0307 0303
 	// 0049 0303
@@ -186,7 +186,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombini
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningOgonekAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningOgonek)
 {
 	// 0069 0328
 	// 0049 0328
@@ -201,7 +201,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningOgonekAccent)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningOgonekAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningOgonek)
 {
 	// 0069 0307 0328
 	// 0049 0307 0328
@@ -432,7 +432,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningDotAb
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningGraveAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningGrave)
 {
 	// 012F 0300
 	// 012E 0300
@@ -447,7 +447,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningGrave
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningAcuteAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningAcute)
 {
 	// 012F 0301
 	// 012E 0301
@@ -462,7 +462,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningAcute
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningTildeAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningTilde)
 {
 	// 012F 0303
 	// 012E 0303
@@ -477,7 +477,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningTilde
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningOgonekAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningOgonek)
 {
 	// 012F 0328
 	// 012E 0328
@@ -537,7 +537,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithGrave)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningGraveAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningGrave)
 {
 	// 0049 0300
 	// 0049 0300
@@ -552,7 +552,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningGraveAccent)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningGraveAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningGrave)
 {
 	// 0049 0307 0300
 	// 0049 0307 0300
@@ -582,7 +582,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithAcute)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningAcuteAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningAcute)
 {
 	// 0049 0301
 	// 0049 0301
@@ -597,7 +597,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningAcuteAccent)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningAcuteAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningAcute)
 {
 	// 0049 0307 0301
 	// 0049 0307 0301
@@ -627,7 +627,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithTilde)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningTildeAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningTilde)
 {
 	// 0049 0303
 	// 0049 0303
@@ -642,7 +642,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningTildeAccent)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningTildeAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningTilde)
 {
 	// 0049 0307 0303
 	// 0049 0307 0303
@@ -657,7 +657,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombi
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningOgnonekAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningOgnonek)
 {
 	// 0049 0328
 	// 0049 0328
@@ -672,7 +672,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningOgnonekAccent
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningOgnonekAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningOgnonek)
 {
 	// 0049 0307 0328
 	// 0049 0307 0328
@@ -903,7 +903,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningDot
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningGraveAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningGrave)
 {
 	// 012E 0300
 	// 012E 0300
@@ -918,7 +918,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningGra
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningAcuteAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningAcute)
 {
 	// 012E 0301
 	// 012E 0301
@@ -933,7 +933,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningAcu
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningTildeAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningTilde)
 {
 	// 012E 0303
 	// 012E 0303
@@ -948,7 +948,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningTil
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningOgonekAccent)
+TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningOgonek)
 {
 	// 012E 0328
 	// 012E 0328
