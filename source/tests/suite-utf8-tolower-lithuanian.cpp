@@ -708,15 +708,15 @@ TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIMoreAboveOutOfOrder)
 TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterJ)
 {
 	// 004A
-	// 006A
+	// 006A 0307
 
 	const char* c = "J";
 	const size_t s = 255;
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8tolower(c, strlen(c), b, s, &errors));
-	EXPECT_UTF8EQ("j", b);
+	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("j\xCC\x87", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -828,15 +828,15 @@ TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterJCombiningDotAboveAndCombi
 TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterJAndCombiningOgonek)
 {
 	// 004A 0328
-	// 006A 0328
+	// 006A 0307 0328
 
 	const char* c = "J\xCC\xA8";
 	const size_t s = 255;
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8tolower(c, strlen(c), b, s, &errors));
-	EXPECT_UTF8EQ("j\xCC\xA8", b);
+	EXPECT_EQ(5, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("j\xCC\x87\xCC\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -860,31 +860,31 @@ TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterJMoreAboveOutOfOrder)
 	// 004A 1D16D 0F72 10AE6
 	//    0   226  130   220
 
-	// 004A 1D16D 0F72 10AE6
-	//    0   226  130   220
+	// 004A 0307 1D16D 0F72 10AE6
+	//    0  230   226  130   220
 
 	const char* c = "J\xF0\x9D\x85\xAD\xE0\xBD\xB2\xF0\x90\xAB\xA6";
 	const size_t s = 255;
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(13, utf8tolower(c, strlen(c), b, s, &errors));
-	EXPECT_UTF8EQ("j\xF0\x9D\x85\xAD\xE0\xBD\xB2\xF0\x90\xAB\xA6", b);
+	EXPECT_EQ(14, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("j\xCC\x87\xF0\x9D\x85\xAD\xE0\xBD\xB2\xF0\x90\xAB\xA6", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
 TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonek)
 {
 	// 012E
-	// 012F
+	// 012F 0307
 
 	const char* c = "\xC4\xAE";
 	const size_t s = 255;
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xC4\xAF", b);
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAF\xCC\x87", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -899,7 +899,7 @@ TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningDot
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xC4\xAE\xCC\x87", b);
+	EXPECT_UTF8EQ("\xC4\xAF\xCC\x87", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -938,7 +938,7 @@ TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningTil
 	// 012E 0303
 	// 012F 0307 0303
 
-	const char* c = "\xC4\xAF\xCC\x83";
+	const char* c = "\xC4\xAE\xCC\x83";
 	const size_t s = 255;
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
@@ -951,15 +951,15 @@ TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningTil
 TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningOgonek)
 {
 	// 012E 0328
-	// 012F 0328
+	// 012F 0307 0328
 
 	const char* c = "\xC4\xAE\xCC\xA8";
 	const size_t s = 255;
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xC4\xAF\xCC\xA8", b);
+	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAF\xCC\x87\xCC\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -968,15 +968,15 @@ TEST_F(Utf8ToLowerLithuanian, SingleLatinCapitalLetterIWithOgonekMoreAboveOutOfO
 	// 012E 0327 1DCE 0335 0346
 	//    0  202  214    1  230
 
-	// 012F 0327 1DCE 0335 0346
-	//    0  202  214    1  230
+	// 012F 0307 0327 1DCE 0335 0346
+	//    0  230  202  214    1  230
 
 	const char* c = "\xC4\xAE\xCC\xA7\xE1\xB7\x8E\xCC\xB5\xCD\x86";
 	const size_t s = 255;
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(11, utf8tolower(c, strlen(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xC4\xAF\xCC\xA7\xE1\xB7\x8E\xCC\xB5\xCD\x86", b);
+	EXPECT_EQ(13, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAF\xCC\x87\xCC\xA7\xE1\xB7\x8E\xCC\xB5\xCD\x86", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }

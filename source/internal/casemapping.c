@@ -29,6 +29,21 @@
 #include "codepoint.h"
 #include "database.h"
 
+#define CP_LATIN_CAPITAL_LETTER_I                 0x0049
+#define CP_LATIN_CAPITAL_LETTER_J                 0x004A
+#define CP_LATIN_SMALL_LETTER_I                   0x0069
+#define CP_LATIN_SMALL_LETTER_J                   0x006A
+#define CP_LATIN_CAPITAL_LETTER_I_WITH_OGONEK     0x012E
+#define CP_LATIN_SMALL_LETTER_I_WITH_OGONEK       0x012F
+#define CP_LATIN_CAPITAL_LETTER_I_WITH_GRAVE      0x00CC
+#define CP_LATIN_CAPITAL_LETTER_I_WITH_ACUTE      0x00CD
+#define CP_LATIN_CAPITAL_LETTER_I_WITH_TILDE      0x0128
+#define CP_LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE  0x0130
+#define CP_COMBINING_GRAVE_ACCENT                 0x0300
+#define CP_COMBINING_ACUTE_ACCENT                 0x0301
+#define CP_COMBINING_TILDE_ACCENT                 0x0303
+#define CP_COMBINING_DOT_ABOVE                    0x0307
+
 static const char basic_latin_lowercase_table[58] = {
 	/* LATIN CAPITAL LETTER A - LATIN CAPITAL LETTER Z */
 	0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C,
@@ -310,6 +325,116 @@ size_t casemapping_write(CaseMappingState* state)
 			}
 
 			return state->last_code_point_size;
+		}
+	}
+	else if (
+		state->locale == CASEMAPPING_LOCALE_LITHUANIAN)
+	{
+		if (state->property_data == LowercaseDataPtr)
+		{
+			uint8_t write_soft_dot = 1;
+			unicode_t code_point_lower = 0;
+			unicode_t additional_accent = 0;
+
+			switch (state->last_code_point)
+			{
+
+			case CP_LATIN_CAPITAL_LETTER_I:
+				{
+					code_point_lower = CP_LATIN_SMALL_LETTER_I;
+
+				} break;
+
+			case CP_LATIN_CAPITAL_LETTER_J:
+				{
+					code_point_lower = CP_LATIN_SMALL_LETTER_J;
+
+				} break;
+
+			case CP_LATIN_CAPITAL_LETTER_I_WITH_OGONEK:
+				{
+					code_point_lower = CP_LATIN_SMALL_LETTER_I_WITH_OGONEK;
+
+				} break;
+
+			case CP_LATIN_CAPITAL_LETTER_I_WITH_GRAVE:
+				{
+					code_point_lower = CP_LATIN_SMALL_LETTER_I;
+					additional_accent = CP_COMBINING_GRAVE_ACCENT;
+
+				} break;
+
+			case CP_LATIN_CAPITAL_LETTER_I_WITH_ACUTE:
+				{
+					code_point_lower = CP_LATIN_SMALL_LETTER_I;
+					additional_accent = CP_COMBINING_ACUTE_ACCENT;
+
+				} break;
+
+			case CP_LATIN_CAPITAL_LETTER_I_WITH_TILDE:
+				{
+					code_point_lower = CP_LATIN_SMALL_LETTER_I;
+					additional_accent = CP_COMBINING_TILDE_ACCENT;
+
+				} break;
+
+			default:
+				break;
+
+			}
+
+			if (code_point_lower != 0)
+			{
+				bytes_needed = state->last_code_point_size;
+
+				/* Write lowercase code point */
+
+				bytes_needed = codepoint_write(code_point_lower, &state->dst, &state->dst_size);
+				if (bytes_needed == 0)
+				{
+					goto outofspace;
+				}
+
+				/* Write COMBINING DOT ABOVE */
+
+				if (write_soft_dot &&
+					state->src_size > 0)
+				{
+					/* Read the next code point without moving the cursor */
+
+					codepoint_read(state->src, state->src_size, &state->last_code_point);
+
+					/* Only write COMBINING DOT ABOVE if not already in input */
+
+					write_soft_dot = state->last_code_point != CP_COMBINING_DOT_ABOVE;
+				}
+
+				if (write_soft_dot)
+				{
+					uint8_t written = codepoint_write(CP_COMBINING_DOT_ABOVE, &state->dst, &state->dst_size);
+					if (written == 0)
+					{
+						goto outofspace;
+					}
+
+					bytes_needed += written;
+				}
+
+				/* Write (optional) additional accent */
+
+				if (additional_accent != 0)
+				{
+					uint8_t written = codepoint_write(additional_accent, &state->dst, &state->dst_size);
+					if (written == 0)
+					{
+						goto outofspace;
+					}
+
+					bytes_needed += written;
+				}
+
+				return bytes_needed;
+			}
 		}
 	}
 
