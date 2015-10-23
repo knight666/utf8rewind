@@ -332,49 +332,59 @@ size_t casemapping_write(CaseMappingState* state)
 	{
 		if (state->property_data == LowercaseDataPtr)
 		{
+			char buffer[16];
+			char* buffer_dst = buffer;
+
 			uint8_t write_soft_dot = 1;
-			unicode_t code_point_lower = 0;
-			unicode_t additional_accent = 0;
+			const char* additional_accent = 0;
+			size_t additional_accent_length = 0;
 
 			switch (state->last_code_point)
 			{
 
 			case CP_LATIN_CAPITAL_LETTER_I:
 				{
-					code_point_lower = CP_LATIN_SMALL_LETTER_I;
+					*buffer_dst++ = 'i';
 
 				} break;
 
 			case CP_LATIN_CAPITAL_LETTER_J:
 				{
-					code_point_lower = CP_LATIN_SMALL_LETTER_J;
+					*buffer_dst++ = 'j';
 
 				} break;
 
 			case CP_LATIN_CAPITAL_LETTER_I_WITH_OGONEK:
 				{
-					code_point_lower = CP_LATIN_SMALL_LETTER_I_WITH_OGONEK;
+					*buffer_dst++ = '\xC4';
+					*buffer_dst++ = '\xAF';
 
 				} break;
 
 			case CP_LATIN_CAPITAL_LETTER_I_WITH_GRAVE:
 				{
-					code_point_lower = CP_LATIN_SMALL_LETTER_I;
-					additional_accent = CP_COMBINING_GRAVE_ACCENT;
+					*buffer_dst++ = 'i';
+
+					additional_accent = "\xCC\x80";
+					additional_accent_length = 2;
 
 				} break;
 
 			case CP_LATIN_CAPITAL_LETTER_I_WITH_ACUTE:
 				{
-					code_point_lower = CP_LATIN_SMALL_LETTER_I;
-					additional_accent = CP_COMBINING_ACUTE_ACCENT;
+					*buffer_dst++ = 'i';
+
+					additional_accent = "\xCC\x81";
+					additional_accent_length = 2;
 
 				} break;
 
 			case CP_LATIN_CAPITAL_LETTER_I_WITH_TILDE:
 				{
-					code_point_lower = CP_LATIN_SMALL_LETTER_I;
-					additional_accent = CP_COMBINING_TILDE_ACCENT;
+					*buffer_dst++ = 'i';
+
+					additional_accent = "\xCC\x83";
+					additional_accent_length = 2;
 
 				} break;
 
@@ -383,17 +393,9 @@ size_t casemapping_write(CaseMappingState* state)
 
 			}
 
-			if (code_point_lower != 0)
+			if (buffer_dst != buffer)
 			{
 				bytes_needed = state->last_code_point_size;
-
-				/* Write lowercase code point */
-
-				bytes_needed = codepoint_write(code_point_lower, &state->dst, &state->dst_size);
-				if (bytes_needed == 0)
-				{
-					goto outofspace;
-				}
 
 				/* Write COMBINING DOT ABOVE */
 
@@ -411,26 +413,31 @@ size_t casemapping_write(CaseMappingState* state)
 
 				if (write_soft_dot)
 				{
-					uint8_t written = codepoint_write(CP_COMBINING_DOT_ABOVE, &state->dst, &state->dst_size);
-					if (written == 0)
-					{
-						goto outofspace;
-					}
-
-					bytes_needed += written;
+					*buffer_dst++ = '\xCC';
+					*buffer_dst++ = '\x87';
 				}
 
 				/* Write (optional) additional accent */
 
 				if (additional_accent != 0)
 				{
-					uint8_t written = codepoint_write(additional_accent, &state->dst, &state->dst_size);
-					if (written == 0)
+					memcpy(buffer_dst, additional_accent, additional_accent_length);
+					buffer_dst += additional_accent_length;
+				}
+
+				bytes_needed = (uint8_t)(buffer_dst - buffer);
+
+				if (state->dst != 0)
+				{
+					if (state->dst_size < bytes_needed)
 					{
 						goto outofspace;
 					}
 
-					bytes_needed += written;
+					memcpy(state->dst, buffer, bytes_needed);
+
+					state->dst += bytes_needed;
+					state->dst_size -= bytes_needed;
 				}
 
 				return bytes_needed;
