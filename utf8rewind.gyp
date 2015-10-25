@@ -129,6 +129,7 @@
 				'source/tests/suite-utf8-tolower-turkish.cpp',
 				'source/tests/suite-utf8-totitle.cpp',
 				'source/tests/suite-utf8-totitle-greek.cpp',
+				'source/tests/suite-utf8-totitle-lithuanian.cpp',
 				'source/tests/suite-utf8-totitle-turkish.cpp',
 				'source/tests/suite-utf8-toupper.cpp',
 				'source/tests/suite-utf8-toupper-greek.cpp',
