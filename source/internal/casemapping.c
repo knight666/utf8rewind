@@ -346,11 +346,17 @@ size_t casemapping_write(CaseMappingState* state)
 				{
 					*buffer_dst++ = 'i';
 
+					state->last_code_point = CP_LATIN_SMALL_LETTER_I;
+					state->last_general_category = 0;
+
 				} break;
 
 			case CP_LATIN_CAPITAL_LETTER_J:
 				{
 					*buffer_dst++ = 'j';
+
+					state->last_code_point = CP_LATIN_SMALL_LETTER_J;
+					state->last_general_category = 0;
 
 				} break;
 
@@ -358,6 +364,9 @@ size_t casemapping_write(CaseMappingState* state)
 				{
 					*buffer_dst++ = '\xC4';
 					*buffer_dst++ = '\xAF';
+
+					state->last_code_point = CP_LATIN_SMALL_LETTER_I_WITH_OGONEK;
+					state->last_general_category = 0;
 
 				} break;
 
@@ -368,6 +377,9 @@ size_t casemapping_write(CaseMappingState* state)
 					additional_accent = "\xCC\x80";
 					additional_accent_length = 2;
 
+					state->last_code_point = CP_COMBINING_GRAVE_ACCENT;
+					state->last_general_category = 230;
+
 				} break;
 
 			case CP_LATIN_CAPITAL_LETTER_I_WITH_ACUTE:
@@ -377,6 +389,9 @@ size_t casemapping_write(CaseMappingState* state)
 					additional_accent = "\xCC\x81";
 					additional_accent_length = 2;
 
+					state->last_code_point = CP_COMBINING_ACUTE_ACCENT;
+					state->last_general_category = 230;
+
 				} break;
 
 			case CP_LATIN_CAPITAL_LETTER_I_WITH_TILDE:
@@ -385,6 +400,9 @@ size_t casemapping_write(CaseMappingState* state)
 
 					additional_accent = "\xCC\x83";
 					additional_accent_length = 2;
+
+					state->last_code_point = CP_COMBINING_TILDE_ACCENT;
+					state->last_general_category = 230;
 
 				} break;
 
@@ -442,6 +460,45 @@ size_t casemapping_write(CaseMappingState* state)
 
 				return bytes_needed;
 			}
+		}
+		else if (
+			state->last_code_point == CP_LATIN_CAPITAL_LETTER_I ||
+			state->last_code_point == CP_LATIN_CAPITAL_LETTER_J)
+		{
+			/* Remove optional COMBINING DOT ABOVE from output */
+			/* General Category should be the letter's, not the combining mark's */
+
+			if (state->src_size > 0 &&
+				(state->last_code_point_size = codepoint_read(state->src, state->src_size, &state->last_code_point)) > 0 &&
+				state->last_code_point == CP_COMBINING_DOT_ABOVE)
+			{
+				/* Invalid code points can extend beyond the source length */
+
+				if (state->src_size >= state->last_code_point_size)
+				{
+					state->src += state->last_code_point_size;
+					state->src_size -= state->last_code_point_size;
+				}
+				else
+				{
+					state->src_size = 0;
+				}
+			}
+
+			/* Write lowercase mapping to output, without combining mark */
+
+			if (state->dst != 0)
+			{
+				if (state->dst_size < 1)
+				{
+					goto outofspace;
+				}
+
+				*state->dst++ = (char)state->last_code_point - 0x20;
+				state->dst_size--;
+			}
+
+			return 1;
 		}
 	}
 
