@@ -204,15 +204,15 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningOgonek)
 TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningOgonek)
 {
 	// 0069 0307 0328
-	// 0049 0307 0328
+	// 0049 0328
 
 	const char* c = "i\xCC\x87\xCC\xA8";
 	const size_t s = 255;
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, &errors));
-	EXPECT_UTF8EQ("I\xCC\x87\xCC\xA8", b);
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("I\xCC\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -341,10 +341,10 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningTilde)
 
 TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJCombiningDotAboveAndCombiningTilde)
 {
-	// 006A 0301 0303
+	// 006A 0307 0303
 	// 004A 0303
 
-	const char* c = "j\xCC\x81\xCC\x83";
+	const char* c = "j\xCC\x87\xCC\x83";
 	const size_t s = 255;
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
@@ -398,7 +398,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJMoreAboveOutOfOrder)
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf8toupper(c, strlen(c), b, s, &errors));
-	EXPECT_UTF8EQ("j\xE1\xB7\x8A\xD6\x95\xE0\xBD\xB4", b);
+	EXPECT_UTF8EQ("J\xE1\xB7\x8A\xD6\x95\xE0\xBD\xB4", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 

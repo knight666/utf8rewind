@@ -462,9 +462,11 @@ size_t casemapping_write(CaseMappingState* state)
 			}
 		}
 		else if (
-			state->last_code_point == CP_LATIN_CAPITAL_LETTER_I ||
-			state->last_code_point == CP_LATIN_CAPITAL_LETTER_J)
+			state->last_code_point == CP_LATIN_SMALL_LETTER_I ||
+			state->last_code_point == CP_LATIN_SMALL_LETTER_J)
 		{
+			unicode_t code_point = state->last_code_point;
+
 			/* Remove optional COMBINING DOT ABOVE from output */
 			/* General Category should be the letter's, not the combining mark's */
 
@@ -485,7 +487,7 @@ size_t casemapping_write(CaseMappingState* state)
 				}
 			}
 
-			/* Write lowercase mapping to output, without combining mark */
+			/* Write uppercase mapping to output, without combining mark */
 
 			if (state->dst != 0)
 			{
@@ -494,7 +496,7 @@ size_t casemapping_write(CaseMappingState* state)
 					goto outofspace;
 				}
 
-				*state->dst++ = (char)state->last_code_point - 0x20;
+				*state->dst++ = (char)code_point - 0x20;
 				state->dst_size--;
 			}
 
