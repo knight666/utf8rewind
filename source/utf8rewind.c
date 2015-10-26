@@ -701,21 +701,24 @@ size_t utf8totitle(
 			be converted to lowercase.
 		*/
 
-		if (state.property_data == TitlecaseDataPtr)
+		if (state.last_canonical_combining_class == 0)
 		{
-			if ((state.last_general_category & GeneralCategory_Letter) != 0)
+			if (state.property_data == TitlecaseDataPtr)
 			{
-				state.property_index1 = LowercaseIndex1Ptr;
-				state.property_index2 = LowercaseIndex2Ptr;
-				state.property_data = LowercaseDataPtr;
+				if ((state.last_general_category & GeneralCategory_Letter) != 0)
+				{
+					state.property_index1 = LowercaseIndex1Ptr;
+					state.property_index2 = LowercaseIndex2Ptr;
+					state.property_data = LowercaseDataPtr;
+				}
 			}
-		}
-		else if (
-			(state.last_general_category & GeneralCategory_Letter) == 0)
-		{
-			state.property_index1 = TitlecaseIndex1Ptr;
-			state.property_index2 = TitlecaseIndex2Ptr;
-			state.property_data = TitlecaseDataPtr;
+			else if (
+				(state.last_general_category & GeneralCategory_Letter) == 0)
+			{
+				state.property_index1 = TitlecaseIndex1Ptr;
+				state.property_index2 = TitlecaseIndex2Ptr;
+				state.property_data = TitlecaseDataPtr;
+			}
 		}
 
 		state.total_bytes_needed += converted;
