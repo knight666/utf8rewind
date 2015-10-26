@@ -33,16 +33,19 @@
 #define CP_LATIN_CAPITAL_LETTER_J                 0x004A
 #define CP_LATIN_SMALL_LETTER_I                   0x0069
 #define CP_LATIN_SMALL_LETTER_J                   0x006A
-#define CP_LATIN_CAPITAL_LETTER_I_WITH_OGONEK     0x012E
-#define CP_LATIN_SMALL_LETTER_I_WITH_OGONEK       0x012F
 #define CP_LATIN_CAPITAL_LETTER_I_WITH_GRAVE      0x00CC
 #define CP_LATIN_CAPITAL_LETTER_I_WITH_ACUTE      0x00CD
 #define CP_LATIN_CAPITAL_LETTER_I_WITH_TILDE      0x0128
+#define CP_LATIN_CAPITAL_LETTER_I_WITH_OGONEK     0x012E
+#define CP_LATIN_SMALL_LETTER_I_WITH_OGONEK       0x012F
 #define CP_LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE  0x0130
+#define CP_LATIN_SMALL_LETTER_DOTLESS_I           0x0131
 #define CP_COMBINING_GRAVE_ACCENT                 0x0300
 #define CP_COMBINING_ACUTE_ACCENT                 0x0301
 #define CP_COMBINING_TILDE_ACCENT                 0x0303
 #define CP_COMBINING_DOT_ABOVE                    0x0307
+#define CP_COMBINING_GREEK_YPOGEGRAMMENI          0x0345
+#define CP_GREEK_CAPITAL_LETTER_SIGMA             0x03A3
 
 static const char basic_latin_lowercase_table[58] = {
 	/* LATIN CAPITAL LETTER A - LATIN CAPITAL LETTER Z */
@@ -141,27 +144,19 @@ uint8_t casemapping_initialize(
 
 uint8_t casemapping_readcodepoint(CaseMappingState* state)
 {
-	if (state->src_size == 0)
+	/* Read next code point */
+
+	state->last_code_point_size = codepoint_read(state->src, state->src_size, &state->last_code_point);
+	if (state->last_code_point_size == 0)
 	{
+		state->src_size = 0;
+
 		return 0;
 	}
-	else if (
-		(*state->src & 0x80) == 0)
-	{
-		/* Basic Latin can be converted to UTF-32 by padding the value to 32 bits with 0. */
 
-		state->last_code_point = (unicode_t)*state->src;
-		state->last_code_point_size = 1;
-	}
-	else
-	{
-		/* Decode current code point */
+	/* Get code point properties */
 
-		state->last_code_point_size = codepoint_read(state->src, state->src_size, &state->last_code_point);
-	}
-
-	/* Get general category */
-
+	state->last_canonical_combining_class = PROPERTY_GET_CCC(state->last_code_point);
 	state->last_general_category = PROPERTY_GET_GC(state->last_code_point);
 
 	/* Move source cursor */
@@ -231,27 +226,19 @@ size_t casemapping_write(CaseMappingState* state)
 				General Category.
 			*/
 
-			/* LATIN CAPITAL LETTER I WITH DOT ABOVE */
-
-			if (state->last_code_point == 0x0130)
+			if (state->last_code_point == CP_LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE)
 			{
-				/* LATIN SMALL LETTER I */
+				state->last_code_point = CP_LATIN_SMALL_LETTER_I;
 
-				state->last_code_point = 0x0069;
 				resolved = "i";
-				state->last_code_point_size = 1;
+				bytes_needed = 1;
 			}
-
-			/* LATIN CAPITAL LETTER I */
-
 			else if (
-				state->last_code_point == 0x0049)
+				state->last_code_point == CP_LATIN_CAPITAL_LETTER_I)
 			{
-				/* COMBINING DOT ABOVE */
-
 				if (state->src_size > 0 &&
 					(state->last_code_point_size = codepoint_read(state->src, state->src_size, &state->last_code_point)) > 0 &&
-					state->last_code_point == 0x0307)
+					state->last_code_point == CP_COMBINING_DOT_ABOVE)
 				{
 					if (state->src_size >= state->last_code_point_size)
 					{
@@ -263,45 +250,36 @@ size_t casemapping_write(CaseMappingState* state)
 						state->src_size = 0;
 					}
 
-					/* LATIN SMALL LETTER I */
+					state->last_code_point = CP_LATIN_SMALL_LETTER_I;
 
-					state->last_code_point = 0x0069;
 					resolved = "i";
-					state->last_code_point_size = 1;
+					bytes_needed = 1;
 				}
 				else
 				{
-					/* LATIN SMALL LETTER DOTLESS I */
+					state->last_code_point = CP_LATIN_SMALL_LETTER_DOTLESS_I;
 
-					state->last_code_point = 0x0131;
 					resolved = "\xC4\xB1";
-					state->last_code_point_size = 2;
+					bytes_needed = 2;
 				}
 			}
 		}
 		else
 		{
-			/* LATIN SMALL LETTER I */
-
-			if (state->last_code_point == 0x0069)
+			if (state->last_code_point == CP_LATIN_SMALL_LETTER_I)
 			{
-				/* LATIN CAPITAL LETTER I WITH DOT ABOVE */
+				state->last_code_point = CP_LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE;
 
-				state->last_code_point = 0x0130;
 				resolved = "\xC4\xB0";
-				state->last_code_point_size = 2;
+				bytes_needed = 2;
 			}
-			
-			/* LATIN SMALL LETTER DOTLESS I */
-
 			else if (
-				state->last_code_point == 0x0131)
+				state->last_code_point == CP_LATIN_SMALL_LETTER_DOTLESS_I)
 			{
-				/* LATIN CAPITAL LETTER I */
+				state->last_code_point = CP_LATIN_CAPITAL_LETTER_I;
 
-				state->last_code_point = 0x0049;
 				resolved = "I";
-				state->last_code_point_size = 1;
+				bytes_needed = 1;
 			}
 		}
 
@@ -313,18 +291,18 @@ size_t casemapping_write(CaseMappingState* state)
 			{
 				/* Write resolved string to output */
 
-				if (state->dst_size < state->last_code_point_size)
+				if (state->dst_size < bytes_needed)
 				{
 					goto outofspace;
 				}
 
-				memcpy(state->dst, resolved, state->last_code_point_size);
+				memcpy(state->dst, resolved, bytes_needed);
 
-				state->dst += state->last_code_point_size;
-				state->dst_size -= state->last_code_point_size;
+				state->dst += bytes_needed;
+				state->dst_size -= bytes_needed;
 			}
 
-			return state->last_code_point_size;
+			return bytes_needed;
 		}
 	}
 	else if (
@@ -347,7 +325,6 @@ size_t casemapping_write(CaseMappingState* state)
 					*buffer_dst++ = 'i';
 
 					state->last_code_point = CP_LATIN_SMALL_LETTER_I;
-					state->last_general_category = 0;
 
 				} break;
 
@@ -356,7 +333,6 @@ size_t casemapping_write(CaseMappingState* state)
 					*buffer_dst++ = 'j';
 
 					state->last_code_point = CP_LATIN_SMALL_LETTER_J;
-					state->last_general_category = 0;
 
 				} break;
 
@@ -366,7 +342,6 @@ size_t casemapping_write(CaseMappingState* state)
 					*buffer_dst++ = '\xAF';
 
 					state->last_code_point = CP_LATIN_SMALL_LETTER_I_WITH_OGONEK;
-					state->last_general_category = 0;
 
 				} break;
 
@@ -378,7 +353,7 @@ size_t casemapping_write(CaseMappingState* state)
 					additional_accent_length = 2;
 
 					state->last_code_point = CP_COMBINING_GRAVE_ACCENT;
-					state->last_general_category = 230;
+					state->last_canonical_combining_class = 230;
 
 				} break;
 
@@ -390,7 +365,7 @@ size_t casemapping_write(CaseMappingState* state)
 					additional_accent_length = 2;
 
 					state->last_code_point = CP_COMBINING_ACUTE_ACCENT;
-					state->last_general_category = 230;
+					state->last_canonical_combining_class = 230;
 
 				} break;
 
@@ -402,7 +377,7 @@ size_t casemapping_write(CaseMappingState* state)
 					additional_accent_length = 2;
 
 					state->last_code_point = CP_COMBINING_TILDE_ACCENT;
-					state->last_general_category = 230;
+					state->last_canonical_combining_class = 230;
 
 				} break;
 
@@ -417,16 +392,15 @@ size_t casemapping_write(CaseMappingState* state)
 
 				/* Write COMBINING DOT ABOVE */
 
-				if (write_soft_dot &&
-					state->src_size > 0)
+				if (state->src_size > 0)
 				{
-					/* Read the next code point without moving the cursor */
-
-					codepoint_read(state->src, state->src_size, &state->last_code_point);
+					unicode_t peeked = 0;
 
 					/* Only write COMBINING DOT ABOVE if not already in input */
 
-					write_soft_dot = state->last_code_point != CP_COMBINING_DOT_ABOVE;
+					write_soft_dot = 
+						!codepoint_read(state->src, state->src_size, &peeked) ||
+						peeked != CP_COMBINING_DOT_ABOVE;
 				}
 
 				if (write_soft_dot)
@@ -468,13 +442,12 @@ size_t casemapping_write(CaseMappingState* state)
 			unicode_t code_point = state->last_code_point;
 
 			/* Remove optional COMBINING DOT ABOVE from output */
-			/* General Category should be the letter's, not the combining mark's */
 
 			if (state->src_size > 0 &&
 				(state->last_code_point_size = codepoint_read(state->src, state->src_size, &state->last_code_point)) > 0 &&
 				state->last_code_point == CP_COMBINING_DOT_ABOVE)
 			{
-				/* Invalid code points can extend beyond the source length */
+				/* Invalid code points can extend beyond the source's length */
 
 				if (state->src_size >= state->last_code_point_size)
 				{
@@ -496,64 +469,14 @@ size_t casemapping_write(CaseMappingState* state)
 					goto outofspace;
 				}
 
+				/* Properties remain the same */
+
 				*state->dst++ = (char)code_point - 0x20;
 				state->dst_size--;
 			}
 
 			return 1;
 		}
-	}
-
-	/* GREEK CAPITAL LETTER SIGMA */
-
-	if (state->last_code_point == 0x03A3 &&
-		state->property_data == LowercaseDataPtr)
-	{
-		/*
-			If the final letter of a word (defined as "a collection of code
-			points with the General Category 'Letter'") is a GREEK CAPITAL
-			LETTER SIGMA and more than one code point was processed, the
-			lowercase version is U+03C2 GREEK SMALL LETTER FINAL SIGMA
-			instead of U+03C3 GREEK SMALL LETTER SIGMA.
-		*/
-
-		/* At least one code point should have been read */
-
-		uint8_t should_convert = state->total_bytes_needed > 0;
-
-		if (state->src_size > 0)
-		{
-			/* Read the next code point without moving the cursor */
-
-			state->last_code_point_size = codepoint_read(state->src, state->src_size, &state->last_code_point);
-
-			/* Retrieve the General Category of the next code point */
-
-			state->last_general_category = PROPERTY_GET_GC(state->last_code_point);
-
-			/* Convert if the "word" has ended */
-
-			should_convert = (state->last_general_category & GeneralCategory_Letter) == 0;
-		}
-
-		/* Write the converted code point to the output buffer */
-
-		bytes_needed = 2;
-
-		if (state->dst != 0)
-		{
-			if (state->dst_size < bytes_needed)
-			{
-				goto outofspace;
-			}
-
-			memcpy(state->dst, should_convert ? "\xCF\x82" : "\xCF\x83", bytes_needed);
-
-			state->dst += bytes_needed;
-			state->dst_size -= bytes_needed;
-		}
-
-		return bytes_needed;
 	}
 
 	if (state->last_code_point_size == 1)
@@ -577,15 +500,11 @@ size_t casemapping_write(CaseMappingState* state)
 			{
 				if (state->property_data == LowercaseDataPtr)
 				{
-					*state->dst =
-						basic_latin_lowercase_table[
-							state->last_code_point - 0x41];
+					*state->dst = basic_latin_lowercase_table[state->last_code_point - 0x41];
 				}
 				else
 				{
-					*state->dst = 
-						basic_latin_uppercase_table[
-							state->last_code_point - 0x41];
+					*state->dst = basic_latin_uppercase_table[state->last_code_point - 0x41];
 				}
 			}
 			else
@@ -603,6 +522,73 @@ size_t casemapping_write(CaseMappingState* state)
 	}
 	else
 	{
+		if (state->last_code_point == CP_GREEK_CAPITAL_LETTER_SIGMA &&
+			state->property_data == LowercaseDataPtr)
+		{
+			/*
+				If the final letter of a word (defined as "a collection of code
+				points with the General Category 'Letter'") is a GREEK CAPITAL
+				LETTER SIGMA and more than one code point was processed, the
+				lowercase version is U+03C2 GREEK SMALL LETTER FINAL SIGMA
+				instead of U+03C3 GREEK SMALL LETTER SIGMA.
+			*/
+
+			/* At least one code point should have been read */
+
+			uint8_t should_convert = state->total_bytes_needed > 0;
+
+			if (state->src_size > 0)
+			{
+				unicode_t peeked = 0;
+				const char* peeked_src = state->src;
+				size_t peeked_src_size = state->src_size;
+
+				while (1)
+				{
+					uint8_t peeked_read = 0;
+
+					if ((peeked_read = codepoint_read(peeked_src, peeked_src_size, &peeked)) == 0 ||
+						peeked_src_size < peeked_read)
+					{
+						should_convert = 1;
+
+						break;
+					}
+
+					if (PROPERTY_GET_CCC(peeked) == 0)
+					{
+						/* Convert if the "word" has ended */
+
+						should_convert = (PROPERTY_GET_GC(peeked) & GeneralCategory_Letter) == 0;
+
+						break;
+					}
+
+					peeked_src += peeked_read;
+					peeked_src_size -= peeked_read;
+				}
+			}
+
+			/* Write the converted code point to the output buffer */
+
+			bytes_needed = 2;
+
+			if (state->dst != 0)
+			{
+				if (state->dst_size < bytes_needed)
+				{
+					goto outofspace;
+				}
+
+				memcpy(state->dst, should_convert ? "\xCF\x82" : "\xCF\x83", bytes_needed);
+
+				state->dst += bytes_needed;
+				state->dst_size -= bytes_needed;
+			}
+
+			return bytes_needed;
+		}
+
 		/* Check if the code point is case mapped */
 
 		if ((state->last_general_category & GeneralCategory_CaseMapped) != 0)

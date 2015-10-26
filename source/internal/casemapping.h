@@ -52,6 +52,7 @@ typedef struct {
 	const uint32_t* property_data;
 	uint8_t last_code_point_size;
 	uint8_t last_general_category;
+	uint8_t last_canonical_combining_class;
 } CaseMappingState;
 
 uint8_t casemapping_initialize(
