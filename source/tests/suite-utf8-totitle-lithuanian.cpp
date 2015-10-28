@@ -324,6 +324,27 @@ TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterIWithTilde)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
+TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterIWithTildeNotEnoughSpace)
+{
+	const char* c = "\xC4\xA9";
+	const size_t s = 1;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8totitle(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterIWithTildeAmountOfBytes)
+{
+	const char* c = "\xC4\xA9";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(2, utf8totitle(c, strlen(c), nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
 TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterIAndCombiningTilde)
 {
 	// 0069 0303
@@ -1366,7 +1387,7 @@ TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterIAndCombiningAcuteNotEnoughSpa
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8totitle(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(5, utf8totitle(c, strlen(c), b, s, &errors));
 	EXPECT_UTF8EQ("Poi\xCC\x81", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -1382,15 +1403,66 @@ TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterIAndCombiningAcuteAmountOfByte
 
 TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterICombiningDotAboveAndCombiningAcute)
 {
-	// 0069 0307 0301
-	// 0049 0301
-
-	const char* c = "i\xCC\x87\xCC\x81";
+	const char* c = "brri\xCC\x87\xCC\x81p";
 	const size_t s = 255;
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8totitle(c, strlen(c), b, s, &errors));
-	EXPECT_UTF8EQ("I\xCC\x81", b);
+	EXPECT_EQ(9, utf8totitle(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("Brri\xCC\x87\xCC\x81p", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterICombiningDotAboveAndCombiningAcuteNotEnoughSpace)
+{
+	const char* c = "i\xCC\x87\xCC\x81mminent";
+	const size_t s = 6;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(6, utf8totitle(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("I\xCC\x81mmi", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterICombiningDotAboveAndCombiningAcuteAmountOfBytes)
+{
+	const char* c = "Mi\xCC\x87\xCC\x81ngle";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(10, utf8totitle(c, strlen(c), nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterIWithTilde)
+{
+	const char* c = "\xC4\xA9\xC7\x8E\xC7\xB4";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(6, utf8totitle(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xA8\xC7\x8E\xC7\xB5", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterIWithTildeNotEnoughSpace)
+{
+	const char* c = "\xC7\xAC\xCB\x97\xC7\xB9\xCA\xA0";
+	const size_t s = 5;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8totitle(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC7\xAC\xCB\x97", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterIWithTildeAmountOfBytes)
+{
+	const char* c = "\xC9\xBF\xC4\xA9\xC9\xB9\xCC\x91";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8totitle(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
