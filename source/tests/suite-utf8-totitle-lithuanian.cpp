@@ -360,6 +360,27 @@ TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterIAndCombiningTilde)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
+TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterIAndCombiningTildeNotEnoughSpace)
+{
+	const char* c = "i\xCC\x83";
+	const size_t s = 2;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(1, utf8totitle(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("I", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterIAndCombiningTildeAmountOfBytes)
+{
+	const char* c = "i\xCC\x83";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf8totitle(c, strlen(c), nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
 TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningTilde)
 {
 	// 0069 0307 0303
@@ -372,6 +393,27 @@ TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombini
 
 	EXPECT_EQ(3, utf8totitle(c, strlen(c), b, s, &errors));
 	EXPECT_UTF8EQ("I\xCC\x83", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningTildeNotEnoughSpace)
+{
+	const char* c = "i\xCC\x87\xCC\x83";
+	const size_t s = 2;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(1, utf8totitle(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("I", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningTildeAmountOfBytes)
+{
+	const char* c = "i\xCC\x87\xCC\x83";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf8totitle(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -1464,5 +1506,71 @@ TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterIWithTildeAmountOfBytes)
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(8, utf8totitle(c, strlen(c), nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterIAndCombiningTilde)
+{
+	const char* c = "Bri\xCC\x83llo";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8totitle(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("Bri\xCC\x83llo", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterIAndCombiningTildeNotEnoughSpace)
+{
+	const char* c = "Cli\xCC\x83" "ck";
+	const size_t s = 5;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(5, utf8totitle(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("Cli\xCC\x83", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterIAndCombiningTildeAmountOfBytes)
+{
+	const char* c = "Fi\xCC\x83ght";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(7, utf8totitle(c, strlen(c), nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterICombiningDotAboveAndCombiningTilde)
+{
+	const char* c = "\xC3\x8B" "i\xCC\x87\xCC\x83\xC3\x93\xC4\x8E";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(11, utf8totitle(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC3\x8B" "i\xCC\x87\xCC\x83\xC3\xB3\xC4\x8F", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterICombiningDotAboveAndCombiningTildeNotEnoughSpace)
+{
+	const char* c = "\xC7\x8B\xC6\xBB" "i\xCC\x87\xCC\x83\xC5\x97";
+	const size_t s = 8;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(7, utf8totitle(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC7\x8B\xC6\xBBi\xCC\x87", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToTitleLithuanian, WordLatinSmallLetterICombiningDotAboveAndCombiningTildeAmountOfBytes)
+{
+	const char* c = "\xC7\x9F\xC5\xA1" "i\xCC\x87\xCC\x83";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(9, utf8totitle(c, strlen(c), nullptr, 0, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
