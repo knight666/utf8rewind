@@ -42,7 +42,7 @@ def codepointToUtf8(codepoint, wroteHex = False):
 		elif codepoint < 0x20:
 			result += '\\x' + format(codepoint, '02X')
 		else:
-			isHex = (codepoint >= 0x41 and codepoint <= 0x46) or (codepoint >= 0x61 and codepoint <= 0x76) or (codepoint >= 0x30 and codepoint <= 0x39)
+			isHex = (codepoint >= 0x41 and codepoint <= 0x46) or (codepoint >= 0x61 and codepoint <= 0x66) or (codepoint >= 0x30 and codepoint <= 0x39)
 			
 			if wroteHex and isHex:
 				result += "\" \""
