@@ -26,10 +26,12 @@
 #include "database.h"
 
 #include "../unicodedatabase.h"
+#include "codepoint.h"
 
 #define DECOMPOSE_INDEX1_SHIFT (12)
 #define DECOMPOSE_INDEX2_SHIFT (5)
 
+static const unicode_t DECOMPOSE_INDEX1_MASK = MAX_LEGAL_UNICODE;
 static const unicode_t DECOMPOSE_INDEX2_MASK = (1 << DECOMPOSE_INDEX1_SHIFT) - 1;
 static const unicode_t DECOMPOSE_DATA_MASK = (1 << DECOMPOSE_INDEX2_SHIFT) - 1;
 
@@ -38,10 +40,10 @@ const char* database_querydecomposition(
 	const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray,
 	uint8_t* length)
 {
-	size_t index = index2Array[
-		index1Array[codepoint >> DECOMPOSE_INDEX1_SHIFT] +
+	uint32_t index = index2Array[
+		index1Array[(codepoint & DECOMPOSE_INDEX1_MASK) >> DECOMPOSE_INDEX1_SHIFT] +
 		((codepoint & DECOMPOSE_INDEX2_MASK) >> DECOMPOSE_INDEX2_SHIFT)] +
-			(codepoint & DECOMPOSE_DATA_MASK);
+		(codepoint & DECOMPOSE_DATA_MASK);
 
 	if (index == 0 ||
 		dataArray[index] == 0)

@@ -75,6 +75,12 @@ TEST(QueryDecompositionDecomposed, MissingOutOfUpperBounds)
 	EXPECT_EQ(nullptr, database_querydecomposition(0x0011A26D, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length));
 }
 
+TEST(QueryDecompositionDecomposed, MissingIndexOutOfBounds)
+{
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0xFFFFFFFF, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length));
+}
+
 // Compatibility decomposed
 
 TEST(QueryDecompositionCompatibilityDecomposed, Found)
@@ -141,6 +147,12 @@ TEST(QueryDecompositionCompatibilityDecomposed, MissingOutOfUpperBounds)
 {
 	uint8_t length = 0;
 	EXPECT_EQ(nullptr, database_querydecomposition(0x00DD2A5D, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length));
+}
+
+TEST(QueryDecompositionCompatibilityDecomposed, MissingIndexOutOfBounds)
+{
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0xFFFFFFFF, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length));
 }
 
 // Uppercase
@@ -211,6 +223,12 @@ TEST(QueryDecompositionUppercase, MissingOutOfUpperBounds)
 	EXPECT_EQ(nullptr, database_querydecomposition(0x00101111, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length));
 }
 
+TEST(QueryDecompositionUppercase, MissingIndexOutOfBounds)
+{
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0xFFFFFFFF, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length));
+}
+
 // Lowercase
 
 TEST(QueryDecompositionLowercase, Found)
@@ -279,6 +297,12 @@ TEST(QueryDecompositionLowercase, MissingOutOfUpperBounds)
 	EXPECT_EQ(nullptr, database_querydecomposition(0x00012000, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length));
 }
 
+TEST(QueryDecompositionLowercase, MissingIndexOutOfBounds)
+{
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0xFFFFFFFF, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length));
+}
+
 // Titlecase
 
 TEST(QueryDecompositionTitlecase, Found)
@@ -345,4 +369,10 @@ TEST(QueryDecompositionTitlecase, MissingOutOfUpperBounds)
 {
 	uint8_t length = 0;
 	EXPECT_EQ(nullptr, database_querydecomposition(0x0002112A, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length));
+}
+
+TEST(QueryDecompositionTitlecase, MissingIndexOutOfBounds)
+{
+	uint8_t length = 0;
+	EXPECT_EQ(nullptr, database_querydecomposition(0xFFFFFFFF, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length));
 }
