@@ -102,6 +102,9 @@ uint8_t stream_read(StreamState* state, const size_t* propertyIndex, const uint8
 		{
 			if (state->src_size <= state->last_length)
 			{
+				state->src += state->src_size;
+				state->src_size = 0;
+
 				break;
 			}
 

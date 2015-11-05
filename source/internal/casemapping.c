@@ -28,6 +28,7 @@
 #include "base.h"
 #include "codepoint.h"
 #include "database.h"
+#include "streaming.h"
 
 #define CP_LATIN_CAPITAL_LETTER_I                 0x0049
 #define CP_LATIN_CAPITAL_LETTER_J                 0x004A
@@ -310,130 +311,170 @@ size_t casemapping_write(CaseMappingState* state)
 	{
 		if (state->property_data == LowercaseDataPtr)
 		{
-			char buffer[16];
-			char* buffer_dst = buffer;
-
+			StreamState stream;
+			unicode_t cp_additional_accent = 0;
 			uint8_t write_soft_dot = 1;
-			const char* additional_accent = 0;
-			size_t additional_accent_length = 0;
+			uint8_t i;
 
 			switch (state->last_code_point)
 			{
 
 			case CP_LATIN_CAPITAL_LETTER_I:
-				{
-					*buffer_dst++ = 'i';
-
-					state->last_code_point = CP_LATIN_SMALL_LETTER_I;
-
-				} break;
-
-			case CP_LATIN_CAPITAL_LETTER_J:
-				{
-					*buffer_dst++ = 'j';
-
-					state->last_code_point = CP_LATIN_SMALL_LETTER_J;
-
-				} break;
-
-			case CP_LATIN_CAPITAL_LETTER_I_WITH_OGONEK:
-				{
-					*buffer_dst++ = '\xC4';
-					*buffer_dst++ = '\xAF';
-
-					state->last_code_point = CP_LATIN_SMALL_LETTER_I_WITH_OGONEK;
-
-				} break;
-
-			case CP_LATIN_CAPITAL_LETTER_I_WITH_GRAVE:
-				{
-					*buffer_dst++ = 'i';
-
-					additional_accent = "\xCC\x80";
-					additional_accent_length = 2;
-
-					state->last_code_point = CP_COMBINING_GRAVE_ACCENT;
-					state->last_canonical_combining_class = 230;
-
-				} break;
-
-			case CP_LATIN_CAPITAL_LETTER_I_WITH_ACUTE:
-				{
-					*buffer_dst++ = 'i';
-
-					additional_accent = "\xCC\x81";
-					additional_accent_length = 2;
-
-					state->last_code_point = CP_COMBINING_ACUTE_ACCENT;
-					state->last_canonical_combining_class = 230;
-
-				} break;
-
-			case CP_LATIN_CAPITAL_LETTER_I_WITH_TILDE:
-				{
-					*buffer_dst++ = 'i';
-
-					additional_accent = "\xCC\x83";
-					additional_accent_length = 2;
-
-					state->last_code_point = CP_COMBINING_TILDE_ACCENT;
-					state->last_canonical_combining_class = 230;
-
-				} break;
-
-			default:
+				state->last_code_point = CP_LATIN_SMALL_LETTER_I;
 				break;
 
+			case CP_LATIN_CAPITAL_LETTER_J:
+				state->last_code_point = CP_LATIN_SMALL_LETTER_J;
+				break;
+
+			case CP_LATIN_CAPITAL_LETTER_I_WITH_OGONEK:
+				state->last_code_point = CP_LATIN_SMALL_LETTER_I_WITH_OGONEK;
+				break;
+
+			case CP_LATIN_CAPITAL_LETTER_I_WITH_GRAVE:
+				state->last_code_point = CP_LATIN_SMALL_LETTER_I;
+				cp_additional_accent = CP_COMBINING_GRAVE_ACCENT;
+				break;
+
+			case CP_LATIN_CAPITAL_LETTER_I_WITH_ACUTE:
+				state->last_code_point = CP_LATIN_SMALL_LETTER_I;
+				cp_additional_accent = CP_COMBINING_ACUTE_ACCENT;
+				break;
+
+			case CP_LATIN_CAPITAL_LETTER_I_WITH_TILDE:
+				state->last_code_point = CP_LATIN_SMALL_LETTER_I;
+				cp_additional_accent = CP_COMBINING_TILDE_ACCENT;
+				break;
+
+			default:
+				goto regular;
+
 			}
 
-			if (buffer_dst != buffer)
+			/* Initialize stream on the start of the sequence */
+
+			if (!stream_initialize(
+				&stream,
+				state->src - state->last_code_point_size,
+				state->src_size + state->last_code_point_size))
 			{
-				bytes_needed = state->last_code_point_size;
-
-				/* Write COMBINING DOT ABOVE */
-
-				if (state->src_size > 0)
-				{
-					unicode_t peeked = 0;
-
-					/* Only write COMBINING DOT ABOVE if not already in input */
-
-					write_soft_dot = 
-						!codepoint_read(state->src, state->src_size, &peeked) ||
-						peeked != CP_COMBINING_DOT_ABOVE;
-				}
-
-				if (write_soft_dot)
-				{
-					*buffer_dst++ = '\xCC';
-					*buffer_dst++ = '\x87';
-				}
-
-				/* Write (optional) additional accent */
-
-				if (additional_accent != 0)
-				{
-					memcpy(buffer_dst, additional_accent, additional_accent_length);
-					buffer_dst += additional_accent_length;
-				}
-
-				bytes_needed = (uint8_t)(buffer_dst - buffer);
-
-				if (state->dst != 0)
-				{
-					if (state->dst_size < bytes_needed)
-					{
-						goto outofspace;
-					}
-
-					memcpy(state->dst, buffer, bytes_needed);
-
-					state->dst += bytes_needed;
-					state->dst_size -= bytes_needed;
-				}
-
-				return bytes_needed;
+				goto regular;
 			}
+
+			/* Read the current sequence */
+
+			if (!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
+			{
+				goto regular;
+			}
+
+			/* Assign the lowercase code point to the start of the stream */
+
+			stream.codepoint[0] = state->last_code_point;
+
+			/* Check if COMBINING DOT ABOVE is not yet present */ 
+
+			for (i = 1; i < stream.current; ++i)
+			{
+				if (stream.codepoint[i] == CP_COMBINING_DOT_ABOVE)
+				{
+					write_soft_dot = 0;
+
+					break;
+				}
+			}
+
+			/* Stabilize the sequence */
+
+			if (!stream.stable)
+			{
+				stream_reorder(&stream);
+
+				stream.stable = 1;
+			}
+
+			/* Write COMBINING DOT ABOVE */
+
+			if (write_soft_dot &&
+				stream.current < STREAM_BUFFER_MAX)
+			{
+				/* Ensure the COMBINING DOT ABOVE comes before other accents with the same CCC */
+
+				if (stream.canonical_combining_class[stream.current - 1] == 230)
+				{
+					unicode_t cp_swap = stream.codepoint[stream.current - 1];
+					stream.codepoint[stream.current - 1] = CP_COMBINING_DOT_ABOVE;
+					stream.codepoint[stream.current] = cp_swap;
+				}
+				else
+				{
+					stream.codepoint[stream.current] = CP_COMBINING_DOT_ABOVE;
+				}
+
+				stream.canonical_combining_class[stream.current] = 230;
+
+				/* Check if sequence has become unstable */
+
+				stream.stable = stream.canonical_combining_class[stream.current - 1] <= 230;
+
+				stream.current++;
+			}
+
+			/* Write additional accent */
+
+			if (cp_additional_accent != 0 &&
+				stream.current < STREAM_BUFFER_MAX)
+			{
+				/* Additional accents are always are of the upper variety */
+
+				stream.codepoint[stream.current] = cp_additional_accent;
+				stream.canonical_combining_class[stream.current] = 230;
+
+				/* Check if sequence has become unstable */
+
+				if (stream.stable &&
+					stream.canonical_combining_class[stream.current] < stream.canonical_combining_class[stream.current - 1])
+				{
+					stream.stable = 0;
+				}
+
+				stream.current++;
+			}
+
+			/* Stabilize the sequence */
+
+			if (!stream.stable)
+			{
+				stream_reorder(&stream);
+			}
+
+			/* Get code point properties */
+
+			state->last_code_point = stream.codepoint[stream.current - 1];
+			state->last_canonical_combining_class = stream.canonical_combining_class[stream.current - 1];
+			state->last_general_category = PROPERTY_GET_GC(state->last_code_point);
+
+			/* Offset source */
+
+			state->src = stream.src;
+			state->src_size = stream.src_size;
+
+			/* Write result to the output buffer */
+
+			bytes_needed = 0;
+
+			for (i = 0; i < stream.current; ++i)
+			{
+				uint8_t encoded_size = codepoint_write(stream.codepoint[i], &state->dst, &state->dst_size);
+				if (encoded_size == 0)
+				{
+					goto outofspace;
+				}
+
+				bytes_needed += encoded_size;
+			}
+
+			return bytes_needed;
 		}
 		else if (
 			state->last_code_point == CP_LATIN_SMALL_LETTER_I ||
@@ -479,6 +520,7 @@ size_t casemapping_write(CaseMappingState* state)
 		}
 	}
 
+regular:
 	if (state->last_code_point_size == 1)
 	{
 		/* Basic Latin */
