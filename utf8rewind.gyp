@@ -94,7 +94,6 @@
 				'source/tests/integration-normalization.cpp',
 				'source/tests/integration-quickbrown-casemapping.cpp',
 				'source/tests/integration-quickbrown.cpp',
-				'source/tests/integration-specialcasing.cpp',
 				'source/tests/suite-casemapping-execute.cpp',
 				'source/tests/suite-casemapping-initialize.cpp',
 				'source/tests/suite-codepoint-decoded-length.cpp',
