@@ -309,12 +309,13 @@ size_t casemapping_write(CaseMappingState* state)
 	else if (
 		state->locale == CASEMAPPING_LOCALE_LITHUANIAN)
 	{
+		StreamState stream;
+		uint8_t i;
+
 		if (state->property_data == LowercaseDataPtr)
 		{
-			StreamState stream;
 			unicode_t cp_additional_accent = 0;
 			uint8_t write_soft_dot = 1;
-			uint8_t i;
 
 			switch (state->last_code_point)
 			{
@@ -447,77 +448,100 @@ size_t casemapping_write(CaseMappingState* state)
 			{
 				stream_reorder(&stream);
 			}
-
-			/* Get code point properties */
-
-			state->last_code_point = stream.codepoint[stream.current - 1];
-			state->last_canonical_combining_class = stream.canonical_combining_class[stream.current - 1];
-			state->last_general_category = PROPERTY_GET_GC(state->last_code_point);
-
-			/* Offset source */
-
-			state->src = stream.src;
-			state->src_size = stream.src_size;
-
-			/* Write result to the output buffer */
-
-			bytes_needed = 0;
-
-			for (i = 0; i < stream.current; ++i)
-			{
-				uint8_t encoded_size = codepoint_write(stream.codepoint[i], &state->dst, &state->dst_size);
-				if (encoded_size == 0)
-				{
-					goto outofspace;
-				}
-
-				bytes_needed += encoded_size;
-			}
-
-			return bytes_needed;
 		}
-		else if (
-			state->last_code_point == CP_LATIN_SMALL_LETTER_I ||
-			state->last_code_point == CP_LATIN_SMALL_LETTER_J)
+		else
 		{
-			unicode_t code_point = state->last_code_point;
+			uint8_t erase_count = 0;
 
-			/* Remove optional COMBINING DOT ABOVE from output */
-
-			if (state->src_size > 0 &&
-				(state->last_code_point_size = codepoint_read(state->src, state->src_size, &state->last_code_point)) > 0 &&
-				state->last_code_point == CP_COMBINING_DOT_ABOVE)
+			switch (state->last_code_point)
 			{
-				/* Invalid code points can extend beyond the source's length */
 
-				if (state->src_size >= state->last_code_point_size)
+			case CP_LATIN_SMALL_LETTER_I:
+				state->last_code_point = CP_LATIN_CAPITAL_LETTER_I;
+				break;
+
+			case CP_LATIN_SMALL_LETTER_J:
+				state->last_code_point = CP_LATIN_CAPITAL_LETTER_J;
+				break;
+
+			case CP_LATIN_SMALL_LETTER_I_WITH_OGONEK:
+				state->last_code_point = CP_LATIN_CAPITAL_LETTER_I_WITH_OGONEK;
+				break;
+
+			default:
+				goto regular;
+
+			}
+
+			/* Initialize stream on the start of the sequence */
+
+			if (!stream_initialize(
+				&stream,
+				state->src - state->last_code_point_size,
+				state->src_size + state->last_code_point_size))
+			{
+				goto regular;
+			}
+
+			/* Read the current sequence */
+
+			if (!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
+			{
+				goto regular;
+			}
+
+			/* Assign the uppercase code point to the start of the stream */
+
+			stream.codepoint[0] = state->last_code_point;
+
+			/* Remove COMBINING DOT ABOVE from sequence */
+
+			for (i = 1; i < stream.current; ++i)
+			{
+				if (stream.codepoint[i] == CP_COMBINING_DOT_ABOVE)
 				{
-					state->src += state->last_code_point_size;
-					state->src_size -= state->last_code_point_size;
-				}
-				else
-				{
-					state->src_size = 0;
+					stream.canonical_combining_class[i] = 255;
+					erase_count++;
 				}
 			}
 
-			/* Write uppercase mapping to output, without combining mark */
+			/* Stabilize the sequence */
 
-			if (state->dst != 0)
+			if (!stream.stable ||
+				erase_count > 0)
 			{
-				if (state->dst_size < 1)
-				{
-					goto outofspace;
-				}
+				stream_reorder(&stream);
 
-				/* Properties remain the same */
-
-				*state->dst++ = (char)code_point - 0x20;
-				state->dst_size--;
+				stream.current -= erase_count;
 			}
-
-			return 1;
 		}
+
+		/* Get code point properties */
+
+		state->last_code_point = stream.codepoint[stream.current - 1];
+		state->last_canonical_combining_class = stream.canonical_combining_class[stream.current - 1];
+
+		/* Offset source */
+
+		state->src = stream.src;
+		state->src_size = stream.src_size;
+
+		/* Write result to the output buffer */
+
+		bytes_needed = 0;
+
+		for (i = 0; i < stream.current; ++i)
+		{
+			uint8_t encoded_size = codepoint_write(stream.codepoint[i], &state->dst, &state->dst_size);
+			if (encoded_size == 0)
+			{
+				goto outofspace;
+			}
+
+			bytes_needed += encoded_size;
+		}
+
+		return bytes_needed;
 	}
 
 regular:
