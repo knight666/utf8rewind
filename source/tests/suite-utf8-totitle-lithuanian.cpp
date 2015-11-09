@@ -221,8 +221,8 @@ TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterIMoreAboveOutOfOrder)
 	// 0069 1939 034E 0747
 	//    0  222  220  230
 
-	// 0049 1939 034E 0747
-	//    0  222  220  230
+	// 0049 034E 1939 0747
+	//    0  220  222  230
 
 	const char* c = "i\xE1\xA4\xB9\xCD\x8E\xDD\x87";
 	const size_t s = 255;
@@ -230,7 +230,7 @@ TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterIMoreAboveOutOfOrder)
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(8, utf8totitle(c, strlen(c), b, s, &errors));
-	EXPECT_UTF8EQ("I\xE1\xA4\xB9\xCD\x8E\xDD\x87", b);
+	EXPECT_UTF8EQ("I\xCD\x8E\xE1\xA4\xB9\xDD\x87", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -389,8 +389,8 @@ TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterJMoreAboveOutOfOrder)
 	// 006A 1DCA 0595 0F74
 	//    0  220  230  132
 
-	// 004A 1DCA 0595 0F74
-	//    0  220  230  132
+	// 004A 0F74 1DCA 0595
+	//    0  132  220  230
 
 	const char* c = "j\xE1\xB7\x8A\xD6\x95\xE0\xBD\xB4";
 	const size_t s = 255;
@@ -398,7 +398,7 @@ TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterJMoreAboveOutOfOrder)
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(9, utf8totitle(c, strlen(c), b, s, &errors));
-	EXPECT_UTF8EQ("J\xE1\xB7\x8A\xD6\x95\xE0\xBD\xB4", b);
+	EXPECT_UTF8EQ("J\xE0\xBD\xB4\xE1\xB7\x8A\xD6\x95", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -427,8 +427,8 @@ TEST_F(Utf8ToTitleLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningDotAb
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8totitle(c, strlen(c), b, s, &errors));
-	EXPECT_UTF8EQ("\xC4\xAE\xCC\x87", b);
+	EXPECT_EQ(2, utf8totitle(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC4\xAE", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
