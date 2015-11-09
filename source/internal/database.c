@@ -40,28 +40,32 @@ const char* database_querydecomposition(
 	const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray,
 	uint8_t* length)
 {
-	uint32_t index = index2Array[
-		index1Array[(codepoint & DECOMPOSE_INDEX1_MASK) >> DECOMPOSE_INDEX1_SHIFT] +
-		((codepoint & DECOMPOSE_INDEX2_MASK) >> DECOMPOSE_INDEX2_SHIFT)] +
-		(codepoint & DECOMPOSE_DATA_MASK);
+	uint32_t index;
+	uint32_t data;
 
-	if (index == 0 ||
-		dataArray[index] == 0)
+	if (codepoint > MAX_LEGAL_UNICODE)
 	{
-		if (length != 0)
-		{
-			*length = 0;
-		}
+		*length = 0;
 
 		return 0;
 	}
 
-	if (length != 0)
+	index = index2Array[
+		index1Array[codepoint >> DECOMPOSE_INDEX1_SHIFT] +
+		((codepoint & DECOMPOSE_INDEX2_MASK) >> DECOMPOSE_INDEX2_SHIFT)] +
+		(codepoint & DECOMPOSE_DATA_MASK);
+
+	if (index == 0 ||
+		(data = dataArray[index]) == 0)
 	{
-		*length = (uint8_t)((dataArray[index] & 0xFF000000) >> 24);
+		*length = 0;
+
+		return 0;
 	}
 
-	return CompressedStringData + (dataArray[index] & 0x00FFFFFF);
+	*length = (uint8_t)((data & 0xFF000000) >> 24);
+
+	return CompressedStringData + (data & 0x00FFFFFF);
 }
 
 unicode_t database_querycomposition(unicode_t left, unicode_t right)
