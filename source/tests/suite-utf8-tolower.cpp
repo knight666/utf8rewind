@@ -457,6 +457,75 @@ TEST_F(Utf8ToLower, GraphemeClusterMultipleUnaffected)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
+TEST_F(Utf8ToLower, GraphemeClusterWord)
+{
+	// 023A 05BB 0F7C 0746 023F 0327 031B 0211 05AD 059E 0201 1D165 1939 05AC
+	//    0   20  130  220    0  202  216    0  222  230    0   216  222  230
+
+	// 2C65 05BB 0F7C 0746 023F 0327 031B 0211 05AD 059E 0201 1D165 1939 05AC
+	//    0   20  130  220    0  202  216    0  222  230    0   216  222  230
+
+	const char* c = "\xC8\xBA\xD6\xBB\xE0\xBD\xBC\xDD\x86\xC8\xBF\xCC\xA7\xCC\x9B\xC8\x91\xD6\xAD\xD6\x9E\xC8\x81\xF0\x9D\x85\xA5\xE1\xA4\xB9\xD6\xAC";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(33, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xE2\xB1\xA5\xD6\xBB\xE0\xBD\xBC\xDD\x86\xC8\xBF\xCC\xA7\xCC\x9B\xC8\x91\xD6\xAD\xD6\x9E\xC8\x81\xF0\x9D\x85\xA5\xE1\xA4\xB9\xD6\xAC", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLower, GraphemeClusterSentence)
+{
+	// 0552 0348 0859 054A 18A9 06E4 0533 031A 0020 0546 0E38 0F74 0567 0020 0328 1DCE 0582 05A4 1939 0586 1D166 0952 1D16D 056B AAB4 05C4 036A
+	//    0  220  220    0  228  230    0  232    0    0  103  132    0    0  202  214    0  220  222    0   216  220   226    0  220  230  230
+
+	// 0582 0348 0859 057A 18A9 06E4 0563 031A 0020 0576 0E38 0F74 0567 0020 0328 1DCE 0582 05A4 1939 0586 1D166 0952 1D16D 056B AAB4 05C4 036A
+	//    0  220  220    0  228  230    0  232    0    0  103  132    0    0  202  214    0  220  222    0   216  220   226    0  220  230  230
+
+	const char* c = "\xD5\x92\xCD\x88\xE0\xA1\x99\xD5\x8A\xE1\xA2\xA9\xDB\xA4\xD4\xB3\xCC\x9A \xD5\x86\xE0\xB8\xB8\xE0\xBD\xB4\xD5\xA7 \xCC\xA8\xE1\xB7\x8E\xD6\x82\xD6\xA4\xE1\xA4\xB9\xD6\x86\xF0\x9D\x85\xA6\xE0\xA5\x92\xF0\x9D\x85\xAD\xD5\xAB\xEA\xAA\xB4\xD7\x84\xCD\xAA";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(64, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xD6\x82\xCD\x88\xE0\xA1\x99\xD5\xBA\xE1\xA2\xA9\xDB\xA4\xD5\xA3\xCC\x9A \xD5\xB6\xE0\xB8\xB8\xE0\xBD\xB4\xD5\xA7 \xCC\xA8\xE1\xB7\x8E\xD6\x82\xD6\xA4\xE1\xA4\xB9\xD6\x86\xF0\x9D\x85\xA6\xE0\xA5\x92\xF0\x9D\x85\xAD\xD5\xAB\xEA\xAA\xB4\xD7\x84\xCD\xAA", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLower, GraphemeClusterAmountOfBytes)
+{
+	// 0535 0328 108D
+	//    0  202  220
+
+	// 0535 0328 108D
+	//    0  202  220
+
+	const char* c = "\xD4\xB5\xCC\xA8\xE1\x82\x8D";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(7, utf8tolower(c, strlen(c), nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToLower, GraphemeClusterNotEnoughSpace)
+{
+	// 04FC 08E6
+	//    0  220
+
+	// 04FD 08E6
+	//    0  220
+
+	const char* c = "\xD3\xBC\xE0\xA3\xA6";
+	const size_t s = 3;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xD3\xBD", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST_F(Utf8ToLower, InvalidCodepointSingle)
 {
 	const char* c = "\xF0\x92";
