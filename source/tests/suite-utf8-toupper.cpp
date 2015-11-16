@@ -312,6 +312,217 @@ TEST_F(Utf8ToUpper, GeneralCategoryCaseMappedNotEnoughSpace)
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
 
+TEST_F(Utf8ToUpper, GraphemeClusterSingleUppercase)
+{
+	// 0045 031B 05C5
+	//    0  216  220
+
+	// 0045 031B 05C5
+	//    0  216  220
+
+	const char* c = "E\xCC\x9B\xD7\x85";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("E\xCC\x9B\xD7\x85", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToUpper, GraphemeClusterSingleLowercase)
+{
+	// 00EB 0363 033F 0595
+	//    0  230  230  230
+
+	// 00CB 0363 033F 0595
+	//    0  230  230  230
+
+	const char* c = "\xC3\xAB\xCD\xA3\xCC\xBF\xD6\x95";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(8, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC3\x8B\xCD\xA3\xCC\xBF\xD6\x95", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToUpper, GraphemeClusterSingleTitlecase)
+{
+	// 01C5 0F7A 0F39 073A
+	//    0  130  216  230
+
+	// 01C4 0363 033F 0595
+	//    0  230  230  230
+
+	const char* c = "\xC7\x85\xE0\xBD\xBA\xE0\xBC\xB9\xDC\xBA";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(10, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC7\x84\xE0\xBD\xBA\xE0\xBC\xB9\xDC\xBA", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+
+TEST_F(Utf8ToUpper, GraphemeClusterSingleUnaffected)
+{
+	// 02EA 0670 0F71 0659
+	//    0   35  129  230
+
+	// 02EA 0670 0F71 0659
+	//    0   35  129  230
+
+	const char* c = "\xCB\xAA\xD9\xB0\xE0\xBD\xB1\xD9\x99";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(9, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xCB\xAA\xD9\xB0\xE0\xBD\xB1\xD9\x99", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToUpper, GraphemeClusterMultipleUppercase)
+{
+	// 01A2 1CED 0346 01E4 102E0 0659 01EE 0E4A 0F7C 031B
+	//    0  220  230    0   220  230    0  107  130  216
+
+	// 01A2 1CED 0346 01E4 102E0 0659 01EE 0E4A 0F7C 031B
+	//    0  220  230    0   220  230    0  107  130  216
+
+	const char* c = "\xC6\xA2\xE1\xB3\xAD\xCD\x86\xC7\xA4\xF0\x90\x8B\xA0\xD9\x99\xC7\xAE\xE0\xB9\x8A\xE0\xBD\xBC\xCC\x9B";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(25, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC6\xA2\xE1\xB3\xAD\xCD\x86\xC7\xA4\xF0\x90\x8B\xA0\xD9\x99\xC7\xAE\xE0\xB9\x8A\xE0\xBD\xBC\xCC\x9B", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToUpper, GraphemeClusterMultipleLowercase)
+{
+	// 01E1 0651 0F7C 0328 01E7 1DD0 1D166 0742 0247 08E6 10A3A 030A 037B 030F 030F
+	//    0   33  130  202    0  202   216  220    0  220   220  230    0  230  230
+
+	// 01E0 0651 0F7C 0328 01E6 1DD0 1D166 0742 0246 08E6 10A3A 030A 03FD 030F 030F
+	//    0   33  130  202    0  202   216  220    0  220   220  230    0  230  230
+
+	const char* c = "\xC7\xA1\xD9\x91\xE0\xBD\xBC\xCC\xA8\xC7\xA7\xE1\xB7\x90\xF0\x9D\x85\xA6\xDD\x82\xC9\x87\xE0\xA3\xA6\xF0\x90\xA8\xBA\xCC\x8A\xCD\xBB\xCC\x8F\xCC\x8F";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(37, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC7\xA0\xD9\x91\xE0\xBD\xBC\xCC\xA8\xC7\xA6\xE1\xB7\x90\xF0\x9D\x85\xA6\xDD\x82\xC9\x86\xE0\xA3\xA6\xF0\x90\xA8\xBA\xCC\x8A\xCF\xBD\xCC\x8F\xCC\x8F", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToUpper, GraphemeClusterMultipleTitlecase)
+{
+	// 01C5 0345 01C8
+	//    0    0    0
+
+	// 01C6 0399
+	//    0    0
+
+	const char* c = "\xC7\xA1\xD9\x91\xE0\xBD\xBC\xCC\xA8\xC7\xA7\xE1\xB7\x90\xF0\x9D\x85\xA6\xDD\x82\xC9\x87\xE0\xA3\xA6\xF0\x90\xA8\xBA\xCC\x8A\xCD\xBB\xCC\x8F\xCC\x8F";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(37, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC7\xA0\xD9\x91\xE0\xBD\xBC\xCC\xA8\xC7\xA6\xE1\xB7\x90\xF0\x9D\x85\xA6\xDD\x82\xC9\x86\xE0\xA3\xA6\xF0\x90\xA8\xBA\xCC\x8A\xCF\xBD\xCC\x8F\xCC\x8F", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToUpper, GraphemeClusterMultipleUnaffected)
+{
+	// 0751 0744 05AD 07E8 08E9 1CF9 0361 079A 0F39 0748
+	//    0  220  222    0  220  230  234    0  216  220
+
+	// 0751 0744 05AD 07E8 08E9 1CF9 0361 079A 0F39 0748
+	//    0  220  222    0  220  230  234    0  216  220
+
+	const char* c = "\xDD\x91\xDD\x84\xD6\xAD\xDF\xA8\xE0\xA3\xA9\xE1\xB3\xB9\xCD\xA1\xDE\x9A\xE0\xBC\xB9\xDD\x88";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(23, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xDD\x91\xDD\x84\xD6\xAD\xDF\xA8\xE0\xA3\xA9\xE1\xB3\xB9\xCD\xA1\xDE\x9A\xE0\xBC\xB9\xDD\x88", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToUpper, GraphemeClusterWord)
+{
+	// 024A 0731 102E0 0233 0C56 0F71 0FC6 024F 1DCA 302E 0F86 023C 08EE 073A
+	//    0  220   220    0   91  129  220    0  220  224  230    0  220  230
+
+	// 024A 0731 102E0 0232 0C56 0F71 0FC6 024E 1DCA 302E 0F86 023B 08EE 073A
+	//    0  220   220    0   91  129  220    0  220  224  230    0  220  230
+	
+	const char* c = "\xC9\x8A\xDC\xB1\xF0\x90\x8B\xA0\xC8\xB3\xE0\xB1\x96\xE0\xBD\xB1\xE0\xBF\x86\xC9\x8F\xE1\xB7\x8A\xE3\x80\xAE\xE0\xBE\x86\xC8\xBC\xE0\xA3\xAE\xDC\xBA";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(37, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC9\x8A\xDC\xB1\xF0\x90\x8B\xA0\xC8\xB2\xE0\xB1\x96\xE0\xBD\xB1\xE0\xBF\x86\xC9\x8E\xE1\xB7\x8A\xE3\x80\xAE\xE0\xBE\x86\xC8\xBB\xE0\xA3\xAE\xDC\xBA", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToUpper, GraphemeClusterSentence)
+{
+	// 0243 0EB8 0F71 1DCF 01ED 108D 05AC 0020 01F5 05C4 0743 01FB 0317 0357 020D 1D165 18A9 0615 0020 021D 20EC 0595 0175 0E48 0EB9 034E
+	//    0  118  129  220    0  220  230    0    0  230  230    0  220  230    0   216  228  230    0    0  220  230    0  107  119  220
+
+	// 0243 0EB8 0F71 1DCF 01EC 108D 05AC 0020 01F4 05C4 0743 01FA 0317 0357 020C 1D165 18A9 0615 0020 021C 20EC 0595 0174 0E48 0EB9 034E
+	//    0  118  129  220    0  220  230    0    0  230  230    0  220  230    0   216  228  230    0    0  220  230    0  107  119  220
+
+	const char* c = "\xC9\x83\xE0\xBA\xB8\xE0\xBD\xB1\xE1\xB7\x8F\xC7\xAD\xE1\x82\x8D\xD6\xAC \xC7\xB5\xD7\x84\xDD\x83\xC7\xBB\xCC\x97\xCD\x97\xC8\x8D\xF0\x9D\x85\xA5\xE1\xA2\xA9\xD8\x95 \xC8\x9D\xE2\x83\xAC\xD6\x95\xC5\xB5\xE0\xB9\x88\xE0\xBA\xB9\xCD\x8E";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(60, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC9\x83\xE0\xBA\xB8\xE0\xBD\xB1\xE1\xB7\x8F\xC7\xAC\xE1\x82\x8D\xD6\xAC \xC7\xB4\xD7\x84\xDD\x83\xC7\xBA\xCC\x97\xCD\x97\xC8\x8C\xF0\x9D\x85\xA5\xE1\xA2\xA9\xD8\x95 \xC8\x9C\xE2\x83\xAC\xD6\x95\xC5\xB4\xE0\xB9\x88\xE0\xBA\xB9\xCD\x8E", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToUpper, GraphemeClusterAmountOfBytes)
+{
+	// 0439 0349 0330 082A
+	//    0  220  220  230
+
+	// 0419 042C 0330 082A
+	//    0    0  220  230
+
+	const char* c = "\xD0\xB9\xCD\x89\xCC\xB0\xE0\xA0\xAA";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(9, utf8toupper(c, strlen(c), nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToUpper, GraphemeClusterNotEnoughSpace)
+{
+	// 0224 0325 0348 0733
+	//    0  220  220  230
+
+	const char* c = "\xC8\xA4\xCC\xA5\xCD\x88\xDC\xB3";
+	const size_t s = 4;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC8\xA4\xCC\xA5", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
 TEST_F(Utf8ToUpper, InvalidCodepointSingle)
 {
 	const char* c = "\xCD";
