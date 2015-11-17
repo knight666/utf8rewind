@@ -178,6 +178,8 @@ uint8_t casemapping_readcodepoint(CaseMappingState* state)
 size_t casemapping_write(CaseMappingState* state)
 {
 	uint8_t bytes_needed = 0;
+	StreamState stream;
+	uint8_t i;
 
 	if (state->last_code_point == REPLACEMENT_CHARACTER)
 	{
@@ -210,23 +212,6 @@ size_t casemapping_write(CaseMappingState* state)
 
 		if (state->property_data == LowercaseDataPtr)
 		{
-			/*
-				For performance reasons, strings are assumed to be in NFC or
-				NFD. While this string
-
-					U+0049 U+0307
-					0      230
-
-				will map to U+0069, this (equally valid) string
-
-					U+0049 U+031D U+0307
-					0      220    230
-
-				won't, because it would require looking ahead further than a
-				single code point and reordering the result by
-				General Category.
-			*/
-
 			if (state->last_code_point == CP_LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE)
 			{
 				state->last_code_point = CP_LATIN_SMALL_LETTER_I;
@@ -237,31 +222,61 @@ size_t casemapping_write(CaseMappingState* state)
 			else if (
 				state->last_code_point == CP_LATIN_CAPITAL_LETTER_I)
 			{
-				if (state->src_size > 0 &&
-					(state->last_code_point_size = codepoint_read(state->src, state->src_size, &state->last_code_point)) > 0 &&
-					state->last_code_point == CP_COMBINING_DOT_ABOVE)
+				if (state->src_size == 0)
 				{
-					if (state->src_size >= state->last_code_point_size)
-					{
-						state->src += state->last_code_point_size;
-						state->src_size -= state->last_code_point_size;
-					}
-					else
-					{
-						state->src_size = 0;
-					}
+					/* Early-out for easy case */
 
-					state->last_code_point = CP_LATIN_SMALL_LETTER_I;
-
-					resolved = "i";
-					bytes_needed = 1;
-				}
-				else
-				{
-					state->last_code_point = CP_LATIN_SMALL_LETTER_DOTLESS_I;
+					state->last_code_point = CP_LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE;
 
 					resolved = "\xC4\xB1";
 					bytes_needed = 2;
+				}
+				else
+				{
+					uint8_t found = 0;
+
+					/* Initialize stream on the start of the sequence */
+
+					if (!stream_initialize(
+						&stream,
+						state->src - state->last_code_point_size,
+						state->src_size + state->last_code_point_size))
+					{
+						goto regular;
+					}
+
+					/* Read the current sequence */
+
+					if (!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
+					{
+						goto regular;
+					}
+
+					/* Erase COMBINING DOT ABOVE from sequence */
+
+					for (i = stream.current - 1; i > 0; --i)
+					{
+						if (stream.codepoint[i] == CP_COMBINING_DOT_ABOVE)
+						{
+							stream.codepoint[i] = 0;
+							stream.canonical_combining_class[i] = 255;
+							stream.stable = 0;
+
+							found++;
+						}
+					}
+
+					/* Stabilize sequence and write to output */
+
+					if (!stream.stable)
+					{
+						stream_reorder(&stream);
+					}
+
+					stream.codepoint[0] = (found > 0) ? CP_LATIN_SMALL_LETTER_I : CP_LATIN_SMALL_LETTER_DOTLESS_I;
+					stream.current -= found;
+
+					goto writestream;
 				}
 			}
 		}
@@ -309,9 +324,6 @@ size_t casemapping_write(CaseMappingState* state)
 	else if (
 		state->locale == CASEMAPPING_LOCALE_LITHUANIAN)
 	{
-		StreamState stream;
-		uint8_t i;
-
 		if (state->property_data == LowercaseDataPtr)
 		{
 			unicode_t cp_additional_accent = 0;
@@ -426,7 +438,7 @@ size_t casemapping_write(CaseMappingState* state)
 			if (cp_additional_accent != 0 &&
 				stream.current < STREAM_BUFFER_MAX)
 			{
-				/* Additional accents are always are of the upper variety */
+				/* Additional accents are always of the upper variety */
 
 				stream.codepoint[stream.current] = cp_additional_accent;
 				stream.canonical_combining_class[stream.current] = 230;
@@ -516,32 +528,7 @@ size_t casemapping_write(CaseMappingState* state)
 			}
 		}
 
-		/* Get code point properties */
-
-		state->last_code_point = stream.codepoint[stream.current - 1];
-		state->last_canonical_combining_class = stream.canonical_combining_class[stream.current - 1];
-
-		/* Offset source */
-
-		state->src = stream.src;
-		state->src_size = stream.src_size;
-
-		/* Write result to the output buffer */
-
-		bytes_needed = 0;
-
-		for (i = 0; i < stream.current; ++i)
-		{
-			uint8_t encoded_size = codepoint_write(stream.codepoint[i], &state->dst, &state->dst_size);
-			if (encoded_size == 0)
-			{
-				goto outofspace;
-			}
-
-			bytes_needed += encoded_size;
-		}
-
-		return bytes_needed;
+		goto writestream;
 	}
 
 regular:
@@ -694,6 +681,34 @@ regular:
 	}
 
 	return (size_t)bytes_needed;
+
+writestream:
+	/* Get code point properties */
+
+	state->last_code_point = stream.codepoint[stream.current - 1];
+	state->last_canonical_combining_class = stream.canonical_combining_class[stream.current - 1];
+
+	/* Offset source */
+
+	state->src = stream.src;
+	state->src_size = stream.src_size;
+
+	/* Write result to the output buffer */
+
+	bytes_needed = 0;
+
+	for (i = 0; i < stream.current; ++i)
+	{
+		uint8_t encoded_size = codepoint_write(stream.codepoint[i], &state->dst, &state->dst_size);
+		if (encoded_size == 0)
+		{
+			goto outofspace;
+		}
+
+		bytes_needed += encoded_size;
+	}
+
+	return bytes_needed;
 
 outofspace:
 	state->src_size = 0;
