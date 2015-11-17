@@ -226,7 +226,7 @@ size_t casemapping_write(CaseMappingState* state)
 				{
 					/* Early-out for easy case */
 
-					state->last_code_point = CP_LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE;
+					state->last_code_point = CP_LATIN_SMALL_LETTER_DOTLESS_I;
 
 					resolved = "\xC4\xB1";
 					bytes_needed = 2;
@@ -258,9 +258,7 @@ size_t casemapping_write(CaseMappingState* state)
 					{
 						if (stream.codepoint[i] == CP_COMBINING_DOT_ABOVE)
 						{
-							stream.codepoint[i] = 0;
 							stream.canonical_combining_class[i] = 255;
-							stream.stable = 0;
 
 							found++;
 						}
@@ -268,13 +266,15 @@ size_t casemapping_write(CaseMappingState* state)
 
 					/* Stabilize sequence and write to output */
 
-					if (!stream.stable)
+					if (!stream.stable ||
+						found > 0)
 					{
 						stream_reorder(&stream);
+
+						stream.current -= found;
 					}
 
 					stream.codepoint[0] = (found > 0) ? CP_LATIN_SMALL_LETTER_I : CP_LATIN_SMALL_LETTER_DOTLESS_I;
-					stream.current -= found;
 
 					goto writestream;
 				}
