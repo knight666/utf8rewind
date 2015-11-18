@@ -178,6 +178,7 @@ uint8_t casemapping_readcodepoint(CaseMappingState* state)
 size_t casemapping_write(CaseMappingState* state)
 {
 	uint8_t bytes_needed = 0;
+	const char* resolved = 0;
 	StreamState stream;
 	uint8_t i;
 
@@ -203,8 +204,6 @@ size_t casemapping_write(CaseMappingState* state)
 
 	if (state->locale == CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN)
 	{
-		const char* resolved = 0;
-
 		/*
 			Code point General Category does not need to be modified, because
 			all mappings result in the same General Category
@@ -242,14 +241,14 @@ size_t casemapping_write(CaseMappingState* state)
 						state->src - state->last_code_point_size,
 						state->src_size + state->last_code_point_size))
 					{
-						goto regular;
+						goto writeregular;
 					}
 
 					/* Read the current sequence */
 
 					if (!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
 					{
-						goto regular;
+						goto writeregular;
 					}
 
 					/* Erase COMBINING DOT ABOVE from sequence */
@@ -303,22 +302,7 @@ size_t casemapping_write(CaseMappingState* state)
 
 		if (resolved != 0)
 		{
-			if (state->dst != 0)
-			{
-				/* Write resolved string to output */
-
-				if (state->dst_size < bytes_needed)
-				{
-					goto outofspace;
-				}
-
-				memcpy(state->dst, resolved, bytes_needed);
-
-				state->dst += bytes_needed;
-				state->dst_size -= bytes_needed;
-			}
-
-			return bytes_needed;
+			goto writeresolved;
 		}
 	}
 	else if (
@@ -360,7 +344,7 @@ size_t casemapping_write(CaseMappingState* state)
 				break;
 
 			default:
-				goto regular;
+				goto writeregular;
 
 			}
 
@@ -371,14 +355,14 @@ size_t casemapping_write(CaseMappingState* state)
 				state->src - state->last_code_point_size,
 				state->src_size + state->last_code_point_size))
 			{
-				goto regular;
+				goto writeregular;
 			}
 
 			/* Read the current sequence */
 
 			if (!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
 			{
-				goto regular;
+				goto writeregular;
 			}
 
 			/* Assign the lowercase code point to the start of the stream */
@@ -481,7 +465,7 @@ size_t casemapping_write(CaseMappingState* state)
 				break;
 
 			default:
-				goto regular;
+				goto writeregular;
 
 			}
 
@@ -492,14 +476,14 @@ size_t casemapping_write(CaseMappingState* state)
 				state->src - state->last_code_point_size,
 				state->src_size + state->last_code_point_size))
 			{
-				goto regular;
+				goto writeregular;
 			}
 
 			/* Read the current sequence */
 
 			if (!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
 			{
-				goto regular;
+				goto writeregular;
 			}
 
 			/* Assign the uppercase code point to the start of the stream */
@@ -531,10 +515,10 @@ size_t casemapping_write(CaseMappingState* state)
 		goto writestream;
 	}
 
-regular:
+writeregular:
 	if (state->last_code_point_size == 1)
 	{
-		/* Basic Latin */
+		/* Write Basic Latin to output buffer*/
 
 		if (state->dst != 0)
 		{
@@ -600,6 +584,8 @@ regular:
 				{
 					uint8_t peeked_read = 0;
 
+					/* Peek next code point */
+
 					if ((peeked_read = codepoint_read(peeked_src, peeked_src_size, &peeked)) == 0 ||
 						peeked_src_size < peeked_read)
 					{
@@ -608,10 +594,10 @@ regular:
 						break;
 					}
 
+					/* Convert if the "word" has ended */
+
 					if (PROPERTY_GET_CCC(peeked) == 0)
 					{
-						/* Convert if the "word" has ended */
-
 						should_convert = (PROPERTY_GET_GC(peeked) & GeneralCategory_Letter) == 0;
 
 						break;
@@ -648,45 +634,52 @@ regular:
 		{
 			/* Attempt to resolve the case mapping */
 
-			const char* resolved = database_querydecomposition(
-				state->last_code_point,
-				state->property_index1,
-				state->property_index2,
-				state->property_data,
-				&bytes_needed);
-
-			if (resolved != 0 &&
-				state->dst != 0)
+			resolved = database_querydecomposition(state->last_code_point, state->property_index1, state->property_index2, state->property_data, &bytes_needed);
+			if (resolved != 0)
 			{
-				if (state->dst_size < bytes_needed)
-				{
-					goto outofspace;
-				}
-
-				memcpy(state->dst, resolved, bytes_needed);
-
-				state->dst += bytes_needed;
-				state->dst_size -= bytes_needed;
+				goto writeresolved;
 			}
 		}
 
+		/* Write code point unchanged to output */
+
+		bytes_needed = codepoint_write(state->last_code_point, &state->dst, &state->dst_size);
 		if (bytes_needed == 0)
 		{
-			bytes_needed = codepoint_write(state->last_code_point, &state->dst, &state->dst_size);
-			if (bytes_needed == 0)
-			{
-				goto outofspace;
-			}
+			goto outofspace;
 		}
 	}
 
-	return (size_t)bytes_needed;
+	return bytes_needed;
+
+writeresolved:
+	/* Code point properties */
+
+	state->last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
+
+	/* Write resolved string to output */
+
+	if (state->dst != 0)
+	{
+		if (state->dst_size < bytes_needed)
+		{
+			goto outofspace;
+		}
+
+		memcpy(state->dst, resolved, bytes_needed);
+
+		state->dst += bytes_needed;
+		state->dst_size -= bytes_needed;
+	}
+
+	return bytes_needed;
 
 writestream:
 	/* Get code point properties */
 
 	state->last_code_point = stream.codepoint[stream.current - 1];
 	state->last_canonical_combining_class = stream.canonical_combining_class[stream.current - 1];
+	state->last_general_category = PROPERTY_GET_GC(stream.codepoint[0]);
 
 	/* Offset source */
 
