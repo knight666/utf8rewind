@@ -143,22 +143,20 @@ uint8_t casemapping_initialize(
 	return 1;
 }
 
-uint8_t casemapping_readcodepoint(CaseMappingState* state)
+size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 {
+	uint8_t bytes_needed = 0;
+	const char* resolved = 0;
+	StreamState stream;
+	uint8_t i;
+
 	/* Read next code point */
 
 	state->last_code_point_size = codepoint_read(state->src, state->src_size, &state->last_code_point);
 	if (state->last_code_point_size == 0)
 	{
-		state->src_size = 0;
-
-		return 0;
+		goto invaliddata;
 	}
-
-	/* Get code point properties */
-
-	state->last_canonical_combining_class = PROPERTY_GET_CCC(state->last_code_point);
-	state->last_general_category = PROPERTY_GET_GC(state->last_code_point);
 
 	/* Move source cursor */
 
@@ -172,18 +170,15 @@ uint8_t casemapping_readcodepoint(CaseMappingState* state)
 		state->src_size = 0;
 	}
 
-	return state->last_code_point_size;
-}
-
-size_t casemapping_write(CaseMappingState* state)
-{
-	uint8_t bytes_needed = 0;
-	const char* resolved = 0;
-	StreamState stream;
-	uint8_t i;
+	/* Check for invalid characters */
 
 	if (state->last_code_point == REPLACEMENT_CHARACTER)
 	{
+		/* Get code point properties */
+
+		state->last_canonical_combining_class = 0;
+		state->last_general_category = GeneralCategory_Symbol;
+
 		if (state->dst != 0)
 		{
 			/* Write replacement character to output */
@@ -201,6 +196,11 @@ size_t casemapping_write(CaseMappingState* state)
 
 		return REPLACEMENT_CHARACTER_STRING_LENGTH;
 	}
+
+	/* Get code point properties */
+
+	state->last_canonical_combining_class = PROPERTY_GET_CCC(state->last_code_point);
+	state->last_general_category = PROPERTY_GET_GC(state->last_code_point);
 
 	if (state->locale == CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN)
 	{
@@ -703,7 +703,16 @@ writestream:
 
 	return bytes_needed;
 
+invaliddata:
+	UTF8_SET_ERROR(INVALID_DATA);
+
+	state->src_size = 0;
+
+	return 0;
+
 outofspace:
+	UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
+
 	state->src_size = 0;
 
 	return 0;

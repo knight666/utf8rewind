@@ -61,9 +61,7 @@ uint8_t casemapping_initialize(
 	char* target, size_t targetSize,
 	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData);
 
-uint8_t casemapping_readcodepoint(CaseMappingState* state);
-
-size_t casemapping_write(CaseMappingState* state);
+size_t casemapping_execute(CaseMappingState* state, int32_t* errors);
 
 /*! \endcond */
 

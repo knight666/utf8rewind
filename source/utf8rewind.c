@@ -557,11 +557,7 @@ size_t utf8toupper(
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(
-		&state,
-		input, inputSize,
-		target, targetSize,
-		UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr))
 	{
 		UTF8_SET_ERROR(NONE);
 
@@ -574,19 +570,8 @@ size_t utf8toupper(
 	{
 		size_t converted;
 
-		if (!casemapping_readcodepoint(&state))
+		if ((converted = casemapping_execute(&state, errors)) == 0)
 		{
-			UTF8_SET_ERROR(INVALID_DATA);
-
-			return state.total_bytes_needed;
-		}
-
-		converted = casemapping_write(&state);
-
-		if (!converted)
-		{
-			UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
-
 			return state.total_bytes_needed;
 		}
 
@@ -611,11 +596,7 @@ size_t utf8tolower(
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(
-		&state,
-		input, inputSize,
-		target, targetSize,
-		LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr))
 	{
 		UTF8_SET_ERROR(NONE);
 
@@ -628,18 +609,8 @@ size_t utf8tolower(
 	{
 		size_t converted;
 
-		if (!casemapping_readcodepoint(&state))
+		if ((converted = casemapping_execute(&state, errors)) == 0)
 		{
-			UTF8_SET_ERROR(INVALID_DATA);
-
-			return state.total_bytes_needed;
-		}
-
-		converted = casemapping_write(&state);
-		if (!converted)
-		{
-			UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
-
 			return state.total_bytes_needed;
 		}
 
@@ -664,11 +635,7 @@ size_t utf8totitle(
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(
-		&state,
-		input, inputSize,
-		target, targetSize,
-		TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr))
 	{
 		UTF8_SET_ERROR(NONE);
 
@@ -680,19 +647,9 @@ size_t utf8totitle(
 	while (state.src_size > 0)
 	{
 		size_t converted;
-
-		if (!casemapping_readcodepoint(&state))
+		
+		if ((converted = casemapping_execute(&state, errors)) == 0)
 		{
-			UTF8_SET_ERROR(INVALID_DATA);
-
-			return state.total_bytes_needed;
-		}
-
-		converted = casemapping_write(&state);
-		if (!converted)
-		{
-			UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
-
 			return state.total_bytes_needed;
 		}
 

@@ -32,22 +32,21 @@ TEST(CaseMappingExecute, BasicLatinSingleLowercase)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(o + 1, state.dst);
+	EXPECT_EQ(os - 1, state.dst_size);
 	EXPECT_CPEQ('R', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 1, state.dst);
-	EXPECT_EQ(os - 1, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("r", o);
 }
@@ -59,22 +58,21 @@ TEST(CaseMappingExecute, BasicLatinSingleUppercase)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(o + 1, state.dst);
+	EXPECT_EQ(os - 1, state.dst_size);
 	EXPECT_CPEQ('i', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 1, state.dst);
-	EXPECT_EQ(os - 1, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("I", o);
 }
@@ -86,22 +84,21 @@ TEST(CaseMappingExecute, BasicLatinSingleTitlecase)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(o + 1, state.dst);
+	EXPECT_EQ(os - 1, state.dst_size);
 	EXPECT_CPEQ('v', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 1, state.dst);
-	EXPECT_EQ(os - 1, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("V", o);
 }
@@ -113,22 +110,21 @@ TEST(CaseMappingExecute, BasicLatinSingleUnaffected)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(o + 1, state.dst);
+	EXPECT_EQ(os - 1, state.dst_size);
 	EXPECT_CPEQ('`', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 1, state.dst);
-	EXPECT_EQ(os - 1, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("`", o);
 }
@@ -138,22 +134,21 @@ TEST(CaseMappingExecute, BasicLatinSingleAmountOfBytes)
 	CaseMappingState state;
 	const char* i = "!";
 	size_t is = strlen(i);
+	int32_t errors = 0;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
 	EXPECT_CPEQ('!', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Punctuation, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(nullptr, state.dst);
-	EXPECT_EQ(0, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 }
 
 TEST(CaseMappingExecute, BasicLatinSingleNotEnoughSpace)
@@ -163,20 +158,19 @@ TEST(CaseMappingExecute, BasicLatinSingleNotEnoughSpace)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 0;
+	int32_t errors = 0;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(o, state.dst);
+	EXPECT_EQ(os, state.dst_size);
 	EXPECT_CPEQ('^', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
-
-	EXPECT_EQ(0, casemapping_write(&state));
-	EXPECT_EQ(o, state.dst);
-	EXPECT_EQ(os, state.dst_size);
 
 	EXPECT_UTF8EQ("", o);
 }
@@ -188,46 +182,41 @@ TEST(CaseMappingExecute, BasicLatinMultipleLowercase)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(o + 1, state.dst);
+	EXPECT_EQ(os - 1, state.dst_size);
 	EXPECT_CPEQ('B', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 1, state.dst);
-	EXPECT_EQ(os - 1, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 2, state.dst);
+	EXPECT_EQ(os - 2, state.dst_size);
 	EXPECT_CPEQ('U', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 2, state.dst);
-	EXPECT_EQ(os - 2, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
+	EXPECT_EQ(o + 3, state.dst);
+	EXPECT_EQ(os - 3, state.dst_size);
 	EXPECT_CPEQ('Y', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 3, state.dst);
-	EXPECT_EQ(os - 3, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("buy", o);
 }
@@ -239,70 +228,61 @@ TEST(CaseMappingExecute, BasicLatinMultipleUppercase)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(o + 1, state.dst);
+	EXPECT_EQ(os - 1, state.dst_size);
 	EXPECT_CPEQ('m', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 1, state.dst);
-	EXPECT_EQ(os - 1, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 2, state.dst);
+	EXPECT_EQ(os - 2, state.dst_size);
 	EXPECT_CPEQ('o', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 2, state.dst);
-	EXPECT_EQ(os - 2, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
+	EXPECT_EQ(o + 3, state.dst);
+	EXPECT_EQ(os - 3, state.dst_size);
 	EXPECT_CPEQ('u', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 3, state.dst);
-	EXPECT_EQ(os - 3, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(o + 4, state.dst);
+	EXPECT_EQ(os - 4, state.dst_size);
 	EXPECT_CPEQ('s', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 4, state.dst);
-	EXPECT_EQ(os - 4, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 5, state.src);
 	EXPECT_EQ(is - 5, state.src_size);
+	EXPECT_EQ(o + 5, state.dst);
+	EXPECT_EQ(os - 5, state.dst_size);
 	EXPECT_CPEQ('e', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 5, state.dst);
-	EXPECT_EQ(os - 5, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("MOUSE", o);
 }
@@ -314,58 +294,51 @@ TEST(CaseMappingExecute, BasicLatinMultipleTitlecase)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(o + 1, state.dst);
+	EXPECT_EQ(os - 1, state.dst_size);
 	EXPECT_CPEQ('Z', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 1, state.dst);
-	EXPECT_EQ(os - 1, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 2, state.dst);
+	EXPECT_EQ(os - 2, state.dst_size);
 	EXPECT_CPEQ('i', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 2, state.dst);
-	EXPECT_EQ(os - 2, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
+	EXPECT_EQ(o + 3, state.dst);
+	EXPECT_EQ(os - 3, state.dst_size);
 	EXPECT_CPEQ('n', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 3, state.dst);
-	EXPECT_EQ(os - 3, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(o + 4, state.dst);
+	EXPECT_EQ(os - 4, state.dst_size);
 	EXPECT_CPEQ('g', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 4, state.dst);
-	EXPECT_EQ(os - 4, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("ZING", o);
 }
@@ -377,58 +350,51 @@ TEST(CaseMappingExecute, BasicLatinMultipleUnaffected)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(o + 1, state.dst);
+	EXPECT_EQ(os - 1, state.dst_size);
 	EXPECT_CPEQ('$', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 1, state.dst);
-	EXPECT_EQ(os - 1, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 2, state.dst);
+	EXPECT_EQ(os - 2, state.dst_size);
 	EXPECT_CPEQ('5', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Number, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 2, state.dst);
-	EXPECT_EQ(os - 2, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
+	EXPECT_EQ(o + 3, state.dst);
+	EXPECT_EQ(os - 3, state.dst_size);
 	EXPECT_CPEQ('.', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Punctuation, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 3, state.dst);
-	EXPECT_EQ(os - 3, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(o + 4, state.dst);
+	EXPECT_EQ(os - 4, state.dst_size);
 	EXPECT_CPEQ('-', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Punctuation, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 4, state.dst);
-	EXPECT_EQ(os - 4, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("$5.-", o);
 }
@@ -438,46 +404,41 @@ TEST(CaseMappingExecute, BasicLatinMultipleAmountOfBytes)
 	CaseMappingState state;
 	const char* i = "bar";
 	size_t is = strlen(i);
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
 	EXPECT_CPEQ('b', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(nullptr, state.dst);
-	EXPECT_EQ(0, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
 	EXPECT_CPEQ('a', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(nullptr, state.dst);
-	EXPECT_EQ(0, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
 	EXPECT_CPEQ('r', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(nullptr, state.dst);
-	EXPECT_EQ(0, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 }
 
 TEST(CaseMappingExecute, BasicLatinMultipleNotEnoughSpace)
@@ -487,54 +448,49 @@ TEST(CaseMappingExecute, BasicLatinMultipleNotEnoughSpace)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 3;
+	int32_t errors = 0;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(o + 1, state.dst);
+	EXPECT_EQ(os - 1, state.dst_size);
 	EXPECT_CPEQ('d', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 1, state.dst);
-	EXPECT_EQ(os - 1, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 2, state.dst);
+	EXPECT_EQ(os - 2, state.dst_size);
 	EXPECT_CPEQ('i', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
-	EXPECT_EQ(o + 2, state.dst);
-	EXPECT_EQ(os - 2, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(1, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
+	EXPECT_EQ(o + 3, state.dst);
+	EXPECT_EQ(os - 3, state.dst_size);
 	EXPECT_CPEQ('s', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_write(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
+	EXPECT_EQ(i + 4, state.src);
+	EXPECT_EQ(0, state.src_size);
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
-	EXPECT_EQ(i + 4, state.src);
-	EXPECT_EQ(is - 4, state.src_size);
 	EXPECT_CPEQ('c', state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
-
-	EXPECT_EQ(0, casemapping_write(&state));
 
 	EXPECT_UTF8EQ("DIS", o);
 }
@@ -548,22 +504,21 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleLowercase)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(2, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 2, state.dst);
+	EXPECT_EQ(os - 2, state.dst_size);
 	EXPECT_CPEQ(0x00D8, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(2, casemapping_write(&state));
-	EXPECT_EQ(o + 2, state.dst);
-	EXPECT_EQ(os - 2, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("\xC3\xB8", o);
 }
@@ -577,22 +532,21 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUppercase)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
 
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 3, state.dst);
+	EXPECT_EQ(os - 3, state.dst_size);
 	EXPECT_CPEQ(0x0149, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(3, casemapping_write(&state));
-	EXPECT_EQ(o + 3, state.dst);
-	EXPECT_EQ(os - 3, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("\xCA\xBCN", o);
 }
@@ -606,22 +560,21 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleTitlecase)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
 
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(2, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 2, state.dst);
+	EXPECT_EQ(os - 2, state.dst_size);
 	EXPECT_CPEQ(0x01C4, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(2, casemapping_write(&state));
-	EXPECT_EQ(o + 2, state.dst);
-	EXPECT_EQ(os - 2, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("\xC7\x85", o);
 }
@@ -635,22 +588,21 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleUnaffected)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
-	EXPECT_EQ(4, casemapping_readcodepoint(&state));
+	EXPECT_EQ(4, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(o + 4, state.dst);
+	EXPECT_EQ(os - 4, state.dst_size);
 	EXPECT_CPEQ(0x1F5B3, state.last_code_point);
 	EXPECT_EQ(4, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(4, casemapping_write(&state));
-	EXPECT_EQ(o + 4, state.dst);
-	EXPECT_EQ(os - 4, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("\xF0\x9F\x96\xB3", o);
 }
@@ -662,22 +614,21 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleAmountOfBytes)
 	CaseMappingState state;
 	const char* i = "\xF0\x9F\x96\xB4";
 	size_t is = strlen(i);
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
-	EXPECT_EQ(4, casemapping_readcodepoint(&state));
+	EXPECT_EQ(4, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
 	EXPECT_CPEQ(0x1F5B4, state.last_code_point);
 	EXPECT_EQ(4, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(4, casemapping_write(&state));
-	EXPECT_EQ(nullptr, state.dst);
-	EXPECT_EQ(0, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 }
 
 TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleNotEnoughSpace)
@@ -689,20 +640,21 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedSingleNotEnoughSpace)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 3;
+	int32_t errors = 0;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
 
-	EXPECT_EQ(4, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(o, state.dst);
+	EXPECT_EQ(os, state.dst_size);
 	EXPECT_CPEQ(0x1F675, state.last_code_point);
 	EXPECT_EQ(4, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
-	EXPECT_EQ(o, state.dst);
-	EXPECT_EQ(os, state.dst_size);
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("", o);
 }
@@ -717,46 +669,41 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleLowercase)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(2, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 2, state.dst);
+	EXPECT_EQ(os - 2, state.dst_size);
 	EXPECT_CPEQ(0x01A4, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(2, casemapping_write(&state));
-	EXPECT_EQ(o + 2, state.dst);
-	EXPECT_EQ(os - 2, state.dst_size);
-
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(2, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(o + 4, state.dst);
+	EXPECT_EQ(os - 4, state.dst_size);
 	EXPECT_CPEQ(0x017D, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(2, casemapping_write(&state));
-	EXPECT_EQ(o + 4, state.dst);
-	EXPECT_EQ(os - 4, state.dst_size);
-
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(2, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 6, state.src);
 	EXPECT_EQ(is - 6, state.src_size);
+	EXPECT_EQ(o + 6, state.dst);
+	EXPECT_EQ(os - 6, state.dst_size);
 	EXPECT_CPEQ(0x015E, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(2, casemapping_write(&state));
-	EXPECT_EQ(o + 6, state.dst);
-	EXPECT_EQ(os - 6, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("\xC6\xA5\xC5\xBE\xC5\x9F", o);
 }
@@ -771,34 +718,31 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUppercase)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
 
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 3, state.dst);
+	EXPECT_EQ(os - 3, state.dst_size);
 	EXPECT_CPEQ(0x0149, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(3, casemapping_write(&state));
-	EXPECT_EQ(o + 3, state.dst);
-	EXPECT_EQ(os - 3, state.dst_size);
-
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(2, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(o + 5, state.dst);
+	EXPECT_EQ(os - 5, state.dst_size);
 	EXPECT_CPEQ(0x00DF, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(2, casemapping_write(&state));
-	EXPECT_EQ(o + 5, state.dst);
-	EXPECT_EQ(os - 5, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("\xCA\xBCNSS", o);
 }
@@ -813,46 +757,41 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleTitlecase)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
 
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(2, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 2, state.dst);
+	EXPECT_EQ(os - 2, state.dst_size);
 	EXPECT_CPEQ(0x01C7, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(2, casemapping_write(&state));
-	EXPECT_EQ(o + 2, state.dst);
-	EXPECT_EQ(os - 2, state.dst_size);
-
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(2, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(o + 4, state.dst);
+	EXPECT_EQ(os - 4, state.dst_size);
 	EXPECT_CPEQ(0x01DC, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(2, casemapping_write(&state));
-	EXPECT_EQ(o + 4, state.dst);
-	EXPECT_EQ(os - 4, state.dst_size);
-
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(2, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 6, state.src);
 	EXPECT_EQ(is - 6, state.src_size);
+	EXPECT_EQ(o + 6, state.dst);
+	EXPECT_EQ(os - 6, state.dst_size);
 	EXPECT_CPEQ(0x01D0, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(2, casemapping_write(&state));
-	EXPECT_EQ(o + 6, state.dst);
-	EXPECT_EQ(os - 6, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("\xC7\x88\xC7\x9B\xC7\x8F", o);
 }
@@ -867,58 +806,51 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleUnaffected)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
 
-	EXPECT_EQ(4, casemapping_readcodepoint(&state));
+	EXPECT_EQ(4, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(o + 4, state.dst);
+	EXPECT_EQ(os - 4, state.dst_size);
 	EXPECT_CPEQ(0x1F5D8, state.last_code_point);
 	EXPECT_EQ(4, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(4, casemapping_write(&state));
-	EXPECT_EQ(o + 4, state.dst);
-	EXPECT_EQ(os - 4, state.dst_size);
-
-	EXPECT_EQ(3, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 7, state.src);
 	EXPECT_EQ(is - 7, state.src_size);
+	EXPECT_EQ(o + 7, state.dst);
+	EXPECT_EQ(os - 7, state.dst_size);
 	EXPECT_CPEQ(0x1AA3, state.last_code_point);
 	EXPECT_EQ(3, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Punctuation, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(3, casemapping_write(&state));
-	EXPECT_EQ(o + 7, state.dst);
-	EXPECT_EQ(os - 7, state.dst_size);
-
-	EXPECT_EQ(3, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 10, state.src);
 	EXPECT_EQ(is - 10, state.src_size);
+	EXPECT_EQ(o + 10, state.dst);
+	EXPECT_EQ(os - 10, state.dst_size);
 	EXPECT_CPEQ(0x3010, state.last_code_point);
 	EXPECT_EQ(3, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Punctuation, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(3, casemapping_write(&state));
-	EXPECT_EQ(o + 10, state.dst);
-	EXPECT_EQ(os - 10, state.dst_size);
-
-	EXPECT_EQ(4, casemapping_readcodepoint(&state));
+	EXPECT_EQ(4, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 14, state.src);
 	EXPECT_EQ(is - 14, state.src_size);
+	EXPECT_EQ(o + 14, state.dst);
+	EXPECT_EQ(os - 14, state.dst_size);
 	EXPECT_CPEQ(0x1F64B, state.last_code_point);
 	EXPECT_EQ(4, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(4, casemapping_write(&state));
-	EXPECT_EQ(o + 14, state.dst);
-	EXPECT_EQ(os - 14, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("\xF0\x9F\x97\x98\xE1\xAA\xA3\xE3\x80\x90\xF0\x9F\x99\x8B", o);
 }
@@ -931,46 +863,41 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleAmountOfBytes)
 	CaseMappingState state;
 	const char* i = "\xC4\xB0\xCE\x90\xD0\x9A";
 	size_t is = strlen(i);
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
 	EXPECT_CPEQ(0x0130, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(3, casemapping_write(&state));
-	EXPECT_EQ(nullptr, state.dst);
-	EXPECT_EQ(0, state.dst_size);
-
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(2, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
 	EXPECT_CPEQ(0x0390, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(2, casemapping_write(&state));
-	EXPECT_EQ(nullptr, state.dst);
-	EXPECT_EQ(0, state.dst_size);
-
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(2, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 6, state.src);
 	EXPECT_EQ(is - 6, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
 	EXPECT_CPEQ(0x041A, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(2, casemapping_write(&state));
-	EXPECT_EQ(nullptr, state.dst);
-	EXPECT_EQ(0, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 }
 
 TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleNotEnoughSpace)
@@ -983,42 +910,39 @@ TEST(CaseMappingExecute, GeneralCategoryCaseMappedMultipleNotEnoughSpace)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 9;
+	int32_t errors = 0;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
 
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(2, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(o + 2, state.dst);
+	EXPECT_EQ(os - 2, state.dst_size);
 	EXPECT_CPEQ(0x03E4, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(2, casemapping_write(&state));
-	EXPECT_EQ(o + 2, state.dst);
-	EXPECT_EQ(os - 2, state.dst_size);
-
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(6, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(o + 8, state.dst);
+	EXPECT_EQ(os - 8, state.dst_size);
 	EXPECT_CPEQ(0x03B0, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(6, casemapping_write(&state));
-	EXPECT_EQ(o + 8, state.dst);
-	EXPECT_EQ(os - 8, state.dst_size);
-
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 6, state.src);
 	EXPECT_EQ(is - 6, state.src_size);
+	EXPECT_EQ(o + 8, state.dst);
+	EXPECT_EQ(os - 8, state.dst_size);
 	EXPECT_CPEQ(0x0390, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Letter | GeneralCategory_CaseMapped, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
 
 	EXPECT_UTF8EQ("\xCF\xA4\xCE\xA5\xCC\x88\xCC\x81", o);
 }
@@ -1030,22 +954,21 @@ TEST(CaseMappingExecute, InvalidCodepointSingle)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(o + 3, state.dst);
+	EXPECT_EQ(os - 3, state.dst_size);
 	EXPECT_CPEQ(0xFFFD, state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(3, casemapping_write(&state));
-	EXPECT_EQ(o + 3, state.dst);
-	EXPECT_EQ(os - 3, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("\xEF\xBF\xBD", o);
 }
@@ -1055,21 +978,21 @@ TEST(CaseMappingExecute, InvalidCodepointSingleAmountOfBytes)
 	CaseMappingState state;
 	const char* i = "\xF4\x89";
 	size_t is = strlen(i);
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
 
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
+	EXPECT_CPEQ(0xFFFD, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(3, casemapping_write(&state));
-	EXPECT_EQ(nullptr, state.dst);
-	EXPECT_EQ(0, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 }
 
 TEST(CaseMappingExecute, InvalidCodepointSingleNotEnoughSpace)
@@ -1079,21 +1002,19 @@ TEST(CaseMappingExecute, InvalidCodepointSingleNotEnoughSpace)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 2;
+	int32_t errors = 0;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr,UppercaseDataPtr));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_CPEQ(0xFFFD, state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
-	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
-	EXPECT_EQ(0, state.last_canonical_combining_class);
-
-	EXPECT_EQ(0, casemapping_write(&state));
 	EXPECT_EQ(o, state.dst);
 	EXPECT_EQ(os, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
+	EXPECT_EQ(0, state.last_canonical_combining_class);
 
 	EXPECT_UTF8EQ("", o);
 }
@@ -1105,43 +1026,41 @@ TEST(CaseMappingExecute, InvalidCodepointMultiple)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 255;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
-	EXPECT_EQ(1, state.last_code_point_size);
-	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
-	EXPECT_EQ(0, state.last_canonical_combining_class);
-
-	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
+	EXPECT_CPEQ(0xFFFD, state.last_code_point);
+	EXPECT_EQ(1, state.last_code_point_size);
+	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
+	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
-	EXPECT_EQ(1, state.last_code_point_size);
-	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
-	EXPECT_EQ(0, state.last_canonical_combining_class);
-
-	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 6, state.dst);
 	EXPECT_EQ(os - 6, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
-	EXPECT_EQ(i + 3, state.src);
-	EXPECT_EQ(is - 3, state.src_size);
+	EXPECT_CPEQ(0xFFFD, state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(3, casemapping_write(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
+	EXPECT_EQ(i + 3, state.src);
+	EXPECT_EQ(is - 3, state.src_size);
 	EXPECT_EQ(o + 9, state.dst);
 	EXPECT_EQ(os - 9, state.dst_size);
+	EXPECT_CPEQ(0xFFFD, state.last_code_point);
+	EXPECT_EQ(1, state.last_code_point_size);
+	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
+	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBD", o);
 }
@@ -1151,54 +1070,51 @@ TEST(CaseMappingExecute, InvalidCodepointMultipleAmountOfBytes)
 	CaseMappingState state;
 	const char* i = "\xDA\xE0\x88\xDE\xCB";
 	size_t is = strlen(i);
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, nullptr, 0, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
+	EXPECT_CPEQ(0xFFFD, state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(3, casemapping_write(&state));
-	EXPECT_EQ(nullptr, state.dst);
-	EXPECT_EQ(0, state.dst_size);
-
-	EXPECT_EQ(2, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 3, state.src);
 	EXPECT_EQ(is - 3, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
+	EXPECT_CPEQ(0xFFFD, state.last_code_point);
 	EXPECT_EQ(2, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(3, casemapping_write(&state));
-	EXPECT_EQ(nullptr, state.dst);
-	EXPECT_EQ(0, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 4, state.src);
 	EXPECT_EQ(is - 4, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
+	EXPECT_CPEQ(0xFFFD, state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(3, casemapping_write(&state));
-	EXPECT_EQ(nullptr, state.dst);
-	EXPECT_EQ(0, state.dst_size);
-
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 5, state.src);
 	EXPECT_EQ(is - 5, state.src_size);
+	EXPECT_EQ(nullptr, state.dst);
+	EXPECT_EQ(0, state.dst_size);
+	EXPECT_CPEQ(0xFFFD, state.last_code_point);
 	EXPECT_EQ(1, state.last_code_point_size);
 	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
 	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(3, casemapping_write(&state));
-	EXPECT_EQ(nullptr, state.dst);
-	EXPECT_EQ(0, state.dst_size);
-
-	EXPECT_EQ(0, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 }
 
 TEST(CaseMappingExecute, InvalidCodepointMultipleNotEnoughSpace)
@@ -1208,28 +1124,37 @@ TEST(CaseMappingExecute, InvalidCodepointMultipleNotEnoughSpace)
 	size_t is = strlen(i);
 	char o[256] = { 0 };
 	size_t os = 7;
+	int32_t errors = 0;
 
 	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr));
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 1, state.src);
 	EXPECT_EQ(is - 1, state.src_size);
-
-	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 3, state.dst);
 	EXPECT_EQ(os - 3, state.dst_size);
+	EXPECT_CPEQ(0xFFFD, state.last_code_point);
+	EXPECT_EQ(1, state.last_code_point_size);
+	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
+	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(3, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 2, state.src);
 	EXPECT_EQ(is - 2, state.src_size);
-
-	EXPECT_EQ(3, casemapping_write(&state));
 	EXPECT_EQ(o + 6, state.dst);
 	EXPECT_EQ(os - 6, state.dst_size);
+	EXPECT_CPEQ(0xFFFD, state.last_code_point);
+	EXPECT_EQ(1, state.last_code_point_size);
+	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
+	EXPECT_EQ(0, state.last_canonical_combining_class);
 
-	EXPECT_EQ(1, casemapping_readcodepoint(&state));
+	EXPECT_EQ(0, casemapping_execute(&state, &errors));
 	EXPECT_EQ(i + 3, state.src);
-	EXPECT_EQ(is - 3, state.src_size);
-
-	EXPECT_EQ(0, casemapping_write(&state));
+	EXPECT_EQ(0, state.src_size);
+	EXPECT_EQ(o + 6, state.dst);
+	EXPECT_EQ(os - 6, state.dst_size);
+	EXPECT_CPEQ(0xFFFD, state.last_code_point);
+	EXPECT_EQ(1, state.last_code_point_size);
+	EXPECT_EQ(GeneralCategory_Symbol, state.last_general_category);
+	EXPECT_EQ(0, state.last_canonical_combining_class);
 }
