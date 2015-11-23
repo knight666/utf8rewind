@@ -1,4 +1,4 @@
-/*!
+﻿/*!
 	\mainpage Overview
 
 	\tableofcontents
@@ -16,25 +16,27 @@
 
 	int main(int argc, char** argv)
 	{
-		const char* input = "Hello World!";
+		// Encode "ξέφωτο" as UTF-8
+
+		const char* input = "\xCE\xBE\xCE\xAD\xCF\x86\xCF\x89\xCF\x84\xCE\xBF";
 
 		static const size_t output_size = 256;
-		char output[output_size];
-		wchar_t output_wide[output_size];
+		char output[output_size + 1];
+		wchar_t output_wide[output_size + 1];
 		const char* input_seek;
 		size_t converted_size;
 		int32_t errors;
 
-		memset(output, 0, sizeof(output));
-		memset(output_wide, 0, sizeof(output_wide));
+		memset(output, 0, sizeof(output) + 1);
+		memset(output_wide, 0, sizeof(output_wide) + sizeof(wchar_t));
 
 		// Convert input to uppercase:
 		//
-		// "Hello World!" -> "HELLO WORLD!"
+		// "ξέφωτο" -> "ΞΈΦΩΤΟ"
 
 		converted_size = utf8toupper(
 			input, strlen(input),
-			output, output_size - 1,
+			output, output_size,
 			&errors);
 		if (converted_size == 0 ||
 			errors != UTF8_ERR_NONE)
@@ -44,11 +46,11 @@
 
 		// Convert UTF-8 input to wide (UTF-16 or UTF-32) encoded text:
 		//
-		// "HELLO WORLD!" -> L"HELLO WORLD!"
+		// "ΞΈΦΩΤΟ" -> L"ΞΈΦΩΤΟ"
 
 		converted_size = utf8towide(
 			output, strlen(output),
-			output_wide, (output_size - 1) * sizeof(wchar_t),
+			output_wide, output_size * sizeof(wchar_t),
 			&errors);
 		if (converted_size == 0 ||
 			errors != UTF8_ERR_NONE)
@@ -58,9 +60,9 @@
 
 		// Seek in input:
 		//
-		// Hello World!" -> "World!"
+		// "ΞΈΦΩΤΟ" -> "ΤΟ"
 
-		input_seek = utf8seek(input, input, 6, SEEK_SET);
+		input_seek = utf8seek(input, strlen(input), input, 4, SEEK_SET);
 
 		return 0;
 	}
@@ -69,18 +71,18 @@
 	\section features Features
 
 	* **Conversion to and from UTF-8** - `utf8rewind` provides functions for
-	converting from and to [wide](\ref widetoutf8), [UTF-16](\ref utf16toutf8)
+	converting to and from [wide](\ref widetoutf8), [UTF-16](\ref utf16toutf8)
 	and [UTF-32](\ref utf32toutf8) encoded text.
 
-	* **Case mapping** - The library also provides functionality for converting
-	text to [uppercase](\ref utf8toupper), [lowercase](\ref utf8tolower) and
+	* **Case mapping** - The library provides functionality for converting text
+	to [uppercase](\ref utf8toupper), [lowercase](\ref utf8tolower) and
 	[titlecase](\ref utf8totitle).
 
 	* **Normalization** - With #utf8normalize, you can normalize UTF-8 encoded
-	text to NFC, NFD, NFKC or NFKD without converting it to UTF-32 first.
+	text to NFC, NFD, NFKC or NFKD without first converting the text to UTF-32.
 
 	* **Seeking** - Using #utf8seek, you can seek forwards and backwards in
-	UTF-8 encoded text.
+	any UTF-8 encoded text.
 
 	* **Cross-platform** - `utf8rewind` is written in plain C, which means it
 	can be used on any platform with a compliant C compiler. Currently, Windows,
@@ -92,11 +94,11 @@
 
 	* **Simple bindings** - No structs are used in the public interface, only
 	pointers. Even if you don't use C, if the language of your choice allows
-	bindings to C functions (e.g. Python), you can benefit from integrating
-	`utf8rewind` into your project.
+	bindings to C functions,you can benefit from integrating `utf8rewind` into
+	your project.
 
 	* **No heap allocations** - All allocations in `utf8rewind` happen on the
-	stack. You provide the memory, without having to override `malloc`. This
+	stack. *You* provide the memory, without having to override `malloc`. This
 	makes the library perfectly tailored to game engines, integrated systems
 	and other performance-critical or memory-constrained projects.
 
