@@ -366,7 +366,6 @@ TEST_F(Utf8ToUpper, GraphemeClusterSingleTitlecase)
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-
 TEST_F(Utf8ToUpper, GraphemeClusterSingleUnaffected)
 {
 	// 02EA 0670 0F71 0659
