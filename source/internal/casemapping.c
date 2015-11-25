@@ -158,18 +158,6 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 		goto invaliddata;
 	}
 
-	/* Move source cursor */
-
-	if (state->src_size >= state->last_code_point_size)
-	{
-		state->src += state->last_code_point_size;
-		state->src_size -= state->last_code_point_size;
-	}
-	else
-	{
-		state->src_size = 0;
-	}
-
 	/* Check for invalid characters */
 
 	if (state->last_code_point == REPLACEMENT_CHARACTER)
@@ -179,28 +167,11 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 		state->last_canonical_combining_class = 0;
 		state->last_general_category = GeneralCategory_Symbol;
 
-		if (state->dst != 0)
-		{
-			/* Write replacement character to output */
+		resolved = REPLACEMENT_CHARACTER_STRING;
+		bytes_needed = REPLACEMENT_CHARACTER_STRING_LENGTH;
 
-			if (state->dst_size < REPLACEMENT_CHARACTER_STRING_LENGTH)
-			{
-				goto outofspace;
-			}
-
-			memcpy(state->dst, REPLACEMENT_CHARACTER_STRING, REPLACEMENT_CHARACTER_STRING_LENGTH);
-
-			state->dst += REPLACEMENT_CHARACTER_STRING_LENGTH;
-			state->dst_size -= REPLACEMENT_CHARACTER_STRING_LENGTH;
-		}
-
-		return REPLACEMENT_CHARACTER_STRING_LENGTH;
+		goto writeresolved;
 	}
-
-	/* Get code point properties */
-
-	state->last_canonical_combining_class = PROPERTY_GET_CCC(state->last_code_point);
-	state->last_general_category = PROPERTY_GET_GC(state->last_code_point);
 
 	if (state->locale == CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN)
 	{
@@ -236,10 +207,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 
 					/* Initialize stream on the start of the sequence */
 
-					if (!stream_initialize(
-						&stream,
-						state->src - state->last_code_point_size,
-						state->src_size + state->last_code_point_size))
+					if (!stream_initialize(&stream, state->src, state->src_size))
 					{
 						goto writeregular;
 					}
@@ -302,6 +270,10 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 
 		if (resolved != 0)
 		{
+			/* Code point properties */
+
+			state->last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
+
 			goto writeresolved;
 		}
 	}
@@ -350,10 +322,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 
 			/* Initialize stream on the start of the sequence */
 
-			if (!stream_initialize(
-				&stream,
-				state->src - state->last_code_point_size,
-				state->src_size + state->last_code_point_size))
+			if (!stream_initialize(&stream, state->src, state->src_size))
 			{
 				goto writeregular;
 			}
@@ -371,7 +340,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 
 			/* Check if COMBINING DOT ABOVE is not yet present */ 
 
-			for (i = 1; i < stream.current; ++i)
+			for (i = stream.current - 1; i > 0; --i)
 			{
 				if (stream.codepoint[i] == CP_COMBINING_DOT_ABOVE)
 				{
@@ -471,10 +440,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 
 			/* Initialize stream on the start of the sequence */
 
-			if (!stream_initialize(
-				&stream,
-				state->src - state->last_code_point_size,
-				state->src_size + state->last_code_point_size))
+			if (!stream_initialize(&stream, state->src, state->src_size))
 			{
 				goto writeregular;
 			}
@@ -516,6 +482,25 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 	}
 
 writeregular:
+	/* Get code point properties */
+
+	state->last_canonical_combining_class = PROPERTY_GET_CCC(state->last_code_point);
+	state->last_general_category = PROPERTY_GET_GC(state->last_code_point);
+
+	/* Move source cursor */
+
+	if (state->src_size >= state->last_code_point_size)
+	{
+		state->src += state->last_code_point_size;
+		state->src_size -= state->last_code_point_size;
+	}
+	else
+	{
+		state->src_size = 0;
+	}
+
+	/* Write to output */
+
 	if (state->last_code_point_size == 1)
 	{
 		/* Write Basic Latin to output buffer*/
@@ -559,8 +544,8 @@ writeregular:
 	}
 	else
 	{
-		if (state->last_code_point == CP_GREEK_CAPITAL_LETTER_SIGMA &&
-			state->property_data == LowercaseDataPtr)
+		if (state->property_data == LowercaseDataPtr &&
+			state->last_code_point == CP_GREEK_CAPITAL_LETTER_SIGMA)
 		{
 			/*
 				If the final letter of a word (defined as "a collection of code
@@ -637,7 +622,11 @@ writeregular:
 			resolved = database_querydecomposition(state->last_code_point, state->property_index1, state->property_index2, state->property_data, &bytes_needed);
 			if (resolved != 0)
 			{
-				goto writeresolved;
+				/* Code point properties */
+
+				state->last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
+
+				goto writeresolvedonly;
 			}
 		}
 
@@ -653,10 +642,19 @@ writeregular:
 	return bytes_needed;
 
 writeresolved:
-	/* Code point properties */
+	/* Move source cursor */
 
-	state->last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
+	if (state->src_size >= state->last_code_point_size)
+	{
+		state->src += state->last_code_point_size;
+		state->src_size -= state->last_code_point_size;
+	}
+	else
+	{
+		state->src_size = 0;
+	}
 
+writeresolvedonly:
 	/* Write resolved string to output */
 
 	if (state->dst != 0)
@@ -681,7 +679,7 @@ writestream:
 	state->last_canonical_combining_class = stream.canonical_combining_class[stream.current - 1];
 	state->last_general_category = PROPERTY_GET_GC(stream.codepoint[0]);
 
-	/* Offset source */
+	/* Move source cursor */
 
 	state->src = stream.src;
 	state->src_size = stream.src_size;
