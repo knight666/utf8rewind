@@ -37,24 +37,13 @@
 namespace testing {
 namespace internal {
 
-	extern bool ParseBoolFlag(
-		const char* str,
-		const char* flag,
-		bool* value);
+	extern bool ParseBoolFlag(const char* str, const char* flag, bool* value);
 
-	extern bool ParseInt32Flag(
-		const char* str,
-		const char* flag,
-		Int32* value);
+	extern bool ParseInt32Flag(const char* str, const char* flag, Int32* value);
 
-	extern bool ParseStringFlag(
-		const char* str,
-		const char* flag,
-		std::string* value);
+	extern bool ParseStringFlag(const char* str, const char* flag, std::string* value);
 
-	static bool PatternMatchesString(
-		const char* pattern,
-		const char* text)
+	static bool PatternMatchesString(const char* pattern, const char* text)
 	{
 		switch (*pattern)
 		{
@@ -77,9 +66,7 @@ namespace internal {
 		}
 	}
 
-	static bool MatchesFilter(
-		const std::string& name,
-		const std::string& filter)
+	static bool MatchesFilter(const std::string& name, const std::string& filter)
 	{
 		const char *cur_pattern = filter.c_str();
 		while (1)
@@ -142,6 +129,26 @@ namespace internal {
 
 namespace performance {
 
+	static std::string casefold(const char* text)
+	{
+		size_t text_size = strlen(text);
+		std::string converted;
+		int32_t errors;
+		size_t converted_size;
+
+		if ((converted_size = utf8tolower(text, text_size, nullptr, 0, &errors)) == 0 ||
+			errors != UTF8_ERR_NONE)
+		{
+			return converted;
+		}
+
+		converted.resize(converted_size);
+
+		utf8tolower(text, text_size, &converted[0], converted_size, &errors);
+
+		return converted;
+	}
+
 	class Suite
 	{
 
@@ -184,9 +191,7 @@ namespace performance {
 			return instance;
 		}
 
-		void addFactory(
-			const std::string& name,
-			BaseSuiteFactory* factory)
+		void addFactory(const std::string& name, BaseSuiteFactory* factory)
 		{
 			m_factories.push_back(std::make_pair(name, factory));
 		}
@@ -204,7 +209,7 @@ namespace performance {
 
 			for (int i = 1; i < argc; ++i)
 			{
-				std::string arg_help = argv[i];
+				std::string arg_help = casefold(argv[i]);
 
 				if (arg_help == "--help" ||
 					arg_help == "-h" ||
@@ -228,7 +233,7 @@ namespace performance {
 
 			if (show_help)
 			{
-				std::cout
+				m_logging
 					<< "--" GTEST_FLAG_PREFIX_ "repeat_count=[COUNT]" << std::endl
 					<< "    How many times to repeat the performance tests. The default is " << std::endl
 					<< "    100 times." << std::endl
@@ -245,9 +250,7 @@ namespace performance {
 
 			if (filter != "*")
 			{
-				std::cout
-					<< "NOTE: Filter is \"" << filter << "\""
-					<< std::endl;
+				m_logging << "NOTE: Filter is \"" << filter << "\"" << std::endl;
 			}
 
 			std::string positive_filter;
@@ -267,22 +270,16 @@ namespace performance {
 				positive_filter = filter;
 			}
 
-			std::cout
-				<< "Running " << repeat_count << " iterations."
-				<< std::endl;
+			m_logging << "Running " << repeat_count << " iterations." << std::endl;
 
 			typedef std::chrono::steady_clock clock;
 			typedef std::chrono::microseconds ms;
 
 			clock::time_point time_start = clock::now();
 
-			typedef
-				std::vector<std::pair<std::string, BaseSuiteFactory*>>::iterator
-				factory_it;
+			typedef std::vector<std::pair<std::string, BaseSuiteFactory*>>::iterator factory_it;
 
-			for (factory_it it = m_factories.begin();
-				it != m_factories.end();
-				++it)
+			for (factory_it it = m_factories.begin(); it != m_factories.end(); ++it)
 			{
 				using testing::internal::MatchesFilter;
 
@@ -294,9 +291,7 @@ namespace performance {
 					continue;
 				}
 
-				std::cout
-					<< "[" << it->first << "]"
-					<< std::endl;
+				std::cout << "[" << it->first << "]" << std::endl;
 
 				std::vector<uint32_t> timings;
 
@@ -310,17 +305,11 @@ namespace performance {
 
 					suite->body();
 
-					uint32_t test_duration = (uint32_t)(
-						std::chrono::duration_cast<ms>(
-							clock::now() - test_start
-						)).count() / 1000;
+					uint32_t test_duration = (uint32_t)(std::chrono::duration_cast<ms>(clock::now() - test_start)).count() / 1000;
 
 					if (display_individual)
 					{
-						std::cout
-							<< std::setw(10) << i << ": "
-							<< std::setw(8) << test_duration << " ms"
-							<< std::endl;
+						m_logging << std::setw(10) << i << ": " << std::setw(8) << test_duration << " ms." << std::endl;
 					}
 
 					timings.push_back(test_duration);
@@ -328,47 +317,26 @@ namespace performance {
 
 				suite->tearDown();
 
-				uint32_t total_duration = (uint32_t)(
-						std::chrono::duration_cast<ms>(
-							clock::now() - total_start
-						)).count() / 1000;
+				uint32_t total_duration = (uint32_t)(std::chrono::duration_cast<ms>(clock::now() - total_start)).count() / 1000;
 
 				uint32_t worst_case = 0;
 				uint32_t best_case = std::numeric_limits<uint32_t>::max();
 				double average = 0.0;
 
-				for (std::vector<uint32_t>::iterator it = timings.begin();
-					it != timings.end();
-					++it)
+				for (uint32_t timing : timings)
 				{
-					worst_case = std::max(worst_case, *it);
-					best_case = std::min(best_case, *it);
-					average += (double)*it;
+					worst_case = std::max(worst_case, timing);
+					best_case = std::min(best_case, timing);
+					average += (double)timing;
 				}
 
 				average /= (double)timings.size();
 
-				std::cout
-					<< "     Total: "
-					<< std::setw(8) << total_duration << " ms"
-					<< std::endl;
-
-				std::cout
-					<< " Best case: "
-					<< std::setw(8) << best_case << " ms"
-					<< std::endl;
-
-				std::cout
-					<< "Worst case: "
-					<< std::setw(8) << worst_case << " ms"
-					<< std::endl;
-
-				std::cout
-					<< "   Average: "
-					<< std::setw(8) << average << " ms"
-					<< std::endl;
-
-				std::cout << std::endl;
+				m_logging << "     Total: " << std::setw(8) << total_duration << " ms." << std::endl;
+				m_logging << " Best case: " << std::setw(8) << best_case << " ms." << std::endl;
+				m_logging << "Worst case: " << std::setw(8) << worst_case << " ms" << std::endl;
+				m_logging << "   Average: " << std::setw(8) << average << " ms" << std::endl;
+				m_logging << std::endl;
 			}
 
 			return 0;
@@ -376,6 +344,12 @@ namespace performance {
 
 	private:
 
+		Collection()
+			: m_logging(std::cout)
+		{
+		}
+
+		std::ostream& m_logging;
 		std::vector<std::pair<std::string, BaseSuiteFactory*>> m_factories;
 
 	};
@@ -396,11 +370,9 @@ namespace performance {
 
 }
 
-#define PERF_RUN_ALL(_argc, _argv) \
-	performance::Collection::get().run(_argc, _argv)
+#define PERF_RUN_ALL(_argc, _argv)  performance::Collection::get().run(_argc, _argv)
 
-#define PERF_TEST_CLASS_NAME(_caseName, _testName) \
-	_caseName ## _ ## _testName ## _Test
+#define PERF_TEST_CLASS_NAME(_caseName, _testName)  _caseName ## _ ## _testName ## _Test
 
 #define PERF_TEST_IMPL(_caseName, _testName, _parentClass) \
 	class PERF_TEST_CLASS_NAME(_caseName, _testName) \
@@ -410,14 +382,9 @@ namespace performance {
 		static bool m_registered; \
 	}; \
 	bool PERF_TEST_CLASS_NAME(_caseName, _testName)::m_registered = \
-		performance::registerTest( \
-			#_caseName, #_testName, \
-			new performance::SuiteFactory< \
-				PERF_TEST_CLASS_NAME(_caseName, _testName)>); \
+		performance::registerTest(#_caseName, #_testName, new performance::SuiteFactory<PERF_TEST_CLASS_NAME(_caseName, _testName)>); \
 	void PERF_TEST_CLASS_NAME(_caseName, _testName)::body()
 
-#define PERF_TEST(_caseName, _testName) \
-	PERF_TEST_IMPL(_caseName, _testName, performance::Suite)
+#define PERF_TEST(_caseName, _testName)    PERF_TEST_IMPL(_caseName, _testName, performance::Suite)
 
-#define PERF_TEST_F(_caseName, _testName) \
-	PERF_TEST_IMPL(_caseName, _testName, _caseName)
+#define PERF_TEST_F(_caseName, _testName)  PERF_TEST_IMPL(_caseName, _testName, _caseName)
