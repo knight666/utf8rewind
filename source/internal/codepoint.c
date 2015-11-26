@@ -77,48 +77,38 @@ const uint8_t codepoint_decoded_length[256] = {
 	7, 7                    /* 0xFE - 0xFF */
 };
 
-uint8_t codepoint_encoded_length(unicode_t codepoint)
-{
-	if (codepoint < 0x80)
-	{
-		/* Single byte */
-
-		return 1;
-	}
-	else if (codepoint < 0x800)
-	{
-		/* Two bytes */
-
-		return 2;
-	}
-	else if (codepoint < 0x10000)
-	{
-		/* Three bytes */
-
-		return 3;
-	}
-	else if (codepoint <= MAX_LEGAL_UNICODE)
-	{
-		/* Four bytes */
-
-		return 4;
-	}
-	else
-	{
-		/* Illegal value */
-
-		return 0;
-	}
-}
-
 uint8_t codepoint_write(unicode_t encoded, char** target, size_t* targetSize)
 {
-	uint8_t encoded_length = codepoint_encoded_length(encoded);
-	if (encoded_length == 0)
+	uint8_t encoded_length;
+
+	/* Determine encoded length of code point */
+
+	if (encoded <= MAX_BASIC_LATIN)
+	{
+		encoded_length = 1;
+	}
+	else if (
+		encoded <= 0x7FF)
+	{
+		encoded_length = 2;
+	}
+	else if (
+		encoded <= MAX_BASIC_MULTILINGUAL_PLANE)
+	{
+		encoded_length = 3;
+	}
+	else if (
+		encoded > MAX_LEGAL_UNICODE)
 	{
 		encoded = REPLACEMENT_CHARACTER;
 		encoded_length = REPLACEMENT_CHARACTER_STRING_LENGTH;
 	}
+	else
+	{
+		encoded_length = 4;
+	}
+
+	/* Write to target */
 
 	if (*target != 0)
 	{
