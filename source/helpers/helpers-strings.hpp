@@ -44,9 +44,18 @@ namespace helpers {
 	std::string canonicalCombiningClass(unicode_t* codepoint, size_t codepointsSize);
 	std::string canonicalCombiningClass(const std::string& text);
 
-	std::string quickCheck(unicode_t codepoint, uint8_t type);
-	std::string quickCheck(unicode_t* codepoint, size_t codepointsSize, uint8_t type);
-	std::string quickCheck(const std::string& text, uint8_t type);
+	enum class QuickCheck
+	{
+		NFC,
+		NFD,
+		NFKC,
+		NFKD,
+		Any
+	};
+
+	std::string quickCheck(unicode_t codepoint, QuickCheck type);
+	std::string quickCheck(unicode_t* codepoint, size_t codepointsSize, QuickCheck type);
+	std::string quickCheck(const std::string& text, QuickCheck type);
 
 	::testing::AssertionResult CompareUtf8Strings(
 		const char* expressionExpected, const char* expressionActual,
