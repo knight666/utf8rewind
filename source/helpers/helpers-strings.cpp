@@ -438,30 +438,30 @@ namespace helpers {
 		return ss.str();
 	}
 
-	void quickCheck(std::stringstream& target, unicode_t codepoint, uint8_t type)
+	void quickCheck(std::stringstream& target, unicode_t codepoint, QuickCheck type)
 	{
 		uint8_t qc;
 
 		switch (type)
 		{
 
-		case UnicodeProperty_Normalization_Compose:
+		case QuickCheck::NFC:
 			qc = PROPERTY_GET_NFC(codepoint);
 			break;
 
-		case UnicodeProperty_Normalization_Decompose:
+		case QuickCheck::NFD:
 			qc = PROPERTY_GET_NFD(codepoint);
 			break;
 
-		case UnicodeProperty_Normalization_Compatibility_Compose:
+		case QuickCheck::NFKC:
 			qc = PROPERTY_GET_NFKC(codepoint);
 			break;
 
-		case UnicodeProperty_Normalization_Compatibility_Decompose:
+		case QuickCheck::NFKD:
 			qc = PROPERTY_GET_NFKD(codepoint);
 			break;
 
-		default:
+		case QuickCheck::Any:
 			qc = QuickCheckResult_Yes;
 			break;
 
@@ -491,14 +491,14 @@ namespace helpers {
 		}
 	}
 
-	std::string quickCheck(unicode_t codepoint, uint8_t type)
+	std::string quickCheck(unicode_t codepoint, QuickCheck type)
 	{
 		std::stringstream ss;
 		quickCheck(ss, codepoint, type);
 		return ss.str();
 	}
 
-	std::string quickCheck(unicode_t* codepoint, size_t codepointsSize, uint8_t type)
+	std::string quickCheck(unicode_t* codepoint, size_t codepointsSize, QuickCheck type)
 	{
 		std::stringstream ss;
 
@@ -513,7 +513,7 @@ namespace helpers {
 		return ss.str();
 	}
 
-	std::string quickCheck(const std::string& text, uint8_t type)
+	std::string quickCheck(const std::string& text, QuickCheck type)
 	{
 		std::vector<unicode_t> converted = utf32(text);
 		if (converted.size() == 0)
