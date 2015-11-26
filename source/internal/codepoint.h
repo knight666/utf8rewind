@@ -203,7 +203,7 @@
 #define HANGUL_S_COUNT                       11172 /* LCount * NCount */
 
 /*!
-	\brief Get the number of bytes used for encoding a codepoint.
+	\brief Get the number of bytes used for encoding a code point.
 
 	\param[in]  byte  Encoded byte
 
@@ -212,20 +212,11 @@
 extern const uint8_t codepoint_decoded_length[256];
 
 /*!
-	\brief Get the number of bytes needed to encode a codepoint.
-
-	\param[in]  codepoint  Unicode codepoint
-
-	\return Number of bytes needed for encoding or 0 if input is illegal.
-*/
-uint8_t codepoint_encoded_length(unicode_t codepoint);
-
-/*!
-	\brief Write Unicode codepoint to UTF-8 encoded string.
+	\brief Write Unicode code point to UTF-8 encoded string.
 
 	Target buffer and size is modified by encoded size.
 
-	\param[in]      encoded     Unicode codepoint
+	\param[in]      encoded     Unicode code point
 	\param[in,out]  target      Target buffer
 	\param[in,out]  targetSize  Size of output buffer in bytes
 
@@ -234,7 +225,7 @@ uint8_t codepoint_encoded_length(unicode_t codepoint);
 uint8_t codepoint_write(unicode_t encoded, char** target, size_t* targetSize);
 
 /*!
-	\brief Read Unicode codepoint from UTF-8 encoded string.
+	\brief Read Unicode code point from UTF-8 encoded string.
 
 	\param[in]   input      Input buffer
 	\param[in]   inputSize  Size of input buffer in bytes
