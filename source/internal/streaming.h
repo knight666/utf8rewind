@@ -75,7 +75,7 @@ uint8_t stream_initialize(StreamState* state, const char* input, size_t inputSiz
 
 uint8_t stream_read(StreamState* state, const size_t* propertyIndex, const uint8_t* propertyData);
 
-uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_t* bytesWritten);
+uint8_t stream_write(StreamState* state, char** output, size_t* outputSize, uint8_t* bytesWritten);
 
 uint8_t stream_reorder(StreamState* state);
 

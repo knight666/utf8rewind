@@ -686,17 +686,9 @@ writestream:
 
 	/* Write result to the output buffer */
 
-	bytes_needed = 0;
-
-	for (i = 0; i < stream.current; ++i)
+	if (!stream_write(&stream, &state->dst, &state->dst_size, &bytes_needed))
 	{
-		uint8_t encoded_size = codepoint_write(stream.codepoint[i], &state->dst, &state->dst_size);
-		if (encoded_size == 0)
-		{
-			goto outofspace;
-		}
-
-		bytes_needed += encoded_size;
+		goto outofspace;
 	}
 
 	return bytes_needed;
