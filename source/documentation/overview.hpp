@@ -5,9 +5,8 @@
 
 	\section introduction Introduction
 
-	`utf8rewind` is a cross-platform and open source C library designed to
-	extend the default string handling functions and add support for UTF-8
-	encoded text.
+	`utf8rewind` is a system library written in C designed to extend the default
+	string handling functions with support for UTF-8 encoded text.
 
 	\section example Example
 
@@ -16,7 +15,7 @@
 
 	int main(int argc, char** argv)
 	{
-		// Encode "ξέφωτο" as UTF-8
+		// "ξέφωτο" encoded in UTF-8 using hexadecimal notation
 
 		const char* input = "\xCE\xBE\xCE\xAD\xCF\x86\xCF\x89\xCF\x84\xCE\xBF";
 
@@ -34,10 +33,7 @@
 		//
 		// "ξέφωτο" -> "ΞΈΦΩΤΟ"
 
-		converted_size = utf8toupper(
-			input, strlen(input),
-			output, output_size,
-			&errors);
+		converted_size = utf8toupper(input, strlen(input), output, output_size, &errors);
 		if (converted_size == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -48,10 +44,7 @@
 		//
 		// "ΞΈΦΩΤΟ" -> L"ΞΈΦΩΤΟ"
 
-		converted_size = utf8towide(
-			output, strlen(output),
-			output_wide, output_size * sizeof(wchar_t),
-			&errors);
+		converted_size = utf8towide(output, strlen(output), output_wide, output_size * sizeof(wchar_t), &errors);
 		if (converted_size == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -60,7 +53,7 @@
 
 		// Seek in input:
 		//
-		// "ΞΈΦΩΤΟ" -> "ΤΟ"
+		// "ξέφωτο" -> "το"
 
 		input_seek = utf8seek(input, strlen(input), input, 4, SEEK_SET);
 
@@ -79,22 +72,22 @@
 	[titlecase](\ref utf8totitle).
 
 	* **Normalization** - With #utf8normalize, you can normalize UTF-8 encoded
-	text to NFC, NFD, NFKC or NFKD without first converting the text to UTF-32.
+	text to NFC, NFD, NFKC or NFKD without converting the text to UTF-32 first.
 
 	* **Seeking** - Using #utf8seek, you can seek forwards and backwards in
-	any UTF-8 encoded text.
+	any UTF-8 encoded strings.
 
 	* **Cross-platform** - `utf8rewind` is written in plain C, which means it
 	can be used on any platform with a compliant C compiler. Currently, Windows,
 	Linux and Mac versions are available.
 
 	* **Easy to integrate** - The library consists of only 13 public functions
-	and requires no initialization. Any C or C++ project can add `utf8rewind`
+	and requires *no* initialization. Any C or C++ project can add `utf8rewind`
 	without breaking existing code.
 
 	* **Simple bindings** - No structs are used in the public interface, only
 	pointers. Even if you don't use C, if the language of your choice allows
-	bindings to C functions,you can benefit from integrating `utf8rewind` into
+	bindings to C functions, you can benefit from integrating `utf8rewind` into
 	your project.
 
 	* **No heap allocations** - All allocations in `utf8rewind` happen on the
@@ -139,7 +132,7 @@
 
 	\subsection building-linux Building on Linux with GCC
 
-	Open a command window at the project's root.
+	Open a shell and navigate to the project's root.
 
 	Ensure you have all dependencies installed using your preferred package
 	manager:
