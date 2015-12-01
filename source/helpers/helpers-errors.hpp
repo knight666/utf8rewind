@@ -9,11 +9,8 @@
 
 #include "helpers-base.hpp"
 
-#define EXPECT_ERROREQ(_expected, _actual) \
-	EXPECT_PRED_FORMAT2(::helpers::CompareErrors, _expected, _actual)
-
-#define ASSERT_ERROREQ(_expected, _actual) \
-	ASSERT_PRED_FORMAT2(::helpers::CompareErrors, _expected, _actual)
+#define EXPECT_ERROREQ(_expected, _actual)  EXPECT_PRED_FORMAT2(::helpers::CompareErrors, _expected, _actual)
+#define ASSERT_ERROREQ(_expected, _actual)  ASSERT_PRED_FORMAT2(::helpers::CompareErrors, _expected, _actual)
 
 namespace helpers {
 
