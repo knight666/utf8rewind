@@ -24,9 +24,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">utf8rewind
-   &#160;<span id="projectnumber">1.2.1</span>
+   &#160;<span id="projectnumber">1.3.0</span>
    </div>
-   <div id="projectbrief">Cross-platform library for UTF-8 encoded text</div>
+   <div id="projectbrief">System library for processing UTF-8 encoded text</div>
   </td>
  </tr>
  </tbody>
@@ -126,19 +126,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    StreamState* input;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    StreamState* output;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    uint8_t property;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> cache_codepoint[STREAM_BUFFER_MAX];</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    uint8_t cache_canonical_combining_class[STREAM_BUFFER_MAX];</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    uint8_t cache_current;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    uint8_t cache_filled;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;} DecomposeState;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;uint8_t decompose_execute(DecomposeState* state);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">size_t</span>* qc_index;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">const</span> uint8_t* qc_data;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">const</span> uint32_t* property_index1;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">const</span> uint32_t* property_index2;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">const</span> uint32_t* property_data;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> cache_codepoint[STREAM_BUFFER_MAX];</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    uint8_t cache_canonical_combining_class[STREAM_BUFFER_MAX];</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    uint8_t cache_current;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    uint8_t cache_filled;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;} DecomposeState;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _UTF8REWIND_INTERNAL_DECOMPOSITION_H_ */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">Unicode codepoint. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:178</div></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;uint8_t decompose_initialize(DecomposeState* state, StreamState* input, StreamState* output, uint8_t compatibility);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;uint8_t decompose_execute(DecomposeState* state);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _UTF8REWIND_INTERNAL_DECOMPOSITION_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">UTF-32 encoded code point. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:235</div></div>
 <div class="ttc" id="streaming_8h_html"><div class="ttname"><a href="streaming_8h.html">streaming.h</a></div><div class="ttdoc">Streaming interface. </div></div>
 <div class="ttc" id="utf8rewind_8h_html"><div class="ttname"><a href="utf8rewind_8h.html">utf8rewind.h</a></div><div class="ttdoc">Public interface for UTF-8 functions. </div></div>
 </div><!-- fragment --></div><!-- contents -->

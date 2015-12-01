@@ -95,8 +95,8 @@
 	makes the library perfectly tailored to game engines, integrated systems
 	and other performance-critical or memory-constrained projects.
 
-	* **Safety** - Over 2300 automated unit and integration tests guarantee the
-	safety and security of the library.
+	* **Safety** - Almost 300 automated unit, integration, property and
+	performance tests guarantee the safety, security and speed of the library.
 
 	For a full summary of the interface, please refer to the
 	[interface page](\ref utf8rewind.h).
