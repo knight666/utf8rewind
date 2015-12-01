@@ -39,6 +39,29 @@
 #include <wchar.h>
 
 /*!
+	\defgroup version Version information
+	\{
+*/
+
+#define UTF8_VERSION_MAKE(_major, _minor, _bugfix) \
+	((_major) * 10000) + ((_minor) * 100) + (_bugfix)
+
+#define UTF8_VERSION_MAJOR   1
+#define UTF8_VERSION_MINOR   3
+#define UTF8_VERSION_BUGFIX  0
+
+#define UTF8_VERSION         UTF8_VERSION_MAKE(UTF8_VERSION_MAJOR, UTF8_VERSION_MINOR, UTF8_VERSION_BUGFIX)
+
+#define UTF8_VERSION_STRING  "1.3.0"
+
+#define UTF8_VERSION_GUARD(_major, _minor, _bugfix) \
+	(UTF8_VERSION >= UTF8_VERSION_MAKE(_major, _minor, _bugfix))
+
+/*!
+	\}
+*/
+
+/*!
 	\defgroup errors Error codes
 	\{
 */
