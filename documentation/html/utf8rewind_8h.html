@@ -24,9 +24,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">utf8rewind
-   &#160;<span id="projectnumber">1.2.1</span>
+   &#160;<span id="projectnumber">1.3.0</span>
    </div>
-   <div id="projectbrief">Cross-platform library for UTF-8 encoded text</div>
+   <div id="projectbrief">System library for processing UTF-8 encoded text</div>
   </td>
  </tr>
  </tbody>
@@ -104,6 +104,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:gad294bdd9e9af304d70c72da1d36236fe"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__version.html#gad294bdd9e9af304d70c72da1d36236fe">UTF8_VERSION_MAKE</a>(_major,  _minor,  _bugfix)&#160;&#160;&#160;((_major) * 10000) + ((_minor) * 100) + (_bugfix)</td></tr>
+<tr class="memdesc:gad294bdd9e9af304d70c72da1d36236fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro for creating a version number from a major, minor and bugfix number.  <a href="group__version.html#gad294bdd9e9af304d70c72da1d36236fe">More...</a><br /></td></tr>
+<tr class="separator:gad294bdd9e9af304d70c72da1d36236fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga060c9c6ec59760e72bccdab54c0da362"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__version.html#ga060c9c6ec59760e72bccdab54c0da362">UTF8_VERSION_MAJOR</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memdesc:ga060c9c6ec59760e72bccdab54c0da362"><td class="mdescLeft">&#160;</td><td class="mdescRight">The major version number of this release.  <a href="group__version.html#ga060c9c6ec59760e72bccdab54c0da362">More...</a><br /></td></tr>
+<tr class="separator:ga060c9c6ec59760e72bccdab54c0da362"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gace881968ccb0deb43827cad5153d5378"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__version.html#gace881968ccb0deb43827cad5153d5378">UTF8_VERSION_MINOR</a>&#160;&#160;&#160;3</td></tr>
+<tr class="memdesc:gace881968ccb0deb43827cad5153d5378"><td class="mdescLeft">&#160;</td><td class="mdescRight">The minor version number of this release.  <a href="group__version.html#gace881968ccb0deb43827cad5153d5378">More...</a><br /></td></tr>
+<tr class="separator:gace881968ccb0deb43827cad5153d5378"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3cc2181c390df4c357008d376cdd0442"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__version.html#ga3cc2181c390df4c357008d376cdd0442">UTF8_VERSION_BUGFIX</a>&#160;&#160;&#160;0</td></tr>
+<tr class="memdesc:ga3cc2181c390df4c357008d376cdd0442"><td class="mdescLeft">&#160;</td><td class="mdescRight">The bugfix version number of this release.  <a href="group__version.html#ga3cc2181c390df4c357008d376cdd0442">More...</a><br /></td></tr>
+<tr class="separator:ga3cc2181c390df4c357008d376cdd0442"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga233b8ef7cf7e5e623192ae686191cbc0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__version.html#ga233b8ef7cf7e5e623192ae686191cbc0">UTF8_VERSION</a>&#160;&#160;&#160;<a class="el" href="group__version.html#gad294bdd9e9af304d70c72da1d36236fe">UTF8_VERSION_MAKE</a>(<a class="el" href="group__version.html#ga060c9c6ec59760e72bccdab54c0da362">UTF8_VERSION_MAJOR</a>, <a class="el" href="group__version.html#gace881968ccb0deb43827cad5153d5378">UTF8_VERSION_MINOR</a>, <a class="el" href="group__version.html#ga3cc2181c390df4c357008d376cdd0442">UTF8_VERSION_BUGFIX</a>)</td></tr>
+<tr class="memdesc:ga233b8ef7cf7e5e623192ae686191cbc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The version number as an integer.  <a href="group__version.html#ga233b8ef7cf7e5e623192ae686191cbc0">More...</a><br /></td></tr>
+<tr class="separator:ga233b8ef7cf7e5e623192ae686191cbc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga98d34d301a5bd9f3e6430bd44fc0cca8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__version.html#ga98d34d301a5bd9f3e6430bd44fc0cca8">UTF8_VERSION_STRING</a>&#160;&#160;&#160;&quot;1.3.0&quot;</td></tr>
+<tr class="memdesc:ga98d34d301a5bd9f3e6430bd44fc0cca8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The verion number as a string.  <a href="group__version.html#ga98d34d301a5bd9f3e6430bd44fc0cca8">More...</a><br /></td></tr>
+<tr class="separator:ga98d34d301a5bd9f3e6430bd44fc0cca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga60c865b6fa3e8b64b61926cfed9f9e43"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__version.html#ga60c865b6fa3e8b64b61926cfed9f9e43">UTF8_VERSION_GUARD</a>(_major,  _minor,  _bugfix)&#160;&#160;&#160;(<a class="el" href="group__version.html#ga233b8ef7cf7e5e623192ae686191cbc0">UTF8_VERSION</a> &gt;= <a class="el" href="group__version.html#gad294bdd9e9af304d70c72da1d36236fe">UTF8_VERSION_MAKE</a>(_major, _minor, _bugfix))</td></tr>
+<tr class="memdesc:ga60c865b6fa3e8b64b61926cfed9f9e43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if feature is supported by the current release.  <a href="group__version.html#ga60c865b6fa3e8b64b61926cfed9f9e43">More...</a><br /></td></tr>
+<tr class="separator:ga60c865b6fa3e8b64b61926cfed9f9e43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac7f8a18ca0ca9ebb357b2e7b9c527cc3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>&#160;&#160;&#160;(0)</td></tr>
 <tr class="memdesc:gac7f8a18ca0ca9ebb357b2e7b9c527cc3"><td class="mdescLeft">&#160;</td><td class="mdescRight">No errors.  <a href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">More...</a><br /></td></tr>
 <tr class="separator:gac7f8a18ca0ca9ebb357b2e7b9c527cc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -114,10 +135,10 @@ Macros</h2></td></tr>
 <tr class="memdesc:gae91fa4856dd1f05861b3924c90bef23c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Input flag is invalid.  <a href="group__errors.html#gae91fa4856dd1f05861b3924c90bef23c">More...</a><br /></td></tr>
 <tr class="separator:gae91fa4856dd1f05861b3924c90bef23c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2c80a4201b65d282db98489204f6d5d8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8">UTF8_ERR_NOT_ENOUGH_SPACE</a>&#160;&#160;&#160;(-3)</td></tr>
-<tr class="memdesc:ga2c80a4201b65d282db98489204f6d5d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer does not have enough space for result.  <a href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8">More...</a><br /></td></tr>
+<tr class="memdesc:ga2c80a4201b65d282db98489204f6d5d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Not enough space in buffer to store result.  <a href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8">More...</a><br /></td></tr>
 <tr class="separator:ga2c80a4201b65d282db98489204f6d5d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga212f91820ec425df66d59f187e78412c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c">UTF8_ERR_OVERLAPPING_PARAMETERS</a>&#160;&#160;&#160;(-4)</td></tr>
-<tr class="memdesc:ga212f91820ec425df66d59f187e78412c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters overlap in memory.  <a href="group__errors.html#ga212f91820ec425df66d59f187e78412c">More...</a><br /></td></tr>
+<tr class="memdesc:ga212f91820ec425df66d59f187e78412c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Input and output buffers overlap in memory.  <a href="group__errors.html#ga212f91820ec425df66d59f187e78412c">More...</a><br /></td></tr>
 <tr class="separator:ga212f91820ec425df66d59f187e78412c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b8ab40213f4505f96b4655fd468848d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a6b8ab40213f4505f96b4655fd468848d">UTF8_NORMALIZE_COMPOSE</a>&#160;&#160;&#160;0x00000001</td></tr>
 <tr class="memdesc:a6b8ab40213f4505f96b4655fd468848d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalize input to Normalization Form C (NFC).  <a href="#a6b8ab40213f4505f96b4655fd468848d">More...</a><br /></td></tr>
@@ -138,7 +159,7 @@ Macros</h2></td></tr>
 <tr class="memdesc:a9a59070cc87c6b141ab742986af0f223"><td class="mdescLeft">&#160;</td><td class="mdescRight">Text is unstable and must be normalized.  <a href="#a9a59070cc87c6b141ab742986af0f223">More...</a><br /></td></tr>
 <tr class="separator:a9a59070cc87c6b141ab742986af0f223"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab1fce55198dd19e0eb149eb3ad34021b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__configuration.html#gab1fce55198dd19e0eb149eb3ad34021b">UTF8_WCHAR_SIZE</a>&#160;&#160;&#160;(2)</td></tr>
-<tr class="memdesc:gab1fce55198dd19e0eb149eb3ad34021b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies the size of the <code>wchar_t</code> type. On Windows this is 2, on POSIX systems it is 4. If not specified on the command line, the compiler tries to automatically determine the value.  <a href="group__configuration.html#gab1fce55198dd19e0eb149eb3ad34021b">More...</a><br /></td></tr>
+<tr class="memdesc:gab1fce55198dd19e0eb149eb3ad34021b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies the size of the <code>wchar_t</code> type. On Windows this is 2, on POSIX systems it is 4. If not specified on the command line, the compiler tries to automatically determine the size of the <code>wchar_t</code> type based on the environment.  <a href="group__configuration.html#gab1fce55198dd19e0eb149eb3ad34021b">More...</a><br /></td></tr>
 <tr class="separator:gab1fce55198dd19e0eb149eb3ad34021b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf41b9c54e9a94ae8ef41a8c17e7c2d51"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__configuration.html#gaf41b9c54e9a94ae8ef41a8c17e7c2d51">UTF8_WCHAR_UTF16</a>&#160;&#160;&#160;(1)</td></tr>
 <tr class="memdesc:gaf41b9c54e9a94ae8ef41a8c17e7c2d51"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <code>wchar_t</code> type is treated as UTF-16 (2 bytes).  <a href="group__configuration.html#gaf41b9c54e9a94ae8ef41a8c17e7c2d51">More...</a><br /></td></tr>
@@ -150,16 +171,16 @@ Macros</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a1c56c34e8f9e0fbcf4949782f110df8f"><td class="memItemLeft" align="right" valign="top">typedef uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a1c56c34e8f9e0fbcf4949782f110df8f">utf16_t</a></td></tr>
-<tr class="memdesc:a1c56c34e8f9e0fbcf4949782f110df8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">UTF-16 encoded codepoint.  <a href="#a1c56c34e8f9e0fbcf4949782f110df8f">More...</a><br /></td></tr>
+<tr class="memdesc:a1c56c34e8f9e0fbcf4949782f110df8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">UTF-16 encoded code point.  <a href="#a1c56c34e8f9e0fbcf4949782f110df8f">More...</a><br /></td></tr>
 <tr class="separator:a1c56c34e8f9e0fbcf4949782f110df8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae128fe5bd9e57be736e64d3638229988"><td class="memItemLeft" align="right" valign="top">typedef uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></td></tr>
-<tr class="memdesc:ae128fe5bd9e57be736e64d3638229988"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unicode codepoint.  <a href="#ae128fe5bd9e57be736e64d3638229988">More...</a><br /></td></tr>
+<tr class="memdesc:ae128fe5bd9e57be736e64d3638229988"><td class="mdescLeft">&#160;</td><td class="mdescRight">UTF-32 encoded code point.  <a href="#ae128fe5bd9e57be736e64d3638229988">More...</a><br /></td></tr>
 <tr class="separator:ae128fe5bd9e57be736e64d3638229988"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a22810a3bc12067d0b6a4542d04220a74"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__configuration.html#gaf8233f2b15c97ad97ccec2beff1d24a2">UTF8_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a22810a3bc12067d0b6a4542d04220a74">utf8len</a> (const char *text)</td></tr>
-<tr class="memdesc:a22810a3bc12067d0b6a4542d04220a74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the length in codepoints of a UTF-8 encoded string.  <a href="#a22810a3bc12067d0b6a4542d04220a74">More...</a><br /></td></tr>
+<tr class="memdesc:a22810a3bc12067d0b6a4542d04220a74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the length in code points of a UTF-8 encoded string.  <a href="#a22810a3bc12067d0b6a4542d04220a74">More...</a><br /></td></tr>
 <tr class="separator:a22810a3bc12067d0b6a4542d04220a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84f067fc0293c142137d308ded6f130c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__configuration.html#gaf8233f2b15c97ad97ccec2beff1d24a2">UTF8_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a84f067fc0293c142137d308ded6f130c">utf16toutf8</a> (const <a class="el" href="utf8rewind_8h.html#a1c56c34e8f9e0fbcf4949782f110df8f">utf16_t</a> *input, size_t inputSize, char *target, size_t targetSize, int32_t *errors)</td></tr>
 <tr class="memdesc:a84f067fc0293c142137d308ded6f130c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a UTF-16 encoded string to a UTF-8 encoded string.  <a href="#a84f067fc0293c142137d308ded6f130c">More...</a><br /></td></tr>
@@ -179,9 +200,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a8653854fdb4550ec3a9515ecede1f73a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__configuration.html#gaf8233f2b15c97ad97ccec2beff1d24a2">UTF8_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a8653854fdb4550ec3a9515ecede1f73a">utf8towide</a> (const char *input, size_t inputSize, wchar_t *target, size_t targetSize, int32_t *errors)</td></tr>
 <tr class="memdesc:a8653854fdb4550ec3a9515ecede1f73a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a UTF-8 encoded string to a wide string.  <a href="#a8653854fdb4550ec3a9515ecede1f73a">More...</a><br /></td></tr>
 <tr class="separator:a8653854fdb4550ec3a9515ecede1f73a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49febdba3b3ae5ce2aa6a0464d48aa0a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__configuration.html#gaf8233f2b15c97ad97ccec2beff1d24a2">UTF8_API</a> const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#a49febdba3b3ae5ce2aa6a0464d48aa0a">utf8seek</a> (const char *text, const char *textStart, off_t offset, int direction)</td></tr>
-<tr class="memdesc:a49febdba3b3ae5ce2aa6a0464d48aa0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seek into a UTF-8 encoded string.  <a href="#a49febdba3b3ae5ce2aa6a0464d48aa0a">More...</a><br /></td></tr>
-<tr class="separator:a49febdba3b3ae5ce2aa6a0464d48aa0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace07c42b3b5031414ceed1f78055242f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__configuration.html#gaf8233f2b15c97ad97ccec2beff1d24a2">UTF8_API</a> const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#ace07c42b3b5031414ceed1f78055242f">utf8seek</a> (const char *text, size_t textSize, const char *textStart, off_t offset, int direction)</td></tr>
+<tr class="memdesc:ace07c42b3b5031414ceed1f78055242f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seek into a UTF-8 encoded string.  <a href="#ace07c42b3b5031414ceed1f78055242f">More...</a><br /></td></tr>
+<tr class="separator:ace07c42b3b5031414ceed1f78055242f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9de7d7b0fbde81c2c2d62a9d045775e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__configuration.html#gaf8233f2b15c97ad97ccec2beff1d24a2">UTF8_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utf8rewind_8h.html#ae9de7d7b0fbde81c2c2d62a9d045775e">utf8toupper</a> (const char *input, size_t inputSize, char *target, size_t targetSize, int32_t *errors)</td></tr>
 <tr class="memdesc:ae9de7d7b0fbde81c2c2d62a9d045775e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert UTF-8 encoded text to uppercase.  <a href="#ae9de7d7b0fbde81c2c2d62a9d045775e">More...</a><br /></td></tr>
 <tr class="separator:ae9de7d7b0fbde81c2c2d62a9d045775e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -296,7 +317,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>UTF-16 encoded codepoint. </p>
+<p>UTF-16 encoded code point. </p>
 
 </div>
 </div>
@@ -310,7 +331,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Unicode codepoint. </p>
+<p>UTF-32 encoded code point. </p>
 
 </div>
 </div>
@@ -329,7 +350,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the length in codepoints of a UTF-8 encoded string. </p>
+<p>Get the length in code points of a UTF-8 encoded string. </p>
 <p>Example:</p>
 <div class="fragment"><div class="line">uint8_t CheckPassword(<span class="keyword">const</span> <span class="keywordtype">char</span>* password)</div>
 <div class="line">{</div>
@@ -342,7 +363,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Length in codepoints. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Length in code points. </dd></dl>
 
 </div>
 </div>
@@ -412,19 +433,19 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-16 encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for storing output.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3" title="No errors. ">UTF8_ERR_NONE</a></td><td>No errors. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for encoding. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Failed to decode data. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Input and output buffers overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Not enough space in buffer to store result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer size is insufficient for result.</td></tr>
   </table>
   </dd>
 </dl>
@@ -483,7 +504,7 @@ Functions</h2></td></tr>
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">char</span>* converted = NULL;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
-<div class="line">    int8_t result = 0;</div>
+<div class="line">    uint8_t result = 0;</div>
 <div class="line">    int32_t errors;</div>
 <div class="line">    </div>
 <div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(query, querySize, NULL, 0, &amp;errors);</div>
@@ -512,19 +533,19 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-32 encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for storing output.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3" title="No errors. ">UTF8_ERR_NONE</a></td><td>No errors. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for encoding. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Failed to decode data. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Input and output buffers overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Not enough space in buffer to store result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer size is insufficient for result.</td></tr>
   </table>
   </dd>
 </dl>
@@ -614,19 +635,19 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>Wide-encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for storing output.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3" title="No errors. ">UTF8_ERR_NONE</a></td><td>No errors. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for encoding. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Failed to decode data. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Input and output buffers overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Not enough space in buffer to store result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer size is insufficient for result.</td></tr>
   </table>
   </dd>
 </dl>
@@ -682,7 +703,7 @@ Functions</h2></td></tr>
 
 <p>Convert a UTF-8 encoded string to a UTF-16 encoded string. </p>
 <dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-16, independent of platform. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#a8653854fdb4550ec3a9515ecede1f73a" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide</a> instead.</dd></dl>
-<p>Erroneous byte sequences such as missing bytes, illegal bytes or overlong encodings of codepoints are converted to the replacement character U+FFFD.</p>
+<p>Erroneous byte sequences such as missing or illegal bytes or overlong encoding of code points (e.g. using five bytes to encode a sequence that can be represented by two bytes) are converted to the replacement character U+FFFD.</p>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Font_DrawText(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
@@ -701,19 +722,19 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for storing output.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3" title="No errors. ">UTF8_ERR_NONE</a></td><td>No errors. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Failed to decode data. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Input and output buffers overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Not enough space in buffer to store result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer size is insufficient for result.</td></tr>
   </table>
   </dd>
 </dl>
@@ -767,36 +788,36 @@ Functions</h2></td></tr>
 
 <p>Convert a UTF-8 encoded string to a UTF-32 encoded string. </p>
 <dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-32, independent of platform. If you're working with wide strings, take a look at <a class="el" href="utf8rewind_8h.html#a8653854fdb4550ec3a9515ecede1f73a" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide</a> instead.</dd></dl>
-<p>Erroneous byte sequences such as missing bytes, illegal bytes or overlong encodings of codepoints are converted to the replacement character U+FFFD.</p>
+<p>Erroneous byte sequences such as missing or illegal bytes or overlong encoding of code points (e.g. using five bytes to encode a sequence that can be represented by two bytes) are converted to the replacement character U+FFFD.</p>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> TextField_AddCharacter(<span class="keyword">const</span> <span class="keywordtype">char</span>* encoded)</div>
 <div class="line">{</div>
-<div class="line">    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint = 0;</div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> code_point = 0;</div>
 <div class="line">    int32_t errors;</div>
 <div class="line"></div>
-<div class="line">    <a class="code" href="utf8rewind_8h.html#a353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(encoded, strlen(encoded), &amp;codepoint, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>), &amp;errors);</div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#a353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(encoded, strlen(encoded), &amp;code_point, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>), &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (errors == <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
-<div class="line">        TextField_AddCodepoint(codepoint);</div>
+<div class="line">        TextField_AddCodePoint(code_point);</div>
 <div class="line">    }</div>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for storing output.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3" title="No errors. ">UTF8_ERR_NONE</a></td><td>No errors. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Failed to decode data. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Input and output buffers overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Not enough space in buffer to store result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer size is insufficient for result.</td></tr>
   </table>
   </dd>
 </dl>
@@ -851,9 +872,9 @@ Functions</h2></td></tr>
 <p>Convert a UTF-8 encoded string to a wide string. </p>
 <p>Depending on the platform, wide strings are either UTF-16 or UTF-32 encoded. This function takes a UTF-8 encoded string as input and automatically calls the correct conversion function.</p>
 <p>This allows for a cross-platform treatment of wide text and is preferable to using the UTF-16 or UTF-32 versions directly.</p>
-<p>Erroneous byte sequences such as missing bytes, illegal bytes or overlong encodings of codepoints are converted to the replacement character U+FFFD.</p>
-<dl class="section note"><dt>Note</dt><dd>Codepoints outside the Basic Multilingual Plane (BMP) are converted to surrogate pairs when using UTF-16. This means that strings containing characters outside the BMP converted on a platform with UTF-32 wide strings are <em>not</em> compatible with platforms with UTF-16 wide strings.</dd></dl>
-<dl class="section user"><dt>Hence, it is preferable to keep all data as UTF-8 and only convert to</dt><dd>wide strings when required by a third-party interface.</dd></dl>
+<p>Erroneous byte sequences such as missing or illegal bytes or overlong encoding of code points (e.g. using five bytes to encode a sequence that can be represented by two bytes) are converted to the replacement character U+FFFD.</p>
+<dl class="section note"><dt>Note</dt><dd>Code points outside the Basic Multilingual Plane (BMP) are converted to surrogate pairs when using UTF-16. This means that strings containing characters outside the BMP converted on a platform with UTF-32 wide strings are <em>not</em> compatible with platforms with UTF-16 wide strings.</dd></dl>
+<dl class="section user"><dt>Hence, it is preferable to store all data as UTF-8 and only convert to</dt><dd>wide strings when required by a third-party interface.</dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Window_SetTitle(<span class="keywordtype">void</span>* windowHandle, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
@@ -886,19 +907,19 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for storing output.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3" title="No errors. ">UTF8_ERR_NONE</a></td><td>No errors. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Failed to decode data. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Input and output buffers overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Not enough space in buffer to store result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer size is insufficient for result.</td></tr>
   </table>
   </dd>
 </dl>
@@ -910,7 +931,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a49febdba3b3ae5ce2aa6a0464d48aa0a"></a>
+<a class="anchor" id="ace07c42b3b5031414ceed1f78055242f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -919,6 +940,12 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>textSize</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -947,7 +974,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Seek into a UTF-8 encoded string. </p>
-<p>Working with UTF-8 encoded strings can be tricky due to the nature of the variable-length encoding. Because one character no longer equals one byte, it can be difficult to skip around in a UTF-8 encoded string without decoding the codepoints.</p>
+<p>Working with UTF-8 encoded strings can be tricky due to the nature of the variable-length encoding. Because one character no longer equals one byte, it can be difficult to skip around in a UTF-8 encoded string without decoding the code points.</p>
 <p>This function provides an interface similar to <code>fseek</code> in order to enable skipping to another part of the string.</p>
 <dl class="section note"><dt>Note</dt><dd><code>textStart</code> must come before <code>text</code> in memory when seeking from the current or end position.</dd></dl>
 <p>Example:</p>
@@ -967,7 +994,7 @@ Functions</h2></td></tr>
 <div class="line">strncpy(fixed, text, commandStart - text);</div>
 <div class="line">strcat(fixed, <span class="stringliteral">&quot;ENTER&quot;</span>);</div>
 <div class="line"></div>
-<div class="line">commandEnd = <a class="code" href="utf8rewind_8h.html#a49febdba3b3ae5ce2aa6a0464d48aa0a">utf8seek</a>(commandStart, text, 1, SEEK_CUR);</div>
+<div class="line">commandEnd = <a class="code" href="utf8rewind_8h.html#ace07c42b3b5031414ceed1f78055242f">utf8seek</a>(commandStart, strlen(commandStart), text, 1, SEEK_CUR);</div>
 <div class="line"><span class="keywordflow">if</span> (commandEnd != commandStart)</div>
 <div class="line">{</div>
 <div class="line">    strcat(fixed, commandEnd);</div>
@@ -975,8 +1002,9 @@ Functions</h2></td></tr>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">text</td><td>Input string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">textSize</td><td>Size of input string in bytes. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">textStart</td><td>Start of input string. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">offset</td><td>Requested offset in codepoints. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">offset</td><td>Requested offset in code points. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">direction</td><td>Direction to seek in. <ul>
 <li><code>SEEK_SET</code> Offset is from the start of the string. </li>
 <li><code>SEEK_CUR</code> Offset is from the current position of the string. </li>
@@ -986,7 +1014,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Changed string or no change on error. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to offset string or no change on error. </dd></dl>
 
 </div>
 </div>
@@ -1034,9 +1062,12 @@ Functions</h2></td></tr>
 
 <p>Convert UTF-8 encoded text to uppercase. </p>
 <p>This function allows conversion of UTF-8 encoded strings to uppercase without first changing the encoding to UTF-32. Conversion is fully compliant with the Unicode 7.0 standard.</p>
-<p>Although most codepoints can be converted in-place, there are notable exceptions. For example, U+00DF (LATIN SMALL LETTER SHARP S) maps to "U+0053 U+0053" (LATIN CAPITAL LETTER S and LATIN CAPITAL LETTER S) when converted to uppercase. Therefor, it is advised to first determine the size in bytes of the output by calling the function with a NULL output buffer.</p>
-<p>Only a handful of scripts make a distinction between upper- and lowercase. In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic, a few historic or archaic scripts have case. The vast majority of scripts do not have case distinctions.</p>
-<dl class="section note"><dt>Note</dt><dd>Case mapping is not reversible. That is, <code>toUpper(toLower(x)) != toLower(toUpper(x))</code>.</dd></dl>
+<p>Although most code points can be converted in-place, there are notable exceptions. For example, U+00DF (LATIN SMALL LETTER SHARP S) maps to "U+0053 U+0053" (LATIN CAPITAL LETTER S and LATIN CAPITAL LETTER S) when converted to uppercase. Therefor, it is advised to first determine the size in bytes of the output by calling the function with a NULL output buffer.</p>
+<p>Only a handful of scripts make a distinction between upper and lowercase. In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic, a few historic or archaic scripts have case. The vast majority of scripts do not have case distinctions.</p>
+<dl class="section note"><dt>Note</dt><dd>Case mapping is not reversible. That is, <code>toUpper(toLower(x)) != toLower(toUpper(x))</code>.</dd>
+<dd>
+This function checks the (thread-local) system locale in order to support languages with exceptional behavior on specific code points. Unfortunately, no cross-platform way of setting and retrieving the system locale is available without adding dependencies to the library. Please refer to your operating system's manual to see how to setup the system locale on your target system.</dd></dl>
+<dl class="section user"><dt>For more information on these exceptional code points, please refer</dt><dd>to the text file made available by the Unicode Consortium: <a href="ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt">ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt</a></dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Button_Draw(int32_t x, int32_t y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
@@ -1075,19 +1106,19 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed to contain output.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3" title="No errors. ">UTF8_ERR_NONE</a></td><td>No errors. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Failed to decode data. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Input and output buffers overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Not enough space in buffer to store result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer size is insufficient for result.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1141,9 +1172,12 @@ Functions</h2></td></tr>
 
 <p>Convert UTF-8 encoded text to lowercase. </p>
 <p>This function allows conversion of UTF-8 encoded strings to lowercase without first changing the encoding to UTF-32. Conversion is fully compliant with the Unicode 7.0 standard.</p>
-<p>Although most codepoints can be converted to lowercase in-place, there are notable exceptions. For example, U+0130 (LATIN CAPITAL LETTER I WITH DOT ABOVE) maps to "U+0069 U+0307" (LATIN SMALL LETTER I and COMBINING DOT ABOVE) when converted to lowercase. Therefor, it is advised to first determine the size in bytes of the output by calling the function with a NULL output buffer.</p>
+<p>Although most code points can be converted to lowercase in-place, there are notable exceptions. For example, U+0130 (LATIN CAPITAL LETTER I WITH DOT ABOVE) maps to "U+0069 U+0307" (LATIN SMALL LETTER I and COMBINING DOT ABOVE) when converted to lowercase. Therefor, it is advised to first determine the size in bytes of the output by calling the function with a NULL output buffer.</p>
 <p>Only a handful of scripts make a distinction between upper- and lowercase. In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic, a few historic or archaic scripts have case. The vast majority of scripts do not have case distinctions.</p>
-<dl class="section note"><dt>Note</dt><dd>Case mapping is not reversible. That is, <code>toUpper(toLower(x)) != toLower(toUpper(x))</code>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Case mapping is not reversible. That is, <code>toUpper(toLower(x)) != toLower(toUpper(x))</code>.</dd>
+<dd>
+This function checks the (thread-local) system locale in order to support languages with exceptional behavior on specific code points. Unfortunately, no cross-platform way of setting and retrieving the system locale is available without adding dependencies to the library. Please refer to your operating system's manual to see how to setup the system locale on your target system.</dd></dl>
+<dl class="section user"><dt>For more information on these exceptional code points, please refer</dt><dd>to the text file made available by the Unicode Consortium: <a href="ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt">ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt</a></dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line">author_t* Author_ByName(<span class="keyword">const</span> <span class="keywordtype">char</span>* name)</div>
 <div class="line">{</div>
@@ -1186,19 +1220,19 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for storing output.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3" title="No errors. ">UTF8_ERR_NONE</a></td><td>No errors. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Failed to decode data. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Input and output buffers overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Not enough space in buffer to store result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer size is insufficient for result.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1252,9 +1286,9 @@ Functions</h2></td></tr>
 
 <p>Convert UTF-8 encoded text to titlecase. </p>
 <p>This function allows conversion of UTF-8 encoded strings to titlecase without first changing the encoding to UTF-32. Conversion is fully compliant with the Unicode 7.0 standard.</p>
-<p>Titlecase requires a bit more explanation than uppercase and lowercase, because it is not a common text transformation. Titlecase uses uppercase for the first letter of each word and lowercase for the rest. Words are defined as "collections of codepoints with general category Lu, Ll, Lt, Lm
+<p>Titlecase requires a bit more explanation than uppercase and lowercase, because it is not a common text transformation. Titlecase uses uppercase for the first letter of each word and lowercase for the rest. Words are defined as "collections of code points with general category Lu, Ll, Lt, Lm
 or Lo according to the Unicode database".</p>
-<p>Effectively, any type of punctuation can break up a word, even if this is not grammatically valid. This is because titlecasing does not take grammar rules into account.</p>
+<p>Effectively, any type of punctuation can break up a word, even if this is not grammatically valid. This happens because the titlecasing algorithm does not and cannot take grammar rules into account.</p>
 <table class="doxtable">
 <tr>
 <th>Text </th><th>Titlecase  </th></tr>
@@ -1265,9 +1299,12 @@ or Lo according to the Unicode database".</p>
 <tr>
 <td>You're amazing at building libraries </td><td>You'Re Amazing At Building Libraries </td></tr>
 </table>
-<p>Although most codepoints can be converted to titlecase in-place, there are notable exceptions. For example, U+00DF (LATIN SMALL LETTER SHARP S) maps to "U+0053 U+0073" (LATIN CAPITAL LETTER S and LATIN SMALL LETTER S) when converted to titlecase. Therefor, it is advised to first determine the size in bytes of the output by calling the function with a NULL output buffer.</p>
+<p>Although most code points can be converted to titlecase in-place, there are notable exceptions. For example, U+00DF (LATIN SMALL LETTER SHARP S) maps to "U+0053 U+0073" (LATIN CAPITAL LETTER S and LATIN SMALL LETTER S) when converted to titlecase. Therefor, it is advised to first determine the size in bytes of the output by calling the function with a NULL output buffer.</p>
 <p>Only a handful of scripts make a distinction between upper- and lowercase. In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic, a few historic or archaic scripts have case. The vast majority of scripts do not have case distinctions.</p>
-<dl class="section note"><dt>Note</dt><dd>Case mapping is not reversible. That is, <code>toUpper(toLower(x)) != toLower(toUpper(x))</code>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Case mapping is not reversible. That is, <code>toUpper(toLower(x)) != toLower(toUpper(x))</code>.</dd>
+<dd>
+This function checks the (thread-local) system locale in order to support languages with exceptional behavior on specific code points. Unfortunately, no cross-platform way of setting and retrieving the system locale is available without adding dependencies to the library. Please refer to your operating system's manual to see how to setup the system locale on your target system.</dd></dl>
+<dl class="section user"><dt>For more information on these exceptional code points, please refer</dt><dd>to the text file made available by the Unicode Consortium: <a href="ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt">ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt</a></dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Book_SetTitle(book_t* book, <span class="keyword">const</span> <span class="keywordtype">char</span>* title)</div>
 <div class="line">{</div>
@@ -1289,19 +1326,19 @@ or Lo according to the Unicode database".</p>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for storing output.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3" title="No errors. ">UTF8_ERR_NONE</a></td><td>No errors. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Failed to decode data. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Input and output buffers overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Not enough space in buffer to store result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer size is insufficient for result.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1350,7 +1387,7 @@ or Lo according to the Unicode database".</p>
 <p>Check if a string is stable in the specified Unicode Normalization Form. </p>
 <p>This function can be used as a preprocessing step, before attempting to normalize a string. Normalization is a very expensive process, it is often cheaper to first determine if the string is unstable in the requested normalization form.</p>
 <p>The result of the check will be YES if the string is stable and MAYBE or NO if it is unstable. If the result is MAYBE, the string does not necessarily have to be normalized.</p>
-<p>If the result is unstable, the offset parameter is set to the offset for the first unstable codepoint. If the string is stable, the offset is equivalent to the length of the string in bytes.</p>
+<p>If the result is unstable, the offset parameter is set to the offset for the first unstable code point. If the string is stable, the offset is equivalent to the length of the string in bytes.</p>
 <p>You must specify the desired Unicode Normalization Form by using a combination of flags:</p>
 <table class="doxtable">
 <tr>
@@ -1388,7 +1425,7 @@ or Lo according to the Unicode database".</p>
 <div class="line"></div>
 <div class="line">        printf(<span class="stringliteral">&quot;Unstable at byte %d\n&quot;</span>, total_offset);</div>
 <div class="line"></div>
-<div class="line">        next = <a class="code" href="utf8rewind_8h.html#a49febdba3b3ae5ce2aa6a0464d48aa0a">utf8seek</a>(src, text, 1, SEEK_CUR);</div>
+<div class="line">        next = <a class="code" href="utf8rewind_8h.html#ace07c42b3b5031414ceed1f78055242f">utf8seek</a>(src, text, 1, SEEK_CUR);</div>
 <div class="line">        <span class="keywordflow">if</span> (next == src)</div>
 <div class="line">        {</div>
 <div class="line">            <span class="keywordflow">break</span>;</div>
@@ -1408,7 +1445,7 @@ or Lo according to the Unicode database".</p>
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">flags</td><td>Desired normalization form. Must be a combination of <a class="el" href="utf8rewind_8h.html#a6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a>, <a class="el" href="utf8rewind_8h.html#aa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to Normalization Form D (NFD). ">UTF8_NORMALIZE_DECOMPOSE</a> and <a class="el" href="utf8rewind_8h.html#a53d4bc1347e2cb233eb212ff7160721f" title="Change Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a>. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">offset</td><td>Offset to first unstable codepoint or length of input in bytes if stable.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">offset</td><td>Offset to first unstable code point or length of input in bytes if stable.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1489,21 +1526,21 @@ or Lo according to the Unicode database".</p>
 <tr>
 <td>Normalization Form KC (NFKC) </td><td>Compatibility decomposition, followed by canonical composition </td></tr>
 </table>
-<p>This function can be used to transform text into one of these forms. You must specify the desired Unicode Normalization Form by using a combination of flags:</p>
+<p><code>utf8normalize</code> can be used to transform text into one of these forms. You must specify the desired Unicode Normalization Form by using a combination of flags:</p>
 <table class="doxtable">
 <tr>
 <th>Form </th><th>Flags  </th></tr>
 <tr>
-<td>Normalization Form D (NFD) </td><td><a class="el" href="utf8rewind_8h.html#a6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a> </td></tr>
+<td>Normalization Form D (NFD) </td><td><a class="el" href="utf8rewind_8h.html#aa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to Normalization Form D (NFD). ">UTF8_NORMALIZE_DECOMPOSE</a> </td></tr>
 <tr>
-<td>Normalization Form C (NFC) </td><td><a class="el" href="utf8rewind_8h.html#a6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a> + <a class="el" href="utf8rewind_8h.html#a53d4bc1347e2cb233eb212ff7160721f" title="Change Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
+<td>Normalization Form C (NFC) </td><td><a class="el" href="utf8rewind_8h.html#a6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a> </td></tr>
 <tr>
-<td>Normalization Form KD (NFKD) </td><td><a class="el" href="utf8rewind_8h.html#aa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to Normalization Form D (NFD). ">UTF8_NORMALIZE_DECOMPOSE</a> </td></tr>
+<td>Normalization Form KD (NFKD) </td><td><a class="el" href="utf8rewind_8h.html#aa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to Normalization Form D (NFD). ">UTF8_NORMALIZE_DECOMPOSE</a> + <a class="el" href="utf8rewind_8h.html#a53d4bc1347e2cb233eb212ff7160721f" title="Change Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
 <tr>
-<td>Normalization Form KC (NFKC) </td><td><a class="el" href="utf8rewind_8h.html#aa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to Normalization Form D (NFD). ">UTF8_NORMALIZE_DECOMPOSE</a> + <a class="el" href="utf8rewind_8h.html#a53d4bc1347e2cb233eb212ff7160721f" title="Change Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
+<td>Normalization Form KC (NFKC) </td><td><a class="el" href="utf8rewind_8h.html#a6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a> + <a class="el" href="utf8rewind_8h.html#a53d4bc1347e2cb233eb212ff7160721f" title="Change Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
 </table>
 <p>For more information, please review <a href="http://www.unicode.org/reports/tr15/">Unicode Standard Annex #15 - Unicode Normalization Forms</a>.</p>
-<dl class="section note"><dt>Note</dt><dd>Unnormalized text is rare in the wild. As an example, <em>all</em> text found on the web as HTML source code is NFC.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Unnormalized text is rare in the wild. As an example, <em>all</em> text found on the Internet as HTML source code must be encoded as NFC, as specified by the W3C.</dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Font_RenderTextNormalized(<span class="keyword">const</span> <span class="keywordtype">char</span>* input)</div>
 <div class="line">{</div>
@@ -1544,20 +1581,20 @@ or Lo according to the Unicode database".</p>
 <div class="line">        <span class="keyword">const</span> <span class="keywordtype">char</span>* next;</div>
 <div class="line">        int32_t errors;</div>
 <div class="line"></div>
-<div class="line">        next = <a class="code" href="utf8rewind_8h.html#a49febdba3b3ae5ce2aa6a0464d48aa0a">utf8seek</a>(src, src_start, 1, SEEK_CUR);</div>
+<div class="line">        next = <a class="code" href="utf8rewind_8h.html#ace07c42b3b5031414ceed1f78055242f">utf8seek</a>(src, src_size, src_start, 1, SEEK_CUR);</div>
 <div class="line">        <span class="keywordflow">if</span> (next == src)</div>
 <div class="line">        {</div>
 <div class="line">            <span class="keywordflow">break</span>;</div>
 <div class="line">        }</div>
 <div class="line"></div>
-<div class="line">        <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint;</div>
-<div class="line">        <a class="code" href="utf8rewind_8h.html#a353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(src, (<span class="keywordtype">size_t</span>)(next - src), &amp;codepoint, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>), &amp;errors);</div>
+<div class="line">        <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> code_point;</div>
+<div class="line">        <a class="code" href="utf8rewind_8h.html#a353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(src, (<span class="keywordtype">size_t</span>)(next - src), &amp;code_point, <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>), &amp;errors);</div>
 <div class="line">        <span class="keywordflow">if</span> (errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">        {</div>
 <div class="line">            <span class="keywordflow">break</span>;</div>
 <div class="line">        }</div>
 <div class="line"></div>
-<div class="line">        Font_RenderCodepoint(codepoint);</div>
+<div class="line">        Font_RenderCodePoint(code_point);</div>
 <div class="line"></div>
 <div class="line">        src_size -= next - src;</div>
 <div class="line">        src = next;</div>
@@ -1573,21 +1610,21 @@ or Lo according to the Unicode database".</p>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">flags</td><td>Desired normalization form. Must be a combination of <a class="el" href="utf8rewind_8h.html#a6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a>, <a class="el" href="utf8rewind_8h.html#aa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to Normalization Form D (NFD). ">UTF8_NORMALIZE_DECOMPOSE</a> and <a class="el" href="utf8rewind_8h.html#a53d4bc1347e2cb233eb212ff7160721f" title="Change Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a>. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Bytes written or amount of bytes needed for output if target buffer is specified as NULL.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Amount of bytes needed for storing output.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname"><a class="el" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3" title="No errors. ">UTF8_ERR_NONE</a></td><td>No errors. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__errors.html#gae91fa4856dd1f05861b3924c90bef23c" title="Input flag is invalid. ">UTF8_ERR_INVALID_FLAG</a></td><td>Invalid combination of flags was specified. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Input does not contain enough bytes for decoding. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Parameters overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
-    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Buffer does not have enough space for result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer could not contain result.</td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#gaabf4ed55c67112f79abe7275ee2ecc9b" title="Input data is invalid. ">UTF8_ERR_INVALID_DATA</a></td><td>Failed to decode data. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga212f91820ec425df66d59f187e78412c" title="Input and output buffers overlap in memory. ">UTF8_ERR_OVERLAPPING_PARAMETERS</a></td><td>Input and output buffers overlap in memory. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__errors.html#ga2c80a4201b65d282db98489204f6d5d8" title="Not enough space in buffer to store result. ">UTF8_ERR_NOT_ENOUGH_SPACE</a></td><td>Target buffer size is insufficient for result.</td></tr>
   </table>
   </dd>
 </dl>
