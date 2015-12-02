@@ -10,10 +10,6 @@
 #include "property-sequence-utf32.hpp"
 #include "property-seeking-current.hpp"
 
-extern "C" {
-	#include "../internal/codepoint.h"
-};
-
 class LoggingStream
 	: public std::ostream
 	, public std::streambuf
@@ -60,7 +56,7 @@ private:
 
 };
 
-int main(int argc, char** argv)
+int main(int argc PROP_ATTRIBUTE_UNUSED, char** argv PROP_ATTRIBUTE_UNUSED)
 {
 	LoggingStream logging;
 

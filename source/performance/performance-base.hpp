@@ -289,8 +289,6 @@ namespace performance {
 			typedef std::chrono::steady_clock clock;
 			typedef std::chrono::microseconds ms;
 
-			clock::time_point time_start = clock::now();
-
 			typedef std::vector<std::pair<std::string, BaseSuiteFactory*>>::iterator factory_it;
 
 			for (factory_it it = m_factories.begin(); it != m_factories.end(); ++it)
@@ -306,6 +304,11 @@ namespace performance {
 				}
 
 				m_logging << "[" << it->first << "]" << std::endl;
+
+				if (output_csv.is_open())
+				{
+					output_csv << it->first;
+				}
 
 				std::vector<uint32_t> timings;
 
@@ -324,6 +327,11 @@ namespace performance {
 					if (display_individual)
 					{
 						m_logging << std::setw(10) << i << ": " << std::setw(8) << test_duration << " ms." << std::endl;
+					}
+
+					if (output_csv.is_open())
+					{
+						output_csv << ";" << test_duration;
 					}
 
 					timings.push_back(test_duration);
@@ -346,13 +354,6 @@ namespace performance {
 
 				if (output_csv.is_open())
 				{
-					output_csv << it->first;
-
-					for (uint32_t timing : timings)
-					{
-						output_csv << ";" << timing;
-					}
-
 					output_csv << std::endl;
 				}
 

@@ -159,7 +159,6 @@
 				'source/properties/property-base.hpp',
 				'source/properties/property-convert-utf16.hpp',
 				'source/properties/property-convert-utf32.hpp',
-				'source/properties/property-generators.hpp',
 				'source/properties/property-main.cpp',
 				'source/properties/property-seeking-current.hpp',
 				'source/properties/property-sequence-utf16.hpp',

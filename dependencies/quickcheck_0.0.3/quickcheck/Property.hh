@@ -572,11 +572,11 @@ template<class A, class B, class C, class D, class E>
 void Property<A, B, C, D, E>::generateInput(size_t n,
                                             A& a, B& b, C& c, D& d, E& e)
 {
-   generate(n, a);
-   generate(n, b);
-   generate(n, c);
-   generate(n, d);
-   generate(n, e);
+   quickcheck::generate(n, a);
+   quickcheck::generate(n, b);
+   quickcheck::generate(n, c);
+   quickcheck::generate(n, d);
+   quickcheck::generate(n, e);
 }
 
 template<class A, class B, class C, class D, class E>
@@ -752,10 +752,10 @@ const std::string Property<A, B, C, D>::classify(const A&, const B&, const C&,
 template<class A, class B, class C, class D>
 void Property<A, B, C, D>::generateInput(size_t n, A& a, B& b, C& c, D& d)
 {
-   generate(n, a);
-   generate(n, b);
-   generate(n, c);
-   generate(n, d);
+   quickcheck::generate(n, a);
+   quickcheck::generate(n, b);
+   quickcheck::generate(n, c);
+   quickcheck::generate(n, d);
 }
 
 template<class A, class B, class C, class D>
@@ -919,9 +919,9 @@ const std::string Property<A, B, C>::classify(const A&, const B&, const C&)
 template<class A, class B, class C>
 void Property<A, B, C>::generateInput(size_t n, A& a, B& b, C& c)
 {
-   generate(n, a);
-   generate(n, b);
-   generate(n, c);
+   quickcheck::generate(n, a);
+   quickcheck::generate(n, b);
+   quickcheck::generate(n, c);
 }
 
 template<class A, class B, class C>
@@ -1077,8 +1077,8 @@ const std::string Property<A, B>::classify(const A&, const B&)
 template<class A, class B>
 void Property<A, B>::generateInput(size_t n, A& a, B& b)
 {
-   generate(n, a);
-   generate(n, b);
+   quickcheck::generate(n, a);
+   quickcheck::generate(n, b);
 }
 
 template<class A, class B>
@@ -1226,7 +1226,7 @@ const std::string Property<A>::classify(const A&)
 template<class A>
 void Property<A>::generateInput(size_t n, A& a)
 {
-   generate(n, a);
+   quickcheck::generate(n, a);
 }
 
 template<class A>

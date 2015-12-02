@@ -1,7 +1,6 @@
 #pragma once
 
 #include "property-base.hpp"
-#include "property-generators.hpp"
 
 class PropertyConvertUtf32
 	: public quickcheck::Property<unicode_t>
