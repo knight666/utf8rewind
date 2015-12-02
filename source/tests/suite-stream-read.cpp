@@ -636,8 +636,6 @@ TEST(StreamRead, BufferOverflow)
 \xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88\xCC\x88" "3";
 	size_t il = strlen(i);
 
-	std::string seq = helpers::sequence(i, UnicodeProperty_Normalization_Compose);
-
 	StreamState state;
 	EXPECT_TRUE(stream_initialize(&state, i, il));
 

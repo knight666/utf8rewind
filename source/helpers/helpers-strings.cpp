@@ -389,81 +389,6 @@ namespace helpers {
 		return ss.str();
 	}
 
-	void sequence(std::stringstream& targetID, std::stringstream& targetCCC, std::stringstream& targetQC, unicode_t codepoint, uint8_t type)
-	{
-		std::string id = identifiable(codepoint);
-		std::string ccc = canonicalCombiningClass(codepoint);
-
-		size_t padding = std::max(id.length(), ccc.length());
-		if (type != 0)
-		{
-			std::string qc = quickCheck(codepoint, type);
-			padding = std::max(qc.length(), padding);
-			targetQC << std::setw(padding) << qc;
-		}
-
-		targetID << std::setw(padding) << identifiable(codepoint);
-		targetCCC << std::setw(padding) << canonicalCombiningClass(codepoint);
-	}
-
-	std::string sequence(unicode_t codepoint, uint8_t type)
-	{
-		std::stringstream ss_id;
-		ss_id << std::setfill(' ');
-		std::stringstream ss_ccc;
-		ss_ccc << std::setfill(' ');
-		std::stringstream ss_qc;
-		ss_qc << std::setfill(' ');
-
-		sequence(ss_id, ss_ccc, ss_qc, codepoint, type);
-
-		std::stringstream ss;
-		ss << ss_id.str() << std::endl;
-		ss << ss_qc.str() << std::endl;
-		ss << ss_ccc.str();
-
-		return ss.str();
-	}
-
-	std::string sequence(unicode_t* codepoint, size_t codepointsSize, uint8_t type)
-	{
-		std::stringstream ss_id;
-		ss_id << std::setfill(' ');
-		std::stringstream ss_ccc;
-		ss_ccc << std::setfill(' ');
-		std::stringstream ss_qc;
-		ss_qc << std::setfill(' ');
-
-		sequence(ss_id, ss_ccc, ss_qc, codepoint[0], type);
-
-		for (size_t i = 1; i < codepointsSize / sizeof(unicode_t); ++i)
-		{
-			ss_id << " ";
-			ss_ccc << " ";
-			ss_qc << " ";
-
-			sequence(ss_id, ss_ccc, ss_qc, codepoint[i], type);
-		}
-
-		std::stringstream ss;
-		ss << ss_id.str() << std::endl;
-		ss << ss_qc.str() << std::endl;
-		ss << ss_ccc.str();
-
-		return ss.str();
-	}
-
-	std::string sequence(const std::string& text, uint8_t type)
-	{
-		std::vector<unicode_t> converted = utf32(text);
-		if (converted.size() == 0)
-		{
-			return "";
-		}
-
-		return sequence(&converted[0], converted.size() * sizeof(unicode_t), type);
-	}
-
 	void canonicalCombiningClass(std::stringstream& target, unicode_t codepoint)
 	{
 		target << (int)PROPERTY_GET_CCC(codepoint);
@@ -513,30 +438,30 @@ namespace helpers {
 		return ss.str();
 	}
 
-	void quickCheck(std::stringstream& target, unicode_t codepoint, uint8_t type)
+	void quickCheck(std::stringstream& target, unicode_t codepoint, QuickCheck type)
 	{
 		uint8_t qc;
 
 		switch (type)
 		{
 
-		case UnicodeProperty_Normalization_Compose:
+		case QuickCheck::NFC:
 			qc = PROPERTY_GET_NFC(codepoint);
 			break;
 
-		case UnicodeProperty_Normalization_Decompose:
+		case QuickCheck::NFD:
 			qc = PROPERTY_GET_NFD(codepoint);
 			break;
 
-		case UnicodeProperty_Normalization_Compatibility_Compose:
+		case QuickCheck::NFKC:
 			qc = PROPERTY_GET_NFKC(codepoint);
 			break;
 
-		case UnicodeProperty_Normalization_Compatibility_Decompose:
+		case QuickCheck::NFKD:
 			qc = PROPERTY_GET_NFKD(codepoint);
 			break;
 
-		default:
+		case QuickCheck::Any:
 			qc = QuickCheckResult_Yes;
 			break;
 
@@ -566,14 +491,14 @@ namespace helpers {
 		}
 	}
 
-	std::string quickCheck(unicode_t codepoint, uint8_t type)
+	std::string quickCheck(unicode_t codepoint, QuickCheck type)
 	{
 		std::stringstream ss;
 		quickCheck(ss, codepoint, type);
 		return ss.str();
 	}
 
-	std::string quickCheck(unicode_t* codepoint, size_t codepointsSize, uint8_t type)
+	std::string quickCheck(unicode_t* codepoint, size_t codepointsSize, QuickCheck type)
 	{
 		std::stringstream ss;
 
@@ -588,7 +513,7 @@ namespace helpers {
 		return ss.str();
 	}
 
-	std::string quickCheck(const std::string& text, uint8_t type)
+	std::string quickCheck(const std::string& text, QuickCheck type)
 	{
 		std::vector<unicode_t> converted = utf32(text);
 		if (converted.size() == 0)

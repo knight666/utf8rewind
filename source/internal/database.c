@@ -35,10 +35,7 @@ static const unicode_t DECOMPOSE_INDEX1_MASK = MAX_LEGAL_UNICODE;
 static const unicode_t DECOMPOSE_INDEX2_MASK = (1 << DECOMPOSE_INDEX1_SHIFT) - 1;
 static const unicode_t DECOMPOSE_DATA_MASK = (1 << DECOMPOSE_INDEX2_SHIFT) - 1;
 
-const char* database_querydecomposition(
-	unicode_t codepoint,
-	const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray,
-	uint8_t* length)
+const char* database_querydecomposition(unicode_t codepoint, const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray, uint8_t* length)
 {
 	uint32_t index;
 	uint32_t data;

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.9.1"/>
-<title>utf8rewind: source/tests/helpers-strings.hpp Source File</title>
+<title>utf8rewind: source/helpers/helpers-strings.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -24,9 +24,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">utf8rewind
-   &#160;<span id="projectnumber">1.2.1</span>
+   &#160;<span id="projectnumber">1.3.0</span>
    </div>
-   <div id="projectbrief">Cross-platform library for UTF-8 encoded text</div>
+   <div id="projectbrief">System library for processing UTF-8 encoded text</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li><li class="navelem"><a class="el" href="dir_bcc475e2baa7fb4fddbbf77a013083ee.html">tests</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li><li class="navelem"><a class="el" href="dir_ac7426e64a8e6f06cc3e6ac020978cfe.html">helpers</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -94,68 +94,80 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <a href="helpers-strings_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="tests-base_8hpp.html">tests-base.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="helpers-base_8hpp.html">helpers-base.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#define EXPECT_UTF8EQ(_expected, _actual)            EXPECT_PRED_FORMAT2(::helpers::CompareUtf8Strings, _expected, _actual)</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#define EXPECT_OFFSETEQ(_expected, _actual, _start)  EXPECT_PRED_FORMAT3(::helpers::CompareOffsets, _expected, _actual, _start)</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#define EXPECT_MEMEQ(_expected, _actual, _size)      EXPECT_PRED_FORMAT3(::helpers::CompareMemory, _expected, _actual, _size)</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#define EXPECT_CPEQ(_expected, _actual)              EXPECT_PRED_FORMAT2(::helpers::CompareCodepoints, _expected, _actual)</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">namespace </span>helpers {</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    std::string identifiable(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    std::string identifiable(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* codepoint, <span class="keywordtype">size_t</span> codepointsSize);</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    std::string identifiable(<span class="keyword">const</span> std::string&amp; text);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    std::string utf8(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    std::string utf8(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* codepoints, <span class="keywordtype">size_t</span> codepointsSize);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    std::string utf8(<span class="keyword">const</span> std::vector&lt;unicode_t&gt;&amp; codepoints);</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#define EXPECT_UTF8EQ(_expected, _actual)                 EXPECT_PRED_FORMAT2(::helpers::CompareUtf8Strings, _expected, _actual)</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#define EXPECT_UTF8LENGTHEQ(_expected, _actual, _length)  EXPECT_PRED_FORMAT3(::helpers::CompareUtf8LengthStrings, _expected, _actual, _length)</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#define EXPECT_OFFSETEQ(_expected, _actual, _start)       EXPECT_PRED_FORMAT3(::helpers::CompareOffsets, _expected, _actual, _start)</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#define EXPECT_MEMEQ(_expected, _actual, _size)           EXPECT_PRED_FORMAT3(::helpers::CompareMemory, _expected, _actual, _size)</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#define EXPECT_CPEQ(_expected, _actual)                   EXPECT_PRED_FORMAT2(::helpers::CompareCodepoints, _expected, _actual)</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">namespace </span>helpers {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    std::string identifiable(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    std::string identifiable(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* codepoint, <span class="keywordtype">size_t</span> codepointsSize);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    std::string identifiable(<span class="keyword">const</span> std::string&amp; text);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    std::string utf8(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    std::string utf8(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* codepoints, <span class="keywordtype">size_t</span> codepointsSize);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    std::string utf8(<span class="keyword">const</span> std::vector&lt;unicode_t&gt;&amp; codepoints);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    std::string utf8(<span class="keyword">const</span> std::wstring&amp; text);</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    std::vector&lt;unicode_t&gt; utf32(<span class="keyword">const</span> std::string&amp; text);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    std::vector&lt;utf16_t&gt; utf16(<span class="keyword">const</span> std::string&amp; text);</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    std::string hex(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    std::string hex(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* codepoints, <span class="keywordtype">size_t</span> codepointsSize);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::string hex(<span class="keyword">const</span> std::string&amp; text);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    std::vector&lt;unicode_t&gt; utf32(<span class="keyword">const</span> std::string&amp; text);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::wstring wide(<span class="keyword">const</span> std::string&amp; text);</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    std::string printable(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::string printable(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* codepoints, <span class="keywordtype">size_t</span> codepointsSize);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    std::string printable(<span class="keyword">const</span> std::string&amp; text);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    std::string hex(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::string hex(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* codepoints, <span class="keywordtype">size_t</span> codepointsSize);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    std::string hex(<span class="keyword">const</span> std::string&amp; text);</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    std::string sequence(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint, uint8_t type);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::string sequence(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* codepoint, <span class="keywordtype">size_t</span> codepointsSize, uint8_t type);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    std::string sequence(<span class="keyword">const</span> std::string&amp; text, uint8_t type);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    std::string printable(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::string printable(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* codepoints, <span class="keywordtype">size_t</span> codepointsSize);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    std::string printable(<span class="keyword">const</span> std::string&amp; text);</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    std::string canonicalCombiningClass(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint);</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    std::string canonicalCombiningClass(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* codepoint, <span class="keywordtype">size_t</span> codepointsSize);</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    std::string canonicalCombiningClass(<span class="keyword">const</span> std::string&amp; text);</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    std::string quickCheck(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint, uint8_t type);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    std::string quickCheck(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* codepoint, <span class="keywordtype">size_t</span> codepointsSize, uint8_t type);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    std::string quickCheck(<span class="keyword">const</span> std::string&amp; text, uint8_t type);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    ::testing::AssertionResult CompareUtf8Strings(</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual,</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* textExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* textActual);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    ::testing::AssertionResult CompareOffsets(</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionCount,</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* offsetExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* offsetActual, <span class="keyword">const</span> <span class="keywordtype">char</span>* offsetStart);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    ::testing::AssertionResult CompareMemory(</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionCount,</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* memoryExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* memoryActual, <span class="keywordtype">size_t</span> memorySize);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    ::testing::AssertionResult CompareCodepoints(</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual,</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepointExpected, <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepointActual);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;};</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
-<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">Unicode codepoint. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:178</div></div>
-<div class="ttc" id="tests-base_8hpp_html"><div class="ttname"><a href="tests-base_8hpp.html">tests-base.hpp</a></div><div class="ttdoc">Base includes for tests. </div></div>
-<div class="ttc" id="utf8rewind_8h_html"><div class="ttname"><a href="utf8rewind_8h.html">utf8rewind.h</a></div><div class="ttdoc">Public interface for UTF-8 functions. </div></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">enum class</span> QuickCheck</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    {</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        NFC,</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        NFD,</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        NFKC,</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        NFKD,</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        Any</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    };</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    std::string quickCheck(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepoint, QuickCheck type);</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    std::string quickCheck(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* codepoint, <span class="keywordtype">size_t</span> codepointsSize, QuickCheck type);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    std::string quickCheck(<span class="keyword">const</span> std::string&amp; text, QuickCheck type);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    ::testing::AssertionResult CompareUtf8Strings(</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual,</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* textExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* textActual);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    ::testing::AssertionResult CompareUtf8LengthStrings(</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionLength,</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* textExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* textActual, <span class="keywordtype">size_t</span> length);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    ::testing::AssertionResult CompareOffsets(</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionCount,</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* offsetExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* offsetActual, <span class="keyword">const</span> <span class="keywordtype">char</span>* offsetStart);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    ::testing::AssertionResult CompareMemory(</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionCount,</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* memoryExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* memoryActual, <span class="keywordtype">size_t</span> memorySize);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    ::testing::AssertionResult CompareCodepoints(</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual,</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepointExpected, <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> codepointActual);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;};</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">UTF-32 encoded code point. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:235</div></div>
+<div class="ttc" id="helpers-base_8hpp_html"><div class="ttname"><a href="helpers-base_8hpp.html">helpers-base.hpp</a></div><div class="ttdoc">Base includes for helper methods. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

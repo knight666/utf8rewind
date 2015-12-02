@@ -164,7 +164,7 @@ namespace helpers {
 		return converted;
 	}
 
-	std::string PrintSequence(const std::string& text, uint8_t type)
+	std::string PrintSequence(const std::string& text, QuickCheck type)
 	{
 		std::stringstream ss;
 
@@ -194,7 +194,7 @@ namespace helpers {
 			std::string ccc = canonicalCombiningClass(*it);
 
 			size_t padding = std::max(id.length(), ccc.length());
-			if (type != 0)
+			if (type != QuickCheck::Any)
 			{
 				std::string qc = quickCheck(*it, type);
 				padding = std::max(qc.length(), padding);
@@ -207,7 +207,7 @@ namespace helpers {
 
 		ss << ss_id.str() << std::endl;
 		ss << "             " << ss_ccc.str();
-		if (type != 0)
+		if (type != QuickCheck::Any)
 		{
 			ss << std::endl;
 			ss << "             " << ss_qc.str();
@@ -305,49 +305,49 @@ namespace helpers {
 			if (entryExpected.decomposed != entryActual.decomposed)
 			{
 				result << "[NFD] " << std::endl;
-				result << "    Actual:  " << PrintSequence(entryActual.decomposed, UnicodeProperty_Normalization_Decompose) << std::endl;
-				result << "  Expected:  " << PrintSequence(entryExpected.decomposed, UnicodeProperty_Normalization_Decompose) << std::endl;
+				result << "    Actual:  " << PrintSequence(entryActual.decomposed, QuickCheck::NFD) << std::endl;
+				result << "  Expected:  " << PrintSequence(entryExpected.decomposed, QuickCheck::NFD) << std::endl;
 			}
 			else
 			{
 				result << "[NFD]        ";
-				result << PrintSequence(entryActual.decomposed, UnicodeProperty_Normalization_Decompose) << std::endl;
+				result << PrintSequence(entryActual.decomposed, QuickCheck::NFD) << std::endl;
 			}
 
 			if (entryExpected.composed != entryActual.composed)
 			{
 				result << "[NFC] " << std::endl;
-				result << "    Actual:  " << PrintSequence(entryActual.composed, UnicodeProperty_Normalization_Compose) << std::endl;
-				result << "  Expected:  " << PrintSequence(entryExpected.composed, UnicodeProperty_Normalization_Compose) << std::endl;
+				result << "    Actual:  " << PrintSequence(entryActual.composed, QuickCheck::NFC) << std::endl;
+				result << "  Expected:  " << PrintSequence(entryExpected.composed, QuickCheck::NFC) << std::endl;
 			}
 			else
 			{
 				result << "[NFC]        ";
-				result << PrintSequence(entryActual.composed, UnicodeProperty_Normalization_Compose) << std::endl;
+				result << PrintSequence(entryActual.composed, QuickCheck::NFC) << std::endl;
 			}
 
 			if (entryExpected.decomposedCompatibility != entryActual.decomposedCompatibility)
 			{
 				result << "[NFKD]" << std::endl;
-				result << "    Actual:  " << PrintSequence(entryActual.decomposedCompatibility, UnicodeProperty_Normalization_Compatibility_Decompose) << std::endl;
-				result << "  Expected:  " << PrintSequence(entryExpected.decomposedCompatibility, UnicodeProperty_Normalization_Compatibility_Decompose) << std::endl;
+				result << "    Actual:  " << PrintSequence(entryActual.decomposedCompatibility, QuickCheck::NFKD) << std::endl;
+				result << "  Expected:  " << PrintSequence(entryExpected.decomposedCompatibility, QuickCheck::NFKD) << std::endl;
 			}
 			else
 			{
 				result << "[NFKD]       ";
-				result << PrintSequence(entryActual.decomposedCompatibility, UnicodeProperty_Normalization_Compatibility_Decompose) << std::endl;
+				result << PrintSequence(entryActual.decomposedCompatibility, QuickCheck::NFKD) << std::endl;
 			}
 
 			if (entryExpected.composedCompatibility != entryActual.composedCompatibility)
 			{
 				result << "[NFKC]" << std::endl;
-				result << "    Actual:  " << PrintSequence(entryActual.composedCompatibility, UnicodeProperty_Normalization_Compatibility_Compose) << std::endl;
-				result << "  Expected:  " << PrintSequence(entryExpected.composedCompatibility, UnicodeProperty_Normalization_Compatibility_Compose);
+				result << "    Actual:  " << PrintSequence(entryActual.composedCompatibility, QuickCheck::NFKC) << std::endl;
+				result << "  Expected:  " << PrintSequence(entryExpected.composedCompatibility, QuickCheck::NFKC);
 			}
 			else
 			{
 				result << "[NFKC]       ";
-				result << PrintSequence(entryActual.composedCompatibility, UnicodeProperty_Normalization_Compatibility_Compose);
+				result << PrintSequence(entryActual.composedCompatibility, QuickCheck::NFKC);
 			}
 
 			return result;
@@ -371,54 +371,54 @@ namespace helpers {
 
 			result << std::endl;
 
-			result << "[Source]     " << PrintSequence(entryExpected.sequence, 0) << std::endl;
+			result << "[Source]     " << PrintSequence(entryExpected.sequence, QuickCheck::Any) << std::endl;
 
 			if (entryExpected.decomposed != entryActual.decomposed)
 			{
 				result << "[NFD] " << std::endl;
-				result << "    Actual:  " << PrintSequence(entryActual.decomposed, UnicodeProperty_Normalization_Decompose) << std::endl;
-				result << "  Expected:  " << PrintSequence(entryExpected.decomposed, UnicodeProperty_Normalization_Decompose) << std::endl;
+				result << "    Actual:  " << PrintSequence(entryActual.decomposed, QuickCheck::NFD) << std::endl;
+				result << "  Expected:  " << PrintSequence(entryExpected.decomposed, QuickCheck::NFD) << std::endl;
 			}
 			else
 			{
 				result << "[NFD]        ";
-				result << PrintSequence(entryActual.decomposed, UnicodeProperty_Normalization_Decompose) << std::endl;
+				result << PrintSequence(entryActual.decomposed, QuickCheck::NFD) << std::endl;
 			}
 
 			if (entryExpected.composed != entryActual.composed)
 			{
 				result << "[NFC] " << std::endl;
-				result << "    Actual:  " << PrintSequence(entryActual.composed, UnicodeProperty_Normalization_Compose) << std::endl;
-				result << "  Expected:  " << PrintSequence(entryExpected.composed, UnicodeProperty_Normalization_Compose) << std::endl;
+				result << "    Actual:  " << PrintSequence(entryActual.composed, QuickCheck::NFC) << std::endl;
+				result << "  Expected:  " << PrintSequence(entryExpected.composed, QuickCheck::NFC) << std::endl;
 			}
 			else
 			{
 				result << "[NFC]        ";
-				result << PrintSequence(entryActual.composed, UnicodeProperty_Normalization_Compose) << std::endl;
+				result << PrintSequence(entryActual.composed, QuickCheck::NFC) << std::endl;
 			}
 
 			if (entryExpected.decomposedCompatibility != entryActual.decomposedCompatibility)
 			{
 				result << "[NFKD]" << std::endl;
-				result << "    Actual:  " << PrintSequence(entryActual.decomposedCompatibility, UnicodeProperty_Normalization_Compatibility_Decompose) << std::endl;
-				result << "  Expected:  " << PrintSequence(entryExpected.decomposedCompatibility, UnicodeProperty_Normalization_Compatibility_Decompose) << std::endl;
+				result << "    Actual:  " << PrintSequence(entryActual.decomposedCompatibility, QuickCheck::NFKD) << std::endl;
+				result << "  Expected:  " << PrintSequence(entryExpected.decomposedCompatibility, QuickCheck::NFKD) << std::endl;
 			}
 			else
 			{
 				result << "[NFKD]       ";
-				result << PrintSequence(entryActual.decomposedCompatibility, UnicodeProperty_Normalization_Compatibility_Decompose) << std::endl;
+				result << PrintSequence(entryActual.decomposedCompatibility, QuickCheck::NFKD) << std::endl;
 			}
 
 			if (entryExpected.composedCompatibility != entryActual.composedCompatibility)
 			{
 				result << "[NFKC]" << std::endl;
-				result << "    Actual:  " << PrintSequence(entryActual.composedCompatibility, UnicodeProperty_Normalization_Compatibility_Compose) << std::endl;
-				result << "  Expected:  " << PrintSequence(entryExpected.composedCompatibility, UnicodeProperty_Normalization_Compatibility_Compose);
+				result << "    Actual:  " << PrintSequence(entryActual.composedCompatibility, QuickCheck::NFKC) << std::endl;
+				result << "  Expected:  " << PrintSequence(entryExpected.composedCompatibility, QuickCheck::NFKC);
 			}
 			else
 			{
 				result << "[NFKC]       ";
-				result << PrintSequence(entryActual.composedCompatibility, UnicodeProperty_Normalization_Compatibility_Compose);
+				result << PrintSequence(entryActual.composedCompatibility, QuickCheck::NFKC);
 			}
 
 			return result;
