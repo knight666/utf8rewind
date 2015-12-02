@@ -926,16 +926,6 @@ TEST(CodepointRead, SurrogatePairLowOverlongSixBytesLast)
 	EXPECT_CPEQ(0xFFFD, o);
 }
 
-TEST(CodepointRead, MissingOutput)
-{
-	const char* i = "Ugh";
-	size_t il = strlen(i);
-	unicode_t o = 0x0123;
-
-	EXPECT_EQ(0, codepoint_read(i, il, nullptr));
-	EXPECT_CPEQ(0x0123, o);
-}
-
 TEST(CodepointRead, MissingData)
 {
 	const char* i = nullptr;
@@ -943,17 +933,6 @@ TEST(CodepointRead, MissingData)
 	unicode_t o;
 
 	EXPECT_EQ(0, codepoint_read(i, il, &o));
-	EXPECT_CPEQ(0, o);
-}
-
-TEST(CodepointRead, MissingDataAndOutput)
-{
-	const char* i = nullptr;
-	size_t il = 13;
-	unicode_t o = 0x0046;
-
-	EXPECT_EQ(0, codepoint_read(i, il, nullptr));
-	EXPECT_CPEQ(0x0046, o);
 }
 
 TEST(CodepointRead, MissingLength)
@@ -963,15 +942,4 @@ TEST(CodepointRead, MissingLength)
 	unicode_t o;
 
 	EXPECT_EQ(0, codepoint_read(i, il, &o));
-	EXPECT_CPEQ(0, o);
-}
-
-TEST(CodepointRead, MissingLengthAndOutput)
-{
-	const char* i = "agent";
-	size_t il = 0;
-	unicode_t o = 0x0117;
-
-	EXPECT_EQ(0, codepoint_read(i, il, nullptr));
-	EXPECT_CPEQ(0x0117, o);
 }
