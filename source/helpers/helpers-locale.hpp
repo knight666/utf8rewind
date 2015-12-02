@@ -39,7 +39,7 @@
 	#define SET_LOCALE_FRENCH()      EXPECT_STREQ("fr_FR.utf8", setlocale(LC_ALL, "fr_FR.utf8"))
 	#define SET_LOCALE_GERMAN()      EXPECT_STREQ("de_DE.utf8", setlocale(LC_ALL, "de_DE.utf8"))
 	#define SET_LOCALE_GREEK()       EXPECT_STREQ("el_GR.utf8", setlocale(LC_ALL, "el_GR.utf8"))
-	#define SET_LOCALE_HEBREW()      EXPECT_STREQ("HE_IL.utf8", setlocale(LC_ALL, "HE_IL.utf8"))
+	#define SET_LOCALE_HEBREW()      EXPECT_STREQ("he_IL.utf8", setlocale(LC_ALL, "he_IL.utf8"))
 	#define SET_LOCALE_HUNGARIAN()   EXPECT_STREQ("hu_HU.utf8", setlocale(LC_ALL, "hu_HU.utf8"))
 	#define SET_LOCALE_ICELANDIC()   EXPECT_STREQ("is_IS.utf8", setlocale(LC_ALL, "is_IS.utf8"))
 	#define SET_LOCALE_IRISH()       EXPECT_STREQ("ga_IE.utf8", setlocale(LC_ALL, "ga_IE.utf8"))
