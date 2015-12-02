@@ -6,6 +6,7 @@ extern "C" {
 
 namespace helpers {
 
+#if UTF8_VERSION_GUARD(1, 3, 0)
 	std::string locale(uint32_t value)
 	{
 	#define LOCALE_CASE(_name) case CASEMAPPING_LOCALE_ ## _name: return "CASEMAPPING_LOCALE_" # _name;
@@ -28,6 +29,12 @@ namespace helpers {
 
 	#undef LOCALE_CASE
 	}
+#else
+	std::string locale(uint32_t value)
+	{
+		return "";
+	}
+#endif
 
 	::testing::AssertionResult CompareLocale(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual,

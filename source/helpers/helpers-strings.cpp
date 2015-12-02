@@ -391,7 +391,11 @@ namespace helpers {
 
 	void canonicalCombiningClass(std::stringstream& target, unicode_t codepoint)
 	{
+	#if UTF8_VERSION_GUARD(1, 3, 0)
 		target << (int)PROPERTY_GET_CCC(codepoint);
+	#else
+		target << database_queryproperty(codepoint, UnicodeProperty_CanonicalCombiningClass);
+	#endif
 	}
 
 	std::string canonicalCombiningClass(unicode_t codepoint)
@@ -442,6 +446,7 @@ namespace helpers {
 	{
 		uint8_t qc;
 
+	#if UTF8_VERSION_GUARD(1, 3, 0)
 		switch (type)
 		{
 
@@ -465,7 +470,39 @@ namespace helpers {
 			qc = QuickCheckResult_Yes;
 			break;
 
+		default:
+			break;
+
 		}
+	#else
+		switch (type)
+		{
+
+		case QuickCheck::NFC:
+			qc = database_queryproperty(codepoint, UnicodeProperty_Normalization_Compose);
+			break;
+
+		case QuickCheck::NFD:
+			qc = database_queryproperty(codepoint, UnicodeProperty_Normalization_Decompose);
+			break;
+
+		case QuickCheck::NFKC:
+			qc = database_queryproperty(codepoint, UnicodeProperty_Normalization_Compatibility_Compose);
+			break;
+
+		case QuickCheck::NFKD:
+			qc = database_queryproperty(codepoint, UnicodeProperty_Normalization_Compatibility_Decompose);
+			break;
+
+		case QuickCheck::Any:
+			qc = QuickCheckResult_Yes;
+			break;
+
+		default:
+			break;
+
+		}
+	#endif
 
 		switch (qc)
 		{

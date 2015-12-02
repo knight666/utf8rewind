@@ -15,7 +15,11 @@ namespace helpers {
 		{
 			stream.codepoint[stream.current] = *it;
 			stream.quick_check[stream.current] = QuickCheckResult_Yes;
+		#if UTF8_VERSION_GUARD(1, 3, 0)
 			stream.canonical_combining_class[stream.current] = PROPERTY_GET_CCC(*it);
+		#else
+			stream.canonical_combining_class[stream.current] = database_queryproperty(*it, UnicodeProperty_CanonicalCombiningClass);
+		#endif
 			stream.current++;
 		}
 
