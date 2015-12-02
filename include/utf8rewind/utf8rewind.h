@@ -39,6 +39,61 @@
 #include <wchar.h>
 
 /*!
+	\defgroup version Version information
+	\{
+*/
+
+/*!
+	\def UTF8_VERSION_MAKE
+	\brief Macro for creating a version number from a major, minor and bugfix
+	number.
+*/
+#define UTF8_VERSION_MAKE(_major, _minor, _bugfix) \
+	((_major) * 10000) + ((_minor) * 100) + (_bugfix)
+
+/*!
+	\def UTF8_VERSION_MAJOR
+	\brief The major version number of this release.
+*/
+#define UTF8_VERSION_MAJOR   1
+
+/*!
+	\def UTF8_VERSION_MINOR
+	\brief The minor version number of this release.
+*/
+#define UTF8_VERSION_MINOR   3
+
+/*!
+	\def UTF8_VERSION_BUGFIX
+	\brief The bugfix version number of this release.
+*/
+#define UTF8_VERSION_BUGFIX  0
+
+/*!
+	\def UTF8_VERSION
+	\brief The version number as an integer.
+*/
+#define UTF8_VERSION \
+	UTF8_VERSION_MAKE(UTF8_VERSION_MAJOR, UTF8_VERSION_MINOR, UTF8_VERSION_BUGFIX)
+
+/*!
+	\def UTF8_VERSION_STRING
+	\brief The verion number as a string.
+*/
+#define UTF8_VERSION_STRING  "1.3.0"
+
+/*!
+	\def UTF8_VERSION_GUARD
+	\brief Check if feature is supported by the current release.
+*/
+#define UTF8_VERSION_GUARD(_major, _minor, _bugfix) \
+	(UTF8_VERSION >= UTF8_VERSION_MAKE(_major, _minor, _bugfix))
+
+/*!
+	\}
+*/
+
+/*!
 	\defgroup errors Error codes
 	\{
 */

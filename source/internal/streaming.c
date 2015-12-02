@@ -155,7 +155,7 @@ uint8_t stream_read(StreamState* state, const size_t* propertyIndex, const uint8
 	return 1;
 }
 
-uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_t* bytesWritten)
+uint8_t stream_write(StreamState* state, char** output, size_t* outputSize, uint8_t* bytesWritten)
 {
 	uint8_t i;
 
@@ -163,14 +163,16 @@ uint8_t stream_write(StreamState* state, char* output, size_t outputSize, uint8_
 	{
 		/* Nothing to write */
 
-		return 0;
+		*bytesWritten = 0;
+
+		return 1;
 	}
 
-	/* Encode codepoints as UTF-8 */
+	/* Encode code points as UTF-8 */
 
 	for (i = 0; i < state->current; ++i)
 	{
-		uint8_t encoded_size = codepoint_write(state->codepoint[i], &output, &outputSize);
+		uint8_t encoded_size = codepoint_write(state->codepoint[i], output, outputSize);
 		if (encoded_size == 0)
 		{
 			/* Not enough space */

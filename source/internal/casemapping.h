@@ -55,11 +55,7 @@ typedef struct {
 	uint8_t last_canonical_combining_class;
 } CaseMappingState;
 
-uint8_t casemapping_initialize(
-	CaseMappingState* state,
-	const char* input, size_t inputSize,
-	char* target, size_t targetSize,
-	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData);
+uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData);
 
 size_t casemapping_execute(CaseMappingState* state, int32_t* errors);
 

@@ -37,21 +37,6 @@
 
 #include "../unicodedatabase.h"
 
-#define UTF8_INVALID_PROPERTY (uint8_t)-1
-
-enum UnicodeProperty
-{
-	UnicodeProperty_GeneralCategory,
-	UnicodeProperty_CanonicalCombiningClass,
-	UnicodeProperty_Normalization_Compose,
-	UnicodeProperty_Normalization_Decompose,
-	UnicodeProperty_Normalization_Compatibility_Compose,
-	UnicodeProperty_Normalization_Compatibility_Decompose,
-	UnicodeProperty_Uppercase,
-	UnicodeProperty_Lowercase,
-	UnicodeProperty_Titlecase,
-};
-
 enum GeneralCategory
 {
 	GeneralCategory_Letter = 0x01,
@@ -98,10 +83,7 @@ static const unicode_t PROPERTY_DATA_MASK = (1 << PROPERTY_INDEX_SHIFT) - 1;
 #define PROPERTY_GET_NFKD(_cp) \
 	PROPERTY_GET(QuickCheckNFKDIndexPtr, QuickCheckNFKDDataPtr, _cp)
 
-const char* database_querydecomposition(
-	unicode_t codepoint,
-	const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray,
-	uint8_t* length);
+const char* database_querydecomposition(unicode_t codepoint, const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray, uint8_t* length);
 
 unicode_t database_querycomposition(unicode_t left, unicode_t right);
 

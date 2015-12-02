@@ -24,9 +24,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">utf8rewind
-   &#160;<span id="projectnumber">1.2.1</span>
+   &#160;<span id="projectnumber">1.3.0</span>
    </div>
-   <div id="projectbrief">Cross-platform library for UTF-8 encoded text</div>
+   <div id="projectbrief">System library for processing UTF-8 encoded text</div>
   </td>
  </tr>
  </tbody>
@@ -99,33 +99,32 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="textblock"><h1><a class="anchor" id="introduction"></a>
 Introduction</h1>
-<p><code>utf8rewind</code> is a cross-platform and open source C library designed to extend the default string handling functions and add support for UTF-8 encoded text.</p>
+<p><code>utf8rewind</code> is a system library written in C designed to extend the default string handling functions with support for UTF-8 encoded text.</p>
 <h1><a class="anchor" id="example"></a>
 Example</h1>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="utf8rewind_8h.html">utf8rewind.h</a>&quot;</span></div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv)</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* input = <span class="stringliteral">&quot;Hello World!&quot;</span>;</div>
+<div class="line">    <span class="comment">// &quot;ξέφωτο&quot; encoded in UTF-8 using hexadecimal notation</span></div>
+<div class="line"></div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* input = <span class="stringliteral">&quot;\xCE\xBE\xCE\xAD\xCF\x86\xCF\x89\xCF\x84\xCE\xBF&quot;</span>;</div>
 <div class="line"></div>
 <div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> output_size = 256;</div>
-<div class="line">    <span class="keywordtype">char</span> output[output_size];</div>
-<div class="line">    <span class="keywordtype">wchar_t</span> output_wide[output_size];</div>
+<div class="line">    <span class="keywordtype">char</span> output[output_size + 1];</div>
+<div class="line">    <span class="keywordtype">wchar_t</span> output_wide[output_size + 1];</div>
 <div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* input_seek;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
 <div class="line">    int32_t errors;</div>
 <div class="line"></div>
-<div class="line">    memset(output, 0, <span class="keyword">sizeof</span>(output));</div>
-<div class="line">    memset(output_wide, 0, <span class="keyword">sizeof</span>(output_wide));</div>
+<div class="line">    memset(output, 0, <span class="keyword">sizeof</span>(output) + 1);</div>
+<div class="line">    memset(output_wide, 0, <span class="keyword">sizeof</span>(output_wide) + <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>));</div>
 <div class="line"></div>
 <div class="line">    <span class="comment">// Convert input to uppercase:</span></div>
 <div class="line">    <span class="comment">//</span></div>
-<div class="line">    <span class="comment">// &quot;Hello World!&quot; -&gt; &quot;HELLO WORLD!&quot;</span></div>
+<div class="line">    <span class="comment">// &quot;ξέφωτο&quot; -&gt; &quot;ΞΈΦΩΤΟ&quot;</span></div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#ae9de7d7b0fbde81c2c2d62a9d045775e">utf8toupper</a>(</div>
-<div class="line">        input, strlen(input),</div>
-<div class="line">        output, output_size - 1,</div>
-<div class="line">        &amp;errors);</div>
+<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#ae9de7d7b0fbde81c2c2d62a9d045775e">utf8toupper</a>(input, strlen(input), output, output_size, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
 <div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
@@ -134,12 +133,9 @@ Example</h1>
 <div class="line"></div>
 <div class="line">    <span class="comment">// Convert UTF-8 input to wide (UTF-16 or UTF-32) encoded text:</span></div>
 <div class="line">    <span class="comment">//</span></div>
-<div class="line">    <span class="comment">// &quot;HELLO WORLD!&quot; -&gt; L&quot;HELLO WORLD!&quot;</span></div>
+<div class="line">    <span class="comment">// &quot;ΞΈΦΩΤΟ&quot; -&gt; L&quot;ΞΈΦΩΤΟ&quot;</span></div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a8653854fdb4550ec3a9515ecede1f73a">utf8towide</a>(</div>
-<div class="line">        output, strlen(output),</div>
-<div class="line">        output_wide, (output_size - 1) * <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>),</div>
-<div class="line">        &amp;errors);</div>
+<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a8653854fdb4550ec3a9515ecede1f73a">utf8towide</a>(output, strlen(output), output_wide, output_size * <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>), &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
 <div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
@@ -148,23 +144,23 @@ Example</h1>
 <div class="line"></div>
 <div class="line">    <span class="comment">// Seek in input:</span></div>
 <div class="line">    <span class="comment">//</span></div>
-<div class="line">    <span class="comment">// Hello World!&quot; -&gt; &quot;World!&quot;</span></div>
+<div class="line">    <span class="comment">// &quot;ξέφωτο&quot; -&gt; &quot;το&quot;</span></div>
 <div class="line"></div>
-<div class="line">    input_seek = <a class="code" href="utf8rewind_8h.html#a49febdba3b3ae5ce2aa6a0464d48aa0a">utf8seek</a>(input, input, 6, SEEK_SET);</div>
+<div class="line">    input_seek = <a class="code" href="utf8rewind_8h.html#ace07c42b3b5031414ceed1f78055242f">utf8seek</a>(input, strlen(input), input, 4, SEEK_SET);</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 </div><!-- fragment --><h1><a class="anchor" id="features"></a>
 Features</h1>
-<p><b>Conversion to and from UTF-8</b> - <code>utf8rewind</code> provides functions for converting from and to <a class="el" href="utf8rewind_8h.html#aedea488052a8d820af3d192485e814e8">wide</a>, <a class="el" href="utf8rewind_8h.html#a84f067fc0293c142137d308ded6f130c">UTF-16</a> and <a class="el" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">UTF-32</a> encoded text.</p>
-<p><b>Case mapping</b> - The library also provides functionality for converting text to <a class="el" href="utf8rewind_8h.html#ae9de7d7b0fbde81c2c2d62a9d045775e">uppercase</a>, <a class="el" href="utf8rewind_8h.html#a2b8b64b410a600e2148e0bfe8f9a15d4">lowercase</a> and <a class="el" href="utf8rewind_8h.html#a8c55b8635f998a2405aa0a5483289264">titlecase</a>.</p>
-<p><b>Normalization</b> - With <a class="el" href="utf8rewind_8h.html#adfa0210609054db368b6af9837ca69db" title="Normalize a string to the specified Unicode Normalization Form. ">utf8normalize</a>, you can normalize UTF-8 encoded text to NFC, NFD, NFKC or NFKD without converting it to UTF-32 first.</p>
-<p><b>Seeking</b> - Using <a class="el" href="utf8rewind_8h.html#a49febdba3b3ae5ce2aa6a0464d48aa0a" title="Seek into a UTF-8 encoded string. ">utf8seek</a>, you can seek forwards and backwards in UTF-8 encoded text.</p>
+<p><b>Conversion to and from UTF-8</b> - <code>utf8rewind</code> provides functions for converting to and from <a class="el" href="utf8rewind_8h.html#aedea488052a8d820af3d192485e814e8">wide</a>, <a class="el" href="utf8rewind_8h.html#a84f067fc0293c142137d308ded6f130c">UTF-16</a> and <a class="el" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">UTF-32</a> encoded text.</p>
+<p><b>Case mapping</b> - The library provides functionality for converting text to <a class="el" href="utf8rewind_8h.html#ae9de7d7b0fbde81c2c2d62a9d045775e">uppercase</a>, <a class="el" href="utf8rewind_8h.html#a2b8b64b410a600e2148e0bfe8f9a15d4">lowercase</a> and <a class="el" href="utf8rewind_8h.html#a8c55b8635f998a2405aa0a5483289264">titlecase</a>.</p>
+<p><b>Normalization</b> - With <a class="el" href="utf8rewind_8h.html#adfa0210609054db368b6af9837ca69db" title="Normalize a string to the specified Unicode Normalization Form. ">utf8normalize</a>, you can normalize UTF-8 encoded text to NFC, NFD, NFKC or NFKD without converting the text to UTF-32 first.</p>
+<p><b>Seeking</b> - Using <a class="el" href="utf8rewind_8h.html#ace07c42b3b5031414ceed1f78055242f" title="Seek into a UTF-8 encoded string. ">utf8seek</a>, you can seek forwards and backwards in any UTF-8 encoded strings.</p>
 <p><b>Cross-platform</b> - <code>utf8rewind</code> is written in plain C, which means it can be used on any platform with a compliant C compiler. Currently, Windows, Linux and Mac versions are available.</p>
-<p><b>Easy to integrate</b> - The library consists of only 13 public functions and requires no initialization. Any C or C++ project can add <code>utf8rewind</code> without breaking existing code.</p>
-<p><b>Simple bindings</b> - No structs are used in the public interface, only pointers. Even if you don't use C, if the language of your choice allows bindings to C functions (e.g. Python), you can benefit from integrating <code>utf8rewind</code> into your project.</p>
-<p><b>No heap allocations</b> - All allocations in <code>utf8rewind</code> happen on the stack. You provide the memory, without having to override <code>malloc</code>. This makes the library perfectly tailored to game engines, integrated systems and other performance-critical or memory-constrained projects.</p>
-<p><b>Safety</b> - Over 2300 automated unit and integration tests guarantee the safety and security of the library.</p>
+<p><b>Easy to integrate</b> - The library consists of only 13 public functions and requires <em>no</em> initialization. Any C or C++ project can add <code>utf8rewind</code> without breaking existing code.</p>
+<p><b>Simple bindings</b> - No structs are used in the public interface, only pointers. Even if you don't use C, if the language of your choice allows bindings to C functions, you can benefit from integrating <code>utf8rewind</code> into your project.</p>
+<p><b>No heap allocations</b> - All allocations in <code>utf8rewind</code> happen on the stack. <em>You</em> provide the memory, without having to override <code>malloc</code>. This makes the library perfectly tailored to game engines, integrated systems and other performance-critical or memory-constrained projects.</p>
+<p><b>Safety</b> - Almost 300 automated unit, integration, property and performance tests guarantee the safety, security and speed of the library.</p>
 <p>For a full summary of the interface, please refer to the <a class="el" href="utf8rewind_8h.html">interface page</a>.</p>
 <h1><a class="anchor" id="license"></a>
 Licensing</h1>
@@ -181,7 +177,7 @@ Building on Windows with Visual Studio</h2>
 </pre><p>Open the solution in Visual Studio. You can use the different build configurations to generate a static library.</p>
 <h2><a class="anchor" id="building-linux"></a>
 Building on Linux with GCC</h2>
-<p>Open a command window at the project's root.</p>
+<p>Open a shell and navigate to the project's root.</p>
 <p>Ensure you have all dependencies installed using your preferred package manager: </p><pre class="fragment">sudo apt-get install gcc g++ gyp doxygen
 </pre><p>Use GYP to generate a Makefile: </p><pre class="fragment">gyp --depth=. utf8rewind.gyp
 </pre><p>Build the project using <code>make</code>: </p><pre class="fragment">make
