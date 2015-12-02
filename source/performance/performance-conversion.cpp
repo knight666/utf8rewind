@@ -1,7 +1,10 @@
 #include "performance-base.hpp"
 
 #include "../helpers/helpers-strings.hpp"
-#include "../internal/codepoint.h"
+
+extern "C" {
+	#include "../internal/codepoint.h"
+}
 
 class ConvertBasicLatin
 	: public performance::Suite

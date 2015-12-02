@@ -1,7 +1,5 @@
 #include "performance-base.hpp"
 
-#include "../helpers/helpers-strings.hpp"
-
 extern "C" {
 	#include "../internal/codepoint.h"
 	#include "../internal/database.h"
@@ -23,7 +21,11 @@ PERF_TEST_F(Database, QueryDecomposeNFD)
 
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
+	#if UTF8_VERSION_GUARD(1, 3, 0)
 		m_output[i] = database_querydecomposition(i, NFDIndex1Ptr, NFDIndex2Ptr, NFDDataPtr, &length);
+	#else
+		m_output[i] = database_querydecomposition(i, UnicodeProperty_Normalization_Decompose);
+	#endif
 	}
 }
 
@@ -33,7 +35,11 @@ PERF_TEST_F(Database, QueryDecomposeNFKD)
 
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
+	#if UTF8_VERSION_GUARD(1, 3, 0)
 		m_output[i] = database_querydecomposition(i, NFKDIndex1Ptr, NFKDIndex2Ptr, NFKDDataPtr, &length);
+	#else
+		m_output[i] = database_querydecomposition(i, UnicodeProperty_Normalization_Compatibility_Decompose);
+	#endif
 	}
 }
 
@@ -43,7 +49,11 @@ PERF_TEST_F(Database, QueryDecomposeUppercase)
 
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
+	#if UTF8_VERSION_GUARD(1, 3, 0)
 		m_output[i] = database_querydecomposition(i, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, &length);
+	#else
+		m_output[i] = database_querydecomposition(i, UnicodeProperty_Uppercase);
+	#endif
 	}
 }
 
@@ -53,7 +63,11 @@ PERF_TEST_F(Database, QueryDecomposeLowercase)
 
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
+	#if UTF8_VERSION_GUARD(1, 3, 0)
 		m_output[i] = database_querydecomposition(i, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, &length);
+	#else
+		m_output[i] = database_querydecomposition(i, UnicodeProperty_Lowercase);
+	#endif
 	}
 }
 
@@ -63,6 +77,10 @@ PERF_TEST_F(Database, QueryDecomposeTitlecase)
 
 	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
 	{
+	#if UTF8_VERSION_GUARD(1, 3, 0)
 		m_output[i] = database_querydecomposition(i, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, &length);
+	#else
+		m_output[i] = database_querydecomposition(i, UnicodeProperty_Titlecase);
+	#endif
 	}
 }
