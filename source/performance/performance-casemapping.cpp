@@ -353,7 +353,7 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, TitlecaseDynamic)
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		size_t l = utf8totitle(m_input.c_str(), m_input.length(), o, ol, nullptr);
+		utf8totitle(m_input.c_str(), m_input.length(), o, ol, nullptr);
 
 		delete [] o;
 	}
