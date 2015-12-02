@@ -205,6 +205,8 @@ namespace performance {
 			testing::internal::Int32 repeat_count = 10;
 			bool display_individual = false;
 			std::string filter = "*";
+			std::string output_results;
+			std::ofstream output_csv;
 			bool show_help = false;
 
 			for (int i = 1; i < argc; ++i)
@@ -223,7 +225,8 @@ namespace performance {
 
 				if (!ParseInt32Flag(argv[i], "repeat_count", &repeat_count) &&
 					!ParseBoolFlag(argv[i], "display_individual", &display_individual) &&
-					!ParseStringFlag(argv[i], "filter", &filter))
+					!ParseStringFlag(argv[i], "filter", &filter) &&
+					!ParseStringFlag(argv[i], "output_results", &output_results))
 				{
 					show_help = true;
 
@@ -243,14 +246,25 @@ namespace performance {
 					<< "--" GTEST_FLAG_PREFIX_ "filter=POSITIVE_PATTERNS[-NEGATIVE_PATTERNS]" << std::endl
 					<< "    Run only the tests whose name matches one of the positive patterns but" << std::endl
 					<< "    none of the negative patterns. '?' matches any single character; '*'" << std::endl
-					<< "    matches any substring; ':' separates two patterns." << std::endl;
+					<< "    matches any substring; ':' separates two patterns." << std::endl
+					<< "--" GTEST_FLAG_PREFIX_ "output_results=FILENAME" << std::endl
+					<< "    Output a CSV file with the results to the specified. The file will be " << std::endl
+					<< "    written to incrementally." << std::endl
+					<< std::endl;
 
 				return 0;
 			}
 
 			if (filter != "*")
 			{
-				m_logging << "NOTE: Filter is \"" << filter << "\"" << std::endl;
+				m_logging << "NOTE: Filter is \"" << filter << "\"." << std::endl;
+			}
+
+			if (!output_results.empty())
+			{
+				m_logging << "Writing output to \"" << output_results << "\"." << std::endl;
+
+				output_csv.open(output_results.c_str(), std::ios::out | std::ios::trunc);
 			}
 
 			std::string positive_filter;
@@ -291,7 +305,7 @@ namespace performance {
 					continue;
 				}
 
-				std::cout << "[" << it->first << "]" << std::endl;
+				m_logging << "[" << it->first << "]" << std::endl;
 
 				std::vector<uint32_t> timings;
 
@@ -330,13 +344,30 @@ namespace performance {
 					average += (double)timing;
 				}
 
+				if (output_csv.is_open())
+				{
+					output_csv << it->first;
+
+					for (uint32_t timing : timings)
+					{
+						output_csv << ";" << timing;
+					}
+
+					output_csv << std::endl;
+				}
+
 				average /= (double)timings.size();
 
-				m_logging << "     Total: " << std::setw(8) << total_duration << " ms." << std::endl;
-				m_logging << " Best case: " << std::setw(8) << best_case << " ms." << std::endl;
+				m_logging << "     Total: " << std::setw(8) << total_duration << " ms" << std::endl;
+				m_logging << " Best case: " << std::setw(8) << best_case << " ms" << std::endl;
 				m_logging << "Worst case: " << std::setw(8) << worst_case << " ms" << std::endl;
 				m_logging << "   Average: " << std::setw(8) << average << " ms" << std::endl;
 				m_logging << std::endl;
+			}
+
+			if (output_csv.is_open())
+			{
+				output_csv.close();
 			}
 
 			return 0;
