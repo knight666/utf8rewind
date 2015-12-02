@@ -1,7 +1,6 @@
 #pragma once
 
 #include "property-base.hpp"
-#include "property-generators.hpp"
 
 class PropertySeekingCurrent
 	: public quickcheck::Property<std::string, off_t>
@@ -40,7 +39,7 @@ class PropertySeekingCurrent
 		for (size_t i = 0; i < generated_length; ++i)
 		{
 			std::string grapheme;
-			quickcheck::generate(quickcheck::generateInRange(0, 100), grapheme);
+			quickcheck::generate((size_t)quickcheck::generateInRange(0, 100), grapheme);
 
 			text += grapheme;
 		}

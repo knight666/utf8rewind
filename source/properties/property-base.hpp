@@ -16,6 +16,12 @@
 
 #include "../helpers/helpers-strings.hpp"
 
+#if defined(__GNUC__) && !defined(COMPILER_ICC)
+	#define PROP_ATTRIBUTE_UNUSED __attribute__((unused))
+#else
+	#define PROP_ATTRIBUTE_UNUSED
+#endif
+
 namespace quickcheck {
 
 	template<>
