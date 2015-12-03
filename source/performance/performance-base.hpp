@@ -326,12 +326,13 @@ namespace performance {
 
 					if (display_individual)
 					{
-						m_logging << std::setw(10) << i << ": " << std::setw(8) << test_duration << " ms." << std::endl;
+						m_logging << std::setw(10) << i << ": " << std::setw(8) << test_duration << " ms" << std::endl;
 					}
 
 					if (output_csv.is_open())
 					{
 						output_csv << ";" << test_duration;
+						output_csv.flush();
 					}
 
 					timings.push_back(test_duration);
