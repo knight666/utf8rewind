@@ -15,23 +15,25 @@
 
 	int main(int argc, char** argv)
 	{
-		// "ξέφωτο" encoded in UTF-8 using hexadecimal notation
+		// "Ἀριστοτέλης" (Aristotle) encoded in UTF-8 using hexadecimal notation
 
-		const char* input = "\xCE\xBE\xCE\xAD\xCF\x86\xCF\x89\xCF\x84\xCE\xBF";
+		const char* input =
+			"\xE1\xBC\x88\xCF\x81\xCE\xB9\xCF\x83\xCF\x84\xCE\xBF\xCF\x84"
+			"\xCE\xAD\xCE\xBB\xCE\xB7\xCF\x82";
 
-		static const size_t output_size = 256;
+		static const size_t output_size = 255;
 		char output[output_size + 1];
 		wchar_t output_wide[output_size + 1];
 		const char* input_seek;
 		size_t converted_size;
 		int32_t errors;
 
-		memset(output, 0, sizeof(output) + 1);
-		memset(output_wide, 0, sizeof(output_wide) + sizeof(wchar_t));
+		memset(output, 0, sizeof(output));
+		memset(output_wide, 0, sizeof(output_wide));
 
 		// Convert input to uppercase:
 		//
-		// "ξέφωτο" -> "ΞΈΦΩΤΟ"
+		// "Ἀριστοτέλης" -> "ἈΡΙΣΤΟΤΈΛΗΣ"
 
 		converted_size = utf8toupper(input, strlen(input), output, output_size, &errors);
 		if (converted_size == 0 ||
@@ -42,7 +44,7 @@
 
 		// Convert UTF-8 input to wide (UTF-16 or UTF-32) encoded text:
 		//
-		// "ΞΈΦΩΤΟ" -> L"ΞΈΦΩΤΟ"
+		// "ἈΡΙΣΤΟΤΈΛΗΣ" -> L"ἈΡΙΣΤΟΤΈΛΗΣ"
 
 		converted_size = utf8towide(output, strlen(output), output_wide, output_size * sizeof(wchar_t), &errors);
 		if (converted_size == 0 ||
@@ -53,9 +55,9 @@
 
 		// Seek in input:
 		//
-		// "ξέφωτο" -> "το"
+		// "Ἀριστοτέλης" -> "τέλης"
 
-		input_seek = utf8seek(input, strlen(input), input, 4, SEEK_SET);
+		input_seek = utf8seek(input, strlen(input), input, 6, SEEK_SET);
 
 		return 0;
 	}
