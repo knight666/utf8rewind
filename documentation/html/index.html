@@ -106,23 +106,25 @@ Example</h1>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv)</div>
 <div class="line">{</div>
-<div class="line">    <span class="comment">// &quot;ξέφωτο&quot; encoded in UTF-8 using hexadecimal notation</span></div>
+<div class="line">    <span class="comment">// &quot;Ἀριστοτέλης&quot; (Aristotle) encoded in UTF-8 using hexadecimal notation</span></div>
 <div class="line"></div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* input = <span class="stringliteral">&quot;\xCE\xBE\xCE\xAD\xCF\x86\xCF\x89\xCF\x84\xCE\xBF&quot;</span>;</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* input =</div>
+<div class="line">        <span class="stringliteral">&quot;\xE1\xBC\x88\xCF\x81\xCE\xB9\xCF\x83\xCF\x84\xCE\xBF\xCF\x84&quot;</span></div>
+<div class="line">        <span class="stringliteral">&quot;\xCE\xAD\xCE\xBB\xCE\xB7\xCF\x82&quot;</span>;</div>
 <div class="line"></div>
-<div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> output_size = 256;</div>
+<div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> output_size = 255;</div>
 <div class="line">    <span class="keywordtype">char</span> output[output_size + 1];</div>
 <div class="line">    <span class="keywordtype">wchar_t</span> output_wide[output_size + 1];</div>
 <div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* input_seek;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
 <div class="line">    int32_t errors;</div>
 <div class="line"></div>
-<div class="line">    memset(output, 0, <span class="keyword">sizeof</span>(output) + 1);</div>
-<div class="line">    memset(output_wide, 0, <span class="keyword">sizeof</span>(output_wide) + <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>));</div>
+<div class="line">    memset(output, 0, <span class="keyword">sizeof</span>(output));</div>
+<div class="line">    memset(output_wide, 0, <span class="keyword">sizeof</span>(output_wide));</div>
 <div class="line"></div>
 <div class="line">    <span class="comment">// Convert input to uppercase:</span></div>
 <div class="line">    <span class="comment">//</span></div>
-<div class="line">    <span class="comment">// &quot;ξέφωτο&quot; -&gt; &quot;ΞΈΦΩΤΟ&quot;</span></div>
+<div class="line">    <span class="comment">// &quot;Ἀριστοτέλης&quot; -&gt; &quot;ἈΡΙΣΤΟΤΈΛΗΣ&quot;</span></div>
 <div class="line"></div>
 <div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#ae9de7d7b0fbde81c2c2d62a9d045775e">utf8toupper</a>(input, strlen(input), output, output_size, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
@@ -133,7 +135,7 @@ Example</h1>
 <div class="line"></div>
 <div class="line">    <span class="comment">// Convert UTF-8 input to wide (UTF-16 or UTF-32) encoded text:</span></div>
 <div class="line">    <span class="comment">//</span></div>
-<div class="line">    <span class="comment">// &quot;ΞΈΦΩΤΟ&quot; -&gt; L&quot;ΞΈΦΩΤΟ&quot;</span></div>
+<div class="line">    <span class="comment">// &quot;ἈΡΙΣΤΟΤΈΛΗΣ&quot; -&gt; L&quot;ἈΡΙΣΤΟΤΈΛΗΣ&quot;</span></div>
 <div class="line"></div>
 <div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a8653854fdb4550ec3a9515ecede1f73a">utf8towide</a>(output, strlen(output), output_wide, output_size * <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>), &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
@@ -144,9 +146,9 @@ Example</h1>
 <div class="line"></div>
 <div class="line">    <span class="comment">// Seek in input:</span></div>
 <div class="line">    <span class="comment">//</span></div>
-<div class="line">    <span class="comment">// &quot;ξέφωτο&quot; -&gt; &quot;το&quot;</span></div>
+<div class="line">    <span class="comment">// &quot;Ἀριστοτέλης&quot; -&gt; &quot;τέλης&quot;</span></div>
 <div class="line"></div>
-<div class="line">    input_seek = <a class="code" href="utf8rewind_8h.html#ace07c42b3b5031414ceed1f78055242f">utf8seek</a>(input, strlen(input), input, 4, SEEK_SET);</div>
+<div class="line">    input_seek = <a class="code" href="utf8rewind_8h.html#ace07c42b3b5031414ceed1f78055242f">utf8seek</a>(input, strlen(input), input, 6, SEEK_SET);</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
