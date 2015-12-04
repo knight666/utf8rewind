@@ -77,6 +77,18 @@ namespace helpers {
 		return converted;
 	}
 
+	std::string casefolded(unicode_t codepoint)
+	{
+		return casefolded(utf8(codepoint));
+	}
+
+	std::string casefolded(const std::string& text)
+	{
+		// TODO
+
+		return "";
+	}
+
 	::testing::AssertionResult CompareCodepoint(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual)
@@ -190,6 +202,29 @@ namespace helpers {
 			{
 				result << "[Titlecase]  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(entryExpected.titlecase) << ")" << std::endl;
 			}
+
+			return result;
+		}
+	}
+
+	::testing::AssertionResult CompareCaseFolding(
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
+		const CaseFoldingEntry& entryExpected, const CaseFoldingEntry& entryActual)
+	{
+		if (entryExpected.folded == entryActual.folded)
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << entryExpected.name << " (" << identifiable(entryExpected.codePoint)  << ")" << std::endl;
+
+			result << std::endl;
+
+			result << "    Actual:  \"" << printable(entryActual.folded) << "\" (" << identifiable(entryActual.folded) << ")" << std::endl;
+			result << "  Expected:  \"" << printable(entryExpected.folded) << "\" (" << identifiable(entryExpected.folded) << ")" << std::endl;
 
 			return result;
 		}

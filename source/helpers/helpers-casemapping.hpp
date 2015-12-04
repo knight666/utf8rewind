@@ -50,6 +50,16 @@
 	EXPECT_PRED_FORMAT2(::helpers::CompareCaseMapping, e, a); \
 }
 
+#define EXPECT_CASEFOLDING_EQ(_codepoint, _folded, _name) { \
+	::helpers::CaseFoldingEntry e; \
+	e.codePoint = _codepoint; \
+	e.folded = _folded; \
+	e.name = _name; \
+	::helpers::CaseFoldingEntry a; \
+	a.folded = ::helpers::casefolded(_codepoint); \
+	EXPECT_PRED_FORMAT2(::helpers::CompareCaseFolding, e, a); \
+}
+
 namespace helpers {
 
 	std::string uppercase(unicode_t codepoint);
@@ -60,6 +70,9 @@ namespace helpers {
 
 	std::string titlecase(unicode_t codepoint);
 	std::string titlecase(const std::string& text);
+
+	std::string casefolded(unicode_t codepoint);
+	std::string casefolded(const std::string& text);
 
 	struct CaseMappingEntry
 	{
@@ -83,6 +96,17 @@ namespace helpers {
 	::testing::AssertionResult CompareCaseMapping(
 		const char* expressionExpected, const char* expressionActual,
 		const CaseMappingEntry& entryExpected, const CaseMappingEntry& entryActual);
+
+	struct CaseFoldingEntry
+	{
+		unicode_t codePoint;
+		std::string folded;
+		std::string name;
+	};
+
+	::testing::AssertionResult CompareCaseFolding(
+		const char* expressionExpected, const char* expressionActual,
+		const CaseFoldingEntry& entryExpected, const CaseFoldingEntry& entryActual);
 
 };
 

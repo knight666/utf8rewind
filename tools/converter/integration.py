@@ -533,7 +533,7 @@ class CaseFoldingIntegrationSuite(IntegrationSuite):
 			self.header.newLine()
 			
 			for r in tests_turkish:
-				self.header.writeLine("EXPECT_CASEFOLDING_EQ(\"" + str(libs.utf8.codepointToUtf8(r.codePoint)[0]) + "\", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\");")
+				self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\");")
 			
 			self.header.outdent()
 			self.header.write("}")
@@ -557,7 +557,7 @@ class CaseFoldingIntegrationSuite(IntegrationSuite):
 		self.header.indent()
 		
 		for r in records:
-			self.header.writeLine("EXPECT_CASEFOLDING_EQ(\"" + str(libs.utf8.codepointToUtf8(r.codePoint)[0]) + "\", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\");")
+			self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\");")
 		
 		self.header.outdent()
 		self.header.write("}")
