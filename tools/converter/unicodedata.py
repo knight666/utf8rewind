@@ -39,6 +39,7 @@ class UnicodeMapping:
 		self.uppercase = []
 		self.lowercase = []
 		self.titlecase = []
+		self.caseFolding = []
 		self.block = None
 	
 	def decomposedToString(self):
@@ -680,6 +681,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.qcNFDRecords = []
 		self.qcNFKCRecords = []
 		self.qcNFKDRecords = []
+		self.caseFolding = []
 	
 	def loadFromFiles(self, arguments):
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -815,11 +817,8 @@ class Database(libs.unicode.UnicodeVisitor):
 		# NFC
 		
 		self.qcNFCRecords = sorted(self.qcNFCRecords, key=lambda record: record.start)
-		nfc_length = len(self.qcNFCRecords)
-		nfc_last = self.qcNFCRecords[nfc_length - 1]
-		nfc_last.end = nfc_last.start + nfc_last.count
 		
-		for i in range(0, nfc_length - 1):
+		for i in range(0, len(self.qcNFCRecords) - 1):
 			current = self.qcNFCRecords[i]
 			self.qcNFCRecords[i].end = self.qcNFCRecords[i + 1].start - 1
 
@@ -830,11 +829,8 @@ class Database(libs.unicode.UnicodeVisitor):
 		# NFD
 		
 		self.qcNFDRecords = sorted(self.qcNFDRecords, key=lambda record: record.start)
-		nfd_length = len(self.qcNFDRecords)
-		nfd_last = self.qcNFDRecords[nfd_length - 1]
-		nfd_last.end = nfd_last.start + nfd_last.count
 		
-		for i in range(0, nfd_length - 1):
+		for i in range(0, len(self.qcNFDRecords) - 1):
 			current = self.qcNFDRecords[i]
 			self.qcNFDRecords[i].end = self.qcNFDRecords[i + 1].start - 1
 
@@ -845,11 +841,8 @@ class Database(libs.unicode.UnicodeVisitor):
 		# NFKC
 		
 		self.qcNFKCRecords = sorted(self.qcNFKCRecords, key=lambda record: record.start)
-		nfkc_length = len(self.qcNFKCRecords)
-		nfkc_last = self.qcNFKCRecords[nfkc_length - 1]
-		nfkc_last.end = nfkc_last.start + nfkc_last.count
 		
-		for i in range(0, nfkc_length - 1):
+		for i in range(0, len(self.qcNFKCRecords) - 1):
 			current = self.qcNFKCRecords[i]
 			self.qcNFKCRecords[i].end = self.qcNFKCRecords[i + 1].start - 1
 
@@ -860,17 +853,26 @@ class Database(libs.unicode.UnicodeVisitor):
 		# NFKD
 		
 		self.qcNFKDRecords = sorted(self.qcNFKDRecords, key=lambda record: record.start)
-		nfkd_length = len(self.qcNFKDRecords)
-		nfkd_last = self.qcNFKDRecords[nfkd_length - 1]
-		nfkd_last.end = nfkd_last.start + nfkd_last.count
 		
-		for i in range(0, nfkd_length - 1):
+		for i in range(0, len(self.qcNFKDRecords) - 1):
 			current = self.qcNFKDRecords[i]
 			self.qcNFKDRecords[i].end = self.qcNFKDRecords[i + 1].start - 1
 
 		for n in self.qcNFKDRecords:
 			for r in self.recordsOrdered[n.start:n.start + n.count + 1]:
 				r.quickNFKD = n.value
+
+		# Case folding
+
+		self.caseFolding = sorted(self.caseFolding, key=lambda record: record.start)
+		
+		for i in range(0, len(self.caseFolding) - 1):
+			current = self.caseFolding[i]
+			self.caseFolding[i].end = self.caseFolding[i + 1].start - 1
+
+		for n in self.caseFolding:
+			for r in self.recordsOrdered[n.start:n.start + n.count + 1]:
+				r.caseFolding = n.value
 		
 	def resolveDecomposition(self):
 		print('Resolving decomposition...')
@@ -1058,7 +1060,7 @@ class Database(libs.unicode.UnicodeVisitor):
 	
 	def writeSource(self, filepath):
 		print('Compressing code point properties...')
-		
+
 		compress_gc = Compression(db)
 		compress_gc.process('generalCategoryCombined', 32)
 		
@@ -1094,6 +1096,9 @@ class Database(libs.unicode.UnicodeVisitor):
 
 		compress_titlecase = CompressionString(db)
 		compress_titlecase.process('titlecase', 32, 128)
+
+		compress_casefolding = CompressionString(db)
+		compress_casefolding.process('caseFolding', 32, 128)
 		
 		print('Writing database to "' + os.path.realpath(filepath) + '"...')
 		
@@ -1154,9 +1159,13 @@ class Database(libs.unicode.UnicodeVisitor):
 
 		compress_titlecase.render(header, 'Titlecase')
 		header.newLine()
+
+		compress_casefolding.render(header, 'CaseFolding')
+		header.newLine()
 		
 		# composition
 		
+		header.newLine()
 		self.writeCompositionRecords(header)
 		
 		# decomposition data
@@ -1178,8 +1187,7 @@ class Database(libs.unicode.UnicodeVisitor):
 
 		header.outdent()
 		header.writeLine(";")
-		header.writeLine("const size_t CompressedStringDataLength = " + str(self.compressed_length) + ";")
-		header.newLine()
+		header.write("const size_t CompressedStringDataLength = " + str(self.compressed_length) + ";")
 	
 	def writeCaseMapping(self, filepath):
 		print('Writing case mapping to "' + os.path.realpath(filepath) + '"...')
@@ -1337,7 +1345,13 @@ class Normalization(libs.unicode.UnicodeVisitor):
 			self.db.__dict__[nf_member[property]].append(qc)
 		
 		def case_fold(property):
-			pass
+			if len(matches[2]) > 0:
+				qc = QuickCheckRecord(self.db)
+				qc.start = start
+				qc.count = count
+				qc.value = [int(i, 16) for i in matches[2]]
+				
+				self.db.caseFolding.append(qc)
 		
 		def changes_when_nfkc_casefolded(property):
 			pass
