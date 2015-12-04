@@ -677,6 +677,13 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 	return state.total_bytes_needed;
 }
 
+size_t utf8tocasefolded(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+{
+	UTF8_SET_ERROR(NONE);
+
+	return 0;
+}
+
 uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size_t* offset)
 {
 	const char* src = input;
