@@ -56,7 +56,7 @@
 	e.folded = _folded; \
 	e.name = _name; \
 	::helpers::CaseFoldingEntry a; \
-	a.folded = ::helpers::casefolded(_codepoint); \
+	a.folded = ::helpers::casefold(_codepoint); \
 	EXPECT_PRED_FORMAT2(::helpers::CompareCaseFolding, e, a); \
 }
 
@@ -71,8 +71,8 @@ namespace helpers {
 	std::string titlecase(unicode_t codepoint);
 	std::string titlecase(const std::string& text);
 
-	std::string casefolded(unicode_t codepoint);
-	std::string casefolded(const std::string& text);
+	std::string casefold(unicode_t codepoint);
+	std::string casefold(const std::string& text);
 
 	struct CaseMappingEntry
 	{

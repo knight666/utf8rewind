@@ -77,16 +77,27 @@ namespace helpers {
 		return converted;
 	}
 
-	std::string casefolded(unicode_t codepoint)
+	std::string casefold(unicode_t codepoint)
 	{
-		return casefolded(utf8(codepoint));
+		return casefold(utf8(codepoint));
 	}
 
-	std::string casefolded(const std::string& text)
+	std::string casefold(const std::string& text)
 	{
-		// TODO
+		std::string converted;
+		int32_t errors;
 
-		return "";
+		size_t size_in_bytes = utf8tocasefolded(text.c_str(), text.length(), nullptr, 0, &errors);
+		if (size_in_bytes == 0 ||
+			errors != UTF8_ERR_NONE)
+		{
+			return converted;
+		}
+
+		converted.resize(size_in_bytes);
+		utf8tocasefolded(text.c_str(), text.length(), &converted[0], size_in_bytes, nullptr);
+
+		return converted;
 	}
 
 	::testing::AssertionResult CompareCodepoint(
