@@ -87,6 +87,7 @@
 				'helpers',
 			],
 			'sources': [
+				'source/tests/integration-casefolding.cpp',
 				'source/tests/integration-casemapping.cpp',
 				'source/tests/integration-conformance.cpp',
 				'source/tests/integration-isnormalized.cpp',
