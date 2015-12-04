@@ -40,17 +40,9 @@ const char* database_querydecomposition(unicode_t codepoint, const uint32_t* ind
 	uint32_t index;
 	uint32_t data;
 
-	if (codepoint > MAX_LEGAL_UNICODE)
-	{
-		*length = 0;
-
-		return 0;
-	}
-
-	index = index2Array[
-		index1Array[codepoint >> DECOMPOSE_INDEX1_SHIFT] +
-		((codepoint & DECOMPOSE_INDEX2_MASK) >> DECOMPOSE_INDEX2_SHIFT)] +
-		(codepoint & DECOMPOSE_DATA_MASK);
+	index = index1Array[codepoint >> DECOMPOSE_INDEX1_SHIFT];
+	index = index2Array[index + ((codepoint & DECOMPOSE_INDEX2_MASK) >> DECOMPOSE_INDEX2_SHIFT)];
+	index = index + (codepoint & DECOMPOSE_DATA_MASK);
 
 	if (index == 0 ||
 		(data = dataArray[index]) == 0)
