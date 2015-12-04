@@ -444,36 +444,168 @@ class IsNormalizedIntegrationSuite(IntegrationSuite):
 		
 		self.header.outdent()
 		self.header.write("}")
+
+class CaseFoldingRecord():
+	def __init__(self):
+		self.codePoint = 0
+		self.type = ''
+		self.folded = []
+	
+	def __str__(self):
+		return '{ codePoint ' + hex(self.codePoint) + ' type ' + self.type + ' folded ' + str(self.folded) + ' }'
+	
+	def parse(self, entry):
+		self.codePoint = int(entry.matches[0][0], 16)
 		
+		types = {
+			'C': 'Common',
+			'F': 'Full',
+			'S': 'Simple',
+			'T': 'Turkish'
+		}
+		self.type = types[entry.matches[1][0]]
+		
+		for m in entry.matches[2]:
+			self.folded.append(int(m, 16))
+
+class CaseFoldingIntegrationSuite(IntegrationSuite):
+	def __init__(self, db):
+		self.db = db
+		self.records = []
+	
+	def execute(self):
+		print('Parsing case folding records...')
+		
+		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+		
+		document_exclusions = libs.unicode.UnicodeDocument()
+		document_exclusions.parse(script_path + '/data/CaseFolding.txt')
+		document_exclusions.accept(self)
+		
+		self.open('/../../source/tests/integration-casefolding.cpp')
+		
+		self.header.writeLine("#include \"../helpers/helpers-casemapping.hpp\"")
+		self.header.writeLine("#include \"../helpers/helpers-locale.hpp\"")
+		self.header.newLine()
+		self.header.writeLine("class CaseFolding")
+		self.header.writeLine("\t: public ::testing::Test")
+		self.header.writeLine("{")
+		self.header.newLine()
+		self.header.writeLine("protected:")
+		self.header.newLine()
+		self.header.writeLine("\tvoid SetUp()")
+		self.header.writeLine("\t{")
+		self.header.writeLine("\t\tSET_LOCALE_ENGLISH();")
+		self.header.writeLine("\t}")
+		self.header.newLine()
+		self.header.writeLine("\tvoid TearDown()")
+		self.header.writeLine("\t{")
+		self.header.writeLine("\t\tRESET_LOCALE();")
+		self.header.writeLine("\t}")
+		self.header.newLine()
+		self.header.write("};")
+		
+		tests_turkish = []
+		
+		for b in db.blocks:
+			tests = []
+			
+			for r in self.records:
+				if r.codePoint >= b.start and r.codePoint <= b.end:
+					if r.type in ['Common', 'Full']:
+						tests.append(r)
+					elif r.type == 'Turkish':
+						tests_turkish.append(r)
+			
+			if len(tests) > 0:
+				self.writeTest(tests, b.name)
+		
+		if len(tests_turkish) > 0:
+			print("Writing tests to \"TurkishLocale\"")
+			
+			self.header.newLine()
+			
+			self.header.newLine()
+			self.header.writeLine("TEST_F(CaseFolding, TurkishLocale)")
+			self.header.writeLine("{")
+			self.header.indent()
+			self.header.writeLine("SET_LOCALE_TURKISH();")
+			self.header.newLine()
+			
+			for r in tests_turkish:
+				self.header.writeLine("EXPECT_CASEFOLDING_EQ(\"" + str(libs.utf8.codepointToUtf8(r.codePoint)[0]) + "\", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\");")
+			
+			self.header.outdent()
+			self.header.write("}")
+	
+	def writeTest(self, records, name):
+		name = re.sub('[ \-]', '', name)
+		
+		if len(records) > 4000:
+			for i in range(0, len(records), 4000):
+				chunk = records[i:i + 4000]
+				self.writeTest(chunk, name + "Part" + str((i / 4000) + 1))
+			return
+		
+		print("Writing tests to \"" + name + "\"")
+		
+		self.header.newLine()
+		
+		self.header.newLine()
+		self.header.writeLine("TEST_F(CaseFolding, " + name + ")")
+		self.header.writeLine("{")
+		self.header.indent()
+		
+		for r in records:
+			self.header.writeLine("EXPECT_CASEFOLDING_EQ(\"" + str(libs.utf8.codepointToUtf8(r.codePoint)[0]) + "\", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\");")
+		
+		self.header.outdent()
+		self.header.write("}")
+	
+	def visitDocument(self, document):
+		return True
+	
+	def visitSection(self, section):
+		return True
+	
+	def visitEntry(self, entry):
+		record = CaseFoldingRecord()
+		record.parse(entry)
+		
+		self.records.append(record)
+		
+		return True
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Parse Unicode codepoint database and write integration tests.')
 	parser.add_argument(
 		'-v', '--verbose',
 		dest = 'verbose',
 		action = 'store_true',
-		help = 'verbose output'
-	)
+		help = 'verbose output')
 	parser.add_argument(
 		'--casemapping',
 		dest = 'casemapping',
 		action = 'store_true',
-		help = 'write case mapping tests'
-	)
+		help = 'write case mapping tests')
 	parser.add_argument(
 		'--normalization',
 		dest = 'normalization',
 		action = 'store_true',
-		help = 'write normalization tests'
-	)
+		help = 'write normalization tests')
 	parser.add_argument(
 		'--is-normalized',
 		dest = 'isnormalized',
 		action = 'store_true',
-		help = 'write is-normalized tests'
-	)
+		help = 'write is-normalized tests')
+	parser.add_argument(
+		'--casefolding',
+		dest = 'casefolding',
+		action = 'store_true',
+		help = 'write casefolding tests')
 	args = parser.parse_args()
 	
-	if not args.casemapping and not args.normalization and not args.isnormalized:
+	if not args.casemapping and not args.normalization and not args.isnormalized and not args.casefolding:
 		all = True
 	else:
 		all = False
@@ -491,4 +623,8 @@ if __name__ == '__main__':
 	
 	if all or args.isnormalized:
 		suite = IsNormalizedIntegrationSuite(db)
+		suite.execute()
+	
+	if all or args.casefolding:
+		suite = CaseFoldingIntegrationSuite(db)
 		suite.execute()
