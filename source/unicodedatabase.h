@@ -101,6 +101,10 @@ extern const uint32_t* TitlecaseIndex1Ptr;
 extern const uint32_t* TitlecaseIndex2Ptr;
 extern const uint32_t* TitlecaseDataPtr;
 
+extern const uint32_t* CaseFoldingIndex1Ptr;
+extern const uint32_t* CaseFoldingIndex2Ptr;
+extern const uint32_t* CaseFoldingDataPtr;
+
 extern const char* CompressedStringData;
 extern const size_t CompressedStringDataLength;
 

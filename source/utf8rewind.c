@@ -679,9 +679,38 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 
 size_t utf8tocasefolded(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
+	CaseMappingState state;
+
+	/* Validate parameters */
+
+	UTF8_VALIDATE_PARAMETERS_CHAR(char, 0);
+
+	/* Initialize case mapping */
+
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr))
+	{
+		UTF8_SET_ERROR(NONE);
+
+		return state.total_bytes_needed;
+	}
+
+	/* Execute case mapping as long as input remains */
+
+	while (state.src_size > 0)
+	{
+		size_t converted;
+
+		if ((converted = casemapping_execute(&state, errors)) == 0)
+		{
+			return state.total_bytes_needed;
+		}
+
+		state.total_bytes_needed += converted;
+	}
+
 	UTF8_SET_ERROR(NONE);
 
-	return 0;
+	return state.total_bytes_needed;
 }
 
 uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size_t* offset)
