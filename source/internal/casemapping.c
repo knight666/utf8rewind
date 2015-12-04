@@ -87,23 +87,19 @@ static const char basic_latin_uppercase_table[58] = {
 };
 
 #if WIN32 || _WINDOWS
-	#define LOCALE_TYPE                     _locale_t
-	#define GET_LOCALE()                    _get_current_locale()
-	#define CHECK_LOCALE(_target, _name, _ansiCodepage, _oemCodepage) \
+	#define UTF8_LOCALE_TYPE                     _locale_t
+	#define UTF8_LOCALE_GET()                    _get_current_locale()
+	#define UTF8_LOCALE_CHECK(_target, _name, _ansiCodepage, _oemCodepage) \
 		(_target)->locinfo->lc_codepage == _ansiCodepage || \
 		(_target)->locinfo->lc_codepage == _oemCodepage
 #else
-	#define LOCALE_TYPE                     const char*
-	#define GET_LOCALE()                    setlocale(LC_ALL, 0)
-	#define CHECK_LOCALE(_target, _name, _ansiCodepage, _oemCodepage) \
+	#define UTF8_LOCALE_TYPE                     const char*
+	#define UTF8_LOCALE_GET()                    setlocale(LC_ALL, 0)
+	#define UTF8_LOCALE_CHECK(_target, _name, _ansiCodepage, _oemCodepage) \
 		!strncasecmp((_target), _name, 5)
 #endif
 
-uint8_t casemapping_initialize(
-	CaseMappingState* state,
-	const char* input, size_t inputSize,
-	char* target, size_t targetSize,
-	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData)
+uint32_t casemapping_locale()
 {
 	/*
 		Sources for locales and code pages
@@ -115,8 +111,28 @@ uint8_t casemapping_initialize(
 		https://www-01.ibm.com/support/knowledgecenter/ssw_aix_61/com.ibm.aix.nlsgdrf/support_languages_locales.htm
 	*/
 
-	LOCALE_TYPE locale;
+	UTF8_LOCALE_TYPE locale = UTF8_LOCALE_GET();
 
+	if (UTF8_LOCALE_CHECK(locale, "lt_lt", 1257, 775))
+	{
+		return CASEMAPPING_LOCALE_LITHUANIAN;
+	}
+	else if (
+		UTF8_LOCALE_CHECK(locale, "tr_tr", 1254, 857) ||
+		UTF8_LOCALE_CHECK(locale, "az_az", 1254, 857))
+	{
+		return CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN;
+	}
+
+	return CASEMAPPING_LOCALE_DEFAULT;
+}
+
+uint8_t casemapping_initialize(
+	CaseMappingState* state,
+	const char* input, size_t inputSize,
+	char* target, size_t targetSize,
+	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData)
+{
 	memset(state, 0, sizeof(CaseMappingState));
 
 	state->src = input;
@@ -126,19 +142,7 @@ uint8_t casemapping_initialize(
 	state->property_index1 = propertyIndex1;
 	state->property_index2 = propertyIndex2;
 	state->property_data = propertyData;
-
-	locale = GET_LOCALE();
-
-	if (CHECK_LOCALE(locale, "lt_lt", 1257, 775))
-	{
-		state->locale = CASEMAPPING_LOCALE_LITHUANIAN;
-	}
-	else if (
-		CHECK_LOCALE(locale, "tr_tr", 1254, 857) ||
-		CHECK_LOCALE(locale, "az_az", 1254, 857))
-	{
-		state->locale = CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN;
-	}
+	state->locale = casemapping_locale();
 
 	return 1;
 }

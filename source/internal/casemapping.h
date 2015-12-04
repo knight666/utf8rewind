@@ -39,6 +39,8 @@
 #define CASEMAPPING_LOCALE_LITHUANIAN              0x00000001
 #define CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN  0x00000002
 
+uint32_t casemapping_locale();
+
 typedef struct {
 	const char* src;
 	char* dst;

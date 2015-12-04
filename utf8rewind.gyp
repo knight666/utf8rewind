@@ -97,6 +97,7 @@
 				'source/tests/integration-quickbrown.cpp',
 				'source/tests/suite-casemapping-execute.cpp',
 				'source/tests/suite-casemapping-initialize.cpp',
+				'source/tests/suite-casemapping-locale.cpp',
 				'source/tests/suite-codepoint-decoded-length.cpp',
 				'source/tests/suite-codepoint-read.cpp',
 				'source/tests/suite-codepoint-write.cpp',
