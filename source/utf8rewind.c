@@ -775,12 +775,12 @@ writeoutput:
 
 		/* Write to output */
 
-		if (state.dst != 0)
+		if (resolved != 0)
 		{
-			if (resolved != 0)
-			{
-				/* Write resolved string to output */
+			/* Write resolved string to output */
 
+			if (state.dst != 0)
+			{
 				if (state.dst_size < bytes_needed)
 				{
 					goto outofspace;
@@ -791,14 +791,14 @@ writeoutput:
 				state.dst += bytes_needed;
 				state.dst_size -= bytes_needed;
 			}
-			else
-			{
-				/* Write code point unchanged to output */
+		}
+		else
+		{
+			/* Write code point unchanged to output */
 
-				if (!(bytes_needed = codepoint_write(state.last_code_point, &state.dst, &state.dst_size)))
-				{
-					goto outofspace;
-				}
+			if (!(bytes_needed = codepoint_write(state.last_code_point, &state.dst, &state.dst_size)))
+			{
+				goto outofspace;
 			}
 		}
 
