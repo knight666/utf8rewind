@@ -39,6 +39,7 @@ class UnicodeMapping:
 		self.uppercase = []
 		self.lowercase = []
 		self.titlecase = []
+		self.caseFoldingType = ''
 		self.caseFolding = []
 		self.block = None
 	
@@ -681,7 +682,6 @@ class Database(libs.unicode.UnicodeVisitor):
 		self.qcNFDRecords = []
 		self.qcNFKCRecords = []
 		self.qcNFKDRecords = []
-		self.caseFolding = []
 	
 	def loadFromFiles(self, arguments):
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -727,6 +727,14 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		special_casing = SpecialCasing(self)
 		document_special_casing.accept(special_casing)
+
+		# case folding
+		
+		document_case_folding = libs.unicode.UnicodeDocument()
+		document_case_folding.parse(script_path + '/data/CaseFolding.txt')
+		
+		case_folding = CaseFolding(self)
+		document_case_folding.accept(case_folding)
 		
 		# properties
 		
@@ -861,18 +869,6 @@ class Database(libs.unicode.UnicodeVisitor):
 		for n in self.qcNFKDRecords:
 			for r in self.recordsOrdered[n.start:n.start + n.count + 1]:
 				r.quickNFKD = n.value
-
-		# Case folding
-
-		self.caseFolding = sorted(self.caseFolding, key=lambda record: record.start)
-		
-		for i in range(0, len(self.caseFolding) - 1):
-			current = self.caseFolding[i]
-			self.caseFolding[i].end = self.caseFolding[i + 1].start - 1
-
-		for n in self.caseFolding:
-			for r in self.recordsOrdered[n.start:n.start + n.count + 1]:
-				r.caseFolding = n.value
 		
 	def resolveDecomposition(self):
 		print('Resolving decomposition...')
@@ -1289,6 +1285,33 @@ class SpecialCasing(libs.unicode.UnicodeVisitor):
 		
 		return True
 
+class CaseFolding(libs.unicode.UnicodeVisitor):
+	def __init__(self, db):
+		self.db = db
+
+	def visitDocument(self, document):
+		print("Parsing case folding...")
+		return True
+	
+	def visitEntry(self, entry):
+		codePoint = int(entry.matches[0][0], 16)
+		
+		r = self.db.records[codePoint]
+		
+		types = {
+			'C': 'Common',
+			'F': 'Full',
+			'S': 'Simple',
+			'T': 'Turkish'
+		}
+		r.caseFoldingType = types[entry.matches[1][0]]
+		
+		if r.caseFoldingType in ['Common', 'Full']:
+			for m in entry.matches[2]:
+				r.caseFolding.append(int(m, 16))
+		
+		return True
+
 class Blocks(libs.unicode.UnicodeVisitor):
 	def __init__(self, db):
 		self.db = db
@@ -1345,13 +1368,7 @@ class Normalization(libs.unicode.UnicodeVisitor):
 			self.db.__dict__[nf_member[property]].append(qc)
 		
 		def case_fold(property):
-			if len(matches[2]) > 0:
-				qc = QuickCheckRecord(self.db)
-				qc.start = start
-				qc.count = count
-				qc.value = [int(i, 16) for i in matches[2]]
-				
-				self.db.caseFolding.append(qc)
+			pass
 		
 		def changes_when_nfkc_casefolded(property):
 			pass
