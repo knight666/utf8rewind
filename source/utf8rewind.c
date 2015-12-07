@@ -698,17 +698,95 @@ size_t utf8tocasefolded(const char* input, size_t inputSize, char* target, size_
 
 	while (state.src_size > 0)
 	{
-		size_t converted;
+		const char* resolved;
+		uint8_t bytes_needed = 0;
 
-		if ((converted = casemapping_execute(&state, errors)) == 0)
+		if (!(state.last_code_point_size = codepoint_read(state.src, state.src_size, &state.last_code_point)))
 		{
-			return state.total_bytes_needed;
+			goto invaliddata;
 		}
 
-		state.total_bytes_needed += converted;
+		/* Check for invalid characters */
+
+		if (state.last_code_point == REPLACEMENT_CHARACTER)
+		{
+			/* Get code point properties */
+
+			state.last_canonical_combining_class = 0;
+			state.last_general_category = GeneralCategory_Symbol;
+
+			/* Resolve case folding */
+
+			resolved = REPLACEMENT_CHARACTER_STRING;
+			bytes_needed = REPLACEMENT_CHARACTER_STRING_LENGTH;
+		}
+		else
+		{
+			/* Get code point properties */
+
+			state.last_canonical_combining_class = PROPERTY_GET_CCC(state.last_code_point);
+			state.last_general_category = PROPERTY_GET_GC(state.last_code_point);
+
+			/* Resolve case folding */
+
+			resolved = database_querydecomposition(state.last_code_point, state.property_index1, state.property_index2, state.property_data, &bytes_needed);
+		}
+
+		/* Move source cursor */
+
+		if (state.src_size >= state.last_code_point_size)
+		{
+			state.src += state.last_code_point_size;
+			state.src_size -= state.last_code_point_size;
+		}
+		else
+		{
+			state.src_size = 0;
+		}
+
+		/* Write to output */
+
+		if (state.dst != 0)
+		{
+			if (resolved != 0)
+			{
+				/* Write resolved string to output */
+
+				if (state.dst_size < bytes_needed)
+				{
+					goto outofspace;
+				}
+
+				memcpy(state.dst, resolved, bytes_needed);
+
+				state.dst += bytes_needed;
+				state.dst_size -= bytes_needed;
+			}
+			else
+			{
+				/* Write code point unchanged to output */
+
+				if (!(bytes_needed = codepoint_write(state.last_code_point, &state.dst, &state.dst_size)))
+				{
+					goto outofspace;
+				}
+			}
+		}
+
+		state.total_bytes_needed += bytes_needed;
 	}
 
 	UTF8_SET_ERROR(NONE);
+
+	return state.total_bytes_needed;
+
+invaliddata:
+	UTF8_SET_ERROR(INVALID_DATA);
+
+	return state.total_bytes_needed;
+
+outofspace:
+	UTF8_SET_ERROR(NOT_ENOUGH_SPACE);
 
 	return state.total_bytes_needed;
 }
