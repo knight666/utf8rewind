@@ -706,6 +706,33 @@ size_t utf8tocasefolded(const char* input, size_t inputSize, char* target, size_
 			goto invaliddata;
 		}
 
+		/* Fixes for Turkish locale */
+
+		if (state.locale == CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN)
+		{
+			if (state.last_code_point == CP_LATIN_CAPITAL_LETTER_I)
+			{
+				state.last_canonical_combining_class = 0;
+				state.last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
+
+				resolved = "\xC4\xB1";
+				bytes_needed = 2;
+
+				goto writeoutput;
+			}
+			else if (
+				state.last_code_point == CP_LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE)
+			{
+				state.last_canonical_combining_class = 0;
+				state.last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
+
+				resolved = "i";
+				bytes_needed = 1;
+
+				goto writeoutput;
+			}
+		}
+
 		/* Check for invalid characters */
 
 		if (state.last_code_point == REPLACEMENT_CHARACTER)
@@ -731,6 +758,8 @@ size_t utf8tocasefolded(const char* input, size_t inputSize, char* target, size_
 
 			resolved = database_querydecomposition(state.last_code_point, state.property_index1, state.property_index2, state.property_data, &bytes_needed);
 		}
+
+writeoutput:
 
 		/* Move source cursor */
 

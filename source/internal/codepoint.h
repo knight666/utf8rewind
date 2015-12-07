@@ -202,6 +202,24 @@
 */
 #define HANGUL_S_COUNT                       11172 /* LCount * NCount */
 
+#define CP_LATIN_CAPITAL_LETTER_I                 0x0049
+#define CP_LATIN_CAPITAL_LETTER_J                 0x004A
+#define CP_LATIN_SMALL_LETTER_I                   0x0069
+#define CP_LATIN_SMALL_LETTER_J                   0x006A
+#define CP_LATIN_CAPITAL_LETTER_I_WITH_GRAVE      0x00CC
+#define CP_LATIN_CAPITAL_LETTER_I_WITH_ACUTE      0x00CD
+#define CP_LATIN_CAPITAL_LETTER_I_WITH_TILDE      0x0128
+#define CP_LATIN_CAPITAL_LETTER_I_WITH_OGONEK     0x012E
+#define CP_LATIN_SMALL_LETTER_I_WITH_OGONEK       0x012F
+#define CP_LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE  0x0130
+#define CP_LATIN_SMALL_LETTER_DOTLESS_I           0x0131
+#define CP_COMBINING_GRAVE_ACCENT                 0x0300
+#define CP_COMBINING_ACUTE_ACCENT                 0x0301
+#define CP_COMBINING_TILDE_ACCENT                 0x0303
+#define CP_COMBINING_DOT_ABOVE                    0x0307
+#define CP_COMBINING_GREEK_YPOGEGRAMMENI          0x0345
+#define CP_GREEK_CAPITAL_LETTER_SIGMA             0x03A3
+
 /*!
 	\brief Get the number of bytes used for encoding a code point.
 
