@@ -316,3 +316,57 @@ TEST_F(Utf8ToCaseFolded, GeneralCategoryCaseMappedMultipleNotEnoughSpace)
 	EXPECT_UTF8EQ("\xCD\xB7\xCA\x8A", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
+
+TEST_F(Utf8ToCaseFolded, GraphemeClusterSingleUppercase)
+{
+	// 004C 0F7C 08EE 0350 0485
+	//    0  130  220  230  230
+
+	// 006C 0F7C 08EE 0350 0485
+	//    0  130  220  230  230
+
+	const char* c = "L\xE0\xBD\xBC\xE0\xA3\xAE\xCD\x90\xD2\x85";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(11, utf8tocasefolded(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("l\xE0\xBD\xBC\xE0\xA3\xAE\xCD\x90\xD2\x85", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, GraphemeClusterSingleLowercase)
+{
+	// 0149 0C55 0F80 0322
+	//    0   84  130  222
+
+	// 02BC 006E 0C55 0F80 0322
+	//    0    0   84  130  222
+
+	const char* c = "\xC5\x89\xE0\xB1\x95\xE0\xBE\x80\xCC\xA2";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(11, utf8tocasefolded(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xCA\xBCn\xE0\xB1\x95\xE0\xBE\x80\xCC\xA2", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, GraphemeClusterSingleTitlecase)
+{
+	// 01C5 0F74 1DCE 1D165
+	//    0  132  214   216
+
+	// 01C6 0F74 1DCE 1D165
+	//    0  132  214   216
+
+	const char* c = "\xC7\x85\xE0\xBD\xB4\xE1\xB7\x8E\xF0\x9D\x85\xA5";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(12, utf8tocasefolded(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xC7\x86\xE0\xBD\xB4\xE1\xB7\x8E\xF0\x9D\x85\xA5", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
