@@ -526,3 +526,69 @@ TEST_F(Utf8ToCaseFolded, GraphemeClusterMultipleNotEnoughSpace)
 	EXPECT_UTF8EQ("\xE1\x84\xB1\xD6\x91\xE1\x84\xB7\xE0\xB1\x96\xE0\xBA\xB9\xE1\x87\xA9\xCD\x80\xE0\xA3\xBE", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
+
+TEST_F(Utf8ToCaseFolded, InvalidCodepointSingle)
+{
+	const char* c = "\xFE";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf8tocasefolded(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, InvalidCodepointAmountOfBytes)
+{
+	const char* c = "\xE2";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(3, utf8tocasefolded(c, strlen(c), nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, InvalidCodepointSingleNotEnoughSpace)
+{
+	const char* c = "\xE5\x81";
+	const size_t s = 2;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8tocasefolded(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, InvalidCodepointMultiple)
+{
+	const char* c = "\xE7\xD5\xE2";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(9, utf8tocasefolded(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBD", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, InvalidCodepointMultipleAmountOfBytes)
+{
+	const char* c = "\xE7\x81\xC2\xD4";
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(9, utf8tocasefolded(c, strlen(c), nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, InvalidCodepointMultipleNotEnoughSpace)
+{
+	const char* c = "\xB2\xB2\xB2";
+	const size_t s = 7;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(6, utf8tocasefolded(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD", b);
+	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
+}
