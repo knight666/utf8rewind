@@ -677,7 +677,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 	return state.total_bytes_needed;
 }
 
-size_t utf8tocasefolded(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
 {
 	CaseMappingState state;
 
