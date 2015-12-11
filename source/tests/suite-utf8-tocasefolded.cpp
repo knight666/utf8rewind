@@ -592,3 +592,160 @@ TEST_F(Utf8ToCaseFolded, InvalidCodepointMultipleNotEnoughSpace)
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
+
+TEST_F(Utf8ToCaseFolded, ErrorsIsReset)
+{
+	const char* c = "CoMpArE";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = -1;
+
+	EXPECT_EQ(7, utf8tocasefolded(c, strlen(c), b, s, &errors));
+	EXPECT_UTF8EQ("compare", b);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, InvalidData)
+{
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8tocasefolded(nullptr, 1, nullptr, 0, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, OverlappingParametersFits)
+{
+	int32_t errors = UTF8_ERR_NONE;
+
+	char data[128] = { 0 };
+	strcpy(data, "Central");
+
+	const char* i = data;
+	size_t is = 7;
+	char* o = data + 7;
+	size_t os = 7;
+
+	EXPECT_EQ(7, utf8tocasefolded(i, is, o, os, &errors));
+	EXPECT_UTF8EQ("Centralcentral", data);
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, OverlappingParametersStartsEqual)
+{
+	int32_t errors = UTF8_ERR_NONE;
+
+	char data[128] = { 0 };
+
+	const char* i = data;
+	size_t is = 66;
+	char* o = data;
+	size_t os = 13;
+
+	EXPECT_EQ(0, utf8tocasefolded(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, OverlappingParametersEndsEqual)
+{
+	int32_t errors = UTF8_ERR_NONE;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 23;
+	size_t is = 17;
+	char* o = data + 35;
+	size_t os = 5;
+
+	EXPECT_EQ(0, utf8tocasefolded(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, OverlappingParametersInputStartsInTarget)
+{
+	int32_t errors = UTF8_ERR_NONE;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 70;
+	size_t is = 35;
+	char* o = data + 55;
+	size_t os = 25;
+
+	EXPECT_EQ(0, utf8tocasefolded(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, OverlappingParametersInputEndsInTarget)
+{
+	int32_t errors = UTF8_ERR_NONE;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 10;
+	size_t is = 33;
+	char* o = data + 23;
+	size_t os = 67;
+
+	EXPECT_EQ(0, utf8tocasefolded(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, OverlappingParametersInputInsideTarget)
+{
+	int32_t errors = UTF8_ERR_NONE;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 59;
+	size_t is = 14;
+	char* o = data + 33;
+	size_t os = 100;
+
+	EXPECT_EQ(0, utf8tocasefolded(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, OverlappingParametersTargetStartsInInput)
+{
+	int32_t errors = UTF8_ERR_NONE;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 16;
+	size_t is = 28;
+	char* o = data + 28;
+	size_t os = 33;
+
+	EXPECT_EQ(0, utf8tocasefolded(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, OverlappingParametersTargetEndsInInput)
+{
+	int32_t errors = UTF8_ERR_NONE;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 24;
+	size_t is = 24;
+	char* o = data + 2;
+	size_t os = 28;
+
+	EXPECT_EQ(0, utf8tocasefolded(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
+
+TEST_F(Utf8ToCaseFolded, OverlappingParametersTargetInsideInput)
+{
+	int32_t errors = UTF8_ERR_NONE;
+
+	char data[128] = { 0 };
+
+	const char* i = data + 20;
+	size_t is = 80;
+	char* o = data + 33;
+	size_t os = 27;
+
+	EXPECT_EQ(0, utf8tocasefolded(i, is, o, os, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
+}
