@@ -912,7 +912,7 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 */
 UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
-UTF8_API size_t utf8tocasefolded(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 /*!
 	\brief Check if a string is stable in the specified Unicode Normalization
