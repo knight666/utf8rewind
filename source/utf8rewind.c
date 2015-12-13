@@ -698,8 +698,10 @@ size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t ta
 
 	while (state.src_size > 0)
 	{
-		const char* resolved;
+		const char* resolved = 0;
 		uint8_t bytes_needed = 0;
+
+		/* Read next code point */
 
 		if (!(state.last_code_point_size = codepoint_read(state.src, state.src_size, &state.last_code_point)))
 		{
@@ -712,54 +714,23 @@ size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t ta
 		{
 			if (state.last_code_point == CP_LATIN_CAPITAL_LETTER_I)
 			{
-				state.last_canonical_combining_class = 0;
-				state.last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
-
 				resolved = "\xC4\xB1";
 				bytes_needed = 2;
-
-				goto writeoutput;
 			}
 			else if (
 				state.last_code_point == CP_LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE)
 			{
-				state.last_canonical_combining_class = 0;
-				state.last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
-
 				resolved = "i";
 				bytes_needed = 1;
-
-				goto writeoutput;
 			}
 		}
 
-		/* Check for invalid characters */
+		/* Resolve case folding */
 
-		if (state.last_code_point == REPLACEMENT_CHARACTER)
+		if (resolved == 0)
 		{
-			/* Get code point properties */
-
-			state.last_canonical_combining_class = 0;
-			state.last_general_category = GeneralCategory_Symbol;
-
-			/* Resolve case folding */
-
-			resolved = REPLACEMENT_CHARACTER_STRING;
-			bytes_needed = REPLACEMENT_CHARACTER_STRING_LENGTH;
-		}
-		else
-		{
-			/* Get code point properties */
-
-			state.last_canonical_combining_class = PROPERTY_GET_CCC(state.last_code_point);
-			state.last_general_category = PROPERTY_GET_GC(state.last_code_point);
-
-			/* Resolve case folding */
-
 			resolved = database_querydecomposition(state.last_code_point, state.property_index1, state.property_index2, state.property_data, &bytes_needed);
 		}
-
-writeoutput:
 
 		/* Move source cursor */
 
