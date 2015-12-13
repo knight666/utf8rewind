@@ -85,3 +85,24 @@ PERF_TEST_F(BigCaseMapping, Titlecase)
 		delete [] o;
 	}
 }
+
+PERF_TEST_F(BigCaseMapping, Casefold)
+{
+	int32_t e;
+
+	size_t ol = utf8casefold(m_contents.c_str(), m_contents.length(), nullptr, 0, &e);
+
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
+
+	if (ol > 0 &&
+		e == UTF8_ERR_NONE)
+	{
+		char* o = new char[ol + 1];
+		memset(o, 0, ol + 1);
+
+		utf8casefold(m_contents.c_str(), m_contents.length(), o, ol, nullptr);
+
+		delete [] o;
+	}
+}

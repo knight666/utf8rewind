@@ -127,6 +127,39 @@ PERF_TEST_F(CaseMappingBasicLatin, TitlecaseDynamic)
 	}
 }
 
+PERF_TEST_F(CaseMappingBasicLatin, CasefoldStatic)
+{
+	char o[1024] = { 0 };
+	size_t ol = 1023;
+	int32_t e;
+
+	size_t l = utf8casefold(m_input.c_str(), m_input.length(), o, ol, &e);
+
+	PERF_ASSERT(l > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
+}
+
+PERF_TEST_F(CaseMappingBasicLatin, CasefoldDynamic)
+{
+	int32_t e;
+
+	size_t ol = utf8casefold(m_input.c_str(), m_input.length(), nullptr, 0, &e);
+
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
+
+	if (ol > 0 &&
+		e == UTF8_ERR_NONE)
+	{
+		char* o = new char[ol + 1];
+		memset(o, 0, ol + 1);
+
+		utf8casefold(m_input.c_str(), m_input.length(), o, ol, nullptr);
+
+		delete [] o;
+	}
+}
+
 class CaseMappingLatin1
 	: public performance::Suite
 {
@@ -229,6 +262,39 @@ PERF_TEST_F(CaseMappingLatin1, TitlecaseDynamic)
 		memset(o, 0, ol + 1);
 
 		utf8totitle(m_input.c_str(), m_input.length(), o, ol, nullptr);
+
+		delete [] o;
+	}
+}
+
+PERF_TEST_F(CaseMappingLatin1, CasefoldStatic)
+{
+	char o[MAX_LATIN_1 * 4] = { 0 };
+	size_t ol = MAX_LATIN_1 * 4 - 1;
+	int32_t e;
+
+	size_t l = utf8casefold(m_input.c_str(), m_input.length(), o, ol, &e);
+
+	PERF_ASSERT(l > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
+}
+
+PERF_TEST_F(CaseMappingLatin1, CasefoldDynamic)
+{
+	int32_t e;
+
+	size_t ol = utf8casefold(m_input.c_str(), m_input.length(), nullptr, 0, &e);
+
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
+
+	if (ol > 0 &&
+		e == UTF8_ERR_NONE)
+	{
+		char* o = new char[ol + 1];
+		memset(o, 0, ol + 1);
+
+		utf8casefold(m_input.c_str(), m_input.length(), o, ol, nullptr);
 
 		delete [] o;
 	}
@@ -354,6 +420,39 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, TitlecaseDynamic)
 		memset(o, 0, ol + 1);
 
 		utf8totitle(m_input.c_str(), m_input.length(), o, ol, nullptr);
+
+		delete [] o;
+	}
+}
+
+PERF_TEST_F(CaseMappingBasicMultilingualPlane, CasefoldStatic)
+{
+	char o[MAX_BASIC_MULTILINGUAL_PLANE * 4] = { 0 };
+	size_t ol = MAX_BASIC_MULTILINGUAL_PLANE * 4 - 1;
+	int32_t e;
+
+	size_t l = utf8casefold(m_input.c_str(), m_input.length(), o, ol, &e);
+
+	PERF_ASSERT(l > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
+}
+
+PERF_TEST_F(CaseMappingBasicMultilingualPlane, CasefoldDynamic)
+{
+	int32_t e;
+
+	size_t ol = utf8casefold(m_input.c_str(), m_input.length(), nullptr, 0, &e);
+
+	PERF_ASSERT(ol > 0);
+	PERF_ASSERT(e == UTF8_ERR_NONE);
+
+	if (ol > 0 &&
+		e == UTF8_ERR_NONE)
+	{
+		char* o = new char[ol + 1];
+		memset(o, 0, ol + 1);
+
+		utf8casefold(m_input.c_str(), m_input.length(), o, ol, nullptr);
 
 		delete [] o;
 	}
