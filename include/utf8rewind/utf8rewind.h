@@ -61,7 +61,7 @@
 	\def UTF8_VERSION_MINOR
 	\brief The minor version number of this release.
 */
-#define UTF8_VERSION_MINOR   3
+#define UTF8_VERSION_MINOR   4
 
 /*!
 	\def UTF8_VERSION_BUGFIX
@@ -80,7 +80,7 @@
 	\def UTF8_VERSION_STRING
 	\brief The verion number as a string.
 */
-#define UTF8_VERSION_STRING  "1.3.0"
+#define UTF8_VERSION_STRING  "1.4.0"
 
 /*!
 	\def UTF8_VERSION_GUARD
@@ -729,6 +729,7 @@ UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* tex
 
 	\sa utf8tolower
 	\sa utf8totitle
+	\sa utf8casefold
 */
 UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
@@ -822,6 +823,7 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 
 	\sa utf8toupper
 	\sa utf8totitle
+	\sa utf8casefold
 */
 UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
@@ -909,9 +911,122 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 
 	\sa utf8tolower
 	\sa utf8toupper
+	\sa utf8casefold
 */
 UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
+/*!
+	\brief Remove case distinction from UTF-8 encoded text.
+
+	Case folding is the process of eliminating differences between code points
+	concerning case mapping. It is most commonly used for comparing strings in a
+	case-insensitive manner. Conversion is fully compliant with the Unicode 7.0
+	standard.
+
+	Although similar to lowercasing text, there are significant differences.
+	For one, case folding does *not* take locale into account when converting.
+	This makes it X% faster than lowercasing, but the result cannot be treated
+	as correct lowercased text.
+
+	Only two locale-specific exception are made when case folding text.
+	In Turkish, U+0049 LATIN CAPITAL LETTER I maps to U+0131 LATIN SMALL LETTER
+	DOTLESS I and U+0130 LATIN CAPITAL LETTER I WITH DOT ABOVE maps to U+0069
+	LATIN SMALL LETTER I.
+
+	Although most code points can be converted to lowercase in-place, there are
+	notable exceptions. For example, U+0130 (LATIN CAPITAL LETTER I WITH DOT
+	ABOVE) maps to "U+0069 U+0307" (LATIN SMALL LETTER I and COMBINING DOT
+	ABOVE) when converted to lowercase. Therefor, it is advised to first
+	determine the size in bytes of the output by calling the function with a
+	NULL output buffer.
+
+	Only a handful of scripts make a distinction between upper- and lowercase.
+	In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic,
+	a few historic or archaic scripts have case. The vast majority of scripts
+	do not have case distinctions.
+
+	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
+	!= toLower(toUpper(x))`.
+
+	\note This function checks the (thread-local) system locale in order to
+	support languages with exceptional behavior on specific code points.
+	Unfortunately, no cross-platform way of setting and retrieving the system
+	locale is available without adding dependencies to the library. Please
+	refer to your operating system's manual to see how to setup the system
+	locale on your target system.
+
+	Example:
+
+	\code{.c}
+		int32_t Command_ParseCommand(const char* argument)
+		{
+			char* buffer = NULL;
+			size_t buffer_size = 0;
+			int32_t errors;
+			int32_t result = 0;
+
+			buffer_size = utf8casefold(argument, strlen(argument), NULL, 0, &errors);
+			if (buffer_size == 0 ||
+				errors != UTF8_ERR_NONE)
+			{
+				result = -1;
+
+				goto cleanup;
+			}
+
+			buffer = (char*)malloc(buffer_size);
+
+			utf8casefold(argument, strlen(argument), buffer, buffer_size, &errors);
+			if (errors != UTF8_ERR_NONE)
+			{
+				result = -1;
+
+				goto cleanup;
+			}
+
+			if (!strncmp(buffer, "-username", strlen("-username")))
+			{
+				result = eCommand_Username;
+			}
+			else if (
+				!strncmp(buffer, "-password", strlen("-password")))
+			{
+				result = eCommand_Password;
+			}
+			else if (
+				!strncmp(buffer, "-message", strlen("-message")))
+			{
+				result = eCommand_Message;
+			}
+
+		cleanup:
+			if (buffer != NULL)
+			{
+				free(buffer);
+				buffer = NULL;
+			}
+
+			return result;
+		}
+	\endcode
+
+	\param[in]   input       UTF-8 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[out]  target      Output buffer for the result, can be NULL.
+	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[out]  errors      Output for errors.
+
+	\return Amount of bytes needed for storing output.
+
+	\retval #UTF8_ERR_NONE                    No errors.
+	\retval #UTF8_ERR_INVALID_DATA            Failed to decode data.
+	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
+	\retval #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer size is insufficient for result.
+
+	\sa utf8tolower
+	\sa utf8toupper
+	\sa utf8totitle
+*/
 UTF8_API size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 /*!

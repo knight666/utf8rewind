@@ -87,7 +87,7 @@ namespace helpers {
 		std::string converted;
 		int32_t errors;
 
-		size_t size_in_bytes = utf8tocasefolded(text.c_str(), text.length(), nullptr, 0, &errors);
+		size_t size_in_bytes = utf8casefold(text.c_str(), text.length(), nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -95,7 +95,7 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes);
-		utf8tocasefolded(text.c_str(), text.length(), &converted[0], size_in_bytes, nullptr);
+		utf8casefold(text.c_str(), text.length(), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
 	}
