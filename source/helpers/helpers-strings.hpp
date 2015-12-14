@@ -14,6 +14,7 @@
 #define EXPECT_OFFSETEQ(_expected, _actual, _start)       EXPECT_PRED_FORMAT3(::helpers::CompareOffsets, _expected, _actual, _start)
 #define EXPECT_MEMEQ(_expected, _actual, _size)           EXPECT_PRED_FORMAT3(::helpers::CompareMemory, _expected, _actual, _size)
 #define EXPECT_CPEQ(_expected, _actual)                   EXPECT_PRED_FORMAT2(::helpers::CompareCodepoints, _expected, _actual)
+#define EXPECT_GCEQ(_expected, _actual)                   EXPECT_PRED_FORMAT2(::helpers::CompareGeneralCategory, _expected, _actual)
 
 namespace helpers {
 
@@ -76,6 +77,10 @@ namespace helpers {
 	::testing::AssertionResult CompareCodepoints(
 		const char* expressionExpected, const char* expressionActual,
 		unicode_t codepointExpected, unicode_t codepointActual);
+
+	::testing::AssertionResult CompareGeneralCategory(
+		const char* expressionExpected, const char* expressionActual,
+		uint32_t categoryExpected, uint32_t categoryActual);
 
 };
 

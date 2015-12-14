@@ -725,4 +725,22 @@ namespace helpers {
 		}
 	}
 
+	::testing::AssertionResult CompareGeneralCategory(
+		const char* expressionExpected, const char* expressionActual,
+		uint32_t categoryExpected, uint32_t categoryActual)
+	{
+		if (categoryExpected == categoryActual)
+		{
+			return ::testing::AssertionSuccess();
+		}
+		else
+		{
+			::testing::AssertionResult result = ::testing::AssertionFailure();
+
+			result << "Category mismatch" << std::endl;
+
+			return result;
+		}
+	}
+
 };
