@@ -2,6 +2,7 @@ var searchData=
 [
   ['utf16toutf8',['utf16toutf8',['../utf8rewind_8h.html#a84f067fc0293c142137d308ded6f130c',1,'utf8rewind.h']]],
   ['utf32toutf8',['utf32toutf8',['../utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b',1,'utf8rewind.h']]],
+  ['utf8casefold',['utf8casefold',['../utf8rewind_8h.html#af60cc918c7dec97b3472b40fbafc8900',1,'utf8rewind.h']]],
   ['utf8isnormalized',['utf8isnormalized',['../utf8rewind_8h.html#a97d390b29d670e7b7c5eea6c5a68e468',1,'utf8rewind.h']]],
   ['utf8len',['utf8len',['../utf8rewind_8h.html#a22810a3bc12067d0b6a4542d04220a74',1,'utf8rewind.h']]],
   ['utf8normalize',['utf8normalize',['../utf8rewind_8h.html#adfa0210609054db368b6af9837ca69db',1,'utf8rewind.h']]],

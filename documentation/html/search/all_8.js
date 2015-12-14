@@ -26,6 +26,7 @@ var searchData=
   ['utf8_5fversion_5fstring',['UTF8_VERSION_STRING',['../group__version.html#ga98d34d301a5bd9f3e6430bd44fc0cca8',1,'utf8rewind.h']]],
   ['utf8_5fwchar_5fsize',['UTF8_WCHAR_SIZE',['../group__configuration.html#gab1fce55198dd19e0eb149eb3ad34021b',1,'utf8rewind.h']]],
   ['utf8_5fwchar_5futf16',['UTF8_WCHAR_UTF16',['../group__configuration.html#gaf41b9c54e9a94ae8ef41a8c17e7c2d51',1,'utf8rewind.h']]],
+  ['utf8casefold',['utf8casefold',['../utf8rewind_8h.html#af60cc918c7dec97b3472b40fbafc8900',1,'utf8rewind.h']]],
   ['utf8isnormalized',['utf8isnormalized',['../utf8rewind_8h.html#a97d390b29d670e7b7c5eea6c5a68e468',1,'utf8rewind.h']]],
   ['utf8len',['utf8len',['../utf8rewind_8h.html#a22810a3bc12067d0b6a4542d04220a74',1,'utf8rewind.h']]],
   ['utf8normalize',['utf8normalize',['../utf8rewind_8h.html#adfa0210609054db368b6af9837ca69db',1,'utf8rewind.h']]],
