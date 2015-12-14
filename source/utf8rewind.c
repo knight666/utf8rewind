@@ -1080,3 +1080,8 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 	return bytes_written;
 }
+
+uint32_t utf8getcategory(const char* input, size_t inputSize)
+{
+	return 0;
+}
