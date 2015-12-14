@@ -925,28 +925,24 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 
 	Although similar to lowercasing text, there are significant differences.
 	For one, case folding does *not* take locale into account when converting.
-	This makes it X% faster than lowercasing, but the result cannot be treated
-	as correct lowercased text.
+	In some cases, case folding can be up to 20% faster than lowercasing the
+	same text, but the result cannot be treated as correct lowercased text.
 
 	Only two locale-specific exception are made when case folding text.
 	In Turkish, U+0049 LATIN CAPITAL LETTER I maps to U+0131 LATIN SMALL LETTER
 	DOTLESS I and U+0130 LATIN CAPITAL LETTER I WITH DOT ABOVE maps to U+0069
 	LATIN SMALL LETTER I.
 
-	Although most code points can be converted to lowercase in-place, there are
-	notable exceptions. For example, U+0130 (LATIN CAPITAL LETTER I WITH DOT
-	ABOVE) maps to "U+0069 U+0307" (LATIN SMALL LETTER I and COMBINING DOT
-	ABOVE) when converted to lowercase. Therefor, it is advised to first
-	determine the size in bytes of the output by calling the function with a
-	NULL output buffer.
+	Although most code points can be case folded in-place, there are notable
+	exceptions. For example, U+0130 (LATIN CAPITAL LETTER I WITH DOT ABOVE) maps
+	to "U+0069 U+0307" (LATIN SMALL LETTER I and COMBINING DOT ABOVE) when
+	converted to lowercase. Therefor, it is advised to first determine the size
+	in bytes of the output by calling the function with a NULL output buffer.
 
 	Only a handful of scripts make a distinction between upper- and lowercase.
 	In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic,
 	a few historic or archaic scripts have case. The vast majority of scripts
 	do not have case distinctions.
-
-	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
-	!= toLower(toUpper(x))`.
 
 	\note This function checks the (thread-local) system locale in order to
 	support languages with exceptional behavior on specific code points.
