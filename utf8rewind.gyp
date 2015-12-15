@@ -89,6 +89,7 @@
 			'sources': [
 				'source/tests/integration-casefolding.cpp',
 				'source/tests/integration-casemapping.cpp',
+				'source/tests/integration-category-standard.cpp',
 				'source/tests/integration-conformance.cpp',
 				'source/tests/integration-isnormalized.cpp',
 				'source/tests/integration-naughty-strings.cpp',
