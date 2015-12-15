@@ -1083,5 +1083,27 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 {
-	return 0;
+	unicode_t code_point;
+	size_t general_category;
+	uint8_t offset = 0;
+
+	if (input == 0 ||
+		inputSize == 0)
+	{
+		return 0;
+	}
+
+	offset = codepoint_read(input, inputSize, &code_point);
+	if (offset == 0)
+	{
+		return 0;
+	}
+
+	general_category = PROPERTY_GET_GC(code_point);
+	if ((general_category & flags) == 0)
+	{
+		return 0;
+	}
+
+	return offset;
 }
