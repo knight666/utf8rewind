@@ -106,51 +106,42 @@ class UnicodeMapping:
 		except:
 			raise KeyError("Failed to find general category mapping for value \"" + matches[2][0] + "\"")
 		
-		mapping = [
-			{
-				"name": "Cased_Letter",
-				"check": [ "Lu", "Ll", "Lt" ],
-				"value": 0x03,
-			},
-			{
-				"name": "Letter",
-				"check": [ "Lu", "Ll", "Lt", "Lm", "Lo" ],
-				"value": 0x01,
-			},
-			{
-				"name": "Mark",
-				"check": [ "Mn", "Mc", "Me" ],
-				"value": 0x04,
-			},
-			{
-				"name": "Number",
-				"check": [ "Nd", "Nl", "No" ],
-				"value": 0x08,
-			},
-			{
-				"name": "Punctuation",
-				"check": [ "Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po" ],
-				"value": 0x10,
-			},
-			{
-				"name": "Symbol",
-				"check": [ "Sm", "Sc", "Sk", "So" ],
-				"value": 0x20,
-			},
-			{
-				"name": "Separator",
-				"check": [ "Zs", "Zl", "Zp" ],
-				"value": 0x40,
-			},
-			{
-				"name": "Other",
-				"check": [ "Cc", "Cf", "Cs", "Co", "Cn" ],
-				"value": 0x80,
-			},
-		]
-		for m in mapping:
-			if matches[2][0] in m["check"]:
-				self.generalCategoryCombined = m["value"]
+		mapping = {
+			"Lu": 0x00000001,
+			"Ll": 0x00000002,
+			"Lt": 0x00000004,
+			"Lm": 0x00000008,
+			"Lo": 0x00000010,
+			"Mn": 0x00000020,
+			"Mc": 0x00000040,
+			"Me": 0x00000080,
+			"Nd": 0x00000100,
+			"Nl": 0x00000200,
+			"No": 0x00000400,
+			"Pc": 0x00000800,
+			"Pd": 0x00001000,
+			"Ps": 0x00002000,
+			"Pe": 0x00004000,
+			"Pi": 0x00008000,
+			"Pf": 0x00010000,
+			"Po": 0x00020000,
+			"Sm": 0x00040000,
+			"Sc": 0x00080000,
+			"Sk": 0x00100000,
+			"So": 0x00200000,
+			"Zs": 0x00400000,
+			"Zl": 0x00800000,
+			"Zp": 0x01000000,
+			"Cc": 0x02000000,
+			"Cf": 0x04000000,
+			"Cs": 0x08000000,
+			"Co": 0x10000000,
+			"Cn": 0x20000000
+		}
+			
+		for name,value in mapping:
+			if matches[2][0] == name:
+				self.generalCategoryCombined = value
 				break
 		
 		# canonical combining class
@@ -250,15 +241,12 @@ class UnicodeMapping:
 		
 		if matches[12]:
 			self.uppercase.append(int(matches[12][0], 16))
-			self.generalCategoryCombined |= 0x02
 		
 		if matches[13]:
 			self.lowercase.append(int(matches[13][0], 16))
-			self.generalCategoryCombined |= 0x02
 		
 		if len(matches) >= 15 and matches[14]:
 			self.titlecase.append(int(matches[14][0], 16))
-			self.generalCategoryCombined |= 0x02
 		
 		return True
 	
@@ -417,7 +405,7 @@ class Compression:
 		self.compression_ratio = (1.0 - (self.compressed_size / self.uncompressed_size)) * 100.0
 		print(field + ': uncompressed ' + str(self.uncompressed_size) + ' compressed ' + str(self.compressed_size) + ' savings ' + ('%.2f%%' % self.compression_ratio))
 
-	def render(self, header, name):
+	def render(self, header, name, dataType = 'uint8_t'):
 		print('Rendering compressed data for "' + name + '"...')
 
 		header.newLine()
@@ -445,7 +433,7 @@ class Compression:
 
 		header.newLine()
 
-		header.writeLine("const uint8_t " + name + "Data[" + str(len(self.table_data)) + "] = {")
+		header.writeLine("const " + dataType + " " + name + "Data[" + str(len(self.table_data)) + "] = {")
 		header.indent()
 
 		count = 0
@@ -1119,7 +1107,7 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# quick check
 
-		compress_gc.render(header, 'GeneralCategory')
+		compress_gc.render(header, 'GeneralCategory', 'size_t')
 		header.newLine()
 		
 		compress_ccc.render(header, 'CanonicalCombiningClass')
