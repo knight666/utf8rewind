@@ -807,26 +807,52 @@ namespace helpers {
 
 			if (entryExpected.standard != -1)
 			{
-				result << "[Standard]" << std::endl;
-				result << entryExpected.standardName <<  ": " << entryExpected.offset << std::endl;
+				if ((entryExpected.standard > 0) != (entryActual.offset > 0))
+				{
+					result << "[Standard]" << std::endl;
+					result << "    Actual:  " << entryActual.offset << std::endl;
+					result << "  Expected:  " << entryExpected.offset << " (" << entryExpected.standardName << ")" << std::endl;
+				}
+				else
+				{
+					result << "[Standard]   " << entryExpected.offset << " (" << entryExpected.standardName << ")" << std::endl;
+				}
 
 				result << std::endl;
 			}
 
-			result << "[Offset]" << std::endl;
-			result << "    Actual: " << entryActual.offset << std::endl;
-			result << "  Expected: " << entryExpected.offset << std::endl;
+			if (entryExpected.offset != entryActual.offset)
+			{
+				result << "[Offset]" << std::endl;
+				result << "    Actual:  " << entryActual.offset << std::endl;
+				result << "  Expected:  " << entryExpected.offset << std::endl;
+			}
+			else
+			{
+				result << "[Offset]     " << entryActual.offset << std::endl;
+			}
 
 			result << std::endl;
 
-			result << "[Flags]" << std::endl;
+			size_t general_category = 0;
 
 			unicode_t code_point;
 			if (codepoint_read(entryActual.input, entryActual.inputSize, &code_point) != 0)
 			{
-				result << "    Actual: " << generalCategory(PROPERTY_GET_GC(code_point)) << std::endl;
+				general_category = PROPERTY_GET_GC(code_point);
 			}
-			result << "  Expected: " << generalCategory(entryExpected.flags) << std::endl;
+
+			if ((general_category & entryExpected.flags) == 0)
+			{
+				result << "[Flags]" << std::endl;
+				result << "    Actual:  " << generalCategory(general_category) << std::endl;
+				result << "  Expected:  " << generalCategory(entryExpected.flags) << std::endl;
+			}
+			else
+			{
+				result << "[Flags]      " << generalCategory(general_category) << std::endl;
+			}
+			
 
 			return result;
 		}
