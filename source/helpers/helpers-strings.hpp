@@ -14,7 +14,17 @@
 #define EXPECT_OFFSETEQ(_expected, _actual, _start)       EXPECT_PRED_FORMAT3(::helpers::CompareOffsets, _expected, _actual, _start)
 #define EXPECT_MEMEQ(_expected, _actual, _size)           EXPECT_PRED_FORMAT3(::helpers::CompareMemory, _expected, _actual, _size)
 #define EXPECT_CPEQ(_expected, _actual)                   EXPECT_PRED_FORMAT2(::helpers::CompareCodepoints, _expected, _actual)
-#define EXPECT_GCEQ(_expected, _actual)                   EXPECT_PRED_FORMAT2(::helpers::CompareGeneralCategory, _expected, _actual)
+#define EXPECT_GCEQ(_expectedOffset, _input, _inputSize, _flags) { \
+	::helpers::GeneralCategoryEntry e; \
+	e.flags = _flags; \
+	e.offset = _expectedOffset; \
+	::helpers::GeneralCategoryEntry a; \
+	a.input = _input; \
+	a.inputSize = _inputSize; \
+	a.flags = _flags; \
+	a.offset = utf8iscategory(_input, _inputSize, _flags); \
+	EXPECT_PRED_FORMAT2(::helpers::CompareGeneralCategory, e, a); \
+}
 
 namespace helpers {
 
@@ -58,6 +68,8 @@ namespace helpers {
 	std::string quickCheck(unicode_t* codepoint, size_t codepointsSize, QuickCheck type);
 	std::string quickCheck(const std::string& text, QuickCheck type);
 
+	std::string generalCategory(size_t flags);
+
 	::testing::AssertionResult CompareUtf8Strings(
 		const char* expressionExpected, const char* expressionActual,
 		const char* textExpected, const char* textActual);
@@ -78,9 +90,17 @@ namespace helpers {
 		const char* expressionExpected, const char* expressionActual,
 		unicode_t codepointExpected, unicode_t codepointActual);
 
+	struct GeneralCategoryEntry
+	{
+		const char* input;
+		size_t inputSize;
+		size_t flags;
+		size_t offset;
+	};
+
 	::testing::AssertionResult CompareGeneralCategory(
 		const char* expressionExpected, const char* expressionActual,
-		uint32_t categoryExpected, uint32_t categoryActual);
+		const GeneralCategoryEntry& entryExpected, const GeneralCategoryEntry& entryActual);
 
 };
 

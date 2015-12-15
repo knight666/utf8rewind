@@ -1,6 +1,7 @@
 #include "helpers-strings.hpp"
 
 extern "C" {
+	#include "../internal/codepoint.h"
 	#include "../internal/database.h"
 };
 
@@ -572,6 +573,69 @@ namespace helpers {
 		return ss.str();
 	}
 
+	std::string generalCategory(size_t flags)
+	{
+		struct Entry
+		{
+			size_t flag;
+			const char* description;
+		};
+
+	#define MAKE_ENTRY(_name) { UTF8_CATEGORY_ ## _name, # _name }
+		static const Entry EntriesMap[] = {
+			MAKE_ENTRY(LETTER_UPPERCASE),
+			MAKE_ENTRY(LETTER_LOWERCASE),
+			MAKE_ENTRY(LETTER_TITLECASE),
+			MAKE_ENTRY(LETTER_MODIFIER),
+			MAKE_ENTRY(LETTER_OTHER),
+			MAKE_ENTRY(MARK_NON_SPACING),
+			MAKE_ENTRY(MARK_SPACING),
+			MAKE_ENTRY(MARK_ENCLOSING),
+			MAKE_ENTRY(NUMBER_DECIMAL),
+			MAKE_ENTRY(NUMBER_LETTER),
+			MAKE_ENTRY(NUMBER_OTHER),
+			MAKE_ENTRY(PUNCTUATION_CONNECTOR),
+			MAKE_ENTRY(PUNCTUATION_DASH),
+			MAKE_ENTRY(PUNCTUATION_OPEN),
+			MAKE_ENTRY(PUNCTUATION_CLOSE),
+			MAKE_ENTRY(PUNCTUATION_INITIAL),
+			MAKE_ENTRY(PUNCTUATION_FINAL),
+			MAKE_ENTRY(PUNCTUATION_OTHER),
+			MAKE_ENTRY(SYMBOL_MATH),
+			MAKE_ENTRY(SYMBOL_CURRENCY),
+			MAKE_ENTRY(SYMBOL_MODIFIER),
+			MAKE_ENTRY(SYMBOL_OTHER),
+			MAKE_ENTRY(SEPARATOR_SPACE),
+			MAKE_ENTRY(SEPARATOR_LINE),
+			MAKE_ENTRY(SEPARATOR_PARAGRAPH),
+			MAKE_ENTRY(CONTROL),
+			MAKE_ENTRY(FORMAT),
+			MAKE_ENTRY(SURROGATE),
+			MAKE_ENTRY(PRIVATE_USE),
+			MAKE_ENTRY(UNASSIGNED),
+		};
+	#undef MAKE_ENTRY
+		static const size_t EntriesMapSize = sizeof(EntriesMap) / sizeof(Entry);
+
+		std::string output;
+		size_t hit = 0;
+
+		for (size_t i = 0; i < EntriesMapSize; ++i)
+		{
+			if ((EntriesMap[i].flag & flags) != 0)
+			{
+				if (hit++ != 0)
+				{
+					output += " | ";
+				}
+
+				output += EntriesMap[i].description;
+			}
+		}
+
+		return output;
+	}
+
 	::testing::AssertionResult CompareUtf8Strings(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const char* textExpected, const char* textActual)
@@ -726,10 +790,10 @@ namespace helpers {
 	}
 
 	::testing::AssertionResult CompareGeneralCategory(
-		const char* expressionExpected, const char* expressionActual,
-		uint32_t categoryExpected, uint32_t categoryActual)
+		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
+		const GeneralCategoryEntry& entryExpected, const GeneralCategoryEntry& entryActual)
 	{
-		if (categoryExpected == categoryActual)
+		if (entryExpected.offset == entryActual.offset)
 		{
 			return ::testing::AssertionSuccess();
 		}
@@ -737,7 +801,24 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << "Category mismatch" << std::endl;
+			result << "Category mismatch " << identifiable(entryActual.input) << " \"" << printable(entryActual.input) << "\"" << std::endl;
+
+			result << std::endl;
+
+			result << "[Offset]" << std::endl;
+			result << "    Actual: " << entryActual.offset << std::endl;
+			result << "  Expected: " << entryExpected.offset << std::endl;
+
+			result << std::endl;
+
+			result << "[Flags]" << std::endl;
+
+			unicode_t code_point;
+			if (codepoint_read(entryActual.input, entryActual.inputSize, &code_point) != 0)
+			{
+				result << "    Actual: " << generalCategory(PROPERTY_GET_GC(code_point)) << std::endl;
+			}
+			result << "  Expected: " << generalCategory(entryExpected.flags) << std::endl;
 
 			return result;
 		}
