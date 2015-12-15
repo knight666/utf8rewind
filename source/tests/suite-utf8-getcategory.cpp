@@ -7,5 +7,5 @@ TEST(Utf8GetCategory, BasicLatinSingle)
 	const char* i = "L";
 	size_t is = strlen(i);
 
-	EXPECT_GCEQ(UTF8_CATEGORY_LETTER_UPPERCASE, utf8getcategory(i, is));
+	EXPECT_TRUE(utf8iscategory(i, is, UTF8_CATEGORY_LETTER_UPPERCASE));
 }
