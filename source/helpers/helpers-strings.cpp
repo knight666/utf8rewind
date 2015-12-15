@@ -1,7 +1,6 @@
 #include "helpers-strings.hpp"
 
 extern "C" {
-	#include "../internal/codepoint.h"
 	#include "../internal/database.h"
 };
 
@@ -793,7 +792,8 @@ namespace helpers {
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const GeneralCategoryEntry& entryExpected, const GeneralCategoryEntry& entryActual)
 	{
-		if (entryExpected.offset == entryActual.offset)
+		if ((entryExpected.standard != -1 && (entryExpected.standard > 0) == (entryActual.offset > 0)) ||
+			entryExpected.offset == entryActual.offset)
 		{
 			return ::testing::AssertionSuccess();
 		}
@@ -804,6 +804,14 @@ namespace helpers {
 			result << "Category mismatch " << identifiable(entryActual.input) << " \"" << printable(entryActual.input) << "\"" << std::endl;
 
 			result << std::endl;
+
+			if (entryExpected.standard != -1)
+			{
+				result << "[Standard]" << std::endl;
+				result << entryExpected.standardName <<  ": " << entryExpected.offset << std::endl;
+
+				result << std::endl;
+			}
 
 			result << "[Offset]" << std::endl;
 			result << "    Actual: " << entryActual.offset << std::endl;
