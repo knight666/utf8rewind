@@ -9,15 +9,37 @@
 
 #include "helpers-base.hpp"
 
+extern "C" {
+	#include "../internal/codepoint.h"
+};
+
 #define EXPECT_UTF8EQ(_expected, _actual)                 EXPECT_PRED_FORMAT2(::helpers::CompareUtf8Strings, _expected, _actual)
 #define EXPECT_UTF8LENGTHEQ(_expected, _actual, _length)  EXPECT_PRED_FORMAT3(::helpers::CompareUtf8LengthStrings, _expected, _actual, _length)
 #define EXPECT_OFFSETEQ(_expected, _actual, _start)       EXPECT_PRED_FORMAT3(::helpers::CompareOffsets, _expected, _actual, _start)
 #define EXPECT_MEMEQ(_expected, _actual, _size)           EXPECT_PRED_FORMAT3(::helpers::CompareMemory, _expected, _actual, _size)
 #define EXPECT_CPEQ(_expected, _actual)                   EXPECT_PRED_FORMAT2(::helpers::CompareCodepoints, _expected, _actual)
+
 #define EXPECT_GCEQ(_expectedOffset, _input, _inputSize, _flags) { \
 	::helpers::GeneralCategoryEntry e; \
 	e.flags = _flags; \
 	e.offset = _expectedOffset; \
+	e.standard = -1; \
+	::helpers::GeneralCategoryEntry a; \
+	a.input = _input; \
+	a.inputSize = _inputSize; \
+	a.flags = _flags; \
+	a.offset = utf8iscategory(_input, _inputSize, _flags); \
+	EXPECT_PRED_FORMAT2(::helpers::CompareGeneralCategory, e, a); \
+}
+
+#define EXPECT_GC_INTEGRATION_EQ(_expectedOffset, _input, _inputSize, _flags, _function) { \
+	::helpers::GeneralCategoryEntry e; \
+	e.flags = _flags; \
+	e.offset = _expectedOffset; \
+	unicode_t code_point; \
+	codepoint_read(_input, _inputSize, &code_point); \
+	e.standard = _function((int)code_point); \
+	e.standardName = # _function; \
 	::helpers::GeneralCategoryEntry a; \
 	a.input = _input; \
 	a.inputSize = _inputSize; \
@@ -96,6 +118,8 @@ namespace helpers {
 		size_t inputSize;
 		size_t flags;
 		size_t offset;
+		int standard;
+		std::string standardName;
 	};
 
 	::testing::AssertionResult CompareGeneralCategory(
