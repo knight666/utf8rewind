@@ -1107,8 +1107,8 @@ TEST(CategoryStandard, IsUpper)
 	EXPECT_GC_INTEGRATION_EQ(0, "\x7B", 1, flags, isupper);
 	EXPECT_GC_INTEGRATION_EQ(0, "\x7C", 1, flags, isupper);
 	EXPECT_GC_INTEGRATION_EQ(0, "\x7D", 1, flags, isupper);
-	EXPECT_GC_INTEGRATION_EQ(0, "\x7E", 1, flags, iscntrl);
-	EXPECT_GC_INTEGRATION_EQ(0, "\x7F", 1, flags, iscntrl);
+	EXPECT_GC_INTEGRATION_EQ(0, "\x7E", 1, flags, isupper);
+	EXPECT_GC_INTEGRATION_EQ(0, "\x7F", 1, flags, isupper);
 }
 
 TEST(CategoryStandard, IsLower)
