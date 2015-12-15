@@ -138,12 +138,12 @@ class UnicodeMapping:
 			"Co": 0x10000000,
 			"Cn": 0x20000000
 		}
-			
-		for name,value in mapping:
-			if matches[2][0] == name:
-				self.generalCategoryCombined = value
-				break
 		
+		try:
+			self.generalCategoryCombined = mapping[matches[2][0]]
+		except:
+			raise KeyError("Failed to find general category mapping for value \"" + matches[2][0] + "\"")
+
 		# canonical combining class
 		
 		self.canonicalCombiningClass = int(matches[3][0])
@@ -453,7 +453,7 @@ class Compression:
 		header.newLine()
 		header.outdent()
 		header.writeLine("};")
-		header.write("const uint8_t* " + name + "DataPtr = " + name + "Data;")
+		header.write("const " + dataType + "* " + name + "DataPtr = " + name + "Data;")
 
 class CompressionString:
 	def __init__(self, database):
