@@ -1083,9 +1083,8 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 {
-	unicode_t code_point;
-	size_t general_category;
-	uint8_t offset = 0;
+	const char* src = input;
+	size_t src_size = inputSize;
 
 	if (input == 0 ||
 		inputSize == 0)
@@ -1093,94 +1092,142 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 		return 0;
 	}
 
-	if ((flags & UTF8_CATEGORY_COMPATIBILITY) != 0 &&
-		input[0] < MAX_BASIC_LATIN)
+	while (src_size > 0)
 	{
-		if (flags == (UTF8_CATEGORY_ISBLANK))
+		unicode_t code_point;
+		size_t general_category;
+		uint8_t offset = 0;
+
+		if ((flags & UTF8_CATEGORY_COMPATIBILITY) != 0 &&
+			*src < MAX_BASIC_LATIN)
 		{
-			if (input[0] == 0x09)
+			if (flags == (UTF8_CATEGORY_ISBLANK))
 			{
-				/* CHARACTER TABULATION */
+				if (*src == 0x09)
+				{
+					/* CHARACTER TABULATION */
 
-				return 1;
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else if (
+					*src == 0x20)
+				{
+					/* SPACE */
+
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else
+				{
+					break;
+				}
 			}
 			else if (
-				input[0] == 0x20)
+				flags == (UTF8_CATEGORY_ISSPACE))
 			{
-				/* SPACE */
+				if (*src < 0x09 ||
+					*src > 0x20)
+				{
+					break;
+				}
+				else if (
+					*src <= 0x0D)
+				{
+					/* CHARACTER TABULATION ... CARRIAGE RETURN (CR) */
 
-				return 1;
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else if (
+					*src == 0x20)
+				{
+					/* SPACE */
+
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else
+				{
+					break;
+				}
 			}
+			else if (
+				flags == (UTF8_CATEGORY_ISXDIGIT))
+			{
+				if (*src < 0x30 ||
+					*src > 0x66)
+				{
+					break;
+				}
+				else if (
+					*src <= 0x39)
+				{
+					/* DIGIT ZERO ... DIGIT NINE */
 
-			return 0;
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else if (
+					*src >= 0x41 &&
+					*src <= 0x46)
+				{
+					/* LATIN CAPITAL LETTER A ... LATIN CAPITAL LETTER F */
+
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else if (
+					*src >= 0x61)
+				{
+					/* LATIN SMALL LETTER A ... LATIN SMALL LETTER F */
+
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else
+				{
+					break;
+				}
+			}
 		}
-		else if (
-			flags == (UTF8_CATEGORY_ISSPACE))
+
+		offset = codepoint_read(src, src_size, &code_point);
+		if (offset == 0)
 		{
-			if (input[0] < 0x09 ||
-				input[0] > 0x20)
-			{
-				return 0;
-			}
-			else if (
-				input[0] <= 0x0D)
-			{
-				/* CHARACTER TABULATION ... CARRIAGE RETURN (CR) */
-
-				return 1;
-			}
-			else if (
-				input[0] == 0x20)
-			{
-				/* SPACE */
-
-				return 1;
-			}
-
-			return 0;
+			break;
 		}
-		else if (
-			flags == (UTF8_CATEGORY_ISXDIGIT))
+
+		general_category = PROPERTY_GET_GC(code_point);
+
+		if ((general_category & flags) == 0)
 		{
-			if (input[0] < 0x30 ||
-				input[0] > 0x66)
-			{
-				return 0;
-			}
-			else if (
-				input[0] <= 0x39)
-			{
-				/* DIGIT ZERO ... DIGIT NINE */
-
-				return 1;
-			}
-			else if (
-				input[0] >= 0x41 &&
-				input[0] <= 0x46)
-			{
-				/* LATIN CAPITAL LETTER A ... LATIN CAPITAL LETTER F */
-
-				return 1;
-			}
-			else if (
-				input[0] >= 0x61)
-			{
-				/* LATIN SMALL LETTER A ... LATIN SMALL LETTER F */
-
-				return 1;
-			}
-
-			return 0;
+			break;
 		}
+
+		if (offset > src_size)
+		{
+			break;
+		}
+
+		src += offset;
+		src_size -= offset;
 	}
+	
 
-	offset = codepoint_read(input, inputSize, &code_point);
-	if (offset == 0)
-	{
-		return 0;
-	}
-
-	general_category = PROPERTY_GET_GC(code_point);
-
-	return ((general_category & flags) != 0) ? offset : 0;
+	return src - input;
 }
