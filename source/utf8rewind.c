@@ -1227,7 +1227,6 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 		src += offset;
 		src_size -= offset;
 	}
-	
 
 	return src - input;
 }
