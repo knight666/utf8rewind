@@ -1098,6 +1098,8 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 		size_t general_category;
 		uint8_t offset = 0;
 
+		/* Compatibility fixes */
+
 		if ((flags & UTF8_CATEGORY_COMPATIBILITY) != 0 &&
 			*src < MAX_BASIC_LATIN)
 		{
@@ -1206,18 +1208,19 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 			}
 		}
 
+		/* Read next code point */
+
 		offset = codepoint_read(src, src_size, &code_point);
-		if (offset == 0)
-		{
-			break;
-		}
+
+		/* Match General Category against flags */
 
 		general_category = PROPERTY_GET_GC(code_point);
-
 		if ((general_category & flags) == 0)
 		{
 			break;
 		}
+
+		/* Move source cursor */
 
 		if (offset > src_size)
 		{
