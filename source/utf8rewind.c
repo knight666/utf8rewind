@@ -1096,7 +1096,8 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 	{
 		unicode_t code_point;
 		size_t general_category;
-		uint8_t offset = 0;
+		uint8_t canonical_combining_class;
+		uint8_t offset;
 
 		/* Compatibility fixes */
 
@@ -1215,7 +1216,9 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 		/* Match General Category against flags */
 
 		general_category = PROPERTY_GET_GC(code_point);
-		if ((general_category & flags) == 0)
+		if ((general_category & flags) == 0 &&
+			/* Check for the start of the next grapheme cluster */
+			((flags & UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER) != 0 || (canonical_combining_class = PROPERTY_GET_CCC(code_point)) == 0))
 		{
 			break;
 		}
