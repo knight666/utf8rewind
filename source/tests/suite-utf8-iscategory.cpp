@@ -186,6 +186,42 @@ TEST(Utf8IsCategory, GraphemeClusterSingleIgnoredNonStarter)
 	EXPECT_GCEQ(3, i, is, UTF8_CATEGORY_MARK_NON_SPACING | UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER);
 }
 
+TEST(Utf8IsCategory, GraphemeClusterMultiple)
+{
+	// 05D1 06E3 0F37 14EA 20E8 05D0 108D
+	//    0  220  220    0  220    0  220
+	//   Lo   Mn   Mn   Lo   Mn   Lo   Mn
+
+	const char* i = "\xD7\x91\xDB\xA3\xE0\xBC\xB7\xE1\x93\xAA\xE2\x83\xA8\xD7\x90\xE1\x82\x8D";
+	size_t is = strlen(i);
+
+	EXPECT_GCEQ(18, i, is, UTF8_CATEGORY_LETTER_OTHER);
+}
+
+TEST(Utf8IsCategory, GraphemeClusterMultipleMismatch)
+{
+	// 0628 1CED 069D 033A 035A 058F 0F80 302A
+	//    0  220    0  220  220    0  130  218
+	//   Lo   Mn   Lo   Mn   Mn   Sc   Mn   Mn
+
+	const char* i = "\xD8\xA8\xE1\xB3\xAD\xDA\x9D\xCC\xBA\xCD\x9A\xD6\x8F\xE0\xBE\x80\xE3\x80\xAA";
+	size_t is = strlen(i);
+
+	EXPECT_GCEQ(11, i, is, UTF8_CATEGORY_LETTER_OTHER);
+}
+
+TEST(Utf8IsCategory, GraphemeClusterMultipleNonStarter)
+{
+	// 0322 0731 031F
+	//  202  220  220
+	//   Mn   Mn   Mn
+
+	const char* i = "\xCC\xA2\xDC\xB1\xCC\x9F";
+	size_t is = strlen(i);
+
+	EXPECT_GCEQ(6, i, is, UTF8_CATEGORY_MARK_NON_SPACING);
+}
+
 TEST(Utf8IsCategory, InvalidData)
 {
 	EXPECT_GCEQ(0, nullptr, 3, UTF8_CATEGORY_LETTER_UPPERCASE);
