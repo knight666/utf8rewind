@@ -1490,6 +1490,13 @@ UTF8_API size_t utf8normalize(const char* input, size_t inputSize, char* target,
 #define UTF8_CATEGORY_COMPATIBILITY             0x40000000
 
 /*!
+	\def UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER
+	\brief Flag used for checking only the general category of code points at
+	the start of a grapheme cluster.
+*/
+#define UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER   0x80000000
+
+/*!
 	\def UTF8_CATEGORY_ISCNTRL
 	\brief Flag used for maintaining backwards compatibility with POSIX
 	`iscntrl` function.
