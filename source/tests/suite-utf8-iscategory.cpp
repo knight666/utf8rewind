@@ -114,6 +114,42 @@ TEST(Utf8IsCategory, InvalidCodePointMultipleMismatch)
 	EXPECT_GCEQ(0, i, is, UTF8_CATEGORY_NUMBER_LETTER);
 }
 
+TEST(Utf8IsCategory, GraphemeClusterSingle)
+{
+	// 10400 0F7D 0322
+	//     0  130  202
+	//    Lu   Mn   Mn
+
+	const char* i = "\xF0\x90\x90\x80\xE0\xBD\xBD\xCC\xA2";
+	size_t is = strlen(i);
+
+	EXPECT_GCEQ(9, i, is, UTF8_CATEGORY_LETTER_UPPERCASE);
+}
+
+TEST(Utf8IsCategory, GraphemeClusterSingleMismatch)
+{
+	// 03E6 0321 0310
+	//    0  202  230
+	//   Lu   Mn   Mn
+
+	const char* i = "\xCF\xA6\xCC\xA1\xCC\x90";
+	size_t is = strlen(i);
+
+	EXPECT_GCEQ(0, i, is, UTF8_CATEGORY_LETTER_OTHER);
+}
+
+TEST(Utf8IsCategory, GraphemeClusterSingleNonStarter)
+{
+	// 06E3
+	//  220
+	//   Mn
+
+	const char* i = "\xDB\xA3";
+	size_t is = strlen(i);
+
+	EXPECT_GCEQ(2, i, is, UTF8_CATEGORY_MARK_NON_SPACING);
+}
+
 TEST(Utf8IsCategory, InvalidData)
 {
 	EXPECT_GCEQ(0, nullptr, 3, UTF8_CATEGORY_LETTER_UPPERCASE);
