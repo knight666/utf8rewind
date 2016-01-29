@@ -224,155 +224,155 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;</div>
 <div class="line"><a name="l01244"></a><span class="lineno"> 1244</span>&#160;<a class="code" href="group__configuration.html#gaf8233f2b15c97ad97ccec2beff1d24a2">UTF8_API</a> <span class="keywordtype">size_t</span> <a class="code" href="utf8rewind_8h.html#adfa0210609054db368b6af9837ca69db">utf8normalize</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* input, <span class="keywordtype">size_t</span> inputSize, <span class="keywordtype">char</span>* target, <span class="keywordtype">size_t</span> targetSize, <span class="keywordtype">size_t</span> flags, int32_t* errors);</div>
 <div class="line"><a name="l01245"></a><span class="lineno"> 1245</span>&#160;</div>
-<div class="line"><a name="l01256"></a><span class="lineno"><a class="line" href="group__category.html#gad0619b98bec91411c73f1abd22b1974b"> 1256</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER_UPPERCASE          0x00000001</span></div>
-<div class="line"><a name="l01257"></a><span class="lineno"> 1257</span>&#160;</div>
-<div class="line"><a name="l01262"></a><span class="lineno"><a class="line" href="group__category.html#ga93bc49b1d0998ed5b095a12c2c51bff5"> 1262</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER_LOWERCASE          0x00000002</span></div>
-<div class="line"><a name="l01263"></a><span class="lineno"> 1263</span>&#160;</div>
-<div class="line"><a name="l01268"></a><span class="lineno"><a class="line" href="group__category.html#ga5e3ac3e4cb5f722ac770945c15d72172"> 1268</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER_TITLECASE          0x00000004</span></div>
-<div class="line"><a name="l01269"></a><span class="lineno"> 1269</span>&#160;</div>
-<div class="line"><a name="l01274"></a><span class="lineno"><a class="line" href="group__category.html#ga28a3a209f327411869f39e11e50dc845"> 1274</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER_MODIFIER           0x00000008</span></div>
-<div class="line"><a name="l01275"></a><span class="lineno"> 1275</span>&#160;</div>
-<div class="line"><a name="l01280"></a><span class="lineno"><a class="line" href="group__category.html#gaa76b0c223998314eb7897f99738bc95f"> 1280</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER_OTHER              0x00000010</span></div>
-<div class="line"><a name="l01281"></a><span class="lineno"> 1281</span>&#160;</div>
-<div class="line"><a name="l01286"></a><span class="lineno"><a class="line" href="group__category.html#ga168e76ca07b729e3b1552cde220da9a5"> 1286</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER \</span></div>
-<div class="line"><a name="l01287"></a><span class="lineno"> 1287</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_UPPERCASE | UTF8_CATEGORY_LETTER_LOWERCASE | \</span></div>
-<div class="line"><a name="l01288"></a><span class="lineno"> 1288</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_TITLECASE | UTF8_CATEGORY_LETTER_MODIFIER | \</span></div>
-<div class="line"><a name="l01289"></a><span class="lineno"> 1289</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_OTHER</span></div>
-<div class="line"><a name="l01290"></a><span class="lineno"> 1290</span>&#160;</div>
-<div class="line"><a name="l01295"></a><span class="lineno"><a class="line" href="group__category.html#ga8f538ff018ff6456ff17c5a7133ed745"> 1295</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_CASE_MAPPED \</span></div>
-<div class="line"><a name="l01296"></a><span class="lineno"> 1296</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_UPPERCASE | UTF8_CATEGORY_LETTER_LOWERCASE | \</span></div>
-<div class="line"><a name="l01297"></a><span class="lineno"> 1297</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_TITLECASE</span></div>
-<div class="line"><a name="l01298"></a><span class="lineno"> 1298</span>&#160;</div>
-<div class="line"><a name="l01303"></a><span class="lineno"><a class="line" href="group__category.html#ga4d2c7b40051d4d5317cc1d85da8a8a93"> 1303</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_MARK_NON_SPACING          0x00000020</span></div>
-<div class="line"><a name="l01304"></a><span class="lineno"> 1304</span>&#160;</div>
-<div class="line"><a name="l01309"></a><span class="lineno"><a class="line" href="group__category.html#gaf5678f86a166db20cec660b77b46fcdd"> 1309</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_MARK_SPACING              0x00000040</span></div>
-<div class="line"><a name="l01310"></a><span class="lineno"> 1310</span>&#160;</div>
-<div class="line"><a name="l01315"></a><span class="lineno"><a class="line" href="group__category.html#gafae6d97439fa14adbe8262a1f5ca2f78"> 1315</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_MARK_ENCLOSING            0x00000080</span></div>
-<div class="line"><a name="l01316"></a><span class="lineno"> 1316</span>&#160;</div>
-<div class="line"><a name="l01321"></a><span class="lineno"><a class="line" href="group__category.html#ga11b764bce69bfc27cc9c6fcb0f526b13"> 1321</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_MARK \</span></div>
-<div class="line"><a name="l01322"></a><span class="lineno"> 1322</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_MARK_NON_SPACING | UTF8_CATEGORY_MARK_SPACING | \</span></div>
-<div class="line"><a name="l01323"></a><span class="lineno"> 1323</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_MARK_ENCLOSING</span></div>
-<div class="line"><a name="l01324"></a><span class="lineno"> 1324</span>&#160;</div>
-<div class="line"><a name="l01329"></a><span class="lineno"><a class="line" href="group__category.html#ga354c29ff8c12c871a8beeb1c03a46e52"> 1329</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_NUMBER_DECIMAL            0x00000100</span></div>
-<div class="line"><a name="l01330"></a><span class="lineno"> 1330</span>&#160;</div>
-<div class="line"><a name="l01335"></a><span class="lineno"><a class="line" href="group__category.html#gad55820a38b2f4faa152831fb8e52da49"> 1335</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_NUMBER_LETTER             0x00000200</span></div>
-<div class="line"><a name="l01336"></a><span class="lineno"> 1336</span>&#160;</div>
-<div class="line"><a name="l01341"></a><span class="lineno"><a class="line" href="group__category.html#gad20204d274d6aed400a5afba0fa3d65f"> 1341</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_NUMBER_OTHER              0x00000400</span></div>
-<div class="line"><a name="l01342"></a><span class="lineno"> 1342</span>&#160;</div>
-<div class="line"><a name="l01347"></a><span class="lineno"><a class="line" href="group__category.html#gaffb94a55729109bd067edbb5bdcfd57e"> 1347</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_NUMBER \</span></div>
-<div class="line"><a name="l01348"></a><span class="lineno"> 1348</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER_DECIMAL | UTF8_CATEGORY_NUMBER_LETTER | \</span></div>
-<div class="line"><a name="l01349"></a><span class="lineno"> 1349</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER_OTHER</span></div>
-<div class="line"><a name="l01350"></a><span class="lineno"> 1350</span>&#160;</div>
-<div class="line"><a name="l01355"></a><span class="lineno"><a class="line" href="group__category.html#ga3293fac7b2ca0025fb90287c7ee2ca74"> 1355</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_CONNECTOR     0x00000800</span></div>
-<div class="line"><a name="l01356"></a><span class="lineno"> 1356</span>&#160;</div>
-<div class="line"><a name="l01361"></a><span class="lineno"><a class="line" href="group__category.html#ga06ef16dfcbcd6c4f6a9b63e041da749f"> 1361</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_DASH          0x00001000</span></div>
-<div class="line"><a name="l01362"></a><span class="lineno"> 1362</span>&#160;</div>
-<div class="line"><a name="l01367"></a><span class="lineno"><a class="line" href="group__category.html#ga0fd43d094662ad75ca9befa07f8c0477"> 1367</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_OPEN          0x00002000</span></div>
-<div class="line"><a name="l01368"></a><span class="lineno"> 1368</span>&#160;</div>
-<div class="line"><a name="l01373"></a><span class="lineno"><a class="line" href="group__category.html#gaa3b03f5ba9ecd4ff1ef9d33bc208f4ad"> 1373</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_CLOSE         0x00004000</span></div>
-<div class="line"><a name="l01374"></a><span class="lineno"> 1374</span>&#160;</div>
-<div class="line"><a name="l01379"></a><span class="lineno"><a class="line" href="group__category.html#ga23e8df53cd05eec83f7ce499739c373a"> 1379</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_INITIAL       0x00008000</span></div>
-<div class="line"><a name="l01380"></a><span class="lineno"> 1380</span>&#160;</div>
-<div class="line"><a name="l01385"></a><span class="lineno"><a class="line" href="group__category.html#gad2397afd761ee2bd84b75c766ef3c61c"> 1385</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_FINAL         0x00010000</span></div>
-<div class="line"><a name="l01386"></a><span class="lineno"> 1386</span>&#160;</div>
-<div class="line"><a name="l01391"></a><span class="lineno"><a class="line" href="group__category.html#ga28285681b7aa0fa9faca6691bf8a0fb4"> 1391</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_OTHER         0x00020000</span></div>
-<div class="line"><a name="l01392"></a><span class="lineno"> 1392</span>&#160;</div>
-<div class="line"><a name="l01397"></a><span class="lineno"><a class="line" href="group__category.html#gaeff6e0918e8035d88499cbadf21d0e72"> 1397</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION \</span></div>
-<div class="line"><a name="l01398"></a><span class="lineno"> 1398</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION_CONNECTOR | UTF8_CATEGORY_PUNCTUATION_DASH | \</span></div>
-<div class="line"><a name="l01399"></a><span class="lineno"> 1399</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION_OPEN | UTF8_CATEGORY_PUNCTUATION_CLOSE | \</span></div>
-<div class="line"><a name="l01400"></a><span class="lineno"> 1400</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION_INITIAL | UTF8_CATEGORY_PUNCTUATION_FINAL | \</span></div>
-<div class="line"><a name="l01401"></a><span class="lineno"> 1401</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION_OTHER</span></div>
-<div class="line"><a name="l01402"></a><span class="lineno"> 1402</span>&#160;</div>
-<div class="line"><a name="l01407"></a><span class="lineno"><a class="line" href="group__category.html#ga29ade124b66b8cc8abbc272dd57965ae"> 1407</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SYMBOL_MATH               0x00040000</span></div>
-<div class="line"><a name="l01408"></a><span class="lineno"> 1408</span>&#160;</div>
-<div class="line"><a name="l01413"></a><span class="lineno"><a class="line" href="group__category.html#ga1486022fa6435f2db176523bd065c6e5"> 1413</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SYMBOL_CURRENCY           0x00080000</span></div>
-<div class="line"><a name="l01414"></a><span class="lineno"> 1414</span>&#160;</div>
-<div class="line"><a name="l01419"></a><span class="lineno"><a class="line" href="group__category.html#ga126f73bd604c72f981bde1c777e20727"> 1419</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SYMBOL_MODIFIER           0x00100000</span></div>
-<div class="line"><a name="l01420"></a><span class="lineno"> 1420</span>&#160;</div>
-<div class="line"><a name="l01425"></a><span class="lineno"><a class="line" href="group__category.html#ga448a8fd6e66e1a3142296c77a2a8ced3"> 1425</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SYMBOL_OTHER              0x00200000</span></div>
-<div class="line"><a name="l01426"></a><span class="lineno"> 1426</span>&#160;</div>
-<div class="line"><a name="l01431"></a><span class="lineno"><a class="line" href="group__category.html#ga5d548506403e5d315111756dadcc87aa"> 1431</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SYMBOL \</span></div>
-<div class="line"><a name="l01432"></a><span class="lineno"> 1432</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SYMBOL_MATH | UTF8_CATEGORY_SYMBOL_CURRENCY | \</span></div>
-<div class="line"><a name="l01433"></a><span class="lineno"> 1433</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SYMBOL_MODIFIER | UTF8_CATEGORY_SYMBOL_OTHER</span></div>
-<div class="line"><a name="l01434"></a><span class="lineno"> 1434</span>&#160;</div>
-<div class="line"><a name="l01439"></a><span class="lineno"><a class="line" href="group__category.html#ga098078b78b6c6b1c5a9ce00faf8e4535"> 1439</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SEPARATOR_SPACE           0x00400000</span></div>
-<div class="line"><a name="l01440"></a><span class="lineno"> 1440</span>&#160;</div>
-<div class="line"><a name="l01445"></a><span class="lineno"><a class="line" href="group__category.html#gaeb330801ffb42e3be049ec0a333c7c28"> 1445</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SEPARATOR_LINE            0x00800000</span></div>
-<div class="line"><a name="l01446"></a><span class="lineno"> 1446</span>&#160;</div>
-<div class="line"><a name="l01451"></a><span class="lineno"><a class="line" href="group__category.html#gac3b176a7d57c30d9fcd60c68a4c0517a"> 1451</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SEPARATOR_PARAGRAPH       0x01000000</span></div>
-<div class="line"><a name="l01452"></a><span class="lineno"> 1452</span>&#160;</div>
-<div class="line"><a name="l01457"></a><span class="lineno"><a class="line" href="group__category.html#ga807f996fdbe772b52f07c70971e2edc2"> 1457</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SEPARATOR \</span></div>
-<div class="line"><a name="l01458"></a><span class="lineno"> 1458</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_SPACE | UTF8_CATEGORY_SEPARATOR_LINE | \</span></div>
-<div class="line"><a name="l01459"></a><span class="lineno"> 1459</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_PARAGRAPH</span></div>
-<div class="line"><a name="l01460"></a><span class="lineno"> 1460</span>&#160;</div>
-<div class="line"><a name="l01465"></a><span class="lineno"><a class="line" href="group__category.html#ga5bfbd7a57f6c14fa9abcb7d86e17f153"> 1465</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_CONTROL                   0x02000000</span></div>
-<div class="line"><a name="l01466"></a><span class="lineno"> 1466</span>&#160;</div>
-<div class="line"><a name="l01471"></a><span class="lineno"><a class="line" href="group__category.html#ga1f80899546f4df795809331aa35bb0f6"> 1471</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_FORMAT                    0x04000000</span></div>
-<div class="line"><a name="l01472"></a><span class="lineno"> 1472</span>&#160;</div>
-<div class="line"><a name="l01477"></a><span class="lineno"><a class="line" href="group__category.html#gaa87a00549593f05c3e3f5f75def27ba4"> 1477</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SURROGATE                 0x08000000</span></div>
-<div class="line"><a name="l01478"></a><span class="lineno"> 1478</span>&#160;</div>
-<div class="line"><a name="l01483"></a><span class="lineno"><a class="line" href="group__category.html#gab298003c8e22c62ca78bf156d5569f89"> 1483</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PRIVATE_USE               0x10000000</span></div>
-<div class="line"><a name="l01484"></a><span class="lineno"> 1484</span>&#160;</div>
-<div class="line"><a name="l01489"></a><span class="lineno"><a class="line" href="group__category.html#gacdee46e8366d186508282a328f5b887b"> 1489</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_UNASSIGNED                0x20000000</span></div>
-<div class="line"><a name="l01490"></a><span class="lineno"> 1490</span>&#160;</div>
-<div class="line"><a name="l01496"></a><span class="lineno"><a class="line" href="group__category.html#ga879c74ce8a9a36c2dd35fd3159ab9f49"> 1496</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_COMPATIBILITY             0x40000000</span></div>
-<div class="line"><a name="l01497"></a><span class="lineno"> 1497</span>&#160;</div>
-<div class="line"><a name="l01503"></a><span class="lineno"><a class="line" href="group__category.html#gad9626f05c4daa133f64a9f73dcb9e88b"> 1503</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER   0x80000000</span></div>
-<div class="line"><a name="l01504"></a><span class="lineno"> 1504</span>&#160;</div>
-<div class="line"><a name="l01510"></a><span class="lineno"><a class="line" href="group__category.html#gaff9219cfcae0e97abfbcd55c28967405"> 1510</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISCNTRL \</span></div>
-<div class="line"><a name="l01511"></a><span class="lineno"> 1511</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01512"></a><span class="lineno"> 1512</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_CONTROL</span></div>
-<div class="line"><a name="l01513"></a><span class="lineno"> 1513</span>&#160;</div>
-<div class="line"><a name="l01519"></a><span class="lineno"><a class="line" href="group__category.html#gad4d13f9ae87e8f27348881bbb2bb9212"> 1519</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISPRINT \</span></div>
-<div class="line"><a name="l01520"></a><span class="lineno"> 1520</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01521"></a><span class="lineno"> 1521</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER | UTF8_CATEGORY_NUMBER | \</span></div>
-<div class="line"><a name="l01522"></a><span class="lineno"> 1522</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL | \</span></div>
-<div class="line"><a name="l01523"></a><span class="lineno"> 1523</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR</span></div>
-<div class="line"><a name="l01524"></a><span class="lineno"> 1524</span>&#160;</div>
-<div class="line"><a name="l01530"></a><span class="lineno"><a class="line" href="group__category.html#ga671bdbf26b2024e25eeaa7dd5dc04d0b"> 1530</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISSPACE \</span></div>
-<div class="line"><a name="l01531"></a><span class="lineno"> 1531</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01532"></a><span class="lineno"> 1532</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_SPACE</span></div>
-<div class="line"><a name="l01533"></a><span class="lineno"> 1533</span>&#160;</div>
-<div class="line"><a name="l01539"></a><span class="lineno"><a class="line" href="group__category.html#gaf44f395540ccf52d719352abb21b5f2c"> 1539</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISBLANK \</span></div>
-<div class="line"><a name="l01540"></a><span class="lineno"> 1540</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01541"></a><span class="lineno"> 1541</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_SPACE | UTF8_CATEGORY_PRIVATE_USE</span></div>
-<div class="line"><a name="l01542"></a><span class="lineno"> 1542</span>&#160;</div>
-<div class="line"><a name="l01548"></a><span class="lineno"><a class="line" href="group__category.html#ga62d2bbf78753f290d7f02d6d1f3b33f6"> 1548</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISGRAPH \</span></div>
-<div class="line"><a name="l01549"></a><span class="lineno"> 1549</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01550"></a><span class="lineno"> 1550</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER | UTF8_CATEGORY_NUMBER | \</span></div>
-<div class="line"><a name="l01551"></a><span class="lineno"> 1551</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL</span></div>
-<div class="line"><a name="l01552"></a><span class="lineno"> 1552</span>&#160;</div>
-<div class="line"><a name="l01558"></a><span class="lineno"><a class="line" href="group__category.html#gaeeb2cf53db6b51c03ac9b5ca489a4eb5"> 1558</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISPUNCT \</span></div>
-<div class="line"><a name="l01559"></a><span class="lineno"> 1559</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01560"></a><span class="lineno"> 1560</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL</span></div>
-<div class="line"><a name="l01561"></a><span class="lineno"> 1561</span>&#160;</div>
-<div class="line"><a name="l01567"></a><span class="lineno"><a class="line" href="group__category.html#gab8cad51e488bd55918118c24874d4a2e"> 1567</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISALNUM \</span></div>
-<div class="line"><a name="l01568"></a><span class="lineno"> 1568</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01569"></a><span class="lineno"> 1569</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER | UTF8_CATEGORY_NUMBER</span></div>
-<div class="line"><a name="l01570"></a><span class="lineno"> 1570</span>&#160;</div>
-<div class="line"><a name="l01576"></a><span class="lineno"><a class="line" href="group__category.html#ga7ccea6542e9c58f62d4fd4dda6b526f0"> 1576</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISALPHA \</span></div>
-<div class="line"><a name="l01577"></a><span class="lineno"> 1577</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01578"></a><span class="lineno"> 1578</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER</span></div>
-<div class="line"><a name="l01579"></a><span class="lineno"> 1579</span>&#160;</div>
-<div class="line"><a name="l01585"></a><span class="lineno"><a class="line" href="group__category.html#gafdad1174c915f84e604f08fbea715baf"> 1585</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISUPPER \</span></div>
-<div class="line"><a name="l01586"></a><span class="lineno"> 1586</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01587"></a><span class="lineno"> 1587</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_UPPERCASE</span></div>
-<div class="line"><a name="l01588"></a><span class="lineno"> 1588</span>&#160;</div>
-<div class="line"><a name="l01594"></a><span class="lineno"><a class="line" href="group__category.html#gaff91c17fbfbfe2cc609d7dbd74f46c21"> 1594</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISLOWER \</span></div>
-<div class="line"><a name="l01595"></a><span class="lineno"> 1595</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01596"></a><span class="lineno"> 1596</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_LOWERCASE</span></div>
-<div class="line"><a name="l01597"></a><span class="lineno"> 1597</span>&#160;</div>
-<div class="line"><a name="l01603"></a><span class="lineno"><a class="line" href="group__category.html#gaa63a290f6d1fd320c968fa24ecf55e34"> 1603</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISDIGIT \</span></div>
-<div class="line"><a name="l01604"></a><span class="lineno"> 1604</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01605"></a><span class="lineno"> 1605</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER</span></div>
-<div class="line"><a name="l01606"></a><span class="lineno"> 1606</span>&#160;</div>
-<div class="line"><a name="l01612"></a><span class="lineno"><a class="line" href="group__category.html#ga3087471026fae5828c1172354957aae1"> 1612</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISXDIGIT \</span></div>
-<div class="line"><a name="l01613"></a><span class="lineno"> 1613</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01614"></a><span class="lineno"> 1614</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER | UTF8_CATEGORY_PRIVATE_USE</span></div>
-<div class="line"><a name="l01615"></a><span class="lineno"> 1615</span>&#160;</div>
-<div class="line"><a name="l01668"></a><span class="lineno"> 1668</span>&#160;<a class="code" href="group__configuration.html#gaf8233f2b15c97ad97ccec2beff1d24a2">UTF8_API</a> <span class="keywordtype">size_t</span> <a class="code" href="utf8rewind_8h.html#afb5becd4b5b7382708159efc89825642">utf8iscategory</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* input, <span class="keywordtype">size_t</span> inputSize, <span class="keywordtype">size_t</span> flags);</div>
-<div class="line"><a name="l01669"></a><span class="lineno"> 1669</span>&#160;</div>
-<div class="line"><a name="l01670"></a><span class="lineno"> 1670</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _UTF8REWIND_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l01257"></a><span class="lineno"><a class="line" href="group__category.html#gad0619b98bec91411c73f1abd22b1974b"> 1257</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER_UPPERCASE          0x00000001</span></div>
+<div class="line"><a name="l01258"></a><span class="lineno"> 1258</span>&#160;</div>
+<div class="line"><a name="l01263"></a><span class="lineno"><a class="line" href="group__category.html#ga93bc49b1d0998ed5b095a12c2c51bff5"> 1263</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER_LOWERCASE          0x00000002</span></div>
+<div class="line"><a name="l01264"></a><span class="lineno"> 1264</span>&#160;</div>
+<div class="line"><a name="l01269"></a><span class="lineno"><a class="line" href="group__category.html#ga5e3ac3e4cb5f722ac770945c15d72172"> 1269</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER_TITLECASE          0x00000004</span></div>
+<div class="line"><a name="l01270"></a><span class="lineno"> 1270</span>&#160;</div>
+<div class="line"><a name="l01275"></a><span class="lineno"><a class="line" href="group__category.html#ga28a3a209f327411869f39e11e50dc845"> 1275</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER_MODIFIER           0x00000008</span></div>
+<div class="line"><a name="l01276"></a><span class="lineno"> 1276</span>&#160;</div>
+<div class="line"><a name="l01281"></a><span class="lineno"><a class="line" href="group__category.html#gaa76b0c223998314eb7897f99738bc95f"> 1281</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER_OTHER              0x00000010</span></div>
+<div class="line"><a name="l01282"></a><span class="lineno"> 1282</span>&#160;</div>
+<div class="line"><a name="l01287"></a><span class="lineno"><a class="line" href="group__category.html#ga168e76ca07b729e3b1552cde220da9a5"> 1287</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER \</span></div>
+<div class="line"><a name="l01288"></a><span class="lineno"> 1288</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_UPPERCASE | UTF8_CATEGORY_LETTER_LOWERCASE | \</span></div>
+<div class="line"><a name="l01289"></a><span class="lineno"> 1289</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_TITLECASE | UTF8_CATEGORY_LETTER_MODIFIER | \</span></div>
+<div class="line"><a name="l01290"></a><span class="lineno"> 1290</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_OTHER</span></div>
+<div class="line"><a name="l01291"></a><span class="lineno"> 1291</span>&#160;</div>
+<div class="line"><a name="l01296"></a><span class="lineno"><a class="line" href="group__category.html#ga8f538ff018ff6456ff17c5a7133ed745"> 1296</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_CASE_MAPPED \</span></div>
+<div class="line"><a name="l01297"></a><span class="lineno"> 1297</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_UPPERCASE | UTF8_CATEGORY_LETTER_LOWERCASE | \</span></div>
+<div class="line"><a name="l01298"></a><span class="lineno"> 1298</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_TITLECASE</span></div>
+<div class="line"><a name="l01299"></a><span class="lineno"> 1299</span>&#160;</div>
+<div class="line"><a name="l01304"></a><span class="lineno"><a class="line" href="group__category.html#ga4d2c7b40051d4d5317cc1d85da8a8a93"> 1304</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_MARK_NON_SPACING          0x00000020</span></div>
+<div class="line"><a name="l01305"></a><span class="lineno"> 1305</span>&#160;</div>
+<div class="line"><a name="l01310"></a><span class="lineno"><a class="line" href="group__category.html#gaf5678f86a166db20cec660b77b46fcdd"> 1310</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_MARK_SPACING              0x00000040</span></div>
+<div class="line"><a name="l01311"></a><span class="lineno"> 1311</span>&#160;</div>
+<div class="line"><a name="l01316"></a><span class="lineno"><a class="line" href="group__category.html#gafae6d97439fa14adbe8262a1f5ca2f78"> 1316</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_MARK_ENCLOSING            0x00000080</span></div>
+<div class="line"><a name="l01317"></a><span class="lineno"> 1317</span>&#160;</div>
+<div class="line"><a name="l01322"></a><span class="lineno"><a class="line" href="group__category.html#ga11b764bce69bfc27cc9c6fcb0f526b13"> 1322</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_MARK \</span></div>
+<div class="line"><a name="l01323"></a><span class="lineno"> 1323</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_MARK_NON_SPACING | UTF8_CATEGORY_MARK_SPACING | \</span></div>
+<div class="line"><a name="l01324"></a><span class="lineno"> 1324</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_MARK_ENCLOSING</span></div>
+<div class="line"><a name="l01325"></a><span class="lineno"> 1325</span>&#160;</div>
+<div class="line"><a name="l01330"></a><span class="lineno"><a class="line" href="group__category.html#ga354c29ff8c12c871a8beeb1c03a46e52"> 1330</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_NUMBER_DECIMAL            0x00000100</span></div>
+<div class="line"><a name="l01331"></a><span class="lineno"> 1331</span>&#160;</div>
+<div class="line"><a name="l01336"></a><span class="lineno"><a class="line" href="group__category.html#gad55820a38b2f4faa152831fb8e52da49"> 1336</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_NUMBER_LETTER             0x00000200</span></div>
+<div class="line"><a name="l01337"></a><span class="lineno"> 1337</span>&#160;</div>
+<div class="line"><a name="l01342"></a><span class="lineno"><a class="line" href="group__category.html#gad20204d274d6aed400a5afba0fa3d65f"> 1342</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_NUMBER_OTHER              0x00000400</span></div>
+<div class="line"><a name="l01343"></a><span class="lineno"> 1343</span>&#160;</div>
+<div class="line"><a name="l01348"></a><span class="lineno"><a class="line" href="group__category.html#gaffb94a55729109bd067edbb5bdcfd57e"> 1348</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_NUMBER \</span></div>
+<div class="line"><a name="l01349"></a><span class="lineno"> 1349</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER_DECIMAL | UTF8_CATEGORY_NUMBER_LETTER | \</span></div>
+<div class="line"><a name="l01350"></a><span class="lineno"> 1350</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER_OTHER</span></div>
+<div class="line"><a name="l01351"></a><span class="lineno"> 1351</span>&#160;</div>
+<div class="line"><a name="l01356"></a><span class="lineno"><a class="line" href="group__category.html#ga3293fac7b2ca0025fb90287c7ee2ca74"> 1356</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_CONNECTOR     0x00000800</span></div>
+<div class="line"><a name="l01357"></a><span class="lineno"> 1357</span>&#160;</div>
+<div class="line"><a name="l01362"></a><span class="lineno"><a class="line" href="group__category.html#ga06ef16dfcbcd6c4f6a9b63e041da749f"> 1362</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_DASH          0x00001000</span></div>
+<div class="line"><a name="l01363"></a><span class="lineno"> 1363</span>&#160;</div>
+<div class="line"><a name="l01368"></a><span class="lineno"><a class="line" href="group__category.html#ga0fd43d094662ad75ca9befa07f8c0477"> 1368</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_OPEN          0x00002000</span></div>
+<div class="line"><a name="l01369"></a><span class="lineno"> 1369</span>&#160;</div>
+<div class="line"><a name="l01374"></a><span class="lineno"><a class="line" href="group__category.html#gaa3b03f5ba9ecd4ff1ef9d33bc208f4ad"> 1374</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_CLOSE         0x00004000</span></div>
+<div class="line"><a name="l01375"></a><span class="lineno"> 1375</span>&#160;</div>
+<div class="line"><a name="l01380"></a><span class="lineno"><a class="line" href="group__category.html#ga23e8df53cd05eec83f7ce499739c373a"> 1380</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_INITIAL       0x00008000</span></div>
+<div class="line"><a name="l01381"></a><span class="lineno"> 1381</span>&#160;</div>
+<div class="line"><a name="l01386"></a><span class="lineno"><a class="line" href="group__category.html#gad2397afd761ee2bd84b75c766ef3c61c"> 1386</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_FINAL         0x00010000</span></div>
+<div class="line"><a name="l01387"></a><span class="lineno"> 1387</span>&#160;</div>
+<div class="line"><a name="l01392"></a><span class="lineno"><a class="line" href="group__category.html#ga28285681b7aa0fa9faca6691bf8a0fb4"> 1392</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_OTHER         0x00020000</span></div>
+<div class="line"><a name="l01393"></a><span class="lineno"> 1393</span>&#160;</div>
+<div class="line"><a name="l01398"></a><span class="lineno"><a class="line" href="group__category.html#gaeff6e0918e8035d88499cbadf21d0e72"> 1398</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION \</span></div>
+<div class="line"><a name="l01399"></a><span class="lineno"> 1399</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION_CONNECTOR | UTF8_CATEGORY_PUNCTUATION_DASH | \</span></div>
+<div class="line"><a name="l01400"></a><span class="lineno"> 1400</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION_OPEN | UTF8_CATEGORY_PUNCTUATION_CLOSE | \</span></div>
+<div class="line"><a name="l01401"></a><span class="lineno"> 1401</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION_INITIAL | UTF8_CATEGORY_PUNCTUATION_FINAL | \</span></div>
+<div class="line"><a name="l01402"></a><span class="lineno"> 1402</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION_OTHER</span></div>
+<div class="line"><a name="l01403"></a><span class="lineno"> 1403</span>&#160;</div>
+<div class="line"><a name="l01408"></a><span class="lineno"><a class="line" href="group__category.html#ga29ade124b66b8cc8abbc272dd57965ae"> 1408</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SYMBOL_MATH               0x00040000</span></div>
+<div class="line"><a name="l01409"></a><span class="lineno"> 1409</span>&#160;</div>
+<div class="line"><a name="l01414"></a><span class="lineno"><a class="line" href="group__category.html#ga1486022fa6435f2db176523bd065c6e5"> 1414</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SYMBOL_CURRENCY           0x00080000</span></div>
+<div class="line"><a name="l01415"></a><span class="lineno"> 1415</span>&#160;</div>
+<div class="line"><a name="l01420"></a><span class="lineno"><a class="line" href="group__category.html#ga126f73bd604c72f981bde1c777e20727"> 1420</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SYMBOL_MODIFIER           0x00100000</span></div>
+<div class="line"><a name="l01421"></a><span class="lineno"> 1421</span>&#160;</div>
+<div class="line"><a name="l01426"></a><span class="lineno"><a class="line" href="group__category.html#ga448a8fd6e66e1a3142296c77a2a8ced3"> 1426</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SYMBOL_OTHER              0x00200000</span></div>
+<div class="line"><a name="l01427"></a><span class="lineno"> 1427</span>&#160;</div>
+<div class="line"><a name="l01432"></a><span class="lineno"><a class="line" href="group__category.html#ga5d548506403e5d315111756dadcc87aa"> 1432</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SYMBOL \</span></div>
+<div class="line"><a name="l01433"></a><span class="lineno"> 1433</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SYMBOL_MATH | UTF8_CATEGORY_SYMBOL_CURRENCY | \</span></div>
+<div class="line"><a name="l01434"></a><span class="lineno"> 1434</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SYMBOL_MODIFIER | UTF8_CATEGORY_SYMBOL_OTHER</span></div>
+<div class="line"><a name="l01435"></a><span class="lineno"> 1435</span>&#160;</div>
+<div class="line"><a name="l01440"></a><span class="lineno"><a class="line" href="group__category.html#ga098078b78b6c6b1c5a9ce00faf8e4535"> 1440</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SEPARATOR_SPACE           0x00400000</span></div>
+<div class="line"><a name="l01441"></a><span class="lineno"> 1441</span>&#160;</div>
+<div class="line"><a name="l01446"></a><span class="lineno"><a class="line" href="group__category.html#gaeb330801ffb42e3be049ec0a333c7c28"> 1446</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SEPARATOR_LINE            0x00800000</span></div>
+<div class="line"><a name="l01447"></a><span class="lineno"> 1447</span>&#160;</div>
+<div class="line"><a name="l01452"></a><span class="lineno"><a class="line" href="group__category.html#gac3b176a7d57c30d9fcd60c68a4c0517a"> 1452</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SEPARATOR_PARAGRAPH       0x01000000</span></div>
+<div class="line"><a name="l01453"></a><span class="lineno"> 1453</span>&#160;</div>
+<div class="line"><a name="l01458"></a><span class="lineno"><a class="line" href="group__category.html#ga807f996fdbe772b52f07c70971e2edc2"> 1458</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SEPARATOR \</span></div>
+<div class="line"><a name="l01459"></a><span class="lineno"> 1459</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_SPACE | UTF8_CATEGORY_SEPARATOR_LINE | \</span></div>
+<div class="line"><a name="l01460"></a><span class="lineno"> 1460</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_PARAGRAPH</span></div>
+<div class="line"><a name="l01461"></a><span class="lineno"> 1461</span>&#160;</div>
+<div class="line"><a name="l01466"></a><span class="lineno"><a class="line" href="group__category.html#ga5bfbd7a57f6c14fa9abcb7d86e17f153"> 1466</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_CONTROL                   0x02000000</span></div>
+<div class="line"><a name="l01467"></a><span class="lineno"> 1467</span>&#160;</div>
+<div class="line"><a name="l01472"></a><span class="lineno"><a class="line" href="group__category.html#ga1f80899546f4df795809331aa35bb0f6"> 1472</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_FORMAT                    0x04000000</span></div>
+<div class="line"><a name="l01473"></a><span class="lineno"> 1473</span>&#160;</div>
+<div class="line"><a name="l01478"></a><span class="lineno"><a class="line" href="group__category.html#gaa87a00549593f05c3e3f5f75def27ba4"> 1478</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SURROGATE                 0x08000000</span></div>
+<div class="line"><a name="l01479"></a><span class="lineno"> 1479</span>&#160;</div>
+<div class="line"><a name="l01484"></a><span class="lineno"><a class="line" href="group__category.html#gab298003c8e22c62ca78bf156d5569f89"> 1484</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PRIVATE_USE               0x10000000</span></div>
+<div class="line"><a name="l01485"></a><span class="lineno"> 1485</span>&#160;</div>
+<div class="line"><a name="l01490"></a><span class="lineno"><a class="line" href="group__category.html#gacdee46e8366d186508282a328f5b887b"> 1490</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_UNASSIGNED                0x20000000</span></div>
+<div class="line"><a name="l01491"></a><span class="lineno"> 1491</span>&#160;</div>
+<div class="line"><a name="l01497"></a><span class="lineno"><a class="line" href="group__category.html#ga879c74ce8a9a36c2dd35fd3159ab9f49"> 1497</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_COMPATIBILITY             0x40000000</span></div>
+<div class="line"><a name="l01498"></a><span class="lineno"> 1498</span>&#160;</div>
+<div class="line"><a name="l01504"></a><span class="lineno"><a class="line" href="group__category.html#gad9626f05c4daa133f64a9f73dcb9e88b"> 1504</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER   0x80000000</span></div>
+<div class="line"><a name="l01505"></a><span class="lineno"> 1505</span>&#160;</div>
+<div class="line"><a name="l01511"></a><span class="lineno"><a class="line" href="group__category.html#gaff9219cfcae0e97abfbcd55c28967405"> 1511</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISCNTRL \</span></div>
+<div class="line"><a name="l01512"></a><span class="lineno"> 1512</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01513"></a><span class="lineno"> 1513</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_CONTROL</span></div>
+<div class="line"><a name="l01514"></a><span class="lineno"> 1514</span>&#160;</div>
+<div class="line"><a name="l01520"></a><span class="lineno"><a class="line" href="group__category.html#gad4d13f9ae87e8f27348881bbb2bb9212"> 1520</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISPRINT \</span></div>
+<div class="line"><a name="l01521"></a><span class="lineno"> 1521</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01522"></a><span class="lineno"> 1522</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER | UTF8_CATEGORY_NUMBER | \</span></div>
+<div class="line"><a name="l01523"></a><span class="lineno"> 1523</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL | \</span></div>
+<div class="line"><a name="l01524"></a><span class="lineno"> 1524</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR</span></div>
+<div class="line"><a name="l01525"></a><span class="lineno"> 1525</span>&#160;</div>
+<div class="line"><a name="l01531"></a><span class="lineno"><a class="line" href="group__category.html#ga671bdbf26b2024e25eeaa7dd5dc04d0b"> 1531</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISSPACE \</span></div>
+<div class="line"><a name="l01532"></a><span class="lineno"> 1532</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01533"></a><span class="lineno"> 1533</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_SPACE</span></div>
+<div class="line"><a name="l01534"></a><span class="lineno"> 1534</span>&#160;</div>
+<div class="line"><a name="l01540"></a><span class="lineno"><a class="line" href="group__category.html#gaf44f395540ccf52d719352abb21b5f2c"> 1540</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISBLANK \</span></div>
+<div class="line"><a name="l01541"></a><span class="lineno"> 1541</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01542"></a><span class="lineno"> 1542</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_SPACE | UTF8_CATEGORY_PRIVATE_USE</span></div>
+<div class="line"><a name="l01543"></a><span class="lineno"> 1543</span>&#160;</div>
+<div class="line"><a name="l01549"></a><span class="lineno"><a class="line" href="group__category.html#ga62d2bbf78753f290d7f02d6d1f3b33f6"> 1549</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISGRAPH \</span></div>
+<div class="line"><a name="l01550"></a><span class="lineno"> 1550</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01551"></a><span class="lineno"> 1551</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER | UTF8_CATEGORY_NUMBER | \</span></div>
+<div class="line"><a name="l01552"></a><span class="lineno"> 1552</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL</span></div>
+<div class="line"><a name="l01553"></a><span class="lineno"> 1553</span>&#160;</div>
+<div class="line"><a name="l01559"></a><span class="lineno"><a class="line" href="group__category.html#gaeeb2cf53db6b51c03ac9b5ca489a4eb5"> 1559</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISPUNCT \</span></div>
+<div class="line"><a name="l01560"></a><span class="lineno"> 1560</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01561"></a><span class="lineno"> 1561</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL</span></div>
+<div class="line"><a name="l01562"></a><span class="lineno"> 1562</span>&#160;</div>
+<div class="line"><a name="l01568"></a><span class="lineno"><a class="line" href="group__category.html#gab8cad51e488bd55918118c24874d4a2e"> 1568</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISALNUM \</span></div>
+<div class="line"><a name="l01569"></a><span class="lineno"> 1569</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01570"></a><span class="lineno"> 1570</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER | UTF8_CATEGORY_NUMBER</span></div>
+<div class="line"><a name="l01571"></a><span class="lineno"> 1571</span>&#160;</div>
+<div class="line"><a name="l01577"></a><span class="lineno"><a class="line" href="group__category.html#ga7ccea6542e9c58f62d4fd4dda6b526f0"> 1577</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISALPHA \</span></div>
+<div class="line"><a name="l01578"></a><span class="lineno"> 1578</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01579"></a><span class="lineno"> 1579</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER</span></div>
+<div class="line"><a name="l01580"></a><span class="lineno"> 1580</span>&#160;</div>
+<div class="line"><a name="l01586"></a><span class="lineno"><a class="line" href="group__category.html#gafdad1174c915f84e604f08fbea715baf"> 1586</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISUPPER \</span></div>
+<div class="line"><a name="l01587"></a><span class="lineno"> 1587</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01588"></a><span class="lineno"> 1588</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_UPPERCASE</span></div>
+<div class="line"><a name="l01589"></a><span class="lineno"> 1589</span>&#160;</div>
+<div class="line"><a name="l01595"></a><span class="lineno"><a class="line" href="group__category.html#gaff91c17fbfbfe2cc609d7dbd74f46c21"> 1595</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISLOWER \</span></div>
+<div class="line"><a name="l01596"></a><span class="lineno"> 1596</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01597"></a><span class="lineno"> 1597</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_LOWERCASE</span></div>
+<div class="line"><a name="l01598"></a><span class="lineno"> 1598</span>&#160;</div>
+<div class="line"><a name="l01604"></a><span class="lineno"><a class="line" href="group__category.html#gaa63a290f6d1fd320c968fa24ecf55e34"> 1604</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISDIGIT \</span></div>
+<div class="line"><a name="l01605"></a><span class="lineno"> 1605</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01606"></a><span class="lineno"> 1606</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER</span></div>
+<div class="line"><a name="l01607"></a><span class="lineno"> 1607</span>&#160;</div>
+<div class="line"><a name="l01613"></a><span class="lineno"><a class="line" href="group__category.html#ga3087471026fae5828c1172354957aae1"> 1613</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISXDIGIT \</span></div>
+<div class="line"><a name="l01614"></a><span class="lineno"> 1614</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01615"></a><span class="lineno"> 1615</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER | UTF8_CATEGORY_PRIVATE_USE</span></div>
+<div class="line"><a name="l01616"></a><span class="lineno"> 1616</span>&#160;</div>
+<div class="line"><a name="l01710"></a><span class="lineno"> 1710</span>&#160;<a class="code" href="group__configuration.html#gaf8233f2b15c97ad97ccec2beff1d24a2">UTF8_API</a> <span class="keywordtype">size_t</span> <a class="code" href="utf8rewind_8h.html#afb5becd4b5b7382708159efc89825642">utf8iscategory</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* input, <span class="keywordtype">size_t</span> inputSize, <span class="keywordtype">size_t</span> flags);</div>
+<div class="line"><a name="l01711"></a><span class="lineno"> 1711</span>&#160;</div>
+<div class="line"><a name="l01712"></a><span class="lineno"> 1712</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _UTF8REWIND_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">UTF-32 encoded code point. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:235</div></div>
 <div class="ttc" id="utf8rewind_8h_html_a8c55b8635f998a2405aa0a5483289264"><div class="ttname"><a href="utf8rewind_8h.html#a8c55b8635f998a2405aa0a5483289264">utf8totitle</a></div><div class="ttdeci">UTF8_API size_t utf8totitle(const char *input, size_t inputSize, char *target, size_t targetSize, int32_t *errors)</div><div class="ttdoc">Convert UTF-8 encoded text to titlecase. </div></div>
 <div class="ttc" id="utf8rewind_8h_html_adfa0210609054db368b6af9837ca69db"><div class="ttname"><a href="utf8rewind_8h.html#adfa0210609054db368b6af9837ca69db">utf8normalize</a></div><div class="ttdeci">UTF8_API size_t utf8normalize(const char *input, size_t inputSize, char *target, size_t targetSize, size_t flags, int32_t *errors)</div><div class="ttdoc">Normalize a string to the specified Unicode Normalization Form. </div></div>
