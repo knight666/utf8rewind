@@ -1657,7 +1657,48 @@ UTF8_API size_t utf8normalize(const char* input, size_t inputSize, char* target,
 	Example:
 
 	\code{.c}
+		const char* Parser_NextIdentifier(char** output, size_t* outputSize, const char* input, size_t inputSize)
+		{
+			const char* src = input;
+			size_t src_size = inputSize;
+			size_t whitespace_size;
+			size_t identifier_size;
+	
+			whitespace_size = utf8iscategory(src, src_size, UTF8_CATEGORY_SEPARATOR_SPACE);
+			if (whitespace_size == 0)
+			{
+				whitespace_size = utf8iscategory(src, src_size, UTF8_CATEGORY_ISSPACE);
+			}
 
+			if (whitespace_size > 0)
+			{
+				if (whitespace_size >= src_size)
+				{
+					return src + src_size;
+				}
+
+				src += whitespace_size;
+				src_size -= whitespace_size;
+			}
+
+			identifier_size = utf8iscategory(src, src_size, UTF8_CATEGORY_LETTER | UTF8_CATEGORY_PUNCTUATION_CONNECTOR | UTF8_CATEGORY_PUNCTUATION_DASH);
+			if (identifier_size == 0)
+			{
+				return src;
+			}
+
+			*output = (char*)malloc(identifier_size + 1);
+			memcpy(*output, src, identifier_size);
+			(*output)[identifier_size] = 0;
+			*outputSize = identifier_size;
+
+			if (identifier_size >= src_size)
+			{
+				return src + src_size;
+			}
+
+			return src + identifier_size;
+		}
 	\endcode
 
 	\param[in]   input       UTF-8 encoded string.

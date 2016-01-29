@@ -1971,7 +1971,49 @@ This function checks the (thread-local) system locale in order to support langua
 <p>If this is undesired behavior, specify the <code>UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER</code> flag.</p>
 <p>In order to main backwards compatibility with POSIX functions like <code>isdigit</code> and <code>isspace</code>, compatibility flags have been provided. Note, however, that the result is only guaranteed to be correct for code points in the Basic Latin range, between U+0000 and 0+007F. Combining a compatibility flag with a regular category flag will result in undefined behavior.</p>
 <p>Example:</p>
-<div class="fragment"></div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+<div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span>* Parser_NextIdentifier(<span class="keywordtype">char</span>** output, <span class="keywordtype">size_t</span>* outputSize, <span class="keyword">const</span> <span class="keywordtype">char</span>* input, <span class="keywordtype">size_t</span> inputSize)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* src = input;</div>
+<div class="line">    <span class="keywordtype">size_t</span> src_size = inputSize;</div>
+<div class="line">    <span class="keywordtype">size_t</span> whitespace_size;</div>
+<div class="line">    <span class="keywordtype">size_t</span> identifier_size;</div>
+<div class="line"></div>
+<div class="line">    whitespace_size = <a class="code" href="utf8rewind_8h.html#afb5becd4b5b7382708159efc89825642">utf8iscategory</a>(src, src_size, <a class="code" href="group__category.html#ga098078b78b6c6b1c5a9ce00faf8e4535">UTF8_CATEGORY_SEPARATOR_SPACE</a>);</div>
+<div class="line">    <span class="keywordflow">if</span> (whitespace_size == 0)</div>
+<div class="line">    {</div>
+<div class="line">        whitespace_size = <a class="code" href="utf8rewind_8h.html#afb5becd4b5b7382708159efc89825642">utf8iscategory</a>(src, src_size, <a class="code" href="group__category.html#ga671bdbf26b2024e25eeaa7dd5dc04d0b">UTF8_CATEGORY_ISSPACE</a>);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">if</span> (whitespace_size &gt; 0)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">if</span> (whitespace_size &gt;= src_size)</div>
+<div class="line">        {</div>
+<div class="line">            <span class="keywordflow">return</span> src + src_size;</div>
+<div class="line">        }</div>
+<div class="line"></div>
+<div class="line">        src += whitespace_size;</div>
+<div class="line">        src_size -= whitespace_size;</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    identifier_size = <a class="code" href="utf8rewind_8h.html#afb5becd4b5b7382708159efc89825642">utf8iscategory</a>(src, src_size, <a class="code" href="group__category.html#ga168e76ca07b729e3b1552cde220da9a5">UTF8_CATEGORY_LETTER</a> | <a class="code" href="group__category.html#ga3293fac7b2ca0025fb90287c7ee2ca74">UTF8_CATEGORY_PUNCTUATION_CONNECTOR</a> | <a class="code" href="group__category.html#ga06ef16dfcbcd6c4f6a9b63e041da749f">UTF8_CATEGORY_PUNCTUATION_DASH</a>);</div>
+<div class="line">    <span class="keywordflow">if</span> (identifier_size == 0)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">return</span> src;</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">     *output = (<span class="keywordtype">char</span>*)malloc(identifier_size + 1);</div>
+<div class="line">    memcpy(*output, src, identifier_size);</div>
+<div class="line">    (*output)[identifier_size] = 0;</div>
+<div class="line">     *outputSize = identifier_size;</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">if</span> (identifier_size &gt;= src_size)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">return</span> src + src_size;</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">return</span> src + identifier_size;</div>
+<div class="line">}</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>UTF-8 encoded string. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
