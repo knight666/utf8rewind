@@ -222,6 +222,42 @@ TEST(Utf8IsCategory, GraphemeClusterMultipleNonStarter)
 	EXPECT_GCEQ(6, i, is, UTF8_CATEGORY_MARK_NON_SPACING);
 }
 
+TEST(Utf8IsCategory, GraphemeClusterMultipleIgnored)
+{
+	// 05E9 302A 034E 05AD 06AF 0E39 0743 062F 0619 0328
+	//    0  218  220  222    0  103  230    0   31  222
+	//   Lo   Mn   Mn   Mn   Lo   Mn   Mn   Lo   Mn   Mn
+
+	const char* i = "\xD7\xA9\xE3\x80\xAA\xCD\x8E\xD6\xAD\xDA\xAF\xE0\xB8\xB9\xDD\x83\xD8\xAF\xD8\x99\xCC\xA8";
+	size_t is = strlen(i);
+
+	EXPECT_GCEQ(2, i, is, UTF8_CATEGORY_LETTER_OTHER | UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER);
+}
+
+TEST(Utf8IsCategory, GraphemeClusterMultipleIgnoredMismatch)
+{
+	// 047C 0742 1DD3 04A3 0321
+	//    0  220  230    0  202
+	//   Lu   Mn   Mn   Ll   Mn
+
+	const char* i = "\xD1\xBC\xDD\x82\xE1\xB7\x93\xD2\xA3\xCC\xA1";
+	size_t is = strlen(i);
+
+	EXPECT_GCEQ(2, i, is, UTF8_CATEGORY_LETTER_UPPERCASE | UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER);
+}
+
+TEST(Utf8IsCategory, GraphemeClusterMultipleIgnoredNonStarter)
+{
+	// 0F72 0321 1D166
+	//  130  202   216
+	//   Mn   Mn    Mc
+
+	const char* i = "\xE0\xBD\xB2\xCC\xA1\xF0\x9D\x85\xA6";
+	size_t is = strlen(i);
+
+	EXPECT_GCEQ(5, i, is, UTF8_CATEGORY_MARK_NON_SPACING | UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER);
+}
+
 TEST(Utf8IsCategory, InvalidData)
 {
 	EXPECT_GCEQ(0, nullptr, 3, UTF8_CATEGORY_LETTER_UPPERCASE);
