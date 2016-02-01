@@ -124,21 +124,21 @@ uint8_t casemapping_initialize(
 	state->property_index1 = propertyIndex1;
 	state->property_index2 = propertyIndex2;
 	state->property_data = propertyData;
-	state->general_category_flags = 0;
+	state->quickcheck_flags = 0;
 	state->locale = casemapping_locale();
 
 	if (propertyData == TitlecaseDataPtr)
 	{
-		state->general_category_flags = UTF8_CATEGORY_LETTER_LOWERCASE | UTF8_CATEGORY_LETTER_UPPERCASE;
+		state->quickcheck_flags = QuickCheckCaseMapped_Titlecase;
 	}
 	else if (
 		propertyData == UppercaseDataPtr)
 	{
-		state->general_category_flags = UTF8_CATEGORY_LETTER_LOWERCASE | UTF8_CATEGORY_LETTER_TITLECASE;
+		state->quickcheck_flags = QuickCheckCaseMapped_Uppercase;
 	}
 	else
 	{
-		state->general_category_flags = UTF8_CATEGORY_LETTER_UPPERCASE | UTF8_CATEGORY_LETTER_TITLECASE;
+		state->quickcheck_flags = QuickCheckCaseMapped_Lowercase;
 	}
 
 	return 1;
@@ -146,6 +146,7 @@ uint8_t casemapping_initialize(
 
 size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 {
+	uint8_t qc_casemapped = 0;
 	uint8_t bytes_needed = 0;
 	const char* resolved = 0;
 	StreamState stream;
@@ -616,7 +617,8 @@ writeregular:
 
 		/* Check if the code point is case mapped */
 
-		if ((state->last_general_category & state->general_category_flags) != 0)
+		qc_casemapped = PROPERTY_GET_CM(state->last_code_point);
+		if ((qc_casemapped & state->quickcheck_flags) != 0)
 		{
 			/* Attempt to resolve the case mapping */
 

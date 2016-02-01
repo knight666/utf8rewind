@@ -29,6 +29,7 @@ class UnicodeMapping:
 		self.decomposedNFKD = []
 		self.compositionPairs = dict()
 		self.compositionExcluded = False
+		self.quickCaseMapped = 0
 		self.quickNFC = 0
 		self.quickNFD = 0
 		self.quickNFKC = 0
@@ -900,6 +901,15 @@ class Database(libs.unicode.UnicodeVisitor):
 					self.qcCanonicalCombiningClass.append(group_ccc)
 				else:
 					group_ccc.count += 1
+
+			if len(r.uppercase) > 0 and r.uppercase[0] != r.codepoint:
+				r.quickCaseMapped |= 0x01
+			if len(r.lowercase) > 0 and r.lowercase[0] != r.codepoint:
+				r.quickCaseMapped |= 0x02
+			if len(r.titlecase) > 0 and r.titlecase[0] != r.codepoint:
+				r.quickCaseMapped |= 0x04
+			if len(r.caseFolding) > 0 and r.caseFolding[0] != r.codepoint:
+				r.quickCaseMapped |= 0x08
 		
 		if group_category:
 			group_category.end = group_category.start + group_category.count
@@ -1051,6 +1061,9 @@ class Database(libs.unicode.UnicodeVisitor):
 		compress_ccc = Compression(db)
 		compress_ccc.process('canonicalCombiningClass', 32)
 
+		compress_qc_cm = Compression(db)
+		compress_qc_cm.process('quickCaseMapped', 32)
+
 		compress_qc_nfc = Compression(db)
 		compress_qc_nfc.process('quickNFC', 32)
 
@@ -1111,6 +1124,9 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		compress_ccc.render(header, 'CanonicalCombiningClass')
 		header.newLine()
+
+		compress_qc_cm.render(header, 'QuickCheckCaseMapped');
+		header.newLine();
 
 		compress_qc_nfc.render(header, 'QuickCheckNFC')
 		header.newLine()
