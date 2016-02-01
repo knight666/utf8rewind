@@ -39,7 +39,8 @@
 #include <wchar.h>
 
 /*!
-	\defgroup version Version information
+	\name Version information
+	Macros used to identify the version of the library.
 	\{
 */
 
@@ -94,7 +95,8 @@
 */
 
 /*!
-	\defgroup errors Error codes
+	\name Error codes
+	Values returned by functions on error.
 	\{
 */
 
@@ -133,43 +135,9 @@
 */
 
 /*!
-	\def UTF8_NORMALIZE_COMPOSE
-	\brief Normalize input to Normalization Form C (NFC).
-*/
-#define UTF8_NORMALIZE_COMPOSE                  0x00000001
-
-/*!
-	\def UTF8_NORMALIZE_DECOMPOSE
-	\brief Normalize input to Normalization Form D (NFD).
-*/
-#define UTF8_NORMALIZE_DECOMPOSE                0x00000002
-
-/*!
-	\def UTF8_NORMALIZE_COMPATIBILITY
-	\brief Change Normalization Form from NFC to NFKC or from NFD to NFKD.
-*/
-#define UTF8_NORMALIZE_COMPATIBILITY            0x00000004
-
-/*!
-	\def UTF8_NORMALIZATION_RESULT_YES
-	\brief Text is stable and does not have to be normalized.
-*/
-#define UTF8_NORMALIZATION_RESULT_YES           (0)
-
-/*!
-	\def UTF8_NORMALIZATION_RESULT_MAYBE
-	\brief Text is unstable, but normalization may be skipped.
-*/
-#define UTF8_NORMALIZATION_RESULT_MAYBE         (1)
-
-/*!
-	\def UTF8_NORMALIZATION_RESULT_NO
-	\brief Text is unstable and must be normalized.
-*/
-#define UTF8_NORMALIZATION_RESULT_NO            (2)
-
-/*!
-	\defgroup configuration Global configuration
+	\name Global configuration
+	Defines used for determining the global configuration of the system and your
+	application.
 	\{
 */
 
@@ -641,6 +609,8 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 	\arg `SEEK_END` Offset is from the end of the string.
 
 	\return Pointer to offset string or no change on error.
+
+	\sa utf8iscategory
 */
 UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* textStart, off_t offset, int direction);
 
@@ -1026,6 +996,52 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 UTF8_API size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 /*!
+	\name Normalization flags
+	Flags used as input for #utf8normalize and the result of #utf8isnormalized.
+	\{
+*/
+
+/*!
+	\def UTF8_NORMALIZE_COMPOSE
+	\brief Normalize input to Normalization Form C (NFC).
+*/
+#define UTF8_NORMALIZE_COMPOSE                  0x00000001
+
+/*!
+	\def UTF8_NORMALIZE_DECOMPOSE
+	\brief Normalize input to Normalization Form D (NFD).
+*/
+#define UTF8_NORMALIZE_DECOMPOSE                0x00000002
+
+/*!
+	\def UTF8_NORMALIZE_COMPATIBILITY
+	\brief Change Normalization Form from NFC to NFKC or from NFD to NFKD.
+*/
+#define UTF8_NORMALIZE_COMPATIBILITY            0x00000004
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_YES
+	\brief Text is stable and does not have to be normalized.
+*/
+#define UTF8_NORMALIZATION_RESULT_YES           (0)
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_MAYBE
+	\brief Text is unstable, but normalization may be skipped.
+*/
+#define UTF8_NORMALIZATION_RESULT_MAYBE         (1)
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_NO
+	\brief Text is unstable and must be normalized.
+*/
+#define UTF8_NORMALIZATION_RESULT_NO            (2)
+
+/*!
+	\}
+*/
+
+/*!
 	\brief Check if a string is stable in the specified Unicode Normalization
 	Form.
 
@@ -1242,5 +1258,473 @@ UTF8_API uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t fl
 	\sa utf8isnormalized
 */
 UTF8_API size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
+
+/*!
+	\name Category flags
+	Flags to be used with #utf8iscategory, to check whether code points in a
+	string are part of that category.
+	\{
+*/
+
+/*!
+	\def UTF8_CATEGORY_LETTER_UPPERCASE
+	\brief Uppercase letter code points, Lu in the Unicode database.
+*/
+#define UTF8_CATEGORY_LETTER_UPPERCASE          0x00000001
+
+/*!
+	\def UTF8_CATEGORY_LETTER_LOWERCASE
+	\brief Lowercase letter code points, Ll in the Unicode database.
+*/
+#define UTF8_CATEGORY_LETTER_LOWERCASE          0x00000002
+
+/*!
+	\def UTF8_CATEGORY_LETTER_TITLECASE
+	\brief Titlecase letter code points, Lt in the Unicode database.
+*/
+#define UTF8_CATEGORY_LETTER_TITLECASE          0x00000004
+
+/*!
+	\def UTF8_CATEGORY_LETTER_MODIFIER
+	\brief Modifier letter code points, Lm in the Unicode database.
+*/
+#define UTF8_CATEGORY_LETTER_MODIFIER           0x00000008
+
+/*!
+	\def UTF8_CATEGORY_LETTER_OTHER
+	\brief Other letter code points, Lo in the Unicode database.
+*/
+#define UTF8_CATEGORY_LETTER_OTHER              0x00000010
+
+/*!
+	\def UTF8_CATEGORY_LETTER
+	\brief Combined flag for all letter categories.
+*/
+#define UTF8_CATEGORY_LETTER \
+	(UTF8_CATEGORY_LETTER_UPPERCASE | UTF8_CATEGORY_LETTER_LOWERCASE | \
+	UTF8_CATEGORY_LETTER_TITLECASE | UTF8_CATEGORY_LETTER_MODIFIER | \
+	UTF8_CATEGORY_LETTER_OTHER)
+
+/*!
+	\def UTF8_CATEGORY_CASE_MAPPED
+	\brief Combined flag for all letter categories with case mapping.
+*/
+#define UTF8_CATEGORY_CASE_MAPPED \
+	(UTF8_CATEGORY_LETTER_UPPERCASE | UTF8_CATEGORY_LETTER_LOWERCASE | \
+	UTF8_CATEGORY_LETTER_TITLECASE)
+
+/*!
+	\def UTF8_CATEGORY_MARK_NON_SPACING
+	\brief Non-spacing mark code points, Mn in the Unicode database.
+*/
+#define UTF8_CATEGORY_MARK_NON_SPACING          0x00000020
+
+/*!
+	\def UTF8_CATEGORY_MARK_SPACING
+	\brief Spacing mark code points, Mc in the Unicode database.
+*/
+#define UTF8_CATEGORY_MARK_SPACING              0x00000040
+
+/*!
+	\def UTF8_CATEGORY_MARK_ENCLOSING
+	\brief Enclosing mark code points, Me in the Unicode database.
+*/
+#define UTF8_CATEGORY_MARK_ENCLOSING            0x00000080
+
+/*!
+	\def UTF8_CATEGORY_MARK
+	\brief Combined flag for all mark categories.
+*/
+#define UTF8_CATEGORY_MARK \
+	(UTF8_CATEGORY_MARK_NON_SPACING | UTF8_CATEGORY_MARK_SPACING | \
+	UTF8_CATEGORY_MARK_ENCLOSING)
+
+/*!
+	\def UTF8_CATEGORY_NUMBER_DECIMAL
+	\brief Decimal number code points, Nd in the Unicode database.
+*/
+#define UTF8_CATEGORY_NUMBER_DECIMAL            0x00000100
+
+/*!
+	\def UTF8_CATEGORY_NUMBER_LETTER
+	\brief Letter number code points, Nl in the Unicode database.
+*/
+#define UTF8_CATEGORY_NUMBER_LETTER             0x00000200
+
+/*!
+	\def UTF8_CATEGORY_NUMBER_OTHER
+	\brief Other number code points, No in the Unicode database.
+*/
+#define UTF8_CATEGORY_NUMBER_OTHER              0x00000400
+
+/*!
+	\def UTF8_CATEGORY_NUMBER
+	\brief Combined flag for all number categories.
+*/
+#define UTF8_CATEGORY_NUMBER \
+	(UTF8_CATEGORY_NUMBER_DECIMAL | UTF8_CATEGORY_NUMBER_LETTER | \
+	UTF8_CATEGORY_NUMBER_OTHER)
+
+/*!
+	\def UTF8_CATEGORY_PUNCTUATION_CONNECTOR
+	\brief Connector punctuation category, Pc in the Unicode database.
+*/
+#define UTF8_CATEGORY_PUNCTUATION_CONNECTOR     0x00000800
+
+/*!
+	\def UTF8_CATEGORY_PUNCTUATION_DASH
+	\brief Dash punctuation category, Pd in the Unicode database.
+*/
+#define UTF8_CATEGORY_PUNCTUATION_DASH          0x00001000
+
+/*!
+	\def UTF8_CATEGORY_PUNCTUATION_OPEN
+	\brief Open punctuation category, Ps in the Unicode database.
+*/
+#define UTF8_CATEGORY_PUNCTUATION_OPEN          0x00002000
+
+/*!
+	\def UTF8_CATEGORY_PUNCTUATION_CLOSE
+	\brief Close punctuation category, Pe in the Unicode database.
+*/
+#define UTF8_CATEGORY_PUNCTUATION_CLOSE         0x00004000
+
+/*!
+	\def UTF8_CATEGORY_PUNCTUATION_INITIAL
+	\brief Initial punctuation category, Pi in the Unicode database.
+*/
+#define UTF8_CATEGORY_PUNCTUATION_INITIAL       0x00008000
+
+/*!
+	\def UTF8_CATEGORY_PUNCTUATION_FINAL
+	\brief Final punctuation category, Pf in the Unicode database.
+*/
+#define UTF8_CATEGORY_PUNCTUATION_FINAL         0x00010000
+
+/*!
+	\def UTF8_CATEGORY_PUNCTUATION_OTHER
+	\brief Other punctuation category, Po in the Unicode database.
+*/
+#define UTF8_CATEGORY_PUNCTUATION_OTHER         0x00020000
+
+/*!
+	\def UTF8_CATEGORY_PUNCTUATION
+	\brief Combined flag for all punctuation categories.
+*/
+#define UTF8_CATEGORY_PUNCTUATION \
+	(UTF8_CATEGORY_PUNCTUATION_CONNECTOR | UTF8_CATEGORY_PUNCTUATION_DASH | \
+	UTF8_CATEGORY_PUNCTUATION_OPEN | UTF8_CATEGORY_PUNCTUATION_CLOSE | \
+	UTF8_CATEGORY_PUNCTUATION_INITIAL | UTF8_CATEGORY_PUNCTUATION_FINAL | \
+	UTF8_CATEGORY_PUNCTUATION_OTHER)
+
+/*!
+	\def UTF8_CATEGORY_SYMBOL_MATH
+	\brief Math symbol category, Sm in the Unicode database.
+*/
+#define UTF8_CATEGORY_SYMBOL_MATH               0x00040000
+
+/*!
+	\def UTF8_CATEGORY_SYMBOL_CURRENCY
+	\brief Currency symbol category, Sc in the Unicode database.
+*/
+#define UTF8_CATEGORY_SYMBOL_CURRENCY           0x00080000
+
+/*!
+	\def UTF8_CATEGORY_SYMBOL_MODIFIER
+	\brief Modifier symbol category, Sk in the Unicode database.
+*/
+#define UTF8_CATEGORY_SYMBOL_MODIFIER           0x00100000
+
+/*!
+	\def UTF8_CATEGORY_SYMBOL_OTHER
+	\brief Other symbol category, So in the Unicode database.
+*/
+#define UTF8_CATEGORY_SYMBOL_OTHER              0x00200000
+
+/*!
+	\def UTF8_CATEGORY_SYMBOL
+	\brief Combined flag for all symbol categories.
+*/
+#define UTF8_CATEGORY_SYMBOL \
+	(UTF8_CATEGORY_SYMBOL_MATH | UTF8_CATEGORY_SYMBOL_CURRENCY | \
+	UTF8_CATEGORY_SYMBOL_MODIFIER | UTF8_CATEGORY_SYMBOL_OTHER)
+
+/*!
+	\def UTF8_CATEGORY_SEPARATOR_SPACE
+	\brief Space separator category, Zs in the Unicode database.
+*/
+#define UTF8_CATEGORY_SEPARATOR_SPACE           0x00400000
+
+/*!
+	\def UTF8_CATEGORY_SEPARATOR_LINE
+	\brief Line separator category, Zl in the Unicode database.
+*/
+#define UTF8_CATEGORY_SEPARATOR_LINE            0x00800000
+
+/*!
+	\def UTF8_CATEGORY_SEPARATOR_PARAGRAPH
+	\brief Paragraph separator category, Zp in the Unicode database.
+*/
+#define UTF8_CATEGORY_SEPARATOR_PARAGRAPH       0x01000000
+
+/*!
+	\def UTF8_CATEGORY_SEPARATOR
+	\brief Combined flag for all separator categories.
+*/
+#define UTF8_CATEGORY_SEPARATOR \
+	(UTF8_CATEGORY_SEPARATOR_SPACE | UTF8_CATEGORY_SEPARATOR_LINE | \
+	UTF8_CATEGORY_SEPARATOR_PARAGRAPH)
+
+/*!
+	\def UTF8_CATEGORY_CONTROL
+	\brief Control category, Cc in the Unicode database.
+*/
+#define UTF8_CATEGORY_CONTROL                   0x02000000
+
+/*!
+	\def UTF8_CATEGORY_FORMAT
+	\brief Format category, Cf in the Unicode database.
+*/
+#define UTF8_CATEGORY_FORMAT                    0x04000000
+
+/*!
+	\def UTF8_CATEGORY_SURROGATE
+	\brief Surrogate category, Cs in the Unicode database.
+*/
+#define UTF8_CATEGORY_SURROGATE                 0x08000000
+
+/*!
+	\def UTF8_CATEGORY_PRIVATE_USE
+	\brief Private use category, Co in the Unicode database.
+*/
+#define UTF8_CATEGORY_PRIVATE_USE               0x10000000
+
+/*!
+	\def UTF8_CATEGORY_UNASSIGNED
+	\brief Unassigned category, Cn in the Unicode database.
+*/
+#define UTF8_CATEGORY_UNASSIGNED                0x20000000
+
+/*!
+	\def UTF8_CATEGORY_COMPATIBILITY
+	\brief Flag used for maintaining backwards compatibility with POSIX
+	functions, not found in the Unicode database.
+*/
+#define UTF8_CATEGORY_COMPATIBILITY             0x40000000
+
+/*!
+	\def UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER
+	\brief Flag used for checking only the general category of code points at
+	the start of a grapheme cluster.
+*/
+#define UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER   0x80000000
+
+/*!
+	\def UTF8_CATEGORY_ISCNTRL
+	\brief Flag used for maintaining backwards compatibility with POSIX
+	`iscntrl` function.
+*/
+#define UTF8_CATEGORY_ISCNTRL \
+	(UTF8_CATEGORY_COMPATIBILITY | \
+	UTF8_CATEGORY_CONTROL)
+
+/*!
+	\def UTF8_CATEGORY_ISPRINT
+	\brief Flag used for maintaining backwards compatibility with POSIX
+	`isprint` function.
+*/
+#define UTF8_CATEGORY_ISPRINT \
+	(UTF8_CATEGORY_COMPATIBILITY | \
+	UTF8_CATEGORY_LETTER | UTF8_CATEGORY_NUMBER | \
+	UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL | \
+	UTF8_CATEGORY_SEPARATOR)
+
+/*!
+	\def UTF8_CATEGORY_ISSPACE
+	\brief Flag used for maintaining backwards compatibility with POSIX
+	`isspace` function.
+*/
+#define UTF8_CATEGORY_ISSPACE \
+	(UTF8_CATEGORY_COMPATIBILITY | \
+	UTF8_CATEGORY_SEPARATOR_SPACE)
+
+/*!
+	\def UTF8_CATEGORY_ISBLANK
+	\brief Flag used for maintaining backwards compatibility with POSIX
+	`isblank` function.
+*/
+#define UTF8_CATEGORY_ISBLANK \
+	(UTF8_CATEGORY_COMPATIBILITY | \
+	UTF8_CATEGORY_SEPARATOR_SPACE | UTF8_CATEGORY_PRIVATE_USE)
+
+/*!
+	\def UTF8_CATEGORY_ISGRAPH
+	\brief Flag used for maintaining backwards compatibility with POSIX
+	`isgraph` function.
+*/
+#define UTF8_CATEGORY_ISGRAPH \
+	(UTF8_CATEGORY_COMPATIBILITY | \
+	UTF8_CATEGORY_LETTER | UTF8_CATEGORY_NUMBER | \
+	UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL)
+
+/*!
+	\def UTF8_CATEGORY_ISPUNCT
+	\brief Flag used for maintaining backwards compatibility with POSIX
+	`ispunct` function.
+*/
+#define UTF8_CATEGORY_ISPUNCT \
+	(UTF8_CATEGORY_COMPATIBILITY | \
+	UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL)
+
+/*!
+	\def UTF8_CATEGORY_ISALNUM
+	\brief Flag used for maintaining backwards compatibility with POSIX
+	`isalnum` function.
+*/
+#define UTF8_CATEGORY_ISALNUM \
+	(UTF8_CATEGORY_COMPATIBILITY | \
+	UTF8_CATEGORY_LETTER | UTF8_CATEGORY_NUMBER)
+
+/*!
+	\def UTF8_CATEGORY_ISALPHA
+	\brief Flag used for maintaining backwards compatibility with POSIX
+	`isalpha` function.
+*/
+#define UTF8_CATEGORY_ISALPHA \
+	(UTF8_CATEGORY_COMPATIBILITY | \
+	UTF8_CATEGORY_LETTER)
+
+/*!
+	\def UTF8_CATEGORY_ISUPPER
+	\brief Flag used for maintaining backwards compatibility with POSIX
+	`isupper` function.
+*/
+#define UTF8_CATEGORY_ISUPPER \
+	(UTF8_CATEGORY_COMPATIBILITY | \
+	UTF8_CATEGORY_LETTER_UPPERCASE)
+
+/*!
+	\def UTF8_CATEGORY_ISLOWER
+	\brief Flag used for maintaining backwards compatibility with POSIX
+	`islower` function.
+*/
+#define UTF8_CATEGORY_ISLOWER \
+	(UTF8_CATEGORY_COMPATIBILITY | \
+	UTF8_CATEGORY_LETTER_LOWERCASE)
+
+/*!
+	\def UTF8_CATEGORY_ISDIGIT
+	\brief Flag used for maintaining backwards compatibility with POSIX
+	`isdigit` function.
+*/
+#define UTF8_CATEGORY_ISDIGIT \
+	(UTF8_CATEGORY_COMPATIBILITY | \
+	UTF8_CATEGORY_NUMBER)
+
+/*!
+	\def UTF8_CATEGORY_ISXDIGIT
+	\brief Flag used for maintaining backwards compatibility with POSIX
+	`isxdigit` function.
+*/
+#define UTF8_CATEGORY_ISXDIGIT \
+	(UTF8_CATEGORY_COMPATIBILITY | \
+	UTF8_CATEGORY_NUMBER | UTF8_CATEGORY_PRIVATE_USE)
+
+/*!
+	\}
+*/
+
+/*!
+	\brief Check if the input string conforms to the category specified by the
+	flags.
+
+	This function can be used to check if the code points in a string are part
+	of a category. Valid flags are part of the UTF8_CATEGORY_* list of defines.
+	The category for a code point is defined as part of the entry in
+	UnicodeData.txt, the data file for the Unicode code point database.
+
+	\note The function is _greedy_. This means it will try to match as many code
+	points with the matching category flags as possible and return the offset in
+	the input in bytes. If this is undesired behavior, use `utf8seek` to seek in
+	the input first before matching it with the category flags.
+
+	By default, the function will treat grapheme clusters as a single code
+	point. This means that a string like:
+
+	Code point | Canonical combining class | General category      | Name
+	---------- | ------------------------- | --------------------- | ----------------------
+	U+0045     | 0                         | Lu (Uppercase letter) | LATIN CAPITAL LETTER E
+	U+0300     | 230                       | Mn (Non-spacing mark) | COMBINING GRAVE ACCENT
+
+	Will match with `UTF8_CATEGORY_LETTER_UPPERCASE` fully, because the
+	COMBINING GRAVE ACCENT is treated as part of the grapheme cluster. This is
+	useful when e.g. creating a text parser, because you do not have to
+	normalize the text first.
+
+	If this is undesired behavior, specify the
+	`UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER` flag.
+
+	In order to main backwards compatibility with POSIX functions like `isdigit`
+	and `isspace`, compatibility flags have been provided. Note, however, that
+	the result is only guaranteed to be correct for code points in the Basic
+	Latin range, between U+0000 and 0+007F. Combining a compatibility flag with
+	a regular category flag will result in undefined behavior.
+
+	Example:
+
+	\code{.c}
+		const char* Parser_NextIdentifier(char** output, size_t* outputSize, const char* input, size_t inputSize)
+		{
+			const char* src = input;
+			size_t src_size = inputSize;
+			size_t whitespace_size;
+			size_t identifier_size;
+	
+			whitespace_size = utf8iscategory(src, src_size, UTF8_CATEGORY_SEPARATOR_SPACE);
+			if (whitespace_size == 0)
+			{
+				whitespace_size = utf8iscategory(src, src_size, UTF8_CATEGORY_ISSPACE);
+			}
+
+			if (whitespace_size > 0)
+			{
+				if (whitespace_size >= src_size)
+				{
+					return src + src_size;
+				}
+
+				src += whitespace_size;
+				src_size -= whitespace_size;
+			}
+
+			identifier_size = utf8iscategory(src, src_size, UTF8_CATEGORY_LETTER | UTF8_CATEGORY_PUNCTUATION_CONNECTOR | UTF8_CATEGORY_PUNCTUATION_DASH);
+			if (identifier_size == 0)
+			{
+				return src;
+			}
+
+			*output = (char*)malloc(identifier_size + 1);
+			memcpy(*output, src, identifier_size);
+			(*output)[identifier_size] = 0;
+			*outputSize = identifier_size;
+
+			if (identifier_size >= src_size)
+			{
+				return src + src_size;
+			}
+
+			return src + identifier_size;
+		}
+	\endcode
+
+	\param[in]   input       UTF-8 encoded string.
+	\param[in]   inputSize   Size of the input in bytes.
+	\param[in]   flags       Requested category. Must be a combination of UTF8_CATEGORY_* flags or a single UTF8_CATEGORY_IS* flag.
+
+	\return Number of bytes in the input that conform to the specified category flags.
+
+	\sa utf8seek
+*/
+UTF8_API size_t utf8iscategory(const char* input, size_t inputSize, size_t flags);
 
 #endif /* _UTF8REWIND_H_ */

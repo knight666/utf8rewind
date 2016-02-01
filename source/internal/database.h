@@ -37,16 +37,12 @@
 
 #include "../unicodedatabase.h"
 
-enum GeneralCategory
+enum QuickCheckCaseMapped
 {
-	GeneralCategory_Letter = 0x01,
-	GeneralCategory_CaseMapped = 0x02,
-	GeneralCategory_Mark = 0x04,
-	GeneralCategory_Number = 0x08,
-	GeneralCategory_Punctuation = 0x10,
-	GeneralCategory_Symbol = 0x20,
-	GeneralCategory_Separator = 0x40,
-	GeneralCategory_Other = 0x80,
+	QuickCheckCaseMapped_Uppercase = 0x01,
+	QuickCheckCaseMapped_Lowercase = 0x02,
+	QuickCheckCaseMapped_Titlecase = 0x04,
+	QuickCheckCaseMapped_Casefolded = 0x08,
 };
 
 enum QuickCheckResult
@@ -70,6 +66,9 @@ static const unicode_t PROPERTY_DATA_MASK = (1 << PROPERTY_INDEX_SHIFT) - 1;
 
 #define PROPERTY_GET_CCC(_cp) \
 	PROPERTY_GET(CanonicalCombiningClassIndexPtr, CanonicalCombiningClassDataPtr, _cp)
+
+#define PROPERTY_GET_CM(_cp) \
+	PROPERTY_GET(QuickCheckCaseMappedIndexPtr, QuickCheckCaseMappedDataPtr, _cp)
 
 #define PROPERTY_GET_NFC(_cp) \
 	PROPERTY_GET(QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr, _cp)

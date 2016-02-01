@@ -42,7 +42,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Overview</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
-      <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -139,17 +138,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">const</span> uint32_t* property_index1;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">const</span> uint32_t* property_index2;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">const</span> uint32_t* property_data;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    uint8_t last_code_point_size;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    uint8_t last_general_category;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    uint32_t last_general_category;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    uint8_t last_code_point_size;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    uint8_t last_canonical_combining_class;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;} CaseMappingState;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;uint8_t casemapping_initialize(CaseMappingState* state, <span class="keyword">const</span> <span class="keywordtype">char</span>* input, <span class="keywordtype">size_t</span> inputSize, <span class="keywordtype">char</span>* target, <span class="keywordtype">size_t</span> targetSize, <span class="keyword">const</span> uint32_t* propertyIndex1, <span class="keyword">const</span> uint32_t* propertyIndex2, <span class="keyword">const</span> uint32_t* propertyData);</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keywordtype">size_t</span> casemapping_execute(CaseMappingState* state, int32_t* errors);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _UTF8REWIND_INTERNAL_CASEMAPPING_H_ */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">UTF-32 encoded code point. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:235</div></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    uint8_t quickcheck_flags;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;} CaseMappingState;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;uint8_t casemapping_initialize(CaseMappingState* state, <span class="keyword">const</span> <span class="keywordtype">char</span>* input, <span class="keywordtype">size_t</span> inputSize, <span class="keywordtype">char</span>* target, <span class="keywordtype">size_t</span> targetSize, <span class="keyword">const</span> uint32_t* propertyIndex1, <span class="keyword">const</span> uint32_t* propertyIndex2, <span class="keyword">const</span> uint32_t* propertyData);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keywordtype">size_t</span> casemapping_execute(CaseMappingState* state, int32_t* errors);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _UTF8REWIND_INTERNAL_CASEMAPPING_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="utf8rewind_8h_html_ae128fe5bd9e57be736e64d3638229988"><div class="ttname"><a href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a></div><div class="ttdeci">uint32_t unicode_t</div><div class="ttdoc">UTF-32 encoded code point. </div><div class="ttdef"><b>Definition:</b> utf8rewind.h:203</div></div>
 <div class="ttc" id="utf8rewind_8h_html"><div class="ttname"><a href="utf8rewind_8h.html">utf8rewind.h</a></div><div class="ttdoc">Public interface for UTF-8 functions. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
