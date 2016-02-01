@@ -653,7 +653,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 		{
 			if (state.property_data == TitlecaseDataPtr)
 			{
-				if ((state.last_general_category & GeneralCategory_Letter) != 0)
+				if ((state.last_general_category & UTF8_CATEGORY_LETTER) != 0)
 				{
 					state.property_index1 = LowercaseIndex1Ptr;
 					state.property_index2 = LowercaseIndex2Ptr;
@@ -661,7 +661,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 				}
 			}
 			else if (
-				(state.last_general_category & GeneralCategory_Letter) == 0)
+				(state.last_general_category & UTF8_CATEGORY_LETTER) == 0)
 			{
 				state.property_index1 = TitlecaseIndex1Ptr;
 				state.property_index2 = TitlecaseIndex2Ptr;
