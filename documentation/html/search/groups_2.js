@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['global_20configuration',['Global configuration',['../group__configuration.html',1,'']]]
+  ['version_20information',['Version information',['../group__version.html',1,'']]]
 ];
