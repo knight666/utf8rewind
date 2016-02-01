@@ -39,7 +39,8 @@
 #include <wchar.h>
 
 /*!
-	\defgroup version Version information
+	\name Version information
+	Macros used to identify the version of the library.
 	\{
 */
 
@@ -94,7 +95,8 @@
 */
 
 /*!
-	\defgroup errors Error codes
+	\name Error codes
+	Values returned by functions on error.
 	\{
 */
 
@@ -133,43 +135,9 @@
 */
 
 /*!
-	\def UTF8_NORMALIZE_COMPOSE
-	\brief Normalize input to Normalization Form C (NFC).
-*/
-#define UTF8_NORMALIZE_COMPOSE                  0x00000001
-
-/*!
-	\def UTF8_NORMALIZE_DECOMPOSE
-	\brief Normalize input to Normalization Form D (NFD).
-*/
-#define UTF8_NORMALIZE_DECOMPOSE                0x00000002
-
-/*!
-	\def UTF8_NORMALIZE_COMPATIBILITY
-	\brief Change Normalization Form from NFC to NFKC or from NFD to NFKD.
-*/
-#define UTF8_NORMALIZE_COMPATIBILITY            0x00000004
-
-/*!
-	\def UTF8_NORMALIZATION_RESULT_YES
-	\brief Text is stable and does not have to be normalized.
-*/
-#define UTF8_NORMALIZATION_RESULT_YES           (0)
-
-/*!
-	\def UTF8_NORMALIZATION_RESULT_MAYBE
-	\brief Text is unstable, but normalization may be skipped.
-*/
-#define UTF8_NORMALIZATION_RESULT_MAYBE         (1)
-
-/*!
-	\def UTF8_NORMALIZATION_RESULT_NO
-	\brief Text is unstable and must be normalized.
-*/
-#define UTF8_NORMALIZATION_RESULT_NO            (2)
-
-/*!
-	\defgroup configuration Global configuration
+	\name Global configuration
+	Defines used for determining the global configuration of the system and your
+	application.
 	\{
 */
 
@@ -641,6 +609,8 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 	\arg `SEEK_END` Offset is from the end of the string.
 
 	\return Pointer to offset string or no change on error.
+
+	\sa utf8iscategory
 */
 UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* textStart, off_t offset, int direction);
 
@@ -1026,6 +996,52 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 UTF8_API size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 /*!
+	\name Normalization flags
+	Flags used as input for #utf8normalize and the result of #utf8isnormalized.
+	\{
+*/
+
+/*!
+	\def UTF8_NORMALIZE_COMPOSE
+	\brief Normalize input to Normalization Form C (NFC).
+*/
+#define UTF8_NORMALIZE_COMPOSE                  0x00000001
+
+/*!
+	\def UTF8_NORMALIZE_DECOMPOSE
+	\brief Normalize input to Normalization Form D (NFD).
+*/
+#define UTF8_NORMALIZE_DECOMPOSE                0x00000002
+
+/*!
+	\def UTF8_NORMALIZE_COMPATIBILITY
+	\brief Change Normalization Form from NFC to NFKC or from NFD to NFKD.
+*/
+#define UTF8_NORMALIZE_COMPATIBILITY            0x00000004
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_YES
+	\brief Text is stable and does not have to be normalized.
+*/
+#define UTF8_NORMALIZATION_RESULT_YES           (0)
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_MAYBE
+	\brief Text is unstable, but normalization may be skipped.
+*/
+#define UTF8_NORMALIZATION_RESULT_MAYBE         (1)
+
+/*!
+	\def UTF8_NORMALIZATION_RESULT_NO
+	\brief Text is unstable and must be normalized.
+*/
+#define UTF8_NORMALIZATION_RESULT_NO            (2)
+
+/*!
+	\}
+*/
+
+/*!
 	\brief Check if a string is stable in the specified Unicode Normalization
 	Form.
 
@@ -1244,8 +1260,8 @@ UTF8_API uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t fl
 UTF8_API size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
 
 /*!
-	\defgroup category Category flags
-	Flags to be used with `utf8iscategory`, to check whether code points in a
+	\name Category flags
+	Flags to be used with #utf8iscategory, to check whether code points in a
 	string are part of that category.
 	\{
 */
@@ -1706,6 +1722,8 @@ UTF8_API size_t utf8normalize(const char* input, size_t inputSize, char* target,
 	\param[in]   flags       Requested category. Must be a combination of UTF8_CATEGORY_* flags or a single UTF8_CATEGORY_IS* flag.
 
 	\return Number of bytes in the input that conform to the specified category flags.
+
+	\sa utf8seek
 */
 UTF8_API size_t utf8iscategory(const char* input, size_t inputSize, size_t flags);
 

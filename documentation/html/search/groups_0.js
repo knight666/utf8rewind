@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['category_20flags',['Category flags',['../group__category.html',1,'']]]
+  ['version_20information',['Version information',['../group__version.html',1,'']]]
 ];
