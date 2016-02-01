@@ -585,7 +585,7 @@ writeregular:
 
 					if (PROPERTY_GET_CCC(peeked) == 0)
 					{
-						should_convert = (PROPERTY_GET_GC(peeked) & UTF8_CATEGORY_LETTER) == 0;
+						should_convert = (PROPERTY_GET_GC(peeked) & (UTF8_CATEGORY_LETTER)) == 0;
 
 						break;
 					}
