@@ -653,19 +653,23 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 		{
 			if (state.property_data == TitlecaseDataPtr)
 			{
-				if ((state.last_general_category & UTF8_CATEGORY_LETTER) != 0)
+				if ((state.last_general_category & (UTF8_CATEGORY_LETTER)) != 0)
 				{
 					state.property_index1 = LowercaseIndex1Ptr;
 					state.property_index2 = LowercaseIndex2Ptr;
 					state.property_data = LowercaseDataPtr;
+
+					state.quickcheck_flags = QuickCheckCaseMapped_Lowercase;
 				}
 			}
 			else if (
-				(state.last_general_category & UTF8_CATEGORY_LETTER) == 0)
+				(state.last_general_category & (UTF8_CATEGORY_LETTER)) == 0)
 			{
 				state.property_index1 = TitlecaseIndex1Ptr;
 				state.property_index2 = TitlecaseIndex2Ptr;
 				state.property_data = TitlecaseDataPtr;
+
+				state.quickcheck_flags = QuickCheckCaseMapped_Titlecase;
 			}
 		}
 
@@ -727,7 +731,8 @@ size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t ta
 
 		/* Resolve case folding */
 
-		if (resolved == 0)
+		if (resolved == 0 &&
+			(PROPERTY_GET_CM(state.last_code_point) & QuickCheckCaseMapped_Casefolded) != 0)
 		{
 			resolved = database_querydecomposition(state.last_code_point, state.property_index1, state.property_index2, state.property_data, &bytes_needed);
 		}
