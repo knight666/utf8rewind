@@ -653,7 +653,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 		{
 			if (state.property_data == TitlecaseDataPtr)
 			{
-				if ((state.last_general_category & (UTF8_CATEGORY_LETTER)) != 0)
+				if ((state.last_general_category & UTF8_CATEGORY_LETTER) != 0)
 				{
 					state.property_index1 = LowercaseIndex1Ptr;
 					state.property_index2 = LowercaseIndex2Ptr;
@@ -663,7 +663,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 				}
 			}
 			else if (
-				(state.last_general_category & (UTF8_CATEGORY_LETTER)) == 0)
+				(state.last_general_category & UTF8_CATEGORY_LETTER) == 0)
 			{
 				state.property_index1 = TitlecaseIndex1Ptr;
 				state.property_index2 = TitlecaseIndex2Ptr;
@@ -1109,7 +1109,7 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 		if ((flags & UTF8_CATEGORY_COMPATIBILITY) != 0 &&
 			*src < MAX_BASIC_LATIN)
 		{
-			if (flags == (UTF8_CATEGORY_ISBLANK))
+			if (flags == UTF8_CATEGORY_ISBLANK)
 			{
 				if (*src == 0x09)
 				{
@@ -1136,7 +1136,7 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 				}
 			}
 			else if (
-				flags == (UTF8_CATEGORY_ISSPACE))
+				flags == UTF8_CATEGORY_ISSPACE)
 			{
 				if (*src < 0x09 ||
 					*src > 0x20)
@@ -1169,7 +1169,7 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 				}
 			}
 			else if (
-				flags == (UTF8_CATEGORY_ISXDIGIT))
+				flags == UTF8_CATEGORY_ISXDIGIT)
 			{
 				if (*src < 0x30 ||
 					*src > 0x66)

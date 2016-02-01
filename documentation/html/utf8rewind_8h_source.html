@@ -234,13 +234,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01297"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aa76b0c223998314eb7897f99738bc95f"> 1297</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER_OTHER              0x00000010</span></div>
 <div class="line"><a name="l01298"></a><span class="lineno"> 1298</span>&#160;</div>
 <div class="line"><a name="l01303"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a168e76ca07b729e3b1552cde220da9a5"> 1303</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_LETTER \</span></div>
-<div class="line"><a name="l01304"></a><span class="lineno"> 1304</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_UPPERCASE | UTF8_CATEGORY_LETTER_LOWERCASE | \</span></div>
+<div class="line"><a name="l01304"></a><span class="lineno"> 1304</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_LETTER_UPPERCASE | UTF8_CATEGORY_LETTER_LOWERCASE | \</span></div>
 <div class="line"><a name="l01305"></a><span class="lineno"> 1305</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_TITLECASE | UTF8_CATEGORY_LETTER_MODIFIER | \</span></div>
-<div class="line"><a name="l01306"></a><span class="lineno"> 1306</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_OTHER</span></div>
+<div class="line"><a name="l01306"></a><span class="lineno"> 1306</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_OTHER)</span></div>
 <div class="line"><a name="l01307"></a><span class="lineno"> 1307</span>&#160;</div>
 <div class="line"><a name="l01312"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a8f538ff018ff6456ff17c5a7133ed745"> 1312</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_CASE_MAPPED \</span></div>
-<div class="line"><a name="l01313"></a><span class="lineno"> 1313</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_UPPERCASE | UTF8_CATEGORY_LETTER_LOWERCASE | \</span></div>
-<div class="line"><a name="l01314"></a><span class="lineno"> 1314</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_TITLECASE</span></div>
+<div class="line"><a name="l01313"></a><span class="lineno"> 1313</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_LETTER_UPPERCASE | UTF8_CATEGORY_LETTER_LOWERCASE | \</span></div>
+<div class="line"><a name="l01314"></a><span class="lineno"> 1314</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_TITLECASE)</span></div>
 <div class="line"><a name="l01315"></a><span class="lineno"> 1315</span>&#160;</div>
 <div class="line"><a name="l01320"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a4d2c7b40051d4d5317cc1d85da8a8a93"> 1320</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_MARK_NON_SPACING          0x00000020</span></div>
 <div class="line"><a name="l01321"></a><span class="lineno"> 1321</span>&#160;</div>
@@ -249,8 +249,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01332"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#afae6d97439fa14adbe8262a1f5ca2f78"> 1332</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_MARK_ENCLOSING            0x00000080</span></div>
 <div class="line"><a name="l01333"></a><span class="lineno"> 1333</span>&#160;</div>
 <div class="line"><a name="l01338"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a11b764bce69bfc27cc9c6fcb0f526b13"> 1338</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_MARK \</span></div>
-<div class="line"><a name="l01339"></a><span class="lineno"> 1339</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_MARK_NON_SPACING | UTF8_CATEGORY_MARK_SPACING | \</span></div>
-<div class="line"><a name="l01340"></a><span class="lineno"> 1340</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_MARK_ENCLOSING</span></div>
+<div class="line"><a name="l01339"></a><span class="lineno"> 1339</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_MARK_NON_SPACING | UTF8_CATEGORY_MARK_SPACING | \</span></div>
+<div class="line"><a name="l01340"></a><span class="lineno"> 1340</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_MARK_ENCLOSING)</span></div>
 <div class="line"><a name="l01341"></a><span class="lineno"> 1341</span>&#160;</div>
 <div class="line"><a name="l01346"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a354c29ff8c12c871a8beeb1c03a46e52"> 1346</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_NUMBER_DECIMAL            0x00000100</span></div>
 <div class="line"><a name="l01347"></a><span class="lineno"> 1347</span>&#160;</div>
@@ -259,8 +259,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01358"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#ad20204d274d6aed400a5afba0fa3d65f"> 1358</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_NUMBER_OTHER              0x00000400</span></div>
 <div class="line"><a name="l01359"></a><span class="lineno"> 1359</span>&#160;</div>
 <div class="line"><a name="l01364"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#affb94a55729109bd067edbb5bdcfd57e"> 1364</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_NUMBER \</span></div>
-<div class="line"><a name="l01365"></a><span class="lineno"> 1365</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER_DECIMAL | UTF8_CATEGORY_NUMBER_LETTER | \</span></div>
-<div class="line"><a name="l01366"></a><span class="lineno"> 1366</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER_OTHER</span></div>
+<div class="line"><a name="l01365"></a><span class="lineno"> 1365</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_NUMBER_DECIMAL | UTF8_CATEGORY_NUMBER_LETTER | \</span></div>
+<div class="line"><a name="l01366"></a><span class="lineno"> 1366</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER_OTHER)</span></div>
 <div class="line"><a name="l01367"></a><span class="lineno"> 1367</span>&#160;</div>
 <div class="line"><a name="l01372"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a3293fac7b2ca0025fb90287c7ee2ca74"> 1372</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_CONNECTOR     0x00000800</span></div>
 <div class="line"><a name="l01373"></a><span class="lineno"> 1373</span>&#160;</div>
@@ -277,10 +277,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01408"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a28285681b7aa0fa9faca6691bf8a0fb4"> 1408</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION_OTHER         0x00020000</span></div>
 <div class="line"><a name="l01409"></a><span class="lineno"> 1409</span>&#160;</div>
 <div class="line"><a name="l01414"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aeff6e0918e8035d88499cbadf21d0e72"> 1414</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_PUNCTUATION \</span></div>
-<div class="line"><a name="l01415"></a><span class="lineno"> 1415</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION_CONNECTOR | UTF8_CATEGORY_PUNCTUATION_DASH | \</span></div>
+<div class="line"><a name="l01415"></a><span class="lineno"> 1415</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_PUNCTUATION_CONNECTOR | UTF8_CATEGORY_PUNCTUATION_DASH | \</span></div>
 <div class="line"><a name="l01416"></a><span class="lineno"> 1416</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION_OPEN | UTF8_CATEGORY_PUNCTUATION_CLOSE | \</span></div>
 <div class="line"><a name="l01417"></a><span class="lineno"> 1417</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION_INITIAL | UTF8_CATEGORY_PUNCTUATION_FINAL | \</span></div>
-<div class="line"><a name="l01418"></a><span class="lineno"> 1418</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION_OTHER</span></div>
+<div class="line"><a name="l01418"></a><span class="lineno"> 1418</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION_OTHER)</span></div>
 <div class="line"><a name="l01419"></a><span class="lineno"> 1419</span>&#160;</div>
 <div class="line"><a name="l01424"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a29ade124b66b8cc8abbc272dd57965ae"> 1424</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SYMBOL_MATH               0x00040000</span></div>
 <div class="line"><a name="l01425"></a><span class="lineno"> 1425</span>&#160;</div>
@@ -291,8 +291,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01442"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a448a8fd6e66e1a3142296c77a2a8ced3"> 1442</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SYMBOL_OTHER              0x00200000</span></div>
 <div class="line"><a name="l01443"></a><span class="lineno"> 1443</span>&#160;</div>
 <div class="line"><a name="l01448"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a5d548506403e5d315111756dadcc87aa"> 1448</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SYMBOL \</span></div>
-<div class="line"><a name="l01449"></a><span class="lineno"> 1449</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SYMBOL_MATH | UTF8_CATEGORY_SYMBOL_CURRENCY | \</span></div>
-<div class="line"><a name="l01450"></a><span class="lineno"> 1450</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SYMBOL_MODIFIER | UTF8_CATEGORY_SYMBOL_OTHER</span></div>
+<div class="line"><a name="l01449"></a><span class="lineno"> 1449</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_SYMBOL_MATH | UTF8_CATEGORY_SYMBOL_CURRENCY | \</span></div>
+<div class="line"><a name="l01450"></a><span class="lineno"> 1450</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SYMBOL_MODIFIER | UTF8_CATEGORY_SYMBOL_OTHER)</span></div>
 <div class="line"><a name="l01451"></a><span class="lineno"> 1451</span>&#160;</div>
 <div class="line"><a name="l01456"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a098078b78b6c6b1c5a9ce00faf8e4535"> 1456</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SEPARATOR_SPACE           0x00400000</span></div>
 <div class="line"><a name="l01457"></a><span class="lineno"> 1457</span>&#160;</div>
@@ -301,8 +301,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01468"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#ac3b176a7d57c30d9fcd60c68a4c0517a"> 1468</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SEPARATOR_PARAGRAPH       0x01000000</span></div>
 <div class="line"><a name="l01469"></a><span class="lineno"> 1469</span>&#160;</div>
 <div class="line"><a name="l01474"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a807f996fdbe772b52f07c70971e2edc2"> 1474</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_SEPARATOR \</span></div>
-<div class="line"><a name="l01475"></a><span class="lineno"> 1475</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_SPACE | UTF8_CATEGORY_SEPARATOR_LINE | \</span></div>
-<div class="line"><a name="l01476"></a><span class="lineno"> 1476</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_PARAGRAPH</span></div>
+<div class="line"><a name="l01475"></a><span class="lineno"> 1475</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_SEPARATOR_SPACE | UTF8_CATEGORY_SEPARATOR_LINE | \</span></div>
+<div class="line"><a name="l01476"></a><span class="lineno"> 1476</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_PARAGRAPH)</span></div>
 <div class="line"><a name="l01477"></a><span class="lineno"> 1477</span>&#160;</div>
 <div class="line"><a name="l01482"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a5bfbd7a57f6c14fa9abcb7d86e17f153"> 1482</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_CONTROL                   0x02000000</span></div>
 <div class="line"><a name="l01483"></a><span class="lineno"> 1483</span>&#160;</div>
@@ -319,55 +319,55 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01520"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#ad9626f05c4daa133f64a9f73dcb9e88b"> 1520</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER   0x80000000</span></div>
 <div class="line"><a name="l01521"></a><span class="lineno"> 1521</span>&#160;</div>
 <div class="line"><a name="l01527"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aff9219cfcae0e97abfbcd55c28967405"> 1527</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISCNTRL \</span></div>
-<div class="line"><a name="l01528"></a><span class="lineno"> 1528</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01529"></a><span class="lineno"> 1529</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_CONTROL</span></div>
+<div class="line"><a name="l01528"></a><span class="lineno"> 1528</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01529"></a><span class="lineno"> 1529</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_CONTROL)</span></div>
 <div class="line"><a name="l01530"></a><span class="lineno"> 1530</span>&#160;</div>
 <div class="line"><a name="l01536"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#ad4d13f9ae87e8f27348881bbb2bb9212"> 1536</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISPRINT \</span></div>
-<div class="line"><a name="l01537"></a><span class="lineno"> 1537</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01537"></a><span class="lineno"> 1537</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_COMPATIBILITY | \</span></div>
 <div class="line"><a name="l01538"></a><span class="lineno"> 1538</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER | UTF8_CATEGORY_NUMBER | \</span></div>
 <div class="line"><a name="l01539"></a><span class="lineno"> 1539</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL | \</span></div>
-<div class="line"><a name="l01540"></a><span class="lineno"> 1540</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR</span></div>
+<div class="line"><a name="l01540"></a><span class="lineno"> 1540</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR)</span></div>
 <div class="line"><a name="l01541"></a><span class="lineno"> 1541</span>&#160;</div>
 <div class="line"><a name="l01547"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a671bdbf26b2024e25eeaa7dd5dc04d0b"> 1547</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISSPACE \</span></div>
-<div class="line"><a name="l01548"></a><span class="lineno"> 1548</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01549"></a><span class="lineno"> 1549</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_SPACE</span></div>
+<div class="line"><a name="l01548"></a><span class="lineno"> 1548</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01549"></a><span class="lineno"> 1549</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_SPACE)</span></div>
 <div class="line"><a name="l01550"></a><span class="lineno"> 1550</span>&#160;</div>
 <div class="line"><a name="l01556"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#af44f395540ccf52d719352abb21b5f2c"> 1556</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISBLANK \</span></div>
-<div class="line"><a name="l01557"></a><span class="lineno"> 1557</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01558"></a><span class="lineno"> 1558</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_SPACE | UTF8_CATEGORY_PRIVATE_USE</span></div>
+<div class="line"><a name="l01557"></a><span class="lineno"> 1557</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01558"></a><span class="lineno"> 1558</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_SEPARATOR_SPACE | UTF8_CATEGORY_PRIVATE_USE)</span></div>
 <div class="line"><a name="l01559"></a><span class="lineno"> 1559</span>&#160;</div>
 <div class="line"><a name="l01565"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a62d2bbf78753f290d7f02d6d1f3b33f6"> 1565</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISGRAPH \</span></div>
-<div class="line"><a name="l01566"></a><span class="lineno"> 1566</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01566"></a><span class="lineno"> 1566</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_COMPATIBILITY | \</span></div>
 <div class="line"><a name="l01567"></a><span class="lineno"> 1567</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER | UTF8_CATEGORY_NUMBER | \</span></div>
-<div class="line"><a name="l01568"></a><span class="lineno"> 1568</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL</span></div>
+<div class="line"><a name="l01568"></a><span class="lineno"> 1568</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL)</span></div>
 <div class="line"><a name="l01569"></a><span class="lineno"> 1569</span>&#160;</div>
 <div class="line"><a name="l01575"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aeeb2cf53db6b51c03ac9b5ca489a4eb5"> 1575</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISPUNCT \</span></div>
-<div class="line"><a name="l01576"></a><span class="lineno"> 1576</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01577"></a><span class="lineno"> 1577</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL</span></div>
+<div class="line"><a name="l01576"></a><span class="lineno"> 1576</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01577"></a><span class="lineno"> 1577</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_PUNCTUATION | UTF8_CATEGORY_SYMBOL)</span></div>
 <div class="line"><a name="l01578"></a><span class="lineno"> 1578</span>&#160;</div>
 <div class="line"><a name="l01584"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#ab8cad51e488bd55918118c24874d4a2e"> 1584</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISALNUM \</span></div>
-<div class="line"><a name="l01585"></a><span class="lineno"> 1585</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01586"></a><span class="lineno"> 1586</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER | UTF8_CATEGORY_NUMBER</span></div>
+<div class="line"><a name="l01585"></a><span class="lineno"> 1585</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01586"></a><span class="lineno"> 1586</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER | UTF8_CATEGORY_NUMBER)</span></div>
 <div class="line"><a name="l01587"></a><span class="lineno"> 1587</span>&#160;</div>
 <div class="line"><a name="l01593"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a7ccea6542e9c58f62d4fd4dda6b526f0"> 1593</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISALPHA \</span></div>
-<div class="line"><a name="l01594"></a><span class="lineno"> 1594</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01595"></a><span class="lineno"> 1595</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER</span></div>
+<div class="line"><a name="l01594"></a><span class="lineno"> 1594</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01595"></a><span class="lineno"> 1595</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER)</span></div>
 <div class="line"><a name="l01596"></a><span class="lineno"> 1596</span>&#160;</div>
 <div class="line"><a name="l01602"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#afdad1174c915f84e604f08fbea715baf"> 1602</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISUPPER \</span></div>
-<div class="line"><a name="l01603"></a><span class="lineno"> 1603</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01604"></a><span class="lineno"> 1604</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_UPPERCASE</span></div>
+<div class="line"><a name="l01603"></a><span class="lineno"> 1603</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01604"></a><span class="lineno"> 1604</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_UPPERCASE)</span></div>
 <div class="line"><a name="l01605"></a><span class="lineno"> 1605</span>&#160;</div>
 <div class="line"><a name="l01611"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aff91c17fbfbfe2cc609d7dbd74f46c21"> 1611</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISLOWER \</span></div>
-<div class="line"><a name="l01612"></a><span class="lineno"> 1612</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01613"></a><span class="lineno"> 1613</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_LOWERCASE</span></div>
+<div class="line"><a name="l01612"></a><span class="lineno"> 1612</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01613"></a><span class="lineno"> 1613</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_LETTER_LOWERCASE)</span></div>
 <div class="line"><a name="l01614"></a><span class="lineno"> 1614</span>&#160;</div>
 <div class="line"><a name="l01620"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#aa63a290f6d1fd320c968fa24ecf55e34"> 1620</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISDIGIT \</span></div>
-<div class="line"><a name="l01621"></a><span class="lineno"> 1621</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01622"></a><span class="lineno"> 1622</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER</span></div>
+<div class="line"><a name="l01621"></a><span class="lineno"> 1621</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01622"></a><span class="lineno"> 1622</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER)</span></div>
 <div class="line"><a name="l01623"></a><span class="lineno"> 1623</span>&#160;</div>
 <div class="line"><a name="l01629"></a><span class="lineno"><a class="line" href="utf8rewind_8h.html#a3087471026fae5828c1172354957aae1"> 1629</a></span>&#160;<span class="preprocessor">#define UTF8_CATEGORY_ISXDIGIT \</span></div>
-<div class="line"><a name="l01630"></a><span class="lineno"> 1630</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_COMPATIBILITY | \</span></div>
-<div class="line"><a name="l01631"></a><span class="lineno"> 1631</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER | UTF8_CATEGORY_PRIVATE_USE</span></div>
+<div class="line"><a name="l01630"></a><span class="lineno"> 1630</span>&#160;<span class="preprocessor">    (UTF8_CATEGORY_COMPATIBILITY | \</span></div>
+<div class="line"><a name="l01631"></a><span class="lineno"> 1631</span>&#160;<span class="preprocessor">    UTF8_CATEGORY_NUMBER | UTF8_CATEGORY_PRIVATE_USE)</span></div>
 <div class="line"><a name="l01632"></a><span class="lineno"> 1632</span>&#160;</div>
 <div class="line"><a name="l01728"></a><span class="lineno"> 1728</span>&#160;<a class="code" href="utf8rewind_8h.html#af8233f2b15c97ad97ccec2beff1d24a2">UTF8_API</a> <span class="keywordtype">size_t</span> <a class="code" href="utf8rewind_8h.html#afb5becd4b5b7382708159efc89825642">utf8iscategory</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* input, <span class="keywordtype">size_t</span> inputSize, <span class="keywordtype">size_t</span> flags);</div>
 <div class="line"><a name="l01729"></a><span class="lineno"> 1729</span>&#160;</div>
