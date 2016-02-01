@@ -42,7 +42,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Overview</span></a></li>
       <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
-      <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -147,11 +146,11 @@ U+0308" (GREEK CAPITAL LETTER IOTA and COMBINING DIAERESIS). Although each encod
 <div class="fragment"><div class="line"><span class="keywordtype">char</span>* text_input = NULL;</div>
 <div class="line"><span class="keywordtype">size_t</span> text_input_size;</div>
 <div class="line"><span class="keywordtype">size_t</span> converted_size;</div>
-<div class="line">int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
+<div class="line">int32_t errors = <a class="code" href="utf8rewind_8h.html#ac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line"></div>
 <div class="line">text_input_size = <a class="code" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, inputSize, NULL, 0, &amp;errors);</div>
 <div class="line"><span class="keywordflow">if</span> (text_input_size == 0 ||</div>
-<div class="line">    errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line">    errors != <a class="code" href="utf8rewind_8h.html#ac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">}</div>
@@ -164,7 +163,7 @@ U+0308" (GREEK CAPITAL LETTER IOTA and COMBINING DIAERESIS). Although each encod
 <div class="line">text_input[text_input_size] = 0;</div>
 <div class="line"></div>
 <div class="line"><a class="code" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, inputSize, text_input, text_input_size, &amp;errors);</div>
-<div class="line"><span class="keywordflow">if</span> (errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line"><span class="keywordflow">if</span> (errors != <a class="code" href="utf8rewind_8h.html#ac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">}</div>
@@ -185,11 +184,11 @@ U+0308" (GREEK CAPITAL LETTER IOTA and COMBINING DIAERESIS). Although each encod
 <div class="line">    <span class="keywordtype">char</span>* text_input = NULL;</div>
 <div class="line">    <span class="keywordtype">size_t</span> text_input_size;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
-<div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
+<div class="line">    int32_t errors = <a class="code" href="utf8rewind_8h.html#ac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line"></div>
 <div class="line">    text_input_size = <a class="code" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, inputSize, NULL, 0, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (text_input_size == 0 ||</div>
-<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line">        errors != <a class="code" href="utf8rewind_8h.html#ac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        result = 0;</div>
 <div class="line"></div>
@@ -206,7 +205,7 @@ U+0308" (GREEK CAPITAL LETTER IOTA and COMBINING DIAERESIS). Although each encod
 <div class="line">    text_input[text_input_size] = 0;</div>
 <div class="line"></div>
 <div class="line">    <a class="code" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, inputSize, text_input, text_input_size, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line">    <span class="keywordflow">if</span> (errors != <a class="code" href="utf8rewind_8h.html#ac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        result = 0;</div>
 <div class="line"></div>
@@ -259,13 +258,13 @@ Displaying Unicode text</h1>
 <div class="line">    <span class="keywordtype">size_t</span> text_size = strlen(text);</div>
 <div class="line">    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* converted = NULL;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
-<div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
+<div class="line">    int32_t errors = <a class="code" href="utf8rewind_8h.html#ac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
 <div class="line">    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* src;</div>
 <div class="line"></div>
 <div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(text, text_size, NULL, 0, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
-<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line">        errors != <a class="code" href="utf8rewind_8h.html#ac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>
@@ -273,7 +272,7 @@ Displaying Unicode text</h1>
 <div class="line">    converted = (<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>*)malloc(converted_size);</div>
 <div class="line"></div>
 <div class="line">    <a class="code" href="utf8rewind_8h.html#a353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(text, text_size, converted, converted_size, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line">    <span class="keywordflow">if</span> (errors != <a class="code" href="utf8rewind_8h.html#ac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>

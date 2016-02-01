@@ -653,19 +653,23 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 		{
 			if (state.property_data == TitlecaseDataPtr)
 			{
-				if ((state.last_general_category & GeneralCategory_Letter) != 0)
+				if ((state.last_general_category & UTF8_CATEGORY_LETTER) != 0)
 				{
 					state.property_index1 = LowercaseIndex1Ptr;
 					state.property_index2 = LowercaseIndex2Ptr;
 					state.property_data = LowercaseDataPtr;
+
+					state.quickcheck_flags = QuickCheckCaseMapped_Lowercase;
 				}
 			}
 			else if (
-				(state.last_general_category & GeneralCategory_Letter) == 0)
+				(state.last_general_category & UTF8_CATEGORY_LETTER) == 0)
 			{
 				state.property_index1 = TitlecaseIndex1Ptr;
 				state.property_index2 = TitlecaseIndex2Ptr;
 				state.property_data = TitlecaseDataPtr;
+
+				state.quickcheck_flags = QuickCheckCaseMapped_Titlecase;
 			}
 		}
 
@@ -727,7 +731,8 @@ size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t ta
 
 		/* Resolve case folding */
 
-		if (resolved == 0)
+		if (resolved == 0 &&
+			(PROPERTY_GET_CM(state.last_code_point) & QuickCheckCaseMapped_Casefolded) != 0)
 		{
 			resolved = database_querydecomposition(state.last_code_point, state.property_index1, state.property_index2, state.property_data, &bytes_needed);
 		}
@@ -1079,4 +1084,160 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 	UTF8_SET_ERROR(NONE);
 
 	return bytes_written;
+}
+
+size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
+{
+	const char* src = input;
+	size_t src_size = inputSize;
+
+	if (input == 0 ||
+		inputSize == 0)
+	{
+		return 0;
+	}
+
+	while (src_size > 0)
+	{
+		unicode_t code_point;
+		uint32_t general_category;
+		uint8_t canonical_combining_class;
+		uint8_t offset;
+
+		/* Compatibility fixes */
+
+		if ((flags & UTF8_CATEGORY_COMPATIBILITY) != 0 &&
+			*src < MAX_BASIC_LATIN)
+		{
+			if (flags == UTF8_CATEGORY_ISBLANK)
+			{
+				if (*src == 0x09)
+				{
+					/* CHARACTER TABULATION */
+
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else if (
+					*src == 0x20)
+				{
+					/* SPACE */
+
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else
+				{
+					break;
+				}
+			}
+			else if (
+				flags == UTF8_CATEGORY_ISSPACE)
+			{
+				if (*src < 0x09 ||
+					*src > 0x20)
+				{
+					break;
+				}
+				else if (
+					*src <= 0x0D)
+				{
+					/* CHARACTER TABULATION ... CARRIAGE RETURN (CR) */
+
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else if (
+					*src == 0x20)
+				{
+					/* SPACE */
+
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else
+				{
+					break;
+				}
+			}
+			else if (
+				flags == UTF8_CATEGORY_ISXDIGIT)
+			{
+				if (*src < 0x30 ||
+					*src > 0x66)
+				{
+					break;
+				}
+				else if (
+					*src <= 0x39)
+				{
+					/* DIGIT ZERO ... DIGIT NINE */
+
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else if (
+					*src >= 0x41 &&
+					*src <= 0x46)
+				{
+					/* LATIN CAPITAL LETTER A ... LATIN CAPITAL LETTER F */
+
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else if (
+					*src >= 0x61)
+				{
+					/* LATIN SMALL LETTER A ... LATIN SMALL LETTER F */
+
+					src++;
+					src_size--;
+
+					continue;
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+
+		/* Read next code point */
+
+		offset = codepoint_read(src, src_size, &code_point);
+
+		/* Match General Category against flags */
+
+		general_category = PROPERTY_GET_GC(code_point);
+		if ((general_category & flags) == 0 &&
+			/* Check for the start of the next grapheme cluster */
+			((flags & UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER) != 0 || (canonical_combining_class = PROPERTY_GET_CCC(code_point)) == 0))
+		{
+			break;
+		}
+
+		/* Move source cursor */
+
+		if (offset > src_size)
+		{
+			break;
+		}
+
+		src += offset;
+		src_size -= offset;
+	}
+
+	return src - input;
 }

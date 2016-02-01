@@ -124,13 +124,29 @@ uint8_t casemapping_initialize(
 	state->property_index1 = propertyIndex1;
 	state->property_index2 = propertyIndex2;
 	state->property_data = propertyData;
+	state->quickcheck_flags = 0;
 	state->locale = casemapping_locale();
+
+	if (propertyData == TitlecaseDataPtr)
+	{
+		state->quickcheck_flags = QuickCheckCaseMapped_Titlecase;
+	}
+	else if (
+		propertyData == UppercaseDataPtr)
+	{
+		state->quickcheck_flags = QuickCheckCaseMapped_Uppercase;
+	}
+	else
+	{
+		state->quickcheck_flags = QuickCheckCaseMapped_Lowercase;
+	}
 
 	return 1;
 }
 
 size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 {
+	uint8_t qc_casemapped = 0;
 	uint8_t bytes_needed = 0;
 	const char* resolved = 0;
 	StreamState stream;
@@ -151,7 +167,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 		/* Get code point properties */
 
 		state->last_canonical_combining_class = 0;
-		state->last_general_category = GeneralCategory_Symbol;
+		state->last_general_category = UTF8_CATEGORY_SYMBOL_OTHER;
 
 		resolved = REPLACEMENT_CHARACTER_STRING;
 		bytes_needed = REPLACEMENT_CHARACTER_STRING_LENGTH;
@@ -258,7 +274,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 		{
 			/* Code point properties */
 
-			state->last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
+			state->last_general_category = UTF8_CATEGORY_LETTER;
 
 			goto writeresolved;
 		}
@@ -569,7 +585,7 @@ writeregular:
 
 					if (PROPERTY_GET_CCC(peeked) == 0)
 					{
-						should_convert = (PROPERTY_GET_GC(peeked) & GeneralCategory_Letter) == 0;
+						should_convert = (PROPERTY_GET_GC(peeked) & UTF8_CATEGORY_LETTER) == 0;
 
 						break;
 					}
@@ -601,7 +617,8 @@ writeregular:
 
 		/* Check if the code point is case mapped */
 
-		if ((state->last_general_category & GeneralCategory_CaseMapped) != 0)
+		qc_casemapped = PROPERTY_GET_CM(state->last_code_point);
+		if ((qc_casemapped & state->quickcheck_flags) != 0)
 		{
 			/* Attempt to resolve the case mapping */
 
@@ -610,7 +627,7 @@ writeregular:
 			{
 				/* Code point properties */
 
-				state->last_general_category = GeneralCategory_Letter | GeneralCategory_CaseMapped;
+				state->last_general_category = UTF8_CATEGORY_LETTER;
 
 				goto writeresolvedonly;
 			}

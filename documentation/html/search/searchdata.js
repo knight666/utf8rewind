@@ -1,12 +1,11 @@
 var indexSectionsWithContent =
 {
-  0: "bcdeghosuvw",
+  0: "bcdehosuw",
   1: "bcdehosu",
   2: "uw",
   3: "u",
   4: "u",
-  5: "egv",
-  6: "eo"
+  5: "eo"
 };
 
 var indexSectionNames =
@@ -16,8 +15,7 @@ var indexSectionNames =
   2: "functions",
   3: "typedefs",
   4: "defines",
-  5: "groups",
-  6: "pages"
+  5: "pages"
 };
 
 var indexSectionLabels =
@@ -27,7 +25,6 @@ var indexSectionLabels =
   2: "Functions",
   3: "Typedefs",
   4: "Macros",
-  5: "Modules",
-  6: "Pages"
+  5: "Pages"
 };
 
