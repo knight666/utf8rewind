@@ -1095,7 +1095,7 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 	while (src_size > 0)
 	{
 		unicode_t code_point;
-		size_t general_category;
+		uint32_t general_category;
 		uint8_t canonical_combining_class;
 		uint8_t offset;
 
