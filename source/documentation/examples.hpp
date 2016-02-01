@@ -20,7 +20,7 @@
 			char hashed_verify_password[256];
 
 			// For the purposes of brevity, ignore the fact that this is a
-			terrible way to generate a salt.
+			// terrible way of generating a salt.
 			memset(verify_password, 0, sizeof(verify_password));
 			strcpy(verify_password, md5(password));
 			strcat(verify_password, md5(username));
@@ -45,7 +45,7 @@
 		"M\xC3\xB4Pyth\xC3\xB4" "denH\xC3\xB4Gr\xC3\xA2" "en"
 
 	which is backwards-compatible with ASCII. Calls to `strcpy` and `strcat`
-	still work as expected, because the string does not contai NUL-terminators
+	still work as expected, because the string does not contain NUL-terminators
 	(`\0`), except to signify the end of data.
 
 	When converting your project to work with UTF-8 encoded text, there are
@@ -96,7 +96,7 @@
 	U+0308" (GREEK CAPITAL LETTER IOTA and COMBINING DIAERESIS). Although each
 	encodes a separate code point, they can be combined (normalized) into U+03AA
 	(GREEK CAPITAL LETTER IOTA WITH DIALYTIKA). This means that splitting the
-	string after U+0399 would not valid, as it would change the meaning of the
+	string after U+0399 is not valid, as it would change the meaning of the
 	encoded text.
 
 	There are also many instances of code points that can be combined when
@@ -112,7 +112,7 @@
 	the parameter to #unicode_t, but luckily this is backwards-compatible. All
 	ASCII code points (0x00 to 0x7F) are valid in Unicode as well.
 
-	Inside the function, we'll want to convert the UTF-32 codepoint to UTF-8.
+	Inside the function, we'll want to convert the UTF-32 code point to UTF-8.
 	To that end, we'll use #utf32toutf8.
 
 	\code{.c}
@@ -256,7 +256,7 @@
 	\endcode
 
 	The issue here is that `FontBatch_AddCharacter` expects code points encoded
-	as one byte per codepoint. Because UTF-8 is a variable-length encoding,
+	as one byte per code point. Because UTF-8 is a variable-length encoding,
 	this isn't necessarily true anymore.
 
 	In order for the font renderer to display Unicode text, we'll need to
