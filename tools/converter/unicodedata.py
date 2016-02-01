@@ -1103,11 +1103,10 @@ class Database(libs.unicode.UnicodeVisitor):
 		# includes
 		
 		header.writeLine("#include \"unicodedatabase.h\"")
-		header.newLine()
 		
 		# quick check
 
-		compress_gc.render(header, 'GeneralCategory', 'size_t')
+		compress_gc.render(header, 'GeneralCategory', 'uint32_t')
 		header.newLine()
 		
 		compress_ccc.render(header, 'CanonicalCombiningClass')

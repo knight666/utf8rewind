@@ -46,7 +46,7 @@ typedef struct {
 } CompositionRecord;
 
 extern const size_t* GeneralCategoryIndexPtr;
-extern const size_t* GeneralCategoryDataPtr;
+extern const uint32_t* GeneralCategoryDataPtr;
 
 extern const size_t* CanonicalCombiningClassIndexPtr;
 extern const uint8_t* CanonicalCombiningClassDataPtr;
