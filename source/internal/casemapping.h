@@ -52,8 +52,9 @@ typedef struct {
 	const uint32_t* property_index1;
 	const uint32_t* property_index2;
 	const uint32_t* property_data;
+	uint32_t general_category_flags;
+	uint32_t last_general_category;
 	uint8_t last_code_point_size;
-	uint8_t last_general_category;
 	uint8_t last_canonical_combining_class;
 } CaseMappingState;
 
