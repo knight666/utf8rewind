@@ -49,6 +49,14 @@ enum GeneralCategory
 	GeneralCategory_Other = 0x80,
 };
 
+enum QuickCheckCaseMapped
+{
+	QuickCheckCaseMapped_Uppercase = 0x01,
+	QuickCheckCaseMapped_Lowercase = 0x02,
+	QuickCheckCaseMapped_Titlecase = 0x04,
+	QuickCheckCaseMapped_Casefolded = 0x08,
+};
+
 enum QuickCheckResult
 {
 	QuickCheckResult_Yes,
@@ -70,6 +78,9 @@ static const unicode_t PROPERTY_DATA_MASK = (1 << PROPERTY_INDEX_SHIFT) - 1;
 
 #define PROPERTY_GET_CCC(_cp) \
 	PROPERTY_GET(CanonicalCombiningClassIndexPtr, CanonicalCombiningClassDataPtr, _cp)
+
+#define PROPERTY_GET_CM(_cp) \
+	PROPERTY_GET(QuickCheckCaseMappedIndexPtr, QuickCheckCaseMappedDataPtr, _cp)
 
 #define PROPERTY_GET_NFC(_cp) \
 	PROPERTY_GET(QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr, _cp)
