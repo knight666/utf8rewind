@@ -572,6 +572,7 @@ namespace helpers {
 		return ss.str();
 	}
 
+#if UTF8_VERSION_GUARD(1, 4, 0)
 	std::string generalCategory(size_t flags)
 	{
 		struct Entry
@@ -634,6 +635,7 @@ namespace helpers {
 
 		return output;
 	}
+#endif
 
 	::testing::AssertionResult CompareUtf8Strings(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
@@ -788,6 +790,7 @@ namespace helpers {
 		}
 	}
 
+#if UTF8_VERSION_GUARD(1, 4, 0)
 	::testing::AssertionResult CompareGeneralCategory(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const GeneralCategoryEntry& entryExpected, const GeneralCategoryEntry& entryActual)
@@ -857,5 +860,6 @@ namespace helpers {
 			return result;
 		}
 	}
+#endif
 
 };
