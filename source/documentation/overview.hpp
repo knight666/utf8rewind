@@ -65,6 +65,10 @@
 	
 	\section features Features
 
+	* **Cross-platform** - `utf8rewind` is written in plain C, which means it
+	can be used on any platform with a compliant C compiler. Currently, Windows,
+	Linux and Mac OS versions are available.
+
 	* **Conversion to and from UTF-8** - `utf8rewind` provides functions for
 	converting to and from [wide](\ref widetoutf8), [UTF-16](\ref utf16toutf8)
 	and [UTF-32](\ref utf32toutf8) encoded text.
@@ -73,17 +77,16 @@
 	to [uppercase](\ref utf8toupper), [lowercase](\ref utf8tolower) and
 	[titlecase](\ref utf8totitle).
 
+	* **Case folding** - Using #utf8casefold, you can erase case distinctions in
+	strings and compare them in a case-insensitive manner.
+
 	* **Normalization** - With #utf8normalize, you can normalize UTF-8 encoded
 	text to NFC, NFD, NFKC or NFKD without converting the text to UTF-32 first.
 
 	* **Seeking** - Using #utf8seek, you can seek forwards and backwards in
 	any UTF-8 encoded strings.
 
-	* **Cross-platform** - `utf8rewind` is written in plain C, which means it
-	can be used on any platform with a compliant C compiler. Currently, Windows,
-	Linux and Mac versions are available.
-
-	* **Easy to integrate** - The library consists of only 13 public functions
+	* **Easy to integrate** - The library consists of only 15 public functions
 	and requires *no* initialization. Any C or C++ project can add `utf8rewind`
 	without breaking existing code.
 
@@ -97,7 +100,7 @@
 	makes the library perfectly tailored to game engines, integrated systems
 	and other performance-critical or memory-constrained projects.
 
-	* **Safety** - Almost 300 automated unit, integration, property and
+	* **Safety** - Almost 2500 automated unit, integration, property and
 	performance tests guarantee the safety, security and speed of the library.
 
 	For a full summary of the interface, please refer to the
@@ -158,9 +161,6 @@
 	manually.
 
 	\subsection building-mac Building on Mac OS X with XCode
-
-	\note Building on Mac OS X is currently untested. Please let us know if
-	you can help us in this regard.
 
 	Open a command window at the project's root.
 
