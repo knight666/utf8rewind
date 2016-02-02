@@ -19,34 +19,36 @@ extern "C" {
 #define EXPECT_MEMEQ(_expected, _actual, _size)           EXPECT_PRED_FORMAT3(::helpers::CompareMemory, _expected, _actual, _size)
 #define EXPECT_CPEQ(_expected, _actual)                   EXPECT_PRED_FORMAT2(::helpers::CompareCodepoints, _expected, _actual)
 
-#define EXPECT_GCEQ(_expectedOffset, _input, _inputSize, _flags) { \
-	::helpers::GeneralCategoryEntry e; \
-	e.flags = _flags; \
-	e.offset = _expectedOffset; \
-	e.standard = -1; \
-	::helpers::GeneralCategoryEntry a; \
-	a.input = _input; \
-	a.inputSize = _inputSize; \
-	a.flags = _flags; \
-	a.offset = utf8iscategory(_input, _inputSize, _flags); \
-	EXPECT_PRED_FORMAT2(::helpers::CompareGeneralCategory, e, a); \
-}
+#if UTF8_VERSION_GUARD(1, 4, 0)
+	#define EXPECT_GCEQ(_expectedOffset, _input, _inputSize, _flags) { \
+		::helpers::GeneralCategoryEntry e; \
+		e.flags = _flags; \
+		e.offset = _expectedOffset; \
+		e.standard = -1; \
+		::helpers::GeneralCategoryEntry a; \
+		a.input = _input; \
+		a.inputSize = _inputSize; \
+		a.flags = _flags; \
+		a.offset = utf8iscategory(_input, _inputSize, _flags); \
+		EXPECT_PRED_FORMAT2(::helpers::CompareGeneralCategory, e, a); \
+	}
 
-#define EXPECT_GC_INTEGRATION_EQ(_expectedOffset, _input, _inputSize, _flags, _function) { \
-	::helpers::GeneralCategoryEntry e; \
-	e.flags = _flags; \
-	e.offset = _expectedOffset; \
-	unicode_t code_point; \
-	codepoint_read(_input, _inputSize, &code_point); \
-	e.standard = _function((int)code_point); \
-	e.standardName = # _function; \
-	::helpers::GeneralCategoryEntry a; \
-	a.input = _input; \
-	a.inputSize = _inputSize; \
-	a.flags = _flags; \
-	a.offset = utf8iscategory(_input, _inputSize, _flags); \
-	EXPECT_PRED_FORMAT2(::helpers::CompareGeneralCategory, e, a); \
-}
+	#define EXPECT_GC_INTEGRATION_EQ(_expectedOffset, _input, _inputSize, _flags, _function) { \
+		::helpers::GeneralCategoryEntry e; \
+		e.flags = _flags; \
+		e.offset = _expectedOffset; \
+		unicode_t code_point; \
+		codepoint_read(_input, _inputSize, &code_point); \
+		e.standard = _function((int)code_point); \
+		e.standardName = # _function; \
+		::helpers::GeneralCategoryEntry a; \
+		a.input = _input; \
+		a.inputSize = _inputSize; \
+		a.flags = _flags; \
+		a.offset = utf8iscategory(_input, _inputSize, _flags); \
+		EXPECT_PRED_FORMAT2(::helpers::CompareGeneralCategory, e, a); \
+	}
+#endif
 
 namespace helpers {
 
@@ -90,7 +92,9 @@ namespace helpers {
 	std::string quickCheck(unicode_t* codepoint, size_t codepointsSize, QuickCheck type);
 	std::string quickCheck(const std::string& text, QuickCheck type);
 
+#if UTF8_VERSION_GUARD(1, 4, 0)
 	std::string generalCategory(size_t flags);
+#endif
 
 	::testing::AssertionResult CompareUtf8Strings(
 		const char* expressionExpected, const char* expressionActual,
@@ -112,6 +116,7 @@ namespace helpers {
 		const char* expressionExpected, const char* expressionActual,
 		unicode_t codepointExpected, unicode_t codepointActual);
 
+#if UTF8_VERSION_GUARD(1, 4, 0)
 	struct GeneralCategoryEntry
 	{
 		const char* input;
@@ -125,6 +130,7 @@ namespace helpers {
 	::testing::AssertionResult CompareGeneralCategory(
 		const char* expressionExpected, const char* expressionActual,
 		const GeneralCategoryEntry& entryExpected, const GeneralCategoryEntry& entryActual);
+#endif
 
 };
 

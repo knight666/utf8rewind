@@ -77,6 +77,7 @@ namespace helpers {
 		return converted;
 	}
 
+#if UTF8_VERSION_GUARD(1, 4, 0)
 	std::string casefold(unicode_t codepoint)
 	{
 		return casefold(utf8(codepoint));
@@ -99,6 +100,7 @@ namespace helpers {
 
 		return converted;
 	}
+#endif
 
 	::testing::AssertionResult CompareCodepoint(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
@@ -218,6 +220,7 @@ namespace helpers {
 		}
 	}
 
+#if UTF8_VERSION_GUARD(1, 4, 0)
 	::testing::AssertionResult CompareCaseFolding(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const CaseFoldingEntry& entryExpected, const CaseFoldingEntry& entryActual)
@@ -240,5 +243,6 @@ namespace helpers {
 			return result;
 		}
 	}
+#endif
 
 };
