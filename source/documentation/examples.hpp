@@ -320,4 +320,102 @@
 	string to UTF-32 before rendering it in this example, it's equally valid to
 	read only one codepoint at a time. However, you'll need to use #utf8seek to
 	move the cursor to the next codepoint.
+
+	\section example-users Comparing usernames in a case-insensitive manner
+
+	After the user has entered their username and password, we'll need to verify
+	their identity. This is done on the back-end, with a straightforward
+	function:
+
+	\code{.c}
+		typedef struct UserData_ {
+			const char* username;
+			const char* passwordHash;
+		} UserData;
+
+		static const UserData Users[] = {
+			{ "qlansu", "11111" },
+			{ "Admin", "asfasdf" },
+			{ "User1", "u99123" }
+		};
+
+		uint8_t Database_IsUserValid(const char* username, const char* passwordHash)
+		{
+			size_t i;
+
+			for (i = 0; i < sizeof(Users) / sizeof(UserData); ++i)
+			{
+				if (!strcmp(Users[i].username, username) &&
+					!strcmp(Users[i].passwordHash, passwordHash))
+				{
+					return 1;
+				}
+			}
+
+			return 0;
+		}
+	\endcode
+
+	Unfortunately, users being users, they end up forgetting the exact
+	combination of upper- and lowercase characters they used for their
+	username.
+
+	Luckily, we can use #utf8casefold to do case-insensitive text comparison.
+	Case folding is an operation that erases case distinction between code
+	points. This process allows you to compare and match strings that wouldn't
+	be considered equivalent otherwise.
+
+	First, we ensure that the usernames stored in our "database" are casefolded:
+
+	\code{.c}
+		static const Users[] = {
+			{ "qlansu", "11111" },
+			{ "admin", "asfasdf" },
+			{ "user1", "u99123" }
+		};
+	\endcode
+
+	Next, we casefold the incoming string before we compare it to the username:
+
+	\code{.c}
+		uint8_t Database_IsUserValid(const char* username, const char* passwordHash)
+		{
+			uint8_t result;
+			char* compare_username = NULL;
+			size_t compare_username_size = 0;
+			int32_t errors;
+			size_t i;
+
+			if ((compare_username_size = utf8casefold(username, strlen(username), NULL, 0, &errors)) == 0 ||
+				errors != UTF8_ERR_NONE)
+			{
+				result = 0;
+
+				goto cleanup;
+			}
+
+			compare_username = (char*)malloc(compare_username_size + 1);
+			utf8casefold(username, strlen(username), compare_username, compare_username_size, &errors);
+			compare_username[compare_username_size] = 0;
+
+			for (i = 0; i < sizeof(Users) / sizeof(UserData); ++i)
+			{
+				if (!strcmp(Users[i].username, compare_username) &&
+					!strcmp(Users[i].passwordHash, passwordHash))
+				{
+					result = 1;
+
+					goto cleanup;
+				}
+			}
+
+		cleanup:
+			if (compare_username != NULL)
+			{
+				free(compare_username);
+			}
+
+			return result;
+		}
+	\endcode
 */
