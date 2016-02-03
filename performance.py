@@ -1,6 +1,7 @@
 import argparse
 import os.path
 import re
+import subprocess
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Runs combinations of performance tests.')
@@ -31,7 +32,7 @@ if __name__ == '__main__':
 
 	if len(args.config) > 0:
 		matches = re.match('(\w+)_(\w+)', args.config)
-		path = path + '/' + matches.group(1) + '/' + matches.group(2) + '/'
+		path = path + '/' + matches.group(1) + '/' + matches.group(2)
 	else:
 		if os.path.exists(path + '/x64'):
 			path += '/x64'
@@ -49,10 +50,18 @@ if __name__ == '__main__':
 			print('Failed to find release configuration path at ' + path + '.')
 			exit(-1)
 
-	executable_path = path + '/tests-rewind.exe'
+	executable_path = path + '/performance-rewind.exe'
 
 	if not os.path.exists(executable_path):
 		print('Failed to find path at ' + path + '.')
 		exit(-1)
 
 	print('Running executable at \"' + executable_path + '\".')
+
+	process = subprocess.Popen(
+		'"' + executable_path + '"',
+		shell=True
+	)
+
+	output, errors = process.communicate()
+	errcode = process.returncode
