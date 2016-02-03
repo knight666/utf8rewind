@@ -119,10 +119,11 @@ namespace internal {
 #endif
 
 #if PERF_ASSERT_ENABLED
-	#define PERF_ASSERT(_check) if (!(_check)) { \
-		PERF_PRINT("Assert failed: \"" # _check "\""); \
-		PERF_BREAK(); \
-	}
+	#define PERF_ASSERT(_check) \
+		if (!(_check)) { \
+			PERF_PRINT("Assert failed: \"" # _check "\""); \
+			PERF_BREAK(); \
+		}
 #else
 	#define PERF_ASSERT(_check)
 #endif
@@ -136,6 +137,17 @@ namespace performance {
 		int32_t errors;
 		size_t converted_size;
 
+	#if UTF8_VERSION_GUARD(1, 4, 0)
+		if ((converted_size = utf8casefold(text, text_size, nullptr, 0, &errors)) == 0 ||
+			errors != UTF8_ERR_NONE)
+		{
+			return converted;
+		}
+
+		converted.resize(converted_size);
+
+		utf8casefold(text, text_size, &converted[0], converted_size, nullptr);
+	#else
 		if ((converted_size = utf8tolower(text, text_size, nullptr, 0, &errors)) == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -144,7 +156,8 @@ namespace performance {
 
 		converted.resize(converted_size);
 
-		utf8tolower(text, text_size, &converted[0], converted_size, &errors);
+		utf8tolower(text, text_size, &converted[0], converted_size, nullptr);
+	#endif
 
 		return converted;
 	}
