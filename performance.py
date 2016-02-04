@@ -3,6 +3,19 @@ import os.path
 import re
 import subprocess
 
+executable_path = None
+
+def Run(filters, outputPath):
+	print('Running executable at \"' + executable_path + '\".')
+
+	process = subprocess.Popen(
+		'"' + executable_path + '" --gtest_filter=' + filters + ' --gtest_display_individual --gtest_output_results=' + outputPath,
+		shell=True
+	)
+
+	output, errors = process.communicate()
+	errcode = process.returncode
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Runs combinations of performance tests.')
 	parser.add_argument(
@@ -56,12 +69,10 @@ if __name__ == '__main__':
 		print('Failed to find path at ' + path + '.')
 		exit(-1)
 
-	print('Running executable at \"' + executable_path + '\".')
+	print('Found executable at \"' + executable_path + '\".')
 
-	process = subprocess.Popen(
-		'"' + executable_path + '"',
-		shell=True
-	)
-
-	output, errors = process.communicate()
-	errcode = process.returncode
+	if args.casefolding:
+		Run('*Casefold:CaseMapping*.Casefold*', 'casefolding.csv')
+		Run('*Lowercase:CaseMapping*.Lowercase*', 'lowercasing.csv')
+	else:
+		Run('*.*', 'all.csv')
