@@ -9,7 +9,7 @@ def Run(filters, outputPath, repeatCount):
 	print('Running executable at \"' + executable_path + '\".')
 
 	process = subprocess.Popen(
-		'"' + executable_path + '" --gtest_filter=' + filters + ' --gtest_repeat_count=' + repeatCount + ' --gtest_display_individual --gtest_output_results=' + outputPath,
+		'"' + executable_path + '" --gtest_filter=' + filters + ' --gtest_repeat_count=' + str(repeatCount) + ' --gtest_display_individual --gtest_output_results=' + outputPath,
 		shell=True
 	)
 
