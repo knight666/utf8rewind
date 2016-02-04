@@ -1,5 +1,7 @@
 #include "performance-base.hpp"
 
+#if UTF8_VERSION_GUARD(1, 4, 0)
+
 class CategoryGreek
 	: public performance::Suite
 {
@@ -68,3 +70,5 @@ PERF_TEST_F(CategoryGreek, Incremental)
 		}
 	}
 }
+
+#endif
