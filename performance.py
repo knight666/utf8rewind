@@ -5,11 +5,11 @@ import subprocess
 
 executable_path = None
 
-def Run(filters, outputPath):
+def Run(filters, outputPath, repeatCount):
 	print('Running executable at \"' + executable_path + '\".')
 
 	process = subprocess.Popen(
-		'"' + executable_path + '" --gtest_filter=' + filters + ' --gtest_display_individual --gtest_output_results=' + outputPath,
+		'"' + executable_path + '" --gtest_filter=' + filters + ' --gtest_repeat_count=' + repeatCount + ' --gtest_display_individual --gtest_output_results=' + outputPath,
 		shell=True
 	)
 
@@ -23,6 +23,17 @@ if __name__ == '__main__':
 		dest = 'config',
 		default = '',
 		help = 'Override configuration to <Platform>_<Configuration>, i.e. x64_Debug.'
+	)
+	parser.add_argument(
+		'--out',
+		dest = 'out',
+		help = 'Change destination for output CSV file.'
+	)
+	parser.add_argument(
+		'--repeat_count',
+		dest = 'repeat_count',
+		default = 10,
+		help = 'Number of times each test suite should be run.'
 	)
 	parser.add_argument(
 		'--casefolding',
@@ -72,7 +83,10 @@ if __name__ == '__main__':
 	print('Found executable at \"' + executable_path + '\".')
 
 	if args.casefolding:
-		Run('*Casefold:CaseMapping*.Casefold*', 'casefolding.csv')
-		Run('*Lowercase:CaseMapping*.Lowercase*', 'lowercasing.csv')
+		Run('*Casefold:CaseMapping*.Casefold*', 'casefolding.csv', args.repeat_count)
+		Run('*Lowercase:CaseMapping*.Lowercase*', 'lowercasing.csv', args.repeat_count)
 	else:
-		Run('*.*', 'all.csv')
+		if args.out:
+			Run('*.*', args.out, args.repeat_count)
+		else:
+			Run('*.*', 'all.csv', args.repeat_count)
