@@ -41,6 +41,12 @@ if __name__ == '__main__':
 		action = 'store_true',
 		help = 'Compare casefolding performance against lowercasing.'
 	)
+	parser.add_argument(
+		'--regression-140',
+		dest = 'regression_140',
+		action = 'store_true',
+		help = 'Regression testing for 1.4.0.'
+	)
 	args = parser.parse_args()
 
 	path = None
@@ -82,7 +88,9 @@ if __name__ == '__main__':
 
 	print('Found executable at \"' + executable_path + '\".')
 
-	if args.casefolding:
+	if args.regression_140:
+		Run('-Category*.*:*Casefold*', 'regression_140_to_130.csv', args.repeat_count)
+	elif args.casefolding:
 		Run('*Casefold:CaseMapping*.Casefold*', 'casefolding.csv', args.repeat_count)
 		Run('*Lowercase:CaseMapping*.Lowercase*', 'lowercasing.csv', args.repeat_count)
 	else:
