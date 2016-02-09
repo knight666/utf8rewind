@@ -48,6 +48,10 @@ syntax: glob
 
 # Other
 syntax: glob
-*.layout
+*.csv
 *.depend
+*.layout
 .DS_Store*
+
+syntax: regexp
+lock\.\w+\.csv#$

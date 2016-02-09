@@ -1,5 +1,7 @@
 #include "performance-base.hpp"
 
+#if UTF8_VERSION_GUARD(1, 4, 0)
+
 #include "../helpers/helpers-strings.hpp"
 
 extern "C" {
@@ -202,3 +204,5 @@ PERF_TEST_F(CategoryBasicMultilingualPlane, Incremental)
 		}
 	}
 }
+
+#endif

@@ -84,3 +84,15 @@ PERF_TEST_F(Database, QueryDecomposeTitlecase)
 	#endif
 	}
 }
+
+#if UTF8_VERSION_GUARD(1, 4, 0)
+PERF_TEST_F(Database, QueryDecomposeTCasefolding)
+{
+	uint8_t length = 0;
+
+	for (unicode_t i = 0; i <= MAX_LEGAL_UNICODE; ++i)
+	{
+		m_output[i] = database_querydecomposition(i, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, &length);
+	}
+}
+#endif
