@@ -127,6 +127,7 @@ PERF_TEST_F(CaseMappingBasicLatin, TitlecaseDynamic)
 	}
 }
 
+#if UTF8_VERSION_GUARD(1, 4, 0)
 PERF_TEST_F(CaseMappingBasicLatin, CasefoldStatic)
 {
 	char o[1024] = { 0 };
@@ -159,6 +160,7 @@ PERF_TEST_F(CaseMappingBasicLatin, CasefoldDynamic)
 		delete [] o;
 	}
 }
+#endif
 
 class CaseMappingLatin1
 	: public performance::Suite
@@ -267,6 +269,7 @@ PERF_TEST_F(CaseMappingLatin1, TitlecaseDynamic)
 	}
 }
 
+#if UTF8_VERSION_GUARD(1, 4, 0)
 PERF_TEST_F(CaseMappingLatin1, CasefoldStatic)
 {
 	char o[MAX_LATIN_1 * 4] = { 0 };
@@ -299,6 +302,7 @@ PERF_TEST_F(CaseMappingLatin1, CasefoldDynamic)
 		delete [] o;
 	}
 }
+#endif
 
 class CaseMappingBasicMultilingualPlane
 	: public performance::Suite
@@ -425,6 +429,7 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, TitlecaseDynamic)
 	}
 }
 
+#if UTF8_VERSION_GUARD(1, 4, 0)
 PERF_TEST_F(CaseMappingBasicMultilingualPlane, CasefoldStatic)
 {
 	char o[MAX_BASIC_MULTILINGUAL_PLANE * 4] = { 0 };
@@ -457,3 +462,4 @@ PERF_TEST_F(CaseMappingBasicMultilingualPlane, CasefoldDynamic)
 		delete [] o;
 	}
 }
+#endif

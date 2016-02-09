@@ -383,6 +383,8 @@ namespace performance {
 			if (output_csv.is_open())
 			{
 				output_csv.close();
+
+				m_logging << "Output was written to \"" << output_results << "\"." << std::endl;
 			}
 
 			return 0;

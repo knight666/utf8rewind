@@ -86,6 +86,7 @@ PERF_TEST_F(BigCaseMapping, Titlecase)
 	}
 }
 
+#if UTF8_VERSION_GUARD(1, 4, 0)
 PERF_TEST_F(BigCaseMapping, Casefold)
 {
 	int32_t e;
@@ -106,3 +107,4 @@ PERF_TEST_F(BigCaseMapping, Casefold)
 		delete [] o;
 	}
 }
+#endif
