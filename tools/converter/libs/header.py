@@ -33,7 +33,7 @@ class Header:
 		self.writeLine("*/")
 
 	def copyrightNotice(self):
-		self.writeLine("Copyright (C) 2014-2015 Quinten Lansu")
+		self.writeLine("Copyright (C) 2014-2016 Quinten Lansu")
 		self.newLine()
 		self.writeLine("Permission is hereby granted, free of charge, to any person")
 		self.writeLine("obtaining a copy of this software and associated documentation")
