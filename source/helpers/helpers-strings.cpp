@@ -172,35 +172,6 @@ namespace helpers {
 		return converted;
 	}
 
-	std::vector<utf16_t> utf16(const std::wstring& text)
-	{
-		std::vector<utf16_t> converted;
-
-		size_t size_in_bytes;
-		int32_t errors;
-
-		if ((size_in_bytes = widetoutf8(text.c_str(), text.size(), nullptr, 0, &errors)) == 0 ||
-			errors != UTF8_ERR_NONE)
-		{
-			return converted;
-		}
-
-		std::string converted_utf8;
-		converted_utf8.resize(size_in_bytes);
-		widetoutf8(text.c_str(), text.size(), &converted_utf8[0], size_in_bytes, nullptr);
-
-		if ((size_in_bytes = utf8toutf16(converted_utf8.c_str(), converted_utf8.size(), nullptr, 0, &errors)) == 0 ||
-			errors != UTF8_ERR_NONE)
-		{
-			return converted;
-		}
-
-		converted.resize(size_in_bytes / sizeof(utf16_t));
-		utf8toutf16(converted_utf8.c_str(), text.size(), &converted[0], size_in_bytes, nullptr);
-
-		return converted;
-	}
-
 	std::vector<unicode_t> utf32(const std::string& text)
 	{
 		std::vector<unicode_t> converted;
@@ -221,45 +192,13 @@ namespace helpers {
 		return converted;
 	}
 
-	std::vector<unicode_t> utf32(const std::wstring& text)
-	{
-		std::vector<unicode_t> converted;
-
-		size_t size_in_bytes;
-		int32_t errors;
-
-		if ((size_in_bytes = widetoutf8(text.c_str(), text.size(), nullptr, 0, &errors)) == 0 ||
-			errors != UTF8_ERR_NONE)
-		{
-			return converted;
-		}
-
-		std::string converted_utf8;
-		converted_utf8.resize(size_in_bytes);
-		widetoutf8(text.c_str(), text.size(), &converted_utf8[0], size_in_bytes, nullptr);
-
-		if ((size_in_bytes = utf8toutf32(converted_utf8.c_str(), converted_utf8.size(), nullptr, 0, &errors)) == 0 ||
-			errors != UTF8_ERR_NONE)
-		{
-			return converted;
-		}
-
-		converted.resize(size_in_bytes / sizeof(unicode_t));
-		utf8toutf32(converted_utf8.c_str(), text.size(), &converted[0], size_in_bytes, nullptr);
-
-		return converted;
-	}
-
 	std::wstring wide(const std::string& text)
 	{
 		std::wstring converted;
 
 		int32_t errors;
-		size_t size_in_bytes = utf8towide(
-			text.c_str(), text.size(),
-			nullptr, 0,
-			&errors);
 
+		size_t size_in_bytes = utf8towide(text.c_str(), text.size(), nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -268,10 +207,7 @@ namespace helpers {
 
 		converted.resize(size_in_bytes / UTF8_WCHAR_SIZE);
 
-		utf8towide(
-			text.c_str(), text.size(),
-			&converted[0], size_in_bytes,
-			&errors);
+		utf8towide(text.c_str(), text.size(), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
 	}

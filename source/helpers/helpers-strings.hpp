@@ -63,10 +63,8 @@ namespace helpers {
 	std::string utf8(const std::wstring& text);
 
 	std::vector<utf16_t> utf16(const std::string& text);
-	std::vector<utf16_t> utf16(const std::wstring& text);
 
 	std::vector<unicode_t> utf32(const std::string& text);
-	std::vector<unicode_t> utf32(const std::wstring& text);
 
 	std::wstring wide(const std::string& text);
 
