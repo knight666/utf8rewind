@@ -292,8 +292,6 @@ TEST_F(Utf8CaseFold, GeneralCategoryCaseMappedMultipleAmountOfBytes)
 	// 041C;CYRILLIC CAPITAL LETTER EM
 
 	const char* c = "\xD1\xB1\xD0\xBF\xD1\xA0\xD0\x9C";
-	const size_t s = 255;
-	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_EQ(8, utf8casefold(c, strlen(c), nullptr, 0, &errors));
