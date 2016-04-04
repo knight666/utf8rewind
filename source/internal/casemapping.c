@@ -71,9 +71,18 @@ static const char basic_latin_uppercase_table[58] = {
 #if WIN32 || _WINDOWS
 	#define UTF8_LOCALE_TYPE                     _locale_t
 	#define UTF8_LOCALE_GET()                    _get_current_locale()
-	#define UTF8_LOCALE_CHECK(_target, _name, _ansiCodepage, _oemCodepage) \
-		(_target)->locinfo->lc_codepage == _ansiCodepage || \
-		(_target)->locinfo->lc_codepage == _oemCodepage
+
+	// Microsoft changed the name of the codepage member in VS2015.
+
+	#if _MSC_VER >= 1800
+		#define UTF8_LOCALE_CHECK(_target, _name, _ansiCodepage, _oemCodepage) \
+			((__crt_locale_data_public*)(_target)->locinfo)->_locale_lc_codepage == _ansiCodepage || \
+			((__crt_locale_data_public*)(_target)->locinfo)->_locale_lc_codepage == _oemCodepage
+	#else
+		#define UTF8_LOCALE_CHECK(_target, _name, _ansiCodepage, _oemCodepage) \
+			(_target)->locinfo->lc_codepage == _ansiCodepage || \
+			(_target)->locinfo->lc_codepage == _oemCodepage
+	#endif
 #else
 	#define UTF8_LOCALE_TYPE                     const char*
 	#define UTF8_LOCALE_GET()                    setlocale(LC_ALL, 0)
