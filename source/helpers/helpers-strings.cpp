@@ -6,77 +6,6 @@ extern "C" {
 
 namespace helpers {
 
-	void identifiable(std::stringstream& target, unicode_t codepoint)
-	{
-		target << "U+" << std::hex << std::setfill('0') << std::setw(4) << std::uppercase << codepoint;
-	}
-
-	std::string identifiable(unicode_t codepoint)
-	{
-		std::stringstream ss;
-		identifiable(ss, codepoint);
-		return ss.str();
-	}
-
-	std::string identifiable(unicode_t* codepoint, size_t codepointsSize)
-	{
-		std::stringstream ss;
-
-		identifiable(ss, codepoint[0]);
-
-		for (size_t i = 1; i < codepointsSize / sizeof(unicode_t); ++i)
-		{
-			ss << " ";
-			identifiable(ss, codepoint[i]);
-		}
-
-		return ss.str();
-	}
-
-	std::string identifiable(const std::string& text)
-	{
-		std::vector<unicode_t> converted = utf32(text);
-		if (converted.size() == 0)
-		{
-			return "";
-		}
-
-		std::stringstream ss;
-
-		for (std::vector<unicode_t>::iterator it = converted.begin(); it != converted.end(); ++it)
-		{
-			if (it != converted.begin())
-			{
-				ss << " ";
-			}
-			identifiable(ss, *it);
-		}
-
-		return ss.str();
-	}
-
-	std::string identifiable(const std::wstring& text)
-	{
-		std::vector<unicode_t> converted = utf32(text);
-		if (converted.size() == 0)
-		{
-			return "";
-		}
-
-		std::stringstream ss;
-
-		for (std::vector<unicode_t>::iterator it = converted.begin(); it != converted.end(); ++it)
-		{
-			if (it != converted.begin())
-			{
-				ss << " ";
-			}
-			identifiable(ss, *it);
-		}
-
-		return ss.str();
-	}
-
 	std::string utf8(unicode_t codepoint)
 	{
 		std::string converted;
@@ -170,6 +99,14 @@ namespace helpers {
 		utf8toutf16(text.c_str(), text.size(), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
+	}
+
+	std::vector<unicode_t> utf32(unicode_t codepoint)
+	{
+		std::vector<unicode_t> result;
+		result.push_back(codepoint);
+
+		return result;
 	}
 
 	std::vector<unicode_t> utf32(const std::string& text)
@@ -288,6 +225,23 @@ namespace helpers {
 
 			wroteHex = true;
 		}
+	}
+
+	std::string identifiable(const std::vector<unicode_t>& codepoints)
+	{
+		std::stringstream ss;
+
+		for (std::vector<unicode_t>::const_iterator it = codepoints.begin(); it != codepoints.end(); ++it)
+		{
+			if (it != codepoints.begin())
+			{
+				ss << " ";
+			}
+
+			ss << "U+" << std::hex << std::setfill('0') << std::setw(4) << std::uppercase << *it;
+		}
+
+		return ss.str();
 	}
 
 	std::string hex(unicode_t codepoint)
@@ -648,8 +602,8 @@ namespace helpers {
 			result << std::endl;
 
 			result << "[Codepoints]" << std::endl;
-			result << "    Actual: " << "\"" << identifiable(textActual) << "\"" << std::endl;
-			result << "  Expected: " << "\"" << identifiable(textExpected) << "\"" << std::endl;
+			result << "    Actual: " << "\"" << identifiable(utf32(textActual)) << "\"" << std::endl;
+			result << "  Expected: " << "\"" << identifiable(utf32(textExpected)) << "\"" << std::endl;
 
 			return result;
 		}
@@ -678,8 +632,8 @@ namespace helpers {
 			result << std::endl;
 
 			result << "[Codepoints]" << std::endl;
-			result << "    Actual: " << "\"" << identifiable(std::string(textActual, length)) << "\"" << std::endl;
-			result << "  Expected: " << "\"" << identifiable(textExpected) << "\"" << std::endl;
+			result << "    Actual: " << "\"" << identifiable(utf32(std::string(textActual, length))) << "\"" << std::endl;
+			result << "  Expected: " << "\"" << identifiable(utf32(textExpected)) << "\"" << std::endl;
 
 			return result;
 		}
@@ -771,8 +725,8 @@ namespace helpers {
 
 			result << "Codepoint mismatch" << std::endl;
 
-			result << "    Actual: " << identifiable(codepointActual) << " \"" << printable(codepointActual) << "\"" << std::endl;
-			result << "  Expected: " << identifiable(codepointExpected) << " \"" << printable(codepointExpected) << "\"" << std::endl;
+			result << "    Actual: " << identifiable(utf32(codepointActual)) << " \"" << printable(codepointActual) << "\"" << std::endl;
+			result << "  Expected: " << identifiable(utf32(codepointExpected)) << " \"" << printable(codepointExpected) << "\"" << std::endl;
 
 			return result;
 		}
@@ -792,7 +746,7 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << "Category mismatch " << identifiable(entryActual.input) << " \"" << printable(entryActual.input) << "\"" << std::endl;
+			result << "Category mismatch " << identifiable(utf32(entryActual.input)) << " \"" << printable(entryActual.input) << "\"" << std::endl;
 
 			result << std::endl;
 
