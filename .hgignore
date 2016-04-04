@@ -23,6 +23,7 @@ ipch/*
 *.sdf
 *.suo
 *.targets
+*.VC.opendb
 syntax: regexp
 .*UpgradeLog([0-9]*)\.XML
 documentation.xml
