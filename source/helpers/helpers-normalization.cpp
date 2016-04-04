@@ -190,7 +190,7 @@ namespace helpers {
 				ss_qc << " ";
 			}
 
-			std::string id = identifiable(*it);
+			std::string id = identifiable(utf32(*it));
 			std::string ccc = canonicalCombiningClass(*it);
 
 			size_t padding = std::max(id.length(), ccc.length());
@@ -231,7 +231,7 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << entryExpected.name << " (" << identifiable(entryExpected.codepoint) << ")" << std::endl;
+			result << entryExpected.name << " (" << identifiable(utf32(entryExpected.codepoint)) << ")" << std::endl;
 
 			if (entryExpected.nfd != entryActual.nfd)
 			{
@@ -300,7 +300,7 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << entryExpected.name << " (" << identifiable(entryExpected.codepoint) << ")" << std::endl;
+			result << entryExpected.name << " (" << identifiable(utf32(entryExpected.codepoint)) << ")" << std::endl;
 
 			if (entryExpected.decomposed != entryActual.decomposed)
 			{
