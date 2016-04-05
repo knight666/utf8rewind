@@ -311,11 +311,71 @@ namespace helpers {
 			}
 
 		#if UTF8_VERSION_GUARD(1, 3, 0)
-			ss << (int)PROPERTY_GET_CCC(*it);
+			uint8_t ccc = PROPERTY_GET_CCC(*it);
 		#else
-			ss << database_queryproperty(*it, UnicodeProperty_CanonicalCombiningClass);
+			uint8_t ccc = database_queryproperty(*it, UnicodeProperty_CanonicalCombiningClass);
 		#endif
+
+			ss << canonicalCombiningClassToString(ccc);
 		}
+
+		return ss.str();
+	}
+
+	std::string canonicalCombiningClassToString(uint8_t value)
+	{
+		std::stringstream ss;
+
+		if (value >= CCC_FIXED_POSITION_START &&
+			value <= CCC_FIXED_POSITION_END)
+		{
+			ss << "FIXED_POSITION";
+		}
+		else
+		{
+			switch (value)
+			{
+
+		#define MAKE_CASE(_name) case CCC_ ## _name: ss << #_name; break
+
+			MAKE_CASE(NOT_REORDERED);
+			MAKE_CASE(OVERLAY);
+			MAKE_CASE(NUKTA);
+			MAKE_CASE(KANA_VOICING);
+			MAKE_CASE(VIRAMA);
+			MAKE_CASE(FIXED_POSITION_START);
+			MAKE_CASE(FIXED_POSITION_END);
+			MAKE_CASE(ATTACHED_BELOW_LEFT);
+			MAKE_CASE(ATTACHED_BELOW);
+			MAKE_CASE(ATTACHED_BOTTOM_RIGHT);
+			MAKE_CASE(ATTACHED_LEFT);
+			MAKE_CASE(ATTACHED_RIGHT);
+			MAKE_CASE(ATTACHED_TOP_LEFT);
+			MAKE_CASE(ATTACHED_ABOVE);
+			MAKE_CASE(ATTACHED_ABOVE_RIGHT);
+			MAKE_CASE(BELOW_LEFT);
+			MAKE_CASE(BELOW);
+			MAKE_CASE(BELOW_RIGHT);
+			MAKE_CASE(LEFT);
+			MAKE_CASE(RIGHT);
+			MAKE_CASE(ABOVE_LEFT);
+			MAKE_CASE(ABOVE);
+			MAKE_CASE(ABOVE_RIGHT);
+			MAKE_CASE(DOUBLE_BELOW);
+			MAKE_CASE(DOUBLE_ABOVE);
+			MAKE_CASE(IOTA_SUBSCRIPT);
+			MAKE_CASE(INVALID);
+
+		#undef MAKE_CASE
+
+			default:
+				ss << "<invalid>";
+				break;
+
+			}
+		}
+
+		ss << " (" << (int)value << ")";
 
 		return ss.str();
 	}
@@ -382,28 +442,7 @@ namespace helpers {
 		}
 	#endif
 
-		switch (qc)
-		{
-
-		case QuickCheckResult_Yes:
-			target << "Y";
-			break;
-
-		case QuickCheckResult_Maybe:
-			target << "M";
-			break;
-
-		case QuickCheckResult_No:
-			target << "N";
-			break;
-
-		default:
-			target << "<invalid> (0x";
-			target << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << (int)qc;
-			target << ")";
-			break;
-
-		}
+		target << quickCheckToString(qc);
 	}
 
 	std::string quickCheck(unicode_t codepoint, QuickCheck type)
@@ -446,6 +485,32 @@ namespace helpers {
 			}
 			quickCheck(ss, *it, type);
 		}
+
+		return ss.str();
+	}
+
+	std::string quickCheckToString(uint8_t value)
+	{
+		std::stringstream ss;
+
+		switch (value)
+		{
+
+		#define MAKE_CASE(_name) case QuickCheckResult_ ## _name: ss << #_name; break
+
+			MAKE_CASE(Yes);
+			MAKE_CASE(Maybe);
+			MAKE_CASE(No);
+
+		#undef MAKE_CASE
+
+		default:
+			ss << "<invalid>";
+			break;
+
+		}
+
+		ss << " (" << (int)value << ")";
 
 		return ss.str();
 	}

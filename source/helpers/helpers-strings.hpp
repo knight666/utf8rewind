@@ -73,6 +73,7 @@ namespace helpers {
 	std::string printable(const std::wstring& text);
 
 	std::string canonicalCombiningClass(const std::vector<unicode_t>& codepoints);
+	std::string canonicalCombiningClassToString(uint8_t value);
 
 	enum class QuickCheck
 	{
@@ -86,6 +87,7 @@ namespace helpers {
 	std::string quickCheck(unicode_t codepoint, QuickCheck type);
 	std::string quickCheck(unicode_t* codepoint, size_t codepointsSize, QuickCheck type);
 	std::string quickCheck(const std::string& text, QuickCheck type);
+	std::string quickCheckToString(uint8_t value);
 
 #if UTF8_VERSION_GUARD(1, 4, 0)
 	std::string generalCategory(size_t flags);
