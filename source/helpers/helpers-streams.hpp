@@ -31,10 +31,6 @@ namespace helpers {
 
 	StreamState createStream(const std::string& text);
 
-	std::string quickCheckToString(uint8_t value);
-
-	std::string canonicalCombiningClassToString(uint8_t value);
-
 	struct StreamEntry
 	{
 		uint8_t index;
