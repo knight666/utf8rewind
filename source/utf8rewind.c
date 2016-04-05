@@ -649,7 +649,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 			be converted to lowercase.
 		*/
 
-		if (state.last_canonical_combining_class == 0)
+		if (state.last_canonical_combining_class == CCC_NOT_REORDERED)
 		{
 			if (state.property_data == TitlecaseDataPtr)
 			{
@@ -800,7 +800,7 @@ uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size
 {
 	const char* src = input;
 	size_t src_size = inputSize;
-	uint8_t last_canonical_class = 0;
+	uint8_t last_canonical_class = CCC_NOT_REORDERED;
 	size_t found_offset = 0;
 	uint8_t result = UTF8_NORMALIZATION_RESULT_YES;
 	unicode_t decoded;
@@ -867,7 +867,7 @@ uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t flags, size
 		/* Compare CCC to previous CCC */
 
 		if (last_canonical_class > canonical_class &&
-			canonical_class > 0)
+			canonical_class > CCC_NOT_REORDERED)
 		{
 			result = UTF8_NORMALIZATION_RESULT_NO;
 
@@ -1223,7 +1223,7 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 		general_category = PROPERTY_GET_GC(code_point);
 		if ((general_category & flags) == 0 &&
 			/* Check for the start of the next grapheme cluster */
-			((flags & UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER) != 0 || (canonical_combining_class = PROPERTY_GET_CCC(code_point)) == 0))
+			((flags & UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER) != 0 || (canonical_combining_class = PROPERTY_GET_CCC(code_point)) == CCC_NOT_REORDERED))
 		{
 			break;
 		}
