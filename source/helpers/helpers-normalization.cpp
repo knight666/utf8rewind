@@ -197,7 +197,7 @@ namespace helpers {
 			size_t padding = std::max(id.length(), ccc.length());
 			if (type != QuickCheck::Any)
 			{
-				std::string qc = quickCheck(*it, type);
+				std::string qc = quickCheck(cps, type);
 				padding = std::max(qc.length(), padding);
 				ss_qc << std::setw(padding) << qc;
 			}

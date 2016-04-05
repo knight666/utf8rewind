@@ -84,9 +84,7 @@ namespace helpers {
 		Any
 	};
 
-	std::string quickCheck(unicode_t codepoint, QuickCheck type);
-	std::string quickCheck(unicode_t* codepoint, size_t codepointsSize, QuickCheck type);
-	std::string quickCheck(const std::string& text, QuickCheck type);
+	std::string quickCheck(const std::vector<unicode_t>& codepoints, QuickCheck type);
 	std::string quickCheckToString(uint8_t value);
 
 #if UTF8_VERSION_GUARD(1, 4, 0)
