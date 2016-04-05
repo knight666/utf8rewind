@@ -26,28 +26,88 @@ namespace helpers {
 		return stream;
 	}
 
-	std::string quickCheckToString(uint8_t quickCheck)
+	std::string quickCheckToString(uint8_t value)
 	{
-		switch (quickCheck)
+		std::stringstream ss;
+
+		switch (value)
 		{
 
-		case QuickCheckResult_Yes:
-			return "Yes";
+	#define MAKE_CASE(_name) case QuickCheckResult_ ## _name: ss << #_name; break
 
-		case QuickCheckResult_Maybe:
-			return "Maybe";
+		MAKE_CASE(Yes);
+		MAKE_CASE(Maybe);
+		MAKE_CASE(No);
 
-		case QuickCheckResult_No:
-			return "No";
+	#undef MAKE_CASE
 
 		default:
-			std::stringstream ss;
-			ss << "<invalid> (0x";
-			ss << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << (int)quickCheck;
-			ss << ")";
-			return ss.str();
+			ss << "<invalid>";
+			break;
 
 		}
+
+		ss << " (" << (int)value << ")";
+
+		return ss.str();
+	}
+
+	std::string canonicalCombiningClassToString(uint8_t value)
+	{
+		std::stringstream ss;
+
+		if (value >= CCC_FIXED_POSITION_START &&
+			value <= CCC_FIXED_POSITION_END)
+		{
+			ss << "FIXED_POSITION";
+		}
+		else
+		{
+			switch (value)
+			{
+
+		#define MAKE_CASE(_name) case CCC_ ## _name: ss << #_name; break
+
+			MAKE_CASE(NOT_REORDERED);
+			MAKE_CASE(OVERLAY);
+			MAKE_CASE(NUKTA);
+			MAKE_CASE(KANA_VOICING);
+			MAKE_CASE(VIRAMA);
+			MAKE_CASE(FIXED_POSITION_START);
+			MAKE_CASE(FIXED_POSITION_END);
+			MAKE_CASE(ATTACHED_BELOW_LEFT);
+			MAKE_CASE(ATTACHED_BELOW);
+			MAKE_CASE(ATTACHED_BOTTOM_RIGHT);
+			MAKE_CASE(ATTACHED_LEFT);
+			MAKE_CASE(ATTACHED_RIGHT);
+			MAKE_CASE(ATTACHED_TOP_LEFT);
+			MAKE_CASE(ATTACHED_ABOVE);
+			MAKE_CASE(ATTACHED_ABOVE_RIGHT);
+			MAKE_CASE(BELOW_LEFT);
+			MAKE_CASE(BELOW);
+			MAKE_CASE(BELOW_RIGHT);
+			MAKE_CASE(LEFT);
+			MAKE_CASE(RIGHT);
+			MAKE_CASE(ABOVE_LEFT);
+			MAKE_CASE(ABOVE);
+			MAKE_CASE(ABOVE_RIGHT);
+			MAKE_CASE(DOUBLE_BELOW);
+			MAKE_CASE(DOUBLE_ABOVE);
+			MAKE_CASE(IOTA_SUBSCRIPT);
+			MAKE_CASE(INVALID);
+
+		#undef MAKE_CASE
+
+			default:
+				ss << "<invalid>";
+				break;
+
+			}
+		}
+
+		ss << " (" << (int)value << ")";
+
+		return ss.str();
 	}
 
 	::testing::AssertionResult CompareStream(
@@ -91,12 +151,12 @@ namespace helpers {
 			if (entryActual.canonical_combining_class != entryExpected.canonical_combining_class)
 			{
 				result << "[CanonicalCombiningClass]" << std::endl;
-				result << "  Actual:  " << (int)entryActual.canonical_combining_class << std::endl;
-				result << "Expected:  " << (int)entryExpected.canonical_combining_class;
+				result << "  Actual:  " << canonicalCombiningClassToString(entryActual.canonical_combining_class) << std::endl;
+				result << "Expected:  " << canonicalCombiningClassToString(entryExpected.canonical_combining_class);
 			}
 			else
 			{
-				result << "[CanonicalCombiningClass]  " << (int)entryActual.canonical_combining_class;
+				result << "[CanonicalCombiningClass]  " << canonicalCombiningClassToString(entryActual.canonical_combining_class);
 			}
 
 			return result;
