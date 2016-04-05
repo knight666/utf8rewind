@@ -380,110 +380,78 @@ namespace helpers {
 		return ss.str();
 	}
 
-	void quickCheck(std::stringstream& target, unicode_t codepoint, QuickCheck type)
-	{
-		uint8_t qc;
-
-	#if UTF8_VERSION_GUARD(1, 3, 0)
-		switch (type)
-		{
-
-		case QuickCheck::NFC:
-			qc = PROPERTY_GET_NFC(codepoint);
-			break;
-
-		case QuickCheck::NFD:
-			qc = PROPERTY_GET_NFD(codepoint);
-			break;
-
-		case QuickCheck::NFKC:
-			qc = PROPERTY_GET_NFKC(codepoint);
-			break;
-
-		case QuickCheck::NFKD:
-			qc = PROPERTY_GET_NFKD(codepoint);
-			break;
-
-		case QuickCheck::Any:
-			qc = QuickCheckResult_Yes;
-			break;
-
-		default:
-			break;
-
-		}
-	#else
-		switch (type)
-		{
-
-		case QuickCheck::NFC:
-			qc = database_queryproperty(codepoint, UnicodeProperty_Normalization_Compose);
-			break;
-
-		case QuickCheck::NFD:
-			qc = database_queryproperty(codepoint, UnicodeProperty_Normalization_Decompose);
-			break;
-
-		case QuickCheck::NFKC:
-			qc = database_queryproperty(codepoint, UnicodeProperty_Normalization_Compatibility_Compose);
-			break;
-
-		case QuickCheck::NFKD:
-			qc = database_queryproperty(codepoint, UnicodeProperty_Normalization_Compatibility_Decompose);
-			break;
-
-		case QuickCheck::Any:
-			qc = QuickCheckResult_Yes;
-			break;
-
-		default:
-			break;
-
-		}
-	#endif
-
-		target << quickCheckToString(qc);
-	}
-
-	std::string quickCheck(unicode_t codepoint, QuickCheck type)
-	{
-		std::stringstream ss;
-		quickCheck(ss, codepoint, type);
-		return ss.str();
-	}
-
-	std::string quickCheck(unicode_t* codepoint, size_t codepointsSize, QuickCheck type)
+	std::string quickCheck(const std::vector<unicode_t>& codepoints, QuickCheck type)
 	{
 		std::stringstream ss;
 
-		quickCheck(ss, codepoint[0], type);
-
-		for (size_t i = 1; i < codepointsSize / sizeof(unicode_t); ++i)
+		for (std::vector<unicode_t>::const_iterator it = codepoints.begin(); it != codepoints.end(); ++it)
 		{
-			ss << " ";
-			quickCheck(ss, codepoint[i], type);
-		}
-
-		return ss.str();
-	}
-
-	std::string quickCheck(const std::string& text, QuickCheck type)
-	{
-		std::vector<unicode_t> converted = utf32(text);
-		if (converted.size() == 0)
-		{
-			return "";
-		}
-
-		std::stringstream ss;
-
-		for (std::vector<unicode_t>::iterator it = converted.begin(); it != converted.end(); ++it)
-		{
-			if (it != converted.begin())
+			if (it != codepoints.begin())
 			{
 				ss << " ";
 			}
-			quickCheck(ss, *it, type);
+
+			uint8_t qc;
+
+		#if UTF8_VERSION_GUARD(1, 3, 0)
+			switch (type)
+			{
+
+			case QuickCheck::NFC:
+				qc = PROPERTY_GET_NFC(*it);
+				break;
+
+			case QuickCheck::NFD:
+				qc = PROPERTY_GET_NFD(*it);
+				break;
+
+			case QuickCheck::NFKC:
+				qc = PROPERTY_GET_NFKC(*it);
+				break;
+
+			case QuickCheck::NFKD:
+				qc = PROPERTY_GET_NFKD(*it);
+				break;
+
+			case QuickCheck::Any:
+				qc = QuickCheckResult_Yes;
+				break;
+
+			default:
+				break;
+
+			}
+		#else
+			switch (type)
+			{
+
+			case QuickCheck::NFC:
+				qc = database_queryproperty(*it, UnicodeProperty_Normalization_Compose);
+				break;
+
+			case QuickCheck::NFD:
+				qc = database_queryproperty(*it, UnicodeProperty_Normalization_Decompose);
+				break;
+
+			case QuickCheck::NFKC:
+				qc = database_queryproperty(*it, UnicodeProperty_Normalization_Compatibility_Compose);
+				break;
+
+			case QuickCheck::NFKD:
+				qc = database_queryproperty(*it, UnicodeProperty_Normalization_Compatibility_Decompose);
+				break;
+
+			case QuickCheck::Any:
+				qc = QuickCheckResult_Yes;
+				break;
+
+			default:
+				break;
+
+			}
+		#endif
+
+			ss << quickCheckToString(qc);
 		}
 
 		return ss.str();
