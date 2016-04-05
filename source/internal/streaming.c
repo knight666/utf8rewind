@@ -145,9 +145,9 @@ uint8_t stream_read(StreamState* state, const size_t* propertyIndex, const uint8
 	{
 		/* Insert COMBINING GRAPHEME JOINER into output */
 
-		state->codepoint[state->filled]                  = 0x034F;
-		state->quick_check[state->filled]                = 0;
-		state->canonical_combining_class[state->filled]  = 0;
+		state->codepoint[state->filled]                  = CP_COMBINING_GRAPHEME_JOINER;
+		state->quick_check[state->filled]                = QuickCheckResult_Yes;
+		state->canonical_combining_class[state->filled]  = CCC_NOT_REORDERED;
 
 		state->filled++;
 	}

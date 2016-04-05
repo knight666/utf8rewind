@@ -179,7 +179,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 	{
 		/* Get code point properties */
 
-		state->last_canonical_combining_class = 0;
+		state->last_canonical_combining_class = CCC_NOT_REORDERED;
 		state->last_general_category = UTF8_CATEGORY_SYMBOL_OTHER;
 
 		resolved = REPLACEMENT_CHARACTER_STRING;
@@ -240,7 +240,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 					{
 						if (stream.codepoint[i] == CP_COMBINING_DOT_ABOVE)
 						{
-							stream.canonical_combining_class[i] = 255;
+							stream.canonical_combining_class[i] = CCC_INVALID;
 
 							found++;
 						}
@@ -335,16 +335,10 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 
 			}
 
-			/* Initialize stream on the start of the sequence */
+			/* Initialize stream and read the next sequence */
 
-			if (!stream_initialize(&stream, state->src, state->src_size))
-			{
-				goto writeregular;
-			}
-
-			/* Read the current sequence */
-
-			if (!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
+			if (!stream_initialize(&stream, state->src, state->src_size) ||
+				!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
 			{
 				goto writeregular;
 			}
@@ -381,7 +375,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 			{
 				/* Ensure the COMBINING DOT ABOVE comes before other accents with the same CCC */
 
-				if (stream.canonical_combining_class[stream.current - 1] == 230)
+				if (stream.canonical_combining_class[stream.current - 1] == CCC_ABOVE)
 				{
 					unicode_t cp_swap = stream.codepoint[stream.current - 1];
 					stream.codepoint[stream.current - 1] = CP_COMBINING_DOT_ABOVE;
@@ -392,11 +386,11 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 					stream.codepoint[stream.current] = CP_COMBINING_DOT_ABOVE;
 				}
 
-				stream.canonical_combining_class[stream.current] = 230;
+				stream.canonical_combining_class[stream.current] = CCC_ABOVE;
 
 				/* Check if sequence has become unstable */
 
-				stream.stable = stream.canonical_combining_class[stream.current - 1] <= 230;
+				stream.stable = stream.canonical_combining_class[stream.current - 1] <= CCC_ABOVE;
 
 				stream.current++;
 			}
@@ -409,7 +403,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 				/* Additional accents are always of the upper variety */
 
 				stream.codepoint[stream.current] = cp_additional_accent;
-				stream.canonical_combining_class[stream.current] = 230;
+				stream.canonical_combining_class[stream.current] = CCC_ABOVE;
 
 				/* Check if sequence has become unstable */
 
@@ -477,7 +471,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 			{
 				if (stream.codepoint[i] == CP_COMBINING_DOT_ABOVE)
 				{
-					stream.canonical_combining_class[i] = 255;
+					stream.canonical_combining_class[i] = CCC_INVALID;
 					erase_count++;
 				}
 			}
@@ -596,7 +590,7 @@ writeregular:
 
 					/* Convert if the "word" has ended */
 
-					if (PROPERTY_GET_CCC(peeked) == 0)
+					if (PROPERTY_GET_CCC(peeked) == CCC_NOT_REORDERED)
 					{
 						should_convert = (PROPERTY_GET_GC(peeked) & UTF8_CATEGORY_LETTER) == 0;
 

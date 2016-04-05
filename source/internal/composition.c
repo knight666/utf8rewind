@@ -115,7 +115,7 @@ uint8_t compose_execute(ComposeState* state)
 
 		cursor_current = output_index;
 
-		while (state->output->canonical_combining_class[cursor_current] != 0)
+		while (state->output->canonical_combining_class[cursor_current] != CCC_NOT_REORDERED)
 		{
 			cursor_current++;
 
@@ -143,7 +143,7 @@ uint8_t compose_execute(ComposeState* state)
 
 			if (state->output->canonical_combining_class[cursor_next] > state->output->canonical_combining_class[cursor_next - 1] || /* Can be composed based on CCC */
 				/* Quick check value can override composition block by previous codepoint */
-				(state->output->quick_check[cursor_next] != QuickCheckResult_Yes && state->output->canonical_combining_class[cursor_next - 1] == 0))
+				(state->output->quick_check[cursor_next] != QuickCheckResult_Yes && state->output->canonical_combining_class[cursor_next - 1] == CCC_NOT_REORDERED))
 			{
 				unicode_t composed = 0;
 
@@ -223,8 +223,8 @@ uint8_t compose_execute(ComposeState* state)
 					/* Clear next codepoint from output */
 
 					state->output->codepoint[cursor_next]                  = 0;
-					state->output->quick_check[cursor_next]                = 0;
-					state->output->canonical_combining_class[cursor_next]  = 0;
+					state->output->quick_check[cursor_next]                = QuickCheckResult_Yes;
+					state->output->canonical_combining_class[cursor_next]  = CCC_NOT_REORDERED;
 
 					if (cursor_next == state->output->current - 1)
 					{
@@ -240,7 +240,7 @@ uint8_t compose_execute(ComposeState* state)
 				}
 			}
 			else if (
-				state->output->canonical_combining_class[cursor_next] == 0)
+				state->output->canonical_combining_class[cursor_next] == CCC_NOT_REORDERED)
 			{
 				/* Attempt to compose starters, but do not read from the next sequence */
 

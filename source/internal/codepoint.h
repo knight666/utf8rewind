@@ -218,7 +218,36 @@
 #define CP_COMBINING_TILDE_ACCENT                 0x0303
 #define CP_COMBINING_DOT_ABOVE                    0x0307
 #define CP_COMBINING_GREEK_YPOGEGRAMMENI          0x0345
+#define CP_COMBINING_GRAPHEME_JOINER              0x034F
 #define CP_GREEK_CAPITAL_LETTER_SIGMA             0x03A3
+
+#define CCC_NOT_REORDERED                         0
+#define CCC_OVERLAY                               1
+#define CCC_NUKTA                                 7
+#define CCC_KANA_VOICING                          8
+#define CCC_VIRAMA                                9
+#define CCC_FIXED_POSITION_START                  10
+#define CCC_FIXED_POSITION_END                    199
+#define CCC_ATTACHED_BELOW_LEFT                   200
+#define CCC_ATTACHED_BELOW                        202
+#define CCC_ATTACHED_BOTTOM_RIGHT                 204
+#define CCC_ATTACHED_LEFT                         208
+#define CCC_ATTACHED_RIGHT                        210
+#define CCC_ATTACHED_TOP_LEFT                     212
+#define CCC_ATTACHED_ABOVE                        214
+#define CCC_ATTACHED_ABOVE_RIGHT                  216
+#define CCC_BELOW_LEFT                            218
+#define CCC_BELOW                                 220
+#define CCC_BELOW_RIGHT                           222
+#define CCC_LEFT                                  224
+#define CCC_RIGHT                                 226
+#define CCC_ABOVE_LEFT                            228
+#define CCC_ABOVE                                 230
+#define CCC_ABOVE_RIGHT                           232
+#define CCC_DOUBLE_BELOW                          233
+#define CCC_DOUBLE_ABOVE                          234
+#define CCC_IOTA_SUBSCRIPT                        240
+#define CCC_INVALID                               255
 
 /*!
 	\brief Get the number of bytes used for encoding a code point.
