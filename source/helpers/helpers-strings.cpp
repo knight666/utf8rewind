@@ -149,84 +149,6 @@ namespace helpers {
 		return converted;
 	}
 
-	void printable(std::stringstream& target, bool& wroteHex, unicode_t character, uint8_t maxWidth)
-	{
-		if (character < 0x20)
-		{
-			wroteHex = false;
-
-			switch (character)
-			{
-
-			case 0:
-				break;
-
-			case '\a':
-				target << "\\a";
-				break;
-
-			case '\b':
-				target << "\\b";
-				break;
-
-			case '\f':
-				target << "\\f";
-				break;
-
-			case '\n':
-				target << "\\n";
-				break;
-
-			case '\r':
-				target << "\\r";
-				break;
-
-			case '\t':
-				target << "\\t";
-				break;
-
-			case '\v':
-				target << "\\v";
-				break;
-
-			default:
-				target << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(maxWidth) << ((unicode_t)character & 0x000000FF);
-				wroteHex = true;
-				break;
-
-			}
-		}
-		else if (character <= 0x7F)
-		{
-			if (wroteHex)
-			{
-				if ((character >= 'A' && character <= 'F') ||
-					(character >= 'a' && character <= 'f') ||
-					(character >= '0' && character <= '9'))
-				{
-					char head = *(--target.str().end());
-
-					if ((head >= 'A' && head <= 'F') ||
-						(head >= 'a' && head <= 'f') ||
-						(head >= '0' && head <= '9'))
-					{
-						target << "\" \"";
-					}
-				}
-			}
-
-			target.put(character);
-
-			wroteHex = false;
-		}
-		else
-		{
-			target << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(2) << ((unicode_t)character & 0x000000FF);
-
-			wroteHex = true;
-		}
-	}
-
 	std::string identifiable(const std::vector<unicode_t>& codepoints)
 	{
 		std::stringstream ss;
@@ -269,14 +191,84 @@ namespace helpers {
 		return ss.str();
 	}
 
-	std::string printable(unicode_t codepoint)
+	void printable(std::stringstream& target, bool& wroteHex, unicode_t character, uint8_t maxWidth)
 	{
-		return printable(utf8(codepoint));
-	}
+		unicode_t mask = (1 << (maxWidth * 8)) - 1;
 
-	std::string printable(unicode_t* codepoints, size_t codepointsSize)
-	{
-		return printable(utf8(codepoints, codepointsSize));
+		if (character < 0x20)
+		{
+			wroteHex = false;
+
+			switch (character)
+			{
+
+			case 0:
+				break;
+
+			case '\a':
+				target << "\\a";
+				break;
+
+			case '\b':
+				target << "\\b";
+				break;
+
+			case '\f':
+				target << "\\f";
+				break;
+
+			case '\n':
+				target << "\\n";
+				break;
+
+			case '\r':
+				target << "\\r";
+				break;
+
+			case '\t':
+				target << "\\t";
+				break;
+
+			case '\v':
+				target << "\\v";
+				break;
+
+			default:
+				target << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(maxWidth) << ((unicode_t)character & mask);
+				wroteHex = true;
+				break;
+
+			}
+		}
+		else if (character <= 0x7F)
+		{
+			if (wroteHex)
+			{
+				if ((character >= 'A' && character <= 'F') ||
+					(character >= 'a' && character <= 'f') ||
+					(character >= '0' && character <= '9'))
+				{
+					char head = *(--target.str().end());
+
+					if ((head >= 'A' && head <= 'F') ||
+						(head >= 'a' && head <= 'f') ||
+						(head >= '0' && head <= '9'))
+					{
+						target << "\" \"";
+					}
+				}
+			}
+
+			target.put(character);
+
+			wroteHex = false;
+		}
+		else
+		{
+			target << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(maxWidth) << ((unicode_t)character & mask);
+
+			wroteHex = true;
+		}
 	}
 
 	std::string printable(const std::string& text)
@@ -307,54 +299,22 @@ namespace helpers {
 		return ss.str();
 	}
 
-	void canonicalCombiningClass(std::stringstream& target, unicode_t codepoint)
-	{
-	#if UTF8_VERSION_GUARD(1, 3, 0)
-		target << (int)PROPERTY_GET_CCC(codepoint);
-	#else
-		target << database_queryproperty(codepoint, UnicodeProperty_CanonicalCombiningClass);
-	#endif
-	}
-
-	std::string canonicalCombiningClass(unicode_t codepoint)
-	{
-		std::stringstream ss;
-		canonicalCombiningClass(ss, codepoint);
-		return ss.str();
-	}
-
-	std::string canonicalCombiningClass(unicode_t* codepoint, size_t codepointsSize)
+	std::string canonicalCombiningClass(const std::vector<unicode_t>& codepoints)
 	{
 		std::stringstream ss;
 
-		canonicalCombiningClass(ss, codepoint[0]);
-
-		for (size_t i = 1; i < codepointsSize / sizeof(unicode_t); ++i)
+		for (std::vector<unicode_t>::const_iterator it = codepoints.begin(); it != codepoints.end(); ++it)
 		{
-			ss << " ";
-			canonicalCombiningClass(ss, codepoint[i]);
-		}
-
-		return ss.str();
-	}
-
-	std::string canonicalCombiningClass(const std::string& text)
-	{
-		std::vector<unicode_t> converted = utf32(text);
-		if (converted.size() == 0)
-		{
-			return "";
-		}
-
-		std::stringstream ss;
-
-		for (std::vector<unicode_t>::iterator it = converted.begin(); it != converted.end(); ++it)
-		{
-			if (it != converted.begin())
+			if (it != codepoints.begin())
 			{
 				ss << " ";
 			}
-			canonicalCombiningClass(ss, *it);
+
+		#if UTF8_VERSION_GUARD(1, 3, 0)
+			ss << (int)PROPERTY_GET_CCC(*it);
+		#else
+			ss << database_queryproperty(*it, UnicodeProperty_CanonicalCombiningClass);
+		#endif
 		}
 
 		return ss.str();
@@ -701,8 +661,8 @@ namespace helpers {
 
 			result << "Codepoint mismatch" << std::endl;
 
-			result << "    Actual: " << identifiable(utf32(codepointActual)) << " \"" << printable(codepointActual) << "\"" << std::endl;
-			result << "  Expected: " << identifiable(utf32(codepointExpected)) << " \"" << printable(codepointExpected) << "\"" << std::endl;
+			result << "    Actual: " << identifiable(utf32(codepointActual)) << " \"" << printable(utf8(codepointActual)) << "\"" << std::endl;
+			result << "  Expected: " << identifiable(utf32(codepointExpected)) << " \"" << printable(utf8(codepointExpected)) << "\"" << std::endl;
 
 			return result;
 		}

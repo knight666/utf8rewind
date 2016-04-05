@@ -190,8 +190,9 @@ namespace helpers {
 				ss_qc << " ";
 			}
 
-			std::string id = identifiable(utf32(*it));
-			std::string ccc = canonicalCombiningClass(*it);
+			std::vector<unicode_t> cps = utf32(*it);
+			std::string id = identifiable(cps);
+			std::string ccc = canonicalCombiningClass(cps);
 
 			size_t padding = std::max(id.length(), ccc.length());
 			if (type != QuickCheck::Any)

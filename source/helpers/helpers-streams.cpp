@@ -69,12 +69,12 @@ namespace helpers {
 			if (entryActual.codepoint != entryExpected.codepoint)
 			{
 				result << "[Codepoint]" << std::endl;
-				result << "  Actual:  " << identifiable(utf32(entryActual.codepoint)) << " \"" << printable(entryActual.codepoint) << "\"" << std::endl;
-				result << "Expected:  " << identifiable(utf32(entryExpected.codepoint)) << " \"" << printable(entryExpected.codepoint) << "\"" << std::endl;
+				result << "  Actual:  " << identifiable(utf32(entryActual.codepoint)) << " \"" << printable(utf8(entryActual.codepoint)) << "\"" << std::endl;
+				result << "Expected:  " << identifiable(utf32(entryExpected.codepoint)) << " \"" << printable(utf8(entryExpected.codepoint)) << "\"" << std::endl;
 			}
 			else
 			{
-				result << "[Codepoint]  " << identifiable(utf32(entryActual.codepoint)) << " \"" << printable(entryActual.codepoint) << "\"" << std::endl;
+				result << "[Codepoint]  " << identifiable(utf32(entryActual.codepoint)) << " \"" << printable(utf8(entryActual.codepoint)) << "\"" << std::endl;
 			}
 
 			if (entryActual.quick_check != entryExpected.quick_check)
