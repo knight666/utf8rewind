@@ -6,65 +6,13 @@ extern "C" {
 
 namespace helpers {
 
-	void identifiable(std::stringstream& target, unicode_t codepoint)
-	{
-		target << "U+" << std::hex << std::setfill('0') << std::setw(4) << std::uppercase << codepoint;
-	}
-
-	std::string identifiable(unicode_t codepoint)
-	{
-		std::stringstream ss;
-		identifiable(ss, codepoint);
-		return ss.str();
-	}
-
-	std::string identifiable(unicode_t* codepoint, size_t codepointsSize)
-	{
-		std::stringstream ss;
-
-		identifiable(ss, codepoint[0]);
-
-		for (size_t i = 1; i < codepointsSize / sizeof(unicode_t); ++i)
-		{
-			ss << " ";
-			identifiable(ss, codepoint[i]);
-		}
-
-		return ss.str();
-	}
-
-	std::string identifiable(const std::string& text)
-	{
-		std::vector<unicode_t> converted = utf32(text);
-		if (converted.size() == 0)
-		{
-			return "";
-		}
-
-		std::stringstream ss;
-
-		for (std::vector<unicode_t>::iterator it = converted.begin(); it != converted.end(); ++it)
-		{
-			if (it != converted.begin())
-			{
-				ss << " ";
-			}
-			identifiable(ss, *it);
-		}
-
-		return ss.str();
-	}
-
 	std::string utf8(unicode_t codepoint)
 	{
 		std::string converted;
 
 		int32_t errors;
-		size_t size_in_bytes = utf32toutf8(
-			&codepoint, sizeof(unicode_t),
-			nullptr, 0,
-			&errors);
 
+		size_t size_in_bytes = utf32toutf8(&codepoint, sizeof(unicode_t), nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -72,11 +20,7 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes);
-
-		utf32toutf8(
-			&codepoint, sizeof(unicode_t),
-			&converted[0], size_in_bytes,
-			nullptr);
+		utf32toutf8(&codepoint, sizeof(unicode_t), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
 	}
@@ -86,11 +30,8 @@ namespace helpers {
 		std::string converted;
 
 		int32_t errors;
-		size_t size_in_bytes = utf32toutf8(
-			codepoints, codepointsSize,
-			nullptr, 0,
-			&errors);
 
+		size_t size_in_bytes = utf32toutf8(codepoints, codepointsSize, nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -98,11 +39,7 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes);
-
-		utf32toutf8(
-			codepoints, codepointsSize,
-			&converted[0], size_in_bytes,
-			nullptr);
+		utf32toutf8(codepoints, codepointsSize, &converted[0], size_in_bytes, nullptr);
 
 		return converted;
 	}
@@ -112,11 +49,8 @@ namespace helpers {
 		std::string converted;
 
 		int32_t errors;
-		size_t size_in_bytes = utf32toutf8(
-			&codepoints[0], codepoints.size() * sizeof(unicode_t),
-			nullptr, 0,
-			&errors);
 
+		size_t size_in_bytes = utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -124,11 +58,7 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes);
-
-		utf32toutf8(
-			&codepoints[0], codepoints.size() * sizeof(unicode_t),
-			&converted[0], size_in_bytes,
-			nullptr);
+		utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
 	}
@@ -138,11 +68,8 @@ namespace helpers {
 		std::string converted;
 
 		int32_t errors;
-		size_t size_in_bytes = widetoutf8(
-			text.c_str(), text.size(),
-			nullptr, 0,
-			&errors);
 
+		size_t size_in_bytes = widetoutf8(text.c_str(), text.size() * UTF8_WCHAR_SIZE, nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -150,11 +77,7 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes);
-
-		widetoutf8(
-			text.c_str(), text.size(),
-			&converted[0], size_in_bytes,
-			&errors);
+		widetoutf8(text.c_str(), text.size() * UTF8_WCHAR_SIZE, &converted[0], size_in_bytes, nullptr);
 
 		return converted;
 	}
@@ -164,11 +87,8 @@ namespace helpers {
 		std::vector<utf16_t> converted;
 
 		int32_t errors;
-		size_t size_in_bytes = utf8toutf16(
-			text.c_str(), text.size(),
-			nullptr, 0,
-			&errors);
 
+		size_t size_in_bytes = utf8toutf16(text.c_str(), text.size(), nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -176,13 +96,17 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes / sizeof(utf16_t));
-
-		utf8toutf16(
-			text.c_str(), text.size(),
-			&converted[0], size_in_bytes,
-			&errors);
+		utf8toutf16(text.c_str(), text.size(), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
+	}
+
+	std::vector<unicode_t> utf32(unicode_t codepoint)
+	{
+		std::vector<unicode_t> result;
+		result.push_back(codepoint);
+
+		return result;
 	}
 
 	std::vector<unicode_t> utf32(const std::string& text)
@@ -190,11 +114,8 @@ namespace helpers {
 		std::vector<unicode_t> converted;
 
 		int32_t errors;
-		size_t size_in_bytes = utf8toutf32(
-			text.c_str(), text.size(),
-			nullptr, 0,
-			&errors);
 
+		size_t size_in_bytes = utf8toutf32(text.c_str(), text.size(), nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -203,10 +124,7 @@ namespace helpers {
 
 		converted.resize(size_in_bytes / sizeof(unicode_t));
 
-		utf8toutf32(
-			text.c_str(), text.size(),
-			&converted[0], size_in_bytes,
-			&errors);
+		utf8toutf32(text.c_str(), text.size(), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
 	}
@@ -216,11 +134,8 @@ namespace helpers {
 		std::wstring converted;
 
 		int32_t errors;
-		size_t size_in_bytes = utf8towide(
-			text.c_str(), text.size(),
-			nullptr, 0,
-			&errors);
 
+		size_t size_in_bytes = utf8towide(text.c_str(), text.size(), nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -229,16 +144,57 @@ namespace helpers {
 
 		converted.resize(size_in_bytes / UTF8_WCHAR_SIZE);
 
-		utf8towide(
-			text.c_str(), text.size(),
-			&converted[0], size_in_bytes,
-			&errors);
+		utf8towide(text.c_str(), text.size(), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
 	}
 
-	void printable(std::stringstream& target, bool& wroteHex, uint8_t character)
+	std::string identifiable(const std::vector<unicode_t>& codepoints)
 	{
+		std::stringstream ss;
+
+		for (std::vector<unicode_t>::const_iterator it = codepoints.begin(); it != codepoints.end(); ++it)
+		{
+			if (it != codepoints.begin())
+			{
+				ss << " ";
+			}
+
+			ss << "U+" << std::hex << std::setfill('0') << std::setw(4) << std::uppercase << *it;
+		}
+
+		return ss.str();
+	}
+
+	std::string hex(const std::string& text)
+	{
+		std::stringstream ss;
+
+		for (std::string::const_iterator it = text.begin(); it != text.end(); ++it)
+		{
+			ss << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(2) << ((unicode_t)*it & 0x000000FF);
+		}
+
+		return ss.str();
+	}
+
+	std::string hex(const std::wstring& text)
+	{
+		std::stringstream ss;
+
+		unicode_t mask = (1 << (8 * UTF8_WCHAR_SIZE)) - 1;
+		for (std::wstring::const_iterator it = text.begin(); it != text.end(); ++it)
+		{
+			ss << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(UTF8_WCHAR_SIZE) << ((unicode_t)*it & mask);
+		}
+
+		return ss.str();
+	}
+
+	void printable(std::stringstream& target, bool& wroteHex, unicode_t character, uint8_t maxWidth)
+	{
+		unicode_t mask = (1 << (maxWidth * 8)) - 1;
+
 		if (character < 0x20)
 		{
 			wroteHex = false;
@@ -278,7 +234,7 @@ namespace helpers {
 				break;
 
 			default:
-				target << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(2) << ((unicode_t)character & 0x000000FF);
+				target << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(maxWidth) << ((unicode_t)character & mask);
 				wroteHex = true;
 				break;
 
@@ -309,70 +265,10 @@ namespace helpers {
 		}
 		else
 		{
-			target << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(2) << ((unicode_t)character & 0x000000FF);
+			target << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(maxWidth) << ((unicode_t)character & mask);
 
 			wroteHex = true;
 		}
-	}
-
-	std::string hex(unicode_t codepoint)
-	{
-		return hex(utf8(codepoint));
-	}
-
-	std::string hex(unicode_t* codepoints, size_t codepointsSize)
-	{
-		std::string converted;
-
-		int32_t errors;
-		size_t size_in_bytes = utf32toutf8(codepoints, codepointsSize, nullptr, 0, &errors);
-
-		if (size_in_bytes == 0 ||
-			errors != UTF8_ERR_NONE)
-		{
-			return converted;
-		}
-
-		converted.resize(size_in_bytes);
-		utf32toutf8(codepoints, codepointsSize, &converted[0], size_in_bytes, nullptr);
-
-		return hex(converted);
-	}
-
-	std::string hex(const std::string& text)
-	{
-		std::stringstream ss;
-
-		for (std::string::const_iterator it = text.begin(); it != text.end(); ++it)
-		{
-			ss << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(2) << ((unicode_t)*it & 0x000000FF);
-		}
-
-		return ss.str();
-	}
-
-	std::string printable(unicode_t codepoint)
-	{
-		return printable(utf8(codepoint));
-	}
-
-	std::string printable(unicode_t* codepoints, size_t codepointsSize)
-	{
-		std::string converted;
-
-		int32_t errors;
-		size_t size_in_bytes = utf32toutf8(codepoints, codepointsSize, nullptr, 0, &errors);
-
-		if (size_in_bytes == 0 ||
-			errors != UTF8_ERR_NONE)
-		{
-			return converted;
-		}
-
-		converted.resize(size_in_bytes);
-		utf32toutf8(codepoints, codepointsSize, &converted[0], size_in_bytes, nullptr);
-
-		return printable(converted);
 	}
 
 	std::string printable(const std::string& text)
@@ -383,60 +279,42 @@ namespace helpers {
 
 		for (std::string::const_iterator it = text.begin(); it != text.end(); ++it)
 		{
-			printable(ss, wrote_hex, (uint8_t)*it);
+			printable(ss, wrote_hex, (unicode_t)*it, 1);
 		}
 
 		return ss.str();
 	}
 
-	void canonicalCombiningClass(std::stringstream& target, unicode_t codepoint)
-	{
-	#if UTF8_VERSION_GUARD(1, 3, 0)
-		target << (int)PROPERTY_GET_CCC(codepoint);
-	#else
-		target << database_queryproperty(codepoint, UnicodeProperty_CanonicalCombiningClass);
-	#endif
-	}
-
-	std::string canonicalCombiningClass(unicode_t codepoint)
-	{
-		std::stringstream ss;
-		canonicalCombiningClass(ss, codepoint);
-		return ss.str();
-	}
-
-	std::string canonicalCombiningClass(unicode_t* codepoint, size_t codepointsSize)
+	std::string printable(const std::wstring& text)
 	{
 		std::stringstream ss;
 
-		canonicalCombiningClass(ss, codepoint[0]);
+		bool wrote_hex = false;
 
-		for (size_t i = 1; i < codepointsSize / sizeof(unicode_t); ++i)
+		for (std::wstring::const_iterator it = text.begin(); it != text.end(); ++it)
 		{
-			ss << " ";
-			canonicalCombiningClass(ss, codepoint[i]);
+			printable(ss, wrote_hex, (unicode_t)*it, UTF8_WCHAR_SIZE);
 		}
 
 		return ss.str();
 	}
 
-	std::string canonicalCombiningClass(const std::string& text)
+	std::string canonicalCombiningClass(const std::vector<unicode_t>& codepoints)
 	{
-		std::vector<unicode_t> converted = utf32(text);
-		if (converted.size() == 0)
-		{
-			return "";
-		}
-
 		std::stringstream ss;
 
-		for (std::vector<unicode_t>::iterator it = converted.begin(); it != converted.end(); ++it)
+		for (std::vector<unicode_t>::const_iterator it = codepoints.begin(); it != codepoints.end(); ++it)
 		{
-			if (it != converted.begin())
+			if (it != codepoints.begin())
 			{
 				ss << " ";
 			}
-			canonicalCombiningClass(ss, *it);
+
+		#if UTF8_VERSION_GUARD(1, 3, 0)
+			ss << (int)PROPERTY_GET_CCC(*it);
+		#else
+			ss << database_queryproperty(*it, UnicodeProperty_CanonicalCombiningClass);
+		#endif
 		}
 
 		return ss.str();
@@ -660,8 +538,8 @@ namespace helpers {
 			result << std::endl;
 
 			result << "[Codepoints]" << std::endl;
-			result << "    Actual: " << "\"" << identifiable(textActual) << "\"" << std::endl;
-			result << "  Expected: " << "\"" << identifiable(textExpected) << "\"" << std::endl;
+			result << "    Actual: " << "\"" << identifiable(utf32(textActual)) << "\"" << std::endl;
+			result << "  Expected: " << "\"" << identifiable(utf32(textExpected)) << "\"" << std::endl;
 
 			return result;
 		}
@@ -690,8 +568,8 @@ namespace helpers {
 			result << std::endl;
 
 			result << "[Codepoints]" << std::endl;
-			result << "    Actual: " << "\"" << identifiable(std::string(textActual, length)) << "\"" << std::endl;
-			result << "  Expected: " << "\"" << identifiable(textExpected) << "\"" << std::endl;
+			result << "    Actual: " << "\"" << identifiable(utf32(std::string(textActual, length))) << "\"" << std::endl;
+			result << "  Expected: " << "\"" << identifiable(utf32(textExpected)) << "\"" << std::endl;
 
 			return result;
 		}
@@ -783,8 +661,8 @@ namespace helpers {
 
 			result << "Codepoint mismatch" << std::endl;
 
-			result << "    Actual: " << identifiable(codepointActual) << " \"" << printable(codepointActual) << "\"" << std::endl;
-			result << "  Expected: " << identifiable(codepointExpected) << " \"" << printable(codepointExpected) << "\"" << std::endl;
+			result << "    Actual: " << identifiable(utf32(codepointActual)) << " \"" << printable(utf8(codepointActual)) << "\"" << std::endl;
+			result << "  Expected: " << identifiable(utf32(codepointExpected)) << " \"" << printable(utf8(codepointExpected)) << "\"" << std::endl;
 
 			return result;
 		}
@@ -804,7 +682,7 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << "Category mismatch " << identifiable(entryActual.input) << " \"" << printable(entryActual.input) << "\"" << std::endl;
+			result << "Category mismatch " << identifiable(utf32(entryActual.input)) << " \"" << printable(entryActual.input) << "\"" << std::endl;
 
 			result << std::endl;
 

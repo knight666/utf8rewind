@@ -52,10 +52,6 @@ extern "C" {
 
 namespace helpers {
 
-	std::string identifiable(unicode_t codepoint);
-	std::string identifiable(unicode_t* codepoint, size_t codepointsSize);
-	std::string identifiable(const std::string& text);
-
 	std::string utf8(unicode_t codepoint);
 	std::string utf8(unicode_t* codepoints, size_t codepointsSize);
 	std::string utf8(const std::vector<unicode_t>& codepoints);
@@ -63,21 +59,20 @@ namespace helpers {
 
 	std::vector<utf16_t> utf16(const std::string& text);
 
+	std::vector<unicode_t> utf32(unicode_t codepoint);
 	std::vector<unicode_t> utf32(const std::string& text);
 
 	std::wstring wide(const std::string& text);
 
-	std::string hex(unicode_t codepoint);
-	std::string hex(unicode_t* codepoints, size_t codepointsSize);
+	std::string identifiable(const std::vector<unicode_t>& codepoints);
+
 	std::string hex(const std::string& text);
+	std::string hex(const std::wstring& text);
 
-	std::string printable(unicode_t codepoint);
-	std::string printable(unicode_t* codepoints, size_t codepointsSize);
 	std::string printable(const std::string& text);
+	std::string printable(const std::wstring& text);
 
-	std::string canonicalCombiningClass(unicode_t codepoint);
-	std::string canonicalCombiningClass(unicode_t* codepoint, size_t codepointsSize);
-	std::string canonicalCombiningClass(const std::string& text);
+	std::string canonicalCombiningClass(const std::vector<unicode_t>& codepoints);
 
 	enum class QuickCheck
 	{
