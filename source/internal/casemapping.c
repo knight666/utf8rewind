@@ -69,25 +69,29 @@ static const char basic_latin_uppercase_table[58] = {
 };
 
 #if WIN32 || _WINDOWS
-	#define UTF8_LOCALE_TYPE                     _locale_t
-	#define UTF8_LOCALE_GET()                    _get_current_locale()
-
 	// Microsoft changed the name of the codepage member in VS2015.
 
 	#if _MSC_VER >= 1800
-		#define UTF8_LOCALE_CHECK(_target, _name, _ansiCodepage, _oemCodepage) \
-			((__crt_locale_data_public*)(_target)->locinfo)->_locale_lc_codepage == _ansiCodepage || \
-			((__crt_locale_data_public*)(_target)->locinfo)->_locale_lc_codepage == _oemCodepage
+		#define UTF8_CODEPAGE_GET(_locale)         ((__crt_locale_data_public*)(_locale)->locinfo)->_locale_lc_codepage
 	#else
-		#define UTF8_LOCALE_CHECK(_target, _name, _ansiCodepage, _oemCodepage) \
-			(_target)->locinfo->lc_codepage == _ansiCodepage || \
-			(_target)->locinfo->lc_codepage == _oemCodepage
+		#define UTF8_CODEPAGE_GET(_locale)         (_locale)->locinfo->lc_codepage
 	#endif
+
+	#define UTF8_LOCALE_GET \
+		unsigned int codepage; \
+		_locale_t locale = _get_current_locale(); \
+		if (locale == 0) return CASEMAPPING_LOCALE_DEFAULT; \
+		codepage = UTF8_CODEPAGE_GET(locale)
+
+	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
+		codepage == _ansiCodepage || codepage == _oemCodepage
 #else
-	#define UTF8_LOCALE_TYPE                     const char*
-	#define UTF8_LOCALE_GET()                    setlocale(LC_ALL, 0)
-	#define UTF8_LOCALE_CHECK(_target, _name, _ansiCodepage, _oemCodepage) \
-		!strncasecmp((_target), _name, 5)
+	#define UTF8_LOCALE_GET \
+		const char* locale = setlocale(LC_ALL, 0); \
+		if (locale == 0) return CASEMAPPING_LOCALE_DEFAULT
+
+	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
+		!strncasecmp(locale, _name, 5)
 #endif
 
 uint32_t casemapping_locale()
@@ -102,15 +106,15 @@ uint32_t casemapping_locale()
 		https://www-01.ibm.com/support/knowledgecenter/ssw_aix_61/com.ibm.aix.nlsgdrf/support_languages_locales.htm
 	*/
 
-	UTF8_LOCALE_TYPE locale = UTF8_LOCALE_GET();
+	UTF8_LOCALE_GET;
 
-	if (UTF8_LOCALE_CHECK(locale, "lt_lt", 1257, 775))
+	if (UTF8_LOCALE_CHECK("lt_lt", 1257, 775))
 	{
 		return CASEMAPPING_LOCALE_LITHUANIAN;
 	}
 	else if (
-		UTF8_LOCALE_CHECK(locale, "tr_tr", 1254, 857) ||
-		UTF8_LOCALE_CHECK(locale, "az_az", 1254, 857))
+		UTF8_LOCALE_CHECK("tr_tr", 1254, 857) ||
+		UTF8_LOCALE_CHECK("az_az", 1254, 857))
 	{
 		return CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN;
 	}
