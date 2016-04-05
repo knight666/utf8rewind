@@ -66,8 +66,6 @@ namespace helpers {
 
 	std::string identifiable(const std::vector<unicode_t>& codepoints);
 
-	std::string hex(unicode_t codepoint);
-	std::string hex(unicode_t* codepoints, size_t codepointsSize);
 	std::string hex(const std::string& text);
 	std::string hex(const std::wstring& text);
 
