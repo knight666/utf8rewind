@@ -118,23 +118,23 @@ TEST(CaseMappingLocale, Azeri)
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
-	EXPECT_STREQ("Azeri_Azerbaijan.1254", setlocale(LC_ALL, "azeri"));
+	EXPECT_STREQ("Azerbaijani_Azerbaijan.1254", setlocale(LC_ALL, "azerbaijani"));
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
-	EXPECT_STREQ("Azeri_Azerbaijan.1254", setlocale(LC_ALL, "Azeri_Azerbaijan.1254"));
+	EXPECT_STREQ("Azerbaijani_Azerbaijan.1254", setlocale(LC_ALL, "Azerbaijani_Azerbaijan.1254"));
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
-	EXPECT_STREQ("Azeri_Azerbaijan.1254", setlocale(LC_ALL, "Azeri_Azerbaijan.ACP"));
+	EXPECT_STREQ("Azerbaijani_Azerbaijan.1254", setlocale(LC_ALL, "Azerbaijani_Azerbaijan.ACP"));
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
-	EXPECT_STREQ("Azeri_Azerbaijan.857", setlocale(LC_ALL, "Azeri_Azerbaijan.857"));
+	EXPECT_STREQ("Azerbaijani_Azerbaijan.857", setlocale(LC_ALL, "Azerbaijani_Azerbaijan.857"));
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
-	EXPECT_STREQ("Azeri_Azerbaijan.857", setlocale(LC_ALL, "Azeri_Azerbaijan.OCP"));
+	EXPECT_STREQ("Azerbaijani_Azerbaijan.857", setlocale(LC_ALL, "Azerbaijani_Azerbaijan.OCP"));
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 #else
