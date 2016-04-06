@@ -14,7 +14,7 @@
 
 namespace helpers {
 
-	std::string error(int32_t error);
+	std::string error(int32_t value);
 
 	::testing::AssertionResult CompareErrors(
 		const char* expressionExpected, const char* expressionActual,

@@ -6,6 +6,26 @@ extern "C" {
 
 #include "../helpers/helpers-locale.hpp"
 
+#if _WINDOWS
+	#include <Windows.h>
+
+	bool CheckWindowsVersion(DWORD versionIdentifier)
+	{
+		DWORDLONG conditionMask = 
+			::VerSetConditionMask(
+				::VerSetConditionMask(
+					0, VER_MAJORVERSION, VER_GREATER_EQUAL),
+				VER_MINORVERSION, VER_GREATER_EQUAL);
+
+		::OSVERSIONINFOEXW osvi = { 0 };
+		osvi.dwOSVersionInfoSize = sizeof(osvi);
+		osvi.dwMajorVersion = HIBYTE(versionIdentifier);
+		osvi.dwMinorVersion = LOBYTE(versionIdentifier);
+
+		return ::VerifyVersionInfoW(&osvi, VER_MAJORVERSION | VER_MINORVERSION, conditionMask) != FALSE;
+	}
+#endif
+
 TEST(CaseMappingLocale, EnglishUS)
 {
 	SET_LOCALE_ENGLISH();
@@ -118,29 +138,52 @@ TEST(CaseMappingLocale, Azeri)
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
-	EXPECT_STREQ("Azeri_Azerbaijan.1254", setlocale(LC_ALL, "azeri"));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
-	RESET_LOCALE();
+	// Windows 10 changes the name of the language from "Azeri" to "Azerbaijani".
 
-	EXPECT_STREQ("Azeri_Azerbaijan.1254", setlocale(LC_ALL, "Azeri_Azerbaijan.1254"));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
-	RESET_LOCALE();
+	if (CheckWindowsVersion(0x0A00))
+	{
+		EXPECT_STREQ("Azerbaijani_Azerbaijan.1254", setlocale(LC_ALL, "azerbaijani"));
+		EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
+		RESET_LOCALE();
 
-	EXPECT_STREQ("Azeri_Azerbaijan.1254", setlocale(LC_ALL, "Azeri_Azerbaijan.ACP"));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
-	RESET_LOCALE();
+		EXPECT_STREQ("Azerbaijani_Azerbaijan.1254", setlocale(LC_ALL, "Azerbaijani_Azerbaijan.1254"));
+		EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
+		RESET_LOCALE();
 
-#if _WIN32_WINNT <= _WIN32_WINNT_WINBLUE
-	// This doesn't work on Windows 10 for some reason.
+		EXPECT_STREQ("Azerbaijani_Azerbaijan.1254", setlocale(LC_ALL, "Azerbaijani_Azerbaijan.ACP"));
+		EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
+		RESET_LOCALE();
 
-	EXPECT_STREQ("Azeri_Azerbaijan.857", setlocale(LC_ALL, "Azeri_Azerbaijan.857"));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
-	RESET_LOCALE();
+		EXPECT_STREQ("Azerbaijani_Azerbaijan.857", setlocale(LC_ALL, "Azerbaijani_Azerbaijan.857"));
+		EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
+		RESET_LOCALE();
 
-	EXPECT_STREQ("Azeri_Azerbaijan.857", setlocale(LC_ALL, "Azeri_Azerbaijan.OCP"));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
-	RESET_LOCALE();
-#endif
+		EXPECT_STREQ("Azerbaijani_Azerbaijan.857", setlocale(LC_ALL, "Azerbaijani_Azerbaijan.OCP"));
+		EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
+		RESET_LOCALE();
+	}
+	else
+	{
+		EXPECT_STREQ("Azeri_Azerbaijan.1254", setlocale(LC_ALL, "azeri"));
+		EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
+		RESET_LOCALE();
+
+		EXPECT_STREQ("Azeri_Azerbaijan.1254", setlocale(LC_ALL, "Azeri_Azerbaijan.1254"));
+		EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
+		RESET_LOCALE();
+
+		EXPECT_STREQ("Azeri_Azerbaijan.1254", setlocale(LC_ALL, "Azeri_Azerbaijan.ACP"));
+		EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
+		RESET_LOCALE();
+
+		EXPECT_STREQ("Azeri_Azerbaijan.857", setlocale(LC_ALL, "Azeri_Azerbaijan.857"));
+		EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
+		RESET_LOCALE();
+
+		EXPECT_STREQ("Azeri_Azerbaijan.857", setlocale(LC_ALL, "Azeri_Azerbaijan.OCP"));
+		EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
+		RESET_LOCALE();
+	}
 #else
 	EXPECT_STREQ("az_AZ", setlocale(LC_ALL, "az_AZ"));
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
