@@ -15,7 +15,7 @@
 #define RESET_LOCALE()               setlocale(LC_ALL, "C")
 
 #if _WINDOWS
-	#define SET_LOCALE_AZERI()       EXPECT_STREQ("Azeri_Azerbaijan.1254", setlocale(LC_ALL, "Azeri_Azerbaijan.1254"))
+	#define SET_LOCALE_AZERI()       EXPECT_STREQ("az-Latn-AZ", setlocale(LC_ALL, "az-Latn-AZ"))
 	#define SET_LOCALE_DANISH()      EXPECT_STREQ("Danish_Denmark.1252", setlocale(LC_ALL, "Danish_Denmark.1252"))
 	#define SET_LOCALE_ENGLISH()     EXPECT_STREQ("en-US", setlocale(LC_ALL, "en-US"))
 	#define SET_LOCALE_FRENCH()      EXPECT_STREQ("French_France.1252", setlocale(LC_ALL, "French_France.1252"))

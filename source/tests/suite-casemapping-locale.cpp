@@ -130,9 +130,6 @@ TEST(CaseMappingLocale, Azeri)
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
-#if _WIN32_WINNT <= _WIN32_WINNT_WINBLUE
-	// This doesn't work on Windows 10 for some reason.
-
 	EXPECT_STREQ("Azeri_Azerbaijan.857", setlocale(LC_ALL, "Azeri_Azerbaijan.857"));
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
@@ -140,7 +137,6 @@ TEST(CaseMappingLocale, Azeri)
 	EXPECT_STREQ("Azeri_Azerbaijan.857", setlocale(LC_ALL, "Azeri_Azerbaijan.OCP"));
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
-#endif
 #else
 	EXPECT_STREQ("az_AZ", setlocale(LC_ALL, "az_AZ"));
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
