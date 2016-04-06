@@ -39,6 +39,10 @@
 							'VCLinkerTool': {
 								'OutputFile': '$(OutDir)$(TargetName)$(TargetExt)',
 							},
+							'VCManifestTool': {
+								'EmbedManifest': 'true',
+								'AdditionalManifestFiles': 'build/windowsversion.manifest',
+							},
 						},
 					}],
 					['OS=="linux"', {
