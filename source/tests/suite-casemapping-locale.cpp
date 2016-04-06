@@ -8,7 +8,22 @@ extern "C" {
 
 #if _WINDOWS
 	#include <Windows.h>
-	#include <VersionHelpers.h>
+
+	bool CheckWindowsVersion(DWORD versionIdentifier)
+	{
+		DWORDLONG conditionMask = 
+			::VerSetConditionMask(
+				::VerSetConditionMask(
+					0, VER_MAJORVERSION, VER_GREATER_EQUAL),
+				VER_MINORVERSION, VER_GREATER_EQUAL);
+
+		::OSVERSIONINFOEXW osvi = { 0 };
+		osvi.dwOSVersionInfoSize = sizeof(osvi);
+		osvi.dwMajorVersion = HIBYTE(versionIdentifier);
+		osvi.dwMinorVersion = LOBYTE(versionIdentifier);
+
+		return ::VerifyVersionInfoW(&osvi, VER_MAJORVERSION | VER_MINORVERSION, conditionMask) != FALSE;
+	}
 #endif
 
 TEST(CaseMappingLocale, EnglishUS)
@@ -123,9 +138,9 @@ TEST(CaseMappingLocale, Azeri)
 	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
-	// Windows 10 changes the name of the language to "Azerbaijani".
+	// Windows 10 changes the name of the language from "Azeri" to "Azerbaijani".
 
-	if (IsWindowsVersionOrGreater(HIBYTE(0x0A00), LOBYTE(0x0A00), 0))
+	if (CheckWindowsVersion(0x0A00))
 	{
 		EXPECT_STREQ("Azerbaijani_Azerbaijan.1254", setlocale(LC_ALL, "azerbaijani"));
 		EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, casemapping_locale());
