@@ -147,6 +147,11 @@
 				'source/tests/tests-main.cpp',
 			],
 			'conditions': [
+				['OS=="win"', {
+					'sources': [
+						'build/windowsversion.manifest',
+					],
+				}],
 				['OS!="win"', {
 					'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
 				}],
@@ -171,6 +176,11 @@
 				'source/properties/property-sequence-utf32.hpp',
 			],
 			'conditions': [
+				['OS=="win"', {
+					'sources': [
+						'build/windowsversion.manifest',
+					],
+				}],
 				['OS!="win"', {
 					'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
 				}],
@@ -205,6 +215,11 @@
 				'source/performance/performance-properties.cpp',
 			],
 			'conditions': [
+				['OS=="win"', {
+					'sources': [
+						'build/windowsversion.manifest',
+					],
+				}],
 				['OS!="win"', {
 					'product_dir': 'output/<(platform_name)/<(architecture_name)/<(CONFIGURATION_NAME)',
 				}],
