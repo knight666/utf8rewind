@@ -9,6 +9,8 @@
 
 #include "helpers-base.hpp"
 
+#include "helpers-strings.hpp"
+
 #define EXPECT_CASEMAPPING_CODEPOINT_NUL_EQ(_codepoint, _name) { \
 	::helpers::CaseMappingEntry e; \
 	e.codepoint = _codepoint; \
@@ -17,9 +19,10 @@
 	e.titlecase = std::string(1, '\0'); \
 	e.name = _name; \
 	::helpers::CaseMappingEntry a; \
-	a.lowercase = ::helpers::lowercase(_codepoint); \
-	a.uppercase = ::helpers::uppercase(_codepoint); \
-	a.titlecase = ::helpers::titlecase(_codepoint); \
+	std::string text = ::helpers::utf8(_codepoint); \
+	a.lowercase = ::helpers::lowercase(text); \
+	a.uppercase = ::helpers::uppercase(text); \
+	a.titlecase = ::helpers::titlecase(text); \
 	EXPECT_PRED_FORMAT2(::helpers::CompareCodepoint, e, a); \
 }
 
@@ -31,9 +34,10 @@
 	e.titlecase = _titlecase; \
 	e.name = _name; \
 	::helpers::CaseMappingEntry a; \
-	a.lowercase = ::helpers::lowercase(_codepoint); \
-	a.uppercase = ::helpers::uppercase(_codepoint); \
-	a.titlecase = ::helpers::titlecase(_codepoint); \
+	std::string text = ::helpers::utf8(_codepoint); \
+	a.lowercase = ::helpers::lowercase(text); \
+	a.uppercase = ::helpers::uppercase(text); \
+	a.titlecase = ::helpers::titlecase(text); \
 	EXPECT_PRED_FORMAT2(::helpers::CompareCodepoint, e, a); \
 }
 
@@ -57,24 +61,20 @@
 		e.folded = _folded; \
 		e.name = _name; \
 		::helpers::CaseFoldingEntry a; \
-		a.folded = ::helpers::casefold(_codepoint); \
+		a.folded = ::helpers::casefold(::helpers::utf8(_codepoint)); \
 		EXPECT_PRED_FORMAT2(::helpers::CompareCaseFolding, e, a); \
 	}
 #endif
 
 namespace helpers {
 
-	std::string uppercase(unicode_t codepoint);
 	std::string uppercase(const std::string& text);
 
-	std::string lowercase(unicode_t codepoint);
 	std::string lowercase(const std::string& text);
 
-	std::string titlecase(unicode_t codepoint);
 	std::string titlecase(const std::string& text);
 
 #if UTF8_VERSION_GUARD(1, 4, 0)
-	std::string casefold(unicode_t codepoint);
 	std::string casefold(const std::string& text);
 #endif
 
