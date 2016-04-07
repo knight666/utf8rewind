@@ -9,29 +9,28 @@
 
 #include "helpers-base.hpp"
 
-#define EXPECT_LOCALE_EQ(_expected, _actual) \
-	EXPECT_PRED_FORMAT2(::helpers::CompareLocale, _expected, _actual); \
+#define EXPECT_LOCALE_EQ(_expected, _actual)  EXPECT_PRED_FORMAT2(::helpers::CompareLocale, _expected, _actual)
 
 #define RESET_LOCALE()               setlocale(LC_ALL, "C")
 
 #if _WINDOWS
 	#define SET_LOCALE_AZERI()       EXPECT_STREQ("az-Latn-AZ", setlocale(LC_ALL, "az-Latn-AZ"))
-	#define SET_LOCALE_DANISH()      EXPECT_STREQ("Danish_Denmark.1252", setlocale(LC_ALL, "Danish_Denmark.1252"))
+	#define SET_LOCALE_DANISH()      EXPECT_STREQ("da-DK", setlocale(LC_ALL, "da-DK"))
 	#define SET_LOCALE_ENGLISH()     EXPECT_STREQ("en-US", setlocale(LC_ALL, "en-US"))
-	#define SET_LOCALE_FRENCH()      EXPECT_STREQ("French_France.1252", setlocale(LC_ALL, "French_France.1252"))
-	#define SET_LOCALE_GERMAN()      EXPECT_STREQ("German_Germany.1252", setlocale(LC_ALL, "German_Germany.1252"))
-	#define SET_LOCALE_GREEK()       EXPECT_STREQ("Greek_Greece.1253", setlocale(LC_ALL, "Greek_Greece.1253"))
-	#define SET_LOCALE_HEBREW()      EXPECT_STREQ("Hebrew_Israel.1255", setlocale(LC_ALL, "Hebrew_Israel.1255"))
-	#define SET_LOCALE_HUNGARIAN()   EXPECT_STREQ("Hungarian_Hungary.1250", setlocale(LC_ALL, "Hungarian_Hungary.1250"))
-	#define SET_LOCALE_ICELANDIC()   EXPECT_STREQ("Icelandic_Iceland.1252", setlocale(LC_ALL, "Icelandic_Iceland.1252"))
-	#define SET_LOCALE_IRISH()       EXPECT_STREQ("Irish_Ireland.1252", setlocale(LC_ALL, "Irish_Ireland.1252"))
-	#define SET_LOCALE_JAPANESE()    EXPECT_STREQ("Japanese_Japan.932", setlocale(LC_ALL, "Japanese_Japan.932"))
-	#define SET_LOCALE_LITHUANIAN()  EXPECT_STREQ("Lithuanian_Lithuania.1257", setlocale(LC_ALL, "Lithuanian_Lithuania.1257"))
-	#define SET_LOCALE_POLISH()      EXPECT_STREQ("Polish_Poland.1250", setlocale(LC_ALL, "Polish_Poland.1250"))
-	#define SET_LOCALE_RUSSIAN()     EXPECT_STREQ("Russian_Russia.1251", setlocale(LC_ALL, "Russian_Russia.1251"))
-	#define SET_LOCALE_SPANISH()     EXPECT_STREQ("Spanish_Spain.1252", setlocale(LC_ALL, "Spanish_Spain.1252"))
-	#define SET_LOCALE_THAI()        EXPECT_STREQ("Thai_Thailand.874", setlocale(LC_ALL, "Thai_Thailand.874"))
-	#define SET_LOCALE_TURKISH()     EXPECT_STREQ("Turkish_Turkey.1254", setlocale(LC_ALL, "Turkish_Turkey.1254"))
+	#define SET_LOCALE_FRENCH()      EXPECT_STREQ("fr-FR", setlocale(LC_ALL, "fr-FR"))
+	#define SET_LOCALE_GERMAN()      EXPECT_STREQ("de-DE", setlocale(LC_ALL, "de-DE"))
+	#define SET_LOCALE_GREEK()       EXPECT_STREQ("el-GR", setlocale(LC_ALL, "el-GR"))
+	#define SET_LOCALE_HEBREW()      EXPECT_STREQ("he-IL", setlocale(LC_ALL, "he-IL"))
+	#define SET_LOCALE_HUNGARIAN()   EXPECT_STREQ("hu-HU", setlocale(LC_ALL, "hu-HU"))
+	#define SET_LOCALE_ICELANDIC()   EXPECT_STREQ("is-IS", setlocale(LC_ALL, "is-IS"))
+	#define SET_LOCALE_IRISH()       EXPECT_STREQ("ga-IE", setlocale(LC_ALL, "ga-IE"))
+	#define SET_LOCALE_JAPANESE()    EXPECT_STREQ("ja-JP", setlocale(LC_ALL, "ja-JP"))
+	#define SET_LOCALE_LITHUANIAN()  EXPECT_STREQ("lt-LT", setlocale(LC_ALL, "lt-LT"))
+	#define SET_LOCALE_POLISH()      EXPECT_STREQ("pl-PL", setlocale(LC_ALL, "pl-PL"))
+	#define SET_LOCALE_RUSSIAN()     EXPECT_STREQ("ru-RU", setlocale(LC_ALL, "ru-RU"))
+	#define SET_LOCALE_SPANISH()     EXPECT_STREQ("es-ES", setlocale(LC_ALL, "es-ES"))
+	#define SET_LOCALE_THAI()        EXPECT_STREQ("th-TH", setlocale(LC_ALL, "th-TH"))
+	#define SET_LOCALE_TURKISH()     EXPECT_STREQ("tr-TR", setlocale(LC_ALL, "tr-TR"))
 #else
 	#define SET_LOCALE_AZERI()       EXPECT_STREQ("az_AZ.utf8", setlocale(LC_ALL, "az_AZ.utf8"))
 	#define SET_LOCALE_DANISH()      EXPECT_STREQ("da_DK.utf8", setlocale(LC_ALL, "da_DK.utf8"))
