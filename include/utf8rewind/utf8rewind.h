@@ -68,7 +68,7 @@
 	\def UTF8_VERSION_BUGFIX
 	\brief The bugfix version number of this release.
 */
-#define UTF8_VERSION_BUGFIX  0
+#define UTF8_VERSION_BUGFIX  1
 
 /*!
 	\def UTF8_VERSION
@@ -81,7 +81,7 @@
 	\def UTF8_VERSION_STRING
 	\brief The verion number as a string.
 */
-#define UTF8_VERSION_STRING  "1.4.0"
+#define UTF8_VERSION_STRING  "1.4.1"
 
 /*!
 	\def UTF8_VERSION_GUARD
