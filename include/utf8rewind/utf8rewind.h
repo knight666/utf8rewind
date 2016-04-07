@@ -1259,6 +1259,11 @@ UTF8_API uint8_t utf8isnormalized(const char* input, size_t inputSize, size_t fl
 */
 UTF8_API size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t targetSize, size_t flags, int32_t* errors);
 
+#define UTF8_COMPARE_CASE_FOLDED                0x00000001
+#define UTF8_COMPARE_NORMALIZED                 0x00000002
+
+UTF8_API size_t utf8cmp(const char* inputLeft, const char* inputRight, size_t inputLength, size_t flags);
+
 /*!
 	\name Category flags
 	Flags to be used with #utf8iscategory, to check whether code points in a
