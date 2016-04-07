@@ -1086,6 +1086,11 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 	return bytes_written;
 }
 
+size_t utf8cmp(const char* inputLeft, const char* inputRight, size_t inputLength, size_t flags)
+{
+	return 0;
+}
+
 size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 {
 	const char* src = input;
