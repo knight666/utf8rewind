@@ -2,29 +2,32 @@
 
 namespace helpers {
 
-	std::string error(int32_t error)
+	std::string error(int32_t value)
 	{
-	#define ERROR_CASE(_name) case UTF8_ERR_ ## _name: return "UTF8_ERR_" # _name;
+		std::stringstream ss;
 
-		switch (error)
+		switch (value)
 		{
 
-		ERROR_CASE(NONE);
-		ERROR_CASE(INVALID_DATA);
-		ERROR_CASE(INVALID_FLAG);
-		ERROR_CASE(NOT_ENOUGH_SPACE);
-		ERROR_CASE(OVERLAPPING_PARAMETERS);
+	#define MAKE_CASE(_name) case UTF8_ERR_ ## _name: ss << #_name; break
+
+		MAKE_CASE(NONE);
+		MAKE_CASE(INVALID_DATA);
+		MAKE_CASE(INVALID_FLAG);
+		MAKE_CASE(NOT_ENOUGH_SPACE);
+		MAKE_CASE(OVERLAPPING_PARAMETERS);
+
+	#undef MAKE_CASE
 
 		default:
-			std::stringstream ss;
-			ss << "<invalid> (0x";
-			ss << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << error;
-			ss << ")";
-			return ss.str();
+			ss << "<invalid>";
+			break;
 
 		}
 
-	#undef ERROR_CASE
+		ss << " (" << value << ")";
+
+		return ss.str();
 	}
 
 	::testing::AssertionResult CompareErrors(

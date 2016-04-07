@@ -26,90 +26,6 @@ namespace helpers {
 		return stream;
 	}
 
-	std::string quickCheckToString(uint8_t value)
-	{
-		std::stringstream ss;
-
-		switch (value)
-		{
-
-	#define MAKE_CASE(_name) case QuickCheckResult_ ## _name: ss << #_name; break
-
-		MAKE_CASE(Yes);
-		MAKE_CASE(Maybe);
-		MAKE_CASE(No);
-
-	#undef MAKE_CASE
-
-		default:
-			ss << "<invalid>";
-			break;
-
-		}
-
-		ss << " (" << (int)value << ")";
-
-		return ss.str();
-	}
-
-	std::string canonicalCombiningClassToString(uint8_t value)
-	{
-		std::stringstream ss;
-
-		if (value >= CCC_FIXED_POSITION_START &&
-			value <= CCC_FIXED_POSITION_END)
-		{
-			ss << "FIXED_POSITION";
-		}
-		else
-		{
-			switch (value)
-			{
-
-		#define MAKE_CASE(_name) case CCC_ ## _name: ss << #_name; break
-
-			MAKE_CASE(NOT_REORDERED);
-			MAKE_CASE(OVERLAY);
-			MAKE_CASE(NUKTA);
-			MAKE_CASE(KANA_VOICING);
-			MAKE_CASE(VIRAMA);
-			MAKE_CASE(FIXED_POSITION_START);
-			MAKE_CASE(FIXED_POSITION_END);
-			MAKE_CASE(ATTACHED_BELOW_LEFT);
-			MAKE_CASE(ATTACHED_BELOW);
-			MAKE_CASE(ATTACHED_BOTTOM_RIGHT);
-			MAKE_CASE(ATTACHED_LEFT);
-			MAKE_CASE(ATTACHED_RIGHT);
-			MAKE_CASE(ATTACHED_TOP_LEFT);
-			MAKE_CASE(ATTACHED_ABOVE);
-			MAKE_CASE(ATTACHED_ABOVE_RIGHT);
-			MAKE_CASE(BELOW_LEFT);
-			MAKE_CASE(BELOW);
-			MAKE_CASE(BELOW_RIGHT);
-			MAKE_CASE(LEFT);
-			MAKE_CASE(RIGHT);
-			MAKE_CASE(ABOVE_LEFT);
-			MAKE_CASE(ABOVE);
-			MAKE_CASE(ABOVE_RIGHT);
-			MAKE_CASE(DOUBLE_BELOW);
-			MAKE_CASE(DOUBLE_ABOVE);
-			MAKE_CASE(IOTA_SUBSCRIPT);
-			MAKE_CASE(INVALID);
-
-		#undef MAKE_CASE
-
-			default:
-				ss << "<invalid>";
-				break;
-
-			}
-		}
-
-		ss << " (" << (int)value << ")";
-
-		return ss.str();
-	}
-
 	::testing::AssertionResult CompareStream(
 		const char* expressionExpected GTEST_ATTRIBUTE_UNUSED_, const char* expressionActual GTEST_ATTRIBUTE_UNUSED_,
 		const StreamEntry& entryExpected, const StreamEntry& entryActual)
@@ -129,12 +45,12 @@ namespace helpers {
 			if (entryActual.codepoint != entryExpected.codepoint)
 			{
 				result << "[Codepoint]" << std::endl;
-				result << "  Actual:  " << identifiable(entryActual.codepoint) << " \"" << printable(entryActual.codepoint) << "\"" << std::endl;
-				result << "Expected:  " << identifiable(entryExpected.codepoint) << " \"" << printable(entryExpected.codepoint) << "\"" << std::endl;
+				result << "  Actual:  " << identifiable(utf32(entryActual.codepoint)) << " \"" << printable(utf8(entryActual.codepoint)) << "\"" << std::endl;
+				result << "Expected:  " << identifiable(utf32(entryExpected.codepoint)) << " \"" << printable(utf8(entryExpected.codepoint)) << "\"" << std::endl;
 			}
 			else
 			{
-				result << "[Codepoint]  " << identifiable(entryActual.codepoint) << " \"" << printable(entryActual.codepoint) << "\"" << std::endl;
+				result << "[Codepoint]  " << identifiable(utf32(entryActual.codepoint)) << " \"" << printable(utf8(entryActual.codepoint)) << "\"" << std::endl;
 			}
 
 			if (entryActual.quick_check != entryExpected.quick_check)

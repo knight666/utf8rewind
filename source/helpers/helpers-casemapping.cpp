@@ -1,17 +1,10 @@
 #include "helpers-casemapping.hpp"
 
-#include "helpers-strings.hpp"
-
 extern "C" {
 	#include "../internal/casemapping.h"
 }
 
 namespace helpers {
-
-	std::string uppercase(unicode_t codepoint)
-	{
-		return uppercase(utf8(codepoint));
-	}
 
 	std::string uppercase(const std::string& text)
 	{
@@ -31,11 +24,6 @@ namespace helpers {
 		return converted;
 	}
 
-	std::string lowercase(unicode_t codepoint)
-	{
-		return lowercase(utf8(codepoint));
-	}
-
 	std::string lowercase(const std::string& text)
 	{
 		std::string converted;
@@ -52,11 +40,6 @@ namespace helpers {
 		utf8tolower(text.c_str(), text.length(), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
-	}
-
-	std::string titlecase(unicode_t codepoint)
-	{
-		return titlecase(utf8(codepoint));
 	}
 
 	std::string titlecase(const std::string& text)
@@ -78,11 +61,6 @@ namespace helpers {
 	}
 
 #if UTF8_VERSION_GUARD(1, 4, 0)
-	std::string casefold(unicode_t codepoint)
-	{
-		return casefold(utf8(codepoint));
-	}
-
 	std::string casefold(const std::string& text)
 	{
 		std::string converted;
@@ -116,19 +94,19 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << entryExpected.name << " (" << identifiable(entryExpected.codepoint)  << ")" << std::endl;
+			result << entryExpected.name << " (" << identifiable(utf32(entryExpected.codepoint)) << ")" << std::endl;
 
 			result << std::endl;
 
 			if (entryExpected.lowercase != entryActual.lowercase)
 			{
 				result << "[Lowercase]" << std::endl;
-				result << "    Actual:  \"" << printable(entryActual.lowercase) << "\" (" << identifiable(entryActual.lowercase) << ")" << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.lowercase) << "\" (" << identifiable(entryExpected.lowercase) << ")" << std::endl;
+				result << "    Actual:  \"" << printable(entryActual.lowercase) << "\" (" << identifiable(utf32(entryActual.lowercase)) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.lowercase) << "\" (" << identifiable(utf32(entryExpected.lowercase)) << ")" << std::endl;
 			}
 			else
 			{
-				result << "[Lowercase]  \"" << printable(entryExpected.lowercase) << "\" (" << identifiable(entryExpected.lowercase) << ")" << std::endl;
+				result << "[Lowercase]  \"" << printable(entryExpected.lowercase) << "\" (" << identifiable(utf32(entryExpected.lowercase)) << ")" << std::endl;
 			}
 
 			result << std::endl;
@@ -136,12 +114,12 @@ namespace helpers {
 			if (entryExpected.uppercase != entryActual.uppercase)
 			{
 				result << "[Uppercase]" << std::endl;
-				result << "    Actual:  \"" << printable(entryActual.uppercase) << "\" (" << identifiable(entryActual.uppercase) << ")" << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.uppercase) << "\" (" << identifiable(entryExpected.uppercase) << ")" << std::endl;
+				result << "    Actual:  \"" << printable(entryActual.uppercase) << "\" (" << identifiable(utf32(entryActual.uppercase)) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.uppercase) << "\" (" << identifiable(utf32(entryExpected.uppercase)) << ")" << std::endl;
 			}
 			else
 			{
-				result << "[Uppercase]  \"" << printable(entryActual.uppercase) << "\" (" << identifiable(entryActual.uppercase) << ")" << std::endl;
+				result << "[Uppercase]  \"" << printable(entryActual.uppercase) << "\" (" << identifiable(utf32(entryActual.uppercase)) << ")" << std::endl;
 			}
 
 			result << std::endl;
@@ -149,12 +127,12 @@ namespace helpers {
 			if (entryExpected.titlecase != entryActual.titlecase)
 			{
 				result << "[Titlecase]" << std::endl;
-				result << "    Actual:  \"" << printable(entryActual.titlecase) << "\" (" << identifiable(entryActual.titlecase) << ")" << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(entryExpected.titlecase) << ")" << std::endl;
+				result << "    Actual:  \"" << printable(entryActual.titlecase) << "\" (" << identifiable(utf32(entryActual.titlecase)) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(utf32(entryExpected.titlecase)) << ")" << std::endl;
 			}
 			else
 			{
-				result << "[Titlecase]  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(entryExpected.titlecase) << ")" << std::endl;
+				result << "[Titlecase]  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(utf32(entryExpected.titlecase)) << ")" << std::endl;
 			}
 
 			return result;
@@ -175,19 +153,19 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << "Input: \"" << printable(entryActual.input) << "\" (" << identifiable(entryActual.input) << ")" << std::endl;
+			result << "Input: \"" << printable(entryActual.input) << "\" (" << identifiable(utf32(entryActual.input)) << ")" << std::endl;
 
 			result << std::endl;
 
 			if (entryExpected.lowercase != entryActual.lowercase)
 			{
 				result << "[Lowercase]" << std::endl;
-				result << "    Actual:  \"" << printable(entryActual.lowercase) << "\" (" << identifiable(entryActual.lowercase) << ")" << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.lowercase) << "\" (" << identifiable(entryExpected.lowercase) << ")" << std::endl;
+				result << "    Actual:  \"" << printable(entryActual.lowercase) << "\" (" << identifiable(utf32(entryActual.lowercase)) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.lowercase) << "\" (" << identifiable(utf32(entryExpected.lowercase)) << ")" << std::endl;
 			}
 			else
 			{
-				result << "[Lowercase]  \"" << printable(entryExpected.lowercase) << "\" (" << identifiable(entryExpected.lowercase) << ")" << std::endl;
+				result << "[Lowercase]  \"" << printable(entryExpected.lowercase) << "\" (" << identifiable(utf32(entryExpected.lowercase)) << ")" << std::endl;
 			}
 
 			result << std::endl;
@@ -195,12 +173,12 @@ namespace helpers {
 			if (entryExpected.uppercase != entryActual.uppercase)
 			{
 				result << "[Uppercase]" << std::endl;
-				result << "    Actual:  \"" << printable(entryActual.uppercase) << "\" (" << identifiable(entryActual.uppercase) << ")" << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.uppercase) << "\" (" << identifiable(entryExpected.uppercase) << ")" << std::endl;
+				result << "    Actual:  \"" << printable(entryActual.uppercase) << "\" (" << identifiable(utf32(entryActual.uppercase)) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.uppercase) << "\" (" << identifiable(utf32(entryExpected.uppercase)) << ")" << std::endl;
 			}
 			else
 			{
-				result << "[Uppercase]  \"" << printable(entryActual.uppercase) << "\" (" << identifiable(entryActual.uppercase) << ")" << std::endl;
+				result << "[Uppercase]  \"" << printable(entryActual.uppercase) << "\" (" << identifiable(utf32(entryActual.uppercase)) << ")" << std::endl;
 			}
 
 			result << std::endl;
@@ -208,12 +186,12 @@ namespace helpers {
 			if (entryExpected.titlecase != entryActual.titlecase)
 			{
 				result << "[Titlecase]" << std::endl;
-				result << "    Actual:  \"" << printable(entryActual.titlecase) << "\" (" << identifiable(entryActual.titlecase) << ")" << std::endl;
-				result << "  Expected:  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(entryExpected.titlecase) << ")" << std::endl;
+				result << "    Actual:  \"" << printable(entryActual.titlecase) << "\" (" << identifiable(utf32(entryActual.titlecase)) << ")" << std::endl;
+				result << "  Expected:  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(utf32(entryExpected.titlecase)) << ")" << std::endl;
 			}
 			else
 			{
-				result << "[Titlecase]  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(entryExpected.titlecase) << ")" << std::endl;
+				result << "[Titlecase]  \"" << printable(entryExpected.titlecase) << "\" (" << identifiable(utf32(entryExpected.titlecase)) << ")" << std::endl;
 			}
 
 			return result;
@@ -233,12 +211,12 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << entryExpected.name << " (" << identifiable(entryExpected.codePoint)  << ")" << std::endl;
+			result << entryExpected.name << " (" << identifiable(utf32(entryExpected.codePoint)) << ")" << std::endl;
 
 			result << std::endl;
 
-			result << "    Actual:  \"" << printable(entryActual.folded) << "\" (" << identifiable(entryActual.folded) << ")" << std::endl;
-			result << "  Expected:  \"" << printable(entryExpected.folded) << "\" (" << identifiable(entryExpected.folded) << ")" << std::endl;
+			result << "    Actual:  \"" << printable(entryActual.folded) << "\" (" << identifiable(utf32(entryActual.folded)) << ")" << std::endl;
+			result << "  Expected:  \"" << printable(entryExpected.folded) << "\" (" << identifiable(utf32(entryExpected.folded)) << ")" << std::endl;
 
 			return result;
 		}

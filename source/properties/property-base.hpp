@@ -27,7 +27,7 @@ namespace quickcheck {
 	template<>
 	void printArgument(std::ostream& out, size_t n, const std::string& a)
 	{
-		out << "  " << n << ": \"" << helpers::printable(a) << "\" (" << helpers::identifiable(a) << ")" << std::endl;
+		out << "  " << n << ": \"" << helpers::printable(a) << "\" (" << helpers::identifiable(helpers::utf32(a)) << ")" << std::endl;
 	}
 
 }

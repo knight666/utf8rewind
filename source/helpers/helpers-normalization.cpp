@@ -1,50 +1,40 @@
 #include "helpers-normalization.hpp"
 
-#include "helpers-strings.hpp"
-
 extern "C" {
 	#include "../internal/database.h"
 };
 
 namespace helpers {
 
-	std::string normalizationResult(uint8_t result)
+	std::string normalizationResult(uint8_t value)
 	{
-		switch (result)
+		std::stringstream ss;
+
+		switch (value)
 		{
 
-		case UTF8_NORMALIZATION_RESULT_YES:
-			return "YES";
+	#define MAKE_CASE(_name) case UTF8_NORMALIZATION_RESULT_ ## _name: ss << #_name; break
 
-		case UTF8_NORMALIZATION_RESULT_MAYBE:
-			return "MAYBE";
+		MAKE_CASE(YES);
+		MAKE_CASE(MAYBE);
+		MAKE_CASE(NO);
 
-		case UTF8_NORMALIZATION_RESULT_NO:
-			return "NO";
+	#undef MAKE_CASE
 
 		default:
-			std::stringstream ss;
-			ss << "<invalid> (0x";
-			ss << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << (int)result;
-			ss << ")";
-			return ss.str();
+			ss << "<invalid>";
+			break;
 
 		}
-	}
 
-	uint8_t isNfc(unicode_t codepoint)
-	{
-		return isNfc(utf8(codepoint));
+		ss << " (" << value << ")";
+
+		return ss.str();
 	}
 
 	uint8_t isNfc(const std::string& text)
 	{
 		return utf8isnormalized(text.c_str(), text.length(), UTF8_NORMALIZE_COMPOSE, nullptr);
-	}
-
-	std::string nfc(unicode_t codepoint)
-	{
-		return nfc(utf8(codepoint));
 	}
 
 	std::string nfc(const std::string& text)
@@ -65,19 +55,9 @@ namespace helpers {
 		return converted;
 	}
 
-	uint8_t isNfd(unicode_t codepoint)
-	{
-		return isNfd(utf8(codepoint));
-	}
-
 	uint8_t isNfd(const std::string& text)
 	{
 		return utf8isnormalized(text.c_str(), text.length(), UTF8_NORMALIZE_DECOMPOSE, nullptr);
-	}
-
-	std::string nfd(unicode_t codepoint)
-	{
-		return nfd(utf8(codepoint));
 	}
 
 	std::string nfd(const std::string& text)
@@ -98,19 +78,9 @@ namespace helpers {
 		return converted;
 	}
 
-	uint8_t isNfkc(unicode_t codepoint)
-	{
-		return isNfkc(utf8(codepoint));
-	}
-
 	uint8_t isNfkc(const std::string& text)
 	{
 		return utf8isnormalized(text.c_str(), text.length(), UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, nullptr);
-	}
-
-	std::string nfkc(unicode_t codepoint)
-	{
-		return nfkc(utf8(codepoint));
 	}
 
 	std::string nfkc(const std::string& text)
@@ -131,19 +101,9 @@ namespace helpers {
 		return converted;
 	}
 
-	uint8_t isNfkd(unicode_t codepoint)
-	{
-		return isNfkd(utf8(codepoint));
-	}
-
 	uint8_t isNfkd(const std::string& text)
 	{
 		return utf8isnormalized(text.c_str(), text.length(), UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, nullptr);
-	}
-
-	std::string nfkd(unicode_t codepoint)
-	{
-		return nfkd(utf8(codepoint));
 	}
 
 	std::string nfkd(const std::string& text)
@@ -190,13 +150,14 @@ namespace helpers {
 				ss_qc << " ";
 			}
 
-			std::string id = identifiable(*it);
-			std::string ccc = canonicalCombiningClass(*it);
+			std::vector<unicode_t> cps = utf32(*it);
+			std::string id = identifiable(cps);
+			std::string ccc = canonicalCombiningClass(cps);
 
 			size_t padding = std::max(id.length(), ccc.length());
 			if (type != QuickCheck::Any)
 			{
-				std::string qc = quickCheck(*it, type);
+				std::string qc = quickCheck(cps, type);
 				padding = std::max(qc.length(), padding);
 				ss_qc << std::setw(padding) << qc;
 			}
@@ -231,7 +192,7 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << entryExpected.name << " (" << identifiable(entryExpected.codepoint) << ")" << std::endl;
+			result << entryExpected.name << " (" << identifiable(utf32(entryExpected.codepoint)) << ")" << std::endl;
 
 			if (entryExpected.nfd != entryActual.nfd)
 			{
@@ -300,7 +261,7 @@ namespace helpers {
 		{
 			::testing::AssertionResult result = ::testing::AssertionFailure();
 
-			result << entryExpected.name << " (" << identifiable(entryExpected.codepoint) << ")" << std::endl;
+			result << entryExpected.name << " (" << identifiable(utf32(entryExpected.codepoint)) << ")" << std::endl;
 
 			if (entryExpected.decomposed != entryActual.decomposed)
 			{
