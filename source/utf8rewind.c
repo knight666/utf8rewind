@@ -1090,24 +1090,54 @@ size_t utf8cmp(const char* inputLeft, const char* inputRight, size_t inputLength
 {
 	size_t src_size = inputLength;
 	const char* src_left = inputLeft;
-	const char* src_left_end = inputLeft + src_size;
 	const char* src_right = inputRight;
-	const char* src_right_end = inputRight + src_size;
 
 	while (src_size > 0)
 	{
-		const char* next_left = seeking_forward(src_left, src_left_end, src_size, 1);
-		const char* next_right = seeking_forward(src_right, src_right_end, src_size, 1);
-		size_t offset = next_left - src_left;
+		unicode_t code_point_left;
+		size_t code_point_left_size = 0;
+		const char* resolved_left = 0;
+		uint8_t resolved_left_size = 0;
+		unicode_t code_point_right;
+		size_t code_point_right_size = 0;
+		const char* resolved_right = 0;
+		uint8_t resolved_right_size = 0;
 
-		if (memcmp(src_left, src_right, offset))
+		if (!(code_point_left_size = codepoint_read(src_left, src_size, &code_point_left)) ||
+			!(code_point_right_size = codepoint_read(src_right, src_size, &code_point_right)))
 		{
 			return inputLength - src_size + 1;
 		}
 
-		src_size -= offset;
-		src_left = next_left;
-		src_right = next_right;
+		if ((PROPERTY_GET_CM(code_point_left) & QuickCheckCaseMapped_Casefolded) != 0)
+		{
+			resolved_left = database_querydecomposition(code_point_left, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, &resolved_left_size);
+		}
+		else
+		{
+			resolved_left = src_left;
+			resolved_left_size = code_point_left_size;
+		}
+
+		if ((PROPERTY_GET_CM(code_point_right) & QuickCheckCaseMapped_Casefolded) != 0)
+		{
+			resolved_right = database_querydecomposition(code_point_right, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, &resolved_right_size);
+		}
+		else
+		{
+			resolved_right = src_right;
+			resolved_right_size = code_point_right_size;
+		}
+
+		if (resolved_left_size != resolved_right_size ||
+			memcmp(resolved_left, resolved_right, resolved_left_size))
+		{
+			return inputLength - src_size + 1;
+		}
+
+		src_size -= code_point_left_size;
+		src_left += code_point_left_size;
+		src_right += code_point_left_size;
 	}
 
 	return 0;
