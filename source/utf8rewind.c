@@ -1103,10 +1103,14 @@ size_t utf8cmp(const char* inputLeft, const char* inputRight, size_t inputLength
 		const char* resolved_right = 0;
 		uint8_t resolved_right_size = 0;
 
-		if (!(code_point_left_size = codepoint_read(src_left, src_size, &code_point_left)) ||
-			!(code_point_right_size = codepoint_read(src_right, src_size, &code_point_right)))
+		if (!(code_point_left_size = codepoint_read(src_left, src_size, &code_point_left)))
 		{
 			return inputLength - src_size + 1;
+		}
+
+		if (!memcmp(src_left, src_right, code_point_left_size))
+		{
+			goto next;
 		}
 
 		if ((PROPERTY_GET_CM(code_point_left) & QuickCheckCaseMapped_Casefolded) != 0)
@@ -1119,6 +1123,21 @@ size_t utf8cmp(const char* inputLeft, const char* inputRight, size_t inputLength
 			resolved_left_size = code_point_left_size;
 		}
 
+		if (!memcmp(resolved_left, src_right, resolved_left_size))
+		{
+			goto next;
+		}
+
+		if (!(code_point_right_size = codepoint_read(src_right, src_size, &code_point_right)))
+		{
+			return inputLength - src_size + 1;
+		}
+
+		if (code_point_left == code_point_right)
+		{
+			goto next;
+		}
+
 		if ((PROPERTY_GET_CM(code_point_right) & QuickCheckCaseMapped_Casefolded) != 0)
 		{
 			resolved_right = database_querydecomposition(code_point_right, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, &resolved_right_size);
@@ -1129,12 +1148,12 @@ size_t utf8cmp(const char* inputLeft, const char* inputRight, size_t inputLength
 			resolved_right_size = code_point_right_size;
 		}
 
-		if (resolved_left_size != resolved_right_size ||
-			memcmp(resolved_left, resolved_right, resolved_left_size))
+		if (memcmp(resolved_left, resolved_right, resolved_left_size))
 		{
 			return inputLength - src_size + 1;
 		}
 
+	next:
 		src_size -= code_point_left_size;
 		src_left += code_point_left_size;
 		src_right += code_point_left_size;
