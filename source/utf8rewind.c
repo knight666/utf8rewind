@@ -1088,6 +1088,28 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 
 size_t utf8cmp(const char* inputLeft, const char* inputRight, size_t inputLength, size_t flags)
 {
+	size_t src_size = inputLength;
+	const char* src_left = inputLeft;
+	const char* src_left_end = inputLeft + src_size;
+	const char* src_right = inputRight;
+	const char* src_right_end = inputRight + src_size;
+
+	while (src_size > 0)
+	{
+		const char* next_left = seeking_forward(src_left, src_left_end, src_size, 1);
+		const char* next_right = seeking_forward(src_right, src_right_end, src_size, 1);
+		size_t offset = next_left - src_left;
+
+		if (memcmp(src_left, src_right, offset))
+		{
+			return inputLength - src_size + 1;
+		}
+
+		src_size -= offset;
+		src_left = next_left;
+		src_right = next_right;
+	}
+
 	return 0;
 }
 
