@@ -51,3 +51,23 @@ TEST(Utf8CompareCaseFolded, BasicLatinMultipleMismatchCasingLast)
 {
 	EXPECT_EQ(0, utf8cmp("lasT", "last", 8, UTF8_COMPARE_CASE_FOLDED));
 }
+
+TEST(Utf8CompareCaseFolded, MultiByteSingle)
+{
+	EXPECT_EQ(0, utf8cmp("\xC7\xB7", "\xC7\xB7", 2, UTF8_COMPARE_CASE_FOLDED));
+}
+
+TEST(Utf8CompareCaseFolded, MultiByteSingleCasingExpansion)
+{
+	EXPECT_EQ(0, utf8cmp("\xC3\x9F", "ss", 2, UTF8_COMPARE_CASE_FOLDED));
+}
+
+TEST(Utf8CompareCaseFolded, MultiByteSingleMismatch)
+{
+	EXPECT_EQ(1, utf8cmp("\xEF\xBB\xA2", "\xEF\xB9\x91", 3, UTF8_COMPARE_CASE_FOLDED));
+}
+
+TEST(Utf8CompareCaseFolded, MultiByteSingleMismatchCasing)
+{
+	EXPECT_EQ(0, utf8cmp("\xE1\xBD\x80", "\xE1\xBD\x88", 3, UTF8_COMPARE_CASE_FOLDED));
+}
