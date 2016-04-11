@@ -12,7 +12,12 @@ TEST(Utf8CompareCaseFolded, BasicLatinSingleMismatch)
 	EXPECT_EQ(1, utf8cmp("c", "b", 1, UTF8_COMPARE_CASE_FOLDED));
 }
 
-TEST(Utf8CompareCaseFolded, BasicLatinSingleMismatchCasing)
+TEST(Utf8CompareCaseFolded, BasicLatinSingleMismatchCasingLeft)
+{
+	EXPECT_EQ(0, utf8cmp("Z", "z", 1, UTF8_COMPARE_CASE_FOLDED));
+}
+
+TEST(Utf8CompareCaseFolded, BasicLatinSingleMismatchCasingRight)
 {
 	EXPECT_EQ(0, utf8cmp("d", "D", 1, UTF8_COMPARE_CASE_FOLDED));
 }
