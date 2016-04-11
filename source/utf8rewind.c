@@ -1100,22 +1100,33 @@ size_t utf8cmp(const char* inputLeft, const char* inputRight, size_t inputLength
 		uint8_t resolved_left_size = 0;
 		unicode_t code_point_right;
 		size_t code_point_right_size = 0;
-		const char* resolved_right = 0;
-		uint8_t resolved_right_size = 0;
+
+		/* Read left code point */
 
 		if (!(code_point_left_size = codepoint_read(src_left, src_size, &code_point_left)))
 		{
 			return inputLength - src_size + 1;
 		}
 
+		/* Compare left with right */
+
 		if (!memcmp(src_left, src_right, code_point_left_size))
 		{
 			goto next;
 		}
 
+		/* Case fold left code point if possible */
+
 		if ((PROPERTY_GET_CM(code_point_left) & QuickCheckCaseMapped_Casefolded) != 0)
 		{
 			resolved_left = database_querydecomposition(code_point_left, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, &resolved_left_size);
+
+			/* Compare case folded left with right */
+
+			if (!memcmp(resolved_left, src_right, resolved_left_size))
+			{
+				goto next;
+			}
 		}
 		else
 		{
@@ -1123,32 +1134,28 @@ size_t utf8cmp(const char* inputLeft, const char* inputRight, size_t inputLength
 			resolved_left_size = code_point_left_size;
 		}
 
-		if (!memcmp(resolved_left, src_right, resolved_left_size))
-		{
-			goto next;
-		}
+		/* Read right code point */
 
 		if (!(code_point_right_size = codepoint_read(src_right, src_size, &code_point_right)))
 		{
 			return inputLength - src_size + 1;
 		}
 
-		if (code_point_left == code_point_right)
-		{
-			goto next;
-		}
+		/* Case fold right code point if possible */
 
 		if ((PROPERTY_GET_CM(code_point_right) & QuickCheckCaseMapped_Casefolded) != 0)
 		{
-			resolved_right = database_querydecomposition(code_point_right, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, &resolved_right_size);
+			uint8_t resolved_right_size;
+			const char* resolved_right = database_querydecomposition(code_point_right, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, &resolved_right_size);
+
+			/* Compare left case folded against right case folded */
+
+			if (memcmp(resolved_left, resolved_right, resolved_right_size))
+			{
+				return inputLength - src_size + 1;
+			}
 		}
 		else
-		{
-			resolved_right = src_right;
-			resolved_right_size = code_point_right_size;
-		}
-
-		if (memcmp(resolved_left, resolved_right, resolved_left_size))
 		{
 			return inputLength - src_size + 1;
 		}
