@@ -1101,16 +1101,17 @@ size_t utf8cmp(const char* inputLeft, const char* inputRight, size_t inputLength
 		unicode_t code_point_right;
 		size_t code_point_right_size = 0;
 
-		/* Read left code point */
+		/* Read left and right code points */
 
-		if (!(code_point_left_size = codepoint_read(src_left, src_size, &code_point_left)))
+		if (!(code_point_left_size = codepoint_read(src_left, src_size, &code_point_left)) ||
+			!(code_point_right_size = codepoint_read(src_right, src_size, &code_point_right)))
 		{
 			return inputLength - src_size + 1;
 		}
 
 		/* Compare left with right */
 
-		if (!memcmp(src_left, src_right, code_point_left_size))
+		if (code_point_left == code_point_right)
 		{
 			goto next;
 		}
@@ -1132,13 +1133,6 @@ size_t utf8cmp(const char* inputLeft, const char* inputRight, size_t inputLength
 		{
 			resolved_left = src_left;
 			resolved_left_size = code_point_left_size;
-		}
-
-		/* Read right code point */
-
-		if (!(code_point_right_size = codepoint_read(src_right, src_size, &code_point_right)))
-		{
-			return inputLength - src_size + 1;
 		}
 
 		/* Case fold right code point if possible */
