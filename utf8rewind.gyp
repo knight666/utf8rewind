@@ -59,6 +59,8 @@
 				'source/helpers/helpers-base.hpp',
 				'source/helpers/helpers-casemapping.cpp',
 				'source/helpers/helpers-casemapping.hpp',
+				'source/helpers/helpers-compare.cpp',
+				'source/helpers/helpers-compare.hpp',
 				'source/helpers/helpers-errors.cpp',
 				'source/helpers/helpers-errors.hpp',
 				'source/helpers/helpers-locale.cpp',
