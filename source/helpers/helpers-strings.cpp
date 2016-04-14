@@ -279,7 +279,7 @@ namespace helpers {
 
 		for (std::string::const_iterator it = text.begin(); it != text.end(); ++it)
 		{
-			printable(ss, wrote_hex, (unicode_t)*it, 2);
+			printable(ss, wrote_hex, (unicode_t)*it, 1);
 		}
 
 		return ss.str();
@@ -293,7 +293,7 @@ namespace helpers {
 
 		for (std::wstring::const_iterator it = text.begin(); it != text.end(); ++it)
 		{
-			printable(ss, wrote_hex, (unicode_t)*it, UTF8_WCHAR_SIZE * 2);
+			printable(ss, wrote_hex, (unicode_t)*it, UTF8_WCHAR_SIZE);
 		}
 
 		return ss.str();
