@@ -4,6 +4,57 @@
 
 namespace helpers {
 
+	void printComparison(::testing::AssertionResult& output, const std::string& left, const std::string& right, size_t offset)
+	{
+		const char* leftCurrent = left.c_str() + offset;
+		const char* leftNext = utf8seek(leftCurrent, left.length(), left.c_str(), 1, SEEK_CUR);
+		size_t leftDifferenceStart = offset;
+		size_t leftDifferenceEnd = leftDifferenceStart + (leftNext - leftCurrent);
+		std::stringstream printLeft;
+		std::stringstream markLeft;
+		bool hexLeft = false;
+
+		const char* rightCurrent = right.c_str() + offset;
+		const char* rightNext = utf8seek(rightCurrent, right.length(), right.c_str(), 1, SEEK_CUR);
+		size_t rightDifferenceStart = offset;
+		size_t rightDifferenceEnd = rightDifferenceStart + (rightNext - rightCurrent);
+		std::stringstream printRight;
+		std::stringstream markRight;
+		bool hexRight = false;
+
+		for (size_t i = 0; i < std::max(left.length(), right.length()); ++i)
+		{
+			if (i < left.length())
+			{
+				std::stringstream ss;
+				printable(ss, hexLeft, (unicode_t)left[i] & 0xFF, 2);
+				printLeft << ss.str();
+
+				for (size_t j = 0; j < ss.str().length(); ++j)
+				{
+					markLeft << ((i >= leftDifferenceStart && i <= leftDifferenceEnd) ? "~" : " ");
+				}
+			}
+
+			if (i < right.length())
+			{
+				std::stringstream ss;
+				printable(ss, hexRight, (unicode_t)right[i] & 0xFF, 2);
+				printRight << ss.str();
+
+				for (size_t j = 0; j < ss.str().length(); ++j)
+				{
+					markRight << ((i >= rightDifferenceStart && i <= rightDifferenceEnd) ? "~" : " ");
+				}
+			}
+		}
+
+		output << "Left:      \"" << printLeft.str() << "\"" << std::endl;
+		output << "            " << markLeft.str() << std::endl;
+		output << "Right:     \"" << printRight.str() << "\"" << std::endl;
+		output << "            " << markRight.str() << std::endl;
+	}
+
 	::testing::AssertionResult CompareText(
 		const char* expressionExpected, const char* expressionActual,
 		const CompareEntry& entryExpected, const CompareEntry& entryActual)
@@ -18,48 +69,14 @@ namespace helpers {
 
 			result << entryActual.expression << std::endl;
 
-			size_t offset = std::max<size_t>(entryActual.result, 1) - 1;
-
-			const char* left = entryExpected.left.c_str();
-			const char* leftCurrent = left + offset;
-			const char* leftNext = utf8seek(leftCurrent, entryExpected.left.length(), left, 1, SEEK_CUR);
-			size_t leftDifferenceStart = offset;
-			size_t leftDifferenceEnd = leftDifferenceStart + (leftNext - leftCurrent);
-			std::stringstream printLeft;
-			std::stringstream markLeft;
-
-			const char* right = entryExpected.right.c_str();
-			const char* rightCurrent = right + offset;
-			const char* rightNext = utf8seek(rightCurrent, entryExpected.right.length(), right, 1, SEEK_CUR);
-			size_t rightDifferenceStart = offset;
-			size_t rightDifferenceEnd = rightDifferenceStart + (rightNext - rightCurrent);
-			std::stringstream printRight;
-			std::stringstream markRight;
-
-			for (size_t i = 0; i < std::max(entryExpected.left.length(), entryExpected.right.length()); ++i)
-			{
-				if (i < entryExpected.left.length())
-				{
-					uint8_t left = (uint8_t)entryExpected.left[i];
-
-					printLeft << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(2) << ((unicode_t)left & 0xFF);
-					markLeft << ((i >= leftDifferenceStart && i <= leftDifferenceEnd) ? "~~~~" : "    ");
-				}
-
-				if (i < entryExpected.right.length())
-				{
-					uint8_t right = (uint8_t)entryExpected.right[i];
-
-					printRight << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(2) << ((unicode_t)right & 0xFF);
-					markRight << ((i >= rightDifferenceStart && i <= rightDifferenceEnd) ? "~~~~" : "    ");
-				}
-			}
-
 			result << "[Text]" << std::endl;
-			result << "Left:      \"" << printLeft.str() << "\"" << std::endl;
-			result << "            " << markLeft.str() << std::endl;
-			result << "Right:     \"" << printRight.str() << "\"" << std::endl;
-			result << "            " << markRight.str() << std::endl;
+			result << "    Actual: " << std::endl;
+			printComparison(result, entryExpected.left, entryExpected.right, std::max<size_t>(entryActual.result, 1) - 1);
+
+			result << std::endl;
+
+			result << "  Expected: " << std::endl;
+			printComparison(result, entryExpected.left, entryExpected.right, std::max<size_t>(entryExpected.result, 1) - 1);
 
 			result << "[Result]" << std::endl;
 			result << "    Actual: " << entryActual.result << std::endl;
