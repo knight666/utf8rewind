@@ -10,8 +10,8 @@ namespace helpers {
 
 		if (offset == 0)
 		{
-			output << "     Left: \"" << printable(left) << "\"" << std::endl;
-			output << "    Right: \"" << printable(right) << "\"" << std::endl;
+			output << "     Left: \"" << printable(left) << "\" (" << identifiable(utf32(left)) << ")" << std::endl;
+			output << "    Right: \"" << printable(right) << "\" (" << identifiable(utf32(right)) << ")" << std::endl;
 
 			return;
 		}
@@ -61,9 +61,9 @@ namespace helpers {
 			}
 		}
 
-		output << "     Left: \"" << printLeft.str() << "\"" << std::endl;
+		output << "     Left: \"" << printLeft.str() << "\" (" << identifiable(utf32(left)) << ")" << std::endl;
 		output << "            " << markLeft.str() << std::endl;
-		output << "    Right: \"" << printRight.str() << "\"" << std::endl;
+		output << "    Right: \"" << printRight.str() << "\" (" << identifiable(utf32(right)) << ")" << std::endl;
 		output << "            " << markRight.str() << std::endl;
 	}
 
