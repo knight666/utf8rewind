@@ -544,7 +544,7 @@ const char* utf8seek(const char* text, size_t textSize, const char* textStart, o
 	}
 }
 
-size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors)
 {
 	CaseMappingState state;
 
@@ -580,7 +580,7 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 	return state.total_bytes_needed;
 }
 
-size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors)
 {
 	CaseMappingState state;
 
@@ -616,7 +616,7 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 	return state.total_bytes_needed;
 }
 
-size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors)
 {
 	CaseMappingState state;
 
@@ -681,7 +681,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 	return state.total_bytes_needed;
 }
 
-size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors)
 {
 	CaseMappingState state;
 
