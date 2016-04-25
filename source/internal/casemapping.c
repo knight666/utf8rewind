@@ -126,9 +126,15 @@ uint8_t casemapping_initialize(
 	CaseMappingState* state,
 	const char* input, size_t inputSize,
 	char* target, size_t targetSize,
-	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData)
+	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData,
+	size_t locale)
 {
 	memset(state, 0, sizeof(CaseMappingState));
+
+	if (locale >= UTF8_LOCALE_MAXIMUM)
+	{
+		return 0;
+	}
 
 	state->src = input;
 	state->src_size = inputSize;
@@ -138,7 +144,7 @@ uint8_t casemapping_initialize(
 	state->property_index2 = propertyIndex2;
 	state->property_data = propertyData;
 	state->quickcheck_flags = 0;
-	state->locale = casemapping_locale();
+	state->locale = locale;
 
 	if (propertyData == TitlecaseDataPtr)
 	{
