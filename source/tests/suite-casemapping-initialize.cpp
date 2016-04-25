@@ -17,7 +17,7 @@ TEST(CaseMappingInitialize, Initialize)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, UTF8_LOCALE_UNAFFECTED));
 	EXPECT_EQ(i, state.src);
 	EXPECT_EQ(is, state.src_size);
 	EXPECT_EQ(o, state.dst);
@@ -25,20 +25,7 @@ TEST(CaseMappingInitialize, Initialize)
 	EXPECT_EQ(TitlecaseIndex1Ptr, state.property_index1);
 	EXPECT_EQ(TitlecaseIndex2Ptr, state.property_index2);
 	EXPECT_EQ(TitlecaseDataPtr, state.property_data);
-}
-
-TEST(CaseMappingInitialize, LocaleEnglishUS)
-{
-	CaseMappingState state;
-	const char* i = "Pancakes";
-	size_t is = strlen(i);
-	char o[256] = { 0 };
-	size_t os = 255;
-
-	SET_LOCALE_ENGLISH();
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_DEFAULT, state.locale);
-	RESET_LOCALE();
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_UNAFFECTED, state.locale);
 }
 
 TEST(CaseMappingInitialize, LocaleLithuanian)
@@ -49,10 +36,8 @@ TEST(CaseMappingInitialize, LocaleLithuanian)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	SET_LOCALE_LITHUANIAN();
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_LITHUANIAN, state.locale);
-	RESET_LOCALE();
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, UTF8_LOCALE_LITHUANIAN));
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_LITHUANIAN, state.locale);
 }
 
 TEST(CaseMappingInitialize, LocaleTurkish)
@@ -63,13 +48,11 @@ TEST(CaseMappingInitialize, LocaleTurkish)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	SET_LOCALE_TURKISH();
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, state.locale);
-	RESET_LOCALE();
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, UTF8_LOCALE_TURKISH));
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH, state.locale);
 }
 
-TEST(CaseMappingInitialize, LocaleAzeri)
+TEST(CaseMappingInitialize, LocaleAzeriLatin)
 {
 	CaseMappingState state;
 	const char* i = "Cuisine.";
@@ -77,8 +60,30 @@ TEST(CaseMappingInitialize, LocaleAzeri)
 	char o[256] = { 0 };
 	size_t os = 255;
 
-	SET_LOCALE_AZERI();
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr));
-	EXPECT_LOCALE_EQ(CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN, state.locale);
-	RESET_LOCALE();
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, UTF8_LOCALE_AZERI_LATIN));
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, state.locale);
+}
+
+TEST(CaseMappingInitialize, LocaleMaximum)
+{
+	CaseMappingState state;
+	const char* i = "Light";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+
+	EXPECT_FALSE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, UTF8_LOCALE_MAXIMUM));
+	EXPECT_LOCALE_EQ(0, state.locale);
+}
+
+TEST(CaseMappingInitialize, LocaleInvalid)
+{
+	CaseMappingState state;
+	const char* i = "Universal";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+
+	EXPECT_FALSE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, 312));
+	EXPECT_LOCALE_EQ(0, state.locale);
 }
