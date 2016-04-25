@@ -99,7 +99,7 @@ TEST(Utf8CompareCaseFolded, MultiByteSingleMismatchCaseFoldLeft)
 
 TEST(Utf8CompareCaseFolded, MultiByteSingleMismatchCaseFoldRight)
 {
-	EXPECT_CMP_EQ("\xE1\xBC\xA5", "\xE1\xBC\xAD", 3, UTF8_COMPARE_CASE_FOLDED, 1);
+	EXPECT_CMP_EQ("\xE1\xBC\xA5", "\xE1\xBC\xAD", 3, UTF8_COMPARE_CASE_FOLDED, 0);
 }
 
 TEST(Utf8CompareCaseFolded, MultiByteMultiple)
@@ -125,4 +125,14 @@ TEST(Utf8CompareCaseFolded, MultiByteMultipleMismatchLast)
 TEST(Utf8CompareCaseFolded, MultiByteMultipleMismatchCaseFold)
 {
 	EXPECT_CMP_EQ("\xE1\xB8\xB8\xE1\xB9\x98\xE1\xBA\x93", "\xE1\xB8\xB9\xE1\xB9\x99\xE1\xBA\x92", 9, UTF8_COMPARE_CASE_FOLDED, 0);
+}
+
+TEST(Utf8CompareCaseFolded, MultiByteMultipleMismatchCaseFoldFirst)
+{
+	EXPECT_CMP_EQ("\xE1\xB9\xBB\xE1\xBA\x8B\xE1\xBA\xA1", "\xE1\xB9\xBA\xE1\xBA\x8B\xE1\xBA\xA1", 9, UTF8_COMPARE_CASE_FOLDED, 0);
+}
+
+TEST(Utf8CompareCaseFolded, MultiByteMultipleMismatchCaseFoldLast)
+{
+	EXPECT_CMP_EQ("\xE1\xBA\x93\xE1\xBB\x89\xE1\xBB\x99\xE1\xBD\x9B", "\xE1\xBA\x93\xE1\xBB\x89\xE1\xBB\x99\xE1\xBD\x93", 12, UTF8_COMPARE_CASE_FOLDED, 0);
 }
