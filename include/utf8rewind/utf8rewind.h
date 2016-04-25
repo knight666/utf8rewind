@@ -614,7 +614,7 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 */
 UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* textStart, off_t offset, int direction);
 
-#define UTF8_LOCALE_UNAFFECTD                   0x00000000
+#define UTF8_LOCALE_UNAFFECTED                  0x00000000
 #define UTF8_LOCALE_LITHUANIAN                  0x00000001
 #define UTF8_LOCALE_TURKISH                     0x00000002
 #define UTF8_LOCALE_AZERI_LATIN                 0x00000004
