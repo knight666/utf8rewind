@@ -51,25 +51,7 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 		self.open('/../../source/tests/integration-casemapping.cpp')
 		
 		self.header.writeLine("#include \"../helpers/helpers-casemapping.hpp\"")
-		self.header.writeLine("#include \"../helpers/helpers-locale.hpp\"")
-		self.header.newLine()
-		self.header.writeLine("class CaseMapping")
-		self.header.writeLine("\t: public ::testing::Test")
-		self.header.writeLine("{")
-		self.header.newLine()
-		self.header.writeLine("protected:")
-		self.header.newLine()
-		self.header.writeLine("\tvoid SetUp()")
-		self.header.writeLine("\t{")
-		self.header.writeLine("\t\tSET_LOCALE_ENGLISH();")
-		self.header.writeLine("\t}")
-		self.header.newLine()
-		self.header.writeLine("\tvoid TearDown()")
-		self.header.writeLine("\t{")
-		self.header.writeLine("\t\tRESET_LOCALE();")
-		self.header.writeLine("\t}")
-		self.header.newLine()
-		self.header.write("};")
+		self.header.write("#include \"../helpers/helpers-locale.hpp\"")
 		
 		for b in valid_blocks:
 			self.writeTest(range(b.start, b.end + 1), b.name)
@@ -101,7 +83,7 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 		self.header.newLine()
 		
 		self.header.newLine()
-		self.header.writeLine("TEST_F(CaseMapping, " + name + ")")
+		self.header.writeLine("TEST(CaseMapping, " + name + ")")
 		self.header.writeLine("{")
 		self.header.indent()
 		
@@ -109,7 +91,7 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 			converted_codepoint = "0x%08X" % r.codepoint
 			
 			if r.codepoint == 0:
-				self.header.writeLine("EXPECT_CASEMAPPING_CODEPOINT_NUL_EQ(" + converted_codepoint + ", \"" + r.name + "\");")
+				self.header.writeLine("EXPECT_CASEMAPPING_CODEPOINT_NUL_EQ(" + converted_codepoint + ", \"" + r.name + "\", UTF8_LOCALE_UNAFFECTED);")
 			else:
 				if r.lowercase:
 					converted_lowercase = libs.utf8.unicodeToUtf8(r.lowercase)
@@ -126,7 +108,7 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 				else:
 					converted_titlecase = libs.utf8.codepointToUtf8(r.codepoint)[0]
 				
-				self.header.writeLine("EXPECT_CASEMAPPING_CODEPOINT_EQ(" + converted_codepoint + ", \"" + converted_lowercase + "\", \"" + converted_uppercase + "\", \"" + converted_titlecase + "\", \"" + r.name + "\");")
+				self.header.writeLine("EXPECT_CASEMAPPING_CODEPOINT_EQ(" + converted_codepoint + ", \"" + converted_lowercase + "\", \"" + converted_uppercase + "\", \"" + converted_titlecase + "\", \"" + r.name + "\", UTF8_LOCALE_UNAFFECTED);")
 		
 		self.header.outdent()
 		self.header.write("}")
@@ -485,25 +467,7 @@ class CaseFoldingIntegrationSuite(IntegrationSuite):
 		self.open('/../../source/tests/integration-casefolding.cpp')
 		
 		self.header.writeLine("#include \"../helpers/helpers-casemapping.hpp\"")
-		self.header.writeLine("#include \"../helpers/helpers-locale.hpp\"")
-		self.header.newLine()
-		self.header.writeLine("class CaseFolding")
-		self.header.writeLine("\t: public ::testing::Test")
-		self.header.writeLine("{")
-		self.header.newLine()
-		self.header.writeLine("protected:")
-		self.header.newLine()
-		self.header.writeLine("\tvoid SetUp()")
-		self.header.writeLine("\t{")
-		self.header.writeLine("\t\tSET_LOCALE_ENGLISH();")
-		self.header.writeLine("\t}")
-		self.header.newLine()
-		self.header.writeLine("\tvoid TearDown()")
-		self.header.writeLine("\t{")
-		self.header.writeLine("\t\tRESET_LOCALE();")
-		self.header.writeLine("\t}")
-		self.header.newLine()
-		self.header.write("};")
+		self.header.write("#include \"../helpers/helpers-locale.hpp\"")
 		
 		tests_turkish = []
 		
@@ -526,14 +490,12 @@ class CaseFoldingIntegrationSuite(IntegrationSuite):
 			self.header.newLine()
 			
 			self.header.newLine()
-			self.header.writeLine("TEST_F(CaseFolding, TurkishLocale)")
+			self.header.writeLine("TEST(CaseFolding, TurkishLocale)")
 			self.header.writeLine("{")
 			self.header.indent()
-			self.header.writeLine("SET_LOCALE_TURKISH();")
-			self.header.newLine()
 			
 			for r in tests_turkish:
-				self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\");")
+				self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\", UTF8_LOCALE_TURKISH);")
 			
 			self.header.outdent()
 			self.header.write("}")
@@ -552,12 +514,12 @@ class CaseFoldingIntegrationSuite(IntegrationSuite):
 		self.header.newLine()
 		
 		self.header.newLine()
-		self.header.writeLine("TEST_F(CaseFolding, " + name + ")")
+		self.header.writeLine("TEST(CaseFolding, " + name + ")")
 		self.header.writeLine("{")
 		self.header.indent()
 		
 		for r in records:
-			self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\");")
+			self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\", UTF8_LOCALE_UNAFFECTED);")
 		
 		self.header.outdent()
 		self.header.write("}")
