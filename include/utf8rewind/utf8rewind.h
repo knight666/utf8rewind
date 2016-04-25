@@ -135,6 +135,22 @@
 */
 
 /*!
+	\name Locales
+	Values used by functions that change behavior based on the input locale.
+	\{
+*/
+
+#define UTF8_LOCALE_UNAFFECTED                  0
+#define UTF8_LOCALE_LITHUANIAN                  1
+#define UTF8_LOCALE_TURKISH                     2
+#define UTF8_LOCALE_AZERI_LATIN                 3
+#define UTF8_LOCALE_MAXIMUM                     4
+
+/*!
+	\}
+*/
+
+/*!
 	\name Global configuration
 	Defines used for determining the global configuration of the system and your
 	application.
@@ -613,11 +629,6 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 	\sa utf8iscategory
 */
 UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* textStart, off_t offset, int direction);
-
-#define UTF8_LOCALE_UNAFFECTED                  0x00000000
-#define UTF8_LOCALE_LITHUANIAN                  0x00000001
-#define UTF8_LOCALE_TURKISH                     0x00000002
-#define UTF8_LOCALE_AZERI_LATIN                 0x00000004
 
 /*!
 	\brief Convert UTF-8 encoded text to uppercase.
