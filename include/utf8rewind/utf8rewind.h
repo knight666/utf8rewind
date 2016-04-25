@@ -614,6 +614,11 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 */
 UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* textStart, off_t offset, int direction);
 
+#define UTF8_LOCALE_UNAFFECTD                   0x00000000
+#define UTF8_LOCALE_LITHUANIAN                  0x00000001
+#define UTF8_LOCALE_TURKISH                     0x00000002
+#define UTF8_LOCALE_AZERI_LATIN                 0x00000004
+
 /*!
 	\brief Convert UTF-8 encoded text to uppercase.
 
@@ -701,7 +706,7 @@ UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* tex
 	\sa utf8totitle
 	\sa utf8casefold
 */
-UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors);
 
 /*!
 	\brief Convert UTF-8 encoded text to lowercase.
@@ -795,7 +800,7 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 	\sa utf8totitle
 	\sa utf8casefold
 */
-UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors);
 
 /*!
 	\brief Convert UTF-8 encoded text to titlecase.
@@ -883,7 +888,7 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 	\sa utf8toupper
 	\sa utf8casefold
 */
-UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors);
 
 /*!
 	\brief Remove case distinction from UTF-8 encoded text.
@@ -993,7 +998,7 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	\sa utf8toupper
 	\sa utf8totitle
 */
-UTF8_API size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
+UTF8_API size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors);
 
 /*!
 	\name Normalization flags
