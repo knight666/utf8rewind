@@ -24,7 +24,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">utf8rewind
-   &#160;<span id="projectnumber">1.4.1</span>
+   &#160;<span id="projectnumber">1.5.0</span>
    </div>
    <div id="projectbrief">System library for processing UTF-8 encoded text</div>
   </td>
@@ -139,11 +139,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">namespace </span>helpers {</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    std::string locale(uint32_t value);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    std::string locale(<span class="keywordtype">size_t</span> value);</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    ::testing::AssertionResult CompareLocale(</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionExpected, <span class="keyword">const</span> <span class="keywordtype">char</span>* expressionActual,</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        uint32_t localeExpected, uint32_t localeActual);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordtype">size_t</span> localeExpected, <span class="keywordtype">size_t</span> localeActual);</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;};</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
