@@ -498,6 +498,18 @@ class CaseFoldingIntegrationSuite(IntegrationSuite):
 				self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\", UTF8_LOCALE_TURKISH);")
 			
 			self.header.outdent()
+			self.header.writeLine("}")
+
+			self.header.newLine()
+
+			self.header.writeLine("TEST(CaseFolding, AzeriLatinLocale)")
+			self.header.writeLine("{")
+			self.header.indent()
+			
+			for r in tests_turkish:
+				self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\", UTF8_LOCALE_AZERI_LATIN);")
+			
+			self.header.outdent()
 			self.header.write("}")
 	
 	def writeTest(self, records, name):
