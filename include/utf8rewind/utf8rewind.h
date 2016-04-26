@@ -653,6 +653,55 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 */
 UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* textStart, off_t offset, int direction);
 
+/*!
+	\brief Returns the environment's locale as an enum value.
+
+	This function retrieves the (thread-local) environment locale as an enum
+	value below #UTF8_LOCALE_MAXIMUM. This value can be used with functions in
+	this library that change behavior on certain inputs, depending on the
+	specified locale.
+
+	\warn This function should not be used as a replacement for
+	platform-specific methods for retrieving the locale. Its intended usage is
+	to "guess" the desired locale by looking at the system locale.
+
+	Example:
+
+	\code{.c}
+		uint8_t Employee_PrintNames(const char** names, size_t nameCount)
+		{
+			size_t locale = utf8envlocale();
+			char buffer[256];
+			size_t buffer_size = 255;
+			int32_t errors;
+			size_t i;
+
+			for (i = 0; i < nameCount; ++i)
+			{
+				size_t buffer_filled;
+
+				memset(buffer, 0, buffer_size);
+
+				if ((buffer_filled = utf8toupper(names[i], strlen(names[i]), buffer, buffer_size, locale, &errors)) == 0 ||
+					errors != UTF8_ERR_NONE)
+				{
+					return 0;
+				}
+
+				Log_Print(buffer, buffer_filled);
+			}
+
+			return 1;
+		}
+	\endcode
+
+	\return A specific locale or #UTF8_LOCALE_DEFAULT.
+
+	\sa utf8toupper
+	\sa utf8tolower
+	\sa utf8totitle
+	\sa utf8casefold
+*/
 UTF8_API size_t utf8envlocale();
 
 /*!
