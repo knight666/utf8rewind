@@ -26,6 +26,72 @@ TEST(CaseMappingInitialize, Initialize)
 	EXPECT_EQ(TitlecaseIndex2Ptr, state.property_index2);
 	EXPECT_EQ(TitlecaseDataPtr, state.property_data);
 	EXPECT_LOCALE_EQ(UTF8_LOCALE_UNAFFECTED, state.locale);
+	EXPECT_EQ(QuickCheckCaseMapped_Titlecase, state.quickcheck_flags);
+	EXPECT_EQ(0, state.total_bytes_needed);
+	EXPECT_EQ(0, state.last_code_point);
+	EXPECT_EQ(0, state.last_code_point_size);
+	EXPECT_EQ(0, state.last_general_category);
+	EXPECT_EQ(0, state.last_canonical_combining_class);
+}
+
+TEST(CaseMappingInitialize, Titlecase)
+{
+	CaseMappingState state;
+	const char* i = "farMING";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, UTF8_LOCALE_UNAFFECTED));
+	EXPECT_EQ(TitlecaseIndex1Ptr, state.property_index1);
+	EXPECT_EQ(TitlecaseIndex2Ptr, state.property_index2);
+	EXPECT_EQ(TitlecaseDataPtr, state.property_data);
+	EXPECT_EQ(QuickCheckCaseMapped_Titlecase, state.quickcheck_flags);
+}
+
+TEST(CaseMappingInitialize, Uppercase)
+{
+	CaseMappingState state;
+	const char* i = "brightness";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, UTF8_LOCALE_UNAFFECTED));
+	EXPECT_EQ(UppercaseIndex1Ptr, state.property_index1);
+	EXPECT_EQ(UppercaseIndex2Ptr, state.property_index2);
+	EXPECT_EQ(UppercaseDataPtr, state.property_data);
+	EXPECT_EQ(QuickCheckCaseMapped_Uppercase, state.quickcheck_flags);
+}
+
+TEST(CaseMappingInitialize, Lowercase)
+{
+	CaseMappingState state;
+	const char* i = "brightness";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, UTF8_LOCALE_UNAFFECTED));
+	EXPECT_EQ(LowercaseIndex1Ptr, state.property_index1);
+	EXPECT_EQ(LowercaseIndex2Ptr, state.property_index2);
+	EXPECT_EQ(LowercaseDataPtr, state.property_data);
+	EXPECT_EQ(QuickCheckCaseMapped_Lowercase, state.quickcheck_flags);
+}
+
+TEST(CaseMappingInitialize, Casefold)
+{
+	CaseMappingState state;
+	const char* i = "Darkness";
+	size_t is = strlen(i);
+	char o[256] = { 0 };
+	size_t os = 255;
+
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, UTF8_LOCALE_UNAFFECTED));
+	EXPECT_EQ(CaseFoldingIndex1Ptr, state.property_index1);
+	EXPECT_EQ(CaseFoldingIndex2Ptr, state.property_index2);
+	EXPECT_EQ(CaseFoldingDataPtr, state.property_data);
+	EXPECT_EQ(QuickCheckCaseMapped_Casefolded, state.quickcheck_flags);
 }
 
 TEST(CaseMappingInitialize, LocaleLithuanian)
