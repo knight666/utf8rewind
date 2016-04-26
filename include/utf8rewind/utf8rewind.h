@@ -140,11 +140,10 @@
 	\{
 */
 
-#define UTF8_LOCALE_UNAFFECTED                  0
+#define UTF8_LOCALE_DEFAULT                     0
 #define UTF8_LOCALE_LITHUANIAN                  1
-#define UTF8_LOCALE_TURKISH                     2
-#define UTF8_LOCALE_AZERI_LATIN                 3
-#define UTF8_LOCALE_MAXIMUM                     4
+#define UTF8_LOCALE_TURKISH_AND_AZERI_LATIN     2
+#define UTF8_LOCALE_MAXIMUM                     3
 
 /*!
 	\}

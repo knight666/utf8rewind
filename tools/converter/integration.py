@@ -91,7 +91,7 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 			converted_codepoint = "0x%08X" % r.codepoint
 			
 			if r.codepoint == 0:
-				self.header.writeLine("EXPECT_CASEMAPPING_CODEPOINT_NUL_EQ(" + converted_codepoint + ", \"" + r.name + "\", UTF8_LOCALE_UNAFFECTED);")
+				self.header.writeLine("EXPECT_CASEMAPPING_CODEPOINT_NUL_EQ(" + converted_codepoint + ", \"" + r.name + "\", UTF8_LOCALE_DEFAULT);")
 			else:
 				if r.lowercase:
 					converted_lowercase = libs.utf8.unicodeToUtf8(r.lowercase)
@@ -108,7 +108,7 @@ class CaseMappingIntegrationSuite(IntegrationSuite):
 				else:
 					converted_titlecase = libs.utf8.codepointToUtf8(r.codepoint)[0]
 				
-				self.header.writeLine("EXPECT_CASEMAPPING_CODEPOINT_EQ(" + converted_codepoint + ", \"" + converted_lowercase + "\", \"" + converted_uppercase + "\", \"" + converted_titlecase + "\", \"" + r.name + "\", UTF8_LOCALE_UNAFFECTED);")
+				self.header.writeLine("EXPECT_CASEMAPPING_CODEPOINT_EQ(" + converted_codepoint + ", \"" + converted_lowercase + "\", \"" + converted_uppercase + "\", \"" + converted_titlecase + "\", \"" + r.name + "\", UTF8_LOCALE_DEFAULT);")
 		
 		self.header.outdent()
 		self.header.write("}")
@@ -490,24 +490,12 @@ class CaseFoldingIntegrationSuite(IntegrationSuite):
 			self.header.newLine()
 			
 			self.header.newLine()
-			self.header.writeLine("TEST(CaseFolding, TurkishLocale)")
+			self.header.writeLine("TEST(CaseFolding, TurkishAndAzeriLatinLocale)")
 			self.header.writeLine("{")
 			self.header.indent()
 			
 			for r in tests_turkish:
-				self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\", UTF8_LOCALE_TURKISH);")
-			
-			self.header.outdent()
-			self.header.writeLine("}")
-
-			self.header.newLine()
-
-			self.header.writeLine("TEST(CaseFolding, AzeriLatinLocale)")
-			self.header.writeLine("{")
-			self.header.indent()
-			
-			for r in tests_turkish:
-				self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\", UTF8_LOCALE_AZERI_LATIN);")
+				self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\", UTF8_LOCALE_TURKISH_AND_AZERI_LATIN);")
 			
 			self.header.outdent()
 			self.header.write("}")
@@ -531,7 +519,7 @@ class CaseFoldingIntegrationSuite(IntegrationSuite):
 		self.header.indent()
 		
 		for r in records:
-			self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\", UTF8_LOCALE_UNAFFECTED);")
+			self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\", UTF8_LOCALE_DEFAULT);")
 		
 		self.header.outdent()
 		self.header.write("}")

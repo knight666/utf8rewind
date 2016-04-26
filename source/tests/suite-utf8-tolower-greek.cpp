@@ -13,7 +13,7 @@ TEST(Utf8ToLowerGreek, SingleCapitalLetterSigma)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCF\x83", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -25,7 +25,7 @@ TEST(Utf8ToLowerGreek, SingleCapitalLetterSigmaNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -35,7 +35,7 @@ TEST(Utf8ToLowerGreek, SingleCapitalLetterSigmaAmountOfBytes)
 	const char* c = "\xCE\xA3";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -49,7 +49,7 @@ TEST(Utf8ToLowerGreek, SingleSmallLetterSigma)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCF\x83", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -61,7 +61,7 @@ TEST(Utf8ToLowerGreek, SingleSmallLetterSigmaNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -71,7 +71,7 @@ TEST(Utf8ToLowerGreek, SingleSmallLetterSigmaAmountOfBytes)
 	const char* c = "\xCF\x83";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -85,7 +85,7 @@ TEST(Utf8ToLowerGreek, SingleSmallLetterFinalSigma)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCF\x82", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -97,7 +97,7 @@ TEST(Utf8ToLowerGreek, SingleSmallLetterFinalSigmaNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -107,7 +107,7 @@ TEST(Utf8ToLowerGreek, SingleSmallLetterFinalSigmaAmountOfBytes)
 	const char* c = "\xCF\x82";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -121,7 +121,7 @@ TEST(Utf8ToLowerGreek, WordCapitalLetterSigma)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(8, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(8, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xBC\xCE\xBE\xCF\x83\xCE\xBF", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -133,7 +133,7 @@ TEST(Utf8ToLowerGreek, WordCapitalLetterSigmaNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xBC\xCE\xBE", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -143,7 +143,7 @@ TEST(Utf8ToLowerGreek, WordCapitalLetterSigmaAmountOfBytes)
 	const char* c = "\xCE\xBC\xCE\xBE\xCE\xA3\xCE\x9F";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(8, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(8, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -157,7 +157,7 @@ TEST(Utf8ToLowerGreek, WordCapitalLetterSigmaAtEnd)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xAD\xCE\xB3\xCF\x82", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -169,7 +169,7 @@ TEST(Utf8ToLowerGreek, WordCapitalLetterSigmaAtEndNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xAD", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -179,7 +179,7 @@ TEST(Utf8ToLowerGreek, WordCapitalLetterSigmaAtEndAmountOfBytes)
 	const char* c = "\xCE\x88\xCE\x93\xCE\xA3";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(6, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(6, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -193,7 +193,7 @@ TEST(Utf8ToLowerGreek, WordSmallLetterSigma)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(8, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(8, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xBB\xCE\xBD\xCF\x83\xCF\x8D", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -205,7 +205,7 @@ TEST(Utf8ToLowerGreek, WordSmallLetterSigmaNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xBB", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -215,7 +215,7 @@ TEST(Utf8ToLowerGreek, WordSmallLetterSigmaAmountOfBytes)
 	const char* c = "\xCE\xBB\xCE\xBD\xCF\x83\xCF\x8D";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(8, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(8, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -229,7 +229,7 @@ TEST(Utf8ToLowerGreek, WordSmallLetterFinalSigma)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xBF\xCF\x80\xCF\x82", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -241,7 +241,7 @@ TEST(Utf8ToLowerGreek, WordSmallLetterFinalSigmaNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(2, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xBF", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -251,7 +251,7 @@ TEST(Utf8ToLowerGreek, WordSmallLetterFinalSigmaAmountOfBytes)
 	const char* c = "\xCE\xBF\xCF\x80\xCF\x82";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(6, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(6, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -265,7 +265,7 @@ TEST(Utf8ToLowerGreek, SentenceCapitalLetterSigma)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(15, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(15, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCF\x83\xCE\xB7\xCF\x82 \xCE\xB8\xCE\xBF\xCF\x84\xCF\x82", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -277,7 +277,7 @@ TEST(Utf8ToLowerGreek, SentenceCapitalLetterSigmaNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCF\x83\xCE\xB7\xCF\x82", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -287,7 +287,7 @@ TEST(Utf8ToLowerGreek, SentenceCapitalLetterSigmaAmountOfBytes)
 	const char* c = "\xCE\xA3\xCE\x97\xCE\xA3 \xCE\x98\xCE\x9F\xCE\xA4\xCE\xA3";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(15, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(15, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -301,7 +301,7 @@ TEST(Utf8ToLowerGreek, SentenceSmallLetterSigma)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(13, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(13, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xB5\xCE\xBD\xCE\xB8\xCF\x83 \xCF\x85\xCF\x84", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -313,7 +313,7 @@ TEST(Utf8ToLowerGreek, SentenceSmallLetterSigmaNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(6, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xB5\xCE\xBD\xCE\xB8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -323,7 +323,7 @@ TEST(Utf8ToLowerGreek, SentenceSmallLetterSigmaAmountOfBytes)
 	const char* c = "\xCE\xB5\xCE\xBD\xCE\xB8\xCF\x83 \xCF\x85\xCF\x84";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(13, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(13, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -337,7 +337,7 @@ TEST(Utf8ToLowerGreek, SentenceSmallLetterFinalSigma)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(15, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(15, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xB5\xCE\xB6\xCF\x82 \xCE\xBE\xCE\xBE\xCF\x8B\xCE\xAD", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -349,7 +349,7 @@ TEST(Utf8ToLowerGreek, SentenceSmallLetterFinalSigmaNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(4, utf8tolower(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xB5\xCE\xB6", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -359,6 +359,6 @@ TEST(Utf8ToLowerGreek, SentenceSmallLetterFinalSigmaAmountOfBytes)
 	const char* c = "\xCE\xB5\xCE\xB6\xCF\x82 \xCE\xBE\xCE\xBE\xCE\xAB\xCE\xAD";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(15, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(15, utf8tolower(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }

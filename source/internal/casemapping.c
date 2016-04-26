@@ -80,7 +80,7 @@ static const char basic_latin_uppercase_table[58] = {
 	#define UTF8_LOCALE_GET \
 		unsigned int codepage; \
 		_locale_t locale = _get_current_locale(); \
-		if (locale == 0) return UTF8_LOCALE_UNAFFECTED; \
+		if (locale == 0) return UTF8_LOCALE_DEFAULT; \
 		codepage = UTF8_CODEPAGE_GET(locale)
 
 	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
@@ -88,7 +88,7 @@ static const char basic_latin_uppercase_table[58] = {
 #else
 	#define UTF8_LOCALE_GET \
 		const char* locale = setlocale(LC_ALL, 0); \
-		if (locale == 0) return UTF8_LOCALE_UNAFFECTED
+		if (locale == 0) return UTF8_LOCALE_DEFAULT
 
 	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
 		!strncasecmp(locale, _name, 5)
@@ -113,17 +113,13 @@ uint32_t casemapping_locale()
 		return UTF8_LOCALE_LITHUANIAN;
 	}
 	else if (
-		UTF8_LOCALE_CHECK("tr_tr", 1254, 857))
-	{
-		return UTF8_LOCALE_TURKISH;
-	}
-	else if (
+		UTF8_LOCALE_CHECK("tr_tr", 1254, 857) ||
 		UTF8_LOCALE_CHECK("az_az", 1254, 857))
 	{
-		return UTF8_LOCALE_AZERI_LATIN;
+		return UTF8_LOCALE_TURKISH_AND_AZERI_LATIN;
 	}
 
-	return UTF8_LOCALE_UNAFFECTED;
+	return UTF8_LOCALE_DEFAULT;
 }
 
 uint8_t casemapping_initialize(
@@ -187,8 +183,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 		goto writeresolved;
 	}
 
-	if (state->locale == UTF8_LOCALE_TURKISH ||
-		state->locale == UTF8_LOCALE_AZERI_LATIN)
+	if (state->locale == UTF8_LOCALE_TURKISH_AND_AZERI_LATIN)
 	{
 		/*
 			Code point General Category does not need to be modified, because
