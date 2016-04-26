@@ -661,7 +661,12 @@ UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* tex
 	this library that change behavior on certain inputs, depending on the
 	specified locale.
 
-	\warn This function should not be used as a replacement for
+	Unfortunately, no cross-platform way of setting and retrieving the system
+	locale is available without adding dependencies to the library. Please
+	refer to your operating system's manual to determine how to setup the
+	system locale on your target system.
+
+	\warning This function should not be used as a replacement for
 	platform-specific methods for retrieving the locale. Its intended usage is
 	to "guess" the desired locale by looking at the system locale.
 

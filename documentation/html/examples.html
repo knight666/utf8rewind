@@ -24,7 +24,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">utf8rewind
-   &#160;<span id="projectnumber">1.4.1</span>
+   &#160;<span id="projectnumber">1.5.0</span>
    </div>
    <div id="projectbrief">System library for processing UTF-8 encoded text</div>
   </td>
@@ -331,7 +331,7 @@ Comparing usernames in a case-insensitive manner</h1>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>Unfortunately, users being users, they end up forgetting the exact combination of upper- and lowercase characters they used for their username.</p>
-<p>Luckily, we can use <a class="el" href="utf8rewind_8h.html#af60cc918c7dec97b3472b40fbafc8900" title="Remove case distinction from UTF-8 encoded text. ">utf8casefold</a> to do case-insensitive text comparison. Case folding is an operation that erases case distinction between code points. This process allows you to compare and match strings that wouldn't be considered equivalent otherwise.</p>
+<p>Luckily, we can use <a class="el" href="utf8rewind_8h.html#af50584a0773d99dfb93912b2f29a4c74" title="Remove case distinction from UTF-8 encoded text. ">utf8casefold</a> to do case-insensitive text comparison. Case folding is an operation that erases case distinction between code points. This process allows you to compare and match strings that wouldn't be considered equivalent otherwise.</p>
 <p>First, we ensure that the usernames stored in our "database" are casefolded:</p>
 <div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> Users[] = {</div>
 <div class="line">    { <span class="stringliteral">&quot;qlansu&quot;</span>, <span class="stringliteral">&quot;11111&quot;</span> },</div>
@@ -347,7 +347,7 @@ Comparing usernames in a case-insensitive manner</h1>
 <div class="line">    int32_t errors;</div>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
 <div class="line"></div>
-<div class="line">    <span class="keywordflow">if</span> ((compare_username_size = <a class="code" href="utf8rewind_8h.html#af60cc918c7dec97b3472b40fbafc8900">utf8casefold</a>(username, strlen(username), NULL, 0, &amp;errors)) == 0 ||</div>
+<div class="line">    <span class="keywordflow">if</span> ((compare_username_size = <a class="code" href="utf8rewind_8h.html#af50584a0773d99dfb93912b2f29a4c74">utf8casefold</a>(username, strlen(username), NULL, 0, &amp;errors)) == 0 ||</div>
 <div class="line">        errors != <a class="code" href="utf8rewind_8h.html#ac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        result = 0;</div>
@@ -356,7 +356,7 @@ Comparing usernames in a case-insensitive manner</h1>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    compare_username = (<span class="keywordtype">char</span>*)malloc(compare_username_size + 1);</div>
-<div class="line">    <a class="code" href="utf8rewind_8h.html#af60cc918c7dec97b3472b40fbafc8900">utf8casefold</a>(username, strlen(username), compare_username, compare_username_size, &amp;errors);</div>
+<div class="line">    <a class="code" href="utf8rewind_8h.html#af50584a0773d99dfb93912b2f29a4c74">utf8casefold</a>(username, strlen(username), compare_username, compare_username_size, &amp;errors);</div>
 <div class="line">    compare_username[compare_username_size] = 0;</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">for</span> (i = 0; i &lt; <span class="keyword">sizeof</span>(Users) / <span class="keyword">sizeof</span>(UserData); ++i)</div>
