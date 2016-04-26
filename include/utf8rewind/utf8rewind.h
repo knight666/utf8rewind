@@ -629,6 +629,8 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 */
 UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* textStart, off_t offset, int direction);
 
+UTF8_API size_t utf8envlocale();
+
 /*!
 	\brief Convert UTF-8 encoded text to uppercase.
 

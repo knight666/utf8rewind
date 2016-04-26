@@ -544,6 +544,11 @@ const char* utf8seek(const char* text, size_t textSize, const char* textStart, o
 	}
 }
 
+UTF8_API size_t utf8envlocale()
+{
+	return 0;
+}
+
 size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors)
 {
 	CaseMappingState state;
