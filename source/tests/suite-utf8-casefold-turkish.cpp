@@ -12,7 +12,7 @@ TEST(Utf8CaseFoldTurkish, LatinCapitalLetterISingle)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH, &errors));
+	EXPECT_EQ(2, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &errors));
 	EXPECT_UTF8EQ("\xC4\xB1", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -22,7 +22,7 @@ TEST(Utf8CaseFoldTurkish, LatinCapitalLetterISingleAmountOfBytes)
 	const char* c = "I";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8casefold(c, strlen(c), nullptr, 0, UTF8_LOCALE_TURKISH, &errors));
+	EXPECT_EQ(2, utf8casefold(c, strlen(c), nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -33,7 +33,7 @@ TEST(Utf8CaseFoldTurkish, LatinCapitalLetterISingleNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(0, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH, &errors));
+	EXPECT_EQ(0, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &errors));
 	EXPECT_UTF8EQ("", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -45,7 +45,7 @@ TEST(Utf8CaseFoldTurkish, LatinCapitalLetterIMultiple)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(8, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH, &errors));
+	EXPECT_EQ(8, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &errors));
 	EXPECT_UTF8EQ("\xC4\xB1\xC4\xB1\xC4\xB1\xC4\xB1", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -55,7 +55,7 @@ TEST(Utf8CaseFoldTurkish, LatinCapitalLetterIMultipleAmountOfBytes)
 	const char* c = "IIII";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(8, utf8casefold(c, strlen(c), nullptr, 0, UTF8_LOCALE_TURKISH, &errors));
+	EXPECT_EQ(8, utf8casefold(c, strlen(c), nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -66,7 +66,7 @@ TEST(Utf8CaseFoldTurkish, LatinCapitalLetterIMultipleNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH, &errors));
+	EXPECT_EQ(2, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &errors));
 	EXPECT_UTF8EQ("\xC4\xB1", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -78,7 +78,7 @@ TEST(Utf8CaseFoldTurkish, LatinCapitalLetterIWithDotAboveSingle)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH, &errors));
+	EXPECT_EQ(1, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &errors));
 	EXPECT_UTF8EQ("i", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -88,7 +88,7 @@ TEST(Utf8CaseFoldTurkish, LatinCapitalLetterIWithDotAboveSingleAmountOfBytes)
 	const char* c = "\xC4\xB0";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8casefold(c, strlen(c), nullptr, 0, UTF8_LOCALE_TURKISH, &errors));
+	EXPECT_EQ(1, utf8casefold(c, strlen(c), nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -99,7 +99,7 @@ TEST(Utf8CaseFoldTurkish, LatinCapitalLetterIWithDotAboveSingleNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(0, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH, &errors));
+	EXPECT_EQ(0, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &errors));
 	EXPECT_UTF8EQ("", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -111,7 +111,7 @@ TEST(Utf8CaseFoldTurkish, LatinCapitalLetterIWithDotAboveMultiple)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH, &errors));
+	EXPECT_EQ(3, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &errors));
 	EXPECT_UTF8EQ("iii", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -121,7 +121,7 @@ TEST(Utf8CaseFoldTurkish, LatinCapitalLetterIWithDotAboveMultipleAmountOfBytes)
 	const char* c = "\xC4\xB0\xC4\xB0\xC4\xB0\xC4\xB0";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8casefold(c, strlen(c), nullptr, 0, UTF8_LOCALE_TURKISH, &errors));
+	EXPECT_EQ(4, utf8casefold(c, strlen(c), nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -132,7 +132,7 @@ TEST(Utf8CaseFoldTurkish, LatinCapitalLetterIWithDotAboveMultipleNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH, &errors));
+	EXPECT_EQ(3, utf8casefold(c, strlen(c), b, s, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &errors));
 	EXPECT_UTF8EQ("iii", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }

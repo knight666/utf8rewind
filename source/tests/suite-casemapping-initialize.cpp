@@ -18,7 +18,7 @@ TEST(CaseMappingInitialize, Initialize)
 	size_t os = 255;
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, QuickCheckCaseMapped_Titlecase, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, QuickCheckCaseMapped_Titlecase, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_EQ(i, state.src);
 	EXPECT_EQ(is, state.src_size);
@@ -27,7 +27,7 @@ TEST(CaseMappingInitialize, Initialize)
 	EXPECT_EQ(TitlecaseIndex1Ptr, state.property_index1);
 	EXPECT_EQ(TitlecaseIndex2Ptr, state.property_index2);
 	EXPECT_EQ(TitlecaseDataPtr, state.property_data);
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_UNAFFECTED, state.locale);
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_DEFAULT, state.locale);
 	EXPECT_EQ(QuickCheckCaseMapped_Titlecase, state.quickcheck_flags);
 	EXPECT_EQ(0, state.total_bytes_needed);
 	EXPECT_EQ(0, state.last_code_point);
@@ -45,7 +45,7 @@ TEST(CaseMappingInitialize, Titlecase)
 	size_t os = 255;
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, QuickCheckCaseMapped_Titlecase, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, QuickCheckCaseMapped_Titlecase, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_EQ(TitlecaseIndex1Ptr, state.property_index1);
 	EXPECT_EQ(TitlecaseIndex2Ptr, state.property_index2);
@@ -62,7 +62,7 @@ TEST(CaseMappingInitialize, Uppercase)
 	size_t os = 255;
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, QuickCheckCaseMapped_Uppercase, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, QuickCheckCaseMapped_Uppercase, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_EQ(UppercaseIndex1Ptr, state.property_index1);
 	EXPECT_EQ(UppercaseIndex2Ptr, state.property_index2);
@@ -79,7 +79,7 @@ TEST(CaseMappingInitialize, Lowercase)
 	size_t os = 255;
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, QuickCheckCaseMapped_Lowercase, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, QuickCheckCaseMapped_Lowercase, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_EQ(LowercaseIndex1Ptr, state.property_index1);
 	EXPECT_EQ(LowercaseIndex2Ptr, state.property_index2);
@@ -96,7 +96,7 @@ TEST(CaseMappingInitialize, Casefold)
 	size_t os = 255;
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, QuickCheckCaseMapped_Casefolded, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, QuickCheckCaseMapped_Casefolded, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 	EXPECT_EQ(CaseFoldingIndex1Ptr, state.property_index1);
 	EXPECT_EQ(CaseFoldingIndex2Ptr, state.property_index2);
@@ -118,7 +118,7 @@ TEST(CaseMappingInitialize, LocaleLithuanian)
 	EXPECT_LOCALE_EQ(UTF8_LOCALE_LITHUANIAN, state.locale);
 }
 
-TEST(CaseMappingInitialize, LocaleTurkish)
+TEST(CaseMappingInitialize, LocaleTurkishAndAzeriLatin)
 {
 	CaseMappingState state;
 	const char* i = "I welcome our Turkish friends.";
@@ -127,23 +127,9 @@ TEST(CaseMappingInitialize, LocaleTurkish)
 	size_t os = 255;
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, QuickCheckCaseMapped_Uppercase, UTF8_LOCALE_TURKISH, &errors));
+	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, QuickCheckCaseMapped_Uppercase, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH, state.locale);
-}
-
-TEST(CaseMappingInitialize, LocaleAzeriLatin)
-{
-	CaseMappingState state;
-	const char* i = "Cuisine.";
-	size_t is = strlen(i);
-	char o[256] = { 0 };
-	size_t os = 255;
-	int32_t errors = UTF8_ERR_NONE;
-
-	EXPECT_TRUE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, QuickCheckCaseMapped_Uppercase, UTF8_LOCALE_AZERI_LATIN, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, state.locale);
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, state.locale);
 }
 
 TEST(CaseMappingInitialize, LocaleMaximum)

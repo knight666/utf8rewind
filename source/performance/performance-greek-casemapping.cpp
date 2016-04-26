@@ -27,7 +27,7 @@ PERF_TEST_F(GreekCaseMapping, Uppercase)
 {
 	int32_t e;
 
-	size_t ol = utf8toupper(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &e);
+	size_t ol = utf8toupper(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
 
 	PERF_ASSERT(ol > 0);
 	PERF_ASSERT(e == UTF8_ERR_NONE);
@@ -38,7 +38,7 @@ PERF_TEST_F(GreekCaseMapping, Uppercase)
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8toupper(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_UNAFFECTED, nullptr);
+		utf8toupper(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
 
 		delete [] o;
 	}
@@ -48,7 +48,7 @@ PERF_TEST_F(GreekCaseMapping, Lowercase)
 {
 	int32_t e;
 
-	size_t ol = utf8tolower(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &e);
+	size_t ol = utf8tolower(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
 
 	PERF_ASSERT(ol > 0);
 	PERF_ASSERT(e == UTF8_ERR_NONE);
@@ -59,7 +59,7 @@ PERF_TEST_F(GreekCaseMapping, Lowercase)
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8tolower(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_UNAFFECTED, nullptr);
+		utf8tolower(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
 
 		delete [] o;
 	}
@@ -69,7 +69,7 @@ PERF_TEST_F(GreekCaseMapping, Titlecase)
 {
 	int32_t e;
 
-	size_t ol = utf8totitle(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &e);
+	size_t ol = utf8totitle(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
 
 	PERF_ASSERT(ol > 0);
 	PERF_ASSERT(e == UTF8_ERR_NONE);
@@ -80,7 +80,7 @@ PERF_TEST_F(GreekCaseMapping, Titlecase)
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8totitle(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_UNAFFECTED, nullptr);
+		utf8totitle(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
 
 		delete [] o;
 	}
@@ -90,7 +90,7 @@ PERF_TEST_F(GreekCaseMapping, Casefold)
 {
 	int32_t e;
 
-	size_t ol = utf8casefold(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &e);
+	size_t ol = utf8casefold(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
 
 	PERF_ASSERT(ol > 0);
 	PERF_ASSERT(e == UTF8_ERR_NONE);
@@ -101,7 +101,7 @@ PERF_TEST_F(GreekCaseMapping, Casefold)
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8casefold(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_UNAFFECTED, nullptr);
+		utf8casefold(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
 
 		delete [] o;
 	}

@@ -12,7 +12,7 @@ TEST(Utf8ToUpper, BasicLatinSingleUppercase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("B", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -24,7 +24,7 @@ TEST(Utf8ToUpper, BasicLatinSingleLowercase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("W", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -36,7 +36,7 @@ TEST(Utf8ToUpper, BasicLatinSingleUnaffected)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ(")", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -48,7 +48,7 @@ TEST(Utf8ToUpper, BasicLatinMultipleUppercase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("CARS", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -60,7 +60,7 @@ TEST(Utf8ToUpper, BasicLatinMultipleLowercase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("ID", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -72,7 +72,7 @@ TEST(Utf8ToUpper, BasicLatinMultipleUnaffected)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("#@!&%", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -84,7 +84,7 @@ TEST(Utf8ToUpper, BasicLatinWord)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("ABBEY", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -96,7 +96,7 @@ TEST(Utf8ToUpper, BasicLatinSentence)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(16, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(16, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("HOLIDAY SPECIAL!", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -106,7 +106,7 @@ TEST(Utf8ToUpper, BasicLatinAmountOfBytes)
 	const char* c = "Magic";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -117,7 +117,7 @@ TEST(Utf8ToUpper, BasicLatinNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("MER", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -131,7 +131,7 @@ TEST(Utf8ToUpper, GeneralCategoryCaseMappedSingleUppercase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xD0\x9B", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -145,7 +145,7 @@ TEST(Utf8ToUpper, GeneralCategoryCaseMappedSingleLowercase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(6, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(6, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xA5\xCC\x88\xCC\x81", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -159,7 +159,7 @@ TEST(Utf8ToUpper, GeneralCategoryCaseMappedSingleTitlecase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8totitle(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(2, utf8totitle(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xC7\xB2", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -173,7 +173,7 @@ TEST(Utf8ToUpper, GeneralCategoryCaseMappedSingleUnaffected)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCC\x86", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -189,7 +189,7 @@ TEST(Utf8ToUpper, GeneralCategoryCaseMappedMultipleUppercase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(6, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(6, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\xA0\xCE\xA4\xCE\xA9", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -206,7 +206,7 @@ TEST(Utf8ToUpper, GeneralCategoryCaseMappedMultipleLowercase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(13, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(13, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xF0\x90\x90\x80\xEF\xBC\xA1\xEA\x9E\x8B\xEA\x99\x8A", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -222,7 +222,7 @@ TEST(Utf8ToUpper, GeneralCategoryCaseMappedMultipleTitlecase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(6, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(6, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("SS\xC7\xB1\xC4\xB2", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -238,7 +238,7 @@ TEST(Utf8ToUpper, GeneralCategoryCaseMappedMultipleUnaffected)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(9, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(9, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xE2\xAB\x96\xE3\x83\xAC\xE2\xAE\x86", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -250,7 +250,7 @@ TEST(Utf8ToUpper, GeneralCategoryCaseMappedWord)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(12, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(12, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCE\x93\xCE\x91\xCE\x96\xCE\x88\xCE\x95\xCE\xA3", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -262,7 +262,7 @@ TEST(Utf8ToUpper, GeneralCategoryCaseMappedSentence)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(21, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(21, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xD0\xAD\xD0\xA2\xD0\x98\xD0\xA5 \xD0\x9C\xD0\xAF\xD0\x93\xD0\x9A\xD0\x98\xD0\xA5", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -275,7 +275,7 @@ TEST(Utf8ToUpper, GeneralCategoryCaseMappedAmountOfBytes)
 	const char* c = "\xE2\xB3\x83\xE1\xBF\xA2\xE2\xB1\x9A";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(12, utf8toupper(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(12, utf8toupper(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -289,7 +289,7 @@ TEST(Utf8ToUpper, GeneralCategoryCaseMappedNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xE2\x85\xA3", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -307,7 +307,7 @@ TEST(Utf8ToUpper, GraphemeClusterSingleUppercase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("E\xCC\x9B\xD7\x85", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -325,7 +325,7 @@ TEST(Utf8ToUpper, GraphemeClusterSingleLowercase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(8, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(8, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xC3\x8B\xCD\xA3\xCC\xBF\xD6\x95", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -343,7 +343,7 @@ TEST(Utf8ToUpper, GraphemeClusterSingleTitlecase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(10, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(10, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xC7\x84\xE0\xBD\xBA\xE0\xBC\xB9\xDC\xBA", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -361,7 +361,7 @@ TEST(Utf8ToUpper, GraphemeClusterSingleUnaffected)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(9, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(9, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xCB\xAA\xD9\xB0\xE0\xBD\xB1\xD9\x99", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -379,7 +379,7 @@ TEST(Utf8ToUpper, GraphemeClusterMultipleUppercase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(25, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(25, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xC6\xA2\xE1\xB3\xAD\xCD\x86\xC7\xA4\xF0\x90\x8B\xA0\xD9\x99\xC7\xAE\xE0\xB9\x8A\xE0\xBD\xBC\xCC\x9B", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -397,7 +397,7 @@ TEST(Utf8ToUpper, GraphemeClusterMultipleLowercase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(37, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(37, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xC7\xA0\xD9\x91\xE0\xBD\xBC\xCC\xA8\xC7\xA6\xE1\xB7\x90\xF0\x9D\x85\xA6\xDD\x82\xC9\x86\xE0\xA3\xA6\xF0\x90\xA8\xBA\xCC\x8A\xCF\xBD\xCC\x8F\xCC\x8F", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -415,7 +415,7 @@ TEST(Utf8ToUpper, GraphemeClusterMultipleTitlecase)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(37, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(37, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xC7\xA0\xD9\x91\xE0\xBD\xBC\xCC\xA8\xC7\xA6\xE1\xB7\x90\xF0\x9D\x85\xA6\xDD\x82\xC9\x86\xE0\xA3\xA6\xF0\x90\xA8\xBA\xCC\x8A\xCF\xBD\xCC\x8F\xCC\x8F", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -433,7 +433,7 @@ TEST(Utf8ToUpper, GraphemeClusterMultipleUnaffected)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(23, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(23, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xDD\x91\xDD\x84\xD6\xAD\xDF\xA8\xE0\xA3\xA9\xE1\xB3\xB9\xCD\xA1\xDE\x9A\xE0\xBC\xB9\xDD\x88", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -451,7 +451,7 @@ TEST(Utf8ToUpper, GraphemeClusterWord)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(37, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(37, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xC9\x8A\xDC\xB1\xF0\x90\x8B\xA0\xC8\xB2\xE0\xB1\x96\xE0\xBD\xB1\xE0\xBF\x86\xC9\x8E\xE1\xB7\x8A\xE3\x80\xAE\xE0\xBE\x86\xC8\xBB\xE0\xA3\xAE\xDC\xBA", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -469,7 +469,7 @@ TEST(Utf8ToUpper, GraphemeClusterSentence)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(60, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(60, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xC9\x83\xE0\xBA\xB8\xE0\xBD\xB1\xE1\xB7\x8F\xC7\xAC\xE1\x82\x8D\xD6\xAC \xC7\xB4\xD7\x84\xDD\x83\xC7\xBA\xCC\x97\xCD\x97\xC8\x8C\xF0\x9D\x85\xA5\xE1\xA2\xA9\xD8\x95 \xC8\x9C\xE2\x83\xAC\xD6\x95\xC5\xB4\xE0\xB9\x88\xE0\xBA\xB9\xCD\x8E", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -485,7 +485,7 @@ TEST(Utf8ToUpper, GraphemeClusterAmountOfBytes)
 	const char* c = "\xD0\xB9\xCD\x89\xCC\xB0\xE0\xA0\xAA";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(9, utf8toupper(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(9, utf8toupper(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -499,7 +499,7 @@ TEST(Utf8ToUpper, GraphemeClusterNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xC8\xA4\xCC\xA5", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -511,7 +511,7 @@ TEST(Utf8ToUpper, InvalidCodepointSingle)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -523,7 +523,7 @@ TEST(Utf8ToUpper, InvalidCodepointMultiple)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(9, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(9, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBD", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -533,7 +533,7 @@ TEST(Utf8ToUpper, InvalidCodepointAmountOfBytes)
 	const char* c = "\xDE\xDE\xDA\xCA";
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(12, utf8toupper(c, strlen(c), nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(12, utf8toupper(c, strlen(c), nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
@@ -544,7 +544,7 @@ TEST(Utf8ToUpper, InvalidCodepointNotEnoughSpace)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(6, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(6, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("\xEF\xBF\xBD\xEF\xBF\xBD", b);
 	EXPECT_ERROREQ(UTF8_ERR_NOT_ENOUGH_SPACE, errors);
 }
@@ -556,7 +556,7 @@ TEST(Utf8ToUpper, ErrorsIsReset)
 	char b[256] = { 0 };
 	int32_t errors = 1989;
 
-	EXPECT_EQ(8, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(8, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("WOOD LOG", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -565,7 +565,7 @@ TEST(Utf8ToUpper, InvalidData)
 {
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(0, utf8toupper(nullptr, 1, nullptr, 0, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(0, utf8toupper(nullptr, 1, nullptr, 0, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
@@ -593,7 +593,7 @@ TEST(Utf8ToUpper, OverlappingParametersFits)
 	char* o = data + 12;
 	size_t os = 12;
 
-	EXPECT_EQ(12, utf8toupper(i, is, o, os, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(12, utf8toupper(i, is, o, os, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_UTF8EQ("destinationsDESTINATIONS", data);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
@@ -609,7 +609,7 @@ TEST(Utf8ToUpper, OverlappingParametersStartsEqual)
 	char* o = data;
 	size_t os = 29;
 
-	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
@@ -624,7 +624,7 @@ TEST(Utf8ToUpper, OverlappingParametersEndsEqual)
 	char* o = data + 3;
 	size_t os = 24;
 
-	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
@@ -639,7 +639,7 @@ TEST(Utf8ToUpper, OverlappingParametersInputStartsInTarget)
 	char* o = data + 10;
 	size_t os = 40;
 
-	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
@@ -654,7 +654,7 @@ TEST(Utf8ToUpper, OverlappingParametersInputEndsInTarget)
 	char* o = data + 35;
 	size_t os = 20;
 
-	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
@@ -669,7 +669,7 @@ TEST(Utf8ToUpper, OverlappingParametersInputInsideTarget)
 	char* o = data + 10;
 	size_t os = 40;
 
-	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
@@ -684,7 +684,7 @@ TEST(Utf8ToUpper, OverlappingParametersTargetStartsInInput)
 	char* o = data + 34;
 	size_t os = 25;
 
-	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
@@ -699,7 +699,7 @@ TEST(Utf8ToUpper, OverlappingParametersTargetEndsInInput)
 	char* o = data + 25;
 	size_t os = 48;
 
-	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }
 
@@ -714,6 +714,6 @@ TEST(Utf8ToUpper, OverlappingParametersTargetInsideInput)
 	char* o = data + 30;
 	size_t os = 10;
 
-	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_UNAFFECTED, &errors));
+	EXPECT_EQ(0, utf8toupper(i, is, o, os, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_OVERLAPPING_PARAMETERS, errors);
 }

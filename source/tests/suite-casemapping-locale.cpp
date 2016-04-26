@@ -29,7 +29,7 @@ extern "C" {
 TEST(CaseMappingLocale, EnglishUS)
 {
 	SET_LOCALE_ENGLISH();
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_UNAFFECTED, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_DEFAULT, casemapping_locale());
 	RESET_LOCALE();
 }
 
@@ -82,43 +82,43 @@ TEST(CaseMappingLocale, Turkish)
 {
 #if _WINDOWS
 	EXPECT_STREQ("tr", setlocale(LC_ALL, "tr"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
 	EXPECT_STREQ("tr-TR", setlocale(LC_ALL, "tr-TR"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
 	EXPECT_STREQ("Turkish_Turkey.1254", setlocale(LC_ALL, "turkish"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
 	EXPECT_STREQ("Turkish_Turkey.1254", setlocale(LC_ALL, "Turkish_Turkey.1254"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
 	EXPECT_STREQ("Turkish_Turkey.1254", setlocale(LC_ALL, "Turkish_Turkey.ACP"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
 	EXPECT_STREQ("Turkish_Turkey.857", setlocale(LC_ALL, "Turkish_Turkey.857"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
 	EXPECT_STREQ("Turkish_Turkey.857", setlocale(LC_ALL, "Turkish_Turkey.OCP"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 #else
 	EXPECT_STREQ("tr_TR", setlocale(LC_ALL, "tr_TR"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
 	EXPECT_STREQ("tr_TR.iso88599", setlocale(LC_ALL, "tr_TR.iso88599"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
 	EXPECT_STREQ("tr_TR.utf8", setlocale(LC_ALL, "tr_TR.utf8"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 #endif
 }
@@ -127,15 +127,15 @@ TEST(CaseMappingLocale, Azeri)
 {
 #if _WINDOWS
 	EXPECT_STREQ("az", setlocale(LC_ALL, "az"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
 	EXPECT_STREQ("az-Cyrl-AZ", setlocale(LC_ALL, "az-Cyrl-AZ"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_UNAFFECTED, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_DEFAULT, casemapping_locale());
 	RESET_LOCALE();
 
 	EXPECT_STREQ("az-Latn-AZ", setlocale(LC_ALL, "az-Latn-AZ"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
 	// Windows 10 changes the name of the language from "Azeri" to "Azerbaijani".
@@ -143,54 +143,54 @@ TEST(CaseMappingLocale, Azeri)
 	if (CheckWindowsVersion(0x0A00))
 	{
 		EXPECT_STREQ("Azerbaijani_Azerbaijan.1254", setlocale(LC_ALL, "azerbaijani"));
-		EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+		EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 		RESET_LOCALE();
 
 		EXPECT_STREQ("Azerbaijani_Azerbaijan.1254", setlocale(LC_ALL, "Azerbaijani_Azerbaijan.1254"));
-		EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+		EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 		RESET_LOCALE();
 
 		EXPECT_STREQ("Azerbaijani_Azerbaijan.1254", setlocale(LC_ALL, "Azerbaijani_Azerbaijan.ACP"));
-		EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+		EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 		RESET_LOCALE();
 
 		EXPECT_STREQ("Azerbaijani_Azerbaijan.857", setlocale(LC_ALL, "Azerbaijani_Azerbaijan.857"));
-		EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+		EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 		RESET_LOCALE();
 
 		EXPECT_STREQ("Azerbaijani_Azerbaijan.857", setlocale(LC_ALL, "Azerbaijani_Azerbaijan.OCP"));
-		EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+		EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 		RESET_LOCALE();
 	}
 	else
 	{
 		EXPECT_STREQ("Azeri_Azerbaijan.1254", setlocale(LC_ALL, "azeri"));
-		EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+		EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 		RESET_LOCALE();
 
 		EXPECT_STREQ("Azeri_Azerbaijan.1254", setlocale(LC_ALL, "Azeri_Azerbaijan.1254"));
-		EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+		EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 		RESET_LOCALE();
 
 		EXPECT_STREQ("Azeri_Azerbaijan.1254", setlocale(LC_ALL, "Azeri_Azerbaijan.ACP"));
-		EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+		EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 		RESET_LOCALE();
 
 		EXPECT_STREQ("Azeri_Azerbaijan.857", setlocale(LC_ALL, "Azeri_Azerbaijan.857"));
-		EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+		EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 		RESET_LOCALE();
 
 		EXPECT_STREQ("Azeri_Azerbaijan.857", setlocale(LC_ALL, "Azeri_Azerbaijan.OCP"));
-		EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+		EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 		RESET_LOCALE();
 	}
 #else
 	EXPECT_STREQ("az_AZ", setlocale(LC_ALL, "az_AZ"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 
 	EXPECT_STREQ("az_AZ.utf8", setlocale(LC_ALL, "az_AZ.utf8"));
-	EXPECT_LOCALE_EQ(UTF8_LOCALE_AZERI_LATIN, casemapping_locale());
+	EXPECT_LOCALE_EQ(UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, casemapping_locale());
 	RESET_LOCALE();
 #endif
 }

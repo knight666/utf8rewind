@@ -706,8 +706,7 @@ size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t ta
 
 		/* Fixes for Turkish locale */
 
-		if (state.locale == UTF8_LOCALE_TURKISH ||
-			state.locale == UTF8_LOCALE_AZERI_LATIN)
+		if (state.locale == UTF8_LOCALE_TURKISH_AND_AZERI_LATIN)
 		{
 			if (state.last_code_point == CP_LATIN_CAPITAL_LETTER_I)
 			{
