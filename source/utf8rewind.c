@@ -554,10 +554,8 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, locale))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, QuickCheckCaseMapped_Uppercase, locale, errors))
 	{
-		UTF8_SET_ERROR(INVALID_FLAG);
-
 		return state.total_bytes_needed;
 	}
 
@@ -590,10 +588,8 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, locale))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, QuickCheckCaseMapped_Lowercase, locale, errors))
 	{
-		UTF8_SET_ERROR(INVALID_FLAG);
-
 		return state.total_bytes_needed;
 	}
 
@@ -626,10 +622,8 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, locale))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, QuickCheckCaseMapped_Titlecase, locale, errors))
 	{
-		UTF8_SET_ERROR(INVALID_FLAG);
-
 		return state.total_bytes_needed;
 	}
 
@@ -691,10 +685,8 @@ size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t ta
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, locale))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, QuickCheckCaseMapped_Casefolded, locale, errors))
 	{
-		UTF8_SET_ERROR(INVALID_FLAG);
-
 		return state.total_bytes_needed;
 	}
 
