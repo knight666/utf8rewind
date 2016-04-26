@@ -48,8 +48,8 @@ namespace helpers {
 
 			result << "Value of: " << expressionActual << std::endl;
 
-			result << "  Actual: " << locale(localeActual) << " (" << localeActual << ")" << std::endl;
-			result << "Expected: " << locale(localeExpected) << " (" << localeExpected << ")";
+			result << "  Actual: " << locale(localeActual) << std::endl;
+			result << "Expected: " << locale(localeExpected);
 
 			return result;
 		}

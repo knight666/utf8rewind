@@ -59,7 +59,8 @@ uint8_t casemapping_initialize(
 	const char* input, size_t inputSize,
 	char* target, size_t targetSize,
 	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData,
-	size_t locale);
+	uint8_t quickCheck, size_t locale,
+	int32_t* errors);
 
 size_t casemapping_execute(CaseMappingState* state, int32_t* errors);
 

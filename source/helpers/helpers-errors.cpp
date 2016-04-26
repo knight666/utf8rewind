@@ -44,8 +44,8 @@ namespace helpers {
 
 			result << std::endl;
 
-			result << "  Actual: " << error(errorActual) << " (" << errorActual << ")" << std::endl;
-			result << "Expected: " << error(errorExpected) << " (" << errorExpected << ")";
+			result << "  Actual: " << error(errorActual) << std::endl;
+			result << "Expected: " << error(errorExpected);
 
 			return result;
 		}
