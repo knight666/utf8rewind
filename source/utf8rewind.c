@@ -546,7 +546,60 @@ const char* utf8seek(const char* text, size_t textSize, const char* textStart, o
 
 UTF8_API size_t utf8envlocale()
 {
-	return 0;
+	/*
+		Sources for locales and code pages
+
+		Windows
+		https://msdn.microsoft.com/en-US/goglobal/bb896001.aspx
+
+		POSIX
+		https://www-01.ibm.com/support/knowledgecenter/ssw_aix_61/com.ibm.aix.nlsgdrf/support_languages_locales.htm
+	*/
+
+#if WIN32 || _WINDOWS
+	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
+		(codepage == _ansiCodepage || codepage == _oemCodepage)
+
+	// Microsoft changed the name of the codepage member in VS2015.
+
+	#if _MSC_VER >= 1800
+		#define UTF8_CODEPAGE_GET(_locale)  ((__crt_locale_data_public*)(_locale)->locinfo)->_locale_lc_codepage
+	#else
+		#define UTF8_CODEPAGE_GET(_locale)  (_locale)->locinfo->lc_codepage
+	#endif
+
+	unsigned int codepage;
+	_locale_t locale = _get_current_locale();
+
+	if (locale == 0)
+	{
+		return UTF8_LOCALE_DEFAULT;
+	}
+
+	codepage = UTF8_CODEPAGE_GET(locale);
+#else
+	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
+		!strncasecmp(locale, _name, 5)
+
+	const char* locale = setlocale(LC_ALL, 0);
+	if (locale == 0)
+	{
+		return UTF8_LOCALE_DEFAULT;
+	}
+#endif
+
+	if (UTF8_LOCALE_CHECK("lt_lt", 1257, 775))
+	{
+		return UTF8_LOCALE_LITHUANIAN;
+	}
+	else if (
+		UTF8_LOCALE_CHECK("tr_tr", 1254, 857) ||
+		UTF8_LOCALE_CHECK("az_az", 1254, 857))
+	{
+		return UTF8_LOCALE_TURKISH_AND_AZERI_LATIN;
+	}
+
+	return UTF8_LOCALE_DEFAULT;
 }
 
 size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors)
