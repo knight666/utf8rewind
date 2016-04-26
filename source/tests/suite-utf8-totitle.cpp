@@ -608,6 +608,18 @@ TEST(Utf8ToTitle, InvalidData)
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
+TEST(Utf8ToTitle, InvalidLocale)
+{
+	const char* c = "consoles";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8totitle(c, strlen(c), b, s, 1366, &errors));
+	EXPECT_UTF8EQ("", b);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_FLAG, errors);
+}
+
 TEST(Utf8ToTitle, OverlappingParametersFits)
 {
 	int32_t errors = UTF8_ERR_NONE;

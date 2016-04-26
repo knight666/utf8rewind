@@ -569,6 +569,18 @@ TEST(Utf8ToUpper, InvalidData)
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_DATA, errors);
 }
 
+TEST(Utf8ToUpper, InvalidLocale)
+{
+	const char* c = "party-time";
+	const size_t s = 255;
+	char b[256] = { 0 };
+	int32_t errors = UTF8_ERR_NONE;
+
+	EXPECT_EQ(0, utf8toupper(c, strlen(c), b, s, 99, &errors));
+	EXPECT_UTF8EQ("", b);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_FLAG, errors);
+}
+
 TEST(Utf8ToUpper, OverlappingParametersFits)
 {
 	int32_t errors = UTF8_ERR_NONE;
