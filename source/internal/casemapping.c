@@ -230,16 +230,10 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 				{
 					uint8_t found = 0;
 
-					/* Initialize stream on the start of the sequence */
+					/* Initialize stream and read the next sequence */
 
-					if (!stream_initialize(&stream, state->src, state->src_size))
-					{
-						goto writeregular;
-					}
-
-					/* Read the current sequence */
-
-					if (!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
+					if (!stream_initialize(&stream, state->src, state->src_size) ||
+						!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
 					{
 						goto writeregular;
 					}
@@ -457,16 +451,10 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 
 			}
 
-			/* Initialize stream on the start of the sequence */
+			/* Initialize stream and read the next sequence */
 
-			if (!stream_initialize(&stream, state->src, state->src_size))
-			{
-				goto writeregular;
-			}
-
-			/* Read the current sequence */
-
-			if (!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
+			if (!stream_initialize(&stream, state->src, state->src_size) ||
+				!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
 			{
 				goto writeregular;
 			}
