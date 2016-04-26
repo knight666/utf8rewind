@@ -35,8 +35,6 @@
 
 #include "utf8rewind.h"
 
-uint32_t casemapping_locale();
-
 typedef struct {
 	const char* src;
 	char* dst;

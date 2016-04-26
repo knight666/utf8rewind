@@ -68,60 +68,6 @@ static const char basic_latin_uppercase_table[58] = {
 	0x59, 0x5A
 };
 
-#if WIN32 || _WINDOWS
-	// Microsoft changed the name of the codepage member in VS2015.
-
-	#if _MSC_VER >= 1800
-		#define UTF8_CODEPAGE_GET(_locale)         ((__crt_locale_data_public*)(_locale)->locinfo)->_locale_lc_codepage
-	#else
-		#define UTF8_CODEPAGE_GET(_locale)         (_locale)->locinfo->lc_codepage
-	#endif
-
-	#define UTF8_LOCALE_GET \
-		unsigned int codepage; \
-		_locale_t locale = _get_current_locale(); \
-		if (locale == 0) return UTF8_LOCALE_DEFAULT; \
-		codepage = UTF8_CODEPAGE_GET(locale)
-
-	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
-		codepage == _ansiCodepage || codepage == _oemCodepage
-#else
-	#define UTF8_LOCALE_GET \
-		const char* locale = setlocale(LC_ALL, 0); \
-		if (locale == 0) return UTF8_LOCALE_DEFAULT
-
-	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
-		!strncasecmp(locale, _name, 5)
-#endif
-
-uint32_t casemapping_locale()
-{
-	/*
-		Sources for locales and code pages
-
-		Windows
-		https://msdn.microsoft.com/en-US/goglobal/bb896001.aspx
-
-		POSIX
-		https://www-01.ibm.com/support/knowledgecenter/ssw_aix_61/com.ibm.aix.nlsgdrf/support_languages_locales.htm
-	*/
-
-	UTF8_LOCALE_GET;
-
-	if (UTF8_LOCALE_CHECK("lt_lt", 1257, 775))
-	{
-		return UTF8_LOCALE_LITHUANIAN;
-	}
-	else if (
-		UTF8_LOCALE_CHECK("tr_tr", 1254, 857) ||
-		UTF8_LOCALE_CHECK("az_az", 1254, 857))
-	{
-		return UTF8_LOCALE_TURKISH_AND_AZERI_LATIN;
-	}
-
-	return UTF8_LOCALE_DEFAULT;
-}
-
 uint8_t casemapping_initialize(
 	CaseMappingState* state,
 	const char* input, size_t inputSize,
