@@ -62,13 +62,13 @@
 	\def UTF8_VERSION_MINOR
 	\brief The minor version number of this release.
 */
-#define UTF8_VERSION_MINOR   4
+#define UTF8_VERSION_MINOR   5
 
 /*!
 	\def UTF8_VERSION_BUGFIX
 	\brief The bugfix version number of this release.
 */
-#define UTF8_VERSION_BUGFIX  1
+#define UTF8_VERSION_BUGFIX  0
 
 /*!
 	\def UTF8_VERSION
@@ -81,7 +81,7 @@
 	\def UTF8_VERSION_STRING
 	\brief The verion number as a string.
 */
-#define UTF8_VERSION_STRING  "1.4.1"
+#define UTF8_VERSION_STRING  "1.5.0"
 
 /*!
 	\def UTF8_VERSION_GUARD
@@ -140,9 +140,33 @@
 	\{
 */
 
+/*!
+	\def UTF8_LOCALE_DEFAULT
+	\brief Default locale, for text unaffected by changes in locale.
+*/
 #define UTF8_LOCALE_DEFAULT                     0
+
+/*!
+	\def UTF8_LOCALE_LITHUANIAN
+	\brief Changes behavior of the case mapping implementation when processing
+	specific code points. For more information, see here:
+	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
+*/
 #define UTF8_LOCALE_LITHUANIAN                  1
+
+/*!
+	\def UTF8_LOCALE_TURKISH_AND_AZERI_LATIN
+	\brief Changes behavior of the case mapping implementation when processing
+	specific code points. For more information, see here:
+	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
+*/
 #define UTF8_LOCALE_TURKISH_AND_AZERI_LATIN     2
+
+/*!
+	\def UTF8_LOCALE_MAXIMUM
+	\brief Terminal value for locales. Valid locales are smaller than
+	this value.
+*/
 #define UTF8_LOCALE_MAXIMUM                     3
 
 /*!
