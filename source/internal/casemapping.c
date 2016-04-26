@@ -80,7 +80,7 @@ static const char basic_latin_uppercase_table[58] = {
 	#define UTF8_LOCALE_GET \
 		unsigned int codepage; \
 		_locale_t locale = _get_current_locale(); \
-		if (locale == 0) return CASEMAPPING_LOCALE_DEFAULT; \
+		if (locale == 0) return UTF8_LOCALE_UNAFFECTED; \
 		codepage = UTF8_CODEPAGE_GET(locale)
 
 	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
@@ -88,7 +88,7 @@ static const char basic_latin_uppercase_table[58] = {
 #else
 	#define UTF8_LOCALE_GET \
 		const char* locale = setlocale(LC_ALL, 0); \
-		if (locale == 0) return CASEMAPPING_LOCALE_DEFAULT
+		if (locale == 0) return UTF8_LOCALE_UNAFFECTED
 
 	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
 		!strncasecmp(locale, _name, 5)
@@ -110,16 +110,20 @@ uint32_t casemapping_locale()
 
 	if (UTF8_LOCALE_CHECK("lt_lt", 1257, 775))
 	{
-		return CASEMAPPING_LOCALE_LITHUANIAN;
+		return UTF8_LOCALE_LITHUANIAN;
 	}
 	else if (
-		UTF8_LOCALE_CHECK("tr_tr", 1254, 857) ||
+		UTF8_LOCALE_CHECK("tr_tr", 1254, 857))
+	{
+		return UTF8_LOCALE_TURKISH;
+	}
+	else if (
 		UTF8_LOCALE_CHECK("az_az", 1254, 857))
 	{
-		return CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN;
+		return UTF8_LOCALE_AZERI_LATIN;
 	}
 
-	return CASEMAPPING_LOCALE_DEFAULT;
+	return UTF8_LOCALE_UNAFFECTED;
 }
 
 uint8_t casemapping_initialize(
@@ -143,7 +147,6 @@ uint8_t casemapping_initialize(
 	state->property_index1 = propertyIndex1;
 	state->property_index2 = propertyIndex2;
 	state->property_data = propertyData;
-	state->quickcheck_flags = 0;
 	state->locale = locale;
 
 	if (propertyData == TitlecaseDataPtr)
@@ -194,7 +197,8 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 		goto writeresolved;
 	}
 
-	if (state->locale == CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN)
+	if (state->locale == UTF8_LOCALE_TURKISH ||
+		state->locale == UTF8_LOCALE_AZERI_LATIN)
 	{
 		/*
 			Code point General Category does not need to be modified, because
@@ -299,7 +303,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 		}
 	}
 	else if (
-		state->locale == CASEMAPPING_LOCALE_LITHUANIAN)
+		state->locale == UTF8_LOCALE_LITHUANIAN)
 	{
 		if (state->property_data == LowercaseDataPtr)
 		{
