@@ -617,7 +617,7 @@ TEST(Utf8ToTitle, InvalidLocale)
 
 	EXPECT_EQ(0, utf8totitle(c, strlen(c), b, s, 1366, &errors));
 	EXPECT_UTF8EQ("", b);
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_FLAG, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_LOCALE, errors);
 }
 
 TEST(Utf8ToTitle, OverlappingParametersFits)

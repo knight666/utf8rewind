@@ -142,7 +142,7 @@ TEST(CaseMappingInitialize, LocaleMaximum)
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_FALSE(casemapping_initialize(&state, i, is, o, os, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, QuickCheckCaseMapped_Uppercase, UTF8_LOCALE_MAXIMUM, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_FLAG, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_LOCALE, errors);
 	EXPECT_LOCALE_EQ(0, state.locale);
 }
 
@@ -156,6 +156,6 @@ TEST(CaseMappingInitialize, LocaleInvalid)
 	int32_t errors = UTF8_ERR_NONE;
 
 	EXPECT_FALSE(casemapping_initialize(&state, i, is, o, os, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, QuickCheckCaseMapped_Uppercase, 312, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_FLAG, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_LOCALE, errors);
 	EXPECT_LOCALE_EQ(0, state.locale);
 }

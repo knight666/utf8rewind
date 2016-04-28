@@ -582,7 +582,7 @@ TEST(Utf8ToLower, InvalidLocale)
 
 	EXPECT_EQ(0, utf8toupper(c, strlen(c), b, s, 99, &errors));
 	EXPECT_UTF8EQ("", b);
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_FLAG, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_LOCALE, errors);
 }
 
 TEST(Utf8ToLower, OverlappingParametersFits)
