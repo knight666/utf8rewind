@@ -735,9 +735,9 @@ UTF8_API size_t utf8envlocale();
 	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
 	!= toLower(toUpper(x))`.
 
-	\note Certain code points (or combinations of code points) exhibit special
-	behavior when the locale is set to non-default. For more information about
-	these exceptions, please refer to the Unicode standard:
+	\warning Certain code points (or combinations of code points) exhibit
+	special behavior when the locale is set to non-default. For more information
+	about these exceptions, please refer to the Unicode standard:
 	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
 	
 
@@ -783,7 +783,7 @@ UTF8_API size_t utf8envlocale();
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Locale to be used for case mapping.
+	\param[in]   locale      Enables locale-specific behavior in the implementation.
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed to contain output.
@@ -822,9 +822,9 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
 	!= toLower(toUpper(x))`.
 
-	\note Certain code points (or combinations of code points) exhibit special
-	behavior when the locale is set to non-default. For more information about
-	these exceptions, please refer to the Unicode standard:
+	\warning Certain code points (or combinations of code points) exhibit
+	special behavior when the locale is set to non-default. For more information
+	about these exceptions, please refer to the Unicode standard:
 	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
 
 	Example:
@@ -873,7 +873,7 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Locale to be used for case mapping.
+	\param[in]   locale      Enables locale-specific behavior in the implementation.
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
@@ -927,9 +927,9 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
 	!= toLower(toUpper(x))`.
 
-	\note Certain code points (or combinations of code points) exhibit special
-	behavior when the locale is set to non-default. For more information about
-	these exceptions, please refer to the Unicode standard:
+	\warning Certain code points (or combinations of code points) exhibit
+	special behavior when the locale is set to non-default. For more information
+	about these exceptions, please refer to the Unicode standard:
 	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
 
 	Example:
@@ -957,7 +957,7 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Locale to be used for case mapping.
+	\param[in]   locale      Enables locale-specific behavior in the implementation.
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
@@ -1003,9 +1003,9 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	a few historic or archaic scripts have case. The vast majority of scripts
 	do not have case distinctions.
 
-	\note Certain code points (or combinations of code points) exhibit special
-	behavior when the locale is set to non-default. For more information about
-	these exceptions, please refer to the Unicode standard:
+	\warning Certain code points (or combinations of code points) exhibit
+	special behavior when the locale is set to non-default. For more information
+	about these exceptions, please refer to the Unicode standard:
 	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
 
 	Example:
@@ -1067,7 +1067,7 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Locale to be used for case mapping.
+	\param[in]   locale      Enables locale-specific behavior in the implementation.
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
