@@ -602,7 +602,7 @@ TEST(Utf8CaseFold, InvalidLocale)
 
 	EXPECT_EQ(0, utf8casefold(c, strlen(c), b, s, 188, &errors));
 	EXPECT_UTF8EQ("", b);
-	EXPECT_ERROREQ(UTF8_ERR_INVALID_FLAG, errors);
+	EXPECT_ERROREQ(UTF8_ERR_INVALID_LOCALE, errors);
 }
 
 TEST(Utf8CaseFold, OverlappingParametersFits)

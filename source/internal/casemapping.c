@@ -80,7 +80,7 @@ uint8_t casemapping_initialize(
 
 	if (locale >= UTF8_LOCALE_MAXIMUM)
 	{
-		UTF8_SET_ERROR(INVALID_FLAG);
+		UTF8_SET_ERROR(INVALID_LOCALE);
 
 		return 0;
 	}

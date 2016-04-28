@@ -131,6 +131,12 @@
 #define UTF8_ERR_OVERLAPPING_PARAMETERS         (-4)
 
 /*!
+	\def UTF8_ERR_INVALID_LOCALE
+	\brief Invalid locale specified.
+*/
+#define UTF8_ERR_INVALID_LOCALE                 (-5)
+
+/*!
 	\}
 */
 
@@ -164,8 +170,7 @@
 
 /*!
 	\def UTF8_LOCALE_MAXIMUM
-	\brief Terminal value for locales. Valid locales are smaller than
-	this value.
+	\brief Terminal value for locales. Valid locales do not exceeed this value.
 */
 #define UTF8_LOCALE_MAXIMUM                     3
 
@@ -662,9 +667,9 @@ UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* tex
 	specified locale.
 
 	Unfortunately, no cross-platform way of setting and retrieving the system
-	locale is available without adding dependencies to the library. Please
-	refer to your operating system's manual to determine how to setup the
-	system locale on your target system.
+	locale is available without adding dependencies to the library. Please refer
+	to your operating system's manual to determine how to setup the system
+	locale on your target system.
 
 	\warning This function should not be used as a replacement for
 	platform-specific methods for retrieving the locale. Its intended usage is
@@ -730,16 +735,11 @@ UTF8_API size_t utf8envlocale();
 	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
 	!= toLower(toUpper(x))`.
 
-	\note This function checks the (thread-local) system locale in order to
-	support languages with exceptional behavior on specific code points.
-	Unfortunately, no cross-platform way of setting and retrieving the system
-	locale is available without adding dependencies to the library. Please
-	refer to your operating system's manual to see how to setup the system
-	locale on your target system.
-	
-	\par For more information on these exceptional code points, please refer
-	to the text file made available by the Unicode Consortium:
+	\note Certain code points (or combinations of code points) exhibit special
+	behavior when the locale is set to non-default. For more information about
+	these exceptions, please refer to the Unicode standard:
 	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
+	
 
 	Example:
 
@@ -752,7 +752,7 @@ UTF8_API size_t utf8envlocale();
 			int32_t text_box_width, text_box_height;
 			int32_t errors;
 
-			converted_size = utf8toupper(text, input_size, NULL, 0, &errors);
+			converted_size = utf8toupper(text, input_size, NULL, 0, UTF8_LOCALE_DEFAULT, &errors);
 			if (converted_size == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
@@ -760,7 +760,7 @@ UTF8_API size_t utf8envlocale();
 			}
 
 			converted = (char*)malloc(converted_size + 1);
-			utf8toupper(text, input_size, converted, converted_size, NULL);
+			utf8toupper(text, input_size, converted, converted_size, UTF8_LOCALE_DEFAULT, NULL);
 			converted[converted_size] = 0;
 
 			Font_GetTextDimensions(converted, &text_box_width, &text_box_height);
@@ -783,12 +783,14 @@ UTF8_API size_t utf8envlocale();
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[in]   locale      Locale to be used for case mapping.
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed to contain output.
 
 	\retval #UTF8_ERR_NONE                    No errors.
 	\retval #UTF8_ERR_INVALID_DATA            Failed to decode data.
+	\retval #UTF8_ERR_INVALID_LOCALE          Invalid locale specified.
 	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
 	\retval #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer size is insufficient for result.
 
@@ -820,15 +822,9 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
 	!= toLower(toUpper(x))`.
 
-	\note This function checks the (thread-local) system locale in order to
-	support languages with exceptional behavior on specific code points.
-	Unfortunately, no cross-platform way of setting and retrieving the system
-	locale is available without adding dependencies to the library. Please
-	refer to your operating system's manual to see how to setup the system
-	locale on your target system.
-
-	\par For more information on these exceptional code points, please refer
-	to the text file made available by the Unicode Consortium:
+	\note Certain code points (or combinations of code points) exhibit special
+	behavior when the locale is set to non-default. For more information about
+	these exceptions, please refer to the Unicode standard:
 	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
 
 	Example:
@@ -843,7 +839,7 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 			int32_t errors;
 			size_t i;
 			
-			converted_size = utf8tolower(name, name_size, NULL, 0, &errors);
+			converted_size = utf8tolower(name, name_size, NULL, 0, UTF8_LOCALE_DEFAULT, &errors);
 			if (converted_size == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
@@ -851,7 +847,7 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 			}
 
 			converted = (char*)malloc(converted_size + 1);
-			utf8tolower(name, name_size, converted, converted_size, NULL);
+			utf8tolower(name, name_size, converted, converted_size, UTF8_LOCALE_DEFAULT, NULL);
 			converted[converted_size] = 0;
 			
 			for (i = 0; i < g_AuthorCount; ++i)
@@ -877,12 +873,14 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[in]   locale      Locale to be used for case mapping.
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
 
 	\retval #UTF8_ERR_NONE                    No errors.
 	\retval #UTF8_ERR_INVALID_DATA            Failed to decode data.
+	\retval #UTF8_ERR_INVALID_LOCALE          Invalid locale specified.
 	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
 	\retval #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer size is insufficient for result.
 
@@ -929,15 +927,9 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
 	!= toLower(toUpper(x))`.
 
-	\note This function checks the (thread-local) system locale in order to
-	support languages with exceptional behavior on specific code points.
-	Unfortunately, no cross-platform way of setting and retrieving the system
-	locale is available without adding dependencies to the library. Please
-	refer to your operating system's manual to see how to setup the system
-	locale on your target system.
-
-	\par For more information on these exceptional code points, please refer
-	to the text file made available by the Unicode Consortium:
+	\note Certain code points (or combinations of code points) exhibit special
+	behavior when the locale is set to non-default. For more information about
+	these exceptions, please refer to the Unicode standard:
 	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
 
 	Example:
@@ -949,7 +941,7 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 			int32_t errors;
 			size_t i;
 
-			converted_size = utf8totitle(title, strlen(title), book->title, sizeof(book->title) - 1, &errors);
+			converted_size = utf8totitle(title, strlen(title), book->title, sizeof(book->title) - 1, UTF8_LOCALE_DEFAULT, &errors);
 			if (converted_size == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
@@ -965,12 +957,14 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[in]   locale      Locale to be used for case mapping.
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
 
 	\retval #UTF8_ERR_NONE                    No errors.
 	\retval #UTF8_ERR_INVALID_DATA            Failed to decode data.
+	\retval #UTF8_ERR_INVALID_LOCALE          Invalid locale specified.
 	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
 	\retval #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer size is insufficient for result.
 
@@ -1009,12 +1003,10 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	a few historic or archaic scripts have case. The vast majority of scripts
 	do not have case distinctions.
 
-	\note This function checks the (thread-local) system locale in order to
-	support languages with exceptional behavior on specific code points.
-	Unfortunately, no cross-platform way of setting and retrieving the system
-	locale is available without adding dependencies to the library. Please
-	refer to your operating system's manual to see how to setup the system
-	locale on your target system.
+	\note Certain code points (or combinations of code points) exhibit special
+	behavior when the locale is set to non-default. For more information about
+	these exceptions, please refer to the Unicode standard:
+	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
 
 	Example:
 
@@ -1026,7 +1018,7 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 			int32_t errors;
 			int32_t result = 0;
 
-			buffer_size = utf8casefold(argument, strlen(argument), NULL, 0, &errors);
+			buffer_size = utf8casefold(argument, strlen(argument), NULL, 0, UTF8_LOCALE_DEFAULT, &errors);
 			if (buffer_size == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
@@ -1037,7 +1029,7 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 
 			buffer = (char*)malloc(buffer_size);
 
-			utf8casefold(argument, strlen(argument), buffer, buffer_size, &errors);
+			utf8casefold(argument, strlen(argument), buffer, buffer_size, UTF8_LOCALE_DEFAULT, &errors);
 			if (errors != UTF8_ERR_NONE)
 			{
 				result = -1;
@@ -1075,12 +1067,14 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
+	\param[in]   locale      Locale to be used for case mapping.
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
 
 	\retval #UTF8_ERR_NONE                    No errors.
 	\retval #UTF8_ERR_INVALID_DATA            Failed to decode data.
+	\retval #UTF8_ERR_INVALID_LOCALE          Invalid locale specified.
 	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
 	\retval #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer size is insufficient for result.
 
