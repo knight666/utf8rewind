@@ -59,6 +59,7 @@ var searchData=
   ['utf8_5fcategory_5funassigned',['UTF8_CATEGORY_UNASSIGNED',['../utf8rewind_8h.html#acdee46e8366d186508282a328f5b887b',1,'utf8rewind.h']]],
   ['utf8_5ferr_5finvalid_5fdata',['UTF8_ERR_INVALID_DATA',['../utf8rewind_8h.html#aabf4ed55c67112f79abe7275ee2ecc9b',1,'utf8rewind.h']]],
   ['utf8_5ferr_5finvalid_5fflag',['UTF8_ERR_INVALID_FLAG',['../utf8rewind_8h.html#ae91fa4856dd1f05861b3924c90bef23c',1,'utf8rewind.h']]],
+  ['utf8_5ferr_5finvalid_5flocale',['UTF8_ERR_INVALID_LOCALE',['../utf8rewind_8h.html#ab72dbc8ef61f9fe150a6ea70368f2b1a',1,'utf8rewind.h']]],
   ['utf8_5ferr_5fnone',['UTF8_ERR_NONE',['../utf8rewind_8h.html#ac7f8a18ca0ca9ebb357b2e7b9c527cc3',1,'utf8rewind.h']]],
   ['utf8_5ferr_5fnot_5fenough_5fspace',['UTF8_ERR_NOT_ENOUGH_SPACE',['../utf8rewind_8h.html#a2c80a4201b65d282db98489204f6d5d8',1,'utf8rewind.h']]],
   ['utf8_5ferr_5foverlapping_5fparameters',['UTF8_ERR_OVERLAPPING_PARAMETERS',['../utf8rewind_8h.html#a212f91820ec425df66d59f187e78412c',1,'utf8rewind.h']]],
