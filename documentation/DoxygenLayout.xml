@@ -3,7 +3,7 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title="Overview"/>
-    <tab type="user" url="@ref public" title="Interface"/>
+    <tab type="user" url="@ref public" title="Public interface"/>
     <tab type="user" url="@ref examples" title="Examples"/>
     <tab type="modules" visible="yes" title="" intro=""/>
     <tab type="namespaces" visible="yes" title="">
