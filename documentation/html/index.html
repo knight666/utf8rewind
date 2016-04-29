@@ -40,8 +40,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li class="current"><a href="index.html"><span>Overview</span></a></li>
-      <li><a href="utf8rewind_8h.html"><span>Interface</span></a></li>
+      <li><a href="group__public.html"><span>Interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -125,9 +126,9 @@ Example</h1>
 <div class="line">    <span class="comment">//</span></div>
 <div class="line">    <span class="comment">// &quot;Ἀριστοτέλης&quot; -&gt; &quot;ἈΡΙΣΤΟΤΈΛΗΣ&quot;</span></div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a60cbc5c0db00eb7c703931ad16c627a7">utf8toupper</a>(input, strlen(input), output, output_size, &amp;errors);</div>
+<div class="line">    converted_size = <a class="code" href="group__public.html#ga60cbc5c0db00eb7c703931ad16c627a7">utf8toupper</a>(input, strlen(input), output, output_size, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
-<div class="line">        errors != <a class="code" href="utf8rewind_8h.html#ac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">return</span> -1;</div>
 <div class="line">    }</div>
@@ -136,9 +137,9 @@ Example</h1>
 <div class="line">    <span class="comment">//</span></div>
 <div class="line">    <span class="comment">// &quot;ἈΡΙΣΤΟΤΈΛΗΣ&quot; -&gt; L&quot;ἈΡΙΣΤΟΤΈΛΗΣ&quot;</span></div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="utf8rewind_8h.html#a8653854fdb4550ec3a9515ecede1f73a">utf8towide</a>(output, strlen(output), output_wide, output_size * <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>), &amp;errors);</div>
+<div class="line">    converted_size = <a class="code" href="group__public.html#ga8653854fdb4550ec3a9515ecede1f73a">utf8towide</a>(output, strlen(output), output_wide, output_size * <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>), &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
-<div class="line">        errors != <a class="code" href="utf8rewind_8h.html#ac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">return</span> -1;</div>
 <div class="line">    }</div>
@@ -147,18 +148,18 @@ Example</h1>
 <div class="line">    <span class="comment">//</span></div>
 <div class="line">    <span class="comment">// &quot;Ἀριστοτέλης&quot; -&gt; &quot;τέλης&quot;</span></div>
 <div class="line"></div>
-<div class="line">    input_seek = <a class="code" href="utf8rewind_8h.html#ace07c42b3b5031414ceed1f78055242f">utf8seek</a>(input, strlen(input), input, 6, SEEK_SET);</div>
+<div class="line">    input_seek = <a class="code" href="group__public.html#gace07c42b3b5031414ceed1f78055242f">utf8seek</a>(input, strlen(input), input, 6, SEEK_SET);</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 </div><!-- fragment --><h1><a class="anchor" id="features"></a>
 Features</h1>
 <p><b>Cross-platform</b> - <code>utf8rewind</code> is written in plain C, which means it can be used on any platform with a compliant C compiler. Currently, Windows, Linux and Mac OS versions are available.</p>
-<p><b>Conversion to and from UTF-8</b> - <code>utf8rewind</code> provides functions for converting to and from <a class="el" href="utf8rewind_8h.html#aedea488052a8d820af3d192485e814e8">wide</a>, <a class="el" href="utf8rewind_8h.html#a84f067fc0293c142137d308ded6f130c">UTF-16</a> and <a class="el" href="utf8rewind_8h.html#a325b2612f0a2afdacb81d5e6831bd43b">UTF-32</a> encoded text.</p>
-<p><b>Case mapping</b> - The library provides functionality for converting text to <a class="el" href="utf8rewind_8h.html#a60cbc5c0db00eb7c703931ad16c627a7">uppercase</a>, <a class="el" href="utf8rewind_8h.html#a02746f7030b3be4da408665dcf9c0015">lowercase</a> and <a class="el" href="utf8rewind_8h.html#acb63e25ee7ea0efe44333f4c9cbb7677">titlecase</a>.</p>
-<p><b>Case folding</b> - Using <a class="el" href="utf8rewind_8h.html#af50584a0773d99dfb93912b2f29a4c74" title="Remove case distinction from UTF-8 encoded text. ">utf8casefold</a>, you can erase case distinctions in strings and compare them in a case-insensitive manner.</p>
-<p><b>Normalization</b> - With <a class="el" href="utf8rewind_8h.html#adfa0210609054db368b6af9837ca69db" title="Normalize a string to the specified Unicode Normalization Form. ">utf8normalize</a>, you can normalize UTF-8 encoded text to NFC, NFD, NFKC or NFKD without converting the text to UTF-32 first.</p>
-<p><b>Seeking</b> - Using <a class="el" href="utf8rewind_8h.html#ace07c42b3b5031414ceed1f78055242f" title="Seek into a UTF-8 encoded string. ">utf8seek</a>, you can seek forwards and backwards in any UTF-8 encoded strings.</p>
+<p><b>Conversion to and from UTF-8</b> - <code>utf8rewind</code> provides functions for converting to and from <a class="el" href="group__public.html#gaedea488052a8d820af3d192485e814e8">wide</a>, <a class="el" href="group__public.html#ga84f067fc0293c142137d308ded6f130c">UTF-16</a> and <a class="el" href="group__public.html#ga325b2612f0a2afdacb81d5e6831bd43b">UTF-32</a> encoded text.</p>
+<p><b>Case mapping</b> - The library provides functionality for converting text to <a class="el" href="group__public.html#ga60cbc5c0db00eb7c703931ad16c627a7">uppercase</a>, <a class="el" href="group__public.html#ga02746f7030b3be4da408665dcf9c0015">lowercase</a> and <a class="el" href="group__public.html#gacb63e25ee7ea0efe44333f4c9cbb7677">titlecase</a>.</p>
+<p><b>Case folding</b> - Using <a class="el" href="group__public.html#gaf50584a0773d99dfb93912b2f29a4c74" title="Remove case distinction from UTF-8 encoded text. ">utf8casefold</a>, you can erase case distinctions in strings and compare them in a case-insensitive manner.</p>
+<p><b>Normalization</b> - With <a class="el" href="group__public.html#gadfa0210609054db368b6af9837ca69db" title="Normalize a string to the specified Unicode Normalization Form. ">utf8normalize</a>, you can normalize UTF-8 encoded text to NFC, NFD, NFKC or NFKD without converting the text to UTF-32 first.</p>
+<p><b>Seeking</b> - Using <a class="el" href="group__public.html#gace07c42b3b5031414ceed1f78055242f" title="Seek into a UTF-8 encoded string. ">utf8seek</a>, you can seek forwards and backwards in any UTF-8 encoded strings.</p>
 <p><b>Easy to integrate</b> - The library consists of only 15 public functions and requires <em>no</em> initialization. Any C or C++ project can add <code>utf8rewind</code> without breaking existing code.</p>
 <p><b>Simple bindings</b> - No structs are used in the public interface, only pointers. Even if you don't use C, if the language of your choice allows bindings to C functions, you can benefit from integrating <code>utf8rewind</code> into your project.</p>
 <p><b>No heap allocations</b> - All allocations in <code>utf8rewind</code> happen on the stack. <em>You</em> provide the memory, without having to override <code>malloc</code>. This makes the library perfectly tailored to game engines, integrated systems and other performance-critical or memory-constrained projects.</p>
