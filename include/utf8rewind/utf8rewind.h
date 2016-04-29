@@ -1108,9 +1108,9 @@ UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* tex
 	\brief Returns the environment's locale as an enum value.
 
 	This function retrieves the (thread-local) environment locale as an enum
-	value below #UTF8_LOCALE_MAXIMUM. This value can be used with functions in
-	this library that change behavior on certain inputs, depending on the
-	specified locale.
+	value in the \ref locales "list of locales". This value can be used with
+	functions in this library that change behavior on certain inputs, depending
+	on the specified locale.
 
 	Unfortunately, no cross-platform way of setting and retrieving the system
 	locale is available without adding dependencies to the library. Please refer
@@ -1151,7 +1151,7 @@ UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* tex
 		}
 	\endcode
 
-	\return A specific locale or #UTF8_LOCALE_DEFAULT.
+	\return A specific \ref locales "locale" or #UTF8_LOCALE_DEFAULT.
 
 	\sa utf8toupper
 	\sa utf8tolower
@@ -1229,7 +1229,7 @@ UTF8_API size_t utf8envlocale();
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Enables locale-specific behavior in the implementation.
+	\param[in]   locale      Enables locale-specific behavior in the implementation. \ref locales "List of valid locales."
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed to contain output.
@@ -1319,7 +1319,7 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Enables locale-specific behavior in the implementation.
+	\param[in]   locale      Enables locale-specific behavior in the implementation. ef locales "List of valid locales."
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
@@ -1403,7 +1403,7 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Enables locale-specific behavior in the implementation.
+	\param[in]   locale      Enables locale-specific behavior in the implementation. ef locales "List of valid locales."
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
@@ -1513,7 +1513,7 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Enables locale-specific behavior in the implementation.
+	\param[in]   locale      Enables locale-specific behavior in the implementation. ef locales "List of valid locales."
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.

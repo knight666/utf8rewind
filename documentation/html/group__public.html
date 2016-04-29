@@ -40,7 +40,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Overview</span></a></li>
-      <li><a href="group__public.html"><span>Interface</span></a></li>
+      <li><a href="group__public.html"><span>Public&#160;interface</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -836,7 +836,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the environment's locale as an enum value. </p>
-<p>This function retrieves the (thread-local) environment locale as an enum value below <a class="el" href="group__locales.html#gaa52afac1e9d8b492cc017bddcdb03f79" title="Terminal value for locales. Valid locales do not exceeed this value. ">UTF8_LOCALE_MAXIMUM</a>. This value can be used with functions in this library that change behavior on certain inputs, depending on the specified locale.</p>
+<p>This function retrieves the (thread-local) environment locale as an enum value in the <a class="el" href="group__locales.html">list of locales</a>. This value can be used with functions in this library that change behavior on certain inputs, depending on the specified locale.</p>
 <p>Unfortunately, no cross-platform way of setting and retrieving the system locale is available without adding dependencies to the library. Please refer to your operating system's manual to determine how to setup the system locale on your target system.</p>
 <dl class="section warning"><dt>Warning</dt><dd>This function should not be used as a replacement for platform-specific methods for retrieving the locale. Its intended usage is to "guess" the desired locale by looking at the system locale.</dd></dl>
 <p>Example:</p>
@@ -865,7 +865,7 @@ Functions</h2></td></tr>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">return</span> 1;</div>
 <div class="line">}</div>
-</div><!-- fragment --><dl class="section return"><dt>Returns</dt><dd>A specific locale or <a class="el" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781" title="Default locale, for text unaffected by changes in locale. ">UTF8_LOCALE_DEFAULT</a>.</dd></dl>
+</div><!-- fragment --><dl class="section return"><dt>Returns</dt><dd>A specific <a class="el" href="group__locales.html">locale</a> or <a class="el" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781" title="Default locale, for text unaffected by changes in locale. ">UTF8_LOCALE_DEFAULT</a>.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__public.html#ga60cbc5c0db00eb7c703931ad16c627a7" title="Convert UTF-8 encoded text to uppercase. ">utf8toupper</a> </dd>
 <dd>
 <a class="el" href="group__public.html#ga02746f7030b3be4da408665dcf9c0015" title="Convert UTF-8 encoded text to lowercase. ">utf8tolower</a> </dd>
@@ -970,7 +970,7 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">locale</td><td>Enables locale-specific behavior in the implementation. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">locale</td><td>Enables locale-specific behavior in the implementation. <a class="el" href="group__locales.html">List of valid locales.</a> </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
@@ -1092,7 +1092,7 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">locale</td><td>Enables locale-specific behavior in the implementation. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">locale</td><td>Enables locale-specific behavior in the implementation. ef locales "List of valid locales." </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
@@ -1167,7 +1167,7 @@ Functions</h2></td></tr>
 <p>Convert UTF-8 encoded text to titlecase. </p>
 <p>This function allows conversion of UTF-8 encoded strings to titlecase without first changing the encoding to UTF-32. Conversion is fully compliant with the Unicode 7.0 standard.</p>
 <p>Titlecase requires a bit more explanation than uppercase and lowercase, because it is not a common text transformation. Titlecase uses uppercase for the first letter of each word and lowercase for the rest. Words are defined as "collections of code points with general category Lu, Ll, Lt, Lm
-or Lo according to the Unicode database".</p>
+    or Lo according to the Unicode database".</p>
 <p>Effectively, any type of punctuation can break up a word, even if this is not grammatically valid. This happens because the titlecasing algorithm does not and cannot take grammar rules into account.</p>
 <table class="doxtable">
 <tr>
@@ -1206,7 +1206,7 @@ or Lo according to the Unicode database".</p>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">locale</td><td>Enables locale-specific behavior in the implementation. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">locale</td><td>Enables locale-specific behavior in the implementation. ef locales "List of valid locales." </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
@@ -1342,7 +1342,7 @@ or Lo according to the Unicode database".</p>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">locale</td><td>Enables locale-specific behavior in the implementation. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">locale</td><td>Enables locale-specific behavior in the implementation. ef locales "List of valid locales." </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>
