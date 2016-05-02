@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['version_20information',['Version information',['../group__version.html',1,'']]]
+  ['types',['Types',['../group__types.html',1,'']]]
 ];

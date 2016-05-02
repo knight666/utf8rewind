@@ -7,6 +7,7 @@ var NAVTREEINDEX0 =
 "group__locales.html":[1,4],
 "group__normalization.html":[1,5],
 "group__public.html":[1,0],
+"group__types.html":[1,7],
 "group__version.html":[1,1],
 "index.html":[],
 "index.html":[0],
@@ -22,6 +23,5 @@ var NAVTREEINDEX0 =
 "index.html#license":[0,3],
 "index.html#running-tests":[0,4,3],
 "pages.html":[],
-"usergroup0.html":[1],
-"utf8rewind_8h.html":[1,7]
+"usergroup0.html":[1]
 };

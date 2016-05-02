@@ -57,6 +57,9 @@
 	\defgroup category Category flags
 	Flags to be used with #utf8iscategory, to check whether code points in a
 	string are part of that category.
+
+	\defgroup types Types
+	Custom type definitions used throughout the library.
 */
 
 #include <locale.h>
@@ -676,6 +679,11 @@
 */
 
 /*!
+	\addtogroup types
+	\{
+*/
+
+/*!
 	\var utf16_t
 	\brief UTF-16 encoded code point.
 */
@@ -686,6 +694,10 @@ typedef uint16_t utf16_t;
 	\brief UTF-32 encoded code point.
 */
 typedef uint32_t unicode_t;
+
+/*!
+	\}
+*/
 
 /*!
 	\addtogroup public
