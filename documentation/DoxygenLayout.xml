@@ -13,7 +13,12 @@
       <tab type="user" url="@ref category" title="Category flags"/>
       <tab type="user" url="@ref types" title="Types"/>
     </tab>
-    <tab type="user" url="@ref examples" title="Examples"/>
+    <tab type="usergroup" visible="yes" title="Examples">
+      <tab type="user" url="@ref example-changes" title="Changes to existing code"/>
+      <tab type="user" url="@ref example-user-input" title="Dealing with user input"/>
+      <tab type="user" url="@ref example-display" title="Displaying Unicode text"/>
+      <tab type="user" url="@ref example-users" title="Comparing usernames in a case-insensitive manner"/>
+    </tab>
   </navindex>
 
   <!-- Layout definition for a class page -->

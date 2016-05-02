@@ -1,6 +1,9 @@
 var NAVTREEINDEX0 =
 {
-"examples.html":[2],
+"examples.html#example-changes":[2,0],
+"examples.html#example-display":[2,2],
+"examples.html#example-user-input":[2,1],
+"examples.html#example-users":[2,3],
 "group__category.html":[1,6],
 "group__errors.html":[1,3],
 "group__global-config.html":[1,2],
@@ -23,5 +26,6 @@ var NAVTREEINDEX0 =
 "index.html#license":[0,3],
 "index.html#running-tests":[0,4,3],
 "pages.html":[],
-"usergroup0.html":[1]
+"usergroup0.html":[1],
+"usergroup1.html":[2]
 };

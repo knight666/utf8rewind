@@ -25,13 +25,18 @@ var NAVTREE =
       [ "Category flags", "group__category.html", null ],
       [ "Types", "group__types.html", null ]
     ] ],
-    [ "Examples", "examples.html", null ]
+    [ "Examples", "usergroup1.html", [
+      [ "Changes to existing code", "examples.html#example-changes", null ],
+      [ "Dealing with user input", "examples.html#example-user-input", null ],
+      [ "Displaying Unicode text", "examples.html#example-display", null ],
+      [ "Comparing usernames in a case-insensitive manner", "examples.html#example-users", null ]
+    ] ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-"examples.html"
+"examples.html#example-changes"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
