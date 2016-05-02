@@ -35,7 +35,7 @@
 		//
 		// "Ἀριστοτέλης" -> "ἈΡΙΣΤΟΤΈΛΗΣ"
 
-		converted_size = utf8toupper(input, strlen(input), output, output_size, &errors);
+		converted_size = utf8toupper(input, strlen(input), output, output_size, UTF8_LOCALE_DEFAULT, &errors);
 		if (converted_size == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -104,7 +104,7 @@
 	performance tests guarantee the safety, security and speed of the library.
 
 	For a full summary of the interface, please refer to the
-	[interface page](\ref utf8rewind.h).
+	[interface page](\ref public).
 
 	\section license Licensing
 
@@ -166,9 +166,9 @@
 
 	Use GYP to generate a solution:
 
-		tools\gyp\gyp --depth utf8rewind.gyp
+		tools\gyp\gyp --depth=. utf8rewind.gyp
 
-	Open the solution in XCode and you can build the library and tests.
+	Open the solution in XCode.
 
 	\subsection running-tests Running the tests
 
