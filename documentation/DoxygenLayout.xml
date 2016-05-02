@@ -11,7 +11,7 @@
       <tab type="user" url="@ref locales" title="Locales"/>
       <tab type="user" url="@ref normalization" title="Normalization flags"/>
       <tab type="user" url="@ref category" title="Category flags"/>
-      <tab type="user" url="@ref utf8rewind.h" title="Header"/>
+      <tab type="user" url="@ref types" title="Types"/>
     </tab>
     <tab type="user" url="@ref examples" title="Examples"/>
   </navindex>

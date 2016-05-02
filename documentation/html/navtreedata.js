@@ -23,7 +23,7 @@ var NAVTREE =
       [ "Locales", "group__locales.html", null ],
       [ "Normalization flags", "group__normalization.html", null ],
       [ "Category flags", "group__category.html", null ],
-      [ "Header", "utf8rewind_8h.html", null ]
+      [ "Types", "group__types.html", null ]
     ] ],
     [ "Examples", "examples.html", null ]
   ] ]

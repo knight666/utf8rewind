@@ -149,13 +149,13 @@ Dealing with user input</h1>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">return</span> 1;</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>What we want to do is make sure the password field can accept Unicode input. To that end, we'll change the input type to <a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988" title="UTF-32 encoded code point. ">unicode_t</a>, which can encode every valid Unicode code point.</p>
-<div class="fragment"><div class="line">uint8_t PasswordField_EnterCharacter(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* input, <span class="keywordtype">size_t</span> inputSize)</div>
+</div><!-- fragment --><p>What we want to do is make sure the password field can accept Unicode input. To that end, we'll change the input type to <a class="el" href="group__types.html#gae128fe5bd9e57be736e64d3638229988" title="UTF-32 encoded code point. ">unicode_t</a>, which can encode every valid Unicode code point.</p>
+<div class="fragment"><div class="line">uint8_t PasswordField_EnterCharacter(<a class="code" href="group__types.html#gae128fe5bd9e57be736e64d3638229988">unicode_t</a>* input, <span class="keywordtype">size_t</span> inputSize)</div>
 </div><!-- fragment --><p>Something that surprises many people working with Unicode is that although UTF-32 can contain all possible valid code points, Unicode <em>itself</em> is a variable-length encoding! For instance, consider a string like "U+0399
 U+0308" (GREEK CAPITAL LETTER IOTA and COMBINING DIAERESIS). Although each encodes a separate code point, they can be combined (normalized) into U+03AA (GREEK CAPITAL LETTER IOTA WITH DIALYTIKA). This means that splitting the string after U+0399 is not valid, as it would change the meaning of the encoded text.</p>
 <p>There are also many instances of code points that can be combined when rendering, but aren't explicitly listed in the Unicode code point. This allowed the Unicode Consortium to encode many more characters without taking up space in the database. The downside for developers is of course that it can be difficult to anticipate how much space will be required to store any particular amount of text.</p>
 <p>Back to our example.</p>
-<p>Every location that calls <code>PasswordField_EnterCharacter</code> will have to cast the parameter to <a class="el" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988" title="UTF-32 encoded code point. ">unicode_t</a>, but luckily this is backwards-compatible. All ASCII code points (0x00 to 0x7F) are valid in Unicode as well.</p>
+<p>Every location that calls <code>PasswordField_EnterCharacter</code> will have to cast the parameter to <a class="el" href="group__types.html#gae128fe5bd9e57be736e64d3638229988" title="UTF-32 encoded code point. ">unicode_t</a>, but luckily this is backwards-compatible. All ASCII code points (0x00 to 0x7F) are valid in Unicode as well.</p>
 <p>Inside the function, we'll want to convert the UTF-32 code point to UTF-8. To that end, we'll use <a class="el" href="group__public.html#ga325b2612f0a2afdacb81d5e6831bd43b" title="Convert a UTF-32 encoded string to a UTF-8 encoded string. ">utf32toutf8</a>.</p>
 <div class="fragment"><div class="line"><span class="keywordtype">char</span>* text_input = NULL;</div>
 <div class="line"><span class="keywordtype">size_t</span> text_input_size;</div>
@@ -192,7 +192,7 @@ U+0308" (GREEK CAPITAL LETTER IOTA and COMBINING DIAERESIS). Although each encod
 <div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> g_PasswordInputMaximum = 255;</div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">char</span> g_PasswordInput[256];</div>
 <div class="line"></div>
-<div class="line">uint8_t PasswordField_EnterCharacter(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a> input)</div>
+<div class="line">uint8_t PasswordField_EnterCharacter(<a class="code" href="group__types.html#gae128fe5bd9e57be736e64d3638229988">unicode_t</a> input)</div>
 <div class="line">{</div>
 <div class="line">    uint8_t result = 1;</div>
 <div class="line">    <span class="keywordtype">char</span>* text_input = NULL;</div>
@@ -270,11 +270,11 @@ Displaying Unicode text</h1>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> InputField_Draw(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">size_t</span> text_size = strlen(text);</div>
-<div class="line">    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* converted = NULL;</div>
+<div class="line">    <a class="code" href="group__types.html#gae128fe5bd9e57be736e64d3638229988">unicode_t</a>* converted = NULL;</div>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
 <div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
-<div class="line">    <a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>* src;</div>
+<div class="line">    <a class="code" href="group__types.html#gae128fe5bd9e57be736e64d3638229988">unicode_t</a>* src;</div>
 <div class="line"></div>
 <div class="line">    converted_size = <a class="code" href="group__public.html#ga353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(text, text_size, NULL, 0, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
@@ -283,7 +283,7 @@ Displaying Unicode text</h1>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>
 <div class="line"></div>
-<div class="line">    converted = (<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>*)malloc(converted_size);</div>
+<div class="line">    converted = (<a class="code" href="group__types.html#gae128fe5bd9e57be736e64d3638229988">unicode_t</a>*)malloc(converted_size);</div>
 <div class="line"></div>
 <div class="line">    <a class="code" href="group__public.html#ga353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(text, text_size, converted, converted_size, &amp;errors);</div>
 <div class="line">    <span class="keywordflow">if</span> (errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
@@ -295,7 +295,7 @@ Displaying Unicode text</h1>
 <div class="line"></div>
 <div class="line">    src = decoded;</div>
 <div class="line"></div>
-<div class="line">    <span class="keywordflow">for</span> (i = 0; i &lt; decoded_size / <span class="keyword">sizeof</span>(<a class="code" href="utf8rewind_8h.html#ae128fe5bd9e57be736e64d3638229988">unicode_t</a>); ++i)</div>
+<div class="line">    <span class="keywordflow">for</span> (i = 0; i &lt; decoded_size / <span class="keyword">sizeof</span>(<a class="code" href="group__types.html#gae128fe5bd9e57be736e64d3638229988">unicode_t</a>); ++i)</div>
 <div class="line">    {</div>
 <div class="line">        FontBatch_AddCharacter(*src);</div>
 <div class="line"></div>
