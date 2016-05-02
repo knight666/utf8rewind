@@ -100,7 +100,7 @@
 	encoded text.
 
 	There are also many instances of code points that can be combined when
-	rendering, but aren't explicitly listed in the Unicode code point. This
+	rendering, but aren't explicitly listed in the Unicode database. This
 	allowed the Unicode Consortium to encode many more characters without taking
 	up space in the database. The downside for developers is of course that it
 	can be difficult to anticipate how much space will be required to store any
@@ -110,7 +110,7 @@
 
 	Every location that calls `PasswordField_EnterCharacter` will have to cast
 	the parameter to #unicode_t, but luckily this is backwards-compatible. All
-	ASCII code points (0x00 to 0x7F) are valid in Unicode as well.
+	values in ASCII (0x00 to 0x7F) encode the same characters in Unicode.
 
 	Inside the function, we'll want to convert the UTF-32 code point to UTF-8.
 	To that end, we'll use #utf32toutf8.
@@ -143,10 +143,10 @@
 	\endcode
 
 	We first determine the length of the input before we allocate memory for it.
-	This way, we ensure that we're protected from buffer-overflow attacks.
-	If you're not too keen on dynamic memory allocations, you could limit the
-	input sequence to six code points, which would require a maximum of four
-	bytes each to encode.
+	This way, we ensure that we're protected from buffer-overflow attacks. If
+	you're not too keen on dynamic memory allocations, you could limit the input
+	sequence to six code points, which would require a maximum of 32 bytes
+	each to encode.
 
 	It's good practice to always check the error code after each call. However,
 	never explicitly check for any particular error code! `utf8rewind` may
