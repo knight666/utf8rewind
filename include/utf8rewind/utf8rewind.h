@@ -1331,7 +1331,8 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Enables locale-specific behavior in the implementation. ef locales "List of valid locales."
+	\param[in]   locale      Enables locale-specific behavior in the implementation. 
+ef locales "List of valid locales."
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
@@ -1415,7 +1416,8 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Enables locale-specific behavior in the implementation. ef locales "List of valid locales."
+	\param[in]   locale      Enables locale-specific behavior in the implementation. 
+ef locales "List of valid locales."
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
@@ -1525,7 +1527,8 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Enables locale-specific behavior in the implementation. ef locales "List of valid locales."
+	\param[in]   locale      Enables locale-specific behavior in the implementation. 
+ef locales "List of valid locales."
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
