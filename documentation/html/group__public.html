@@ -234,8 +234,7 @@ Functions</h2></td></tr>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
 <div class="line">    int32_t errors;</div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="group__public.html#ga84f067fc0293c142137d308ded6f130c">utf16toutf8</a>(name, nameSize, buffer, buffer_size, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
+<div class="line">    <span class="keywordflow">if</span> ((converted_size = <a class="code" href="group__public.html#ga84f067fc0293c142137d308ded6f130c">utf16toutf8</a>(name, nameSize, buffer, buffer_size, &amp;errors)) == 0 ||</div>
 <div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">return</span> 0;</div>
@@ -321,9 +320,8 @@ Functions</h2></td></tr>
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
 <div class="line">    uint8_t result = 0;</div>
 <div class="line">    int32_t errors;</div>
-<div class="line">    </div>
-<div class="line">    converted_size = <a class="code" href="group__public.html#ga325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(query, querySize, NULL, 0, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">if</span> ((converted_size = <a class="code" href="group__public.html#ga325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(query, querySize, NULL, 0, &amp;errors)) == 0 ||</div>
 <div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
@@ -424,8 +422,7 @@ Functions</h2></td></tr>
 <div class="line">    texture_t result = NULL;</div>
 <div class="line">    int32_t errors;</div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="group__public.html#gaedea488052a8d820af3d192485e814e8">widetoutf8</a>(input, input_size, NULL, 0, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
+<div class="line">    <span class="keywordflow">if</span> ((converted_size = <a class="code" href="group__public.html#gaedea488052a8d820af3d192485e814e8">widetoutf8</a>(input, input_size, NULL, 0, &amp;errors)) == 0 ||</div>
 <div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
@@ -519,6 +516,7 @@ Functions</h2></td></tr>
 <p>Convert a UTF-8 encoded string to a UTF-16 encoded string. </p>
 <dl class="section note"><dt>Note</dt><dd>This function should only be called directly if you are positive that you <em>must</em> convert to UTF-16, independent of platform. If you're working with wide strings, take a look at <a class="el" href="group__public.html#ga8653854fdb4550ec3a9515ecede1f73a" title="Convert a UTF-8 encoded string to a wide string. ">utf8towide</a> instead.</dd></dl>
 <p>Erroneous byte sequences such as missing or illegal bytes or overlong encoding of code points (e.g. using five bytes to encode a sequence that can be represented by two bytes) are converted to the replacement character U+FFFD.</p>
+<p>Code points outside the Basic Multilingual Plane (BMP) will be converted to surrogate pairs, which use four bytes instead of two.</p>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Font_DrawText(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
@@ -850,7 +848,7 @@ Functions</h2></td></tr>
 <p>Returns the environment's locale as an enum value. </p>
 <p>This function retrieves the (thread-local) environment locale as an enum value in the <a class="el" href="group__locales.html">list of locales</a>. This value can be used with functions in this library that change behavior on certain inputs, depending on the specified locale.</p>
 <p>Unfortunately, no cross-platform way of setting and retrieving the system locale is available without adding dependencies to the library. Please refer to your operating system's manual to determine how to setup the system locale on your target system.</p>
-<dl class="section warning"><dt>Warning</dt><dd>This function should not be used as a replacement for platform-specific methods for retrieving the locale. Its intended usage is to "guess" the desired locale by looking at the system locale.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This function should not be used as a replacement for platform- specific methods for retrieving the locale. Its intended usage is to "guess" the desired locale by looking at the system locale.</dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line">uint8_t Employee_PrintNames(<span class="keyword">const</span> <span class="keywordtype">char</span>** names, <span class="keywordtype">size_t</span> nameCount)</div>
 <div class="line">{</div>
@@ -877,7 +875,7 @@ Functions</h2></td></tr>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">return</span> 1;</div>
 <div class="line">}</div>
-</div><!-- fragment --><dl class="section return"><dt>Returns</dt><dd>A specific <a class="el" href="group__locales.html">locale</a> or <a class="el" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781" title="Default locale, for text unaffected by changes in locale. ">UTF8_LOCALE_DEFAULT</a>.</dd></dl>
+</div><!-- fragment --><dl class="section return"><dt>Returns</dt><dd>A specific <a class="el" href="group__locales.html">locale</a> or <a class="el" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781" title="Used for text unaffected by changes in locale. ">UTF8_LOCALE_DEFAULT</a>.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__public.html#ga60cbc5c0db00eb7c703931ad16c627a7" title="Convert UTF-8 encoded text to uppercase. ">utf8toupper</a> </dd>
 <dd>
 <a class="el" href="group__public.html#ga02746f7030b3be4da408665dcf9c0015" title="Convert UTF-8 encoded text to lowercase. ">utf8tolower</a> </dd>
@@ -941,7 +939,7 @@ Functions</h2></td></tr>
 <p>Although most code points can be converted in-place, there are notable exceptions. For example, U+00DF (LATIN SMALL LETTER SHARP S) maps to "U+0053 U+0053" (LATIN CAPITAL LETTER S and LATIN CAPITAL LETTER S) when converted to uppercase. Therefor, it is advised to first determine the size in bytes of the output by calling the function with a NULL output buffer.</p>
 <p>Only a handful of scripts make a distinction between upper and lowercase. In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic, a few historic or archaic scripts have case. The vast majority of scripts do not have case distinctions.</p>
 <dl class="section note"><dt>Note</dt><dd>Case mapping is not reversible. That is, <code>toUpper(toLower(x)) != toLower(toUpper(x))</code>.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>Certain code points (or combinations of code points) exhibit special behavior when the locale is set to non-default. For more information about these exceptions, please refer to the Unicode standard: <a href="ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt">ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt</a></dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Certain code points (or combinations of code points) apply rules based on the locale. For more information about these exceptional code points, please refer to the Unicode standard: <a href="ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt">ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt</a></dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Button_Draw(int32_t x, int32_t y, <span class="keyword">const</span> <span class="keywordtype">char</span>* text)</div>
 <div class="line">{</div>
@@ -951,15 +949,21 @@ Functions</h2></td></tr>
 <div class="line">    int32_t text_box_width, text_box_height;</div>
 <div class="line">    int32_t errors;</div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="group__public.html#ga60cbc5c0db00eb7c703931ad16c627a7">utf8toupper</a>(text, input_size, NULL, 0, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
+<div class="line">    <span class="keywordflow">if</span> ((<a class="code" href="group__public.html#ga60cbc5c0db00eb7c703931ad16c627a7">utf8toupper</a>(text, input_size, NULL, 0, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors)) == 0 ||</div>
 <div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    converted = (<span class="keywordtype">char</span>*)malloc(converted_size + 1);</div>
-<div class="line">    <a class="code" href="group__public.html#ga60cbc5c0db00eb7c703931ad16c627a7">utf8toupper</a>(text, input_size, converted, converted_size, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, NULL);</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">if</span> (converted == NULL ||</div>
+<div class="line">        <a class="code" href="group__public.html#ga60cbc5c0db00eb7c703931ad16c627a7">utf8toupper</a>(text, input_size, converted, converted_size, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors) == 0 ||</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line"></div>
 <div class="line">    converted[converted_size] = 0;</div>
 <div class="line"></div>
 <div class="line">    Font_GetTextDimensions(converted, &amp;text_box_width, &amp;text_box_height);</div>
@@ -1059,7 +1063,7 @@ Functions</h2></td></tr>
 <p>Although most code points can be converted to lowercase in-place, there are notable exceptions. For example, U+0130 (LATIN CAPITAL LETTER I WITH DOT ABOVE) maps to "U+0069 U+0307" (LATIN SMALL LETTER I and COMBINING DOT ABOVE) when converted to lowercase. Therefor, it is advised to first determine the size in bytes of the output by calling the function with a NULL output buffer.</p>
 <p>Only a handful of scripts make a distinction between upper- and lowercase. In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic, a few historic or archaic scripts have case. The vast majority of scripts do not have case distinctions.</p>
 <dl class="section note"><dt>Note</dt><dd>Case mapping is not reversible. That is, <code>toUpper(toLower(x)) != toLower(toUpper(x))</code>.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>Certain code points (or combinations of code points) exhibit special behavior when the locale is set to non-default. For more information about these exceptions, please refer to the Unicode standard: <a href="ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt">ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt</a></dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Certain code points (or combinations of code points) apply rules based on the locale. For more information about these exceptional code points, please refer to the Unicode standard: <a href="ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt">ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt</a></dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line">author_t* Author_ByName(<span class="keyword">const</span> <span class="keywordtype">char</span>* name)</div>
 <div class="line">{</div>
@@ -1070,15 +1074,21 @@ Functions</h2></td></tr>
 <div class="line">    int32_t errors;</div>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
 <div class="line">    </div>
-<div class="line">    converted_size = <a class="code" href="group__public.html#ga02746f7030b3be4da408665dcf9c0015">utf8tolower</a>(name, name_size, NULL, 0, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
+<div class="line">    <span class="keywordflow">if</span> ((converted_size = <a class="code" href="group__public.html#ga02746f7030b3be4da408665dcf9c0015">utf8tolower</a>(name, name_size, NULL, 0, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors)) == 0 ||</div>
 <div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    converted = (<span class="keywordtype">char</span>*)malloc(converted_size + 1);</div>
-<div class="line">    <a class="code" href="group__public.html#ga02746f7030b3be4da408665dcf9c0015">utf8tolower</a>(name, name_size, converted, converted_size, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, NULL);</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">if</span> (converted == NULL ||</div>
+<div class="line">        <a class="code" href="group__public.html#ga02746f7030b3be4da408665dcf9c0015">utf8tolower</a>(name, name_size, converted, converted_size, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors) == 0 ||</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
+<div class="line"></div>
 <div class="line">    converted[converted_size] = 0;</div>
 <div class="line">    </div>
 <div class="line">    <span class="keywordflow">for</span> (i = 0; i &lt; g_AuthorCount; ++i)</div>
@@ -1194,7 +1204,7 @@ or Lo according to the Unicode database".</p>
 <p>Although most code points can be converted to titlecase in-place, there are notable exceptions. For example, U+00DF (LATIN SMALL LETTER SHARP S) maps to "U+0053 U+0073" (LATIN CAPITAL LETTER S and LATIN SMALL LETTER S) when converted to titlecase. Therefor, it is advised to first determine the size in bytes of the output by calling the function with a NULL output buffer.</p>
 <p>Only a handful of scripts make a distinction between upper- and lowercase. In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic, a few historic or archaic scripts have case. The vast majority of scripts do not have case distinctions.</p>
 <dl class="section note"><dt>Note</dt><dd>Case mapping is not reversible. That is, <code>toUpper(toLower(x)) != toLower(toUpper(x))</code>.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>Certain code points (or combinations of code points) exhibit special behavior when the locale is set to non-default. For more information about these exceptions, please refer to the Unicode standard: <a href="ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt">ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt</a></dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Certain code points (or combinations of code points) apply rules based on the locale. For more information about these exceptional code points, please refer to the Unicode standard: <a href="ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt">ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt</a></dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Book_SetTitle(book_t* book, <span class="keyword">const</span> <span class="keywordtype">char</span>* title)</div>
 <div class="line">{</div>
@@ -1202,8 +1212,7 @@ or Lo according to the Unicode database".</p>
 <div class="line">    int32_t errors;</div>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="group__public.html#gacb63e25ee7ea0efe44333f4c9cbb7677">utf8totitle</a>(title, strlen(title), book-&gt;title, <span class="keyword">sizeof</span>(book-&gt;title) - 1, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
+<div class="line">    <span class="keywordflow">if</span> ((converted_size = <a class="code" href="group__public.html#gacb63e25ee7ea0efe44333f4c9cbb7677">utf8totitle</a>(title, strlen(title), book-&gt;title, <span class="keyword">sizeof</span>(book-&gt;title) - 1, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors)) == 0 ||</div>
 <div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        memset(book-&gt;title, 0, <span class="keyword">sizeof</span>(book-&gt;title));</div>
@@ -1296,7 +1305,6 @@ or Lo according to the Unicode database".</p>
 <p>Only two locale-specific exception are made when case folding text. In Turkish, U+0049 LATIN CAPITAL LETTER I maps to U+0131 LATIN SMALL LETTER DOTLESS I and U+0130 LATIN CAPITAL LETTER I WITH DOT ABOVE maps to U+0069 LATIN SMALL LETTER I.</p>
 <p>Although most code points can be case folded in-place, there are notable exceptions. For example, U+0130 (LATIN CAPITAL LETTER I WITH DOT ABOVE) maps to "U+0069 U+0307" (LATIN SMALL LETTER I and COMBINING DOT ABOVE) when converted to lowercase. Therefor, it is advised to first determine the size in bytes of the output by calling the function with a NULL output buffer.</p>
 <p>Only a handful of scripts make a distinction between upper- and lowercase. In addition to modern scripts, such as Latin, Greek, Armenian and Cyrillic, a few historic or archaic scripts have case. The vast majority of scripts do not have case distinctions.</p>
-<dl class="section warning"><dt>Warning</dt><dd>Certain code points (or combinations of code points) exhibit special behavior when the locale is set to non-default. For more information about these exceptions, please refer to the Unicode standard: <a href="ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt">ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt</a></dd></dl>
 <p>Example:</p>
 <div class="fragment"><div class="line">int32_t Command_ParseCommand(<span class="keyword">const</span> <span class="keywordtype">char</span>* argument)</div>
 <div class="line">{</div>
@@ -1305,8 +1313,7 @@ or Lo according to the Unicode database".</p>
 <div class="line">    int32_t errors;</div>
 <div class="line">    int32_t result = 0;</div>
 <div class="line"></div>
-<div class="line">    buffer_size = <a class="code" href="group__public.html#gaf50584a0773d99dfb93912b2f29a4c74">utf8casefold</a>(argument, strlen(argument), NULL, 0, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (buffer_size == 0 ||</div>
+<div class="line">    <span class="keywordflow">if</span> ((buffer_size = <a class="code" href="group__public.html#gaf50584a0773d99dfb93912b2f29a4c74">utf8casefold</a>(argument, strlen(argument), NULL, 0, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors)) == 0 ||</div>
 <div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        result = -1;</div>
@@ -1316,8 +1323,9 @@ or Lo according to the Unicode database".</p>
 <div class="line"></div>
 <div class="line">    buffer = (<span class="keywordtype">char</span>*)malloc(buffer_size);</div>
 <div class="line"></div>
-<div class="line">    <a class="code" href="group__public.html#gaf50584a0773d99dfb93912b2f29a4c74">utf8casefold</a>(argument, strlen(argument), buffer, buffer_size, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line">    <span class="keywordflow">if</span> (buffer == NULL ||</div>
+<div class="line">        <a class="code" href="group__public.html#gaf50584a0773d99dfb93912b2f29a4c74">utf8casefold</a>(argument, strlen(argument), buffer, buffer_size, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors) == 0 ||</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        result = -1;</div>
 <div class="line"></div>
@@ -1425,11 +1433,11 @@ or Lo according to the Unicode database".</p>
 <tr>
 <td>Normalization Form C (NFC) </td><td><a class="el" href="group__normalization.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a> </td></tr>
 <tr>
-<td>Normalization Form KC (NFKC) </td><td><a class="el" href="group__normalization.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a> + <a class="el" href="group__normalization.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Change Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
+<td>Normalization Form KC (NFKC) </td><td><a class="el" href="group__normalization.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a> + <a class="el" href="group__normalization.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Changes Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
 <tr>
 <td>Normalization Form D (NFD) </td><td><a class="el" href="group__normalization.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to Normalization Form D (NFD). ">UTF8_NORMALIZE_DECOMPOSE</a> </td></tr>
 <tr>
-<td>Normalization Form KD (NFKD) </td><td><a class="el" href="group__normalization.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to Normalization Form D (NFD). ">UTF8_NORMALIZE_DECOMPOSE</a> + <a class="el" href="group__normalization.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Change Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
+<td>Normalization Form KD (NFKD) </td><td><a class="el" href="group__normalization.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to Normalization Form D (NFD). ">UTF8_NORMALIZE_DECOMPOSE</a> + <a class="el" href="group__normalization.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Changes Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
 </table>
 <p>For more information, please review <a href="http://www.unicode.org/reports/tr15/">Unicode Standard Annex #15 - Unicode Normalization Forms</a>.</p>
 <p>Example:</p>
@@ -1481,7 +1489,7 @@ or Lo according to the Unicode database".</p>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname"><a class="el" href="group__normalization.html#gae047d522ffc5afe11b150b6d5c527b80" title="Text is stable and does not have to be normalized. ">UTF8_NORMALIZATION_RESULT_YES</a></td><td>Input is stable and does not have to be normalized. </td></tr>
+    <tr><td class="paramname"><a class="el" href="group__normalization.html#gae047d522ffc5afe11b150b6d5c527b80" title="Text is stable and does not need to be normalized. ">UTF8_NORMALIZATION_RESULT_YES</a></td><td>Input is stable and does not have to be normalized. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__normalization.html#ga8ea4d576e89529e074392175230dc352" title="Text is unstable, but normalization may be skipped. ">UTF8_NORMALIZATION_RESULT_MAYBE</a></td><td>Input is unstable, but normalization may be skipped. </td></tr>
     <tr><td class="paramname"><a class="el" href="group__normalization.html#ga9a59070cc87c6b141ab742986af0f223" title="Text is unstable and must be normalized. ">UTF8_NORMALIZATION_RESULT_NO</a></td><td>Input is unstable and must be normalized.</td></tr>
   </table>
@@ -1565,9 +1573,9 @@ or Lo according to the Unicode database".</p>
 <tr>
 <td>Normalization Form C (NFC) </td><td><a class="el" href="group__normalization.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a> </td></tr>
 <tr>
-<td>Normalization Form KD (NFKD) </td><td><a class="el" href="group__normalization.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to Normalization Form D (NFD). ">UTF8_NORMALIZE_DECOMPOSE</a> + <a class="el" href="group__normalization.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Change Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
+<td>Normalization Form KD (NFKD) </td><td><a class="el" href="group__normalization.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to Normalization Form D (NFD). ">UTF8_NORMALIZE_DECOMPOSE</a> + <a class="el" href="group__normalization.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Changes Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
 <tr>
-<td>Normalization Form KC (NFKC) </td><td><a class="el" href="group__normalization.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a> + <a class="el" href="group__normalization.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Change Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
+<td>Normalization Form KC (NFKC) </td><td><a class="el" href="group__normalization.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a> + <a class="el" href="group__normalization.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Changes Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a> </td></tr>
 </table>
 <p>For more information, please review <a href="http://www.unicode.org/reports/tr15/">Unicode Standard Annex #15 - Unicode Normalization Forms</a>.</p>
 <dl class="section note"><dt>Note</dt><dd>Unnormalized text is rare in the wild. As an example, <em>all</em> text found on the Internet as HTML source code must be encoded as NFC, as specified by the W3C.</dd></dl>
@@ -1642,7 +1650,7 @@ or Lo according to the Unicode database".</p>
     <tr><td class="paramdir">[in]</td><td class="paramname">inputSize</td><td>Size of the input in bytes. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">target</td><td>Output buffer for the result, can be NULL. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">targetSize</td><td>Size of the output buffer in bytes. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">flags</td><td>Desired normalization form. Must be a combination of <a class="el" href="group__normalization.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a>, <a class="el" href="group__normalization.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to Normalization Form D (NFD). ">UTF8_NORMALIZE_DECOMPOSE</a> and <a class="el" href="group__normalization.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Change Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">flags</td><td>Desired normalization form. Must be a combination of <a class="el" href="group__normalization.html#ga6b8ab40213f4505f96b4655fd468848d" title="Normalize input to Normalization Form C (NFC). ">UTF8_NORMALIZE_COMPOSE</a>, <a class="el" href="group__normalization.html#gaa9cf4bf8f49035a84de94973c9c31181" title="Normalize input to Normalization Form D (NFD). ">UTF8_NORMALIZE_DECOMPOSE</a> and <a class="el" href="group__normalization.html#ga53d4bc1347e2cb233eb212ff7160721f" title="Changes Normalization Form from NFC to NFKC or from NFD to NFKD. ">UTF8_NORMALIZE_COMPATIBILITY</a>. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">errors</td><td>Output for errors.</td></tr>
   </table>
   </dd>

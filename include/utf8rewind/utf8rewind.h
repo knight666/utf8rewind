@@ -176,7 +176,7 @@
 
 /*!
 	\def UTF8_LOCALE_DEFAULT
-	\brief Default locale, for text unaffected by changes in locale.
+	\brief Used for text unaffected by changes in locale.
 */
 #define UTF8_LOCALE_DEFAULT                     0
 
@@ -198,7 +198,7 @@
 
 /*!
 	\def UTF8_LOCALE_MAXIMUM
-	\brief Terminal value for locales. Valid locales do not exceeed this value.
+	\brief Terminal value for locales. Valid locales do not exceed this value.
 */
 #define UTF8_LOCALE_MAXIMUM                     3
 
@@ -225,13 +225,13 @@
 
 /*!
 	\def UTF8_NORMALIZE_COMPATIBILITY
-	\brief Change Normalization Form from NFC to NFKC or from NFD to NFKD.
+	\brief Changes Normalization Form from NFC to NFKC or from NFD to NFKD.
 */
 #define UTF8_NORMALIZE_COMPATIBILITY            0x00000004
 
 /*!
 	\def UTF8_NORMALIZATION_RESULT_YES
-	\brief Text is stable and does not have to be normalized.
+	\brief Text is stable and does not need to be normalized.
 */
 #define UTF8_NORMALIZATION_RESULT_YES           (0)
 
@@ -631,10 +631,10 @@
 
 /*!
 	\def UTF8_WCHAR_SIZE
-	\brief Specifies the size of the `wchar_t` type. On Windows this is 2, on
-	POSIX systems it is 4. If not specified on the command line, the compiler
-	tries to automatically determine the size of the `wchar_t` type based on the
-	environment.
+	\brief Specifies the size of the `wchar_t` type. On Windows this is two
+	bytes, on POSIX systems it is four. If not specified on the command line,
+	the compiler tries to automatically determine the size of the `wchar_t` type
+	based on the environment.
 */
 
 #ifndef UTF8_WCHAR_SIZE
@@ -648,13 +648,15 @@
 #if (UTF8_WCHAR_SIZE == 4)
 	/*!
 		\def UTF8_WCHAR_UTF32
-		\brief The `wchar_t` type is treated as UTF-32 (4 bytes).
+		\brief The `wchar_t` type is treated as UTF-32 (four byte fixed
+		encoding).
 	*/
 	#define UTF8_WCHAR_UTF32 (1)
 #elif (UTF8_WCHAR_SIZE == 2)
 	/*!
 		\def UTF8_WCHAR_UTF16
-		\brief The `wchar_t` type is treated as UTF-16 (2 bytes).
+		\brief The `wchar_t` type is treated as UTF-16 (two byte variable
+		length encoding).
 	*/
 	#define UTF8_WCHAR_UTF16 (1)
 #else
@@ -740,8 +742,7 @@ UTF8_API size_t utf8len(const char* text);
 			size_t converted_size;
 			int32_t errors;
 
-			converted_size = utf16toutf8(name, nameSize, buffer, buffer_size, &errors);
-			if (converted_size == 0 ||
+			if ((converted_size = utf16toutf8(name, nameSize, buffer, buffer_size, &errors)) == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
 				return 0;
@@ -786,9 +787,8 @@ UTF8_API size_t utf16toutf8(const utf16_t* input, size_t inputSize, char* target
 			size_t converted_size;
 			uint8_t result = 0;
 			int32_t errors;
-			
-			converted_size = utf32toutf8(query, querySize, NULL, 0, &errors);
-			if (converted_size == 0 ||
+
+			if ((converted_size = utf32toutf8(query, querySize, NULL, 0, &errors)) == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
 				goto cleanup;
@@ -850,8 +850,7 @@ UTF8_API size_t utf32toutf8(const unicode_t* input, size_t inputSize, char* targ
 			texture_t result = NULL;
 			int32_t errors;
 
-			converted_size = widetoutf8(input, input_size, NULL, 0, &errors);
-			if (converted_size == 0 ||
+			if ((converted_size = widetoutf8(input, input_size, NULL, 0, &errors)) == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
 				goto cleanup;
@@ -904,6 +903,9 @@ UTF8_API size_t widetoutf8(const wchar_t* input, size_t inputSize, char* target,
 	encoding of code points (e.g. using five bytes to encode a sequence that
 	can be represented by two bytes) are converted to the replacement
 	character U+FFFD.
+
+	Code points outside the Basic Multilingual Plane (BMP) will be converted to
+	surrogate pairs, which use four bytes instead of two.
 
 	Example:
 
@@ -1129,9 +1131,9 @@ UTF8_API const char* utf8seek(const char* text, size_t textSize, const char* tex
 	to your operating system's manual to determine how to setup the system
 	locale on your target system.
 
-	\warning This function should not be used as a replacement for
-	platform-specific methods for retrieving the locale. Its intended usage is
-	to "guess" the desired locale by looking at the system locale.
+	\warning This function should not be used as a replacement for platform-
+	specific methods for retrieving the locale. Its intended usage is to
+	"guess" the desired locale by looking at the system locale.
 
 	Example:
 
@@ -1193,9 +1195,9 @@ UTF8_API size_t utf8envlocale();
 	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
 	!= toLower(toUpper(x))`.
 
-	\warning Certain code points (or combinations of code points) exhibit
-	special behavior when the locale is set to non-default. For more information
-	about these exceptions, please refer to the Unicode standard:
+	\warning Certain code points (or combinations of code points) apply rules
+	based on the locale. For more information about these exceptional
+	code points, please refer to the Unicode standard:
 	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
 	
 
@@ -1210,15 +1212,21 @@ UTF8_API size_t utf8envlocale();
 			int32_t text_box_width, text_box_height;
 			int32_t errors;
 
-			converted_size = utf8toupper(text, input_size, NULL, 0, UTF8_LOCALE_DEFAULT, &errors);
-			if (converted_size == 0 ||
+			if ((utf8toupper(text, input_size, NULL, 0, UTF8_LOCALE_DEFAULT, &errors)) == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
 				goto cleanup;
 			}
 
 			converted = (char*)malloc(converted_size + 1);
-			utf8toupper(text, input_size, converted, converted_size, UTF8_LOCALE_DEFAULT, NULL);
+
+			if (converted == NULL ||
+				utf8toupper(text, input_size, converted, converted_size, UTF8_LOCALE_DEFAULT, &errors) == 0 ||
+				errors != UTF8_ERR_NONE)
+			{
+				goto cleanup;
+			}
+
 			converted[converted_size] = 0;
 
 			Font_GetTextDimensions(converted, &text_box_width, &text_box_height);
@@ -1280,9 +1288,9 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
 	!= toLower(toUpper(x))`.
 
-	\warning Certain code points (or combinations of code points) exhibit
-	special behavior when the locale is set to non-default. For more information
-	about these exceptions, please refer to the Unicode standard:
+	\warning Certain code points (or combinations of code points) apply rules
+	based on the locale. For more information about these exceptional
+	code points, please refer to the Unicode standard:
 	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
 
 	Example:
@@ -1297,15 +1305,21 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 			int32_t errors;
 			size_t i;
 			
-			converted_size = utf8tolower(name, name_size, NULL, 0, UTF8_LOCALE_DEFAULT, &errors);
-			if (converted_size == 0 ||
+			if ((converted_size = utf8tolower(name, name_size, NULL, 0, UTF8_LOCALE_DEFAULT, &errors)) == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
 				goto cleanup;
 			}
 
 			converted = (char*)malloc(converted_size + 1);
-			utf8tolower(name, name_size, converted, converted_size, UTF8_LOCALE_DEFAULT, NULL);
+
+			if (converted == NULL ||
+				utf8tolower(name, name_size, converted, converted_size, UTF8_LOCALE_DEFAULT, &errors) == 0 ||
+				errors != UTF8_ERR_NONE)
+			{
+				goto cleanup;
+			}
+
 			converted[converted_size] = 0;
 			
 			for (i = 0; i < g_AuthorCount; ++i)
@@ -1385,9 +1399,9 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 	\note Case mapping is not reversible. That is, `toUpper(toLower(x))
 	!= toLower(toUpper(x))`.
 
-	\warning Certain code points (or combinations of code points) exhibit
-	special behavior when the locale is set to non-default. For more information
-	about these exceptions, please refer to the Unicode standard:
+	\warning Certain code points (or combinations of code points) apply rules
+	based on the locale. For more information about these exceptional
+	code points, please refer to the Unicode standard:
 	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
 
 	Example:
@@ -1399,8 +1413,7 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 			int32_t errors;
 			size_t i;
 
-			converted_size = utf8totitle(title, strlen(title), book->title, sizeof(book->title) - 1, UTF8_LOCALE_DEFAULT, &errors);
-			if (converted_size == 0 ||
+			if ((converted_size = utf8totitle(title, strlen(title), book->title, sizeof(book->title) - 1, UTF8_LOCALE_DEFAULT, &errors)) == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
 				memset(book->title, 0, sizeof(book->title));
@@ -1441,7 +1454,7 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	standard.
 
 	Although similar to lowercasing text, there are significant differences.
-	For one, case folding does *not* take locale into account when converting.
+	For one, case folding does _not_ take locale into account when converting.
 	In some cases, case folding can be up to 20% faster than lowercasing the
 	same text, but the result cannot be treated as correct lowercased text.
 
@@ -1461,11 +1474,6 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	a few historic or archaic scripts have case. The vast majority of scripts
 	do not have case distinctions.
 
-	\warning Certain code points (or combinations of code points) exhibit
-	special behavior when the locale is set to non-default. For more information
-	about these exceptions, please refer to the Unicode standard:
-	ftp://ftp.unicode.org/Public/UNIDATA/SpecialCasing.txt
-
 	Example:
 
 	\code{.c}
@@ -1476,8 +1484,7 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 			int32_t errors;
 			int32_t result = 0;
 
-			buffer_size = utf8casefold(argument, strlen(argument), NULL, 0, UTF8_LOCALE_DEFAULT, &errors);
-			if (buffer_size == 0 ||
+			if ((buffer_size = utf8casefold(argument, strlen(argument), NULL, 0, UTF8_LOCALE_DEFAULT, &errors)) == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
 				result = -1;
@@ -1487,8 +1494,9 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 
 			buffer = (char*)malloc(buffer_size);
 
-			utf8casefold(argument, strlen(argument), buffer, buffer_size, UTF8_LOCALE_DEFAULT, &errors);
-			if (errors != UTF8_ERR_NONE)
+			if (buffer == NULL ||
+				utf8casefold(argument, strlen(argument), buffer, buffer_size, UTF8_LOCALE_DEFAULT, &errors) == 0 ||
+				errors != UTF8_ERR_NONE)
 			{
 				result = -1;
 
