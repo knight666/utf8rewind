@@ -1102,7 +1102,7 @@ UTF8_API size_t utf8towide(const char* input, size_t inputSize, wchar_t* target,
 	\endcode
 
 	\param[in]  text       Input string.
-	\param[in]  textSize   Size of input string in bytes.
+	\param[in]  textSize   Size of the complete input string in bytes, starting from `textStart`.
 	\param[in]  textStart  Start of input string.
 	\param[in]  offset     Requested offset in code points.
 	\param[in]  direction  Direction to seek in.
@@ -1331,8 +1331,7 @@ UTF8_API size_t utf8toupper(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Enables locale-specific behavior in the implementation. 
-ef locales "List of valid locales."
+	\param[in]   locale      Enables locale-specific behavior in the implementation. \ref locales "List of valid locales."
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
@@ -1416,8 +1415,7 @@ UTF8_API size_t utf8tolower(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Enables locale-specific behavior in the implementation. 
-ef locales "List of valid locales."
+	\param[in]   locale      Enables locale-specific behavior in the implementation. \ref locales "List of valid locales."
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
@@ -1527,8 +1525,7 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Enables locale-specific behavior in the implementation. 
-ef locales "List of valid locales."
+	\param[in]   locale      Enables locale-specific behavior in the implementation. \ref locales "List of valid locales."
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
@@ -1619,7 +1616,7 @@ UTF8_API size_t utf8casefold(const char* input, size_t inputSize, char* target, 
 
 	\param[in]   input       UTF-8 encoded string.
 	\param[in]   inputSize   Size of the input in bytes.
-	\param[in]   flags       Desired normalization form. Must be a combination of #UTF8_NORMALIZE_COMPOSE, #UTF8_NORMALIZE_DECOMPOSE and #UTF8_NORMALIZE_COMPATIBILITY.
+	\param[in]   flags       Desired normalization form. Must be a combination of \ref normalization "normalization flags".
 	\param[out]  offset      Offset to first unstable code point or length of input in bytes if stable.
 
 	\retval #UTF8_NORMALIZATION_RESULT_YES    Input is stable and does not have to be normalized.
@@ -1768,36 +1765,38 @@ UTF8_API size_t utf8normalize(const char* input, size_t inputSize, char* target,
 	flags.
 
 	This function can be used to check if the code points in a string are part
-	of a category. Valid flags are part of the UTF8_CATEGORY_* list of defines.
-	The category for a code point is defined as part of the entry in
-	UnicodeData.txt, the data file for the Unicode code point database.
+	of a category. Valid flags are members of the
+	\ref category "list of categories". The category for a code point is
+	defined as part of the entry in UnicodeData.txt, the data file for the
+	Unicode code point database.
 
-	\note The function is _greedy_. This means it will try to match as many code
-	points with the matching category flags as possible and return the offset in
-	the input in bytes. If this is undesired behavior, use `utf8seek` to seek in
-	the input first before matching it with the category flags.
+	\note The function is _greedy_. This means it will try to match as many
+	code points with the matching category flags as possible and return the
+	offset in the input in bytes. If this is undesired behavior, use `utf8seek`
+	to seek in the input first before matching it with the category flags.
 
 	By default, the function will treat grapheme clusters as a single code
-	point. This means that a string like:
+	point. This means that the following string:
 
 	Code point | Canonical combining class | General category      | Name
 	---------- | ------------------------- | --------------------- | ----------------------
 	U+0045     | 0                         | Lu (Uppercase letter) | LATIN CAPITAL LETTER E
 	U+0300     | 230                       | Mn (Non-spacing mark) | COMBINING GRAVE ACCENT
 
-	Will match with `UTF8_CATEGORY_LETTER_UPPERCASE` fully, because the
-	COMBINING GRAVE ACCENT is treated as part of the grapheme cluster. This is
-	useful when e.g. creating a text parser, because you do not have to
+	Will match with #UTF8_CATEGORY_LETTER_UPPERCASE in its entirety, because
+	the COMBINING GRAVE ACCENT is treated as part of the grapheme cluster. This
+	is useful when e.g. creating a text parser, because you do not have to
 	normalize the text first.
 
 	If this is undesired behavior, specify the
-	`UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER` flag.
+	#UTF8_CATEGORY_IGNORE_GRAPHEME_CLUSTER flag.
 
-	In order to main backwards compatibility with POSIX functions like `isdigit`
-	and `isspace`, compatibility flags have been provided. Note, however, that
-	the result is only guaranteed to be correct for code points in the Basic
-	Latin range, between U+0000 and 0+007F. Combining a compatibility flag with
-	a regular category flag will result in undefined behavior.
+	\warning In order to maintain backwards compatibility with POSIX functions
+	like `isdigit` and `isspace`, compatibility flags have been provided. Note,
+	however, that the result is only guaranteed to be correct for code points
+	in the Basic Latin range, between U+0000 and 0+007F. Combining a
+	compatibility flag with a regular category flag will result in undefined
+	behavior.
 
 	Example:
 
@@ -1848,7 +1847,7 @@ UTF8_API size_t utf8normalize(const char* input, size_t inputSize, char* target,
 
 	\param[in]   input       UTF-8 encoded string.
 	\param[in]   inputSize   Size of the input in bytes.
-	\param[in]   flags       Requested category. Must be a combination of UTF8_CATEGORY_* flags or a single UTF8_CATEGORY_IS* flag.
+	\param[in]   flags       Requested category. Must be a combination of \ref category "category flags" or a single compatibility flag.
 
 	\return Number of bytes in the input that conform to the specified category flags.
 
