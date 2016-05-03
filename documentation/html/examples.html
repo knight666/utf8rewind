@@ -153,17 +153,16 @@ Dealing with user input</h1>
 <div class="fragment"><div class="line">uint8_t PasswordField_EnterCharacter(<a class="code" href="group__types.html#gae128fe5bd9e57be736e64d3638229988">unicode_t</a>* input, <span class="keywordtype">size_t</span> inputSize)</div>
 </div><!-- fragment --><p>Something that surprises many people working with Unicode is that although UTF-32 can contain all possible valid code points, Unicode <em>itself</em> is a variable-length encoding! For instance, consider a string like "U+0399
 U+0308" (GREEK CAPITAL LETTER IOTA and COMBINING DIAERESIS). Although each encodes a separate code point, they can be combined (normalized) into U+03AA (GREEK CAPITAL LETTER IOTA WITH DIALYTIKA). This means that splitting the string after U+0399 is not valid, as it would change the meaning of the encoded text.</p>
-<p>There are also many instances of code points that can be combined when rendering, but aren't explicitly listed in the Unicode code point. This allowed the Unicode Consortium to encode many more characters without taking up space in the database. The downside for developers is of course that it can be difficult to anticipate how much space will be required to store any particular amount of text.</p>
+<p>There are also many instances of code points that can be combined when rendering, but aren't explicitly listed in the Unicode database. This allowed the Unicode Consortium to encode many more characters without taking up space in the database. The downside for developers is of course that it can be difficult to anticipate how much space will be required to store any particular amount of text.</p>
 <p>Back to our example.</p>
-<p>Every location that calls <code>PasswordField_EnterCharacter</code> will have to cast the parameter to <a class="el" href="group__types.html#gae128fe5bd9e57be736e64d3638229988" title="UTF-32 encoded code point. ">unicode_t</a>, but luckily this is backwards-compatible. All ASCII code points (0x00 to 0x7F) are valid in Unicode as well.</p>
+<p>Every location that calls <code>PasswordField_EnterCharacter</code> will have to cast the parameter to <a class="el" href="group__types.html#gae128fe5bd9e57be736e64d3638229988" title="UTF-32 encoded code point. ">unicode_t</a>, but luckily this is backwards-compatible. All values in ASCII (0x00 to 0x7F) encode the same characters in Unicode.</p>
 <p>Inside the function, we'll want to convert the UTF-32 code point to UTF-8. To that end, we'll use <a class="el" href="group__public.html#ga325b2612f0a2afdacb81d5e6831bd43b" title="Convert a UTF-32 encoded string to a UTF-8 encoded string. ">utf32toutf8</a>.</p>
 <div class="fragment"><div class="line"><span class="keywordtype">char</span>* text_input = NULL;</div>
 <div class="line"><span class="keywordtype">size_t</span> text_input_size;</div>
 <div class="line"><span class="keywordtype">size_t</span> converted_size;</div>
 <div class="line">int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line"></div>
-<div class="line">text_input_size = <a class="code" href="group__public.html#ga325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, inputSize, NULL, 0, &amp;errors);</div>
-<div class="line"><span class="keywordflow">if</span> (text_input_size == 0 ||</div>
+<div class="line"><span class="keywordflow">if</span> ((text_input_size = <a class="code" href="group__public.html#ga325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, inputSize, NULL, 0, &amp;errors)) == 0 ||</div>
 <div class="line">    errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">goto</span> cleanup;</div>
@@ -176,12 +175,12 @@ U+0308" (GREEK CAPITAL LETTER IOTA and COMBINING DIAERESIS). Although each encod
 <div class="line">}</div>
 <div class="line">text_input[text_input_size] = 0;</div>
 <div class="line"></div>
-<div class="line"><a class="code" href="group__public.html#ga325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, inputSize, text_input, text_input_size, &amp;errors);</div>
-<div class="line"><span class="keywordflow">if</span> (errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line"><span class="keywordflow">if</span> (<a class="code" href="group__public.html#ga325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, inputSize, text_input, text_input_size, &amp;errors) == 0 ||</div>
+<div class="line">    errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>We first determine the length of the input before we allocate memory for it. This way, we ensure that we're protected from buffer-overflow attacks. If you're not too keen on dynamic memory allocations, you could limit the input sequence to six code points, which would require a maximum of four bytes each to encode.</p>
+</div><!-- fragment --><p>We first determine the length of the input before we allocate memory for it. This way, we ensure that we're protected from buffer-overflow attacks. If you're not too keen on dynamic memory allocations, you could limit the input sequence to six code points, which would require a maximum of 32 bytes to encode.</p>
 <p>It's good practice to always check the error code after each call. However, never explicitly check for any particular error code! <code>utf8rewind</code> may introduce new error codes on every release, so you should check if the error code does <em>not</em> equal <code>UTF8_ERR_NONE</code>.</p>
 <p>Because the converted string can now consist of more than one byte, we'll have to change the check to see if we're out of bounds of the password input array.</p>
 <div class="fragment"><div class="line"><span class="keywordflow">if</span> ((strlen(g_PasswordInput) + strlen(text_input)) &gt; g_PasswordInputMaximum)</div>
@@ -200,8 +199,7 @@ U+0308" (GREEK CAPITAL LETTER IOTA and COMBINING DIAERESIS). Although each encod
 <div class="line">    <span class="keywordtype">size_t</span> converted_size;</div>
 <div class="line">    int32_t errors = <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>;</div>
 <div class="line"></div>
-<div class="line">    text_input_size = <a class="code" href="group__public.html#ga325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, inputSize, NULL, 0, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (text_input_size == 0 ||</div>
+<div class="line">    <span class="keywordflow">if</span> ((text_input_size = <a class="code" href="group__public.html#ga325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, inputSize, NULL, 0, &amp;errors)) == 0 ||</div>
 <div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        result = 0;</div>
@@ -218,8 +216,8 @@ U+0308" (GREEK CAPITAL LETTER IOTA and COMBINING DIAERESIS). Although each encod
 <div class="line">    }</div>
 <div class="line">    text_input[text_input_size] = 0;</div>
 <div class="line"></div>
-<div class="line">    <a class="code" href="group__public.html#ga325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, inputSize, text_input, text_input_size, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="group__public.html#ga325b2612f0a2afdacb81d5e6831bd43b">utf32toutf8</a>(input, inputSize, text_input, text_input_size, &amp;errors) == 0 ||</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        result = 0;</div>
 <div class="line"></div>
@@ -276,8 +274,7 @@ Displaying Unicode text</h1>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
 <div class="line">    <a class="code" href="group__types.html#gae128fe5bd9e57be736e64d3638229988">unicode_t</a>* src;</div>
 <div class="line"></div>
-<div class="line">    converted_size = <a class="code" href="group__public.html#ga353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(text, text_size, NULL, 0, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (converted_size == 0 ||</div>
+<div class="line">    <span class="keywordflow">if</span> ((converted_size = <a class="code" href="group__public.html#ga353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(text, text_size, NULL, 0, &amp;errors)) == 0 ||</div>
 <div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
@@ -285,8 +282,8 @@ Displaying Unicode text</h1>
 <div class="line"></div>
 <div class="line">    converted = (<a class="code" href="group__types.html#gae128fe5bd9e57be736e64d3638229988">unicode_t</a>*)malloc(converted_size);</div>
 <div class="line"></div>
-<div class="line">    <a class="code" href="group__public.html#ga353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(text, text_size, converted, converted_size, &amp;errors);</div>
-<div class="line">    <span class="keywordflow">if</span> (errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="group__public.html#ga353e5c4a977a630d154db221d6c36159">utf8toutf32</a>(text, text_size, converted, converted_size, &amp;errors) == 0 ||</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>
@@ -324,7 +321,7 @@ Comparing usernames in a case-insensitive manner</h1>
 <div class="line"></div>
 <div class="line"><span class="keyword">static</span> <span class="keyword">const</span> UserData Users[] = {</div>
 <div class="line">    { <span class="stringliteral">&quot;qlansu&quot;</span>, <span class="stringliteral">&quot;11111&quot;</span> },</div>
-<div class="line">    { <span class="stringliteral">&quot;Admin&quot;</span>, <span class="stringliteral">&quot;asfasdf&quot;</span> },</div>
+<div class="line">    { <span class="stringliteral">&quot;Admin&quot;</span>, <span class="stringliteral">&quot;ASDFSF&quot;</span> },</div>
 <div class="line">    { <span class="stringliteral">&quot;User1&quot;</span>, <span class="stringliteral">&quot;u99123&quot;</span> }</div>
 <div class="line">};</div>
 <div class="line"></div>
@@ -348,7 +345,7 @@ Comparing usernames in a case-insensitive manner</h1>
 <p>First, we ensure that the usernames stored in our "database" are casefolded:</p>
 <div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> Users[] = {</div>
 <div class="line">    { <span class="stringliteral">&quot;qlansu&quot;</span>, <span class="stringliteral">&quot;11111&quot;</span> },</div>
-<div class="line">    { <span class="stringliteral">&quot;admin&quot;</span>, <span class="stringliteral">&quot;asfasdf&quot;</span> },</div>
+<div class="line">    { <span class="stringliteral">&quot;admin&quot;</span>, <span class="stringliteral">&quot;asdfsf&quot;</span> },</div>
 <div class="line">    { <span class="stringliteral">&quot;user1&quot;</span>, <span class="stringliteral">&quot;u99123&quot;</span> }</div>
 <div class="line">};</div>
 </div><!-- fragment --><p>Next, we casefold the incoming string before we compare it to the username:</p>
@@ -360,7 +357,7 @@ Comparing usernames in a case-insensitive manner</h1>
 <div class="line">    int32_t errors;</div>
 <div class="line">    <span class="keywordtype">size_t</span> i;</div>
 <div class="line"></div>
-<div class="line">    <span class="keywordflow">if</span> ((compare_username_size = <a class="code" href="group__public.html#gaf50584a0773d99dfb93912b2f29a4c74">utf8casefold</a>(username, strlen(username), NULL, 0, &amp;errors)) == 0 ||</div>
+<div class="line">    <span class="keywordflow">if</span> ((compare_username_size = <a class="code" href="group__public.html#gaf50584a0773d99dfb93912b2f29a4c74">utf8casefold</a>(username, strlen(username), NULL, 0, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors)) == 0 ||</div>
 <div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
 <div class="line">    {</div>
 <div class="line">        result = 0;</div>
@@ -369,8 +366,21 @@ Comparing usernames in a case-insensitive manner</h1>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    compare_username = (<span class="keywordtype">char</span>*)malloc(compare_username_size + 1);</div>
-<div class="line">    <a class="code" href="group__public.html#gaf50584a0773d99dfb93912b2f29a4c74">utf8casefold</a>(username, strlen(username), compare_username, compare_username_size, &amp;errors);</div>
+<div class="line">    <span class="keywordflow">if</span> (compare_username == 0)</div>
+<div class="line">    {</div>
+<div class="line">        result = 0;</div>
+<div class="line"></div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
 <div class="line">    compare_username[compare_username_size] = 0;</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="group__public.html#gaf50584a0773d99dfb93912b2f29a4c74">utf8casefold</a>(username, strlen(username), compare_username, compare_username_size, <a class="code" href="group__locales.html#ga0cc6a56588c12c1de734be559a5b0781">UTF8_LOCALE_DEFAULT</a>, &amp;errors) == 0 ||</div>
+<div class="line">        errors != <a class="code" href="group__errors.html#gac7f8a18ca0ca9ebb357b2e7b9c527cc3">UTF8_ERR_NONE</a>)</div>
+<div class="line">    {</div>
+<div class="line">        result = 0;</div>
+<div class="line"></div>
+<div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
+<div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">for</span> (i = 0; i &lt; <span class="keyword">sizeof</span>(Users) / <span class="keyword">sizeof</span>(UserData); ++i)</div>
 <div class="line">    {</div>
@@ -391,7 +401,8 @@ Comparing usernames in a case-insensitive manner</h1>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">return</span> result;</div>
 <div class="line">}</div>
-</div><!-- fragment --> </div></div><!-- contents -->
+</div><!-- fragment --><p>One thing to keep in mind is that case folding (and uppercasing, lowercasing and titlecasing) are locale-sensitive. That is, their behavior may be changed by the specified locale. Something to keep in mind when dealing with, for example, Turkish or Azerbaijani text. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
