@@ -55,13 +55,13 @@
 }
 
 #if UTF8_VERSION_GUARD(1, 4, 0)
-	#define EXPECT_CASEFOLDING_EQ(_codepoint, _folded, _name, _locale) { \
+	#define EXPECT_CASEFOLDING_EQ(_codepoint, _folded, _name) { \
 		::helpers::CaseFoldingEntry e; \
 		e.codePoint = _codepoint; \
 		e.folded = _folded; \
 		e.name = _name; \
 		::helpers::CaseFoldingEntry a; \
-		a.folded = ::helpers::casefold(::helpers::utf8(_codepoint), (_locale)); \
+		a.folded = ::helpers::casefold(::helpers::utf8(_codepoint)); \
 		EXPECT_PRED_FORMAT2(::helpers::CompareCaseFolding, e, a); \
 	}
 #endif
@@ -75,7 +75,7 @@ namespace helpers {
 	std::string titlecase(const std::string& text, size_t locale);
 
 #if UTF8_VERSION_GUARD(1, 4, 0)
-	std::string casefold(const std::string& text, size_t locale);
+	std::string casefold(const std::string& text);
 #endif
 
 	struct CaseMappingEntry

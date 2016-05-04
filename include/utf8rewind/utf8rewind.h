@@ -1458,12 +1458,7 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	In some cases, case folding can be up to 20% faster than lowercasing the
 	same text, but the result cannot be treated as correct lowercased text.
 
-	Only two locale-specific exception are made when case folding text.
-	In Turkish, U+0049 LATIN CAPITAL LETTER I maps to U+0131 LATIN SMALL LETTER
-	DOTLESS I and U+0130 LATIN CAPITAL LETTER I WITH DOT ABOVE maps to U+0069
-	LATIN SMALL LETTER I.
-
-	Although most code points can be case folded in-place, there are notable
+	Even though most code points can be case folded in-place, there are notable
 	exceptions. For example, U+0130 (LATIN CAPITAL LETTER I WITH DOT ABOVE) maps
 	to "U+0069 U+0307" (LATIN SMALL LETTER I and COMBINING DOT ABOVE) when
 	converted to lowercase. Therefor, it is advised to first determine the size
@@ -1533,14 +1528,12 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	\param[in]   inputSize   Size of the input in bytes.
 	\param[out]  target      Output buffer for the result, can be NULL.
 	\param[in]   targetSize  Size of the output buffer in bytes.
-	\param[in]   locale      Enables locale-specific behavior in the implementation. \ref locales "List of valid locales."
 	\param[out]  errors      Output for errors.
 
 	\return Amount of bytes needed for storing output.
 
 	\retval #UTF8_ERR_NONE                    No errors.
 	\retval #UTF8_ERR_INVALID_DATA            Failed to decode data.
-	\retval #UTF8_ERR_INVALID_LOCALE          Invalid locale specified.
 	\retval #UTF8_ERR_OVERLAPPING_PARAMETERS  Input and output buffers overlap in memory.
 	\retval #UTF8_ERR_NOT_ENOUGH_SPACE        Target buffer size is insufficient for result.
 
@@ -1548,7 +1541,7 @@ UTF8_API size_t utf8totitle(const char* input, size_t inputSize, char* target, s
 	\sa utf8toupper
 	\sa utf8totitle
 */
-UTF8_API size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors);
+UTF8_API size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors);
 
 /*!
 	\brief Check if a string is stable in the specified Unicode Normalization

@@ -521,7 +521,7 @@ class CaseFoldingIntegrationSuite(IntegrationSuite):
 		self.header.indent()
 		
 		for r in records:
-			self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\", UTF8_LOCALE_DEFAULT);")
+			self.header.writeLine("EXPECT_CASEFOLDING_EQ(0x" + format(r.codePoint, '08X') + ", \"" + libs.utf8.unicodeToUtf8(r.folded) + "\", \"" + self.db.records[r.codePoint].name + "\");")
 		
 		self.header.outdent()
 		self.header.write("}")
