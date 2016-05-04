@@ -772,87 +772,151 @@ size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t ta
 		return state.total_bytes_needed;
 	}
 
-	/* Execute case mapping as long as input remains */
-
-	while (state.src_size > 0)
+	if (state.locale == UTF8_LOCALE_TURKISH_AND_AZERI_LATIN)
 	{
-		const char* resolved = 0;
-		uint8_t bytes_needed = 0;
+		/* Exceptional behavior for Turkish and Azerbaijani (Latin) locales */
 
-		/* Read next code point */
-
-		if (!(state.last_code_point_size = codepoint_read(state.src, state.src_size, &state.last_code_point)))
+		while (state.src_size > 0)
 		{
-			goto invaliddata;
-		}
+			const char* resolved = 0;
+			uint8_t bytes_needed = 0;
 
-		/* Fixes for Turkish locale */
+			/* Read next code point */
 
-		if (state.locale == UTF8_LOCALE_TURKISH_AND_AZERI_LATIN)
-		{
-			if (state.last_code_point == CP_LATIN_CAPITAL_LETTER_I)
+			if (!(state.last_code_point_size = codepoint_read(state.src, state.src_size, &state.last_code_point)))
 			{
-				resolved = "\xC4\xB1";
-				bytes_needed = 2;
+				goto invaliddata;
 			}
-			else if (
-				state.last_code_point == CP_LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE)
+
+			/* Move source cursor */
+
+			if (state.src_size >= state.last_code_point_size)
 			{
-				resolved = "i";
-				bytes_needed = 1;
+				state.src += state.last_code_point_size;
+				state.src_size -= state.last_code_point_size;
 			}
-		}
-
-		/* Resolve case folding */
-
-		if (resolved == 0 &&
-			(PROPERTY_GET_CM(state.last_code_point) & QuickCheckCaseMapped_Casefolded) != 0)
-		{
-			resolved = database_querydecomposition(state.last_code_point, state.property_index1, state.property_index2, state.property_data, &bytes_needed);
-		}
-
-		/* Move source cursor */
-
-		if (state.src_size >= state.last_code_point_size)
-		{
-			state.src += state.last_code_point_size;
-			state.src_size -= state.last_code_point_size;
-		}
-		else
-		{
-			state.src_size = 0;
-		}
-
-		/* Write to output */
-
-		if (resolved != 0)
-		{
-			/* Write resolved string to output */
-
-			if (state.dst != 0)
+			else
 			{
-				if (state.dst_size < bytes_needed)
+				state.src_size = 0;
+			}
+
+			/* Resolve case folding */
+
+			if ((PROPERTY_GET_CM(state.last_code_point) & QuickCheckCaseMapped_Casefolded) != 0)
+			{
+				if (state.last_code_point == CP_LATIN_CAPITAL_LETTER_I)
+				{
+					resolved = "\xC4\xB1";
+					bytes_needed = 2;
+				}
+				else if (
+					state.last_code_point == CP_LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE)
+				{
+					resolved = "i";
+					bytes_needed = 1;
+				}
+				else
+				{
+					resolved = database_querydecomposition(state.last_code_point, state.property_index1, state.property_index2, state.property_data, &bytes_needed);
+				}
+			}
+
+			/* Write to output */
+
+			if (resolved != 0)
+			{
+				/* Write resolved string to output */
+
+				if (state.dst != 0)
+				{
+					if (state.dst_size < bytes_needed)
+					{
+						goto outofspace;
+					}
+
+					memcpy(state.dst, resolved, bytes_needed);
+
+					state.dst += bytes_needed;
+					state.dst_size -= bytes_needed;
+				}
+			}
+			else
+			{
+				/* Write code point unchanged to output */
+
+				if (!(bytes_needed = codepoint_write(state.last_code_point, &state.dst, &state.dst_size)))
 				{
 					goto outofspace;
 				}
-
-				memcpy(state.dst, resolved, bytes_needed);
-
-				state.dst += bytes_needed;
-				state.dst_size -= bytes_needed;
 			}
+
+			state.total_bytes_needed += bytes_needed;
 		}
-		else
+	}
+	else
+	{
+		/* Execute case mapping as long as input remains */
+
+		while (state.src_size > 0)
 		{
-			/* Write code point unchanged to output */
+			const char* resolved = 0;
+			uint8_t bytes_needed = 0;
 
-			if (!(bytes_needed = codepoint_write(state.last_code_point, &state.dst, &state.dst_size)))
+			/* Read next code point */
+
+			if (!(state.last_code_point_size = codepoint_read(state.src, state.src_size, &state.last_code_point)))
 			{
-				goto outofspace;
+				goto invaliddata;
 			}
-		}
 
-		state.total_bytes_needed += bytes_needed;
+			/* Move source cursor */
+
+			if (state.src_size >= state.last_code_point_size)
+			{
+				state.src += state.last_code_point_size;
+				state.src_size -= state.last_code_point_size;
+			}
+			else
+			{
+				state.src_size = 0;
+			}
+
+			/* Resolve case folding */
+
+			if ((PROPERTY_GET_CM(state.last_code_point) & QuickCheckCaseMapped_Casefolded) != 0)
+			{
+				resolved = database_querydecomposition(state.last_code_point, state.property_index1, state.property_index2, state.property_data, &bytes_needed);
+			}
+
+			if (resolved != 0)
+			{
+				/* Write resolved string to output */
+
+				if (state.dst != 0)
+				{
+					if (state.dst_size < bytes_needed)
+					{
+						goto outofspace;
+					}
+
+					memcpy(state.dst, resolved, bytes_needed);
+
+					state.dst += bytes_needed;
+					state.dst_size -= bytes_needed;
+				}
+			}
+			else
+			{
+				/* Write code point unchanged to output */
+
+				if (!(bytes_needed = codepoint_write(state.last_code_point, &state.dst, &state.dst_size)))
+				{
+					goto outofspace;
+				}
+			}
+
+			state.total_bytes_needed += bytes_needed;
+		}
 	}
 
 	UTF8_SET_ERROR(NONE);
