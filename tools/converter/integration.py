@@ -484,6 +484,7 @@ class CaseFoldingIntegrationSuite(IntegrationSuite):
 			if len(tests) > 0:
 				self.writeTest(tests, b.name)
 		
+		"""
 		if len(tests_turkish) > 0:
 			print("Writing tests to \"TurkishLocale\"")
 			
@@ -499,6 +500,7 @@ class CaseFoldingIntegrationSuite(IntegrationSuite):
 			
 			self.header.outdent()
 			self.header.write("}")
+		"""
 	
 	def writeTest(self, records, name):
 		name = re.sub('[ \-]', '', name)

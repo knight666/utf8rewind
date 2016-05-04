@@ -743,7 +743,13 @@ size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t ta
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, QuickCheckCaseMapped_Casefolded, locale, errors))
+	if (!casemapping_initialize(
+		&state,
+		input, inputSize,
+		target, targetSize,
+		CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr,
+		QuickCheckCaseMapped_Casefolded, UTF8_LOCALE_DEFAULT,
+		errors))
 	{
 		return state.total_bytes_needed;
 	}
