@@ -544,7 +544,65 @@ const char* utf8seek(const char* text, size_t textSize, const char* textStart, o
 	}
 }
 
-size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+UTF8_API size_t utf8envlocale()
+{
+	/*
+		Sources for locales and code pages
+
+		Windows
+		https://msdn.microsoft.com/en-US/goglobal/bb896001.aspx
+
+		POSIX
+		https://www-01.ibm.com/support/knowledgecenter/ssw_aix_61/com.ibm.aix.nlsgdrf/support_languages_locales.htm
+	*/
+
+#if WIN32 || _WINDOWS
+	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
+		(codepage == _ansiCodepage || codepage == _oemCodepage)
+
+	// Microsoft changed the name of the codepage member in VS2015.
+
+	#if _MSC_VER >= 1800
+		#define UTF8_CODEPAGE_GET(_locale)  ((__crt_locale_data_public*)(_locale)->locinfo)->_locale_lc_codepage
+	#else
+		#define UTF8_CODEPAGE_GET(_locale)  (_locale)->locinfo->lc_codepage
+	#endif
+
+	unsigned int codepage;
+	_locale_t locale = _get_current_locale();
+
+	if (locale == 0)
+	{
+		return UTF8_LOCALE_DEFAULT;
+	}
+
+	codepage = UTF8_CODEPAGE_GET(locale);
+#else
+	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
+		!strncasecmp(locale, _name, 5)
+
+	const char* locale = setlocale(LC_ALL, 0);
+	if (locale == 0)
+	{
+		return UTF8_LOCALE_DEFAULT;
+	}
+#endif
+
+	if (UTF8_LOCALE_CHECK("lt_lt", 1257, 775))
+	{
+		return UTF8_LOCALE_LITHUANIAN;
+	}
+	else if (
+		UTF8_LOCALE_CHECK("tr_tr", 1254, 857) ||
+		UTF8_LOCALE_CHECK("az_az", 1254, 857))
+	{
+		return UTF8_LOCALE_TURKISH_AND_AZERI_LATIN;
+	}
+
+	return UTF8_LOCALE_DEFAULT;
+}
+
+size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors)
 {
 	CaseMappingState state;
 
@@ -554,10 +612,8 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, UppercaseIndex1Ptr, UppercaseIndex2Ptr, UppercaseDataPtr, QuickCheckCaseMapped_Uppercase, locale, errors))
 	{
-		UTF8_SET_ERROR(NONE);
-
 		return state.total_bytes_needed;
 	}
 
@@ -580,7 +636,7 @@ size_t utf8toupper(const char* input, size_t inputSize, char* target, size_t tar
 	return state.total_bytes_needed;
 }
 
-size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors)
 {
 	CaseMappingState state;
 
@@ -590,10 +646,8 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, LowercaseIndex1Ptr, LowercaseIndex2Ptr, LowercaseDataPtr, QuickCheckCaseMapped_Lowercase, locale, errors))
 	{
-		UTF8_SET_ERROR(NONE);
-
 		return state.total_bytes_needed;
 	}
 
@@ -616,7 +670,7 @@ size_t utf8tolower(const char* input, size_t inputSize, char* target, size_t tar
 	return state.total_bytes_needed;
 }
 
-size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors)
 {
 	CaseMappingState state;
 
@@ -626,10 +680,8 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, TitlecaseIndex1Ptr, TitlecaseIndex2Ptr, TitlecaseDataPtr, QuickCheckCaseMapped_Titlecase, locale, errors))
 	{
-		UTF8_SET_ERROR(NONE);
-
 		return state.total_bytes_needed;
 	}
 
@@ -681,7 +733,7 @@ size_t utf8totitle(const char* input, size_t inputSize, char* target, size_t tar
 	return state.total_bytes_needed;
 }
 
-size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors)
+size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t targetSize, size_t locale, int32_t* errors)
 {
 	CaseMappingState state;
 
@@ -691,10 +743,8 @@ size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t ta
 
 	/* Initialize case mapping */
 
-	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr))
+	if (!casemapping_initialize(&state, input, inputSize, target, targetSize, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, QuickCheckCaseMapped_Casefolded, locale, errors))
 	{
-		UTF8_SET_ERROR(NONE);
-
 		return state.total_bytes_needed;
 	}
 
@@ -714,7 +764,7 @@ size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t ta
 
 		/* Fixes for Turkish locale */
 
-		if (state.locale == CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN)
+		if (state.locale == UTF8_LOCALE_TURKISH_AND_AZERI_LATIN)
 		{
 			if (state.last_code_point == CP_LATIN_CAPITAL_LETTER_I)
 			{

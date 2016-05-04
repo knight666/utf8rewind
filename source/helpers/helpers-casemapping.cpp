@@ -6,12 +6,12 @@ extern "C" {
 
 namespace helpers {
 
-	std::string uppercase(const std::string& text)
+	std::string uppercase(const std::string& text, size_t locale)
 	{
 		std::string converted;
 		int32_t errors;
 
-		size_t size_in_bytes = utf8toupper(text.c_str(), text.length(), nullptr, 0, &errors);
+		size_t size_in_bytes = utf8toupper(text.c_str(), text.length(), nullptr, 0, locale, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -19,17 +19,17 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes);
-		utf8toupper(text.c_str(), text.length(), &converted[0], size_in_bytes, nullptr);
+		utf8toupper(text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
 
 		return converted;
 	}
 
-	std::string lowercase(const std::string& text)
+	std::string lowercase(const std::string& text, size_t locale)
 	{
 		std::string converted;
 		int32_t errors;
 
-		size_t size_in_bytes = utf8tolower(text.c_str(), text.length(), nullptr, 0, &errors);
+		size_t size_in_bytes = utf8tolower(text.c_str(), text.length(), nullptr, 0, locale, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -37,17 +37,17 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes);
-		utf8tolower(text.c_str(), text.length(), &converted[0], size_in_bytes, nullptr);
+		utf8tolower(text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
 
 		return converted;
 	}
 
-	std::string titlecase(const std::string& text)
+	std::string titlecase(const std::string& text, size_t locale)
 	{
 		std::string converted;
 		int32_t errors;
 
-		size_t size_in_bytes = utf8totitle(text.c_str(), text.length(), nullptr, 0, &errors);
+		size_t size_in_bytes = utf8totitle(text.c_str(), text.length(), nullptr, 0, locale, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -55,18 +55,18 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes);
-		utf8totitle(text.c_str(), text.length(), &converted[0], size_in_bytes, nullptr);
+		utf8totitle(text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
 
 		return converted;
 	}
 
 #if UTF8_VERSION_GUARD(1, 4, 0)
-	std::string casefold(const std::string& text)
+	std::string casefold(const std::string& text, size_t locale)
 	{
 		std::string converted;
 		int32_t errors;
 
-		size_t size_in_bytes = utf8casefold(text.c_str(), text.length(), nullptr, 0, &errors);
+		size_t size_in_bytes = utf8casefold(text.c_str(), text.length(), nullptr, 0, locale, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -74,7 +74,7 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes);
-		utf8casefold(text.c_str(), text.length(), &converted[0], size_in_bytes, nullptr);
+		utf8casefold(text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
 
 		return converted;
 	}

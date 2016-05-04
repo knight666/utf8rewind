@@ -34,7 +34,7 @@
 			"Ἀριστοτέλης" -> "ἈΡΙΣΤΟΤΈΛΗΣ"
 		*/
 
-		converted_size = utf8toupper(input, strlen(input), output, output_size, &errors);
+		converted_size = utf8toupper(input, strlen(input), output, output_size, UTF8_LOCALE_DEFAULT, &errors);
 		if (converted_size == 0 ||
 			errors != UTF8_ERR_NONE)
 		{

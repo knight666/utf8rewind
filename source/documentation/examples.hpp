@@ -100,7 +100,7 @@
 	encoded text.
 
 	There are also many instances of code points that can be combined when
-	rendering, but aren't explicitly listed in the Unicode code point. This
+	rendering, but aren't explicitly listed in the Unicode database. This
 	allowed the Unicode Consortium to encode many more characters without taking
 	up space in the database. The downside for developers is of course that it
 	can be difficult to anticipate how much space will be required to store any
@@ -110,7 +110,7 @@
 
 	Every location that calls `PasswordField_EnterCharacter` will have to cast
 	the parameter to #unicode_t, but luckily this is backwards-compatible. All
-	ASCII code points (0x00 to 0x7F) are valid in Unicode as well.
+	values in ASCII (0x00 to 0x7F) encode the same characters in Unicode.
 
 	Inside the function, we'll want to convert the UTF-32 code point to UTF-8.
 	To that end, we'll use #utf32toutf8.
@@ -121,8 +121,7 @@
 		size_t converted_size;
 		int32_t errors = UTF8_ERR_NONE;
 
-		text_input_size = utf32toutf8(input, inputSize, NULL, 0, &errors);
-		if (text_input_size == 0 ||
+		if ((text_input_size = utf32toutf8(input, inputSize, NULL, 0, &errors)) == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
 			goto cleanup;
@@ -135,18 +134,18 @@
 		}
 		text_input[text_input_size] = 0;
 
-		utf32toutf8(input, inputSize, text_input, text_input_size, &errors);
-		if (errors != UTF8_ERR_NONE)
+		if (utf32toutf8(input, inputSize, text_input, text_input_size, &errors) == 0 ||
+			errors != UTF8_ERR_NONE)
 		{
 			goto cleanup;
 		}
 	\endcode
 
 	We first determine the length of the input before we allocate memory for it.
-	This way, we ensure that we're protected from buffer-overflow attacks.
-	If you're not too keen on dynamic memory allocations, you could limit the
-	input sequence to six code points, which would require a maximum of four
-	bytes each to encode.
+	This way, we ensure that we're protected from buffer-overflow attacks. If
+	you're not too keen on dynamic memory allocations, you could limit the input
+	sequence to six code points, which would require a maximum of 32 bytes
+	to encode.
 
 	It's good practice to always check the error code after each call. However,
 	never explicitly check for any particular error code! `utf8rewind` may
@@ -178,8 +177,7 @@
 			size_t converted_size;
 			int32_t errors = UTF8_ERR_NONE;
 
-			text_input_size = utf32toutf8(input, inputSize, NULL, 0, &errors);
-			if (text_input_size == 0 ||
+			if ((text_input_size = utf32toutf8(input, inputSize, NULL, 0, &errors)) == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
 				result = 0;
@@ -196,8 +194,8 @@
 			}
 			text_input[text_input_size] = 0;
 
-			utf32toutf8(input, inputSize, text_input, text_input_size, &errors);
-			if (errors != UTF8_ERR_NONE)
+			if (utf32toutf8(input, inputSize, text_input, text_input_size, &errors) == 0 ||
+				errors != UTF8_ERR_NONE)
 			{
 				result = 0;
 
@@ -273,8 +271,7 @@
 			size_t i;
 			unicode_t* src;
 
-			converted_size = utf8toutf32(text, text_size, NULL, 0, &errors);
-			if (converted_size == 0 ||
+			if ((converted_size = utf8toutf32(text, text_size, NULL, 0, &errors)) == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
 				goto cleanup;
@@ -282,8 +279,8 @@
 
 			converted = (unicode_t*)malloc(converted_size);
 
-			utf8toutf32(text, text_size, converted, converted_size, &errors);
-			if (errors != UTF8_ERR_NONE)
+			if (utf8toutf32(text, text_size, converted, converted_size, &errors) == 0 ||
+				errors != UTF8_ERR_NONE)
 			{
 				goto cleanup;
 			}
@@ -335,7 +332,7 @@
 
 		static const UserData Users[] = {
 			{ "qlansu", "11111" },
-			{ "Admin", "asfasdf" },
+			{ "Admin", "ASDFSF" },
 			{ "User1", "u99123" }
 		};
 
@@ -370,7 +367,7 @@
 	\code{.c}
 		static const Users[] = {
 			{ "qlansu", "11111" },
-			{ "admin", "asfasdf" },
+			{ "admin", "asdfsf" },
 			{ "user1", "u99123" }
 		};
 	\endcode
@@ -386,7 +383,7 @@
 			int32_t errors;
 			size_t i;
 
-			if ((compare_username_size = utf8casefold(username, strlen(username), NULL, 0, &errors)) == 0 ||
+			if ((compare_username_size = utf8casefold(username, strlen(username), NULL, 0, UTF8_LOCALE_DEFAULT, &errors)) == 0 ||
 				errors != UTF8_ERR_NONE)
 			{
 				result = 0;
@@ -395,8 +392,21 @@
 			}
 
 			compare_username = (char*)malloc(compare_username_size + 1);
-			utf8casefold(username, strlen(username), compare_username, compare_username_size, &errors);
+			if (compare_username == 0)
+			{
+				result = 0;
+
+				goto cleanup;
+			}
 			compare_username[compare_username_size] = 0;
+
+			if (utf8casefold(username, strlen(username), compare_username, compare_username_size, UTF8_LOCALE_DEFAULT, &errors) == 0 ||
+				errors != UTF8_ERR_NONE)
+			{
+				result = 0;
+
+				goto cleanup;
+			}
 
 			for (i = 0; i < sizeof(Users) / sizeof(UserData); ++i)
 			{
@@ -418,4 +428,9 @@
 			return result;
 		}
 	\endcode
+
+	One thing to keep in mind is that case folding (and uppercasing, lowercasing
+	and titlecasing) are locale-sensitive. That is, their behavior may be
+	changed by the specified locale. Something to keep in mind when dealing
+	with, for example, Turkish or Azerbaijani text.
 */

@@ -3,22 +3,21 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title="Overview"/>
-    <tab type="user" url="@ref utf8rewind.h" title="Interface"/>
-    <tab type="user" url="@ref examples" title="Examples"/>
-    <tab type="modules" visible="yes" title="" intro=""/>
-    <tab type="namespaces" visible="yes" title="">
-      <tab type="namespacelist" visible="yes" title="" intro=""/>
-      <tab type="namespacemembers" visible="yes" title="" intro=""/>
+    <tab type="usergroup" visible="yes" title="Reference">
+      <tab type="user" url="@ref public" title="Public interface"/>
+      <tab type="user" url="@ref version" title="Version information"/>
+      <tab type="user" url="@ref global-config" title="Global configuration"/>
+      <tab type="user" url="@ref errors" title="Error codes"/>
+      <tab type="user" url="@ref locales" title="Locales"/>
+      <tab type="user" url="@ref normalization" title="Normalization flags"/>
+      <tab type="user" url="@ref category" title="Category flags"/>
+      <tab type="user" url="@ref types" title="Types"/>
     </tab>
-    <tab type="classes" visible="yes" title="">
-      <tab type="classlist" visible="yes" title="" intro=""/>
-      <tab type="classindex" visible="$ALPHABETICAL_INDEX" title=""/> 
-      <tab type="hierarchy" visible="yes" title="" intro=""/>
-      <tab type="classmembers" visible="yes" title="" intro=""/>
-    </tab>
-    <tab type="files" visible="yes" title="">
-      <tab type="filelist" visible="yes" title="" intro=""/>
-      <tab type="globals" visible="yes" title="" intro=""/>
+    <tab type="usergroup" visible="yes" title="Examples">
+      <tab type="user" url="@ref example-changes" title="Changes to existing code"/>
+      <tab type="user" url="@ref example-user-input" title="Dealing with user input"/>
+      <tab type="user" url="@ref example-display" title="Displaying Unicode text"/>
+      <tab type="user" url="@ref example-users" title="Comparing usernames in a case-insensitive manner"/>
     </tab>
   </navindex>
 

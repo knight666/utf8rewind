@@ -27,7 +27,7 @@ PERF_TEST_F(BigCaseMapping, Uppercase)
 {
 	int32_t e;
 
-	size_t ol = utf8toupper(m_contents.c_str(), m_contents.length(), nullptr, 0, &e);
+	size_t ol = utf8toupper(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
 
 	PERF_ASSERT(ol > 0);
 	PERF_ASSERT(e == UTF8_ERR_NONE);
@@ -38,7 +38,7 @@ PERF_TEST_F(BigCaseMapping, Uppercase)
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8toupper(m_contents.c_str(), m_contents.length(), o, ol, nullptr);
+		utf8toupper(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
 
 		delete [] o;
 	}
@@ -48,7 +48,7 @@ PERF_TEST_F(BigCaseMapping, Lowercase)
 {
 	int32_t e;
 
-	size_t ol = utf8tolower(m_contents.c_str(), m_contents.length(), nullptr, 0, &e);
+	size_t ol = utf8tolower(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
 
 	PERF_ASSERT(ol > 0);
 	PERF_ASSERT(e == UTF8_ERR_NONE);
@@ -59,7 +59,7 @@ PERF_TEST_F(BigCaseMapping, Lowercase)
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8tolower(m_contents.c_str(), m_contents.length(), o, ol, nullptr);
+		utf8tolower(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
 
 		delete [] o;
 	}
@@ -69,7 +69,7 @@ PERF_TEST_F(BigCaseMapping, Titlecase)
 {
 	int32_t e;
 
-	size_t ol = utf8totitle(m_contents.c_str(), m_contents.length(), nullptr, 0, &e);
+	size_t ol = utf8totitle(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
 
 	PERF_ASSERT(ol > 0);
 	PERF_ASSERT(e == UTF8_ERR_NONE);
@@ -80,18 +80,17 @@ PERF_TEST_F(BigCaseMapping, Titlecase)
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8totitle(m_contents.c_str(), m_contents.length(), o, ol, nullptr);
+		utf8totitle(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
 
 		delete [] o;
 	}
 }
 
-#if UTF8_VERSION_GUARD(1, 4, 0)
 PERF_TEST_F(BigCaseMapping, Casefold)
 {
 	int32_t e;
 
-	size_t ol = utf8casefold(m_contents.c_str(), m_contents.length(), nullptr, 0, &e);
+	size_t ol = utf8casefold(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
 
 	PERF_ASSERT(ol > 0);
 	PERF_ASSERT(e == UTF8_ERR_NONE);
@@ -102,9 +101,8 @@ PERF_TEST_F(BigCaseMapping, Casefold)
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8casefold(m_contents.c_str(), m_contents.length(), o, ol, nullptr);
+		utf8casefold(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
 
 		delete [] o;
 	}
 }
-#endif
