@@ -752,39 +752,22 @@ size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t ta
 
 	while (state.src_size > 0)
 	{
+		unicode_t code_point;
 		const char* resolved = 0;
 		uint8_t bytes_needed = 0;
 
 		/* Read next code point */
 
-		if (!(state.last_code_point_size = codepoint_read(state.src, state.src_size, &state.last_code_point)))
+		if (!(state.last_code_point_size = codepoint_read(state.src, state.src_size, &code_point)))
 		{
 			goto invaliddata;
 		}
 
-		/* Fixes for Turkish locale */
-
-		if (state.locale == UTF8_LOCALE_TURKISH_AND_AZERI_LATIN)
-		{
-			if (state.last_code_point == CP_LATIN_CAPITAL_LETTER_I)
-			{
-				resolved = "\xC4\xB1";
-				bytes_needed = 2;
-			}
-			else if (
-				state.last_code_point == CP_LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE)
-			{
-				resolved = "i";
-				bytes_needed = 1;
-			}
-		}
-
 		/* Resolve case folding */
 
-		if (resolved == 0 &&
-			(PROPERTY_GET_CM(state.last_code_point) & QuickCheckCaseMapped_Casefolded) != 0)
+		if ((PROPERTY_GET_CM(code_point) & QuickCheckCaseMapped_Casefolded) != 0)
 		{
-			resolved = database_querydecomposition(state.last_code_point, state.property_index1, state.property_index2, state.property_data, &bytes_needed);
+			resolved = database_querydecomposition(code_point, state.property_index1, state.property_index2, state.property_data, &bytes_needed);
 		}
 
 		/* Move source cursor */
@@ -822,7 +805,7 @@ size_t utf8casefold(const char* input, size_t inputSize, char* target, size_t ta
 		{
 			/* Write code point unchanged to output */
 
-			if (!(bytes_needed = codepoint_write(state.last_code_point, &state.dst, &state.dst_size)))
+			if (!(bytes_needed = codepoint_write(code_point, &state.dst, &state.dst_size)))
 			{
 				goto outofspace;
 			}
