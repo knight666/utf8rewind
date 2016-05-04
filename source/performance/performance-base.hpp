@@ -137,7 +137,7 @@ namespace performance {
 		int32_t errors;
 		size_t converted_size;
 
-		if ((converted_size = utf8casefold(text, text_size, nullptr, 0, UTF8_LOCALE_DEFAULT, &errors)) == 0 ||
+		if ((converted_size = utf8casefold(text, text_size, nullptr, 0, &errors)) == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
 			return converted;
@@ -145,7 +145,7 @@ namespace performance {
 
 		converted.resize(converted_size);
 
-		utf8casefold(text, text_size, &converted[0], converted_size, UTF8_LOCALE_DEFAULT, nullptr);
+		utf8casefold(text, text_size, &converted[0], converted_size, nullptr);
 
 		return converted;
 	}
