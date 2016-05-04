@@ -68,67 +68,22 @@ static const char basic_latin_uppercase_table[58] = {
 	0x59, 0x5A
 };
 
-#if WIN32 || _WINDOWS
-	// Microsoft changed the name of the codepage member in VS2015.
-
-	#if _MSC_VER >= 1800
-		#define UTF8_CODEPAGE_GET(_locale)         ((__crt_locale_data_public*)(_locale)->locinfo)->_locale_lc_codepage
-	#else
-		#define UTF8_CODEPAGE_GET(_locale)         (_locale)->locinfo->lc_codepage
-	#endif
-
-	#define UTF8_LOCALE_GET \
-		unsigned int codepage; \
-		_locale_t locale = _get_current_locale(); \
-		if (locale == 0) return CASEMAPPING_LOCALE_DEFAULT; \
-		codepage = UTF8_CODEPAGE_GET(locale)
-
-	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
-		codepage == _ansiCodepage || codepage == _oemCodepage
-#else
-	#define UTF8_LOCALE_GET \
-		const char* locale = setlocale(LC_ALL, 0); \
-		if (locale == 0) return CASEMAPPING_LOCALE_DEFAULT
-
-	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
-		!strncasecmp(locale, _name, 5)
-#endif
-
-uint32_t casemapping_locale()
-{
-	/*
-		Sources for locales and code pages
-
-		Windows
-		https://msdn.microsoft.com/en-US/goglobal/bb896001.aspx
-
-		POSIX
-		https://www-01.ibm.com/support/knowledgecenter/ssw_aix_61/com.ibm.aix.nlsgdrf/support_languages_locales.htm
-	*/
-
-	UTF8_LOCALE_GET;
-
-	if (UTF8_LOCALE_CHECK("lt_lt", 1257, 775))
-	{
-		return CASEMAPPING_LOCALE_LITHUANIAN;
-	}
-	else if (
-		UTF8_LOCALE_CHECK("tr_tr", 1254, 857) ||
-		UTF8_LOCALE_CHECK("az_az", 1254, 857))
-	{
-		return CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN;
-	}
-
-	return CASEMAPPING_LOCALE_DEFAULT;
-}
-
 uint8_t casemapping_initialize(
 	CaseMappingState* state,
 	const char* input, size_t inputSize,
 	char* target, size_t targetSize,
-	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData)
+	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData,
+	uint8_t quickCheck, size_t locale,
+	int32_t* errors)
 {
 	memset(state, 0, sizeof(CaseMappingState));
+
+	if (locale >= UTF8_LOCALE_MAXIMUM)
+	{
+		UTF8_SET_ERROR(INVALID_LOCALE);
+
+		return 0;
+	}
 
 	state->src = input;
 	state->src_size = inputSize;
@@ -137,22 +92,8 @@ uint8_t casemapping_initialize(
 	state->property_index1 = propertyIndex1;
 	state->property_index2 = propertyIndex2;
 	state->property_data = propertyData;
-	state->quickcheck_flags = 0;
-	state->locale = casemapping_locale();
-
-	if (propertyData == TitlecaseDataPtr)
-	{
-		state->quickcheck_flags = QuickCheckCaseMapped_Titlecase;
-	}
-	else if (
-		propertyData == UppercaseDataPtr)
-	{
-		state->quickcheck_flags = QuickCheckCaseMapped_Uppercase;
-	}
-	else
-	{
-		state->quickcheck_flags = QuickCheckCaseMapped_Lowercase;
-	}
+	state->quickcheck_flags = quickCheck;
+	state->locale = locale;
 
 	return 1;
 }
@@ -188,7 +129,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 		goto writeresolved;
 	}
 
-	if (state->locale == CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN)
+	if (state->locale == UTF8_LOCALE_TURKISH_AND_AZERI_LATIN)
 	{
 		/*
 			Code point General Category does not need to be modified, because
@@ -220,16 +161,10 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 				{
 					uint8_t found = 0;
 
-					/* Initialize stream on the start of the sequence */
+					/* Initialize stream and read the next sequence */
 
-					if (!stream_initialize(&stream, state->src, state->src_size))
-					{
-						goto writeregular;
-					}
-
-					/* Read the current sequence */
-
-					if (!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
+					if (!stream_initialize(&stream, state->src, state->src_size) ||
+						!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
 					{
 						goto writeregular;
 					}
@@ -293,7 +228,7 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 		}
 	}
 	else if (
-		state->locale == CASEMAPPING_LOCALE_LITHUANIAN)
+		state->locale == UTF8_LOCALE_LITHUANIAN)
 	{
 		if (state->property_data == LowercaseDataPtr)
 		{
@@ -447,16 +382,10 @@ size_t casemapping_execute(CaseMappingState* state, int32_t* errors)
 
 			}
 
-			/* Initialize stream on the start of the sequence */
+			/* Initialize stream and read the next sequence */
 
-			if (!stream_initialize(&stream, state->src, state->src_size))
-			{
-				goto writeregular;
-			}
-
-			/* Read the current sequence */
-
-			if (!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
+			if (!stream_initialize(&stream, state->src, state->src_size) ||
+				!stream_read(&stream, QuickCheckNFCIndexPtr, QuickCheckNFCDataPtr))
 			{
 				goto writeregular;
 			}

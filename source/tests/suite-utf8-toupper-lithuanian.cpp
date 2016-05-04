@@ -3,25 +3,7 @@
 #include "../helpers/helpers-locale.hpp"
 #include "../helpers/helpers-strings.hpp"
 
-class Utf8ToUpperLithuanian
-	: public ::testing::Test
-{
-
-protected:
-
-	void SetUp()
-	{
-		SET_LOCALE_LITHUANIAN();
-	}
-
-	void TearDown()
-	{
-		RESET_LOCALE();
-	}
-
-};
-
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterI)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterI)
 {
 	// 0069
 	// 0049
@@ -31,12 +13,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterI)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningDotAbove)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningDotAbove)
 {
 	// 0069 0307
 	// 0049
@@ -46,12 +28,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningDotAbove)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithGrave)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithGrave)
 {
 	// 00EC
 	// 00CC
@@ -61,12 +43,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithGrave)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC3\x8C", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningGrave)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningGrave)
 {
 	// 0069 0300
 	// 0049 0300
@@ -76,12 +58,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningGrave)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x80", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningGrave)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningGrave)
 {
 	// 0069 0307 0300
 	// 0049 0300
@@ -91,12 +73,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombini
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x80", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithAcute)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithAcute)
 {
 	// 00ED
 	// 00CD
@@ -106,12 +88,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithAcute)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC3\x8D", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningAcute)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningAcute)
 {
 	// 0069 0301
 	// 0049 0301
@@ -121,12 +103,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningAcute)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x81", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningAcute)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningAcute)
 {
 	// 0069 0307 0301
 	// 0049 0301
@@ -136,12 +118,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombini
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x81", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithTilde)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithTilde)
 {
 	// 0129
 	// 0128
@@ -151,12 +133,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithTilde)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningTilde)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningTilde)
 {
 	// 0069 0303
 	// 0049 0303
@@ -166,12 +148,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningTilde)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x83", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningTilde)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningTilde)
 {
 	// 0069 0307 0303
 	// 0049 0303
@@ -181,12 +163,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombini
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x83", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningOgonek)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningOgonek)
 {
 	// 0069 0328
 	// 0049 0328
@@ -196,12 +178,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIAndCombiningOgonek)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningOgonek)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombiningOgonek)
 {
 	// 0069 0307 0328
 	// 0049 0328
@@ -211,12 +193,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterICombiningDotAboveAndCombini
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIMoreAboveOutOfOrder)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIMoreAboveOutOfOrder)
 {
 	// 0069 1939 034E 0747
 	//    0  222  220  230
@@ -229,12 +211,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIMoreAboveOutOfOrder)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(8, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(8, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCD\x8E\xE1\xA4\xB9\xDD\x87", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJ)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterJ)
 {
 	// 006A
 	// 004A
@@ -244,12 +226,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJ)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningDotAbove)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningDotAbove)
 {
 	// 006A 0307
 	// 004A
@@ -259,12 +241,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningDotAbove)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningGrave)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningGrave)
 {
 	// 006A 0300
 	// 004A 0300
@@ -274,12 +256,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningGrave)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x80", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJCombiningDotAboveAndCombiningGrave)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterJCombiningDotAboveAndCombiningGrave)
 {
 	// 006A 0307 0300
 	// 004A 0300
@@ -289,12 +271,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJCombiningDotAboveAndCombini
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x80", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningAcute)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningAcute)
 {
 	// 006A 0301
 	// 004A 0301
@@ -304,12 +286,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningAcute)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x81", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJCombiningDotAboveAndCombiningAcute)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterJCombiningDotAboveAndCombiningAcute)
 {
 	// 006A 0307 0301
 	// 004A 0301
@@ -319,12 +301,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJCombiningDotAboveAndCombini
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x81", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningTilde)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningTilde)
 {
 	// 006A 0303
 	// 004A 0303
@@ -334,12 +316,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningTilde)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x83", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJCombiningDotAboveAndCombiningTilde)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterJCombiningDotAboveAndCombiningTilde)
 {
 	// 006A 0307 0303
 	// 004A 0303
@@ -349,12 +331,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJCombiningDotAboveAndCombini
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x83", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningOgonek)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningOgonek)
 {
 	// 006A 0328
 	// 004A 0328
@@ -364,12 +346,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJAndCombiningOgonek)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJCombiningDotAboveAndCombiningOgonek)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterJCombiningDotAboveAndCombiningOgonek)
 {
 	// 006A 0307 0328
 	// 004A 0328
@@ -379,12 +361,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJCombiningDotAboveAndCombini
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJMoreAboveOutOfOrder)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterJMoreAboveOutOfOrder)
 {
 	// 006A 1DCA 0595 0F74
 	//    0  220  230  132
@@ -397,12 +379,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterJMoreAboveOutOfOrder)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(9, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(9, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xE0\xBD\xB4\xE1\xB7\x8A\xD6\x95", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonek)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonek)
 {
 	// 012F
 	// 012E
@@ -412,12 +394,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonek)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xAE", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningDotAbove)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningDotAbove)
 {
 	// 012F 0307
 	// 012E
@@ -427,12 +409,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningDotAb
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xAE", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningGrave)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningGrave)
 {
 	// 012F 0300
 	// 012E 0300
@@ -442,12 +424,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningGrave
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xAE\xCC\x80", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningAcute)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningAcute)
 {
 	// 012F 0301
 	// 012E 0301
@@ -457,12 +439,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningAcute
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xAE\xCC\x81", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningTilde)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningTilde)
 {
 	// 012F 0303
 	// 012E 0303
@@ -472,12 +454,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningTilde
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xAE\xCC\x83", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningOgonek)
+TEST(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningOgonek)
 {
 	// 012F 0328
 	// 012E 0328
@@ -487,12 +469,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinSmallLetterIWithOgonekAndCombiningOgone
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xAE\xCC\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterI)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterI)
 {
 	// 0049
 	// 0049
@@ -502,12 +484,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterI)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombingDotAbove)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombingDotAbove)
 {
 	// 0049 0307
 	// 0049 0307
@@ -517,12 +499,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombingDotAbove)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x87", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithGrave)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithGrave)
 {
 	// 00CC
 	// 00CC
@@ -532,12 +514,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithGrave)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC3\x8C", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningGrave)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningGrave)
 {
 	// 0049 0300
 	// 0049 0300
@@ -547,12 +529,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningGrave)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x80", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningGrave)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningGrave)
 {
 	// 0049 0307 0300
 	// 0049 0307 0300
@@ -562,12 +544,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombi
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x87\xCC\x80", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithAcute)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithAcute)
 {
 	// 00CD
 	// 00CD
@@ -577,12 +559,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithAcute)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC3\x8D", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningAcute)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningAcute)
 {
 	// 0049 0301
 	// 0049 0301
@@ -592,12 +574,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningAcute)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x81", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningAcute)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningAcute)
 {
 	// 0049 0307 0301
 	// 0049 0307 0301
@@ -607,12 +589,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombi
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x87\xCC\x81", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithTilde)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithTilde)
 {
 	// 0128
 	// 0128
@@ -622,12 +604,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithTilde)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningTilde)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningTilde)
 {
 	// 0049 0303
 	// 0049 0303
@@ -637,12 +619,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningTilde)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x83", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningTilde)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningTilde)
 {
 	// 0049 0307 0303
 	// 0049 0307 0303
@@ -652,12 +634,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombi
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x87\xCC\x83", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningOgnonek)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningOgnonek)
 {
 	// 0049 0328
 	// 0049 0328
@@ -667,12 +649,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIAndCombiningOgnonek)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningOgnonek)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombiningOgnonek)
 {
 	// 0049 0307 0328
 	// 0049 0307 0328
@@ -682,12 +664,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterICombiningDotAboveAndCombi
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xCC\x87\xCC\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIMoreAboveOutOfOrder)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIMoreAboveOutOfOrder)
 {
 	// 0049 302D 0EB8 0F7B 0350
 	//    0  222  118  130  230
@@ -700,12 +682,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIMoreAboveOutOfOrder)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(12, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(12, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("I\xE3\x80\xAD\xE0\xBA\xB8\xE0\xBD\xBB\xCD\x90", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJ)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJ)
 {
 	// 004A
 	// 004A
@@ -715,12 +697,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJ)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(1, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJAndCombiningDotAbove)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJAndCombiningDotAbove)
 {
 	// 004A 0307
 	// 004A 0307
@@ -730,12 +712,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJAndCombiningDotAbove)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x87", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJAndCombiningGrave)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJAndCombiningGrave)
 {
 	// 004A 0300
 	// 004A 0300
@@ -745,12 +727,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJAndCombiningGrave)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x80", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningDotAboveAndCombiningGrave)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningDotAboveAndCombiningGrave)
 {
 	// 004A 0307 0300
 	// 004A 0307 0300
@@ -760,12 +742,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningDotAboveAndCombi
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x87\xCC\x80", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJAndCombiningAcute)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJAndCombiningAcute)
 {
 	// 004A 0301
 	// 004A 0301
@@ -775,12 +757,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJAndCombiningAcute)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x81", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningDotAboveAndCombiningAcute)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningDotAboveAndCombiningAcute)
 {
 	// 004A 0307 0301
 	// 004A 0307 0301
@@ -790,12 +772,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningDotAboveAndCombi
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x87\xCC\x81", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJAndCombiningTilde)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJAndCombiningTilde)
 {
 	// 004A 0303
 	// 004A 0303
@@ -805,12 +787,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJAndCombiningTilde)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x83", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningDotAboveAndCombiningTilde)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningDotAboveAndCombiningTilde)
 {
 	// 004A 0307 0303
 	// 004A 0307 0303
@@ -820,12 +802,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningDotAboveAndCombi
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x87\xCC\x83", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningOgonek)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningOgonek)
 {
 	// 004A 0328
 	// 004A 0328
@@ -835,12 +817,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningOgonek)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(3, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningDotAboveAndCombiningOgonek)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningDotAboveAndCombiningOgonek)
 {
 	// 004A 0307 0328
 	// 004A 0307 0328
@@ -850,12 +832,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJCombiningDotAboveAndCombi
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(5, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xCC\x87\xCC\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJMoreAboveOutOfOrder)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJMoreAboveOutOfOrder)
 {
 	// 004A AAB4 0619 0F72 0732
 	//    0  220   31  130  230
@@ -868,12 +850,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterJMoreAboveOutOfOrder)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(11, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(11, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("J\xEA\xAA\xB4\xD8\x99\xE0\xBD\xB2\xDC\xB2", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonek)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonek)
 {
 	// 012E
 	// 012E
@@ -883,12 +865,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonek)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(2, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xAE", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningDotAbove)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningDotAbove)
 {
 	// 012E 0307
 	// 012E 0307
@@ -898,12 +880,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningDot
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xAE\xCC\x87", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningGrave)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningGrave)
 {
 	// 012E 0300
 	// 012E 0300
@@ -913,12 +895,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningGra
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xAE\xCC\x80", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningAcute)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningAcute)
 {
 	// 012E 0301
 	// 012E 0301
@@ -928,12 +910,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningAcu
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xAE\xCC\x81", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningTilde)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningTilde)
 {
 	// 012E 0303
 	// 012E 0303
@@ -943,12 +925,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningTil
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xAE\xCC\x83", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningOgonek)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningOgonek)
 {
 	// 012E 0328
 	// 012E 0328
@@ -958,12 +940,12 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekAndCombiningOgo
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(4, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xAE\xCC\xA8", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
 
-TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekMoreAboveOutOfOrder)
+TEST(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekMoreAboveOutOfOrder)
 {
 	// 012E 302E 1DCA AAC1
 	//    0  224  220  230
@@ -976,7 +958,7 @@ TEST_F(Utf8ToUpperLithuanian, SingleLatinCapitalLetterIWithOgonekMoreAboveOutOfO
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(11, utf8toupper(c, strlen(c), b, s, &errors));
+	EXPECT_EQ(11, utf8toupper(c, strlen(c), b, s, UTF8_LOCALE_LITHUANIAN, &errors));
 	EXPECT_UTF8EQ("\xC4\xAE\xE3\x80\xAE\xE1\xB7\x8A\xEA\xAB\x81", b);
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }

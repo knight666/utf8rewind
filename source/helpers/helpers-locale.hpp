@@ -53,11 +53,11 @@
 
 namespace helpers {
 
-	std::string locale(uint32_t value);
+	std::string locale(size_t value);
 
 	::testing::AssertionResult CompareLocale(
 		const char* expressionExpected, const char* expressionActual,
-		uint32_t localeExpected, uint32_t localeActual);
+		size_t localeExpected, size_t localeActual);
 
 };
 

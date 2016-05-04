@@ -35,12 +35,6 @@
 
 #include "utf8rewind.h"
 
-#define CASEMAPPING_LOCALE_DEFAULT                 0x00000000
-#define CASEMAPPING_LOCALE_LITHUANIAN              0x00000001
-#define CASEMAPPING_LOCALE_TURKISH_OR_AZERI_LATIN  0x00000002
-
-uint32_t casemapping_locale();
-
 typedef struct {
 	const char* src;
 	char* dst;
@@ -48,7 +42,7 @@ typedef struct {
 	size_t dst_size;
 	size_t total_bytes_needed;
 	unicode_t last_code_point;
-	uint32_t locale;
+	size_t locale;
 	const uint32_t* property_index1;
 	const uint32_t* property_index2;
 	const uint32_t* property_data;
@@ -58,7 +52,13 @@ typedef struct {
 	uint8_t quickcheck_flags;
 } CaseMappingState;
 
-uint8_t casemapping_initialize(CaseMappingState* state, const char* input, size_t inputSize, char* target, size_t targetSize, const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData);
+uint8_t casemapping_initialize(
+	CaseMappingState* state,
+	const char* input, size_t inputSize,
+	char* target, size_t targetSize,
+	const uint32_t* propertyIndex1, const uint32_t* propertyIndex2, const uint32_t* propertyData,
+	uint8_t quickCheck, size_t locale,
+	int32_t* errors);
 
 size_t casemapping_execute(CaseMappingState* state, int32_t* errors);
 

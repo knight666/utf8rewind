@@ -16,6 +16,7 @@ namespace helpers {
 		MAKE_CASE(INVALID_FLAG);
 		MAKE_CASE(NOT_ENOUGH_SPACE);
 		MAKE_CASE(OVERLAPPING_PARAMETERS);
+		MAKE_CASE(INVALID_LOCALE);
 
 	#undef MAKE_CASE
 
@@ -44,8 +45,8 @@ namespace helpers {
 
 			result << std::endl;
 
-			result << "  Actual: " << error(errorActual) << " (" << errorActual << ")" << std::endl;
-			result << "Expected: " << error(errorExpected) << " (" << errorExpected << ")";
+			result << "  Actual: " << error(errorActual) << std::endl;
+			result << "Expected: " << error(errorExpected);
 
 			return result;
 		}
