@@ -11,7 +11,7 @@ namespace helpers {
 		std::string converted;
 		int32_t errors;
 
-		size_t size_in_bytes = utf8toupper(text.c_str(), text.length(), nullptr, 0, locale, &errors);
+		size_t size_in_bytes = CM_CALL(utf8toupper, text.c_str(), text.length(), nullptr, 0, locale, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -19,7 +19,7 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes);
-		utf8toupper(text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
+		CM_CALL(utf8toupper, text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
 
 		return converted;
 	}
@@ -29,7 +29,7 @@ namespace helpers {
 		std::string converted;
 		int32_t errors;
 
-		size_t size_in_bytes = utf8tolower(text.c_str(), text.length(), nullptr, 0, locale, &errors);
+		size_t size_in_bytes = CM_CALL(utf8tolower, text.c_str(), text.length(), nullptr, 0, locale, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -37,7 +37,7 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes);
-		utf8tolower(text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
+		CM_CALL(utf8tolower, text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
 
 		return converted;
 	}
@@ -47,7 +47,7 @@ namespace helpers {
 		std::string converted;
 		int32_t errors;
 
-		size_t size_in_bytes = utf8totitle(text.c_str(), text.length(), nullptr, 0, locale, &errors);
+		size_t size_in_bytes = CM_CALL(utf8totitle, text.c_str(), text.length(), nullptr, 0, locale, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -55,7 +55,7 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes);
-		utf8totitle(text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
+		CM_CALL(utf8totitle, text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
 
 		return converted;
 	}
@@ -66,7 +66,7 @@ namespace helpers {
 		std::string converted;
 		int32_t errors;
 
-		size_t size_in_bytes = utf8casefold(text.c_str(), text.length(), nullptr, 0, locale, &errors);
+		size_t size_in_bytes = CM_CALL(utf8casefold, text.c_str(), text.length(), nullptr, 0, locale, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
@@ -74,7 +74,7 @@ namespace helpers {
 		}
 
 		converted.resize(size_in_bytes);
-		utf8casefold(text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
+		CM_CALL(utf8casefold, text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
 
 		return converted;
 	}
