@@ -1,6 +1,7 @@
 #include "performance-base.hpp"
 
 #include "../helpers/helpers-casemapping.hpp"
+#include "../helpers/helpers-locale.hpp"
 
 class GreekCaseMapping
 	: public performance::Suite

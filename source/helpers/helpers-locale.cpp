@@ -10,6 +10,7 @@ namespace helpers {
 	{
 		std::stringstream ss;
 
+	#if UTF8_VERSION_GUARD(1, 5, 0)
 		switch (value)
 		{
 
@@ -27,6 +28,24 @@ namespace helpers {
 			break;
 
 		}
+	#elif UTF8_VERSION_GUARD(1, 3, 0)
+		switch (value)
+		{
+
+	#define LOCALE_CASE(_name) case CASEMAPPING_LOCALE_ ## _name: ss << #_name; break
+
+		LOCALE_CASE(DEFAULT);
+		LOCALE_CASE(LITHUANIAN);
+		LOCALE_CASE(TURKISH_OR_AZERI_LATIN);
+
+	#undef LOCALE_CASE
+
+		default:
+			ss << "<invalid>";
+			break;
+
+				}
+	#endif
 
 		ss << " (" << value << ")";
 
