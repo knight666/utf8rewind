@@ -106,3 +106,111 @@ PERF_TEST_F(GreekCaseMapping, Casefold)
 		delete [] o;
 	}
 }
+
+PERF_TEST_F(GreekCaseMapping, Locale)
+{
+	int32_t e;
+	const char* i = m_contents.c_str();
+	size_t il = m_contents.length();
+	size_t ol;
+
+#if UTF8_VERSION < UTF8_VERSION_MAKE(1, 5, 0)
+	SET_LOCALE_TURKISH();
+#endif
+
+	if ((ol = CM_CALL(utf8toupper, i, il, nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &e)) != 0 &&
+		e == UTF8_ERR_NONE)
+	{
+		char* o = new char[ol + 1];
+		memset(o, 0, ol + 1);
+
+		CM_CALL(utf8toupper, i, il, o, ol, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, nullptr);
+
+		delete [] o;
+	}
+
+	if ((ol = CM_CALL(utf8tolower, i, il, nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &e)) != 0 &&
+		e == UTF8_ERR_NONE)
+	{
+		char* o = new char[ol + 1];
+		memset(o, 0, ol + 1);
+
+		CM_CALL(utf8tolower, i, il, o, ol, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, nullptr);
+
+		delete [] o;
+	}
+
+	if ((ol = CM_CALL(utf8totitle, i, il, nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &e)) != 0 &&
+		e == UTF8_ERR_NONE)
+	{
+		char* o = new char[ol + 1];
+		memset(o, 0, ol + 1);
+
+		CM_CALL(utf8totitle, i, il, o, ol, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, nullptr);
+
+		delete [] o;
+	}
+
+	if ((ol = CM_CALL(utf8casefold, i, il, nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &e)) != 0 &&
+		e == UTF8_ERR_NONE)
+	{
+		char* o = new char[ol + 1];
+		memset(o, 0, ol + 1);
+
+		CM_CALL(utf8casefold, i, il, o, ol, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, nullptr);
+
+		delete [] o;
+	}
+
+#if UTF8_VERSION < UTF8_VERSION_MAKE(1, 5, 0)
+	SET_LOCALE_LITHUANIAN();
+#endif
+
+	if ((ol = CM_CALL(utf8toupper, i, il, nullptr, 0, UTF8_LOCALE_LITHUANIAN, &e)) != 0 &&
+		e == UTF8_ERR_NONE)
+	{
+		char* o = new char[ol + 1];
+		memset(o, 0, ol + 1);
+
+		CM_CALL(utf8toupper, i, il, o, ol, UTF8_LOCALE_LITHUANIAN, nullptr);
+
+		delete [] o;
+	}
+
+	if ((ol = CM_CALL(utf8tolower, i, il, nullptr, 0, UTF8_LOCALE_LITHUANIAN, &e)) != 0 &&
+		e == UTF8_ERR_NONE)
+	{
+		char* o = new char[ol + 1];
+		memset(o, 0, ol + 1);
+
+		CM_CALL(utf8tolower, i, il, o, ol, UTF8_LOCALE_LITHUANIAN, nullptr);
+
+		delete [] o;
+	}
+
+	if ((ol = CM_CALL(utf8totitle, i, il, nullptr, 0, UTF8_LOCALE_LITHUANIAN, &e)) != 0 &&
+		e == UTF8_ERR_NONE)
+	{
+		char* o = new char[ol + 1];
+		memset(o, 0, ol + 1);
+
+		CM_CALL(utf8totitle, i, il, o, ol, UTF8_LOCALE_LITHUANIAN, nullptr);
+
+		delete [] o;
+	}
+
+	if ((ol = CM_CALL(utf8casefold, i, il, nullptr, 0, UTF8_LOCALE_LITHUANIAN, &e)) != 0 &&
+		e == UTF8_ERR_NONE)
+	{
+		char* o = new char[ol + 1];
+		memset(o, 0, ol + 1);
+
+		CM_CALL(utf8casefold, i, il, o, ol, UTF8_LOCALE_LITHUANIAN, nullptr);
+
+		delete [] o;
+	}
+
+#if UTF8_VERSION < UTF8_VERSION_MAKE(1, 5, 0)
+	RESET_LOCALE();
+#endif
+}
