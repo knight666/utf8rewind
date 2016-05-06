@@ -150,6 +150,61 @@ namespace performance {
 		return converted;
 	}
 
+	static const uint32_t DurationSeconds = 1000;
+	static const uint32_t DurationMinutes = 60 * DurationSeconds;
+	static const uint32_t DurationHours = 60 * DurationMinutes;
+	static const uint32_t DurationDays = 24 * DurationHours;
+	static const uint32_t DurationWeeks = 7 * DurationDays;
+
+	static std::string formatDuration(uint32_t duration)
+	{
+		std::stringstream ss;
+
+		bool highest = false;
+
+		if (duration >= DurationWeeks)
+		{
+			ss << (duration / DurationWeeks) << "w ";
+			duration %= DurationWeeks;
+			highest = true;
+		}
+
+		if (duration >= DurationDays)
+		{
+			ss << (duration / DurationDays) << "d ";
+			duration %= DurationDays;
+			highest = true;
+		}
+
+		if (duration >= DurationHours ||
+			highest)
+		{
+			ss << (duration / DurationHours) << "h ";
+			duration %= DurationHours;
+			highest = true;
+		}
+
+		if (duration >= DurationMinutes ||
+			highest)
+		{
+			ss << (duration / DurationMinutes) << "m ";
+			duration %= DurationMinutes;
+			highest = true;
+		}
+
+		if (duration >= DurationSeconds ||
+			highest)
+		{
+			ss << (duration / DurationSeconds) << "s ";
+			duration %= DurationSeconds;
+			highest = true;
+		}
+
+		ss << duration << "ms";
+
+		return ss.str();
+	}
+
 	class Suite
 	{
 
@@ -361,10 +416,10 @@ namespace performance {
 
 				average /= (double)timings.size();
 
-				m_logging << "     Total: " << std::setw(8) << total_duration << " ms" << std::endl;
-				m_logging << " Best case: " << std::setw(8) << best_case << " ms" << std::endl;
-				m_logging << "Worst case: " << std::setw(8) << worst_case << " ms" << std::endl;
-				m_logging << "   Average: " << std::setw(8) << average << " ms" << std::endl;
+				m_logging << "     Total: " << std::setw(8) << total_duration << " ms (" << formatDuration(total_duration) << ")" << std::endl;
+				m_logging << " Best case: " << std::setw(8) << best_case << " ms (" << formatDuration((uint32_t)best_case) << ")" << std::endl;
+				m_logging << "Worst case: " << std::setw(8) << worst_case << " ms (" << formatDuration((uint32_t)worst_case) << ")" << std::endl;
+				m_logging << "   Average: " << std::setw(8) << average << " ms (" << formatDuration((uint32_t)average) << ")" << std::endl;
 				m_logging << std::endl;
 			}
 
