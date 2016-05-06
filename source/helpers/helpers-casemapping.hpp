@@ -66,6 +66,14 @@
 	}
 #endif
 
+#if UTF8_VERSION_GUARD(1, 5, 0)
+	#define CM_CALL(_function, _input, _inputSize, _output, _outputSize, _locale, _errors) \
+		_function ((_input), (_inputSize), (_output), (_outputSize), (_locale), (_errors))
+#else
+	#define CM_CALL(_function, _input, _inputSize, _output, _outputSize, _locale, _errors) \
+		_function ((_input), (_inputSize), (_output), (_outputSize), (_errors))
+#endif
+
 namespace helpers {
 
 	std::string uppercase(const std::string& text, size_t locale);

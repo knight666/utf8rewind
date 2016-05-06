@@ -1,5 +1,7 @@
 #include "performance-base.hpp"
 
+#include "../helpers/helpers-casemapping.hpp"
+
 class BigCaseMapping
 	: public performance::Suite
 {
@@ -27,7 +29,7 @@ PERF_TEST_F(BigCaseMapping, Uppercase)
 {
 	int32_t e;
 
-	size_t ol = utf8toupper(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
+	size_t ol = CM_CALL(utf8toupper, m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
 
 	PERF_ASSERT(ol > 0);
 	PERF_ASSERT(e == UTF8_ERR_NONE);
@@ -38,7 +40,7 @@ PERF_TEST_F(BigCaseMapping, Uppercase)
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8toupper(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
+		CM_CALL(utf8toupper, m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
 
 		delete [] o;
 	}
@@ -48,7 +50,7 @@ PERF_TEST_F(BigCaseMapping, Lowercase)
 {
 	int32_t e;
 
-	size_t ol = utf8tolower(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
+	size_t ol = CM_CALL(utf8tolower, m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
 
 	PERF_ASSERT(ol > 0);
 	PERF_ASSERT(e == UTF8_ERR_NONE);
@@ -59,7 +61,7 @@ PERF_TEST_F(BigCaseMapping, Lowercase)
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8tolower(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
+		CM_CALL(utf8tolower, m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
 
 		delete [] o;
 	}
@@ -69,7 +71,7 @@ PERF_TEST_F(BigCaseMapping, Titlecase)
 {
 	int32_t e;
 
-	size_t ol = utf8totitle(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
+	size_t ol = CM_CALL(utf8totitle, m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
 
 	PERF_ASSERT(ol > 0);
 	PERF_ASSERT(e == UTF8_ERR_NONE);
@@ -80,7 +82,7 @@ PERF_TEST_F(BigCaseMapping, Titlecase)
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8totitle(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
+		CM_CALL(utf8totitle, m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
 
 		delete [] o;
 	}
@@ -90,7 +92,7 @@ PERF_TEST_F(BigCaseMapping, Casefold)
 {
 	int32_t e;
 
-	size_t ol = utf8casefold(m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
+	size_t ol = CM_CALL(utf8casefold, m_contents.c_str(), m_contents.length(), nullptr, 0, UTF8_LOCALE_DEFAULT, &e);
 
 	PERF_ASSERT(ol > 0);
 	PERF_ASSERT(e == UTF8_ERR_NONE);
@@ -101,7 +103,7 @@ PERF_TEST_F(BigCaseMapping, Casefold)
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8casefold(m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
+		CM_CALL(utf8casefold, m_contents.c_str(), m_contents.length(), o, ol, UTF8_LOCALE_DEFAULT, nullptr);
 
 		delete [] o;
 	}
@@ -118,46 +120,46 @@ PERF_TEST_F(BigCaseMapping, Locale)
 	SET_LOCALE_TURKISH();
 #endif
 
-	if ((ol = utf8toupper(i, il, nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &e)) != 0 &&
+	if ((ol = CM_CALL(utf8toupper, i, il, nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &e)) != 0 &&
 		e == UTF8_ERR_NONE)
 	{
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8toupper(i, il, o, ol, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, nullptr);
+		CM_CALL(utf8toupper, i, il, o, ol, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, nullptr);
 
 		delete [] o;
 	}
 
-	if ((ol = utf8tolower(i, il, nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &e)) != 0 &&
+	if ((ol = CM_CALL(utf8tolower, i, il, nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &e)) != 0 &&
 		e == UTF8_ERR_NONE)
 	{
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8tolower(i, il, o, ol, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, nullptr);
+		CM_CALL(utf8tolower, i, il, o, ol, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, nullptr);
 
 		delete [] o;
 	}
 
-	if ((ol = utf8totitle(i, il, nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &e)) != 0 &&
+	if ((ol = CM_CALL(utf8totitle, i, il, nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &e)) != 0 &&
 		e == UTF8_ERR_NONE)
 	{
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8totitle(i, il, o, ol, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, nullptr);
+		CM_CALL(utf8totitle, i, il, o, ol, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, nullptr);
 
 		delete [] o;
 	}
 
-	if ((ol = utf8casefold(i, il, nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &e)) != 0 &&
+	if ((ol = CM_CALL(utf8casefold, i, il, nullptr, 0, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, &e)) != 0 &&
 		e == UTF8_ERR_NONE)
 	{
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8casefold(i, il, o, ol, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, nullptr);
+		CM_CALL(utf8casefold, i, il, o, ol, UTF8_LOCALE_TURKISH_AND_AZERI_LATIN, nullptr);
 
 		delete [] o;
 	}
@@ -166,46 +168,46 @@ PERF_TEST_F(BigCaseMapping, Locale)
 	SET_LOCALE_LITHUANIAN();
 #endif
 
-	if ((ol = utf8toupper(i, il, nullptr, 0, UTF8_LOCALE_LITHUANIAN, &e)) != 0 &&
+	if ((ol = CM_CALL(utf8toupper, i, il, nullptr, 0, UTF8_LOCALE_LITHUANIAN, &e)) != 0 &&
 		e == UTF8_ERR_NONE)
 	{
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8toupper(i, il, o, ol, UTF8_LOCALE_LITHUANIAN, nullptr);
+		CM_CALL(utf8toupper, i, il, o, ol, UTF8_LOCALE_LITHUANIAN, nullptr);
 
 		delete [] o;
 	}
 
-	if ((ol = utf8tolower(i, il, nullptr, 0, UTF8_LOCALE_LITHUANIAN, &e)) != 0 &&
+	if ((ol = CM_CALL(utf8tolower, i, il, nullptr, 0, UTF8_LOCALE_LITHUANIAN, &e)) != 0 &&
 		e == UTF8_ERR_NONE)
 	{
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8tolower(i, il, o, ol, UTF8_LOCALE_LITHUANIAN, nullptr);
+		CM_CALL(utf8tolower, i, il, o, ol, UTF8_LOCALE_LITHUANIAN, nullptr);
 
 		delete [] o;
 	}
 
-	if ((ol = utf8totitle(i, il, nullptr, 0, UTF8_LOCALE_LITHUANIAN, &e)) != 0 &&
+	if ((ol = CM_CALL(utf8totitle, i, il, nullptr, 0, UTF8_LOCALE_LITHUANIAN, &e)) != 0 &&
 		e == UTF8_ERR_NONE)
 	{
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8totitle(i, il, o, ol, UTF8_LOCALE_LITHUANIAN, nullptr);
+		CM_CALL(utf8totitle, i, il, o, ol, UTF8_LOCALE_LITHUANIAN, nullptr);
 
 		delete [] o;
 	}
 
-	if ((ol = utf8casefold(i, il, nullptr, 0, UTF8_LOCALE_LITHUANIAN, &e)) != 0 &&
+	if ((ol = CM_CALL(utf8casefold, i, il, nullptr, 0, UTF8_LOCALE_LITHUANIAN, &e)) != 0 &&
 		e == UTF8_ERR_NONE)
 	{
 		char* o = new char[ol + 1];
 		memset(o, 0, ol + 1);
 
-		utf8casefold(i, il, o, ol, UTF8_LOCALE_LITHUANIAN, nullptr);
+		CM_CALL(utf8casefold, i, il, o, ol, UTF8_LOCALE_LITHUANIAN, nullptr);
 
 		delete [] o;
 	}
