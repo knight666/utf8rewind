@@ -24,7 +24,18 @@ public:
 		}
 
 		m_input = helpers::utf8(codepoints);
+
+	#if UTF8_VERSION < UTF8_VERSION_MAKE(1, 5, 0)
+		SET_LOCALE_ENGLISH();
+	#endif
 	}
+
+#if UTF8_VERSION < UTF8_VERSION_MAKE(1, 5, 0)
+	virtual void tearDown() override
+	{
+		RESET_LOCALE();
+	}
+#endif
 
 	std::string m_input;
 
@@ -346,7 +357,18 @@ public:
 		}
 
 		m_input = helpers::utf8(codepoints);
+
+	#if UTF8_VERSION < UTF8_VERSION_MAKE(1, 5, 0)
+		SET_LOCALE_ENGLISH();
+	#endif
 	}
+
+#if UTF8_VERSION < UTF8_VERSION_MAKE(1, 5, 0)
+	virtual void tearDown() override
+	{
+		RESET_LOCALE();
+	}
+#endif
 
 	std::string m_input;
 
@@ -658,7 +680,18 @@ public:
 		}
 
 		m_input = helpers::utf8(codepoints);
+
+	#if UTF8_VERSION < UTF8_VERSION_MAKE(1, 5, 0)
+		SET_LOCALE_ENGLISH();
+	#endif
 	}
+
+#if UTF8_VERSION < UTF8_VERSION_MAKE(1, 5, 0)
+	virtual void tearDown() override
+	{
+		RESET_LOCALE();
+	}
+#endif
 
 	std::string m_input;
 
@@ -984,7 +1017,18 @@ public:
 		}
 
 		m_input = helpers::utf8(codepoints);
+
+	#if UTF8_VERSION < UTF8_VERSION_MAKE(1, 5, 0)
+		SET_LOCALE_ENGLISH();
+	#endif
 	}
+
+#if UTF8_VERSION < UTF8_VERSION_MAKE(1, 5, 0)
+	virtual void tearDown() override
+	{
+		RESET_LOCALE();
+	}
+#endif
 
 	std::string m_input;
 
