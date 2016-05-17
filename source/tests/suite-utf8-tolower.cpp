@@ -580,7 +580,7 @@ TEST(Utf8ToLower, InvalidLocale)
 	char b[256] = { 0 };
 	int32_t errors = UTF8_ERR_NONE;
 
-	EXPECT_EQ(0, utf8toupper(c, strlen(c), b, s, 99, &errors));
+	EXPECT_EQ(0, utf8tolower(c, strlen(c), b, s, 99, &errors));
 	EXPECT_UTF8EQ("", b);
 	EXPECT_ERROREQ(UTF8_ERR_INVALID_LOCALE, errors);
 }
