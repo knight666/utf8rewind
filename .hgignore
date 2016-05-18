@@ -20,10 +20,12 @@ ipch/*
 *.props
 *.ncv
 *.opensdf
+*.psess
 *.sdf
 *.suo
 *.targets
 *.VC.opendb
+*.vspx
 syntax: regexp
 .*UpgradeLog([0-9]*)\.XML
 documentation.xml
