@@ -30,7 +30,7 @@
 						},
 						'msvs_settings': {
 							'VCCLCompilerTool': {
-								'WarningLevel': 3, # /W3
+								'WarningLevel': '3', # /W3
 								# 'WarnAsError': 'true' # TODO
 							},
 							'VCLibrarianTool': {
@@ -98,9 +98,9 @@
 					['OS=="win"', {
 						'msvs_settings': {
 							'VCCLCompilerTool': {
+								'RuntimeLibrary': 3, # /MDd (dynamic debug)
 								'Optimization': 0, # /Od
 								'BasicRuntimeChecks': 3, # /RTC1
-								'RuntimeLibrary': 3, # /MDd (dynamic debug)
 								'ProgramDataBaseFileName': '$(TargetDir)$(ProjectName).pdb',
 							},
 							'VCLinkerTool': {
@@ -119,15 +119,19 @@
 						'msvs_settings': {
 							'VCCLCompilerTool': {
 								'RuntimeLibrary': 2, # /MD (dynamic release)
-								'Optimization': 3, # /Ox
+								'Optimization': 2, # /O2
 								'InlineFunctionExpansion': 2, # /Ob2
 								'EnableIntrinsicFunctions': 'true', # /Oi
-								'FavorSizeOrSpeed': 1, # /Ot
-								'EnableEnhancedInstructionSet': 2, # /arch:SSE2
-								'FloatingPointModel': 2, # /fp:fast
+								'FavorSizeOrSpeed': 2, # /Os
+								'EnableFiberSafeOptimizations': 'true',
+								'WholeProgramOptimization': 'true',  # /GL
+							},
+							'VCLibrarianTool': {
+								'LinkTimeCodeGeneration': 'true', # /LTCG
 							},
 							'VCLinkerTool': {
-								'LinkIncremental': 2, # /INCREMENTAL
+								'LinkIncremental': 0, # /INCREMENTAL
+								'GenerateDebugInformation': 'true',
 							},
 						},
 					}],
