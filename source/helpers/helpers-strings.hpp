@@ -69,6 +69,7 @@ namespace helpers {
 	std::string hex(const std::string& text);
 	std::string hex(const std::wstring& text);
 
+	void printable(std::stringstream& target, bool& wroteHex, unicode_t character, uint8_t maxWidth);
 	std::string printable(const std::string& text);
 	std::string printable(const std::wstring& text);
 
