@@ -560,14 +560,6 @@ UTF8_API size_t utf8envlocale()
 	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
 		(codepage == _ansiCodepage || codepage == _oemCodepage)
 
-	// Microsoft changed the name of the codepage member in VS2015.
-
-	#if _MSC_VER >= 1800
-		#define UTF8_CODEPAGE_GET(_locale)  ((__crt_locale_data_public*)(_locale)->locinfo)->_locale_lc_codepage
-	#else
-		#define UTF8_CODEPAGE_GET(_locale)  (_locale)->locinfo->lc_codepage
-	#endif
-
 	unsigned int codepage;
 	_locale_t locale = _get_current_locale();
 
@@ -576,7 +568,13 @@ UTF8_API size_t utf8envlocale()
 		return UTF8_LOCALE_DEFAULT;
 	}
 
-	codepage = UTF8_CODEPAGE_GET(locale);
+	// Microsoft changed the name of the codepage member in VS2015.
+
+	#if _MSC_VER >= 1900
+		codepage = ((__crt_locale_data_public*)(locale)->locinfo)->_locale_lc_codepage;
+	#else
+		codepage = locale->locinfo->lc_codepage;
+	#endif
 #else
 	#define UTF8_LOCALE_CHECK(_name, _ansiCodepage, _oemCodepage) \
 		!strncasecmp(locale, _name, 5)
