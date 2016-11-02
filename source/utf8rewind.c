@@ -1222,6 +1222,89 @@ size_t utf8normalize(const char* input, size_t inputSize, char* target, size_t t
 	return bytes_written;
 }
 
+size_t utf8cmp(const char* inputLeft, const char* inputRight, size_t inputLength, size_t flags)
+{
+	size_t src_size = inputLength;
+	const char* src_left = inputLeft;
+	const char* src_right = inputRight;
+
+	while (src_size > 0)
+	{
+		unicode_t code_point_left;
+		size_t code_point_left_size = 0;
+		const char* resolved_left = 0;
+		uint8_t resolved_left_size = 0;
+		unicode_t code_point_right;
+		size_t code_point_right_size = 0;
+
+		/* Read left code point */
+
+		if (!(code_point_left_size = codepoint_read(src_left, src_size, &code_point_left)))
+		{
+			return inputLength - src_size + 1;
+		}
+
+		/* Compare left and right strings */
+
+		if (!memcmp(src_left, src_right, code_point_left_size))
+		{
+			goto next;
+		}
+
+		/* Read right code point */
+
+		if (!(code_point_right_size = codepoint_read(src_right, src_size, &code_point_right)))
+		{
+			return inputLength - src_size + 1;
+		}
+
+		/* Case fold left code point if possible */
+
+		if ((PROPERTY_GET_CM(code_point_left) & QuickCheckCaseMapped_Casefolded) != 0)
+		{
+			resolved_left = database_querydecomposition(code_point_left, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, &resolved_left_size);
+
+			/* Compare case folded left with right */
+
+			if (!memcmp(resolved_left, src_right, resolved_left_size))
+			{
+				goto next;
+			}
+		}
+		else
+		{
+			resolved_left = src_left;
+			resolved_left_size = code_point_left_size;
+		}
+
+		/* Case fold right code point if possible */
+
+		if ((PROPERTY_GET_CM(code_point_right) & QuickCheckCaseMapped_Casefolded) != 0)
+		{
+			uint8_t resolved_right_size;
+			const char* resolved_right = database_querydecomposition(code_point_right, CaseFoldingIndex1Ptr, CaseFoldingIndex2Ptr, CaseFoldingDataPtr, &resolved_right_size);
+
+			/* Compare left case folded against right case folded */
+
+			if (memcmp(resolved_left, resolved_right, resolved_right_size))
+			{
+				return inputLength - src_size + 1;
+			}
+		}
+		else
+		{
+			return inputLength - src_size + 1;
+		}
+
+	next:
+		src_size -= code_point_left_size;
+		src_left += code_point_left_size;
+		src_right += code_point_left_size;
+	}
+
+	return 0;
+}
+
 size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 {
 	const char* src = input;
