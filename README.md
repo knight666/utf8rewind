@@ -94,7 +94,7 @@ This project is licensed under the MIT license, a full copy of which should have
 
 ## Download ##
 
-[utf8rewind-1.5.0.zip (7.71 MB)](https://bitbucket.org/knight666/utf8rewind/downloads/utf8rewind-1.5.0.zip)
+[utf8rewind-1.5.1.zip (7.71 MB)](https://bitbucket.org/knight666/utf8rewind/downloads/utf8rewind-1.5.1.zip)
 
 ### Clone in Mercurial ###
  
