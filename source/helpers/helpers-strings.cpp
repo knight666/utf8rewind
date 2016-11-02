@@ -8,18 +8,16 @@ namespace helpers {
 
 	std::string utf8(unicode_t codepoint)
 	{
-		std::string converted;
-
 		int32_t errors;
 
 		size_t size_in_bytes = utf32toutf8(&codepoint, sizeof(unicode_t), nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::string();
 		}
 
-		converted.resize(size_in_bytes);
+		std::string converted(size_in_bytes, '!');
 		utf32toutf8(&codepoint, sizeof(unicode_t), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
@@ -27,18 +25,16 @@ namespace helpers {
 
 	std::string utf8(unicode_t* codepoints, size_t codepointsSize)
 	{
-		std::string converted;
-
 		int32_t errors;
 
 		size_t size_in_bytes = utf32toutf8(codepoints, codepointsSize, nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::string();
 		}
 
-		converted.resize(size_in_bytes);
+		std::string converted(size_in_bytes, '!');
 		utf32toutf8(codepoints, codepointsSize, &converted[0], size_in_bytes, nullptr);
 
 		return converted;
@@ -46,18 +42,16 @@ namespace helpers {
 
 	std::string utf8(const std::vector<unicode_t>& codepoints)
 	{
-		std::string converted;
-
 		int32_t errors;
 
 		size_t size_in_bytes = utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::string();
 		}
 
-		converted.resize(size_in_bytes);
+		std::string converted(size_in_bytes, '!');
 		utf32toutf8(&codepoints[0], codepoints.size() * sizeof(unicode_t), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
@@ -65,18 +59,16 @@ namespace helpers {
 
 	std::string utf8(const std::wstring& text)
 	{
-		std::string converted;
-
 		int32_t errors;
 
 		size_t size_in_bytes = widetoutf8(text.c_str(), text.size() * UTF8_WCHAR_SIZE, nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::string();
 		}
 
-		converted.resize(size_in_bytes);
+		std::string converted(size_in_bytes, '!');
 		widetoutf8(text.c_str(), text.size() * UTF8_WCHAR_SIZE, &converted[0], size_in_bytes, nullptr);
 
 		return converted;
@@ -84,18 +76,16 @@ namespace helpers {
 
 	std::vector<utf16_t> utf16(const std::string& text)
 	{
-		std::vector<utf16_t> converted;
-
 		int32_t errors;
 
 		size_t size_in_bytes = utf8toutf16(text.c_str(), text.size(), nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::vector<utf16_t>();
 		}
 
-		converted.resize(size_in_bytes / sizeof(utf16_t));
+		std::vector<utf16_t> converted(size_in_bytes / sizeof(utf16_t));
 		utf8toutf16(text.c_str(), text.size(), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
@@ -111,19 +101,16 @@ namespace helpers {
 
 	std::vector<unicode_t> utf32(const std::string& text)
 	{
-		std::vector<unicode_t> converted;
-
 		int32_t errors;
 
 		size_t size_in_bytes = utf8toutf32(text.c_str(), text.size(), nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::vector<unicode_t>();
 		}
 
-		converted.resize(size_in_bytes / sizeof(unicode_t));
-
+		std::vector<unicode_t> converted(size_in_bytes / sizeof(unicode_t));
 		utf8toutf32(text.c_str(), text.size(), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
@@ -131,19 +118,16 @@ namespace helpers {
 
 	std::wstring wide(const std::string& text)
 	{
-		std::wstring converted;
-
 		int32_t errors;
 
 		size_t size_in_bytes = utf8towide(text.c_str(), text.size(), nullptr, 0, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::wstring();
 		}
 
-		converted.resize(size_in_bytes / UTF8_WCHAR_SIZE);
-
+		std::wstring converted(size_in_bytes / UTF8_WCHAR_SIZE, L'!');
 		utf8towide(text.c_str(), text.size(), &converted[0], size_in_bytes, nullptr);
 
 		return converted;
