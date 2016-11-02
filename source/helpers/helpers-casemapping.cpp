@@ -8,17 +8,16 @@ namespace helpers {
 
 	std::string uppercase(const std::string& text, size_t locale)
 	{
-		std::string converted;
 		int32_t errors;
 
 		size_t size_in_bytes = CM_CALL(utf8toupper, text.c_str(), text.length(), nullptr, 0, locale, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::string();
 		}
 
-		converted.resize(size_in_bytes);
+		std::string converted(size_in_bytes, '!');
 		CM_CALL(utf8toupper, text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
 
 		return converted;
@@ -26,17 +25,16 @@ namespace helpers {
 
 	std::string lowercase(const std::string& text, size_t locale)
 	{
-		std::string converted;
 		int32_t errors;
 
 		size_t size_in_bytes = CM_CALL(utf8tolower, text.c_str(), text.length(), nullptr, 0, locale, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::string();
 		}
 
-		converted.resize(size_in_bytes);
+		std::string converted(size_in_bytes, '!');
 		CM_CALL(utf8tolower, text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
 
 		return converted;
@@ -44,17 +42,16 @@ namespace helpers {
 
 	std::string titlecase(const std::string& text, size_t locale)
 	{
-		std::string converted;
 		int32_t errors;
 
 		size_t size_in_bytes = CM_CALL(utf8totitle, text.c_str(), text.length(), nullptr, 0, locale, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::string();
 		}
 
-		converted.resize(size_in_bytes);
+		std::string converted(size_in_bytes, '!');
 		CM_CALL(utf8totitle, text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
 
 		return converted;
@@ -63,17 +60,16 @@ namespace helpers {
 #if UTF8_VERSION_GUARD(1, 4, 0)
 	std::string casefold(const std::string& text, size_t locale)
 	{
-		std::string converted;
 		int32_t errors;
 
 		size_t size_in_bytes = CM_CALL(utf8casefold, text.c_str(), text.length(), nullptr, 0, locale, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::string();
 		}
 
-		converted.resize(size_in_bytes);
+		std::string converted(size_in_bytes, '!');
 		CM_CALL(utf8casefold, text.c_str(), text.length(), &converted[0], size_in_bytes, locale, nullptr);
 
 		return converted;

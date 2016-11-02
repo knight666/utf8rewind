@@ -39,17 +39,16 @@ namespace helpers {
 
 	std::string nfc(const std::string& text)
 	{
-		std::string converted;
 		int32_t errors;
 
 		size_t size_in_bytes = utf8normalize(text.c_str(), text.length(), nullptr, 0, UTF8_NORMALIZE_COMPOSE, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::string();
 		}
 
-		converted.resize(size_in_bytes);
+		std::string converted(size_in_bytes, '!');
 		utf8normalize(text.c_str(), text.length(), &converted[0], size_in_bytes, UTF8_NORMALIZE_COMPOSE, nullptr);
 
 		return converted;
@@ -62,17 +61,16 @@ namespace helpers {
 
 	std::string nfd(const std::string& text)
 	{
-		std::string converted;
 		int32_t errors;
 
 		size_t size_in_bytes = utf8normalize(text.c_str(), text.length(), nullptr, 0, UTF8_NORMALIZE_DECOMPOSE, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::string();
 		}
 
-		converted.resize(size_in_bytes);
+		std::string converted(size_in_bytes, '!');
 		utf8normalize(text.c_str(), text.length(), &converted[0], size_in_bytes, UTF8_NORMALIZE_DECOMPOSE, nullptr);
 
 		return converted;
@@ -85,17 +83,16 @@ namespace helpers {
 
 	std::string nfkc(const std::string& text)
 	{
-		std::string converted;
 		int32_t errors;
 
 		size_t size_in_bytes = utf8normalize(text.c_str(), text.length(), nullptr, 0, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::string();
 		}
 
-		converted.resize(size_in_bytes);
+		std::string converted(size_in_bytes, '!');
 		utf8normalize(text.c_str(), text.length(), &converted[0], size_in_bytes, UTF8_NORMALIZE_COMPOSE | UTF8_NORMALIZE_COMPATIBILITY, nullptr);
 
 		return converted;
@@ -108,17 +105,16 @@ namespace helpers {
 
 	std::string nfkd(const std::string& text)
 	{
-		std::string converted;
 		int32_t errors;
 
 		size_t size_in_bytes = utf8normalize(text.c_str(), text.length(), nullptr, 0, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, &errors);
 		if (size_in_bytes == 0 ||
 			errors != UTF8_ERR_NONE)
 		{
-			return converted;
+			return std::string();
 		}
 
-		converted.resize(size_in_bytes);
+		std::string converted(size_in_bytes, '!');
 		utf8normalize(text.c_str(), text.length(), &converted[0], size_in_bytes, UTF8_NORMALIZE_DECOMPOSE | UTF8_NORMALIZE_COMPATIBILITY, nullptr);
 
 		return converted;
