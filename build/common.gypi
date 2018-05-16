@@ -35,9 +35,13 @@
 							},
 							'VCLibrarianTool': {
 								'OutputFile': '$(OutDir)$(TargetName)$(TargetExt)',
+								'AdditionalOptions': [
+									'/LTCG'
+								],
 							},
 							'VCLinkerTool': {
 								'OutputFile': '$(OutDir)$(TargetName)$(TargetExt)',
+								'LinkTimeCodeGeneration': 1, # /LTCG
 							},
 							'VCManifestTool': {
 								'EmbedManifest': 'true',
@@ -125,9 +129,6 @@
 								'FavorSizeOrSpeed': 2, # /Os
 								'EnableFiberSafeOptimizations': 'true',
 								'WholeProgramOptimization': 'true',  # /GL
-							},
-							'VCLibrarianTool': {
-								'LinkTimeCodeGeneration': 'true', # /LTCG
 							},
 							'VCLinkerTool': {
 								'LinkIncremental': 0, # /INCREMENTAL
