@@ -1425,5 +1425,15 @@ UTF8_API int32_t utf8sort(const char* left, size_t leftSize, const char* right, 
 		siz_r -= read;
 	}
 
+	if (siz_l > siz_r)
+	{
+		return 1;
+	}
+	else if (
+		siz_r > siz_l)
+	{
+		return -1;
+	}
+
 	return 0;
 }
