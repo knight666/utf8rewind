@@ -1,39 +1,33 @@
 #include "tests-base.hpp"
 
-TEST(Utf8Sort, Same)
+TEST(Utf8Sort, Equal)
 {
 	const char* l = "amazing";
 	size_t ls = strlen(l);
 	const char* r = "amazing";
 	size_t rs = strlen(r);
-	int32_t errors = -4;
 
-	EXPECT_EQ(0, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+	EXPECT_EQ(UTF8_RANK_EQUAL, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT));
 }
 
-TEST(Utf8Sort, Lesser)
+TEST(Utf8Sort, Above)
 {
 	const char* l = "book";
 	size_t ls = strlen(l);
 	const char* r = "rack";
 	size_t rs = strlen(r);
-	int32_t errors = 1877;
 
-	EXPECT_EQ(-1, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+	EXPECT_EQ(UTF8_RANK_ABOVE, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT));
 }
 
-TEST(Utf8Sort, Greater)
+TEST(Utf8Sort, Below)
 {
 	const char* l = "medical";
 	size_t ls = strlen(l);
 	const char* r = "branch";
 	size_t rs = strlen(r);
-	int32_t errors = 33;
 
-	EXPECT_EQ(1, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+	EXPECT_EQ(UTF8_RANK_BELOW, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT));
 }
 
 TEST(Utf8Sort, Longer)
@@ -42,10 +36,8 @@ TEST(Utf8Sort, Longer)
 	size_t ls = strlen(l);
 	const char* r = "bamb";
 	size_t rs = strlen(r);
-	int32_t errors = 3;
 
-	EXPECT_EQ(1, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+	EXPECT_EQ(UTF8_RANK_BELOW, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT));
 }
 
 TEST(Utf8Sort, Shorter)
@@ -54,10 +46,8 @@ TEST(Utf8Sort, Shorter)
 	size_t ls = strlen(l);
 	const char* r = "ham";
 	size_t rs = strlen(r);
-	int32_t errors = 3;
 
-	EXPECT_EQ(-1, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+	EXPECT_EQ(UTF8_RANK_ABOVE, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT));
 }
 
 TEST(Utf8Sort, CaseDifference)
@@ -66,10 +56,8 @@ TEST(Utf8Sort, CaseDifference)
 	size_t ls = strlen(l);
 	const char* r = "CAVE";
 	size_t rs = strlen(r);
-	int32_t errors = 3;
 
-	EXPECT_EQ(-1, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT, &errors));
-	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+	EXPECT_EQ(UTF8_RANK_ABOVE, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT));
 }
 
 TEST(Utf8Sort, Dictionary)
@@ -85,7 +73,7 @@ TEST(Utf8Sort, Dictionary)
 		"cat"
 	};
 	std::sort(dictionary.begin(), dictionary.end(), [](const std::string& left, const std::string& right) {
-		return utf8sort(left.c_str(), left.length(), right.c_str(), right.length(), UTF8_LOCALE_DEFAULT, nullptr) == -1;
+		return utf8sort(left.c_str(), left.length(), right.c_str(), right.length(), UTF8_LOCALE_DEFAULT) == UTF8_RANK_ABOVE;
 	});
 
 	EXPECT_STREQ("car", dictionary[0].c_str());

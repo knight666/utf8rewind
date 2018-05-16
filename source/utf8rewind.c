@@ -1378,7 +1378,7 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 	return src - input;
 }
 
-UTF8_API int32_t utf8sort(const char* left, size_t leftSize, const char* right, size_t rightSize, size_t locale, int32_t* errors)
+UTF8_API int32_t utf8sort(const char* left, size_t leftSize, const char* right, size_t rightSize, size_t locale)
 {
 	const char* src_left;
 	size_t size_left;
@@ -1396,8 +1396,6 @@ UTF8_API int32_t utf8sort(const char* left, size_t leftSize, const char* right, 
 		CollationWeightTertiaryDataPtr
 	};
 	uint8_t weight = 0;
-
-	UTF8_SET_ERROR(NONE);
 
 	/* Compare weights of code points */
 
@@ -1443,14 +1441,14 @@ UTF8_API int32_t utf8sort(const char* left, size_t leftSize, const char* right, 
 			{
 				/* Ranked above right string */
 
-				return -1;
+				return UTF8_RANK_ABOVE;
 			}
 			else if (
 				w_left != w_right)
 			{
 				/* Ranked below right string */
 
-				return 1;
+				return UTF8_RANK_BELOW;
 			}
 
 			/* Move the cursors */
@@ -1471,15 +1469,15 @@ UTF8_API int32_t utf8sort(const char* left, size_t leftSize, const char* right, 
 
 	if (size_left > size_right)
 	{
-		return 1;
+		return UTF8_RANK_BELOW;
 	}
 	else if (
 		size_right > size_left)
 	{
-		return -1;
+		return UTF8_RANK_ABOVE;
 	}
 
 	/* Failed to resolve */
 
-	return 0;
+	return UTF8_RANK_EQUAL;
 }
