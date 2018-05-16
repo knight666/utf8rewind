@@ -1377,3 +1377,41 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 
 	return src - input;
 }
+
+UTF8_API int32_t utf8sort(const char* left, size_t leftSize, const char* right, size_t rightSize, size_t locale, int32_t* errors)
+{
+	const char* src_l = left;
+	size_t siz_l = leftSize;
+	const char* src_r = right;
+	size_t siz_r = rightSize;
+
+	UTF8_SET_ERROR(NONE);
+
+	while (siz_l > 0 && siz_r > 0)
+	{
+		uint8_t read;
+		unicode_t cp_left;
+		unicode_t cp_right;
+
+		if ((read = codepoint_read(src_l, siz_l, &cp_left)) == 0)
+		{
+			break;
+		}
+
+		if ((read = codepoint_read(src_r, siz_r, &cp_right)) == 0)
+		{
+			break;
+		}
+
+		if (cp_left < cp_right)
+		{
+			return -1;
+		}
+		else
+		{
+			return 1;
+		}
+	}
+
+	return 0;
+}

@@ -20,6 +20,6 @@ TEST(Utf8Sort, Greater)
 	size_t rs = strlen(r);
 	int32_t errors = 33;
 
-	EXPECT_EQ(-1, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT, &errors));
+	EXPECT_EQ(1, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
