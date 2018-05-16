@@ -66,6 +66,15 @@ extern const uint8_t* QuickCheckNFKCDataPtr;
 extern const size_t* QuickCheckNFKDIndexPtr;
 extern const uint8_t* QuickCheckNFKDDataPtr;
 
+extern const size_t* CollationWeightPrimaryIndexPtr;
+extern const uint32_t* CollationWeightPrimaryDataPtr;
+
+extern const size_t* CollationWeightSecondaryIndexPtr;
+extern const uint32_t* CollationWeightSecondaryDataPtr;
+
+extern const size_t* CollationWeightTertiaryIndexPtr;
+extern const uint32_t* CollationWeightTertiaryDataPtr;
+
 extern const size_t UnicodeNFDRecordCount;
 extern const DecompositionRecord* UnicodeNFDRecordPtr;
 
