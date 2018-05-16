@@ -17,6 +17,18 @@ import subprocess
 import sys
 
 
+if sys.platform in ('darwin', 'win32'):
+  print "This test is currently disabled: https://crbug.com/483696."
+  sys.exit(0)
+
+
+def CheckFileXMLPropertyList(file):
+  output = subprocess.check_output(['file', file])
+  # The double space after XML is intentional.
+  if not 'XML  document text' in output:
+    print 'File: Expected XML  document text, got %s' % output
+    test.fail_test()
+
 def ExpectEq(expected, actual):
   if expected != actual:
     print >>sys.stderr, 'Expected "%s", got "%s"' % (expected, actual)
@@ -48,6 +60,7 @@ if sys.platform == 'darwin':
   test.must_exist(info_plist)
   test.must_contain(info_plist, 'com.google.Test-App-Gyp')  # Variable expansion
   test.must_not_contain(info_plist, '${MACOSX_DEPLOYMENT_TARGET}');
+  CheckFileXMLPropertyList(info_plist)
 
   if test.format != 'make':
     # TODO: Synthesized plist entries aren't hooked up in the make generator.

@@ -9,11 +9,17 @@ Verifies file copies where the destination is one level above an expansion that
 yields a make variable.
 """
 
+import sys
+
 import TestGyp
 
-# The Android build system doesn't allow output to go to arbitrary places.
-test = TestGyp.TestGyp(formats=['!android'])
+if sys.platform == 'darwin':
+  print "This test is currently disabled: https://crbug.com/483696."
+  sys.exit(0)
+
+test = TestGyp.TestGyp()
 test.run_gyp('copies-updir.gyp', chdir='src')
+
 test.relocate('src', 'relocate/src')
 test.build('copies-updir.gyp', 'copies_up', chdir='relocate/src')
 

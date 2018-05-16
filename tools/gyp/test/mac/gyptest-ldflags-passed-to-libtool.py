@@ -13,6 +13,9 @@ import TestGyp
 import sys
 
 if sys.platform == 'darwin':
+  print "This test is currently disabled: https://crbug.com/483696."
+  sys.exit(0)
+
   test = TestGyp.TestGyp(formats=['ninja', 'make', 'xcode'],
                          match = lambda a, b: True)
 
@@ -20,6 +23,7 @@ if sys.platform == 'darwin':
     'xcode': [1, 65],  # 1 for xcode 3, 65 for xcode 4 (see `man sysexits`)
     'make': 2,
     'ninja': 1,
+    'xcode-ninja': [1, 65],
   }[test.format]
 
   CHDIR = 'ldflags-libtool'

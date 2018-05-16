@@ -116,14 +116,24 @@ class WinTool(object):
     env = self._GetEnv(arch)
     if use_separate_mspdbsrv == 'True':
       self._UseSeparateMspdbsrv(env, args)
-    link = subprocess.Popen(args,
-                            shell=True,
-                            env=env,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT)
+    if sys.platform == 'win32':
+      args = list(args)  # *args is a tuple by default, which is read-only.
+      args[0] = args[0].replace('/', '\\')
+    # https://docs.python.org/2/library/subprocess.html:
+    # "On Unix with shell=True [...] if args is a sequence, the first item
+    # specifies the command string, and any additional items will be treated as
+    # additional arguments to the shell itself.  That is to say, Popen does the
+    # equivalent of:
+    #   Popen(['/bin/sh', '-c', args[0], args[1], ...])"
+    # For that reason, since going through the shell doesn't seem necessary on
+    # non-Windows don't do that there.
+    link = subprocess.Popen(args, shell=sys.platform == 'win32', env=env,
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     out, _ = link.communicate()
     for line in out.splitlines():
-      if not line.startswith('   Creating library '):
+      if (not line.startswith('   Creating library ') and
+          not line.startswith('Generating code') and
+          not line.startswith('Finished generating code')):
         print line
     return link.returncode
 
@@ -248,19 +258,17 @@ class WinTool(object):
     # Processing C:\Program Files (x86)\Microsoft SDKs\...\include\objidl.idl
     # objidl.idl
     lines = out.splitlines()
-    prefix = 'Processing '
-    processing = set(os.path.basename(x) for x in lines if x.startswith(prefix))
+    prefixes = ('Processing ', '64 bit Processing ')
+    processing = set(os.path.basename(x)
+                     for x in lines if x.startswith(prefixes))
     for line in lines:
-      if not line.startswith(prefix) and line not in processing:
+      if not line.startswith(prefixes) and line not in processing:
         print line
     return popen.returncode
 
   def ExecAsmWrapper(self, arch, *args):
     """Filter logo banner from invocations of asm.exe."""
     env = self._GetEnv(arch)
-    # MSVS doesn't assemble x64 asm files.
-    if arch == 'environment.x64':
-      return 0
     popen = subprocess.Popen(args, shell=True, env=env,
                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     out, _ = popen.communicate()

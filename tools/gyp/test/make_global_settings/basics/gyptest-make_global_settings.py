@@ -12,6 +12,9 @@ import os
 import sys
 import TestGyp
 
+print "This test is currently disabled: https://crbug.com/483696."
+sys.exit(0)
+
 test_format = ['ninja']
 if sys.platform in ('linux2', 'darwin'):
   test_format += ['make']
@@ -27,11 +30,11 @@ endif
 """
   if sys.platform == 'linux2':
     link_expected = """
-LINK ?= flock $(builddir)/linker.lock $(abspath clang)
+LINK ?= $(abspath clang)
 """
   elif sys.platform == 'darwin':
     link_expected = """
-LINK ?= ./gyp-mac-tool flock $(builddir)/linker.lock $(abspath clang)
+LINK ?= $(abspath clang)
 """
   test.must_contain('Makefile', cc_expected)
   test.must_contain('Makefile', link_expected)
