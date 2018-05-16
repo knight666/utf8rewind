@@ -19,6 +19,9 @@ if sys.platform == 'win32':
   # and make not supported on windows at all.
   sys.exit(0)
 
+print "This test is currently disabled: https://crbug.com/483696."
+sys.exit(0)
+
 test = TestGyp.TestGyp(formats=['ninja', 'make'])
 
 gypfile = 'compiler-global-settings.gyp'
@@ -42,6 +45,11 @@ os.environ.update(old_env)
 
 test.build(gypfile)
 test.must_contain_all_lines(test.stdout(), ['my_cc.py', 'my_cxx.py', 'FOO'])
+
+# The xcode generator chokes on the 'host' toolset. Skip the rest of
+# this test (cf. https://code.google.com/p/gyp/issues/detail?id=454).
+if test.format == 'xcode-ninja':
+  test.pass_test()
 
 # Same again but with the host toolset.
 replacements['TOOLSET'] = 'host'

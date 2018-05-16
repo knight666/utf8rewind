@@ -19,10 +19,13 @@ import re
 import xml.sax.saxutils
 
 
-def _WriteWorkspace(main_gyp, sources_gyp):
+def _WriteWorkspace(main_gyp, sources_gyp, params):
   """ Create a workspace to wrap main and sources gyp paths. """
   (build_file_root, build_file_ext) = os.path.splitext(main_gyp)
   workspace_path = build_file_root + '.xcworkspace'
+  options = params['options']
+  if options.generator_output:
+    workspace_path = os.path.join(options.generator_output, workspace_path)
   try:
     os.makedirs(workspace_path)
   except OSError, e:
@@ -64,10 +67,13 @@ def _TargetFromSpec(old_spec, params):
 
   target_name = old_spec.get('target_name')
   product_name = old_spec.get('product_name', target_name)
+  product_extension = old_spec.get('product_extension')
 
   ninja_target = {}
   ninja_target['target_name'] = target_name
   ninja_target['product_name'] = product_name
+  if product_extension:
+    ninja_target['product_extension'] = product_extension
   ninja_target['toolset'] = old_spec.get('toolset')
   ninja_target['default_configuration'] = old_spec.get('default_configuration')
   ninja_target['configurations'] = {}
@@ -80,16 +86,26 @@ def _TargetFromSpec(old_spec, params):
 
   if 'configurations' in old_spec:
     for config in old_spec['configurations'].iterkeys():
-      old_xcode_settings = old_spec['configurations'][config]['xcode_settings']
+      old_xcode_settings = \
+        old_spec['configurations'][config].get('xcode_settings', {})
       if 'IPHONEOS_DEPLOYMENT_TARGET' in old_xcode_settings:
         new_xcode_settings['CODE_SIGNING_REQUIRED'] = "NO"
         new_xcode_settings['IPHONEOS_DEPLOYMENT_TARGET'] = \
             old_xcode_settings['IPHONEOS_DEPLOYMENT_TARGET']
+      for key in ['BUNDLE_LOADER', 'TEST_HOST']:
+        if key in old_xcode_settings:
+          new_xcode_settings[key] = old_xcode_settings[key]
+
       ninja_target['configurations'][config] = {}
       ninja_target['configurations'][config]['xcode_settings'] = \
           new_xcode_settings
 
   ninja_target['mac_bundle'] = old_spec.get('mac_bundle', 0)
+  ninja_target['mac_xctest_bundle'] = old_spec.get('mac_xctest_bundle', 0)
+  ninja_target['ios_app_extension'] = old_spec.get('ios_app_extension', 0)
+  ninja_target['ios_watchkit_extension'] = \
+      old_spec.get('ios_watchkit_extension', 0)
+  ninja_target['ios_watchkit_app'] = old_spec.get('ios_watchkit_app', 0)
   ninja_target['type'] = old_spec['type']
   if ninja_toplevel:
     ninja_target['actions'] = [
@@ -111,6 +127,33 @@ def _TargetFromSpec(old_spec, params):
     if jobs > 0:
       ninja_target['actions'][0]['action'].extend(('-j', jobs))
   return ninja_target
+
+def IsValidTargetForWrapper(target_extras, executable_target_pattern, spec):
+  """Limit targets for Xcode wrapper.
+
+  Xcode sometimes performs poorly with too many targets, so only include
+  proper executable targets, with filters to customize.
+  Arguments:
+    target_extras: Regular expression to always add, matching any target.
+    executable_target_pattern: Regular expression limiting executable targets.
+    spec: Specifications for target.
+  """
+  target_name = spec.get('target_name')
+  # Always include targets matching target_extras.
+  if target_extras is not None and re.search(target_extras, target_name):
+    return True
+
+  # Otherwise just show executable targets and xc_tests.
+  if (int(spec.get('mac_xctest_bundle', 0)) != 0 or
+      (spec.get('type', '') == 'executable' and
+       spec.get('product_extension', '') != 'bundle')):
+
+    # If there is a filter and the target does not match, exclude the target.
+    if executable_target_pattern is not None:
+      if not re.search(executable_target_pattern, target_name):
+        return False
+    return True
+  return False
 
 def CreateWrapper(target_list, target_dicts, data, params):
   """Initialize targets for the ninja wrapper.
@@ -148,20 +191,21 @@ def CreateWrapper(target_list, target_dicts, data, params):
   new_data[main_gyp]['xcode_settings'] = \
       data[orig_gyp].get('xcode_settings', {})
 
+  # Normally the xcode-ninja generator includes only valid executable targets.
+  # If |xcode_ninja_executable_target_pattern| is set, that list is reduced to
+  # executable targets that match the pattern. (Default all)
+  executable_target_pattern = \
+      generator_flags.get('xcode_ninja_executable_target_pattern', None)
+
+  # For including other non-executable targets, add the matching target name
+  # to the |xcode_ninja_target_pattern| regular expression. (Default none)
+  target_extras = generator_flags.get('xcode_ninja_target_pattern', None)
+
   for old_qualified_target in target_list:
     spec = target_dicts[old_qualified_target]
-    if spec.get('type', '') == 'executable' and \
-        spec.get('product_extension', '') != 'bundle':
-
+    if IsValidTargetForWrapper(target_extras, executable_target_pattern, spec):
       # Add to new_target_list.
       target_name = spec.get('target_name')
-
-      # Filter target names if requested.
-      target_filter = generator_flags.get('xcode_ninja_target_filter', None)
-      if target_filter is not None:
-        if not re.search(target_filter, target_name):
-          continue;
-
       new_target_name = '%s:%s#target' % (main_gyp, target_name)
       new_target_list.append(new_target_name)
 
@@ -189,11 +233,26 @@ def CreateWrapper(target_list, target_dicts, data, params):
   # Tell Xcode to look everywhere for headers.
   sources_target['configurations'] = {'Default': { 'include_dirs': [ depth ] } }
 
+  # Put excluded files into the sources target so they can be opened in Xcode.
+  skip_excluded_files = \
+      not generator_flags.get('xcode_ninja_list_excluded_files', True)
+
   sources = []
   for target, target_dict in target_dicts.iteritems():
-    base =  os.path.dirname(target)
+    base = os.path.dirname(target)
     files = target_dict.get('sources', []) + \
             target_dict.get('mac_bundle_resources', [])
+
+    if not skip_excluded_files:
+      files.extend(target_dict.get('sources_excluded', []) +
+                   target_dict.get('mac_bundle_resources_excluded', []))
+
+    for action in target_dict.get('actions', []):
+      files.extend(action.get('inputs', []))
+
+      if not skip_excluded_files:
+        files.extend(action.get('inputs_excluded', []))
+
     # Remove files starting with $. These are mostly intermediate files for the
     # build system.
     files = [ file for file in files if not file.startswith('$')]
@@ -226,5 +285,5 @@ def CreateWrapper(target_list, target_dicts, data, params):
   new_data[sources_gyp]['targets'].append(new_data_target)
 
   # Write workspace to file.
-  _WriteWorkspace(main_gyp, sources_gyp)
+  _WriteWorkspace(main_gyp, sources_gyp, params)
   return (new_target_list, new_target_dicts, new_data)

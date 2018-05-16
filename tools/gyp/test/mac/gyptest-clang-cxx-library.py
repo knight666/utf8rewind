@@ -9,20 +9,23 @@ Verifies that CLANG_CXX_LIBRARY works.
 """
 
 import TestGyp
+import TestMac
 
-import os
 import sys
 
 if sys.platform == 'darwin':
-  test = TestGyp.TestGyp(formats=['make', 'ninja', 'xcode'])
-
   # Xcode 4.2 on OS X 10.6 doesn't install the libc++ headers, don't run this
   # test there.
-  if not os.path.isdir('/usr/lib/c++'):
+  if TestMac.Xcode.Version() <= '0420':
     sys.exit(0)
 
-  test.run_gyp('clang-cxx-library.gyp', chdir='clang-cxx-library')
+  test = TestGyp.TestGyp(formats=['make', 'ninja', 'xcode'])
 
+  if test.format == 'make':
+    # This is failing because of a deprecation warning for libstdc++.
+    test.skip_test()  # bug=533
+
+  test.run_gyp('clang-cxx-library.gyp', chdir='clang-cxx-library')
   test.build('clang-cxx-library.gyp', test.ALL, chdir='clang-cxx-library')
 
   test.pass_test()

@@ -10,7 +10,20 @@ Verifies that ios app bundles are built correctly.
 
 import TestGyp
 
+import subprocess
 import sys
+
+def CheckFileXMLPropertyList(file):
+  output = subprocess.check_output(['file', file])
+  if not 'XML 1.0 document text' in output:
+    print 'File: Expected XML 1.0 document text, got %s' % output
+    test.fail_test()
+
+def CheckFileBinaryPropertyList(file):
+  output = subprocess.check_output(['file', file])
+  if not 'Apple binary property list' in output:
+    print 'File: Expected Apple binary property list, got %s' % output
+    test.fail_test()
 
 if sys.platform == 'darwin':
   test = TestGyp.TestGyp(formats=['xcode', 'ninja'])
@@ -26,10 +39,27 @@ if sys.platform == 'darwin':
   # Info.plist
   info_plist = test.built_file_path('Test App Gyp.app/Info.plist',
                                     chdir='app-bundle')
+  test.built_file_must_exist(info_plist)
+  CheckFileBinaryPropertyList(info_plist)
+
+  # XML Info.plist
+  info_plist = test.built_file_path('Test App Gyp XML.app/Info.plist',
+                                    chdir='app-bundle')
+  CheckFileXMLPropertyList(info_plist)
+
   # Resources
-  test.built_file_must_exist(
+  strings_file = test.built_file_path(
       'Test App Gyp.app/English.lproj/InfoPlist.strings',
       chdir='app-bundle')
+  test.built_file_must_exist(strings_file)
+  CheckFileBinaryPropertyList(strings_file)
+
+  extra_plist_file = test.built_file_path(
+      'Test App Gyp.app/English.lproj/LanguageMap.plist',
+      chdir='app-bundle')
+  test.built_file_must_exist(extra_plist_file)
+  CheckFileBinaryPropertyList(extra_plist_file)
+
   test.built_file_must_exist(
       'Test App Gyp.app/English.lproj/MainMenu.nib',
       chdir='app-bundle')

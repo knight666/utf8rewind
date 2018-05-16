@@ -14,6 +14,9 @@ import TestGyp
 import sys
 
 if sys.platform == 'darwin':
+  print "This test is currently disabled: https://crbug.com/483696."
+  sys.exit(0)
+
   expected_error = 'Old-style plist parser: missing semicolon in dictionary'
   saw_expected_error = [False]  # Python2 has no "nonlocal" keyword.
   def match(a, b):
@@ -34,7 +37,8 @@ if sys.platform == 'darwin':
   test.build('test-error.gyp', test.ALL, chdir='app-bundle')
 
   # Ninja pipes stderr of subprocesses to stdout.
-  if test.format == 'ninja' and expected_error in test.stdout():
+  if test.format in ['ninja', 'xcode-ninja'] \
+      and expected_error in test.stdout():
     saw_expected_error[0] = True
 
   if saw_expected_error[0]:
