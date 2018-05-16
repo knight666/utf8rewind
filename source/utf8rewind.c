@@ -1391,7 +1391,9 @@ UTF8_API int32_t utf8sort(const char* left, size_t leftSize, const char* right, 
 	{
 		uint8_t read;
 		unicode_t cp_left;
+		uint32_t w_left;
 		unicode_t cp_right;
+		uint32_t w_right;
 
 		if ((read = codepoint_read(src_l, siz_l, &cp_left)) == 0)
 		{
@@ -1403,14 +1405,24 @@ UTF8_API int32_t utf8sort(const char* left, size_t leftSize, const char* right, 
 			break;
 		}
 
-		if (cp_left < cp_right)
+		w_left = PROPERTY_GET_COLL_L0(cp_left);
+		w_right = PROPERTY_GET_COLL_L0(cp_right);
+
+		if (w_left < w_right)
 		{
 			return -1;
 		}
-		else
+		else if (
+			w_left != w_right)
 		{
 			return 1;
 		}
+
+		src_l += read;
+		siz_l -= read;
+
+		src_r += read;
+		siz_r -= read;
 	}
 
 	return 0;
