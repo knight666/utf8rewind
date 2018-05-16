@@ -1863,7 +1863,11 @@ UTF8_API size_t utf8normalize(const char* input, size_t inputSize, char* target,
 */
 UTF8_API size_t utf8iscategory(const char* input, size_t inputSize, size_t flags);
 
-UTF8_API int32_t utf8sort(const char* left, size_t leftSize, const char* right, size_t rightSize, size_t locale, int32_t* errors);
+#define UTF8_RANK_ABOVE    (-1)
+#define UTF8_RANK_EQUAL    (0)
+#define UTF8_RANK_BELOW    (1)
+
+UTF8_API int32_t utf8sort(const char* left, size_t leftSize, const char* right, size_t rightSize, size_t locale);
 
 /*!
 	\}
