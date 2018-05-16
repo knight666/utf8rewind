@@ -31,7 +31,7 @@ class UnicodeDocument:
 		
 		self.filename = filename
 		
-		section_search = re.compile('@(\w+) ?# ?(.+)')
+		section_search = re.compile('@([^#]+)')
 		comment_search = re.compile('.*# (.+)')
 		
 		section_current = UnicodeSection()
@@ -47,27 +47,33 @@ class UnicodeDocument:
 			lines_total = float(len(lines))
 			for line in lines:
 				line_count += 1
-					
+
 				if len(line) > 0 and not line.startswith('\n') and not line.startswith('#'):
 					stripped = line.rstrip('\n')
-					
+
 					# section
-					
-					if line.startswith('@'):
+
+					if stripped.startswith('@'):
 						section_match = re.match(section_search, stripped)
 						if section_match:
 							if sections_found > 0:
 								section_current = UnicodeSection()
 								self.sections.append(section_current)
-							
+
 							section_current.identifier = section_match.group(1)
-							section_current.title = section_match.group(2)
+
+							comment_start = stripped.find('#')
+							if comment_start != -1:
+								section_current.title = stripped[:comment_start]
+							else:
+								section_current.title = section_current.identifier
+
 							sections_found += 1
-							
+
 							continue
 					
 					# entry
-					
+
 					comment_start = stripped.find('#')
 					if comment_start != -1:
 						entry_sliced = stripped[:comment_start]

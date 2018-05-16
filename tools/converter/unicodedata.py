@@ -43,6 +43,10 @@ class UnicodeMapping:
 		self.caseFoldingType = ''
 		self.caseFolding = []
 		self.block = None
+		self.weightPrimary = 0
+		self.weightPrimaryVariable = False
+		self.weightSecondary = 0
+		self.weightTertiary = 0
 	
 	def decomposedToString(self):
 		decomposedCodepoints = ""
@@ -674,7 +678,7 @@ class Database(libs.unicode.UnicodeVisitor):
 	
 	def loadFromFiles(self, arguments):
 		script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-		
+
 		document_database = libs.unicode.UnicodeDocument()
 		if arguments:
 			self.pageSize = args.pageSize
@@ -683,7 +687,7 @@ class Database(libs.unicode.UnicodeVisitor):
 			document_database.entrySkip = arguments.entrySkip
 		document_database.parse(script_path + '/data/UnicodeData.txt')
 		document_database.accept(self)
-		
+
 		# blocks
 		
 		blocks = Blocks(self)
@@ -711,19 +715,24 @@ class Database(libs.unicode.UnicodeVisitor):
 		
 		# case mapping
 		
+		special_casing = SpecialCasing(self)
 		document_special_casing = libs.unicode.UnicodeDocument()
 		document_special_casing.parse(script_path + '/data/SpecialCasing.txt')
-		
-		special_casing = SpecialCasing(self)
 		document_special_casing.accept(special_casing)
 
 		# case folding
 		
+		case_folding = CaseFolding(self)
 		document_case_folding = libs.unicode.UnicodeDocument()
 		document_case_folding.parse(script_path + '/data/CaseFolding.txt')
-		
-		case_folding = CaseFolding(self)
 		document_case_folding.accept(case_folding)
+
+		# collation
+
+		collation = Collation(self)
+		document_collation = libs.unicode.UnicodeDocument()
+		document_collation.parse(script_path + '/data/allkeys.txt')
+		document_collation.accept(collation)
 		
 		# properties
 		
@@ -1076,6 +1085,15 @@ class Database(libs.unicode.UnicodeVisitor):
 		compress_qc_nfkd = Compression(db)
 		compress_qc_nfkd.process('quickNFKD', 32)
 
+		compress_weight_primary = Compression(db)
+		compress_weight_primary.process('weightPrimary', 32)
+
+		compress_weight_secondary = Compression(db)
+		compress_weight_secondary.process('weightSecondary', 32)
+
+		compress_weight_tertiary = Compression(db)
+		compress_weight_tertiary.process('weightTertiary', 32)
+
 		self.compressed = ""
 		self.compressed_length = 0
 
@@ -1138,6 +1156,17 @@ class Database(libs.unicode.UnicodeVisitor):
 		header.newLine()
 
 		compress_qc_nfkd.render(header, 'QuickCheckNFKD')
+		header.newLine()
+
+		# collation
+
+		compress_weight_primary.render(header, 'CollationWeightPrimary')
+		header.newLine()
+
+		compress_weight_secondary.render(header, 'CollationWeightSecondary')
+		header.newLine()
+
+		compress_weight_tertiary.render(header, 'CollationWeightTertiary')
 		header.newLine()
 		
 		# decomposition
@@ -1407,6 +1436,30 @@ class Normalization(libs.unicode.UnicodeVisitor):
 			
 			self.parseEntry(start, count, entry.matches)
 		
+		return True
+
+class Collation(libs.unicode.UnicodeVisitor):
+	def __init__(self, db):
+		self.db = db
+
+	def visitDocument(self, document):
+		print("Parsing collation...")
+		return True
+
+	def visitEntry(self, entry):
+		match = re.match('\[([\*\.])([\dA-F]{4})\.([\dA-F]{4})\.([\dA-F]{4})\]', entry.matches[1][0])
+		if not match:
+			print('Failed to match "%s"' % (entry.matches[1][0]))
+			return False
+
+		codePoint = int(entry.matches[0][0], 16)
+
+		r = self.db.records[codePoint]
+		r.weightPrimaryVariable = match.group(1) == '*'
+		r.weightPrimary = int(match.group(2), 16)
+		r.weightSecondary = int(match.group(3), 16)
+		r.weightTertiary = int(match.group(4), 16)
+
 		return True
 
 if __name__ == '__main__':
