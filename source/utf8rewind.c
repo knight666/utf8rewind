@@ -1380,60 +1380,106 @@ size_t utf8iscategory(const char* input, size_t inputSize, size_t flags)
 
 UTF8_API int32_t utf8sort(const char* left, size_t leftSize, const char* right, size_t rightSize, size_t locale, int32_t* errors)
 {
-	const char* src_l = left;
-	size_t siz_l = leftSize;
-	const char* src_r = right;
-	size_t siz_r = rightSize;
+	const char* src_left;
+	size_t size_left;
+	const char* src_right;
+	size_t size_right;
+
+	const size_t* weightIndexPtrs[3] = {
+		CollationWeightPrimaryIndexPtr,
+		CollationWeightSecondaryIndexPtr,
+		CollationWeightTertiaryIndexPtr
+	};
+	const uint32_t* weightDataPtrs[3] = {
+		CollationWeightPrimaryDataPtr,
+		CollationWeightSecondaryDataPtr,
+		CollationWeightTertiaryDataPtr
+	};
+	uint8_t weight = 0;
 
 	UTF8_SET_ERROR(NONE);
 
-	while (siz_l > 0 && siz_r > 0)
+	/* Compare weights of code points */
+
+	while (weight < 3)
 	{
-		uint8_t read;
-		unicode_t cp_left;
-		uint32_t w_left;
-		unicode_t cp_right;
-		uint32_t w_right;
+		const size_t* index_ptr = weightIndexPtrs[weight];
+		const uint32_t* data_ptr = weightDataPtrs[weight];
 
-		if ((read = codepoint_read(src_l, siz_l, &cp_left)) == 0)
+		/* Setup cursors */
+
+		src_left = left;
+		size_left = leftSize;
+		src_right = right;
+		size_right = rightSize;
+
+		/* Compare weights of code points */
+
+		while (
+			size_left > 0 &&
+			size_right > 0)
 		{
-			break;
+			uint8_t read_left;
+			unicode_t cp_left;
+			uint32_t w_left;
+			uint8_t read_right;
+			unicode_t cp_right;
+			uint32_t w_right;
+
+			/* Read next code points */
+
+			if ((read_left = codepoint_read(src_left, size_left, &cp_left)) == 0 ||
+				(read_right = codepoint_read(src_right, size_right, &cp_right)) == 0)
+			{
+				break;
+			}
+
+			/* Compare weights of code points */
+
+			w_left = PROPERTY_GET(index_ptr, data_ptr, cp_left);
+			w_right = PROPERTY_GET(index_ptr, data_ptr, cp_right);
+
+			if (w_left < w_right)
+			{
+				/* Ranked above right string */
+
+				return -1;
+			}
+			else if (
+				w_left != w_right)
+			{
+				/* Ranked below right string */
+
+				return 1;
+			}
+
+			/* Move the cursors */
+
+			src_left += read_left;
+			size_left -= read_left;
+
+			src_right += read_right;
+			size_right -= read_right;
 		}
 
-		if ((read = codepoint_read(src_r, siz_r, &cp_right)) == 0)
-		{
-			break;
-		}
+		/* Next weight category */
 
-		w_left = PROPERTY_GET_COLL_L0(cp_left);
-		w_right = PROPERTY_GET_COLL_L0(cp_right);
-
-		if (w_left < w_right)
-		{
-			return -1;
-		}
-		else if (
-			w_left != w_right)
-		{
-			return 1;
-		}
-
-		src_l += read;
-		siz_l -= read;
-
-		src_r += read;
-		siz_r -= read;
+		weight += 1;
 	}
 
-	if (siz_l > siz_r)
+	/* Try to resolve by comparing lengths */
+
+	if (size_left > size_right)
 	{
 		return 1;
 	}
 	else if (
-		siz_r > siz_l)
+		size_right > size_left)
 	{
 		return -1;
 	}
+
+	/* Failed to resolve */
 
 	return 0;
 }

@@ -59,3 +59,15 @@ TEST(Utf8Sort, Shorter)
 	EXPECT_EQ(-1, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT, &errors));
 	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
 }
+
+TEST(Utf8Sort, CaseDifference)
+{
+	const char* l = "cave";
+	size_t ls = strlen(l);
+	const char* r = "CAVE";
+	size_t rs = strlen(r);
+	int32_t errors = 3;
+
+	EXPECT_EQ(-1, utf8sort(l, ls, r, rs, UTF8_LOCALE_DEFAULT, &errors));
+	EXPECT_ERROREQ(UTF8_ERR_NONE, errors);
+}
