@@ -82,6 +82,15 @@ static const unicode_t PROPERTY_DATA_MASK = (1 << PROPERTY_INDEX_SHIFT) - 1;
 #define PROPERTY_GET_NFKD(_cp) \
 	PROPERTY_GET(QuickCheckNFKDIndexPtr, QuickCheckNFKDDataPtr, _cp)
 
+#define PROPERTY_GET_COLL_L0(_cp) \
+	PROPERTY_GET(CollationWeightPrimaryIndexPtr, CollationWeightPrimaryDataPtr, _cp)
+
+#define PROPERTY_GET_COLL_L1(_cp) \
+	PROPERTY_GET(CollationWeightSecondaryIndexPtr, CollationWeightSecondaryDataPtr, _cp)
+
+#define PROPERTY_GET_COLL_L2(_cp) \
+	PROPERTY_GET(CollationWeightTertiaryIndexPtr, CollationWeightTertiaryDataPtr, _cp)
+
 const char* database_querydecomposition(unicode_t codepoint, const uint32_t* index1Array, const uint32_t* index2Array, const uint32_t* dataArray, uint8_t* length);
 
 unicode_t database_querycomposition(unicode_t left, unicode_t right);

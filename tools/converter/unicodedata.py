@@ -1160,13 +1160,13 @@ class Database(libs.unicode.UnicodeVisitor):
 
 		# collation
 
-		compress_weight_primary.render(header, 'CollationWeightPrimary')
+		compress_weight_primary.render(header, 'CollationWeightPrimary', 'uint32_t')
 		header.newLine()
 
-		compress_weight_secondary.render(header, 'CollationWeightSecondary')
+		compress_weight_secondary.render(header, 'CollationWeightSecondary', 'uint32_t')
 		header.newLine()
 
-		compress_weight_tertiary.render(header, 'CollationWeightTertiary')
+		compress_weight_tertiary.render(header, 'CollationWeightTertiary', 'uint32_t')
 		header.newLine()
 		
 		# decomposition
