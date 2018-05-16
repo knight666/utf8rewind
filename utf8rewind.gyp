@@ -127,6 +127,7 @@
 				'source/tests/suite-utf8-seek-end.cpp',
 				'source/tests/suite-utf8-seek-set.cpp',
 				'source/tests/suite-utf8-seek.cpp',
+				'source/tests/suite-utf8-sort.cpp',
 				'source/tests/suite-utf8-tolower.cpp',
 				'source/tests/suite-utf8-tolower-greek.cpp',
 				'source/tests/suite-utf8-tolower-lithuanian.cpp',
