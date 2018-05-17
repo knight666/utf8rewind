@@ -24,6 +24,7 @@ ipch/*
 *.sdf
 *.suo
 *.targets
+*.VC.db
 *.VC.opendb
 *.vspx
 syntax: regexp
