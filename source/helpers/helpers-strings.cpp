@@ -166,7 +166,7 @@ namespace helpers {
 	{
 		std::stringstream ss;
 
-		unicode_t mask = (1 << (8 * UTF8_WCHAR_SIZE)) - 1;
+		unicode_t mask = (1ull << (8ull * UTF8_WCHAR_SIZE)) - 1;
 		for (std::wstring::const_iterator it = text.begin(); it != text.end(); ++it)
 		{
 			ss << "\\x" << std::uppercase << std::setfill('0') << std::hex << std::setw(UTF8_WCHAR_SIZE) << ((unicode_t)*it & mask);
