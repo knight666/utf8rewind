@@ -45,7 +45,7 @@
 							},
 						},
 					}],
-					['OS=="linux"', {
+					['OS!="win"', {
 						'cflags': [
 							'-g',
 							'-Wall',
@@ -56,6 +56,19 @@
 							'-std=c++11'
 						],
 					}],
+					['OS=="mac"', {
+						"xcode_settings": {  
+							"OTHER_CPLUSPLUSFLAGS": [  
+								"-std=c++11",
+								"-stdlib=libc++"
+							],
+							"OTHER_LDFLAGS": [  
+								"-stdlib=libc++"
+							],
+							"MACOSX_DEPLOYMENT_TARGET":"10.7",
+						},
+					}],
+					
 				],
 			},
 			'Platform_x86': {
