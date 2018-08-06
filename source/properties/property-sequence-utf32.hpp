@@ -6,7 +6,7 @@ class PropertySequenceUtf32
 	: public quickcheck::Property<std::string>
 {
 
-	bool holdsFor(const std::string& input)
+	virtual bool holdsFor(const std::string& input) override
 	{
 		int32_t errors = 0;
 
@@ -63,12 +63,12 @@ class PropertySequenceUtf32
 		return output == input;
 	}
 
-	void generateInput(size_t size, std::string& output)
+	virtual void generateInput(size_t size, std::string& output) override
 	{
 		quickcheck::generate(size, output);
 	}
 
-	const std::string classify(const std::string& input)
+	virtual const std::string classify(const std::string& input) override
 	{
 		if (input.empty())
 		{

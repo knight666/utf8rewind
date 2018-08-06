@@ -6,7 +6,7 @@ class PropertyConvertUtf16
 	: public quickcheck::Property<utf16_t>
 {
 
-	bool holdsFor(const utf16_t& input)
+	virtual bool holdsFor(const utf16_t& input) override
 	{
 		int32_t errors;
 		size_t converted_size;
@@ -38,7 +38,7 @@ class PropertyConvertUtf16
 		return output == input;
 	}
 
-	bool accepts(const utf16_t& input)
+	virtual bool accepts(const utf16_t& input) override
 	{
 		return
 			input != 0 &&
@@ -46,7 +46,7 @@ class PropertyConvertUtf16
 			input > SURROGATE_LOW_END);
 	}
 
-	void generateInput(size_t size, utf16_t& output)
+	virtual void generateInput(size_t size, utf16_t& output) override
 	{
 		quickcheck::generateCodepoint(size, output);
 	}
