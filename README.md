@@ -148,7 +148,7 @@ Open a command window at the project's root.
 
 Use GYP to generate a solution:
 
-	tools\gyp\gyp --depth utf8rewind.gyp
+	tools/gyp/gyp --depth utf8rewind.gyp
 
 Open the solution in XCode and you can build the library and tests.
 
